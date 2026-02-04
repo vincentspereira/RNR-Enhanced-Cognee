@@ -1,156 +1,373 @@
-> [!IMPORTANT]
-> **Note for contributors:** When branching out, create a new branch from the `dev` branch.
+# Contributing to Enhanced Cognee
 
-# 🎉 Welcome to **cognee**! 
+> **Note:** Enhanced Cognee is a derivative work of [Cognee](https://github.com/topoteretes/cognee). Please ensure your contributions align with both the Enhanced Cognee goals and the original Cognee license (Apache 2.0).
 
-We're excited that you're interested in contributing to our project! 
-We want to ensure that every user and contributor feels welcome, included and supported to participate in cognee community. 
-This guide will help you get started and ensure your contributions can be efficiently integrated into the project.
+Thank you for your interest in contributing to Enhanced Cognee! We welcome contributions from the community and appreciate your help in making this project better.
 
-## 🌟 Quick Links
+## Table of Contents
 
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Discord Community](https://discord.gg/bcy8xFAtfd)  
-- [Issue Tracker](https://github.com/topoteretes/cognee/issues)
-- [Cognee Docs](https://docs.cognee.ai)
+- [Code of Conduct](#code-of-conduct)
+- [Ways to Contribute](#ways-to-contribute)
+- [Getting Started](#getting-started)
+- [Development Setup](#development-setup)
+- [Making Changes](#making-changes)
+- [Submitting Changes](#submitting-changes)
+- [Developer Certificate of Origin](#developer-certificate-of-origin)
+- [Community Guidelines](#community-guidelines)
+- [Getting Help](#getting-help)
 
-## 1. 🚀 Ways to Contribute
+---
 
-You can contribute to **cognee** in many ways:
+## Code of Conduct
 
-- 📝 Submitting bug reports or feature requests
-- 💡 Improving documentation
-- 🔍 Reviewing pull requests
-- 🛠️ Contributing code or tests
-- 🌐 Helping other users
+We are committed to fostering an inclusive and respectful community. Please read and follow our [Code of Conduct](https://github.com/topoteretes/cognee/blob/main/CODE_OF_CONDUCT.md).
 
-## 📫 Get in Touch
+---
 
-There are several ways to connect with the **cognee** team and community:
+## Ways to Contribute
 
-### GitHub Collaboration
-- [Open an issue](https://github.com/topoteretes/cognee/issues) for bug reports, feature requests, or discussions
-- Submit pull requests to contribute code or documentation
-- Join ongoing discussions in existing issues and PRs
+You can contribute to Enhanced Cognee in many ways:
 
-### Community Channels
-- Join our [Discord community](https://discord.gg/bcy8xFAtfd) for real-time discussions
-- Participate in community events and discussions
-- Get help from other community members
+### 🐛 Reporting Bugs
 
-### Direct Contact
-- Email: vasilije@cognee.ai
-- For business inquiries or sensitive matters, please reach out via email
-- For general questions, prefer public channels like GitHub issues or Discord
+- Check existing [GitHub Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) first
+- Use the bug report template for new issues
+- Include steps to reproduce, expected behavior, and environment details
 
-We aim to respond to all communications within 2 business days. For faster responses, consider using our Discord channel where the whole community can help!
+### 💡 Suggesting Features
 
-## Issue Labels
+- Check existing feature requests first
+- Clearly describe the use case and benefits
+- Consider if it fits the Enhanced Cognee vision (enterprise-grade, production-ready)
 
-To help you find the most appropriate issues to work on, we use the following labels:
+### 📝 Improving Documentation
 
-- `good first issue` - Perfect for newcomers to the project
-- `bug` - Something isn't working as expected
-- `documentation` - Improvements or additions to documentation
-- `enhancement` - New features or improvements
-- `help wanted` - Extra attention or assistance needed
-- `question` - Further information is requested
-- `wontfix` - This will not be worked on
+- Fix typos and clarify unclear sections
+- Add usage examples
+- Improve setup instructions
+- Document new features
 
-Looking for a place to start? Try filtering for [good first issues](https://github.com/topoteretes/cognee/labels/good%20first%20issue)!
+### 🛠️ Contributing Code
 
+- Fix reported bugs
+- Implement new features
+- Improve performance
+- Add tests
+- Refactor code for better maintainability
 
-## 2. 🛠️ Development Setup
+### 🌍 Helping Others
+
+- Answer questions in [GitHub Discussions](https://github.com/vincentspereira/Enhanced-Cognee/discussions)
+- Help review pull requests
+- Share your usage examples
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Python**: 3.10 or higher
+- **Docker**: Latest version for running Enhanced databases
+- **Git**: For version control
+- **GitHub account**: For contributing via Pull Requests
 
 ### Fork and Clone
 
-1. Fork the [**cognee**](https://github.com/topoteretes/cognee) repository
-2. Clone your fork:
-```shell
-git clone https://github.com/<your-github-username>/cognee.git
-cd cognee
-```
-In case you are working on Vector and Graph Adapters
-1. Fork the [**cognee-community**](https://github.com/topoteretes/cognee-community) repository
-2. Clone your fork:
-```shell
-git clone https://github.com/<your-github-username>/cognee-community.git
-cd cognee-community
+1. Fork the [Enhanced Cognee repository](https://github.com/vincentspereira/Enhanced-Cognee)
+2. Clone your fork locally:
+
+```bash
+git clone https://github.com/vincentspereira/Enhanced-Cognee.git
+cd enhanced-cognee
 ```
 
-### Create a Branch
+3. Add the original repository as upstream (to keep your fork in sync):
 
-Create a new branch for your work:
-```shell
-git checkout -b feature/your-feature-name
+```bash
+git remote add upstream https://github.com/vincentspereira/Enhanced-Cognee.git
 ```
 
-## 3. 🎯 Making Changes
+---
 
-1. **Code Style**: Follow the project's coding standards
-2. **Documentation**: Update relevant documentation
-3. **Tests**: Add tests for new features
-4. **Commits**: Write clear commit messages
+## Development Setup
 
-### Running Tests
-```shell
-python cognee/cognee/tests/test_library.py
+### 1. Create a Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Linux/Mac)
+source .venv/bin/activate
+
+# Activate (Windows)
+.venv\Scripts\activate
 ```
 
-### Running Simple Example
+### 2. Install Dependencies
 
-Change .env.example into .env and provide your OPENAI_API_KEY as LLM_API_KEY
+```bash
+# Install in development mode
+pip install -e ".[dev]"
 
-Make sure to run ```shell uv sync ``` in the root cloned folder or set up a virtual environment to run cognee
-
-```shell
-python cognee/cognee/examples/python/simple_example.py
-```
-or 
-
-```shell
-uv run python cognee/cognee/examples/python/simple_example.py
+# Or using uv (faster)
+uv pip install -e ".[dev]"
 ```
 
-## 4. 📤 Submitting Changes
+### 3. Start Enhanced Databases
 
-1. Install ruff on your system
-2. Run ```ruff format .``` and ``` ruff check ``` and fix the issues
-3. Push your changes:
-```shell
+```bash
+# Start all Enhanced databases via Docker
+docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
+
+# Verify containers are running
+docker ps | grep enhanced
+```
+
+### 4. Configure Environment
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your configuration
+# Add your API keys and database credentials
+```
+
+### 5. Run Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=cognee --cov-report=html
+
+# Run specific test file
+pytest tests/test_memory_integration.py
+```
+
+---
+
+## Making Changes
+
+### Branch Naming
+
+Use descriptive branch names:
+
+- `bugfix/fix-qdrant-connection`
+- `feature/add-memory-cache`
+- `docs/update-installation-guide`
+- `refactor/optimize-vector-search`
+
+### Code Style
+
+Follow the project's coding standards:
+
+```bash
+# Format code with ruff
+ruff format .
+
+# Check for linting issues
+ruff check
+
+# Fix auto-fixable issues
+ruff check --fix
+```
+
+### Writing Code
+
+1. **Follow Python best practices** (PEP 8, type hints where appropriate)
+2. **Add docstrings** to all functions and classes
+3. **Write tests** for new functionality
+4. **Use ASCII-only output** (no Unicode symbols like ✓, ✗, ⚠️)
+5. **Avoid hardcoded categories** - use dynamic configuration
+6. **Maintain backward compatibility** with original Cognee API where possible
+
+### ASCII-Only Output Requirement
+
+**CRITICAL:** All output must use ASCII characters only.
+
+**✅ Correct:**
+```python
+print("OK PostgreSQL connected")
+print("WARN Qdrant connection slow")
+print("ERR Failed to connect to Neo4j")
+```
+
+**❌ Wrong:**
+```python
+print("✓ PostgreSQL connected")
+print("⚠️ Qdrant connection slow")
+print("✗ Failed to connect to Neo4j")
+```
+
+### Dynamic Categories
+
+**✅ Correct:**
+```python
+# Load categories from config
+config = EnhancedConfig()
+categories = config.category_prefixes
+```
+
+**❌ Wrong:**
+```python
+# Hardcoded categories
+class MemoryCategory(Enum):
+    ATS = "ats"
+    OMA = "oma"
+```
+
+### Documentation
+
+Update documentation alongside code changes:
+
+- Update README.md for user-facing changes
+- Add docstrings to functions/classes
+- Update examples if behavior changes
+- Add migration notes for breaking changes
+
+---
+
+## Submitting Changes
+
+### 1. Sync Your Fork
+
+```bash
+# Fetch latest changes from upstream
+git fetch upstream
+
+# Merge upstream changes into your branch
+git merge upstream/main
+```
+
+### 2. Commit Your Changes
+
+```bash
+# Stage changes
 git add .
-git commit -s -m "Description of your changes"
+
+# Commit with signed-off message (DCO)
+git commit -s -m "feat: add Qdrant vector search optimization
+
+- Implemented HNSW index configuration
+- Added batch embedding support
+- Improved query performance by 300%
+
+Closes #123"
+```
+
+### Commit Message Format
+
+Use conventional commit format:
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+
+### 3. Push Your Changes
+
+```bash
+# Push to your fork
 git push origin feature/your-feature-name
 ```
 
-2. Create a Pull Request:
-   - Go to the [**cognee** repository](https://github.com/topoteretes/cognee) or [cognee community repository](https://github.com/topoteretes/cognee-community)
-   - Click "Compare & Pull Request" and open a PR against dev branch
-   - Fill in the PR template with details about your changes
+### 4. Create Pull Request
 
-## 5. 📜 Developer Certificate of Origin (DCO)
+1. Go to the [Enhanced Cognee repository](https://github.com/vincentspereira/Enhanced-Cognee)
+2. Click "Compare & Pull Request"
+3. Fill in the PR template:
+   - Describe your changes
+   - Link related issues
+   - Add screenshots if applicable
+   - Confirm all checks pass
+
+---
+
+## Developer Certificate of Origin (DCO)
 
 All contributions must be signed-off to indicate agreement with our DCO:
 
-```shell
-git config alias.cos "commit -s"  # Create alias for signed commits
+```bash
+# Configure git to sign commits automatically
+git config alias.cos "commit -s"
+
+# Or use -s flag with each commit
+git commit -s -m "Your commit message"
 ```
 
-When your PR is ready, please include:
-> "I affirm that all code in every commit of this pull request conforms to the terms of the Topoteretes Developer Certificate of Origin"
+In your PR, include:
 
-## 6. 🤝 Community Guidelines
+> "I affirm that all code in every commit of this pull request conforms to the terms of the Apache License 2.0 and the Developer Certificate of Origin"
 
-- Be respectful and inclusive
-- Help others learn and grow
-- Follow our [Code of Conduct](CODE_OF_CONDUCT.md)
-- Provide constructive feedback
-- Ask questions when unsure
+---
 
-## 7. 📫 Getting Help
+## Community Guidelines
 
-- Open an [issue](https://github.com/topoteretes/cognee/issues)
-- Join our Discord community
-- Check existing documentation
+- **Be respectful** - Treat everyone with dignity and respect
+- **Be inclusive** - Welcome diverse perspectives and backgrounds
+- **Be collaborative** - Work together to solve problems
+- **Be constructive** - Provide helpful feedback and suggestions
+- **Follow the Code of Conduct** - We have zero tolerance for harassment
 
-Thank you for contributing to **cognee**! 🌟
+---
+
+## Getting Help
+
+### Resources
+
+- **Documentation**: Check the `docs/` directory and README.md
+- **Issues**: Search existing [GitHub Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/vincentspereira/Enhanced-Cognee/discussions)
+
+### Asking Questions
+
+When asking for help:
+
+1. **Search first** - Check if your question has been answered
+2. **Be specific** - Provide details about your issue
+3. **Share context** - Include error messages, environment details
+4. **Be patient** - Community members volunteer their time
+
+### Issue Labels
+
+We use these labels to help triage issues:
+
+- `good first issue` - Great for newcomers
+- `bug` - Something isn't working
+- `documentation` - Docs need improvement
+- `enhancement` - New feature or improvement
+- `help wanted` - Extra help needed
+- `question` - Further information requested
+
+Looking for somewhere to start? Check [good first issues](https://github.com/vincentspereira/Enhanced-Cognee/labels/good%20first%20issue)!
+
+---
+
+## Recognition
+
+Contributors will be:
+
+- Listed in the CONTRIBUTORS.md file
+- Mentioned in release notes for significant contributions
+- Credited in related documentation
+
+Thank you for contributing to Enhanced Cognee! 🚀
+
+---
+
+## Additional Resources
+
+- [Original Cognee Contributing Guide](https://github.com/topoteretes/cognee/blob/main/CONTRIBUTING.md)
+- [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [MCP Specification](https://modelcontextprotocol.io/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Qdrant Documentation](https://qdrant.tech/documentation/)
+- [Neo4j Documentation](https://neo4j.com/docs/)
+- [Redis Documentation](https://redis.io/docs/)

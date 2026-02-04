@@ -127,6 +127,30 @@ def create_vector_engine(
             embedding_engine=embedding_engine,
         )
 
+    elif vector_db_provider.lower() == "qdrant":
+        try:
+            from qdrant_client import QdrantClient
+        except ImportError:
+            raise ImportError(
+                "Qdrant client is not installed. Please install it with 'pip install qdrant-client'"
+            )
+
+        from .qdrant.QdrantAdapter import QdrantAdapter
+
+        # Construct URL from host and port if provided separately
+        url = vector_db_url
+        if url and not url.startswith("http"):
+            if vector_db_port:
+                url = f"http://{url}:{vector_db_port}"
+            else:
+                url = f"http://{url}"
+
+        return QdrantAdapter(
+            url=url,
+            api_key=vector_db_key,
+            embedding_engine=embedding_engine,
+        )
+
     elif vector_db_provider.lower() == "lancedb":
         from .lancedb.LanceDBAdapter import LanceDBAdapter
 
@@ -139,5 +163,5 @@ def create_vector_engine(
     else:
         raise EnvironmentError(
             f"Unsupported vector database provider: {vector_db_provider}. "
-            f"Supported providers are: {', '.join(list(supported_databases.keys()) + ['LanceDB', 'PGVector', 'neptune_analytics', 'ChromaDB'])}"
+            f"Supported providers are: {', '.join(list(supported_databases.keys()) + ['LanceDB', 'PGVector', 'Qdrant', 'neptune_analytics', 'ChromaDB'])}"
         )

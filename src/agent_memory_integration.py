@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Enhanced Cognee Agent Memory Integration Layer
-Provides memory integration for 21 sub-agents with ATS/OMA/SMC categorization
+Provides DYNAMIC and CONFIGURABLE memory integration for agents
+Projects can define their own categories and agent registries
 Integrates with Enhanced stack: PostgreSQL+pgVector, Qdrant, Neo4j, Redis
 """
 
@@ -22,18 +23,21 @@ from neo4j import GraphDatabase, Driver
 import redis.asyncio as redis
 import numpy as np
 
+# Import dynamic memory configuration system
+from memory_config import (
+    MemoryConfigManager,
+    MemoryCategoryConfig,
+    AgentConfig,
+    get_config_manager,
+)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class MemoryCategory(Enum):
-    """Memory categorization system"""
-    ATS = "ats"      # Algorithmic Trading System
-    OMA = "oma"      # Other Multi-Agent Agents
-    SMC = "smc"      # Shared Multi-Agent Components
 
 class MemoryType(Enum):
-    """Types of memory entries"""
+    """Types of memory entries (common across all projects)"""
     FACTUAL = "factual"        # Factual information
     PROCEDURAL = "procedural"  # Procedures and workflows
     EPISODIC = "episodic"      # Event-based memories
@@ -46,7 +50,7 @@ class MemoryEntry:
     id: str
     content: str
     agent_id: str
-    category: MemoryCategory
+    category: str  # Category name (dynamically configured)
     memory_type: MemoryType
     embedding: Optional[List[float]] = None
     metadata: Dict[str, Any] = None
@@ -70,15 +74,34 @@ class MemorySearchResult:
     id: str
     content: str
     agent_id: str
-    category: MemoryCategory
+    category: str  # Category name (dynamically configured)
     similarity_score: float
     metadata: Dict[str, Any]
     created_at: datetime
 
 class AgentMemoryIntegration:
-    """Enhanced Cognee Memory Integration Layer for Multi-Agent System"""
+    """
+    Enhanced Cognee Memory Integration Layer with DYNAMIC configuration
 
-    def __init__(self):
+    Projects can define their own categories and agents through:
+    1. JSON config file (.enhanced-cognee-config.json)
+    2. Environment variable (ENHANCED_COGNEE_CONFIG_PATH)
+    3. Programmatic configuration
+    """
+
+    def __init__(self, config_manager: Optional[MemoryConfigManager] = None):
+        """
+        Initialize with dynamic configuration
+
+        Parameters:
+        -----------
+        - config_manager: Optional custom config manager.
+                         If None, uses the global default which loads from
+                         .enhanced-cognee-config.json or environment variables.
+        """
+        # Use dynamic configuration system
+        self.config_manager = config_manager or get_config_manager()
+
         # Enhanced stack connections
         self.postgres_pool = None
         self.qdrant_client = None
@@ -105,16 +128,30 @@ class AgentMemoryIntegration:
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
         self.postgres_password = os.getenv("POSTGRES_PASSWORD", "cognee_password")
 
-        # Agent registry with 21 sub-agents
-        self.agent_registry = self._initialize_agent_registry()
-
         # Performance optimization
         self.cache_ttl = int(os.getenv("REDIS_CACHE_TTL", "3600"))
         self.batch_size = int(os.getenv("BATCH_SIZE", "50"))
         self.similarity_threshold = float(os.getenv("SIMILARITY_THRESHOLD", "0.7"))
 
+        # Log loaded configuration
+        categories = self.config_manager.get_all_categories()
+        agents = self.config_manager.get_all_agents()
+        logger.info(f"Initialized with {len(categories)} categories and {len(agents)} agents")
+        for cat_name, cat_config in categories.items():
+            logger.info(f"  Category: {cat_name} (prefix: {cat_config.prefix})")
+
     def _initialize_agent_registry(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize registry of all 21 sub-agents with their categorization"""
+        """
+        DEPRECATED: Agent registry is now loaded from configuration
+
+        This method is kept for backward compatibility but should not be used.
+        Use the dynamic configuration system instead via .enhanced-cognee-config.json
+        """
+        logger.warning(
+            "_initialize_agent_registry is deprecated. "
+            "Use .enhanced-cognee-config.json for agent configuration."
+        )
+        return {}
         return {
             # ATS (Algorithmic Trading System) - ats_ prefix
             "algorithmic-trading-system": {
@@ -417,11 +454,11 @@ class AgentMemoryIntegration:
             raise
 
     async def _initialize_qdrant_collections(self):
-        """Initialize Qdrant collections for each agent category"""
-        categories = [MemoryCategory.ATS, MemoryCategory.OMA, MemoryCategory.SMC]
+        """Initialize Qdrant collections for each configured category"""
+        categories = self.config_manager.get_all_categories()
 
-        for category in categories:
-            collection_name = f"{self.qdrant_collection_prefix}{category.value}_memory"
+        for category_name, category_config in categories.items():
+            collection_name = f"{self.qdrant_collection_prefix}{category_config.prefix}memory"
 
             try:
                 # Check if collection exists
@@ -435,27 +472,59 @@ class AgentMemoryIntegration:
                 )
                 logger.info(f"Created Qdrant collection: {collection_name}")
 
-    async def add_memory(self, agent_id: str, content: str, memory_type: MemoryType,
-                         metadata: Dict[str, Any] = None, embedding: List[float] = None,
-                         tags: List[str] = None, expires_at: datetime = None) -> str:
-        """Add memory entry for specific agent with Enhanced stack integration"""
+    async def add_memory(
+        self,
+        agent_id: str,
+        content: str,
+        memory_type: MemoryType,
+        category_name: Optional[str] = None,
+        metadata: Dict[str, Any] = None,
+        embedding: List[float] = None,
+        tags: List[str] = None,
+        expires_at: datetime = None
+    ) -> str:
+        """
+        Add memory entry for specific agent with Enhanced stack integration
 
-        # Validate agent exists
-        if agent_id not in self.agent_registry:
-            raise ValueError(f"Unknown agent: {agent_id}")
+        Parameters:
+        -----------
+        - agent_id: Agent identifier (must be registered in config)
+        - content: Memory content
+        - memory_type: Type of memory (factual, procedural, etc.)
+        - category_name: Optional category override (defaults to agent's configured category)
+        - metadata: Optional metadata dictionary
+        - embedding: Optional pre-computed embedding
+        - tags: Optional tags
+        - expires_at: Optional expiration time
+        """
 
-        agent_info = self.agent_registry[agent_id]
-        category = agent_info["category"]
+        # Validate agent exists in dynamic configuration
+        agent_config = self.config_manager.get_agent_config(agent_id)
+        if not agent_config:
+            raise ValueError(f"Unknown agent: {agent_id}. "
+                           f"Please register agents in .enhanced-cognee-config.json")
+
+        # Get category (use override if provided, otherwise use agent's category)
+        if category_name:
+            category_config = self.config_manager.get_category(category_name)
+            if not category_config:
+                raise ValueError(f"Unknown category: {category_name}")
+        else:
+            category_name = agent_config.category
+            category_config = self.config_manager.get_category(category_name)
+
+        if not category_config:
+            raise ValueError(f"Category '{category_name}' not found in configuration")
 
         # Generate memory entry
         memory_id = str(uuid.uuid4())
 
-        # Create memory entry object
+        # Create memory entry object (using category name string instead of Enum)
         memory_entry = MemoryEntry(
             id=memory_id,
             content=content,
             agent_id=agent_id,
-            category=category,
+            category=category_name,  # Store as string (category name)
             memory_type=memory_type,
             embedding=embedding,
             metadata=metadata or {},
@@ -506,7 +575,7 @@ class AgentMemoryIntegration:
                 f"{memory_entry.memory_type.value} memory from {memory_entry.agent_id}",
                 memory_entry.content,
                 memory_entry.agent_id,
-                memory_entry.category.value,
+                memory_entry.category,  # Use category name string directly
                 memory_entry.tags,
                 json.dumps(memory_entry.metadata),  # Convert dict to JSON string
                 memory_entry.created_at
@@ -527,13 +596,21 @@ class AgentMemoryIntegration:
                     memory_entry.content,
                     memory_entry.embedding,
                     memory_entry.agent_id,
-                    memory_entry.category.value,
+                    memory_entry.category,  # Use category name string directly
                     memory_entry.created_at
                 )
 
     async def _store_qdrant_memory(self, memory_entry: MemoryEntry):
         """Store memory entry embedding in Qdrant"""
-        collection_name = f"{self.qdrant_collection_prefix}{memory_entry.category.value}_memory"
+        # Get category configuration
+        category_config = self.config_manager.get_category(memory_entry.category)
+        if not category_config:
+            logger.warning(f"Category '{memory_entry.category}' not found, using default prefix")
+            category_prefix = f"{memory_entry.category}_"
+        else:
+            category_prefix = category_config.prefix
+
+        collection_name = f"{self.qdrant_collection_prefix}{category_prefix}memory"
 
         # Create point for Qdrant
         point = models.PointStruct(
@@ -542,6 +619,7 @@ class AgentMemoryIntegration:
             payload={
                 "content": memory_entry.content,
                 "agent_id": memory_entry.agent_id,
+                "category_name": memory_entry.category,  # Store category name
                 "memory_type": memory_entry.memory_type.value,
                 "tags": memory_entry.tags,
                 "importance": memory_entry.importance,
@@ -562,7 +640,7 @@ class AgentMemoryIntegration:
         cache_data = {
             "id": memory_entry.id,
             "content": memory_entry.content,
-            "category": memory_entry.category.value,
+            "category": memory_entry.category,  # Use category name directly
             "memory_type": memory_entry.memory_type.value,
             "tags": memory_entry.tags,
             "created_at": memory_entry.created_at.isoformat()
@@ -590,7 +668,7 @@ class AgentMemoryIntegration:
                             e.last_seen = $timestamp
                     """,
                     name=entity,
-                    category=memory_entry.category.value,
+                    category=memory_entry.category,  # Use category name directly
                     agent_id=memory_entry.agent_id,
                     timestamp=datetime.utcnow().isoformat()
                     )
@@ -626,24 +704,42 @@ class AgentMemoryIntegration:
 
         return list(set(entities))
 
-    async def search_memory(self, agent_id: str = None, query: str = None,
-                           embedding: List[float] = None, memory_type: MemoryType = None,
-                           category: MemoryCategory = None, limit: int = 10,
-                           similarity_threshold: float = None) -> List[MemorySearchResult]:
-        """Search memory with enhanced stack capabilities"""
+    async def search_memory(
+        self,
+        agent_id: str = None,
+        query: str = None,
+        embedding: List[float] = None,
+        memory_type: MemoryType = None,
+        category_name: str = None,
+        limit: int = 10,
+        similarity_threshold: float = None
+    ) -> List[MemorySearchResult]:
+        """
+        Search memory with enhanced stack capabilities
+
+        Parameters:
+        -----------
+        - agent_id: Optional agent ID to filter by
+        - query: Optional text query
+        - embedding: Optional vector embedding for semantic search
+        - memory_type: Optional memory type filter
+        - category_name: Optional category name filter
+        - limit: Maximum results to return
+        - similarity_threshold: Optional similarity threshold for vector search
+        """
 
         results = []
         qdrant_results = []  # Initialize to prevent UnboundLocalError
 
         # Search in PostgreSQL for exact matches and metadata
         postgres_results = await self._search_postgresql_memory(
-            agent_id, query, memory_type, category, limit
+            agent_id, query, memory_type, category_name, limit
         )
 
         # Search in Qdrant for semantic similarity
         if embedding:
             qdrant_results = await self._search_qdrant_memory(
-                embedding, category, limit, similarity_threshold
+                embedding, category_name, limit, similarity_threshold
             )
             results.extend(qdrant_results)
 
@@ -658,7 +754,7 @@ class AgentMemoryIntegration:
                     id=result['id'],
                     content=result['content'],
                     agent_id=result['agent_id'],
-                    category=MemoryCategory(result['memory_category']),
+                    category=result['memory_category'],  # Use string directly
                     similarity_score=1.0,  # Exact match
                     metadata=result.get('metadata', {}),
                     created_at=result['created_at']
@@ -672,7 +768,7 @@ class AgentMemoryIntegration:
                     id=result['id'],
                     content=result['content'],
                     agent_id=result['agent_id'],
-                    category=MemoryCategory(result['memory_category']),
+                    category=result['memory_category'],  # Use string directly
                     similarity_score=result['similarity_score'],
                     metadata=result.get('metadata', {}),
                     created_at=result['created_at']
@@ -683,9 +779,14 @@ class AgentMemoryIntegration:
         final_results.sort(key=lambda x: x.similarity_score, reverse=True)
         return final_results[:limit]
 
-    async def _search_postgresql_memory(self, agent_id: str = None, query: str = None,
-                                      memory_type: MemoryType = None, category: MemoryCategory = None,
-                                      limit: int = 10) -> List[Dict[str, Any]]:
+    async def _search_postgresql_memory(
+        self,
+        agent_id: str = None,
+        query: str = None,
+        memory_type: MemoryType = None,
+        category_name: str = None,
+        limit: int = 10
+    ) -> List[Dict[str, Any]]:
         """Search in PostgreSQL database"""
         async with self.postgres_pool.acquire() as conn:
             conditions = []
@@ -707,9 +808,9 @@ class AgentMemoryIntegration:
                 params.append(f"%{memory_type.value}%")
                 param_idx += 1
 
-            if category:
+            if category_name:
                 conditions.append(f"memory_category = ${param_idx}")
-                params.append(category.value)
+                params.append(category_name)
                 param_idx += 1
 
             where_clause = " AND ".join(conditions) if conditions else "1=1"
@@ -727,18 +828,30 @@ class AgentMemoryIntegration:
             rows = await conn.fetch(query_sql, *params)
             return [dict(row) for row in rows]
 
-    async def _search_qdrant_memory(self, embedding: List[float], category: MemoryCategory = None,
-                                    limit: int = 10, threshold: float = None) -> List[Dict[str, Any]]:
-        """Search in Qdrant vector database"""
-        if category:
-            collection_name = f"{self.qdrant_collection_prefix}{category.value}_memory"
-            collection_names = [collection_name]
+    async def _search_qdrant_memory(
+        self,
+        embedding: List[float],
+        category_name: str = None,
+        limit: int = 10,
+        threshold: float = None
+    ) -> List[Dict[str, Any]]:
+        """Search in Qdrant vector database with dynamic categories"""
+        if category_name:
+            # Search specific category
+            category_config = self.config_manager.get_category(category_name)
+            if category_config:
+                collection_name = f"{self.qdrant_collection_prefix}{category_config.prefix}memory"
+                collection_names = [collection_name]
+            else:
+                logger.warning(f"Category '{category_name}' not found, trying direct lookup")
+                collection_name = f"{self.qdrant_collection_prefix}{category_name}_memory"
+                collection_names = [collection_name]
         else:
-            # Search all category collections
+            # Search all configured category collections
+            categories = self.config_manager.get_all_categories()
             collection_names = [
-                f"{self.qdrant_collection_prefix}ats_memory",
-                f"{self.qdrant_collection_prefix}oma_memory",
-                f"{self.qdrant_collection_prefix}smc_memory"
+                f"{self.qdrant_collection_prefix}{cat_config.prefix}memory"
+                for cat_config in categories.values()
             ]
 
         all_results = []
@@ -758,7 +871,7 @@ class AgentMemoryIntegration:
                         'id': hit.id,
                         'content': hit.payload['content'],
                         'agent_id': hit.payload['agent_id'],
-                        'memory_category': hit.payload.get('memory_type', 'unknown'),
+                        'memory_category': hit.payload.get('category_name', 'unknown'),
                         'similarity_score': hit.score,
                         'metadata': {
                             'tags': hit.payload.get('tags', []),
@@ -775,17 +888,36 @@ class AgentMemoryIntegration:
 
     async def get_agent_memory_stats(self, agent_id: str) -> Dict[str, Any]:
         """Get memory statistics for specific agent"""
-        if agent_id not in self.agent_registry:
-            raise ValueError(f"Unknown agent: {agent_id}")
+        # Validate agent exists in dynamic configuration
+        agent_config = self.config_manager.get_agent_config(agent_id)
+        if not agent_config:
+            raise ValueError(f"Unknown agent: {agent_id}. "
+                           f"Please register agents in .enhanced-cognee-config.json")
 
-        agent_info = self.agent_registry[agent_id]
-        category = agent_info["category"]
+        category_name = agent_config.category
+        category_config = self.config_manager.get_category(category_name)
 
         stats = {
             "agent_id": agent_id,
-            "agent_info": agent_info,
+            "agent_config": {
+                "agent_id": agent_config.agent_id,
+                "category": agent_config.category,
+                "description": agent_config.description,
+                "memory_types": agent_config.memory_types,
+                "priority": agent_config.priority,
+                "data_retention_days": agent_config.data_retention_days,
+            },
             "memory_stats": {}
         }
+
+        if category_config:
+            stats["category_config"] = {
+                "name": category_config.name,
+                "description": category_config.description,
+                "prefix": category_config.prefix,
+                "retention_days": category_config.retention_days,
+                "priority": category_config.priority,
+            }
 
         try:
             # Get PostgreSQL stats
@@ -803,7 +935,11 @@ class AgentMemoryIntegration:
                 stats["memory_stats"]["postgresql"] = dict(result) if result else {}
 
             # Get Qdrant stats
-            collection_name = f"{self.qdrant_collection_prefix}{category.value}_memory"
+            if category_config:
+                collection_name = f"{self.qdrant_collection_prefix}{category_config.prefix}memory"
+            else:
+                collection_name = f"{self.qdrant_collection_prefix}{category_name}_memory"
+
             try:
                 collection_info = self.qdrant_client.get_collection(collection_name)
                 points_count = self.qdrant_client.count(collection_name).count
@@ -859,15 +995,41 @@ class AgentMemoryIntegration:
             return 0
 
     async def get_all_agents_info(self) -> Dict[str, Any]:
-        """Get information about all 21 agents"""
+        """Get information about all configured agents"""
+        agents = self.config_manager.get_all_agents()
+        categories = self.config_manager.get_all_categories()
+
+        # Group agents by category
+        category_counts = {}
+        for agent_config in agents.values():
+            cat_name = agent_config.category
+            category_counts[cat_name] = category_counts.get(cat_name, 0) + 1
+
         return {
-            "total_agents": len(self.agent_registry),
-            "categories": {
-                "ats": len([a for a in self.agent_registry.values() if a["category"] == MemoryCategory.ATS]),
-                "oma": len([a for a in self.agent_registry.values() if a["category"] == MemoryCategory.OMA]),
-                "smc": len([a for a in self.agent_registry.values() if a["category"] == MemoryCategory.SMC])
+            "project_info": {
+                "total_categories": len(categories),
+                "total_agents": len(agents),
             },
-            "agents": self.agent_registry
+            "categories": {
+                name: {
+                    "name": cat_config.name,
+                    "description": cat_config.description,
+                    "prefix": cat_config.prefix,
+                    "agent_count": category_counts.get(name, 0),
+                }
+                for name, cat_config in categories.items()
+            },
+            "agents": {
+                agent_id: {
+                    "agent_id": agent_config.agent_id,
+                    "category": agent_config.category,
+                    "description": agent_config.description,
+                    "memory_types": agent_config.memory_types,
+                    "priority": agent_config.priority,
+                    "data_retention_days": agent_config.data_retention_days,
+                }
+                for agent_id, agent_config in agents.items()
+            }
         }
 
     async def close(self):
@@ -885,50 +1047,90 @@ class AgentMemoryIntegration:
 
 # Example usage and initialization
 async def main():
-    """Example usage of the Agent Memory Integration"""
+    """
+    Example usage of the Agent Memory Integration with DYNAMIC configuration
+
+    This example shows how the system now uses dynamic configuration instead of
+    hardcoded categories. Projects can define their own categories and agents.
+    """
     integration = AgentMemoryIntegration()
 
     try:
         # Initialize the integration
         await integration.initialize()
 
-        # Get all agents info
+        # Get all agents info (now dynamically loaded)
         agents_info = await integration.get_all_agents_info()
-        print(f"Initialized memory integration for {agents_info['total_agents']} agents")
+        print(f"\n=== Enhanced Cognee Memory Integration ===")
+        print(f"Project: {agents_info['project_info']['total_categories']} categories, "
+              f"{agents_info['project_info']['total_agents']} agents")
 
-        # Example: Add memory for an ATS agent
-        memory_id = await integration.add_memory(
-            agent_id="algorithmic-trading-system",
-            content="Market volatility increased by 15% in the last hour. Consider adjusting position sizes.",
-            memory_type=MemoryType.FACTUAL,
-            metadata={
-                "importance": 0.8,
-                "source": "market_data_feed",
-                "market_conditions": "high_volatility"
-            },
-            tags=["market", "volatility", "risk"],
-            embedding=[0.1, 0.2, 0.3] * 341  # Example embedding
-        )
+        # Show configured categories
+        print("\nConfigured Categories:")
+        for cat_name, cat_info in agents_info['categories'].items():
+            print(f"  - {cat_name}: {cat_info['description']} "
+                  f"(prefix: {cat_info['prefix']}, agents: {cat_info['agent_count']})")
 
-        print(f"Added memory: {memory_id}")
+        # Show configured agents
+        print("\nConfigured Agents:")
+        for agent_id, agent_info in agents_info['agents'].items():
+            print(f"  - {agent_id}: {agent_info['description']} "
+                  f"(category: {agent_info['category']})")
 
-        # Search memory
-        results = await integration.search_memory(
-            agent_id="algorithmic-trading-system",
-            query="volatility",
-            limit=5
-        )
+        # Example: Add memory for a configured agent
+        # NOTE: Agent must be registered in .enhanced-cognee-config.json
+        try:
+            memory_id = await integration.add_memory(
+                agent_id="algorithmic-trading-system",  # Must exist in config
+                content="Market volatility increased by 15% in the last hour. Consider adjusting position sizes.",
+                memory_type=MemoryType.FACTUAL,
+                metadata={
+                    "importance": 0.8,
+                    "source": "market_data_feed",
+                    "market_conditions": "high_volatility"
+                },
+                tags=["market", "volatility", "risk"],
+                embedding=[0.1, 0.2, 0.3] * 341  # Example embedding
+            )
 
-        print(f"Found {len(results)} matching memories")
+            print(f"\n✅ Added memory: {memory_id}")
 
-        # Get agent stats
-        stats = await integration.get_agent_memory_stats("algorithmic-trading-system")
-        print(f"Agent stats: {stats}")
+            # Search memory
+            results = await integration.search_memory(
+                agent_id="algorithmic-trading-system",
+                query="volatility",
+                limit=5
+            )
+
+            print(f"✅ Found {len(results)} matching memories")
+
+            # Get agent stats
+            stats = await integration.get_agent_memory_stats("algorithmic-trading-system")
+            print(f"✅ Agent stats: {stats}")
+
+        except ValueError as e:
+            print(f"\n⚠️ {e}")
+            print("To add memory for agents, create a .enhanced-cognee-config.json file")
+            print("with your project's agents and categories.")
 
     except Exception as e:
         logger.error(f"Error in example usage: {e}")
     finally:
         await integration.close()
 
+
 if __name__ == "__main__":
+    print("""
+╔════════════════════════════════════════════════════════════════════╗
+║   Enhanced Cognee Agent Memory Integration - DYNAMIC CONFIGURATION   ║
+╠════════════════════════════════════════════════════════════════════╣
+║   Categories are now DYNAMIC and CONFIGURABLE per project!          ║
+║   No more hardcoded ATS/OMA/SMC categories.                         ║
+║                                                                     ║
+║   Configure your project via:                                       ║
+║   1. Create .enhanced-cognee-config.json in your project root      ║
+║   2. Define your own categories and agents                         ║
+║   3. Or use ENHANCED_COGNEE_CONFIG_PATH environment variable       ║
+╚════════════════════════════════════════════════════════════════════╝
+    """)
     asyncio.run(main())

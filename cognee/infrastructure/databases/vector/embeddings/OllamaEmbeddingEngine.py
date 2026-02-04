@@ -58,7 +58,7 @@ class OllamaEmbeddingEngine(EmbeddingEngine):
         dimensions: Optional[int] = 1024,
         max_completion_tokens: int = 512,
         endpoint: Optional[str] = "http://localhost:11434/api/embeddings",
-        huggingface_tokenizer: str = "Salesforce/SFR-Embedding-Mistral",
+        huggingface_tokenizer: Optional[str] = None,
         batch_size: int = 100,
     ):
         self.model = model
@@ -67,7 +67,8 @@ class OllamaEmbeddingEngine(EmbeddingEngine):
         self.endpoint = endpoint
         self.huggingface_tokenizer_name = huggingface_tokenizer
         self.batch_size = batch_size
-        self.tokenizer = self.get_tokenizer()
+        # Only initialize tokenizer if explicitly provided (Ollama handles tokenization internally)
+        self.tokenizer = self.get_tokenizer() if huggingface_tokenizer else None
 
         enable_mocking = os.getenv("MOCK_EMBEDDING", "false")
         if isinstance(enable_mocking, bool):

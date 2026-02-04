@@ -2,7 +2,7 @@
 """
 Enhanced Cognee MCP Server
 Integrates with enterprise-grade memory stack: PostgreSQL+pgVector, Qdrant, Neo4j, Redis
-Provides exclusive memory architecture with ATS/OMA/SMC categorization
+Provides DYNAMIC and CONFIGURABLE memory architecture (not hardcoded to specific categories)
 """
 
 import os
@@ -13,6 +13,7 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import asyncpg
 import qdrant_client
@@ -32,39 +33,77 @@ class EnhancedConfig:
     def __init__(self):
         self.enhanced_mode = os.getenv("ENHANCED_COGNEE_MODE", "false").lower() == "true"
 
-        # Enhanced Stack Configuration
+        # Enhanced Stack Configuration with Enhanced ports
         self.postgres_host = os.getenv("POSTGRES_HOST", "localhost")
-        self.postgres_port = int(os.getenv("POSTGRES_PORT", "5432"))
+        self.postgres_port = int(os.getenv("POSTGRES_PORT", "25432"))  # Enhanced port
         self.postgres_db = os.getenv("POSTGRES_DB", "cognee_db")
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
         self.postgres_password = os.getenv("POSTGRES_PASSWORD", "cognee_password")
 
         self.qdrant_host = os.getenv("QDRANT_HOST", "localhost")
-        self.qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
+        self.qdrant_port = int(os.getenv("QDRANT_PORT", "26333"))  # Enhanced port
         self.qdrant_api_key = os.getenv("QDRANT_API_KEY")
         self.qdrant_collection_prefix = os.getenv("QDRANT_COLLECTION_PREFIX", "cognee_")
 
-        self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+        self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:27687")  # Enhanced port
         self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
         self.neo4j_password = os.getenv("NEO4J_PASSWORD", "cognee_password")
         self.neo4j_database = os.getenv("NEO4J_DATABASE", "neo4j")
 
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
-        self.redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        self.redis_port = int(os.getenv("REDIS_PORT", "26379"))  # Enhanced port
         self.redis_password = os.getenv("REDIS_PASSWORD")
         self.redis_db = int(os.getenv("REDIS_DB", "0"))
 
-        # Enhanced Features
-        self.memory_categorization = os.getenv("MEMORY_CATEGORIZATION", "false").lower() == "true"
-        self.ats_prefix = os.getenv("ATS_MEMORY_PREFIX", "ats_")
-        self.oma_prefix = os.getenv("OMA_MEMORY_PREFIX", "oma_")
-        self.smc_prefix = os.getenv("SMC_MEMORY_PREFIX", "smc_")
+        # Dynamic category configuration
+        self.memory_categorization = os.getenv("MEMORY_CATEGORIZATION", "true").lower() == "true"
+        self.config_path = os.getenv("ENHANCED_COGNEE_CONFIG_PATH")
+
+        # Load dynamic category configuration
+        self.category_prefixes = self._load_category_prefixes()
 
         # Performance Settings
         self.performance_monitoring = os.getenv("PERFORMANCE_MONITORING", "false").lower() == "true"
         self.auto_optimization = os.getenv("AUTO_OPTIMIZATION", "false").lower() == "true"
         self.vector_dimensions = int(os.getenv("EMBEDDING_DIMENSIONS", "1024"))
         self.similarity_threshold = float(os.getenv("SIMILARITY_THRESHOLD", "0.7"))
+
+    def _load_category_prefixes(self) -> Dict[str, str]:
+        """Load dynamic category prefixes from configuration file"""
+        # Try to load from JSON config
+        config_paths = [
+            self.config_path,
+            ".enhanced-cognee-config.json",
+            "config/.enhanced-cognee-config.json",
+        ]
+
+        for config_path in config_paths:
+            if config_path and Path(config_path).exists():
+                try:
+                    with open(config_path, 'r') as f:
+                        config_data = json.load(f)
+
+                    prefixes = {}
+                    if "categories" in config_data:
+                        for cat_name, cat_config in config_data["categories"].items():
+                            prefixes[cat_name] = cat_config.get("prefix", f"{cat_name.lower()}_")
+
+                    logger.info(f"Loaded {len(prefixes)} category prefixes from {config_path}")
+                    return prefixes
+                except Exception as e:
+                    logger.warning(f"Failed to load config from {config_path}: {e}")
+
+        # Fallback to legacy environment variables for backward compatibility
+        if os.getenv("ATS_MEMORY_PREFIX"):
+            return {
+                "ATS": os.getenv("ATS_MEMORY_PREFIX", "ats_"),
+                "OMA": os.getenv("OMA_MEMORY_PREFIX", "oma_"),
+                "SMC": os.getenv("SMC_MEMORY_PREFIX", "smc_"),
+            }
+
+        # Default to no prefixes (simple mode)
+        logger.info("Using default category configuration (no custom prefixes)")
+        return {}
 
 config = EnhancedConfig()
 
@@ -73,7 +112,7 @@ class MemoryEntry(BaseModel):
     id: Optional[str] = None
     content: str
     agent_id: str
-    memory_category: str = Field(pattern="^(ats|oma|smc)$")
+    memory_category: str  # Now dynamic - any category name allowed
     embedding: Optional[List[float]] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
     tags: List[str] = Field(default_factory=list)
@@ -191,16 +230,19 @@ class EnhancedCogneeMCPServer:
             raise
 
     def _get_collection_name(self, memory_category: str, agent_id: str) -> str:
-        """Generate Qdrant collection name with categorization"""
-        if config.memory_categorization:
-            prefix_map = {
-                'ats': config.ats_prefix,
-                'oma': config.oma_prefix,
-                'smc': config.smc_prefix
-            }
-            prefix = prefix_map.get(memory_category, 'shared_')
-            return f"{config.qdrant_collection_prefix}{prefix}{agent_id}"
-        return f"{config.qdrant_collection_prefix}{agent_id}"
+        """
+        Generate Qdrant collection name with DYNAMIC categorization
+
+        Supports dynamic category prefixes from configuration file
+        Falls back to simple {prefix}{category}_memory format
+        """
+        if config.memory_categorization and config.category_prefixes:
+            # Use dynamic category prefix from configuration
+            prefix = config.category_prefixes.get(memory_category, f"{memory_category.lower()}_")
+            return f"{config.qdrant_collection_prefix}{prefix}memory"
+        else:
+            # Simple format without category prefixes
+            return f"{config.qdrant_collection_prefix}{memory_category.lower()}_memory"
 
     async def add_memory(self, entry: MemoryEntry) -> str:
         """Add memory entry to Enhanced stack"""
@@ -268,7 +310,11 @@ class EnhancedCogneeMCPServer:
             raise HTTPException(status_code=500, detail=str(e))
 
     async def search_memory(self, query: SearchQuery) -> List[Dict[str, Any]]:
-        """Search memory using Enhanced vector database"""
+        """
+        Search memory using Enhanced vector database with DYNAMIC categories
+
+        Supports searching across dynamically configured categories
+        """
         try:
             results = []
 
@@ -279,17 +325,21 @@ class EnhancedCogneeMCPServer:
                 if query.memory_category and query.agent_id:
                     collection_names.append(self._get_collection_name(query.memory_category, query.agent_id))
                 else:
-                    # Search across multiple collections based on category
-                    if config.memory_categorization:
-                        if not query.memory_category or query.memory_category == "ats":
-                            collection_names.extend([f"{config.qdrant_collection_prefix}{config.ats_prefix}{agent}"
-                                                   for agent in await self._get_active_agents("ats")])
-                        if not query.memory_category or query.memory_category == "oma":
-                            collection_names.extend([f"{config.qdrant_collection_prefix}{config.oma_prefix}{agent}"
-                                                   for agent in await self._get_active_agents("oma")])
-                        if not query.memory_category or query.memory_category == "smc":
-                            collection_names.extend([f"{config.qdrant_collection_prefix}{config.smc_prefix}{agent}"
-                                                   for agent in await self._get_active_agents("smc")])
+                    # Search across all configured category collections
+                    if config.memory_categorization and config.category_prefixes:
+                        # Use dynamic categories from configuration
+                        for category_name in config.category_prefixes.keys():
+                            if not query.memory_category or query.memory_category.lower() == category_name.lower():
+                                collection_name = self._get_collection_name(category_name, "")
+                                # Check if collection exists before searching
+                                try:
+                                    self.qdrant_client.get_collection(collection_name)
+                                    collection_names.append(collection_name)
+                                except:
+                                    logger.debug(f"Collection {collection_name} does not exist, skipping")
+                    else:
+                        # No categorization - search default collection
+                        collection_names.append(f"{config.qdrant_collection_prefix}memory")
 
                 # Search each collection
                 for collection_name in collection_names:
@@ -472,11 +522,22 @@ class EnhancedCogneeMCPServer:
 
         @self.app.get("/health")
         async def health_check():
-            """Health check endpoint"""
+            """Health check endpoint with Enhanced stack status"""
             health = {
                 "status": "healthy",
                 "enhanced_mode": config.enhanced_mode,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
+                "stack": {
+                    "postgresql": f"{config.postgres_host}:{config.postgres_port}",
+                    "qdrant": f"{config.qdrant_host}:{config.qdrant_port}",
+                    "neo4j": config.neo4j_uri,
+                    "redis": f"{config.redis_host}:{config.redis_port}",
+                },
+                "categories": {
+                    "enabled": config.memory_categorization,
+                    "count": len(config.category_prefixes),
+                    "configured": list(config.category_prefixes.keys()) if config.category_prefixes else []
+                }
             }
 
             # Check each component
@@ -487,8 +548,8 @@ class EnhancedCogneeMCPServer:
                     health["postgresql"] = "connected"
                 else:
                     health["postgresql"] = "disconnected"
-            except:
-                health["postgresql"] = "error"
+            except Exception as e:
+                health["postgresql"] = f"error: {str(e)}"
 
             try:
                 if self.qdrant_client:
@@ -496,8 +557,8 @@ class EnhancedCogneeMCPServer:
                     health["qdrant"] = f"connected ({len(collections.collections)} collections)"
                 else:
                     health["qdrant"] = "disconnected"
-            except:
-                health["qdrant"] = "error"
+            except Exception as e:
+                health["qdrant"] = f"error: {str(e)}"
 
             try:
                 if self.neo4j_driver:
@@ -506,8 +567,8 @@ class EnhancedCogneeMCPServer:
                     health["neo4j"] = "connected"
                 else:
                     health["neo4j"] = "disconnected"
-            except:
-                health["neo4j"] = "error"
+            except Exception as e:
+                health["neo4j"] = f"error: {str(e)}"
 
             try:
                 if self.redis_client:
@@ -515,8 +576,8 @@ class EnhancedCogneeMCPServer:
                     health["redis"] = "connected"
                 else:
                     health["redis"] = "disconnected"
-            except:
-                health["redis"] = "error"
+            except Exception as e:
+                health["redis"] = f"error: {str(e)}"
 
             return health
 
