@@ -37,16 +37,23 @@ import mcp.types as types
 # Create MCP server
 mcp = FastMCP("Enhanced Cognee")
 
+# Import memory management
+from src.memory_management import MemoryManager, RetentionPolicy
+
+# Memory manager instance
+memory_manager = None
+
 # Initialize Enhanced stack connections
 postgres_pool = None
 qdrant_client = None
 neo4j_driver = None
 redis_client = None
+memory_manager = None
 
 
 async def init_enhanced_stack():
     """Initialize Enhanced database connections"""
-    global postgres_pool, qdrant_client, neo4j_driver, redis_client
+    global postgres_pool, qdrant_client, neo4j_driver, redis_client, memory_manager
 
     logger.info("Initializing Enhanced Cognee stack...")
 
@@ -113,6 +120,11 @@ async def init_enhanced_stack():
         logger.info("OK Redis connected")
     except Exception as e:
         logger.warning(f"Redis connection failed: {e}")
+
+    # Initialize Memory Manager
+    if postgres_pool and redis_client and qdrant_client:
+        memory_manager = MemoryManager(postgres_pool, redis_client, qdrant_client)
+        logger.info("OK Memory Manager initialized")
 
 
 async def cleanup_enhanced_stack():
@@ -645,6 +657,152 @@ async def list_agents() -> str:
     except Exception as e:
         logger.error(f"list_agents failed: {e}")
         return f"ERR Failed to list agents: {str(e)}"
+
+
+# ============================================================================
+# MEMORY MANAGEMENT TOOLS - Expiry, Archival, Cleanup
+# ============================================================================
+
+@mcp.tool()
+async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
+    """
+    Expire or archive memories older than specified days (Memory Management Tool)
+
+    Parameters:
+    -----------
+    - days: Number of days after which memories expire (default: 90)
+    - dry_run: If True, simulate without actually deleting (default: False)
+
+    Returns:
+    --------
+    - Result of the expiry operation with memory count
+    """
+    if not memory_manager:
+        return "ERR Memory Manager not available"
+
+    try:
+        result = await memory_manager.expire_old_memories(
+            days=days,
+            dry_run=dry_run,
+            policy=RetentionPolicy.DELETE_OLD
+        )
+
+        if result.get("status") == "dry_run":
+            return f"OK DRY RUN: Would expire {result['memories_affected']} memories older than {days} days"
+
+        elif result.get("status") == "success":
+            return f"OK Expired {result['memories_affected']} memories older than {days} days"
+
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"expire_memories failed: {e}")
+        return f"ERR Failed to expire memories: {str(e)}"
+
+
+@mcp.tool()
+async def get_memory_age_stats() -> str:
+    """
+    Get statistics about memory age distribution (Memory Management Tool)
+
+    Returns:
+    --------
+    - Memory statistics by age bracket (0-7 days, 8-30 days, 31-90 days, 90+ days)
+    """
+    if not memory_manager:
+        return "ERR Memory Manager not available"
+
+    try:
+        stats = await memory_manager.get_memory_stats_by_age()
+
+        if stats.get("status") == "error":
+            return f"ERR {stats.get('error', 'Unknown error')}"
+
+        output = [
+            f"[STATS] Memory Age Distribution:",
+            f"  Total memories: {stats['total_memories']}",
+            f"  Oldest memory: {stats['oldest_memory']}",
+            f"  Newest memory: {stats['newest_memory']}",
+            "",
+            "  Age Distribution:"
+        ]
+
+        for bracket, count in stats.get("age_distribution", {}).items():
+            output.append(f"    {bracket}: {count} memories")
+
+        return "\n".join(output)
+
+    except Exception as e:
+        logger.error(f"get_memory_age_stats failed: {e}")
+        return f"ERR Failed to get memory age stats: {str(e)}"
+
+
+@mcp.tool()
+async def set_memory_ttl(memory_id: str, ttl_days: int) -> str:
+    """
+    Set time-to-live (TTL) for a specific memory (Memory Management Tool)
+
+    Parameters:
+    -----------
+    - memory_id: ID of the memory to set TTL for
+    - ttl_days: Days until expiry (0 = no expiry)
+
+    Returns:
+    --------
+    - Result of TTL setting operation
+    """
+    if not memory_manager:
+        return "ERR Memory Manager not available"
+
+    try:
+        result = await memory_manager.set_memory_ttl(memory_id, ttl_days)
+
+        if result.get("status") == "not_found":
+            return f"ERR Memory not found: {memory_id}"
+
+        elif result.get("status") == "success":
+            expiry = result.get("expiry_date", "never")
+            return f"OK Set TTL of {ttl_days} days for memory {memory_id} (expires: {expiry})"
+
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"set_memory_ttl failed: {e}")
+        return f"ERR Failed to set memory TTL: {str(e)}"
+
+
+@mcp.tool()
+async def archive_category(category: str, days: int = 180) -> str:
+    """
+    Archive all memories from a specific category older than specified days
+
+    Parameters:
+    -----------
+    - category: Memory category to archive (e.g., 'trading', 'development')
+    - days: Age threshold for archiving (default: 180 days)
+
+    Returns:
+    --------
+    - Result of archival operation
+    """
+    if not memory_manager:
+        return "ERR Memory Manager not available"
+
+    try:
+        result = await memory_manager.archive_memories_by_category(category, days)
+
+        if result.get("status") == "success":
+            return f"OK Archived {result['memories_archived']} memories from category '{category}' older than {days} days"
+
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"archive_category failed: {e}")
+        return f"ERR Failed to archive category: {str(e)}"
+
 
 
 async def main():
