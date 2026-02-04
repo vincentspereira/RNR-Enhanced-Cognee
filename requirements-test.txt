@@ -1,0 +1,44 @@
+# Testing Requirements for Enhanced Cognee
+# Install with: pip install -r requirements-test.txt
+
+# Core Testing Framework
+pytest==8.0.0
+pytest-asyncio==0.23.4
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Coverage
+coverage==7.4.1
+
+# Async Testing
+asyncio==3.4.3
+
+# Mocking
+pytest-mock==3.12.0
+
+# Type Checking (for test development)
+mypy==1.8.0
+
+# Linting
+pylint==3.0.3
+
+# Code Formatting
+black==24.1.1
+
+# Import Sorting
+isort==5.13.2
+
+# Security Checks
+bandit==1.7.6
+
+# Performance Profiling
+pytest-profiling==1.8.1
+
+# HTML Coverage Reports
+pytest-html==4.1.1
+
+# JSON Schema Validation
+jsonschema==4.20.0
+
+# Timezone Support
+tzdata==2024.1
