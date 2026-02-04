@@ -159,7 +159,7 @@ class MemorySummarizer:
                         "summarized_memories": summarized,
                         "full_memories": full,
                         "summarization_ratio": f"{(summarized/total*100):.1f}%" if total > 0 else "0%",
-                        "avg_length": f"{avg_avg_length:.0f}" if row["avg_length"] else 0,
+                        "avg_length": f"{avg_summary:.0f}" if row["avg_length"] else 0,
                         "estimated_space_saved_bytes": int(space_saved),
                         "estimated_space_saved_mb": f"{space_saved/1024/1024:.2f} MB"
                     }

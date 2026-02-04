@@ -53,7 +53,7 @@ class MemoryDeduplicator:
                 }
 
             # Check 2: Vector similarity (if embedding provided)
-            if embedding and qdrant_client:
+            if embedding and self.qdrant_client:
                 similar = await self._check_vector_similarity(
                     content, embedding, agent_id, memory_category
                 )

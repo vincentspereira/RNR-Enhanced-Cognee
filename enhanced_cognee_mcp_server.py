@@ -37,11 +37,21 @@ import mcp.types as types
 # Create MCP server
 mcp = FastMCP("Enhanced Cognee")
 
-# Import memory management
+# Import enhanced modules
 from src.memory_management import MemoryManager, RetentionPolicy
+from src.memory_deduplication import MemoryDeduplicator
+from src.memory_summarization import MemorySummarizer
+from src.performance_analytics import PerformanceAnalytics
+from src.cross_agent_sharing import CrossAgentMemorySharing, SharePolicy
+from src.realtime_sync import RealTimeMemorySync
 
-# Memory manager instance
+# Enhanced module instances
 memory_manager = None
+memory_deduplicator = None
+memory_summarizer = None
+performance_analytics = None
+cross_agent_sharing = None
+realtime_sync = None
 
 # Initialize Enhanced stack connections
 postgres_pool = None
@@ -125,6 +135,32 @@ async def init_enhanced_stack():
     if postgres_pool and redis_client and qdrant_client:
         memory_manager = MemoryManager(postgres_pool, redis_client, qdrant_client)
         logger.info("OK Memory Manager initialized")
+
+    # Initialize Memory Deduplicator
+    if postgres_pool and qdrant_client:
+        memory_deduplicator = MemoryDeduplicator(postgres_pool, qdrant_client)
+        logger.info("OK Memory Deduplicator initialized")
+
+    # Initialize Memory Summarizer
+    if postgres_pool:
+        llm_config = {}  # Configure with your LLM settings
+        memory_summarizer = MemorySummarizer(postgres_pool, llm_config)
+        logger.info("OK Memory Summarizer initialized")
+
+    # Initialize Performance Analytics
+    if postgres_pool and redis_client:
+        performance_analytics = PerformanceAnalytics(postgres_pool, redis_client)
+        logger.info("OK Performance Analytics initialized")
+
+    # Initialize Cross-Agent Sharing
+    if postgres_pool:
+        cross_agent_sharing = CrossAgentMemorySharing(postgres_pool)
+        logger.info("OK Cross-Agent Sharing initialized")
+
+    # Initialize Real-Time Sync
+    if redis_client and postgres_pool:
+        realtime_sync = RealTimeMemorySync(redis_client, postgres_pool)
+        logger.info("OK Real-Time Sync initialized")
 
 
 async def cleanup_enhanced_stack():
@@ -805,6 +841,621 @@ async def archive_category(category: str, days: int = 180) -> str:
 
 
 
+# ============================================================================
+# MEMORY DEDUPLICATION TOOLS - Prevent duplicate memories
+# ============================================================================
+
+@mcp.tool()
+async def check_duplicate(content: str, agent_id: str = "default") -> str:
+    """
+    Check if content is duplicate before adding (Memory Deduplication Tool)
+
+    Parameters:
+    -----------
+    - content: Content to check for duplicates
+    - agent_id: Agent ID to check duplicates for (default: "default")
+
+    Returns:
+    --------
+    - Duplicate check result with action recommendation
+    """
+    if not memory_deduplicator:
+        return "ERR Memory Deduplicator not available"
+
+    try:
+        result = await memory_deduplicator.check_duplicate(
+            content=content,
+            embedding=None,
+            agent_id=agent_id
+        )
+
+        if result.get("is_duplicate"):
+            dup_type = result.get("duplicate_type", "unknown")
+            reason = result.get("reason", "No reason")
+            action = result.get("action", "skip")
+            existing_id = result.get("existing_id", "unknown")
+
+            return (f"OK DUPLICATE FOUND:\n"
+                   f"  Type: {dup_type}\n"
+                   f"  Existing ID: {existing_id}\n"
+                   f"  Reason: {reason}\n"
+                   f"  Action: {action}")
+        else:
+            return f"OK No duplicate found - safe to add"
+
+    except Exception as e:
+        logger.error(f"check_duplicate failed: {e}")
+        return f"ERR Failed to check duplicate: {str(e)}"
+
+
+@mcp.tool()
+async def auto_deduplicate(agent_id: str = None) -> str:
+    """
+    Automatically find and handle duplicate memories (Memory Deduplication Tool)
+
+    Parameters:
+    -----------
+    - agent_id: Optional agent ID to scope deduplication (default: all agents)
+
+    Returns:
+    --------
+    - Deduplication results with counts
+    """
+    if not memory_deduplicator:
+        return "ERR Memory Deduplicator not available"
+
+    try:
+        result = await memory_deduplicator.auto_deduplicate(agent_id)
+
+        if result.get("status") == "success":
+            res = result.get("results", {})
+            return (f"OK Auto-deduplication complete:\n"
+                   f"  Processed: {res.get('processed', 0)} memories\n"
+                   f"  Duplicates found: {res.get('duplicates_found', 0)}\n"
+                   f"  Merged: {res.get('merged', 0)}\n"
+                   f"  Deleted: {res.get('deleted', 0)}")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"auto_deduplicate failed: {e}")
+        return f"ERR Failed to auto-deduplicate: {str(e)}"
+
+
+@mcp.tool()
+async def get_deduplication_stats() -> str:
+    """
+    Get statistics about memory deduplication (Memory Deduplication Tool)
+
+    Returns:
+    --------
+    - Deduplication statistics
+    """
+    if not memory_deduplicator:
+        return "ERR Memory Deduplicator not available"
+
+    try:
+        stats = await memory_deduplicator.get_deduplication_stats()
+
+        if "error" in stats:
+            return f"ERR {stats['error']}"
+
+        return (f"[STATS] Deduplication Statistics:\n"
+               f"  Similarity threshold: {stats.get('similarity_threshold', 0)}\n"
+               f"  Exact duplicates found: {stats.get('exact_duplicates_found', 0)}\n"
+               f"  Similar duplicates found: {stats.get('similar_duplicates_found', 0)}\n"
+               f"  Total duplicates prevented: {stats.get('total_duplicates_prevented', 0)}")
+
+    except Exception as e:
+        logger.error(f"get_deduplication_stats failed: {e}")
+        return f"ERR Failed to get deduplication stats: {str(e)}"
+
+
+# ============================================================================
+# MEMORY SUMMARIZATION TOOLS - Automatic summarization for storage optimization
+# ============================================================================
+
+@mcp.tool()
+async def summarize_old_memories(days: int = 30, min_length: int = 1000, dry_run: bool = False) -> str:
+    """
+    Summarize memories older than specified days (Memory Summarization Tool)
+
+    Parameters:
+    -----------
+    - days: Age threshold for summarization (default: 30)
+    - min_length: Minimum content length to summarize (default: 1000)
+    - dry_run: If True, simulate without summarizing (default: False)
+
+    Returns:
+    --------
+    - Summarization results with compression statistics
+    """
+    if not memory_summarizer:
+        return "ERR Memory Summarizer not available"
+
+    try:
+        result = await memory_summarizer.summarize_old_memories(days, min_length, dry_run)
+
+        if result.get("status") == "success":
+            if dry_run:
+                return (f"OK DRY RUN: Found {result.get('candidates_found', 0)} memories to summarize "
+                       f"older than {days} days")
+            else:
+                return (f"OK Summarized {result.get('memories_summarized', 0)} memories:\n"
+                       f"  Space saved: {result.get('space_saved_bytes', 0)} bytes")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"summarize_old_memories failed: {e}")
+        return f"ERR Failed to summarize memories: {str(e)}"
+
+
+@mcp.tool()
+async def summarize_category(category: str, days: int = 30) -> str:
+    """
+    Summarize all memories in a category older than specified days (Memory Summarization Tool)
+
+    Parameters:
+    -----------
+    - category: Category to summarize (e.g., 'trading', 'development')
+    - days: Age threshold (default: 30)
+
+    Returns:
+    --------
+    - Summarization results for category
+    """
+    if not memory_summarizer:
+        return "ERR Memory Summarizer not available"
+
+    try:
+        result = await memory_summarizer.summarize_by_category(category, days)
+
+        if result.get("status") == "success":
+            res = result.get("results", {})
+            return (f"OK Summarized {res.get('memories_summarized', 0)} memories "
+                   f"in category '{category}':\n"
+                   f"  Space saved: {res.get('space_saved', 0)} bytes")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"summarize_category failed: {e}")
+        return f"ERR Failed to summarize category: {str(e)}"
+
+
+@mcp.tool()
+async def get_summary_stats() -> str:
+    """
+    Get statistics about memory summarization (Memory Summarization Tool)
+
+    Returns:
+    --------
+    - Summarization statistics
+    """
+    if not memory_summarizer:
+        return "ERR Memory Summarizer not available"
+
+    try:
+        stats = await memory_summarizer.get_summary_stats()
+
+        if "error" in stats:
+            return f"ERR {stats['error']}"
+
+        return (f"[STATS] Memory Summarization:\n"
+               f"  Total memories: {stats.get('total_memories', 0)}\n"
+               f"  Summarized memories: {stats.get('summarized_memories', 0)}\n"
+               f"  Full memories: {stats.get('full_memories', 0)}\n"
+               f"  Summarization ratio: {stats.get('summarization_ratio', '0%')}\n"
+               f"  Estimated space saved: {stats.get('estimated_space_saved_mb', '0 MB')}")
+
+    except Exception as e:
+        logger.error(f"get_summary_stats failed: {e}")
+        return f"ERR Failed to get summary stats: {str(e)}"
+
+
+# ============================================================================
+# PERFORMANCE ANALYTICS TOOLS - Metrics collection and monitoring
+# ============================================================================
+
+@mcp.tool()
+async def get_performance_metrics() -> str:
+    """
+    Get comprehensive performance metrics (Performance Analytics Tool)
+
+    Returns:
+    --------
+    - Detailed performance metrics including query times, cache stats, memory counts
+    """
+    if not performance_analytics:
+        return "ERR Performance Analytics not available"
+
+    try:
+        metrics = await performance_analytics.get_performance_metrics()
+
+        if "error" in metrics:
+            return f"ERR {metrics['error']}"
+
+        output = ["[PERF] Performance Metrics:", f"  Timestamp: {metrics.get('timestamp', 'unknown')}"]
+
+        # Query performance
+        if "query_performance" in metrics:
+            qp = metrics["query_performance"]
+            output.extend([
+                "",
+                "  Query Performance:",
+                f"    Avg time: {qp.get('avg_time_ms', 0):.2f} ms",
+                f"    Min time: {qp.get('min_time_ms', 0):.2f} ms",
+                f"    Max time: {qp.get('max_time_ms', 0):.2f} ms",
+                f"    P50 time: {qp.get('p50_time_ms', 0):.2f} ms",
+                f"    P95 time: {qp.get('p95_time_ms', 0):.2f} ms",
+                f"    Total queries: {qp.get('total_queries', 0)}"
+            ])
+
+        # Cache performance
+        if "cache_performance" in metrics:
+            cp = metrics["cache_performance"]
+            output.extend([
+                "",
+                "  Cache Performance:",
+                f"    Hits: {cp.get('hits', 0)}",
+                f"    Misses: {cp.get('misses', 0)}",
+                f"    Hit rate: {cp.get('hit_rate', '0%')}"
+            ])
+
+        # Memory stats
+        if "memory_stats" in metrics:
+            ms = metrics["memory_stats"]
+            output.extend([
+                "",
+                "  Memory Statistics:",
+                f"    Total memories: {ms.get('total_memories', 0)}",
+                f"    Active agents: {ms.get('active_agents', 0)}"
+            ])
+
+        # Database stats
+        if "database_stats" in metrics:
+            ds = metrics["database_stats"]
+            output.extend([
+                "",
+                "  Database:",
+                f"    Size: {ds.get('database_size', 'unknown')}"
+            ])
+
+        return "\n".join(output)
+
+    except Exception as e:
+        logger.error(f"get_performance_metrics failed: {e}")
+        return f"ERR Failed to get performance metrics: {str(e)}"
+
+
+@mcp.tool()
+async def get_slow_queries(threshold_ms: float = 1000, limit: int = 10) -> str:
+    """
+    Get slow queries above threshold (Performance Analytics Tool)
+
+    Parameters:
+    -----------
+    - threshold_ms: Query time threshold in ms (default: 1000)
+    - limit: Maximum number of slow queries to return (default: 10)
+
+    Returns:
+    --------
+    - List of slow queries with execution times
+    """
+    if not performance_analytics:
+        return "ERR Performance Analytics not available"
+
+    try:
+        slow_queries = await performance_analytics.get_slow_queries(threshold_ms, limit)
+
+        if not slow_queries:
+            return f"OK No queries found above {threshold_ms} ms threshold"
+
+        output = [f"[SLOW QUERIES] Queries > {threshold_ms} ms:"]
+
+        for i, query in enumerate(slow_queries, 1):
+            output.append(f"\n  {i}. {query.get('operation', 'unknown')}")
+            output.append(f"     Duration: {query.get('duration_ms', 0):.2f} ms")
+            output.append(f"     Timestamp: {query.get('timestamp', 'unknown')}")
+
+        return "\n".join(output)
+
+    except Exception as e:
+        logger.error(f"get_slow_queries failed: {e}")
+        return f"ERR Failed to get slow queries: {str(e)}"
+
+
+@mcp.tool()
+async def get_prometheus_metrics() -> str:
+    """
+    Export metrics in Prometheus format (Performance Analytics Tool)
+
+    Returns:
+    --------
+    - Prometheus-compatible metrics text
+    """
+    if not performance_analytics:
+        return "ERR Performance Analytics not available"
+
+    try:
+        metrics = await performance_analytics.get_prometheus_metrics()
+        return f"OK Prometheus Metrics:\n\n{metrics}"
+
+    except Exception as e:
+        logger.error(f"get_prometheus_metrics failed: {e}")
+        return f"ERR Failed to get Prometheus metrics: {str(e)}"
+
+
+# ============================================================================
+# CROSS-AGENT SHARING TOOLS - Controlled memory sharing between agents
+# ============================================================================
+
+@mcp.tool()
+async def set_memory_sharing(memory_id: str, policy: str, allowed_agents: str = None) -> str:
+    """
+    Set sharing policy for a memory (Cross-Agent Sharing Tool)
+
+    Parameters:
+    -----------
+    - memory_id: ID of the memory
+    - policy: Sharing policy (private, shared, category_shared, custom)
+    - allowed_agents: Optional JSON array of agent IDs for custom policy
+
+    Returns:
+    --------
+    - Result of sharing policy setting
+    """
+    if not cross_agent_sharing:
+        return "ERR Cross-Agent Sharing not available"
+
+    try:
+        # Parse policy enum
+        try:
+            share_policy = SharePolicy(policy.lower())
+        except ValueError:
+            return f"ERR Invalid policy: {policy}. Use: private, shared, category_shared, custom"
+
+        # Parse allowed agents if provided
+        allowed_list = None
+        if allowed_agents:
+            try:
+                allowed_list = json.loads(allowed_agents)
+            except:
+                return f"ERR Invalid JSON for allowed_agents: {allowed_agents}"
+
+        result = await cross_agent_sharing.set_memory_sharing(memory_id, share_policy, allowed_list)
+
+        if result.get("status") == "success":
+            return f"OK Set sharing policy '{policy}' for memory {memory_id}"
+        elif result.get("status") == "not_found":
+            return f"ERR Memory not found: {memory_id}"
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"set_memory_sharing failed: {e}")
+        return f"ERR Failed to set sharing: {str(e)}"
+
+
+@mcp.tool()
+async def check_memory_access(memory_id: str, agent_id: str) -> str:
+    """
+    Check if an agent can access a memory (Cross-Agent Sharing Tool)
+
+    Parameters:
+    -----------
+    - memory_id: ID of the memory
+    - agent_id: Agent requesting access
+
+    Returns:
+    --------
+    - Access decision with reason
+    """
+    if not cross_agent_sharing:
+        return "ERR Cross-Agent Sharing not available"
+
+    try:
+        result = await cross_agent_sharing.can_agent_access_memory(memory_id, agent_id)
+
+        can_access = result.get("can_access", False)
+        reason = result.get("reason", "unknown")
+
+        if can_access:
+            return f"OK Agent '{agent_id}' CAN access memory {memory_id} (reason: {reason})"
+        else:
+            return f"NO Agent '{agent_id}' CANNOT access memory {memory_id} (reason: {reason})"
+
+    except Exception as e:
+        logger.error(f"check_memory_access failed: {e}")
+        return f"ERR Failed to check access: {str(e)}"
+
+
+@mcp.tool()
+async def get_shared_memories(agent_id: str, limit: int = 50) -> str:
+    """
+    Get all memories shared with this agent (Cross-Agent Sharing Tool)
+
+    Parameters:
+    -----------
+    - agent_id: Agent ID to get shared memories for
+    - limit: Maximum results to return (default: 50)
+
+    Returns:
+    --------
+    - List of shared memories
+    """
+    if not cross_agent_sharing:
+        return "ERR Cross-Agent Sharing not available"
+
+    try:
+        memories = await cross_agent_sharing.get_shared_memories(agent_id, limit)
+
+        if not memories:
+            return f"OK No shared memories found for agent '{agent_id}'"
+
+        output = [f"[SHARED] Memories shared with agent '{agent_id}' ({len(memories)} total):", ""]
+
+        for memory in memories[:20]:  # Limit display
+            output.append(f"- {memory['title']}")
+            output.append(f"  ID: {memory['id']}")
+            output.append(f"  Owner: {memory['owner_id']}")
+            output.append(f"  Category: {memory['memory_category']}")
+            output.append(f"  Created: {memory['created_at']}")
+            output.append("")
+
+        return "\n".join(output)
+
+    except Exception as e:
+        logger.error(f"get_shared_memories failed: {e}")
+        return f"ERR Failed to get shared memories: {str(e)}"
+
+
+@mcp.tool()
+async def create_shared_space(space_name: str, member_agents: str) -> str:
+    """
+    Create a shared memory space for multiple agents (Cross-Agent Sharing Tool)
+
+    Parameters:
+    -----------
+    - space_name: Name for the shared space
+    - member_agents: JSON array of agent IDs that can access this space
+
+    Returns:
+    --------
+    - Result of shared space creation
+    """
+    if not cross_agent_sharing:
+        return "ERR Cross-Agent Sharing not available"
+
+    try:
+        # Parse member agents
+        try:
+            members = json.loads(member_agents)
+        except:
+            return f"ERR Invalid JSON for member_agents: {member_agents}"
+
+        result = await cross_agent_sharing.create_shared_space(space_name, members)
+
+        if result.get("status") == "success":
+            return (f"OK Created shared space '{space_name}' for {result.get('member_count', 0)} agents\n"
+                   f"  Space ID: {result.get('space_id', 'unknown')}")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"create_shared_space failed: {e}")
+        return f"ERR Failed to create shared space: {str(e)}"
+
+
+# ============================================================================
+# REAL-TIME SYNC TOOLS - Synchronization across multiple agents
+# ============================================================================
+
+@mcp.tool()
+async def publish_memory_event(event_type: str, memory_id: str, agent_id: str, data: str = "{}") -> str:
+    """
+    Publish a memory event to all subscribers (Real-Time Sync Tool)
+
+    Parameters:
+    -----------
+    - event_type: Type of event (memory_added, memory_updated, memory_deleted)
+    - memory_id: ID of the memory
+    - agent_id: Agent that triggered the event
+    - data: Optional JSON string with additional event data
+
+    Returns:
+    --------
+    - Publish result
+    """
+    if not realtime_sync:
+        return "ERR Real-Time Sync not available"
+
+    try:
+        # Parse data
+        try:
+            data_dict = json.loads(data)
+        except:
+            data_dict = {}
+
+        result = await realtime_sync.publish_memory_event(event_type, memory_id, agent_id, data_dict)
+
+        if result.get("status") == "success":
+            return (f"OK Published {event_type} event for memory {memory_id} "
+                   f"from agent {agent_id}")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"publish_memory_event failed: {e}")
+        return f"ERR Failed to publish event: {str(e)}"
+
+
+@mcp.tool()
+async def get_sync_status() -> str:
+    """
+    Get synchronization status and statistics (Real-Time Sync Tool)
+
+    Returns:
+    --------
+    - Sync status with subscriber information
+    """
+    if not realtime_sync:
+        return "ERR Real-Time Sync not available"
+
+    try:
+        status = await realtime_sync.get_sync_status()
+
+        if status.get("status") == "error":
+            return f"ERR {status.get('error', 'Unknown error')}"
+
+        return (f"[SYNC] Real-Time Sync Status:\n"
+               f"  Status: {status.get('status', 'unknown')}\n"
+               f"  Channel: {status.get('sync_channel', 'unknown')}\n"
+               f"  Subscribed agents: {status.get('subscribers_count', 0)}\n"
+               f"  Agent list: {', '.join(status.get('subscribed_agents', []))}\n"
+               f"  Redis connected clients: {status.get('redis_connected_clients', 0)}")
+
+    except Exception as e:
+        logger.error(f"get_sync_status failed: {e}")
+        return f"ERR Failed to get sync status: {str(e)}"
+
+
+@mcp.tool()
+async def sync_agent_state(source_agent: str, target_agent: str, category: str = None) -> str:
+    """
+    Synchronize memory state between two agents (Real-Time Sync Tool)
+
+    Parameters:
+    -----------
+    - source_agent: Source agent ID to sync from
+    - target_agent: Target agent ID to sync to
+    - category: Optional category filter
+
+    Returns:
+    --------
+    - Sync result with memories synced
+    """
+    if not realtime_sync:
+        return "ERR Real-Time Sync not available"
+
+    try:
+        result = await realtime_sync.sync_agent_state(source_agent, target_agent, category)
+
+        if result.get("status") == "success":
+            errors = result.get("errors", [])
+            error_msg = f"\nErrors: {len(errors)}" if errors else ""
+
+            return (f"OK Synced {result.get('memories_synced', 0)} memories "
+                   f"from '{source_agent}' to '{target_agent}'{error_msg}")
+        else:
+            return f"ERR {result.get('error', 'Unknown error')}"
+
+    except Exception as e:
+        logger.error(f"sync_agent_state failed: {e}")
+        return f"ERR Failed to sync agent state: {str(e)}"
+
+
 async def main():
     """Main entry point"""
     print("""
@@ -833,6 +1484,32 @@ async def main():
     print("      - list_data: List all documents")
     print("      - get_stats: Get system statistics")
     print("      - health: Health check")
+    print("    Memory Management Tools:")
+    print("      - expire_memories: Expire old memories")
+    print("      - get_memory_age_stats: Get memory age statistics")
+    print("      - set_memory_ttl: Set time-to-live for memory")
+    print("      - archive_category: Archive category memories")
+    print("    Memory Deduplication Tools:")
+    print("      - check_duplicate: Check if content is duplicate")
+    print("      - auto_deduplicate: Auto-deduplicate memories")
+    print("      - get_deduplication_stats: Get deduplication stats")
+    print("    Memory Summarization Tools:")
+    print("      - summarize_old_memories: Summarize old memories")
+    print("      - summarize_category: Summarize category memories")
+    print("      - get_summary_stats: Get summarization stats")
+    print("    Performance Analytics Tools:")
+    print("      - get_performance_metrics: Get comprehensive metrics")
+    print("      - get_slow_queries: Get slow queries")
+    print("      - get_prometheus_metrics: Export Prometheus metrics")
+    print("    Cross-Agent Sharing Tools:")
+    print("      - set_memory_sharing: Set sharing policy")
+    print("      - check_memory_access: Check memory access")
+    print("      - get_shared_memories: Get shared memories")
+    print("      - create_shared_space: Create shared space")
+    print("    Real-Time Sync Tools:")
+    print("      - publish_memory_event: Publish memory event")
+    print("      - get_sync_status: Get sync status")
+    print("      - sync_agent_state: Sync agent state")
     print()
 
     try:
