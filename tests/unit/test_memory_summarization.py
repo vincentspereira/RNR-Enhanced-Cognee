@@ -53,7 +53,7 @@ class TestSummarizeOldMemories:
                 "created_at": datetime.utcnow() - timedelta(days=60)
             }
         ])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -209,7 +209,7 @@ class TestSummarizeByCategory:
             {"id": "mem-1", "content": "Long content " * 100},
             {"id": "mem-2", "content": "More long content " * 100}
         ])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -431,7 +431,7 @@ class TestPerformance:
             for i in range(100)
         ]
         mock_conn.fetch = AsyncMock(return_value=memories)
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 

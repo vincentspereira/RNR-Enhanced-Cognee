@@ -94,7 +94,7 @@ class TestExpireOldMemories:
         """Test expiring memories with ARCHIVE_OLD policy"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -198,7 +198,7 @@ class TestTTLManagement:
         """Test setting TTL for a memory"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value="memory-id-123")
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -226,7 +226,7 @@ class TestTTLManagement:
         """Test setting TTL to 0 (no expiry)"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value="memory-id")
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -243,7 +243,7 @@ class TestTTLManagement:
             {"id": "mem-1"},
             {"id": "mem-2"}
         ])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -269,7 +269,7 @@ class TestCategoryArchival:
             {"id": "mem-1", "content": "content 1"},
             {"id": "mem-2", "content": "content 2"}
         ])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -336,7 +336,7 @@ class TestRetentionPolicies:
     def test_retention_policy_enum(self):
         """Test RetentionPolicy enum values"""
         assert RetentionPolicy.KEEP_ALL.value == "keep_all"
-        assert RetentionPolicy.KEEP_RECENT.value == "keep_recent"
+        assert RetentionPolicy.KEEP_recent.value == "keep_recent"
         assert RetentionPolicy.ARCHIVE_OLD.value == "archive_old"
         assert RetentionPolicy.DELETE_OLD.value == "delete_old"
 
@@ -421,7 +421,7 @@ class TestPerformance:
         mock_conn = AsyncMock()
         # Simulate 1000 memories
         mock_conn.fetch = AsyncMock(return_value=[{"id": f"mem-{i}"} for i in range(1000)])
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1000")
+        mock_conn.execute = AsyncMock(return_value=1000)
         ctx_mgr = create_async_context_manager(mock_conn)
         memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 

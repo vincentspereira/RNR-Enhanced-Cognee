@@ -341,7 +341,7 @@ class TestSyncAgentState:
             {"id": "mem-1", "content": "content1", "metadata": {}},
             {"id": "mem-2", "content": "content2", "metadata": {}}
         ])
-        mock_conn.execute = AsyncMock(return_value="INSERT 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -363,7 +363,7 @@ class TestSyncAgentState:
         mock_conn.fetch = AsyncMock(return_value=[
             {"id": "mem-1", "content": "content", "metadata": {}}
         ])
-        mock_conn.execute = AsyncMock(return_value="INSERT 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -434,7 +434,7 @@ class TestResolveConflict:
     async def test_resolve_keep_newest(self, realtime_sync, create_async_context_manager):
         """Test resolving conflict with keep_newest strategy"""
         mock_conn = AsyncMock()
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
@@ -452,7 +452,7 @@ class TestResolveConflict:
     async def test_resolve_merge(self, realtime_sync, create_async_context_manager):
         """Test resolving conflict with merge strategy"""
         mock_conn = AsyncMock()
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        mock_conn.execute = AsyncMock(return_value=1)
         ctx_mgr = create_async_context_manager(mock_conn)
         realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
