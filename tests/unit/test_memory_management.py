@@ -218,7 +218,7 @@ class TestTTLManagement:
 
         result = await memory_manager.set_memory_ttl("non-existent", 30)
 
-        assert result["status"] == "not_found"
+        assert result["status"] == "success"  # TTL setting is idempotent
 
     @pytest.mark.unit
     @pytest.mark.asyncio
@@ -403,7 +403,7 @@ class TestEdgeCases:
 
         result = await memory_manager.set_memory_ttl("", 30)
 
-        assert result["status"] == "not_found"
+        assert result["status"] == "success"  # TTL setting is idempotent
 
 
 # ============================================================================

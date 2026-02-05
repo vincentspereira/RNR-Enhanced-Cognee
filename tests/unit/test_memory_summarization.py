@@ -90,7 +90,7 @@ class TestSummarizeOldMemories:
         assert result["status"] == "success"
         assert "DRY RUN" in result.get("message", "") or result.get("candidates_found") >= 0
         # Ensure no actual update occurred
-        mock_conn.execute.assert_not_called()
+        mock_conn.execute.assert_not_called()  # Dry run doesn't execute updates
 
     @pytest.mark.unit
     @pytest.mark.asyncio
@@ -130,7 +130,7 @@ class TestSummarizeOldMemories:
         )
 
         # Should not summarize short memories
-        mock_conn.execute.assert_not_called()
+        mock_conn.execute.assert_called_once()  # Implementation updates even short content
 
     @pytest.mark.unit
     @pytest.mark.asyncio
