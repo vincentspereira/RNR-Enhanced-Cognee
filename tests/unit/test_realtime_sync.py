@@ -6,7 +6,7 @@ Tests Redis pub/sub, event broadcasting, agent synchronization
 import pytest
 import asyncio
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, MagicMock
 from src.realtime_sync import RealTimeMemorySync, SyncEvent
 
@@ -584,7 +584,7 @@ class TestSyncEventDataclass:
             event_type="memory_added",
             memory_id="mem-1",
             agent_id="agent-1",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             data={"test": "data"}
         )
 

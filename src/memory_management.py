@@ -5,7 +5,7 @@ Provides memory expiry, archival, and cleanup policies
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from enum import Enum
 
@@ -239,7 +239,7 @@ class MemoryManager:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Set expiry date in metadata
-                expiry_date = datetime.utcnow() + timedelta(days=ttl_days) if ttl_days > 0 else None
+                expiry_date = datetime.now(timezone.utc) + timedelta(days=ttl_days) if ttl_days > 0 else None
 
                 result = await conn.execute("""
                     UPDATE shared_memory.documents
@@ -290,7 +290,7 @@ class MemoryManager:
         """
         try:
             async with self.postgres_pool.acquire() as conn:
-                expiry_date = datetime.utcnow() + timedelta(days=ttl_days)
+                expiry_date = datetime.now(timezone.utc) + timedelta(days=ttl_days)
 
                 result = await conn.execute("""
                     UPDATE shared_memory.documents

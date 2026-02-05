@@ -10,7 +10,7 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any, Tuple
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -249,7 +249,7 @@ class EnhancedCogneeMCPServer:
         try:
             # Generate ID if not provided
             entry.id = entry.id or str(uuid.uuid4())
-            entry.created_at = datetime.utcnow()
+            entry.created_at = datetime.now(timezone.utc)
 
             # Store in PostgreSQL (metadata)
             async with self.postgres_pool.acquire() as conn:
@@ -438,7 +438,7 @@ class EnhancedCogneeMCPServer:
                 rel_type=relation.relationship_type,
                 properties=relation.properties,
                 confidence=relation.confidence,
-                created_at=datetime.utcnow().isoformat()
+                created_at=datetime.now(timezone.utc).isoformat()
                 )
 
                 relation_id = str(uuid.uuid4())
@@ -526,7 +526,7 @@ class EnhancedCogneeMCPServer:
             health = {
                 "status": "healthy",
                 "enhanced_mode": config.enhanced_mode,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "stack": {
                     "postgresql": f"{config.postgres_host}:{config.postgres_port}",
                     "qdrant": f"{config.qdrant_host}:{config.qdrant_port}",

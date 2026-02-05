@@ -369,6 +369,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "integration: Integration tests")
     config.addinivalue_line("markers", "system: System tests")
     config.addinivalue_line("markers", "e2e: End-to-end tests")
+    config.addinivalue_line("markers", "slow: Slow-running tests")
 
 
 def pytest_collection_modifyitems(config, items):

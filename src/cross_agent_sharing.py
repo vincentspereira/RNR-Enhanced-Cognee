@@ -5,7 +5,7 @@ Enables controlled memory sharing between agents
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 from enum import Enum
 import json
@@ -50,7 +50,7 @@ class CrossAgentMemorySharing:
                 sharing_data = {
                     "policy": policy.value,
                     "allowed_agents": allowed_agents or [],
-                    "shared_at": datetime.utcnow().isoformat()
+                    "shared_at": datetime.now(timezone.utc).isoformat()
                 }
 
                 # Update memory with sharing policy
@@ -293,7 +293,7 @@ class CrossAgentMemorySharing:
                         "type": "shared_space",
                         "space_name": space_name,
                         "members": member_agents,
-                        "created_at": datetime.utcnow().isoformat()
+                        "created_at": datetime.now(timezone.utc).isoformat()
                     })
                 )
 

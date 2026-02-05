@@ -6,7 +6,7 @@ Collects and exposes performance metrics for monitoring
 import asyncio
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any
 from collections import defaultdict
 from dataclasses import dataclass, asdict
@@ -46,7 +46,7 @@ class PerformanceAnalytics:
         self.query_times.append({
             "operation": operation,
             "duration_ms": duration_ms,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
 
         # Keep only recent queries
@@ -124,7 +124,7 @@ class PerformanceAnalytics:
                     metrics["database_stats"] = {"database_size": db_size}
 
             # System health
-            metrics["timestamp"] = datetime.utcnow().isoformat()
+            metrics["timestamp"] = datetime.now(timezone.utc).isoformat()
             metrics["uptime"] = "unknown"  # Would need to track start time
 
             return metrics

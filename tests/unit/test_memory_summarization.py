@@ -5,7 +5,7 @@ Tests automatic summarization, category summarization, statistics
 
 import pytest
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, Mock, patch
 from src.memory_summarization import MemorySummarizer
 
@@ -50,7 +50,7 @@ class TestSummarizeOldMemories:
                 "id": "old-mem-1",
                 "title": "Old Memory",
                 "content": "Very long content that should be summarized. " * 100,
-                "created_at": datetime.utcnow() - timedelta(days=60)
+                "created_at": datetime.now(timezone.utc) - timedelta(days=60)
             }
         ])
         mock_conn.execute = AsyncMock(return_value=1)
@@ -76,7 +76,7 @@ class TestSummarizeOldMemories:
                 "id": "old-mem-1",
                 "title": "Old Memory",
                 "content": "Long content " * 100,
-                "created_at": datetime.utcnow() - timedelta(days=60)
+                "created_at": datetime.now(timezone.utc) - timedelta(days=60)
             }
         ])
         ctx_mgr = create_async_context_manager(mock_conn)
@@ -118,7 +118,7 @@ class TestSummarizeOldMemories:
                 "id": "short-mem",
                 "title": "Short",
                 "content": "Too short",
-                "created_at": datetime.utcnow() - timedelta(days=60)
+                "created_at": datetime.now(timezone.utc) - timedelta(days=60)
             }
         ])
         ctx_mgr = create_async_context_manager(mock_conn)
@@ -328,7 +328,7 @@ class TestErrorHandling:
         """Test handling update errors during summarization"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
-            {"id": "mem-1", "title": "Test", "content": "Long " * 100, "created_at": datetime.utcnow()}
+            {"id": "mem-1", "title": "Test", "content": "Long " * 100, "created_at": datetime.now(timezone.utc)}
         ])
         mock_conn.execute = AsyncMock(side_effect=Exception("Update failed"))
         ctx_mgr = create_async_context_manager(mock_conn)
@@ -426,7 +426,7 @@ class TestPerformance:
                 "id": f"mem-{i}",
                 "title": f"Memory {i}",
                 "content": "Content " * 500,
-                "created_at": datetime.utcnow() - timedelta(days=60)
+                "created_at": datetime.now(timezone.utc) - timedelta(days=60)
             }
             for i in range(100)
         ]

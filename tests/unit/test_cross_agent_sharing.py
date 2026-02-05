@@ -5,7 +5,7 @@ Tests memory sharing policies, access control, shared spaces
 
 import pytest
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock
 from src.cross_agent_sharing import CrossAgentMemorySharing, SharePolicy
 
@@ -223,7 +223,7 @@ class TestGetSharedMemories:
                 "content": "Content 1",
                 "owner_id": "agent-1",
                 "memory_category": "test",
-                "created_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc)
             },
             {
                 "id": "mem-2",
@@ -231,7 +231,7 @@ class TestGetSharedMemories:
                 "content": "Content 2",
                 "owner_id": "agent-2",
                 "memory_category": "test",
-                "created_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc)
             }
         ])
         ctx_mgr = create_async_context_manager(mock_conn)
@@ -263,7 +263,7 @@ class TestGetSharedMemories:
         # Return many memories
         mock_conn.fetch = AsyncMock(return_value=[
             {"id": f"mem-{i}", "title": f"Memory {i}", "content": "content",
-             "owner_id": "agent-1", "memory_category": "test", "created_at": datetime.utcnow()}
+             "owner_id": "agent-1", "memory_category": "test", "created_at": datetime.now(timezone.utc)}
             for i in range(100)
         ])
         ctx_mgr = create_async_context_manager(mock_conn)

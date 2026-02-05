@@ -12,7 +12,7 @@ import json
 import logging
 import uuid
 import hashlib
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any, Union, Tuple
 from dataclasses import dataclass, asdict
 from enum import Enum
@@ -66,7 +66,7 @@ class MemoryEntry:
         if self.tags is None:
             self.tags = []
         if self.created_at is None:
-            self.created_at = datetime.utcnow()
+            self.created_at = datetime.now(timezone.utc)
 
 @dataclass
 class MemorySearchResult:
@@ -670,7 +670,7 @@ class AgentMemoryIntegration:
                     name=entity,
                     category=memory_entry.category,  # Use category name directly
                     agent_id=memory_entry.agent_id,
-                    timestamp=datetime.utcnow().isoformat()
+                    timestamp=datetime.now(timezone.utc).isoformat()
                     )
 
                 # Create relationships between entities
@@ -688,7 +688,7 @@ class AgentMemoryIntegration:
                     agent_id=memory_entry.agent_id,
                     memory_type=memory_entry.memory_type.value,
                     confidence=memory_entry.confidence,
-                    timestamp=datetime.utcnow().isoformat()
+                    timestamp=datetime.now(timezone.utc).isoformat()
                     )
 
     def _extract_entities(self, text: str) -> List[str]:

@@ -6,7 +6,7 @@ Enables real-time memory updates across multiple agents using Redis pub/sub
 import asyncio
 import logging
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
 
@@ -61,7 +61,7 @@ class RealTimeMemorySync:
                 "event_type": event_type,
                 "memory_id": memory_id,
                 "agent_id": agent_id,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "data": data
             }
 
@@ -200,7 +200,7 @@ class RealTimeMemorySync:
                 "event_type": f"memory_{update_type}",
                 "memory_id": memory_id,
                 "agent_id": agent_id,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "data": {
                     "memory": dict(memory),
                     "update_type": update_type

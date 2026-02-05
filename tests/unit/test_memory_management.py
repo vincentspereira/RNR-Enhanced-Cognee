@@ -5,7 +5,7 @@ Tests memory expiry, archival, TTL management
 
 import pytest
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, Mock, patch
 from src.memory_management import MemoryManager, RetentionPolicy
 
@@ -152,8 +152,8 @@ class TestMemoryStats:
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value={
             "total_memories": 100,
-            "oldest_memory": datetime.utcnow() - timedelta(days=180),
-            "newest_memory": datetime.utcnow()
+            "oldest_memory": datetime.now(timezone.utc) - timedelta(days=180),
+            "newest_memory": datetime.now(timezone.utc)
         })
         mock_conn.fetch = AsyncMock(return_value=[
             {"age_bracket": "0-7 days", "count": 20},
@@ -313,14 +313,17 @@ class TestErrorHandling:
     @pytest.mark.asyncio
     async def test_database_connection_error(self, memory_manager, create_async_context_manager):
         """Test handling of database connection errors"""
-        memory_manager.postgres_pool.acquire = AsyncMock(side_effect=Exception("Connection lost"))
+        # Create a mock acquire function that raises an exception
+        async def mock_acquire():
+            raise Exception("Connection lost")
+
+        memory_manager.postgres_pool.acquire = mock_acquire
 
         result = await memory_manager.expire_old_memories(days=90)
 
         assert result["status"] == "error"
-        # The actual error is "'coroutine' object does not support the asynchronous context manager protocol"
-        # because AsyncMock doesn't work properly with async context managers
-        assert "error" in result
+        # Error is caught and returned in the error field
+        assert result.get("error") is not None
 
     @pytest.mark.unit
     @pytest.mark.asyncio
