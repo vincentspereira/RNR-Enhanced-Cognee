@@ -332,7 +332,7 @@ class RealTimeMemorySync:
                         sync_result["errors"].append({
                             "memory_id": memory["id"],
                             "error": str(e)
-                }
+                        })
 
                 logger.info(f"Synced {sync_result['memories_synced']} memories from {source_agent_id} to {target_agent_id}")
 

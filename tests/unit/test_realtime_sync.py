@@ -244,7 +244,7 @@ class TestBroadcastMemoryUpdate:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_broadcast_to_all_agents(self, realtime_sync):
+    async def test_broadcast_to_all_agents(self, realtime_sync, create_async_context_manager):
         """Test broadcasting to all subscribed agents"""
         # Setup subscriptions
         callback1 = AsyncMock()
@@ -260,7 +260,8 @@ class TestBroadcastMemoryUpdate:
             "agent_id": "agent-1",
             "memory_category": "test"
         })
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.broadcast_memory_update(
             memory_id="mem-1",
@@ -273,7 +274,7 @@ class TestBroadcastMemoryUpdate:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_broadcast_to_target_agents(self, realtime_sync):
+    async def test_broadcast_to_target_agents(self, realtime_sync, create_async_context_manager):
         """Test broadcasting to specific target agents"""
         # Setup subscriptions
         callback1 = AsyncMock()
@@ -291,7 +292,8 @@ class TestBroadcastMemoryUpdate:
             "agent_id": "agent-1",
             "memory_category": "test"
         })
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.broadcast_memory_update(
             memory_id="mem-1",
@@ -307,11 +309,12 @@ class TestBroadcastMemoryUpdate:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_broadcast_memory_not_found(self, realtime_sync):
+    async def test_broadcast_memory_not_found(self, realtime_sync, create_async_context_manager):
         """Test broadcasting non-existent memory"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.broadcast_memory_update(
             memory_id="non-existent",
@@ -331,7 +334,7 @@ class TestSyncAgentState:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_sync_all_memories(self, realtime_sync):
+    async def test_sync_all_memories(self, realtime_sync, create_async_context_manager):
         """Test syncing all memories between agents"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -339,7 +342,8 @@ class TestSyncAgentState:
             {"id": "mem-2", "content": "content2", "metadata": {}}
         ])
         mock_conn.execute = AsyncMock(return_value="INSERT 1")
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.sync_agent_state(
             source_agent_id="agent-1",
@@ -353,14 +357,15 @@ class TestSyncAgentState:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_sync_with_category_filter(self, realtime_sync):
+    async def test_sync_with_category_filter(self, realtime_sync, create_async_context_manager):
         """Test syncing with category filter"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
             {"id": "mem-1", "content": "content", "metadata": {}}
         ])
         mock_conn.execute = AsyncMock(return_value="INSERT 1")
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.sync_agent_state(
             source_agent_id="agent-1",
@@ -426,11 +431,12 @@ class TestResolveConflict:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_resolve_keep_newest(self, realtime_sync):
+    async def test_resolve_keep_newest(self, realtime_sync, create_async_context_manager):
         """Test resolving conflict with keep_newest strategy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.resolve_conflict(
             memory_id="mem-1",
@@ -443,11 +449,12 @@ class TestResolveConflict:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_resolve_merge(self, realtime_sync):
+    async def test_resolve_merge(self, realtime_sync, create_async_context_manager):
         """Test resolving conflict with merge strategy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.resolve_conflict(
             memory_id="mem-1",
@@ -514,11 +521,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_empty_memory_id(self, realtime_sync):
+    async def test_empty_memory_id(self, realtime_sync, create_async_context_manager):
         """Test broadcasting with empty memory ID"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        realtime_sync.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await realtime_sync.broadcast_memory_update(
             memory_id="",

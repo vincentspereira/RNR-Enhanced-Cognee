@@ -50,11 +50,12 @@ class TestSetMemorySharing:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_set_private_policy(self, cross_agent_sharing):
+    async def test_set_private_policy(self, cross_agent_sharing, create_async_context_manager):
         """Test setting private sharing policy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="mem-1",
@@ -70,7 +71,8 @@ class TestSetMemorySharing:
         """Test setting shared policy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="mem-1",
@@ -86,7 +88,8 @@ class TestSetMemorySharing:
         """Test setting custom policy with allowed agents"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="mem-1",
@@ -103,7 +106,8 @@ class TestSetMemorySharing:
         """Test setting policy on non-existent memory"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 0")  # No rows updated
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="non-existent",
@@ -131,7 +135,8 @@ class TestCanAgentAccessMemory:
             "policy": None,
             "allowed_agents": None
         })
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-1")
 
@@ -149,7 +154,8 @@ class TestCanAgentAccessMemory:
             "policy": "private",
             "allowed_agents": None
         })
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
 
@@ -167,7 +173,8 @@ class TestCanAgentAccessMemory:
             "policy": "shared",
             "allowed_agents": None
         })
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
 
@@ -185,7 +192,8 @@ class TestCanAgentAccessMemory:
             "policy": "custom",
             "allowed_agents": '["agent-2", "agent-3"]'
         })
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         # Agent on whitelist
         result1 = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
@@ -226,7 +234,8 @@ class TestGetSharedMemories:
                 "created_at": datetime.utcnow()
             }
         ])
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         memories = await cross_agent_sharing.get_shared_memories("agent-3", limit=50)
 
@@ -239,7 +248,8 @@ class TestGetSharedMemories:
         """Test getting shared memories when none exist"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         memories = await cross_agent_sharing.get_shared_memories("agent-1")
 
@@ -256,7 +266,8 @@ class TestGetSharedMemories:
              "owner_id": "agent-1", "memory_category": "test", "created_at": datetime.utcnow()}
             for i in range(100)
         ])
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         memories = await cross_agent_sharing.get_shared_memories("agent-2", limit=10)
 
@@ -283,7 +294,8 @@ class TestGetSharingStats:
             {"policy": "custom", "count": 5}
         ])
         mock_conn.fetchval = AsyncMock(return_value=100)  # Total private
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await cross_agent_sharing.get_sharing_stats()
 
@@ -299,7 +311,8 @@ class TestGetSharingStats:
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
         mock_conn.fetchval = AsyncMock(return_value=0)
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await cross_agent_sharing.get_sharing_stats()
 
@@ -319,7 +332,8 @@ class TestCreateSharedSpace:
         """Test creating a shared space"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="INSERT 0")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.create_shared_space(
             space_name="team-space",
@@ -337,7 +351,8 @@ class TestCreateSharedSpace:
         """Test creating shared space with no members"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="INSERT 0")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.create_shared_space(
             space_name="empty-space",
@@ -361,7 +376,8 @@ class TestErrorHandling:
         """Test handling database errors when setting sharing"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(side_effect=Exception("DB error"))
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="mem-1",
@@ -376,7 +392,8 @@ class TestErrorHandling:
         """Test checking access for non-existent memory"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("non-existent", "agent-1")
 
@@ -397,7 +414,8 @@ class TestEdgeCases:
         """Test setting sharing with empty memory ID"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 0")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="",
@@ -415,7 +433,8 @@ class TestEdgeCases:
 
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="INSERT 0")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.create_shared_space(
             space_name=long_name,
@@ -433,7 +452,8 @@ class TestEdgeCases:
 
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.set_memory_sharing(
             memory_id="mem-1",
@@ -464,7 +484,8 @@ class TestCategorySharedAccess:
         })
         # Agent has memories in the same category
         mock_conn.fetchval = AsyncMock(return_value=True)
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
 
@@ -484,7 +505,8 @@ class TestCategorySharedAccess:
         })
         # Agent has no memories in the category
         mock_conn.fetchval = AsyncMock(return_value=False)
-        cross_agent_sharing.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
 

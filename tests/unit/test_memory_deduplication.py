@@ -51,7 +51,8 @@ class TestCheckDuplicate:
         """Test when no duplicate is found"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate(
             content="Unique new content",
@@ -70,7 +71,8 @@ class TestCheckDuplicate:
             "id": "existing-memory-id",
             "created_at": "2024-01-01"
         })
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate(
             content="Exact duplicate content",
@@ -89,7 +91,8 @@ class TestCheckDuplicate:
         # Mock no exact match
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         # Mock vector similarity match
         similar_result = Mock()
@@ -116,7 +119,8 @@ class TestCheckDuplicate:
         """Test content below similarity threshold is not duplicate"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         # Mock below threshold
         similar_result = Mock()
@@ -138,7 +142,8 @@ class TestCheckDuplicate:
         """Test duplicate check without vector embedding"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate(
             content="Content without embedding",
@@ -166,7 +171,8 @@ class TestCheckExactMatch:
             "id": "exact-match-id",
             "created_at": "2024-01-01"
         })
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator._check_exact_match(
             "Exact content to match",
@@ -182,7 +188,8 @@ class TestCheckExactMatch:
         """Test when no exact match exists"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator._check_exact_match(
             "Non-existent content",
@@ -198,7 +205,8 @@ class TestCheckExactMatch:
         mock_conn = AsyncMock()
         # First agent has the content
         mock_conn.fetchrow = AsyncMock(return_value={"id": "mem-1", "created_at": "2024-01-01"})
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator._check_exact_match(
             "Shared content",
@@ -276,7 +284,8 @@ class TestMergeDuplicates:
         """Test merging with keep_newest strategy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.merge_duplicates(
             memory_id="mem-1",
@@ -293,7 +302,8 @@ class TestMergeDuplicates:
         """Test merging with append strategy"""
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.merge_duplicates(
             memory_id="mem-1",
@@ -309,7 +319,8 @@ class TestMergeDuplicates:
     async def test_merge_unknown_strategy(self, memory_deduplicator):
         """Test merging with unknown strategy"""
         mock_conn = AsyncMock()
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.merge_duplicates(
             memory_id="mem-1",
@@ -355,7 +366,8 @@ class TestAutoDeduplicate:
 
         mock_conn.fetchrow = AsyncMock(side_effect=side_effect)
         mock_conn.execute = AsyncMock(return_value="DELETE 1")
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.auto_deduplicate("agent-1")
 
@@ -369,7 +381,8 @@ class TestAutoDeduplicate:
         """Test auto deduplication across all agents"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.auto_deduplicate()  # No agent_id = all agents
 
@@ -392,7 +405,8 @@ class TestDeduplicationStats:
         mock_conn.fetch = AsyncMock(return_value=[
             {"total": 110, "unique_content": 100}  # 10 duplicates
         ])
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_deduplicator.get_deduplication_stats()
 
@@ -408,7 +422,8 @@ class TestDeduplicationStats:
         mock_conn.fetch = AsyncMock(return_value=[
             {"total": 100, "unique_content": 100}  # No duplicates
         ])
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_deduplicator.get_deduplication_stats()
 
@@ -429,7 +444,8 @@ class TestErrorHandling:
         """Test handling database errors during duplicate check"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(side_effect=Exception("Database error"))
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate("content", "agent")
 
@@ -443,7 +459,8 @@ class TestErrorHandling:
         """Test handling vector search errors"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         memory_deduplicator.qdrant_client.search = Mock(side_effect=Exception("Qdrant error"))
 
@@ -470,7 +487,8 @@ class TestEdgeCases:
         """Test checking duplicate with empty content"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate("", "agent")
 
@@ -484,7 +502,8 @@ class TestEdgeCases:
 
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate(long_content, "agent")
 
@@ -498,7 +517,8 @@ class TestEdgeCases:
 
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
-        memory_deduplicator.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_deduplicator.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_deduplicator.check_duplicate(special_content, "agent")
 

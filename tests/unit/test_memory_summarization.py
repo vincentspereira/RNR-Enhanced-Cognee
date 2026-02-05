@@ -42,7 +42,7 @@ class TestSummarizeOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_success(self, memory_summarizer):
+    async def test_summarize_success(self, memory_summarizer, create_async_context_manager):
         """Test successful summarization of old memories"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -54,7 +54,8 @@ class TestSummarizeOldMemories:
             }
         ])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(
             days=30,
@@ -67,7 +68,7 @@ class TestSummarizeOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_dry_run(self, memory_summarizer):
+    async def test_summarize_dry_run(self, memory_summarizer, create_async_context_manager):
         """Test dry run mode does not actually summarize"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -78,7 +79,8 @@ class TestSummarizeOldMemories:
                 "created_at": datetime.utcnow() - timedelta(days=60)
             }
         ])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(
             days=30,
@@ -92,11 +94,12 @@ class TestSummarizeOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_no_old_memories(self, memory_summarizer):
+    async def test_summarize_no_old_memories(self, memory_summarizer, create_async_context_manager):
         """Test when no old memories exist"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(days=30)
 
@@ -106,7 +109,7 @@ class TestSummarizeOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_below_min_length(self, memory_summarizer):
+    async def test_summarize_below_min_length(self, memory_summarizer, create_async_context_manager):
         """Test that short memories are not summarized"""
         mock_conn = AsyncMock()
         # Memory is too short
@@ -118,7 +121,8 @@ class TestSummarizeOldMemories:
                 "created_at": datetime.utcnow() - timedelta(days=60)
             }
         ])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(
             days=30,
@@ -130,11 +134,12 @@ class TestSummarizeOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_various_days(self, memory_summarizer):
+    async def test_summarize_various_days(self, memory_summarizer, create_async_context_manager):
         """Test summarization with various day thresholds"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         for days in [7, 14, 30, 60, 90, 180]:
             result = await memory_summarizer.summarize_old_memories(days=days)
@@ -197,7 +202,7 @@ class TestSummarizeByCategory:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_category_success(self, memory_summarizer):
+    async def test_summarize_category_success(self, memory_summarizer, create_async_context_manager):
         """Test summarizing memories in a specific category"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -205,7 +210,8 @@ class TestSummarizeByCategory:
             {"id": "mem-2", "content": "More long content " * 100}
         ])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_by_category("test-category", 30)
 
@@ -215,11 +221,12 @@ class TestSummarizeByCategory:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_category_empty(self, memory_summarizer):
+    async def test_summarize_category_empty(self, memory_summarizer, create_async_context_manager):
         """Test summarizing empty category"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_by_category("empty-category", 30)
 
@@ -236,7 +243,7 @@ class TestGetSummaryStats:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_stats_with_summaries(self, memory_summarizer):
+    async def test_get_stats_with_summaries(self, memory_summarizer, create_async_context_manager):
         """Test getting statistics with summarized memories"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -248,7 +255,8 @@ class TestGetSummaryStats:
                 "avg_original_length": 30000
             }
         ])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_summarizer.get_summary_stats()
 
@@ -259,7 +267,7 @@ class TestGetSummaryStats:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_stats_no_summaries(self, memory_summarizer):
+    async def test_get_stats_no_summaries(self, memory_summarizer, create_async_context_manager):
         """Test getting statistics with no summaries"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -271,7 +279,8 @@ class TestGetSummaryStats:
                 "avg_original_length": 2000
             }
         ])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_summarizer.get_summary_stats()
 
@@ -280,11 +289,12 @@ class TestGetSummaryStats:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_stats_error(self, memory_summarizer):
+    async def test_get_stats_error(self, memory_summarizer, create_async_context_manager):
         """Test error handling in stats retrieval"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(side_effect=Exception("DB error"))
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_summarizer.get_summary_stats()
 
@@ -300,11 +310,12 @@ class TestErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_db_error(self, memory_summarizer):
+    async def test_summarize_db_error(self, memory_summarizer, create_async_context_manager):
         """Test handling database errors"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(side_effect=Exception("Connection lost"))
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(days=30)
 
@@ -313,14 +324,15 @@ class TestErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_update_error(self, memory_summarizer):
+    async def test_summarize_update_error(self, memory_summarizer, create_async_context_manager):
         """Test handling update errors during summarization"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
             {"id": "mem-1", "title": "Test", "content": "Long " * 100, "created_at": datetime.utcnow()}
         ])
         mock_conn.execute = AsyncMock(side_effect=Exception("Update failed"))
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(days=30, dry_run=False)
 
@@ -337,11 +349,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_zero_days(self, memory_summarizer):
+    async def test_summarize_zero_days(self, memory_summarizer, create_async_context_manager):
         """Test summarization with zero days"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(days=0)
 
@@ -349,11 +362,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_summarize_negative_days(self, memory_summarizer):
+    async def test_summarize_negative_days(self, memory_summarizer, create_async_context_manager):
         """Test summarization with negative days"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_summarizer.summarize_old_memories(days=-10)
 
@@ -401,7 +415,7 @@ class TestPerformance:
     @pytest.mark.unit
     @pytest.mark.asyncio
     @pytest.mark.slow
-    async def test_bulk_summarization_performance(self, memory_summarizer):
+    async def test_bulk_summarization_performance(self, memory_summarizer, create_async_context_manager):
         """Test performance of bulk summarization"""
         import time
 
@@ -418,7 +432,8 @@ class TestPerformance:
         ]
         mock_conn.fetch = AsyncMock(return_value=memories)
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_summarizer.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_summarizer.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         start = time.time()
         result = await memory_summarizer.summarize_old_memories(days=30)

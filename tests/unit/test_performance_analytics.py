@@ -153,7 +153,7 @@ class TestGetPerformanceMetrics:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_metrics_with_data(self, performance_analytics):
+    async def test_get_metrics_with_data(self, performance_analytics, create_async_context_manager):
         """Test getting metrics with recorded data"""
         # Record some data
         await performance_analytics.record_query_time("op1", 100.0)
@@ -165,7 +165,8 @@ class TestGetPerformanceMetrics:
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=50)
         mock_conn.fetch = AsyncMock(return_value=[{"agent_id": "agent1", "count": 10}])
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         metrics = await performance_analytics.get_performance_metrics()
 
@@ -176,7 +177,7 @@ class TestGetPerformanceMetrics:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_metrics_percentiles(self, performance_analytics):
+    async def test_get_metrics_percentiles(self, performance_analytics, create_async_context_manager):
         """Test percentile calculations"""
         # Record multiple query times
         times = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
@@ -186,7 +187,8 @@ class TestGetPerformanceMetrics:
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=10)
         mock_conn.fetch = AsyncMock(return_value=[])
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         metrics = await performance_analytics.get_performance_metrics()
 
@@ -198,12 +200,13 @@ class TestGetPerformanceMetrics:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_metrics_empty(self, performance_analytics):
+    async def test_get_metrics_empty(self, performance_analytics, create_async_context_manager):
         """Test getting metrics with no data"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=0)
         mock_conn.fetch = AsyncMock(return_value=[])
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         metrics = await performance_analytics.get_performance_metrics()
 
@@ -219,7 +222,7 @@ class TestGetPrometheusMetrics:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_prometheus_format(self, performance_analytics):
+    async def test_prometheus_format(self, performance_analytics, create_async_context_manager):
         """Test Prometheus format output"""
         # Record some data
         await performance_analytics.record_query_time("test", 150.0)
@@ -228,7 +231,8 @@ class TestGetPrometheusMetrics:
 
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=100)
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         prometheus_text = await performance_analytics.get_prometheus_metrics()
 
@@ -239,7 +243,7 @@ class TestGetPrometheusMetrics:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_prometheus_metrics_includes_all(self, performance_analytics):
+    async def test_prometheus_metrics_includes_all(self, performance_analytics, create_async_context_manager):
         """Test all metrics are included in Prometheus export"""
         await performance_analytics.record_query_time("op1", 100.0)
         await performance_analytics.record_cache_hit()
@@ -247,7 +251,8 @@ class TestGetPrometheusMetrics:
 
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=50)
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         prometheus_text = await performance_analytics.get_prometheus_metrics()
 
@@ -339,14 +344,15 @@ class TestErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_metrics_db_error(self, performance_analytics):
+    async def test_get_metrics_db_error(self, performance_analytics, create_async_context_manager):
         """Test handling database errors when getting metrics"""
         # Record query time
         await performance_analytics.record_query_time("test", 100.0)
 
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(side_effect=Exception("DB error"))
-        performance_analytics.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        performance_analytics.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         metrics = await performance_analytics.get_performance_metrics()
 

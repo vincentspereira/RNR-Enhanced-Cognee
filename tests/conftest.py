@@ -38,7 +38,7 @@ os.environ.update({
     "REDIS_HOST": "localhost",
     "REDIS_PORT": "26379",
     "ENHANCED_COGNEE_MODE": "true"
-)
+})
 
 
 # ============================================================================
@@ -60,16 +60,24 @@ def event_loop() -> Generator:
 @pytest.fixture
 async def mock_postgres_pool() -> AsyncGenerator:
     """Mock PostgreSQL connection pool"""
-    async def mock_acquire():
-        mock_conn = AsyncMock()
-        mock_conn.fetch = AsyncMock(return_value=[])
-        mock_conn.fetchrow = AsyncMock(return_value=None)
-        mock_conn.fetchval = AsyncMock(return_value=0)
-        mock_conn.execute = AsyncMock(return_value=None)
-        return mock_conn
 
+    # Create a connection mock
+    mock_conn = AsyncMock()
+    mock_conn.fetch = AsyncMock(return_value=[])
+    mock_conn.fetchrow = AsyncMock(return_value=None)
+    mock_conn.fetchval = AsyncMock(return_value=0)
+    mock_conn.execute = AsyncMock(return_value=None)
+
+    # Create an async context manager for the connection
+    class MockConnectionContext:
+        async def __aenter__(self):
+            return mock_conn
+        async def __aexit__(self, *args):
+            pass
+
+    # Create the pool mock with acquire returning the context manager
     mock_pool = Mock()
-    mock_pool.acquire = mock_acquire
+    mock_pool.acquire = lambda: MockConnectionContext()
 
     yield mock_pool
 
@@ -306,6 +314,31 @@ def sample_embedding():
     return [random.random() for _ in range(1536)]
 
 
+@pytest.fixture
+def create_async_context_manager():
+    """Fixture that returns a function to create async context managers.
+
+    This helper fixture provides a function that creates an async context
+    manager for a mock connection. Use this in tests that need to mock
+    postgres_pool.acquire().
+
+    Example:
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        ctx_mgr = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx_mgr)
+    """
+    def _create_context_manager(mock_conn):
+        class MockConnectionContext:
+            async def __aenter__(self):
+                return mock_conn
+            async def __aexit__(self, *args):
+                pass
+        return MockConnectionContext()
+
+    return _create_context_manager
+
+
 # ============================================================================
 # Test Utilities
 # ============================================================================
@@ -355,8 +388,3 @@ def pytest_report_header(config):
         f"Coverage Target: 98%",
         f"Test Requirements: 100% success, 0 warnings, 0 skipped"
     ]
-
-
-def pytest_summary_warnings():
-    """Warn about potential issues"""
-    return []

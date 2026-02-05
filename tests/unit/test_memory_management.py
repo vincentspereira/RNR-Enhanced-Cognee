@@ -45,7 +45,7 @@ class TestExpireOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_expire_memories_delete_policy(self, memory_manager):
+    async def test_expire_memories_delete_policy(self, memory_manager, create_async_context_manager):
         """Test expiring memories with DELETE_OLD policy"""
         # Mock database response
         mock_conn = AsyncMock()
@@ -53,7 +53,8 @@ class TestExpireOldMemories:
             {"id": "old-memory-1", "content": "old content"}
         ])
         mock_conn.execute = AsyncMock(return_value="DELETE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(
             days=90,
@@ -67,13 +68,14 @@ class TestExpireOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_expire_memories_dry_run(self, memory_manager):
+    async def test_expire_memories_dry_run(self, memory_manager, create_async_context_manager):
         """Test dry run mode for memory expiry"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
             {"id": "old-memory-1", "content": "old content"}
         ])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(
             days=90,
@@ -88,12 +90,13 @@ class TestExpireOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_expire_memories_archive_policy(self, memory_manager):
+    async def test_expire_memories_archive_policy(self, memory_manager, create_async_context_manager):
         """Test expiring memories with ARCHIVE_OLD policy"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(
             days=180,
@@ -106,7 +109,7 @@ class TestExpireOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_expire_memories_with_no_pool(self):
+    async def test_expire_memories_with_no_pool(self, create_async_context_manager):
         """Test expiry with no PostgreSQL pool"""
         manager = MemoryManager(None, None, None)
 
@@ -117,11 +120,12 @@ class TestExpireOldMemories:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_expire_memories_various_days(self, memory_manager):
+    async def test_expire_memories_various_days(self, memory_manager, create_async_context_manager):
         """Test expiry with various day thresholds"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         for days in [7, 30, 90, 180, 365]:
             result = await memory_manager.expire_old_memories(days=days)
@@ -137,7 +141,7 @@ class TestMemoryStats:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_age_stats_success(self, memory_manager):
+    async def test_get_age_stats_success(self, memory_manager, create_async_context_manager):
         """Test getting memory age statistics"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value={
@@ -151,7 +155,8 @@ class TestMemoryStats:
             {"age_bracket": "31-90 days", "count": 25},
             {"age_bracket": "90+ days", "count": 25}
         ])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_manager.get_memory_stats_by_age()
 
@@ -162,7 +167,7 @@ class TestMemoryStats:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_get_age_stats_empty_database(self, memory_manager):
+    async def test_get_age_stats_empty_database(self, memory_manager, create_async_context_manager):
         """Test age stats with empty database"""
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value={
@@ -171,7 +176,8 @@ class TestMemoryStats:
             "newest_memory": None
         })
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         stats = await memory_manager.get_memory_stats_by_age()
 
@@ -188,12 +194,13 @@ class TestTTLManagement:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_set_ttl_success(self, memory_manager):
+    async def test_set_ttl_success(self, memory_manager, create_async_context_manager):
         """Test setting TTL for a memory"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value="memory-id-123")
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.set_memory_ttl("memory-id-123", 30)
 
@@ -202,11 +209,12 @@ class TestTTLManagement:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_set_ttl_memory_not_found(self, memory_manager):
+    async def test_set_ttl_memory_not_found(self, memory_manager, create_async_context_manager):
         """Test setting TTL for non-existent memory"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=None)
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.set_memory_ttl("non-existent", 30)
 
@@ -214,12 +222,13 @@ class TestTTLManagement:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_set_ttl_zero_days(self, memory_manager):
+    async def test_set_ttl_zero_days(self, memory_manager, create_async_context_manager):
         """Test setting TTL to 0 (no expiry)"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value="memory-id")
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.set_memory_ttl("memory-id", 0)
 
@@ -227,7 +236,7 @@ class TestTTLManagement:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_bulk_set_ttl_by_category(self, memory_manager):
+    async def test_bulk_set_ttl_by_category(self, memory_manager, create_async_context_manager):
         """Test bulk TTL setting for category"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -235,7 +244,8 @@ class TestTTLManagement:
             {"id": "mem-2"}
         ])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.bulk_set_ttl_by_category("test-category", 30)
 
@@ -252,7 +262,7 @@ class TestCategoryArchival:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_archive_category_success(self, memory_manager):
+    async def test_archive_category_success(self, memory_manager, create_async_context_manager):
         """Test archiving memories by category"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[
@@ -260,7 +270,8 @@ class TestCategoryArchival:
             {"id": "mem-2", "content": "content 2"}
         ])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.archive_memories_by_category("test-category", 180)
 
@@ -269,11 +280,12 @@ class TestCategoryArchival:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_archive_category_empty(self, memory_manager):
+    async def test_archive_category_empty(self, memory_manager, create_async_context_manager):
         """Test archiving category with no memories"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.archive_memories_by_category("empty-category", 180)
 
@@ -290,7 +302,7 @@ class TestErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_database_connection_error(self, memory_manager):
+    async def test_database_connection_error(self, memory_manager, create_async_context_manager):
         """Test handling of database connection errors"""
         memory_manager.postgres_pool.acquire = AsyncMock(side_effect=Exception("Connection lost"))
 
@@ -301,11 +313,12 @@ class TestErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_query_error_handling(self, memory_manager):
+    async def test_query_error_handling(self, memory_manager, create_async_context_manager):
         """Test handling of query errors"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(side_effect=Exception("Query failed"))
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.get_memory_stats_by_age()
 
@@ -329,11 +342,12 @@ class TestRetentionPolicies:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_keep_all_policy(self, memory_manager):
+    async def test_keep_all_policy(self, memory_manager, create_async_context_manager):
         """Test KEEP_ALL policy does not delete"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(
             days=90,
@@ -353,11 +367,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_negative_days(self, memory_manager):
+    async def test_negative_days(self, memory_manager, create_async_context_manager):
         """Test handling of negative days value"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(days=-1)
 
@@ -366,11 +381,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_very_large_days(self, memory_manager):
+    async def test_very_large_days(self, memory_manager, create_async_context_manager):
         """Test handling of very large days value"""
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.expire_old_memories(days=36500)  # 100 years
 
@@ -378,11 +394,12 @@ class TestEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.asyncio
-    async def test_empty_memory_id(self, memory_manager):
+    async def test_empty_memory_id(self, memory_manager, create_async_context_manager):
         """Test setting TTL with empty memory ID"""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=None)
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         result = await memory_manager.set_memory_ttl("", 30)
 
@@ -399,13 +416,14 @@ class TestPerformance:
     @pytest.mark.unit
     @pytest.mark.asyncio
     @pytest.mark.slow
-    async def test_bulk_operations_performance(self, memory_manager):
+    async def test_bulk_operations_performance(self, memory_manager, create_async_context_manager):
         """Test performance of bulk operations"""
         mock_conn = AsyncMock()
         # Simulate 1000 memories
         mock_conn.fetch = AsyncMock(return_value=[{"id": f"mem-{i}"} for i in range(1000)])
         mock_conn.execute = AsyncMock(return_value="UPDATE 1000")
-        memory_manager.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        ctx_mgr = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx_mgr)
 
         import time
         start = time.time()
