@@ -221,9 +221,10 @@ class MemoryDeduplicator:
                     FROM shared_memory.documents
                 """)
 
-                if result:
-                    total = result["total"]
-                    unique = result["unique_content"]
+                if result and len(result) > 0:
+                    row = result[0]
+                    total = row["total"]
+                    unique = row["unique_content"]
                     duplicates = total - unique
                     stats["total_duplicates_prevented"] = duplicates
                     stats["exact_duplicates_found"] = duplicates
