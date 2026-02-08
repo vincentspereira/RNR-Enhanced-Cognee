@@ -1,0 +1,14 @@
+{
+  "schedule": "weekly",
+  "dry_run_first": true,
+  "require_approval": true,
+  "similarity_threshold": 0.95,
+  "merge_strategy": "keep_newest",
+  "notification": {
+    "enabled": true,
+    "on_duplicates_found": true
+  },
+  "retention": {
+    "keep_deduplication_history_days": 90
+  }
+}

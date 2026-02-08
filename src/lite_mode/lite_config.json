@@ -1,0 +1,53 @@
+{
+  "lite_mode": {
+    "enabled": true,
+    "description": "Enhanced Cognee Lite Mode - Lightweight SQLite-based memory system",
+    "version": "1.0.0"
+  },
+  "database": {
+    "type": "sqlite",
+    "path": "cognee_lite.db",
+    "fts5_enabled": true,
+    "journal_mode": "WAL",
+    "synchronous": "NORMAL",
+    "cache_size": "-64000",
+    "temp_store": "memory"
+  },
+  "features": {
+    "full_text_search": true,
+    "metadata_support": true,
+    "session_management": true,
+    "agent_isolation": true,
+    "knowledge_graph": false
+  },
+  "limits": {
+    "max_memory_size": 10000000,
+    "max_results": 1000,
+    "query_timeout": 30,
+    "connection_pool_size": 5
+  },
+  "maintenance": {
+    "auto_vacuum": "INCREMENTAL",
+    "vacuum_frequency_days": 7,
+    "analyze_frequency_days": 1
+  },
+  "tools": [
+    "add_memory",
+    "search_memories",
+    "get_memories",
+    "get_memory",
+    "update_memory",
+    "delete_memory",
+    "list_agents",
+    "health",
+    "get_stats",
+    "cognify"
+  ],
+  "setup": {
+    "docker_required": false,
+    "setup_time_minutes": 2,
+    "dependencies": [
+      "python>=3.8"
+    ]
+  }
+}

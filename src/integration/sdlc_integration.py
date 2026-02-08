@@ -8,7 +8,7 @@ import asyncio
 import json
 import logging
 from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class SDLCIntegrationManager:
         """Create a new SDLC project with Enhanced Cognee integration"""
         try:
             project = SDLCProject(
-                project_id=project_config.get("project_id") or f"proj_{datetime.utcnow().timestamp()}",
+                project_id=project_config.get("project_id") or f"proj_{datetime.now(UTC).timestamp()}",
                 name=project_config.get("name"),
                 description=project_config.get("description"),
                 agent_team=project_config.get("agent_team", []),
@@ -123,7 +123,7 @@ class SDLCIntegrationManager:
             self.integration_status[existing_agent_id] = {
                 "status": "integrated",
                 "category": enhanced_category,
-                "integration_time": datetime.utcnow().isoformat(),
+                "integration_time": datetime.now(UTC).isoformat(),
                 "memory_enabled": True,
                 "coordination_enabled": self.config.coordination_enabled
             }
@@ -246,7 +246,7 @@ class SDLCIntegrationManager:
             from ..coordination.sub_agent_coordinator import AgentTask, TaskPriority
 
             task = AgentTask(
-                task_id=task_data.get("task_id", f"task_{datetime.utcnow().timestamp()}"),
+                task_id=task_data.get("task_id", f"task_{datetime.now(UTC).timestamp()}"),
                 title=task_data.get("title"),
                 description=task_data.get("description"),
                 assigned_to=assigned_agents or [],
@@ -351,7 +351,7 @@ class SDLCIntegrationManager:
                     "project_name": project.name,
                     "project_type": "sdlc",
                     "agent_team": project.agent_team,
-                    "created_at": datetime.utcnow().isoformat()
+                    "created_at": datetime.now(UTC).isoformat()
                 }
             )
 

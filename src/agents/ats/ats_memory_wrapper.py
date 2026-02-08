@@ -8,7 +8,7 @@ Integrates with Enhanced Cognee stack
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import (
     AgentMemoryIntegration, MemoryCategory, MemoryType, MemoryEntry,
     MemorySearchResult
@@ -175,7 +175,7 @@ class ATSMemoryWrapper:
 
         # Filter by confidence and recent time (simplified)
         filtered_results = []
-        cutoff_time = datetime.utcnow() - timedelta(hours=hours_back)
+        cutoff_time = datetime.now(UTC) - timedelta(hours=hours_back)
 
         for result in results:
             # Check metadata for confidence and timestamp
@@ -273,7 +273,7 @@ class ATSMemoryWrapper:
     def _format_market_data(self, market_data: Dict[str, Any]) -> str:
         """Format market data for storage"""
         return f"Market data update: {market_data.get('symbols', 'Unknown symbols')} " \
-               f"at {market_data.get('timestamp', datetime.utcnow().isoformat())}. " \
+               f"at {market_data.get('timestamp', datetime.now(UTC).isoformat())}. " \
                f"Price: {market_data.get('price', 'N/A')}, " \
                f"Volume: {market_data.get('volume', 'N/A')}, " \
                f"Change: {market_data.get('change', 'N/A')}"
@@ -320,7 +320,7 @@ async def example_usage():
     # Example: Store market data
     market_data = {
         "symbols": ["AAPL", "GOOGL"],
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "price": {"AAPL": 150.25, "GOOGL": 2800.50},
         "volume": {"AAPL": 1000000, "GOOGL": 500000},
         "change": {"AAPL": 2.5, "GOOGL": -1.2},

@@ -5,7 +5,7 @@ Tests integration with real databases (PostgreSQL, Qdrant, Redis)
 
 import pytest
 import asyncio
-from datetime import datetime
+from datetime import UTC, datetime
 from src.memory_management import MemoryManager
 from src.memory_deduplication import MemoryDeduplicator
 from src.performance_analytics import PerformanceAnalytics
@@ -37,13 +37,13 @@ class TestPostgreSQLIntegration:
         memory_id = "test-integration-mem-1"
 
         async with real_postgres_pool.acquire() as conn:
-            # Insert memory
+            # Insert memory (use naive datetime for asyncpg compatibility)
             await conn.execute("""
                 INSERT INTO shared_memory.documents (id, title, content, agent_id, created_at)
                 VALUES ($1, $2, $3, $4, $5)
                 ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content
             """, memory_id, "Integration Test Memory", "Test content for integration testing",
-               "test-agent", datetime.utcnow())
+               "test-agent", datetime.now(UTC).replace(tzinfo=None))
 
             # Query memory
             row = await conn.fetchrow("""
@@ -108,6 +108,12 @@ class TestQdrantIntegration:
         """Test creating collection and searching vectors"""
         collection_name = "test_integration_collection"
 
+        # Clean up any existing collection from previous test runs
+        try:
+            real_qdrant_client.delete_collection(collection_name)
+        except:
+            pass  # Collection doesn't exist, that's fine
+
         try:
             # Create collection
             from qdrant_client.models import Distance, VectorParams, PointStruct
@@ -130,19 +136,19 @@ class TestQdrantIntegration:
                 points=points
             )
 
-            # Search
-            search_result = real_qdrant_client.search(
+            # Search (use query_points for newer qdrant-client versions)
+            search_result = real_qdrant_client.query_points(
                 collection_name=collection_name,
-                query_vector=[random.random() for _ in range(128)],
+                query=[random.random() for _ in range(128)],
                 limit=3
             )
 
-            assert len(search_result) <= 3
+            assert len(search_result.points) <= 3
 
         finally:
             # Cleanup
             try:
-                real_qdrant_client.delete(collection_name)
+                real_qdrant_client.delete_collection(collection_name)
             except:
                 pass
 
@@ -192,15 +198,19 @@ class TestRedisIntegration:
         pubsub = real_redis_client.pubsub()
         await pubsub.subscribe(channel)
 
+        # Skip the subscription confirmation message
+        await pubsub.get_message(timeout=1.0)
+
         # Publish
         await real_redis_client.publish(channel, message)
 
-        # Receive (with timeout)
+        # Receive the actual message (with timeout)
         import asyncio
         try:
             msg = await asyncio.wait_for(pubsub.get_message(timeout=1.0), timeout=1.0)
             assert msg is not None
             assert msg["type"] == "message"
+            assert msg["data"] == message
         except asyncio.TimeoutError:
             pass  # Message might not arrive in time
         finally:
@@ -232,7 +242,7 @@ class TestMultiDatabaseIntegration:
                     VALUES ($1, $2, $3, $4, $5)
                     ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content
                 """, memory_id, "Full Workflow Test", "Testing full integration workflow",
-                   "test-agent", datetime.utcnow())
+                   "test-agent", datetime.now(UTC).replace(tzinfo=None))
 
             # 2. Index in Qdrant
             from qdrant_client.models import PointStruct

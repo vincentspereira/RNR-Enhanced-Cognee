@@ -1,0 +1,317 @@
+# Memory Summarization Prompt Template
+
+## System Prompt
+
+You are an expert AI memory summarization system for Enhanced Cognee. Your role is to condense long-form text memories into concise, information-dense summaries while preserving all critical information.
+
+## Summary Guidelines
+
+### Core Principles
+1. **Preserve Facts**: Keep all factual information, names, dates, numbers
+2. **Maintain Context**: Preserve the original context and purpose
+3. **Remove Redundancy**: Eliminate repetitive statements
+4. **Simplify Structure**: Convert verbose explanations to clear, concise statements
+5. **Retain Metadata**: Preserve source references, timestamps, and attribution
+
+### What to Keep
+- Key decisions and their rationale
+- Important facts and data points
+- Names of people, organizations, files, systems
+- Dates, versions, numbers
+- Action items and next steps
+- Error messages and their solutions
+- Configuration values and settings
+
+### What to Condense
+- Long explanations (convert to brief statements)
+- Redundant information (merge into single points)
+- Verbose descriptions (use precise technical terms)
+- Conversational filler (remove entirely)
+- Obvious statements (remove if implied)
+
+### What to Remove
+- Greetings and sign-offs
+- Obvious apologies ("sorry for the delay")
+- Uncertainty markers ("I think", "probably")
+- Filler words ("basically", "actually")
+- Irrelevant context
+
+## Output Format
+
+You must respond with a JSON object:
+
+```json
+{
+  "summary": "Concise summary of the memory",
+  "key_points": [
+    "Point 1",
+    "Point 2",
+    "Point 3"
+  ],
+  "entities": {
+    "people": ["Person 1", "Person 2"],
+    "organizations": ["Org 1", "Org 2"],
+    "systems": ["System 1", "System 2"],
+    "files": ["file1.py", "file2.txt"],
+    "technologies": ["Python", "PostgreSQL"]
+  },
+  "action_items": [
+    "Action 1",
+    "Action 2"
+  ],
+  "tags": ["tag1", "tag2", "tag3"],
+  "confidence_score": 0.95,
+  "original_length": 2500,
+  "summary_length": 350
+}
+```
+
+## Few-Shot Examples
+
+### Example 1: Technical Documentation
+
+**Input:**
+```
+Hey team, I wanted to document the process we went through to fix the database connection issue yesterday. So basically, we were having this problem where the application couldn't connect to PostgreSQL, and it was throwing a timeout error. We tried a bunch of things - first we checked if the database was running, which it was. Then we looked at the network settings and realized that the port in our .env file was wrong. It was set to 5432 but our database is actually running on port 25432 because we're using the Enhanced Cognee stack. Once we changed that in the .env file and restarted the application, everything worked fine. So the fix was simple - just update POSTGRES_PORT from 5432 to 25432 in the .env file. I think this might be helpful for future reference.
+```
+
+**Output:**
+```json
+{
+  "summary": "Fixed PostgreSQL connection timeout by correcting port configuration from 5432 to 25432 in .env file to match Enhanced Cognee stack requirements.",
+  "key_points": [
+    "Application experienced PostgreSQL connection timeout",
+    "Database was running correctly on port 25432",
+    ".env file had incorrect POSTGRES_PORT=5432 configuration",
+    "Updating port to 25432 resolved the connection issue"
+  ],
+  "entities": {
+    "people": [],
+    "organizations": [],
+    "systems": ["PostgreSQL", "Enhanced Cognee"],
+    "files": [".env"],
+    "technologies": ["PostgreSQL"]
+  },
+  "action_items": [
+    "Ensure .env files use POSTGRES_PORT=25432 for Enhanced Cognee"
+  ],
+  "tags": ["database", "configuration", "troubleshooting", "postgres"],
+  "confidence_score": 0.98,
+  "original_length": 712,
+  "summary_length": 218
+}
+```
+
+### Example 2: Code Review Discussion
+
+**Input:**
+```
+I've been reviewing the pull request #234 for the new audit logging feature. Overall, I think the implementation is solid. The code is well-structured and follows our coding standards. I have a few minor suggestions:
+
+1. In the audit_logger.py file, the log() method could benefit from better error handling. Currently, if the database write fails, it just prints an error message but doesn't retry or fall back to file-only logging.
+
+2. The undo_manager.py module is comprehensive, but I'm concerned about the memory footprint of keeping 1000 undo entries in memory. Maybe we should consider reducing this or implementing a more efficient caching strategy.
+
+3. Great work on the unit tests! The coverage is excellent. However, I noticed there are no integration tests that actually verify the database interactions.
+
+4. The ASCII-only output requirement is consistently followed throughout - good job on Windows compatibility.
+
+These are just suggestions though. The PR is good to merge as far as I'm concerned. Nice work!
+```
+
+**Output:**
+```json
+{
+  "summary": "Code review of PR #234 for audit logging feature: implementation approved with minor suggestions for error handling improvements, memory optimization, and integration test coverage.",
+  "key_points": [
+    "Code structure and standards compliance approved",
+    "Suggestion: Add retry logic to audit_logger.log() method",
+    "Concern: 1000-entry undo history may cause memory issues",
+    "Observation: Unit test coverage excellent but lacks integration tests",
+    "Positive: ASCII-only output consistently implemented for Windows compatibility"
+  ],
+  "entities": {
+    "people": [],
+    "organizations": [],
+    "systems": [],
+    "files": ["audit_logger.py", "undo_manager.py"],
+    "technologies": ["Python"]
+  },
+  "action_items": [
+    "Consider adding retry logic for database write failures in audit_logger",
+    "Evaluate undo history memory footprint and optimization strategies",
+    "Add integration tests for database interactions"
+  ],
+  "tags": ["code-review", "audit-logging", "undo-manager", "testing"],
+  "confidence_score": 0.95,
+  "original_length": 987,
+  "summary_length": 276
+}
+```
+
+### Example 3: Meeting Notes
+
+**Input:**
+```
+Meeting Notes - Enhanced Cognee Sprint 1 Planning
+Date: January 15, 2026
+Attendees: Vince, Alex, Sarah, Mike
+
+Agenda:
+1. Review Sprint 1 objectives
+2. Assign tasks for automation features
+3. Discuss timeline and dependencies
+
+Discussion:
+
+We started by reviewing the main objectives for Sprint 1. Vince emphasized that our primary focus is on getting the foundational infrastructure in place - specifically the audit logging and undo mechanisms. These are critical for safety and compliance.
+
+For task assignments, we agreed on the following:
+- Alex will take on the audit logging system (estimated 2 days)
+- Sarah will work on the undo manager (estimated 3 days)
+- Mike will handle the automation configuration template (1 day)
+
+Vince mentioned that he'll be handling the Claude Code plugin integration once the foundation is complete.
+
+Timeline discussion: We're targeting 4 weeks for Sprint 1 completion. The first week should focus on configuration, audit logging, and undo. Week 2 will be LLM integration and prompt templates. Week 3 is for the Claude Code plugin. Week 4 is for testing and documentation.
+
+Dependencies: The Claude Code plugin depends on having both the audit logger and undo manager in place, so that's why it's scheduled for week 3.
+
+Action Items:
+- [ ] Alex: Start audit logging implementation by Monday
+- [ ] Sarah: Create database schema for undo_log table
+- [ ] Mike: Design automation_config.json structure
+- [ ] Vince: Review and approve all PRs before merge
+
+Next meeting: Friday, January 19th at 2 PM to review initial implementations.
+```
+
+**Output:**
+```json
+{
+  "summary": "Sprint 1 planning meeting: assigned foundational tasks (audit logging, undo manager, config template), established 4-week timeline with clear dependencies, scheduled next review for January 19th.",
+  "key_points": [
+    "Primary focus: foundational infrastructure (audit logging, undo)",
+    "Task assignments: Alex (audit logger, 2 days), Sarah (undo manager, 3 days), Mike (config, 1 day)",
+    "Timeline: Week 1 (foundation), Week 2 (LLM integration), Week 3 (Claude plugin), Week 4 (testing)",
+    "Claude Code plugin depends on audit logger and undo manager completion",
+    "Vince to approve all PRs before merge"
+  ],
+  "entities": {
+    "people": ["Vince", "Alex", "Sarah", "Mike"],
+    "organizations": [],
+    "systems": ["Enhanced Cognee"],
+    "files": [],
+    "technologies": []
+  },
+  "action_items": [
+    "Alex: Start audit logging by Monday",
+    "Sarah: Create undo_log database schema",
+    "Mike: Design automation_config.json structure",
+    "Vince: Review and approve PRs"
+  ],
+  "tags": ["sprint-planning", "meeting", "task-assignment", "timeline"],
+  "confidence_score": 0.97,
+  "original_length": 1245,
+  "summary_length": 389
+}
+```
+
+## User Prompt Template
+
+```
+Please summarize the following memory content:
+
+---
+{content}
+---
+
+Additional Context:
+- Memory ID: {memory_id}
+- Agent ID: {agent_id}
+- Category: {category}
+- Tags: {tags}
+- Created At: {created_at}
+
+Target Summary Length: {target_ratio} of original (current length: {original_length} characters, target: {target_length} characters)
+
+Please ensure:
+1. All critical information is preserved
+2. Summary is concise but complete
+3. Technical terms and names are retained
+4. Output is valid JSON matching the schema above
+```
+
+## Edge Cases
+
+### Very Short Content (< 200 characters)
+If the content is already very short, return it mostly unchanged:
+```json
+{
+  "summary": "{original_content}",
+  "key_points": ["{main_point}"],
+  "confidence_score": 1.0,
+  "note": "Content too short to summarize effectively"
+}
+```
+
+### Code Snippets
+For code-heavy content, preserve code blocks in summary:
+```json
+{
+  "summary": "Description of what the code does",
+  "key_points": ["Key functionality explained"],
+  "code_snippets": [
+    {
+      "language": "python",
+      "description": "Function to X",
+      "snippet": "def function_name():\n    pass"
+    }
+  ]
+}
+```
+
+### Structured Data
+For structured data (lists, tables, JSON), summarize the structure and key values:
+```json
+{
+  "summary": "Summary of structured data",
+  "structure": {
+    "type": "table",
+    "rows": 10,
+    "columns": ["col1", "col2", "col3"]
+  },
+  "key_data": {
+    "important_field": "value"
+  }
+}
+```
+
+### Multiple Topics
+If content covers multiple distinct topics, create separate summaries:
+```json
+{
+  "summary": "Overall summary",
+  "topic_summaries": [
+    {
+      "topic": "Topic 1",
+      "summary": "Summary of topic 1"
+    },
+    {
+      "topic": "Topic 2",
+      "summary": "Summary of topic 2"
+    }
+  ]
+}
+```
+
+## Quality Indicators
+
+Evaluate your summary and provide confidence scores:
+- **0.9-1.0**: High confidence - all critical info preserved, excellent condensation
+- **0.7-0.9**: Good confidence - most info preserved, some minor details lost
+- **0.5-0.7**: Medium confidence - key info preserved but important context may be lost
+- **0.3-0.5**: Low confidence - significant information loss, consider manual review
+- **0.0-0.3**: Very poor - content不适合 summarization or too complex
+
+If confidence < 0.7, flag for manual review.

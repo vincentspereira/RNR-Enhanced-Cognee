@@ -9,6 +9,17 @@ import json
 from unittest.mock import AsyncMock, Mock
 
 
+# Helper for async context manager mocking
+def create_mock_acquire_context(mock_conn):
+    """Create a proper async context manager for postgres_pool.acquire()"""
+    class MockAcquireContext:
+        async def __aenter__(self):
+            return mock_conn
+        async def __aexit__(self, *args):
+            pass
+    return MockAcquireContext()
+
+
 # ============================================================================
 # Test MCP Server Initialization
 # ============================================================================
@@ -154,12 +165,11 @@ class TestEnhancedCogneeTools:
 
         # Initialize stack (mock databases not running)
         server.postgres_pool = AsyncMock()
-        server.postgres_pool.acquire = AsyncMock()
 
         # Mock connection
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock()
-        server.postgres_pool.acquire.return_value = mock_conn
+        server.postgres_pool.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         result = await server.cognify("Test data for cognify")
 
@@ -197,7 +207,7 @@ class TestMemoryManagementTools:
         # Mock database response
         mock_conn = AsyncMock()
         mock_conn.fetch = AsyncMock(return_value=[])
-        mock_pool.acquire = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         result = await server.expire_memories(days=90, dry_run=True)
 

@@ -1,0 +1,41 @@
+# Enhanced Cognee Dashboard API - Python Dependencies
+# FastAPI Backend Requirements
+
+# Core Framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.9
+
+# Database Connections
+asyncpg>=0.29.0          # PostgreSQL async driver
+psycopg2-binary>=2.9.9   # PostgreSQL sync driver
+qdrant-client>=1.12.0    # Qdrant vector database
+neo4j>=5.25.0            # Neo4j graph database
+redis>=5.2.0             # Redis cache
+
+# Authentication & Security
+pyjwt>=2.9.0             # JWT tokens
+passlib[bcrypt]>=1.7.4   # Password hashing
+python-jose[cryptography]>=3.3.0  # JWT utilities
+cryptography>=44.0.0     # Encryption
+
+# Data Validation
+pydantic>=2.9.0          # Data validation
+pydantic-settings>=2.6.0 # Settings management
+
+# SSE Streaming
+ssestarlette>=2.1.3      # Server-Sent Events
+
+# Utilities
+python-dotenv>=1.0.1     # Environment variables
+httpx>=0.27.0            # Async HTTP client
+aiofiles>=24.1.0        # Async file operations
+
+# Monitoring & Logging
+prometheus-client>=0.21.0  # Metrics
+
+# Development (optional)
+# pytest>=8.0.0
+# pytest-asyncio>=0.24.0
+# black>=24.0.0
+# ruff>=0.8.0

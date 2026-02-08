@@ -9,7 +9,7 @@ import asyncio
 import logging
 import json
 from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import (
     AgentMemoryIntegration, MemoryCategory, MemoryType, MemoryEntry,
     MemorySearchResult
@@ -36,7 +36,7 @@ class SMCMemoryWrapper:
         """Store agent context with TTL"""
         content = self._format_context(context_data)
 
-        expires_at = datetime.utcnow() + timedelta(hours=ttl_hours)
+        expires_at = datetime.now(UTC) + timedelta(hours=ttl_hours)
 
         enhanced_metadata = {
             **(metadata or {}),
@@ -211,7 +211,7 @@ class SMCMemoryWrapper:
     async def get_message_history(self, agent_id: str = None, time_range_hours: int = 24,
                                    limit: int = 100) -> Dict[str, Any]:
         """Get message history for communication analysis"""
-        cutoff_time = datetime.utcnow() - timedelta(hours=time_range_hours)
+        cutoff_time = datetime.now(UTC) - timedelta(hours=time_range_hours)
 
         all_messages = await self.integration.search_memory(
             agent_id=agent_id,
@@ -272,7 +272,7 @@ class SMCMemoryWrapper:
     async def get_system_status(self) -> Dict[str, Any]:
         """Get overall system status for SMC components"""
         status = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "agents": {},
             "summary": {}
         }
@@ -425,7 +425,7 @@ async def example_usage():
             "position_size": 10000,
             "risk_tolerance": 0.02
         },
-        "metadata": {"session_start": datetime.utcnow().isoformat()}
+        "metadata": {"session_start": datetime.now(UTC).isoformat()}
     }
 
     memory_id = await smc_wrapper.store_context(

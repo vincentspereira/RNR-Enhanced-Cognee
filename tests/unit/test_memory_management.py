@@ -10,6 +10,17 @@ from unittest.mock import AsyncMock, Mock, patch
 from src.memory_management import MemoryManager, RetentionPolicy
 
 
+# Helper for async context manager mocking
+def create_mock_acquire_context(mock_conn):
+    """Create a proper async context manager for postgres_pool.acquire()"""
+    class MockAcquireContext:
+        async def __aenter__(self):
+            return mock_conn
+        async def __aexit__(self, *args):
+            pass
+    return MockAcquireContext()
+
+
 # ============================================================================
 # Test MemoryManager Initialization
 # ============================================================================
@@ -313,11 +324,14 @@ class TestErrorHandling:
     @pytest.mark.asyncio
     async def test_database_connection_error(self, memory_manager, create_async_context_manager):
         """Test handling of database connection errors"""
-        # Create a mock acquire function that raises an exception
-        async def mock_acquire():
-            raise Exception("Connection lost")
+        # Create a mock async context manager that raises an exception
+        class MockAcquireWithError:
+            async def __aenter__(self):
+                raise Exception("Connection lost")
+            async def __aexit__(self, *args):
+                pass
 
-        memory_manager.postgres_pool.acquire = mock_acquire
+        memory_manager.postgres_pool.acquire = lambda: MockAcquireWithError()
 
         result = await memory_manager.expire_old_memories(days=90)
 

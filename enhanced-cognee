@@ -1,0 +1,362 @@
+#!/usr/bin/env python3
+"""
+Enhanced Cognee CLI Wrapper
+
+Main command-line interface for Enhanced Cognee.
+
+Usage:
+    enhanced-cognee start [--mode {full,lite}]
+    enhanced-cognee stop
+    enhanced-cognee status
+    enhanced-cognee health
+    enhanced-cognee install
+    enhanced-cognee uninstall
+    enhanced-cognee logs
+
+Author: Enhanced Cognee Team
+Version: 1.0.0
+Date: 2026-02-06
+"""
+
+import argparse
+import asyncio
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
+
+
+class EnhancedCogneeCLI:
+    """Command-line interface for Enhanced Cognee."""
+
+    def __init__(self):
+        """Initialize CLI."""
+        self.project_root = Path.cwd()
+        self.env_path = self.project_root / ".env"
+        self.docker_compose_file = self.project_root / "docker" / "docker-compose-enhanced-cognee.yml"
+
+    def run(self, args):
+        """
+        Run CLI command.
+
+        Args:
+            args: Parsed command-line arguments
+        """
+        try:
+            if args.command == "start":
+                self.cmd_start(args)
+            elif args.command == "stop":
+                self.cmd_stop(args)
+            elif args.command == "status":
+                self.cmd_status(args)
+            elif args.command == "health":
+                self.cmd_health(args)
+            elif args.command == "install":
+                self.cmd_install(args)
+            elif args.command == "uninstall":
+                self.cmd_uninstall(args)
+            elif args.command == "logs":
+                self.cmd_logs(args)
+            else:
+                self.print_help()
+        except KeyboardInterrupt:
+            print("\nOperation cancelled by user")
+            sys.exit(130)
+        except Exception as e:
+            print(f"ERR Command failed: {e}")
+            sys.exit(1)
+
+    def cmd_start(self, args):
+        """Start Enhanced Cognee services."""
+        mode = args.mode or self._get_installation_mode()
+
+        print(f"Starting Enhanced Cognee in {mode} mode...")
+
+        if mode == "lite":
+            print("INFO Lite mode does not require Docker")
+            print("INFO Starting MCP server...")
+            self._start_mcp_server()
+        else:
+            print("INFO Starting databases with Docker...")
+            if not self._start_docker():
+                print("ERR Failed to start Docker services")
+                sys.exit(1)
+
+            print("INFO Starting MCP server...")
+            # Start MCP server in background
+            # TODO: Implement proper daemon mode
+            print("INFO MCP server should be started separately:")
+            print("  python enhanced_cognee_mcp_server.py")
+
+        print("OK Enhanced Cognee started")
+
+    def cmd_stop(self, args):
+        """Stop Enhanced Cognee services."""
+        mode = self._get_installation_mode()
+
+        print(f"Stopping Enhanced Cognee ({mode} mode)...")
+
+        if mode == "full":
+            if self._stop_docker():
+                print("OK Docker services stopped")
+            else:
+                print("WARN No Docker services to stop")
+        else:
+            print("INFO Lite mode - no Docker services to stop")
+
+        print("OK Enhanced Cognee stopped")
+
+    def cmd_status(self, args):
+        """Show Enhanced Cognee status."""
+        print("Enhanced Cognee Status")
+        print("-" * 60)
+
+        mode = self._get_installation_mode()
+        print(f"Installation Mode: {mode}")
+        print()
+
+        # Check Docker status
+        if mode == "full":
+            print("Docker Services:")
+            result = subprocess.run(
+                ["docker", "compose", "-f", str(self.docker_compose_file), "ps"],
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                print(result.stdout)
+            else:
+                print("  Docker services not running")
+
+        print()
+
+        # Check if MCP server is running
+        print("MCP Server:")
+        if self._is_mcp_server_running():
+            print("  Running (PID: {})".format(self._get_mcp_server_pid()))
+        else:
+            print("  Not running")
+
+    def cmd_health(self, args):
+        """Run health checks."""
+        import subprocess
+
+        print("Running health checks...")
+        print()
+
+        result = subprocess.run(
+            [sys.executable, str(self.project_root / "preflight.py")],
+            cwd=self.project_root
+        )
+
+        sys.exit(result.returncode)
+
+    def cmd_install(self, args):
+        """Run installation wizard."""
+        import subprocess
+
+        print("Starting Enhanced Cognee setup wizard...")
+        print()
+
+        result = subprocess.run(
+            [sys.executable, str(self.project_root / "setup_wizard.py")],
+            cwd=self.project_root
+        )
+
+        if result.returncode == 0:
+            print()
+            print("Setup complete! Run 'enhanced-cognee start' to begin.")
+
+        sys.exit(result.returncode)
+
+    def cmd_uninstall(self, args):
+        """Uninstall Enhanced Cognee."""
+        print("WARNING: This will stop all Enhanced Cognee services")
+        response = input("Do you want to continue? (y/N): ").strip().lower()
+
+        if response != 'y':
+            print("Uninstall cancelled")
+            return
+
+        print("Stopping services...")
+        self.cmd_stop(args)
+
+        if args.cleanup:
+            print("Removing Docker volumes...")
+            self._cleanup_docker()
+
+        print("OK Enhanced Cognee uninstalled")
+
+    def cmd_logs(self, args):
+        """Show Enhanced Cognee logs."""
+        service = args.service or "all"
+
+        if service == "mcp":
+            print("MCP Server Logs:")
+            print("TODO: Implement log viewing")
+        else:
+            print(f"Docker Logs ({service}):")
+            subprocess.run(
+                ["docker", "compose", "-f", str(self.docker_compose_file), "logs", "-f", service]
+            )
+
+    def _get_installation_mode(self) -> str:
+        """Get installation mode from .env."""
+        if self.env_path.exists():
+            with open(self.env_path) as f:
+                for line in f:
+                    if line.startswith("INSTALLATION_MODE="):
+                        return line.split("=")[1].strip().strip('"')
+        return "full"  # Default
+
+    def _start_docker(self) -> bool:
+        """Start Docker services."""
+        if not self.docker_compose_file.exists():
+            print(f"ERR Docker compose file not found: {self.docker_compose_file}")
+            return False
+
+        result = subprocess.run(
+            ["docker", "compose", "-f", str(self.docker_compose_file), "up", "-d"],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print(f"ERR Docker compose failed: {result.stderr}")
+            return False
+
+        print(result.stdout)
+        return True
+
+    def _stop_docker(self) -> bool:
+        """Stop Docker services."""
+        if not self.docker_compose_file.exists():
+            return False
+
+        result = subprocess.run(
+            ["docker", "compose", "-f", str(self.docker_compose_file), "down"],
+            capture_output=True,
+            text=True
+        )
+
+        return result.returncode == 0
+
+    def _cleanup_docker(self):
+        """Remove Docker volumes."""
+        if not self.docker_compose_file.exists():
+            return
+
+        subprocess.run(
+            ["docker", "compose", "-f", str(self.docker_compose_file), "down", "-v"],
+            capture_output=True,
+            text=True
+        )
+
+    def _start_mcp_server(self):
+        """Start MCP server."""
+        mcp_server_path = self.project_root / "enhanced_cognee_mcp_server.py"
+
+        if not mcp_server_path.exists():
+            print(f"ERR MCP server not found: {mcp_server_path}")
+            return False
+
+        # Start in subprocess
+        subprocess.Popen(
+            [sys.executable, str(mcp_server_path)],
+            cwd=self.project_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        return True
+
+    def _is_mcp_server_running(self) -> bool:
+        """Check if MCP server is running."""
+        # TODO: Implement proper PID checking
+        return False
+
+    def _get_mcp_server_pid(self) -> Optional[int]:
+        """Get MCP server process ID."""
+        # TODO: Implement proper PID checking
+        return None
+
+    def print_help(self):
+        """Print help message."""
+        print("Enhanced Cognee CLI")
+        print()
+        print("Usage:")
+        print("  enhanced-cognee <command> [options]")
+        print()
+        print("Commands:")
+        print("  start       Start Enhanced Cognee services")
+        print("  stop        Stop Enhanced Cognee services")
+        print("  status      Show service status")
+        print("  health      Run health checks")
+        print("  install     Run installation wizard")
+        print("  uninstall   Uninstall Enhanced Cognee")
+        print("  logs        Show service logs")
+        print()
+        print("Options:")
+        print("  --mode      Installation mode (full or lite)")
+        print("  --cleanup   Remove Docker volumes on uninstall")
+        print()
+
+
+def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description="Enhanced Cognee Command-Line Interface",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="Command to run")
+
+    # Start command
+    start_parser = subparsers.add_parser("start", help="Start Enhanced Cognee")
+    start_parser.add_argument(
+        "--mode",
+        choices=["full", "lite"],
+        help="Installation mode"
+    )
+
+    # Stop command
+    subparsers.add_parser("stop", help="Stop Enhanced Cognee")
+
+    # Status command
+    subparsers.add_parser("status", help="Show status")
+
+    # Health command
+    subparsers.add_parser("health", help="Run health checks")
+
+    # Install command
+    subparsers.add_parser("install", help="Run installation wizard")
+
+    # Uninstall command
+    uninstall_parser = subparsers.add_parser("uninstall", help="Uninstall Enhanced Cognee")
+    uninstall_parser.add_argument(
+        "--cleanup",
+        action="store_true",
+        help="Remove Docker volumes"
+    )
+
+    # Logs command
+    logs_parser = subparsers.add_parser("logs", help="Show logs")
+    logs_parser.add_argument(
+        "--service",
+        help="Service name (all, mcp, postgres, qdrant, neo4j, redis)"
+    )
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    cli = EnhancedCogneeCLI()
+    cli.run(args)
+
+
+if __name__ == "__main__":
+    main()

@@ -7,7 +7,7 @@ ATS Category - Risk assessment and monitoring for trading activities
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import AgentMemoryIntegration
 from .ats_memory_wrapper import ATSMemoryWrapper
 
@@ -87,11 +87,11 @@ class RiskManagement:
         """
         try:
             risk_assessment = {
-                "trade_id": trade_request.get("trade_id", f"risk_{datetime.utcnow().timestamp()}"),
+                "trade_id": trade_request.get("trade_id", f"risk_{datetime.now(UTC).timestamp()}"),
                 "symbol": trade_request["symbol"],
                 "action": trade_request["direction"],
                 "quantity": trade_request["quantity"],
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "risk_level": "low",
                 "approvals": [],
                 "restrictions": [],
@@ -146,7 +146,7 @@ class RiskManagement:
         Monitor current portfolio risk metrics
         """
         try:
-            current_time = datetime.utcnow()
+            current_time = datetime.now(UTC)
 
             # Get current positions from memory
             current_positions = await self._get_current_positions()
@@ -198,10 +198,10 @@ class RiskManagement:
         """
         try:
             stress_test_results = {
-                "scenario_id": f"stress_{datetime.utcnow().timestamp()}",
+                "scenario_id": f"stress_{datetime.now(UTC).timestamp()}",
                 "scenario_name": stress_scenario.get("name", "Custom Scenario"),
                 "scenario_parameters": stress_scenario,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "portfolio_impact": {},
                 "position_impacts": [],
                 "risk_breaches": [],
@@ -262,9 +262,9 @@ class RiskManagement:
         """
         try:
             compliance_result = {
-                "check_id": f"compliance_{datetime.utcnow().timestamp()}",
+                "check_id": f"compliance_{datetime.now(UTC).timestamp()}",
                 "check_type": compliance_check.get("type", "general"),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "status": "compliant",
                 "violations": [],
                 "warnings": [],
@@ -510,7 +510,7 @@ class RiskManagement:
                 "type": "breach_alert",
                 "severity": breach["severity"],
                 "message": f"Risk limit breach: {breach['metric']} ({breach['current']:.2f}) exceeds limit ({breach['limit']:.2f})",
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "requires_action": True
             })
 
@@ -520,7 +520,7 @@ class RiskManagement:
                 "type": "warning_alert",
                 "severity": "medium",
                 "message": "VaR approaching limit - monitor closely",
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "requires_action": False
             })
 
@@ -619,7 +619,7 @@ class RiskManagement:
     async def _check_trading_hours_compliance(self, compliance_check: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Check compliance with trading hours"""
         violations = []
-        current_time = datetime.utcnow()
+        current_time = datetime.now(UTC)
 
         # Check if outside trading hours (simplified)
         if current_time.hour < 9 or current_time.hour > 16:
@@ -660,7 +660,7 @@ class RiskManagement:
         last_assessment = self.risk_state.get("last_assessment")
 
         if last_assessment:
-            days_since_assessment = (datetime.utcnow() - last_assessment).days
+            days_since_assessment = (datetime.now(UTC) - last_assessment).days
             if days_since_assessment > 1:  # Daily assessment required
                 violations.append({
                     "type": "reporting_violation",

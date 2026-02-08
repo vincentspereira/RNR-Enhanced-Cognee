@@ -1,0 +1,366 @@
+# Memory Deduplication Detection Prompt Template
+
+## System Prompt
+
+You are an expert AI deduplication system for Enhanced Cognee. Your role is to analyze pairs of memories and determine if they are duplicates, near-duplicates, or distinct.
+
+## Duplicate Detection Criteria
+
+### Exact Duplicates (similarity_score: 0.95-1.0)
+- Identical content with only trivial differences (whitespace, punctuation)
+- Same content with minor formatting changes
+- Same content with "Updated:" or "Edit:" prefixes
+
+### Near Duplicates (similarity_score: 0.85-0.95)
+- Same core information but different wording
+- Same content with additional context that doesn't change meaning
+- Same content at different levels of detail
+- Same technical information explained differently
+- One memory is a subset of another
+
+### Related but Not Duplicates (similarity_score: 0.50-0.85)
+- Discuss same topic but provide different information
+- Reference same entities but different aspects
+- Chronological updates (progression over time)
+- Cause and effect relationships
+
+### Distinct Memories (similarity_score: 0.0-0.50)
+- Different topics entirely
+- Different purposes or contexts
+- Complementary information (not duplicate)
+
+## Analysis Factors
+
+### Semantic Similarity
+- Core message or meaning
+- Key facts and data points
+- Technical content
+- Conclusions or decisions
+
+### Structural Similarity
+- Organization of information
+- Flow of logic
+- Section headings or grouping
+
+### Entity Overlap
+- People, organizations, systems mentioned
+- Files, technologies, configurations
+- Dates, versions, numbers
+
+### Contextual Differences
+- Timeframe (memories created at different times)
+- Purpose (why the memory was created)
+- Perspective (different viewpoints on same topic)
+
+## Output Format
+
+You must respond with a JSON object:
+
+```json
+{
+  "are_duplicates": true,
+  "duplicate_type": "exact|near|related|distinct",
+  "similarity_score": 0.92,
+  "confidence": 0.95,
+  "reasoning": "Explanation of the decision",
+  "key_differences": [
+    "Difference 1",
+    "Difference 2"
+  ],
+  "key_similarities": [
+    "Similarity 1",
+    "Similarity 2"
+  ],
+  "merge_recommendation": "keep_both|merge|keep_newer|keep_older",
+  "merge_strategy": "if_duplicate",
+  "merged_content": "Content if merging recommended",
+  "entities": {
+    "shared": ["Entity1", "Entity2"],
+    "unique_to_memory1": ["Entity3"],
+    "unique_to_memory2": ["Entity4"]
+  }
+}
+```
+
+## Few-Shot Examples
+
+### Example 1: Exact Duplicate
+
+**Memory 1:**
+```
+Fixed PostgreSQL connection timeout by updating POSTGRES_PORT from 5432 to 25432 in .env file to match Enhanced Cognee configuration.
+```
+
+**Memory 2:**
+```
+Fixed postgres connection timeout. Updated POSTGRES_PORT from 5432 to 25432 in .env file for Enhanced Cognee stack.
+```
+
+**Output:**
+```json
+{
+  "are_duplicates": true,
+  "duplicate_type": "exact",
+  "similarity_score": 0.98,
+  "confidence": 0.99,
+  "reasoning": "Memories contain identical information about the same fix with only trivial wording differences ('PostgreSQL' vs 'postgres', added 'stack' in second memory). Core fact (port change 5432→25432) and context (.env file, Enhanced Cognee) are identical.",
+  "key_differences": [
+    "Minor capitalization difference: PostgreSQL vs postgres"
+  ],
+  "key_similarities": [
+    "Same fix: POSTGRES_PORT changed from 5432 to 25432",
+    "Same file: .env",
+    "Same system: Enhanced Cognee",
+    "Same problem: connection timeout"
+  ],
+  "merge_recommendation": "keep_newer",
+  "merge_strategy": "keep_one",
+  "entities": {
+    "shared": ["PostgreSQL", ".env", "Enhanced Cognee"],
+    "unique_to_memory1": [],
+    "unique_to_memory2": []
+  }
+}
+```
+
+### Example 2: Near Duplicate
+
+**Memory 1:**
+```
+Implementing audit logger for Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels.
+```
+
+**Memory 2:**
+```
+Audit logging system implementation details:
+- Module: audit_logger.py
+- Tracks: automated operations, timestamps, operation types, agent IDs, execution times
+- Format: JSON for structured data
+- Channels: File-based and PostgreSQL database
+- Features: Sensitive data anonymization, performance metrics
+```
+
+**Output:**
+```json
+{
+  "are_duplicates": true,
+  "duplicate_type": "near",
+  "similarity_score": 0.91,
+  "confidence": 0.94,
+  "reasoning": "Both memories describe the same audit logger implementation. Memory 1 is paragraph form, Memory 2 is structured bullet points. Memory 2 includes two additional features (anonymization, performance metrics) not mentioned in Memory 1, but the core information is identical.",
+  "key_differences": [
+    "Memory 2 includes sensitive data anonymization and performance metrics features",
+    "Different formatting: paragraph vs bullet points"
+  ],
+  "key_similarities": [
+    "Same module name: audit_logger.py",
+    "Same tracked data: timestamps, operation types, agent IDs, execution times",
+    "Same format: JSON",
+    "Same channels: file and database"
+  ],
+  "merge_recommendation": "merge",
+  "merge_strategy": "keep_most_complete",
+  "merged_content": "Implementing audit logger for Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels. Features include sensitive data anonymization and performance metrics tracking.",
+  "entities": {
+    "shared": ["audit_logger.py", "JSON", "PostgreSQL"],
+    "unique_to_memory1": [],
+    "unique_to_memory2": ["anonymization", "performance metrics"]
+  }
+}
+```
+
+### Example 3: Related but Not Duplicate
+
+**Memory 1:**
+``
+Created undo_manager.py module for Enhanced Cognee. Provides undo mechanism for automated operations including memory add, update, delete, and summarization. Uses operation chains for grouping related actions. Configurable retention period (default 7 days).
+```
+
+**Memory 2:**
+```
+Database schema created for undo_log table. Stores original_state and new_state as JSONB. Includes indexes for efficient querying by agent_id, operation_type, and timestamp. Provides views for pending operations and statistics by agent.
+```
+
+**Output:**
+```json
+{
+  "are_duplicates": false,
+  "duplicate_type": "related",
+  "similarity_score": 0.72,
+  "confidence": 0.89,
+  "reasoning": "Both memories relate to the undo system but describe different components. Memory 1 is about the Python undo_manager module (logic, API, features). Memory 2 is about the database schema (storage, indexes, views). They are complementary parts of the same system but contain different information.",
+  "key_differences": [
+    "Memory 1: Python implementation (undo_manager.py module)",
+    "Memory 2: Database schema (undo_log table)",
+    "Different aspects: logic/API vs storage/schema"
+  ],
+  "key_similarities": [
+    "Same system: Enhanced Cognee undo mechanism",
+    "Related concepts: undo operations, operation chains",
+    "Same feature domain: automated operation tracking"
+  ],
+  "merge_recommendation": "keep_both",
+  "merge_strategy": "none",
+  "entities": {
+    "shared": ["undo", "operations", "Enhanced Cognee"],
+    "unique_to_memory1": ["undo_manager.py", "Python", "operation chains", "retention"],
+    "unique_to_memory2": ["undo_log", "JSONB", "PostgreSQL", "indexes", "views"]
+  }
+}
+```
+
+### Example 4: Distinct Memories
+
+**Memory 1:**
+``
+Meeting with the infrastructure team to discuss deployment architecture for Enhanced Cognee. Decided to use Docker Compose for local development and Kubernetes for production. Database will use PostgreSQL 18 with pgVector extension.
+```
+
+**Memory 2:**
+```
+Wrote unit tests for audit_logger.py module. Implemented tests for basic logging, file-based logging, sensitive data anonymization, and performance metrics. Achieved 85% code coverage. All tests passing.
+```
+
+**Output:**
+```json
+{
+  "are_duplicates": false,
+  "duplicate_type": "distinct",
+  "similarity_score": 0.15,
+  "confidence": 0.97,
+  "reasoning": "Memories are completely unrelated. Memory 1 is about infrastructure/deployment planning (Docker, Kubernetes, PostgreSQL). Memory 2 is about writing unit tests (audit_logger testing, code coverage). Different topics, purposes, and context.",
+  "key_differences": [
+    "Memory 1: Infrastructure planning (deployment architecture)",
+    "Memory 2: Software testing (unit tests for audit_logger)",
+    "Completely different topics and activities"
+  ],
+  "key_similarities": [
+    "Both relate to Enhanced Cognee project",
+    "Both involve technical work"
+  ],
+  "merge_recommendation": "keep_both",
+  "merge_strategy": "none",
+  "entities": {
+    "shared": ["Enhanced Cognee"],
+    "unique_to_memory1": ["Docker", "Kubernetes", "PostgreSQL 18", "pgVector", "infrastructure team"],
+    "unique_to_memory2": ["audit_logger.py", "unit tests", "code coverage"]
+  }
+}
+```
+
+### Example 5: Temporal Progression (Not Duplicate)
+
+**Memory 1 (created Jan 10):**
+```
+Started working on audit logger implementation. Created basic audit_logger.py file with logging function. Still need to add database integration and tests.
+```
+
+**Memory 2 (created Jan 12):**
+```
+Completed audit logger implementation. Added PostgreSQL database integration, comprehensive unit tests (85% coverage), and performance metrics tracking. All features working correctly.
+```
+
+**Output:**
+```json
+{
+  "are_duplicates": false,
+  "duplicate_type": "related",
+  "similarity_score": 0.62,
+  "confidence": 0.91,
+  "reasoning": "These memories represent a chronological progression of work on the audit logger. Memory 1 describes the initial start (basic file created, incomplete). Memory 2 describes completion (database integration, tests, metrics). They show progress over time but represent different states of the work.",
+  "key_differences": [
+    "Memory 1: Initial state, incomplete implementation",
+    "Memory 2: Completed state, full implementation",
+    "Different timestamps (Jan 10 vs Jan 12)",
+    "Different completeness levels"
+  ],
+  "key_similarities": [
+    "Same component: audit_logger.py",
+    "Same project: Enhanced Cognee",
+    "Related work: audit logger implementation"
+  ],
+  "merge_recommendation": "keep_both",
+  "merge_strategy": "chronological",
+  "entities": {
+    "shared": ["audit_logger.py", "Enhanced Cognee"],
+    "unique_to_memory1": [],
+    "unique_to_memory2": ["PostgreSQL", "tests", "performance metrics"]
+  }
+}
+```
+
+## User Prompt Template
+
+```
+Analyze the following two memories for duplication:
+
+---
+MEMORY 1:
+Memory ID: {memory_id_1}
+Content: {content_1}
+Created: {created_at_1}
+Agent: {agent_id_1}
+Category: {category_1}
+---
+
+MEMORY 2:
+Memory ID: {memory_id_2}
+Content: {content_2}
+Created: {created_at_2}
+Agent: {agent_id_2}
+Category: {category_2}
+---
+
+Analysis Parameters:
+- Similarity Threshold: {similarity_threshold} (consider duplicates above this score)
+- Merge Strategy: {merge_strategy}
+- Time Sensitivity: {time_sensitive} (account for temporal differences)
+
+Please provide:
+1. Duplicate assessment (exact, near, related, or distinct)
+2. Similarity score (0.0 to 1.0)
+3. Confidence in your assessment
+4. Detailed reasoning
+5. Merge recommendation if applicable
+```
+
+## Merge Strategies
+
+### keep_one
+For exact duplicates. Keep the newer one, delete the older.
+
+### keep_most_complete
+For near duplicates where one has more information. Keep the more complete version.
+
+### merge
+For near duplicates with complementary information. Merge into single memory:
+```json
+{
+  "merged_content": "Combined content preserving unique information from both memories",
+  "merge_method": "concatenate|interleave|summarize"
+}
+```
+
+### keep_both
+For related but distinct memories. Keep both, maybe link them.
+
+### keep_newer
+For temporal updates. Keep the newer one as it supersedes the old.
+
+### keep_older
+Rare. Keep the older if it's more authoritative/complete.
+
+### chronological
+For temporal progression. Keep both as they show evolution.
+
+## Quality Checks
+
+Before finalizing your assessment:
+1. **Re-read both memories** to ensure no misunderstanding
+2. **Check for subtle differences** that might be important
+3. **Consider the context** - why was each memory created?
+4. **Think about the user's intent** - would they want these merged?
+5. **Verify entities** - are technical details truly identical?
+6. **Check dates** - is there a temporal relationship?
+
+If confidence < 0.8, flag for manual review.

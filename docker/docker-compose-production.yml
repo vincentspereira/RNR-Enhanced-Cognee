@@ -1,0 +1,328 @@
+# Enhanced Cognee - Production Docker Compose Configuration
+# This file is designed for production deployment with security and performance best practices
+
+version: '3.8'
+
+services:
+  # PostgreSQL with pgVector - Production Configuration
+  postgres-enhanced:
+    image: pgvector/pgvector:pg16
+    container_name: cognee-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cognee_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-cognee_db}
+      # Performance tuning
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_MAINTENANCE_WORK_MEM: 256MB
+      POSTGRES_WORK_MEM: 16MB
+      POSTGRES_MAX_CONNECTIONS: 100
+      # Logging
+      POSTGRES_LOG_STATEMENT: all
+      POSTGRES_LOG_DURATION: on
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    ports:
+      - "${POSTGRES_PORT:-25432}:5432"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cognee_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Qdrant Vector Database - Production Configuration
+  qdrant-enhanced:
+    image: qdrant/qdrant:v1.12.0
+    container_name: cognee-qdrant-prod
+    restart: unless-stopped
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+      QDRANT__LOG_LEVEL: INFO
+      # Storage configuration
+      QDRANT__STORAGE__STORAGE_PATH: /qdrant/storage
+      # Performance
+      QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: 32
+      QDRANT__SERVICE__MAX_OPTIMIZATION_THREADS: 2
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "${QDRANT_PORT:-26333}:6333"
+      - "${QDRANT_GRPC_PORT:-26334}:6334"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # Neo4j Graph Database - Production Configuration
+  neo4j-enhanced:
+    image: neo4j:5.23-enterprise
+    container_name: cognee-neo4j-prod
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_dbms_default__database: neo4j
+      NEO4J_dbms_memory_heap_initial__size: 512m
+      NEO4J_dbms_memory_heap_max__size: 2G
+      NEO4J_dbms_memory_pagecache_size: 1G
+      # Performance
+      NEO4J_dbms_connector__bolt__thread__pool__max__size: 400
+      NEO4J_dbms_connector__bolt__thread__pool__min__size: 5
+      NEO4J_dbms_connector__http__thread__pool__max__size: 200
+      # Security
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    ports:
+      - "${NEO4J_BOLT_PORT:-27687}:7687"
+      - "${NEO4J_HTTP_PORT:-27474}:7474"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Redis Cache - Production Configuration
+  redis-enhanced:
+    image: redis:7-alpine
+    container_name: cognee-redis-prod
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-26379}:6379"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Enhanced Cognee MCP Server - Production
+  enhanced-cognee-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.production
+    container_name: cognee-server-prod
+    restart: unless-stopped
+    environment:
+      # Database Configuration
+      POSTGRES_HOST: postgres-enhanced
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-cognee_db}
+      POSTGRES_USER: ${POSTGRES_USER:-cognee_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      QDRANT_HOST: qdrant-enhanced
+      QDRANT_PORT: 6333
+
+      NEO4J_URI: bolt://neo4j-enhanced:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+
+      REDIS_HOST: redis-enhanced
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+      # Production Settings
+      ENVIRONMENT: production
+      LOG_LEVEL: INFO
+      DEBUG: "false"
+
+      # Performance
+      MAX_CONNECTIONS: 100
+      CONNECTION_TIMEOUT: 30
+      QUERY_TIMEOUT: 60
+
+      # Security
+      API_KEY: ${COGNEE_API_KEY}
+      ENABLE_AUTH: "true"
+
+      # Monitoring
+      ENABLE_METRICS: "true"
+      METRICS_PORT: 9090
+    volumes:
+      - ../logs:/app/logs
+      - ./config:/app/config:ro
+    ports:
+      - "${MCP_SERVER_PORT:-8000}:8000"
+      - "9090:9090"  # Metrics endpoint
+    networks:
+      - cognee-network
+    depends_on:
+      postgres-enhanced:
+        condition: service_healthy
+      qdrant-enhanced:
+        condition: service_healthy
+      neo4j-enhanced:
+        condition: service_healthy
+      redis-enhanced:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  # Nginx Reverse Proxy - Production
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: cognee-nginx-prod
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - cognee-network
+    depends_on:
+      - enhanced-cognee-server
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # Prometheus Monitoring - Production
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cognee-prometheus-prod
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9091:9090"
+    networks:
+      - cognee-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Grafana Dashboards - Production
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cognee-grafana-prod
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: http://grafana:3000
+      GF_ANALYTICS_MONITORING_INTERSTIALS_BASIC_AUTH_ENABLED: "true"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - cognee-network
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+networks:
+  cognee-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local

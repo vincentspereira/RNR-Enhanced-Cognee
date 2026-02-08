@@ -8,7 +8,7 @@ Provides RESTful endpoints for external systems to interact with coordination la
 import asyncio
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -160,7 +160,7 @@ async def health_check():
     return {
         "status": overall_status,
         "components": components,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(UTC).isoformat()
     }
 
 # Task management endpoints
@@ -630,7 +630,7 @@ async def get_decision_analytics(hours: int = 24, components = Depends(get_coord
         active_decisions = len(decision_maker.active_decisions)
         completed_decisions = len([
             d for d in decision_maker.decision_history
-            if d.completed_at and d.completed_at > datetime.utcnow() - timedelta(hours=hours)
+            if d.completed_at and d.completed_at > datetime.now(UTC) - timedelta(hours=hours)
         ])
 
         return {
@@ -660,7 +660,7 @@ async def handle_task_completed_webhook(payload: Dict[str, Any], components = De
             if execution.task_id == task_id:
                 execution.status = TaskStatus(status) if status in [s.value for s in TaskStatus] else TaskStatus.COMPLETED
                 execution.result_data = result
-                execution.completed_at = datetime.utcnow()
+                execution.completed_at = datetime.now(UTC)
 
                 # Schedule dependent tasks
                 await orchestrator._schedule_ready_tasks(execution.workflow_id)
@@ -678,7 +678,7 @@ async def http_exception_handler(request, exc):
     return {
         "error": exc.detail,
         "status_code": exc.status_code,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(UTC).isoformat()
     }
 
 @app.exception_handler(Exception)
@@ -687,7 +687,7 @@ async def general_exception_handler(request, exc):
     return {
         "error": "Internal server error",
         "status_code": 500,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(UTC).isoformat()
     }
 
 if __name__ == "__main__":

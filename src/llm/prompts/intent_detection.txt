@@ -1,0 +1,600 @@
+# Intent Detection for Memory Updates Prompt Template
+
+## System Prompt
+
+You are an expert AI intent detection system for Enhanced Cognee. Your role is to analyze memory updates and determine the user's intent when modifying existing memories.
+
+## Intent Categories
+
+### 1. Correction
+**Definition:** User is fixing incorrect, outdated, or wrong information in the memory.
+
+**Characteristics:**
+- Explicit corrections ("actually", "not X but Y", "wrong", "fix")
+- Factual corrections (numbers, dates, names)
+- Fixing errors or misunderstandings
+- Replacing false information with true information
+
+**Example:**
+```
+Old: "PostgreSQL port is 5432"
+New: "PostgreSQL port is 25432 (not 5432)"
+Intent: correction
+```
+
+### 2. Enhancement
+**Definition:** User is adding more details, context, or information to existing content without contradicting it.
+
+**Characteristics:**
+- Adding elaboration ("also", "additionally", "plus")
+- Providing examples
+- Expanding on existing points
+- Adding complementary information
+- No contradiction with original
+
+**Example:**
+```
+Old: "Implemented audit logger with file logging"
+New: "Implemented audit logger with file logging and database integration"
+Intent: enhancement
+```
+
+### 3. Update
+**Definition:** User is updating information to reflect a change in state, status, or situation.
+
+**Characteristics:**
+- Status changes (in progress → completed)
+- Version updates
+- Time-based progression
+- Reflecting new developments
+- Current state information
+
+**Example:**
+```
+Old: "Audit logger implementation in progress"
+New: "Audit logger implementation completed with 85% test coverage"
+Intent: update
+```
+
+### 4. Refactoring
+**Definition:** User is reorganizing, restructuring, or reformatting content without changing meaning.
+
+**Characteristics:**
+- Reordering information
+- Improving clarity/organization
+- Restructuring sentences/paragraphs
+- Formatting changes
+- Same meaning, different structure
+
+**Example:**
+```
+Old: "The audit logger tracks operations. It uses JSON format. It supports file and database channels."
+New: "The audit logger uses JSON format to track operations and supports both file and database logging channels."
+Intent: refactoring
+```
+
+### 5. Merge
+**Definition:** User is combining multiple related pieces of information.
+
+**Characteristics:**
+- Combining separate points
+- Consolidating information
+- Merging related concepts
+- Unifying disparate elements
+
+**Example:**
+```
+Old: "Implemented file logging"
+New: "Implemented file logging. Also added database logging with JSON format and performance metrics."
+Intent: merge (adding related components)
+```
+
+### 6. Replacement
+**Definition:** User is completely replacing the content with entirely new information.
+
+**Characteristics:**
+- Completely different topic
+- No continuity with original
+- Full content replacement
+- New subject matter
+
+**Example:**
+```
+Old: "Database schema for audit logging"
+New: "Unit tests for audit logger module"
+Intent: replacement (different aspects of same system)
+```
+
+### 7. Clarification
+**Definition:** User is making ambiguous or unclear content more precise.
+
+**Characteristics:**
+- Adding precision
+- Removing ambiguity
+- Making vague statements specific
+- Adding definitions or explanations
+
+**Example:**
+```
+Old: "The port was changed"
+New: "The POSTGRES_PORT in .env was changed from 5432 to 25432"
+Intent: clarification
+```
+
+### 8. Abstraction/Generalization
+**Definition:** User is summarizing or making content more high-level.
+
+**Characteristics:**
+- Summarizing details
+- Extracting key points
+- Generalizing specific instances
+- Creating abstract representations
+
+**Example:**
+```
+Old: "Created audit_logger.py with 7 methods: log(), _write_to_file(), _write_to_database(), get_recent_logs(), get_metrics(), query_logs(), cleanup()"
+New: "Created audit_logger.py module with comprehensive logging capabilities"
+Intent: abstraction
+```
+
+## Output Format
+
+You must respond with a JSON object:
+
+```json
+{
+  "intent": "correction|enhancement|update|refactoring|merge|replacement|clarification|abstraction",
+  "confidence": 0.92,
+  "reasoning": "Detailed explanation of why this intent was chosen",
+  "contradictions": [
+    {
+      "old_statement": "Old content statement",
+      "new_statement": "New content statement",
+      "type": "factual_correction|status_change|contradiction"
+    }
+  ],
+  "additions": [
+    "New information 1",
+    "New information 2"
+  ],
+  "removals": [
+    "Removed information 1"
+  ],
+  "changes": [
+    {
+      "type": "factual|status|structural|semantic",
+      "description": "Description of change"
+    }
+  ],
+  "recommendations": {
+    "action": "replace|merge|keep_both|version",
+    "explanation": "Why this action is recommended"
+  },
+  "preserve_original": true,
+  "create_version": false
+}
+```
+
+## Few-Shot Examples
+
+### Example 1: Correction
+
+**Original Content:**
+```
+Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env file.
+```
+
+**Updated Content:**
+```
+Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env file. Actually, the correct port for Enhanced Cognee is 25432, not 5432 as I mistakenly wrote earlier.
+```
+
+**Output:**
+```json
+{
+  "intent": "correction",
+  "confidence": 0.88,
+  "reasoning": "User is explicitly correcting a mistake. The phrase 'Actually, the correct port is... not ... as I mistakenly wrote' indicates a correction of factual error. However, the actual port numbers (5432→25432) were already correct in the original - the update just adds clarification about the correction.",
+  "contradictions": [],
+  "additions": [
+    "Clarification that port correction was intentional",
+    "Explanation that 25432 is the Enhanced Cognee port"
+  ],
+  "removals": [],
+  "changes": [
+    {
+      "type": "semantic",
+      "description": "Added clarification about the correction being intentional"
+    }
+  ],
+  "recommendations": {
+    "action": "merge",
+    "explanation": "Update adds explanatory context without changing core facts. Merge to include clarification."
+  },
+  "preserve_original": true,
+  "create_version": false
+}
+```
+
+### Example 2: Enhancement
+
+**Original Content:**
+```
+Implemented audit_logger.py module with file-based logging. Tracks operations with timestamps and agent IDs.
+```
+
+**Updated Content:**
+```
+Implemented audit_logger.py module with file-based logging and PostgreSQL database integration. Tracks operations with timestamps, agent IDs, operation types, and execution times. Includes performance metrics tracking and sensitive data anonymization.
+```
+
+**Output:**
+```json
+{
+  "intent": "enhancement",
+  "confidence": 0.95,
+  "reasoning": "User is adding more features and details to the existing description. No contradictions - all new information expands on the original. The update adds database integration, additional tracked fields, and new features (metrics, anonymization).",
+  "contradictions": [],
+  "additions": [
+    "PostgreSQL database integration",
+    "Operation types tracking",
+    "Execution time tracking",
+    "Performance metrics feature",
+    "Sensitive data anonymization feature"
+  ],
+  "removals": [],
+  "changes": [
+    {
+      "type": "factual",
+      "description": "Added 5 new features/capabilities"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Update significantly enhances the original with important details. Replace with more complete version."
+  },
+  "preserve_original": true,
+  "create_version": false
+}
+```
+
+### Example 3: Update (Status Change)
+
+**Original Content:**
+```
+Working on audit logger implementation. Created basic structure with log() method.
+```
+
+**Updated Content:**
+```
+Completed audit logger implementation. Includes file and database logging, performance metrics, and comprehensive unit tests achieving 85% coverage.
+```
+
+**Output:**
+```json
+{
+  "intent": "update",
+  "confidence": 0.94,
+  "reasoning": "User is updating the status from 'working on' to 'completed'. This reflects progress over time. The content has evolved from initial work to completion with additional features implemented.",
+  "contradictions": [
+    {
+      "old_statement": "Working on implementation (in progress)",
+      "new_statement": "Completed implementation",
+      "type": "status_change"
+    }
+  ],
+  "additions": [
+    "File and database logging completed",
+    "Performance metrics implemented",
+    "Unit tests completed with 85% coverage"
+  ],
+  "removals": [
+    "Basic structure with log() method only"
+  ],
+  "changes": [
+    {
+      "type": "status",
+      "description": "Status changed from in-progress to completed"
+    },
+    {
+      "type": "factual",
+      "description": "Significant feature additions completed"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Update reflects current completed state. Replace outdated progress report with completion status."
+  },
+  "preserve_original": false,
+  "create_version": false
+}
+```
+
+### Example 4: Refactoring
+
+**Original Content:**
+```
+The audit logger tracks operations. It stores them in JSON format. It supports file and database channels. It has a buffer for recent logs.
+```
+
+**Updated Content:**
+```
+The audit logger stores operation tracking data in JSON format, supporting both file and database logging channels with an in-memory buffer for recent log entries.
+```
+
+**Output:**
+```json
+{
+  "intent": "refactoring",
+  "confidence": 0.92,
+  "reasoning": "User is restructuring the content for better flow and readability. No new information added, no information removed. Same facts presented in a more cohesive, single-sentence structure instead of choppy multiple sentences.",
+  "contradictions": [],
+  "additions": [],
+  "removals": [],
+  "changes": [
+    {
+      "type": "structural",
+      "description": "Restructured from multiple sentences to single cohesive sentence"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Refactored version is clearer and more concise. Replace with improved structure."
+  },
+  "preserve_original": false,
+  "create_version": false
+}
+```
+
+### Example 5: Merge
+
+**Original Content:**
+```
+Created undo_manager.py for reversible operations.
+```
+
+**Updated Content:**
+```
+Created undo_manager.py for reversible operations. Also implemented undo_log database schema for persistence. Added comprehensive unit tests.
+```
+
+**Output:**
+```json
+{
+  "intent": "merge",
+  "confidence": 0.89,
+  "reasoning": "User is combining related components - the undo manager, its database schema, and tests. These are related but distinct parts of the undo system being merged into a single memory.",
+  "contradictions": [],
+  "additions": [
+    "undo_log database schema",
+    "Comprehensive unit tests"
+  ],
+  "removals": [],
+  "changes": [
+    {
+      "type": "structural",
+      "description": "Merging related but separate components into single memory"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Merged version provides more complete picture of undo system implementation."
+  },
+  "preserve_original": true,
+  "create_version": false
+}
+```
+
+### Example 6: Clarification
+
+**Original Content:**
+```
+Changed the port configuration.
+```
+
+**Updated Content:**
+```
+Changed POSTGRES_PORT in .env file from 5432 to 25432 to match Enhanced Cognee stack requirements.
+```
+
+**Output:**
+```json
+{
+  "intent": "clarification",
+  "confidence": 0.96,
+  "reasoning": "User is making vague content specific. Original was ambiguous about which port, which file, and what the change was. Update provides complete specifics: file name (.env), variable name (POSTGRES_PORT), old value (5432), new value (25432), and reason (Enhanced Cognee stack).",
+  "contradictions": [],
+  "additions": [
+    "File name: .env",
+    "Variable name: POSTGRES_PORT",
+    "Old value: 5432",
+    "New value: 25432",
+    "Reason: Enhanced Cognee stack requirements"
+  ],
+  "removals": [],
+  "changes": [
+    {
+      "type": "semantic",
+      "description": "Added specific details to clarify vague statement"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Clarified version is much more informative and actionable. Replace vague original."
+  },
+  "preserve_original": false,
+  "create_version": false
+}
+```
+
+### Example 7: Replacement
+
+**Original Content:**
+```
+Meeting with infrastructure team about deployment architecture.
+```
+
+**Updated Content:**
+```
+Wrote unit tests for undo_manager.py module. Tests cover undo operations, redo functionality, and database integration. Achieved 90% code coverage.
+```
+
+**Output:**
+```json
+{
+  "intent": "replacement",
+  "confidence": 0.94,
+  "reasoning": "User is completely replacing content about one topic (deployment meeting) with entirely different topic (unit tests). No continuity between subjects - these are unrelated activities.",
+  "contradictions": [],
+  "additions": [
+    "Unit tests for undo_manager.py",
+    "Undo operations testing",
+    "Redo functionality testing",
+    "Database integration testing",
+    "90% code coverage achieved"
+  ],
+  "removals": [
+    "Infrastructure team meeting",
+    "Deployment architecture discussion"
+  ],
+  "changes": [
+    {
+      "type": "semantic",
+      "description": "Complete topic replacement"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Content is completely different. This should be treated as a new memory, not an update."
+  },
+  "preserve_original": true,
+  "create_version": true
+}
+```
+
+### Example 8: Abstraction
+
+**Original Content:**
+```
+Created audit_logger.py with the following methods:
+- log(operation_type, agent_id, status, details) - Main logging function
+- _write_to_file(log_entry) - Write to log file
+- _write_to_database(log_entry) - Write to PostgreSQL
+- get_recent_logs(limit, agent_id, operation_type) - Query recent logs
+- get_metrics() - Get performance statistics
+- query_logs(start_time, end_time, filters) - Advanced querying
+- cleanup_old_logs(retention_days) - Remove old entries
+```
+
+**Updated Content:**
+```
+Created audit_logger.py module with comprehensive logging capabilities including file and database storage, querying, metrics tracking, and automated cleanup.
+```
+
+**Output:**
+```json
+{
+  "intent": "abstraction",
+  "confidence": 0.91,
+  "reasoning": "User is replacing detailed method-by-method listing with high-level summary. Same fundamental information but presented at abstract level instead of detailed implementation level.",
+  "contradictions": [],
+  "additions": [],
+  "removals": [
+    "Detailed method list with signatures",
+    "Specific method names"
+  ],
+  "changes": [
+    {
+      "type": "semantic",
+      "description": "Converted detailed list to high-level summary"
+    }
+  ],
+  "recommendations": {
+    "action": "replace",
+    "explanation": "Abstract version is more concise. Consider if detailed version needed elsewhere."
+  },
+  "preserve_original": true,
+  "create_version": false
+}
+```
+
+## User Prompt Template
+
+```
+Analyze the intent behind this memory update:
+
+---
+ORIGINAL MEMORY:
+Memory ID: {memory_id}
+Content: {original_content}
+Created: {original_created_at}
+Agent: {original_agent_id}
+---
+
+UPDATED MEMORY:
+Content: {updated_content}
+Updated: {updated_at}
+Agent: {updated_agent_id}
+---
+
+Analysis Parameters:
+- Time Difference: {time_diff} seconds
+- Agent Same: {same_agent}
+- Category: {category}
+
+Determine:
+1. Primary intent (correction, enhancement, update, refactoring, merge, replacement, clarification, abstraction)
+2. Confidence level (0.0 to 1.0)
+3. Detailed reasoning
+4. Any contradictions between old and new
+5. New information added
+6. Information removed
+7. Recommended action (replace, merge, keep_both, version)
+
+Output must be valid JSON.
+```
+
+## Decision Tree for Recommendations
+
+### Should we preserve original?
+
+**Preserve original if:**
+- Intent = replacement (completely different topic)
+- Intent = update (temporal progression, might want history)
+- Significant factual information removed
+- High ambiguity in intent (confidence < 0.7)
+
+### Should we create a version?
+
+**Create version if:**
+- Intent = replacement (new topic)
+- Intent = update (significant status change)
+- Time difference > 1 day
+- Different agents (might represent different perspectives)
+
+### Should we merge?
+
+**Merge if:**
+- Intent = enhancement (adds without removing)
+- Intent = merge (combining related info)
+- Both old and new have unique valuable information
+
+### Should we replace?
+
+**Replace if:**
+- Intent = correction (fixing errors)
+- Intent = clarification (adding precision to vague)
+- Intent = refactoring (improving structure)
+- Intent = abstraction (summarizing)
+- New version supersedes old
+
+## Quality Indicators
+
+Before finalizing:
+1. **Review contradictions** - are there actual conflicts or just additions?
+2. **Check temporal aspect** - is this a progression over time?
+3. **Verify agent** - was this updated by same person who created it?
+4. **Assess information loss** - will replacing lose important details?
+5. **Consider context** - why was the memory updated?
+
+If confidence < 0.7, recommend manual review.

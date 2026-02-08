@@ -1,0 +1,280 @@
+{
+  "_comment": "Enhanced Cognee Automation Configuration",
+  "_version": "1.0.0",
+  "_last_updated": "2026-02-06",
+
+  "auto_memory_capture": {
+    "enabled": false,
+    "_comment": "Automatically capture observations from Claude Code actions",
+    "capture_on": [
+      "code_edit",
+      "file_write",
+      "terminal_command"
+    ],
+    "exclude_patterns": [
+      "*.log",
+      "temp*",
+      "*.tmp",
+      "node_modules/*",
+      ".git/*",
+      "__pycache__/*",
+      "*.pyc",
+      ".env"
+    ],
+    "importance_threshold": 0.3,
+    "_comment_importance": "Minimum importance score (0.0-1.0) to auto-capture",
+    "max_memory_length": 5000,
+    "_comment_max_length": "Maximum character length for auto-captured memories"
+  },
+
+  "auto_events": {
+    "enabled": false,
+    "_comment": "Automatically publish events on memory changes",
+    "batch_events": true,
+    "batch_size": 10,
+    "batch_interval_ms": 1000,
+    "_comment_batch": "Publish events in batches to reduce overhead"
+  },
+
+  "auto_deduplication": {
+    "enabled": false,
+    "_comment": "Scheduled automatic deduplication of memories",
+    "schedule": "weekly",
+    "_comment_schedule": "Options: hourly, daily, weekly, monthly",
+    "day_of_week": 0,
+    "_comment_day": "0=Monday, 6=Sunday (for weekly schedule)",
+    "hour": 2,
+    "_comment_hour": "Hour of day to run (0-23, UTC)",
+    "dry_run_first": true,
+    "_comment_dry_run": "Preview changes before applying",
+    "require_approval": true,
+    "_comment_approval": "Require user approval before applying deduplication",
+    "merge_threshold": 0.95,
+    "_comment_threshold": "Similarity threshold (0.0-1.0) to consider memories duplicate",
+    "min_similarity_score": 0.85
+  },
+
+  "auto_summarization": {
+    "enabled": false,
+    "_comment": "Scheduled automatic summarization of old memories",
+    "schedule": "monthly",
+    "day_of_month": 1,
+    "_comment_day": "Day of month to run monthly summarization",
+    "hour": 3,
+    "age_threshold_days": 30,
+    "_comment_age": "Summarize memories older than this many days",
+    "min_length": 1000,
+    "_comment_length": "Minimum character length to consider for summarization",
+    "preserve_original": true,
+    "_comment_preserve": "Always preserve original content in metadata",
+    "summary_target_ratio": 0.3,
+    "_comment_ratio": "Target summary length as ratio of original (0.0-1.0)"
+  },
+
+  "auto_categorization": {
+    "enabled": false,
+    "_comment": "Automatically categorize memories by content analysis",
+    "method": "keyword",
+    "_comment_method": "Options: keyword, embedding, llm",
+    "categories": {
+      "default": "uncategorized"
+    },
+    "auto_create_categories": true,
+    "_comment_auto": "Create new categories if none match"
+  },
+
+  "auto_sharing": {
+    "enabled": false,
+    "_comment": "Automatically set sharing policies based on content analysis",
+    "default_policy": "private",
+    "_comment_policy": "Options: private, category_shared, agent_shared, public",
+    "smart_keywords": [
+      "team:",
+      "project:",
+      "api-docs:",
+      "shared:",
+      "collaboration:"
+    ],
+    "_comment_keywords": "Keywords that trigger auto-sharing",
+    "require_approval": true,
+    "_comment_approval": "Require user approval for auto-sharing",
+    "user_opt_in": false,
+    "_comment_optin": "User must explicitly opt-in to enable auto-sharing",
+    "notification_on_share": true,
+    "_comment_notify": "Notify user when memories are auto-shared"
+  },
+
+  "auto_cognify": {
+    "enabled": false,
+    "_comment": "Automatically process documents into knowledge graph",
+    "watch_paths": [
+      ".",
+      "./docs",
+      "./knowledge"
+    ],
+    "_comment_watch": "Paths to watch for new documents",
+    "file_extensions": [
+      ".md",
+      ".txt",
+      ".pdf",
+      ".rst",
+      ".docx"
+    ],
+    "min_file_size_kb": 1,
+    "_comment_min_size": "Minimum file size in KB to process",
+    "max_file_size_mb": 10,
+    "_comment_max_size": "Maximum file size in MB to process",
+    "exclude_patterns": [
+      "node_modules/*",
+      ".git/*",
+      "*.log",
+      "dist/*",
+      "build/*"
+    ],
+    "process_on_create": true,
+    "_comment_on_create": "Process file when created",
+    "process_on_modify": false,
+    "_comment_on_modify": "Process file when modified"
+  },
+
+  "auto_updates": {
+    "enabled": false,
+    "_comment": "Smart memory updates with intent detection",
+    "intent_detection_threshold": 0.8,
+    "_comment_threshold": "Confidence threshold for intent detection (0.0-1.0)",
+    "preserve_history": true,
+    "_comment_history": "Preserve update history in metadata",
+    "max_history_entries": 10,
+    "_comment_max_history": "Maximum number of history entries to keep",
+    "merge_strategy": "smart",
+    "_comment_strategy": "Options: replace, append, smart",
+    "conflict_resolution": "most_recent",
+    "_comment_conflict": "Options: most_recent, keep_both, manual"
+  },
+
+  "auto_sync": {
+    "enabled": false,
+    "_comment": "Periodic agent state synchronization",
+    "schedule": "hourly",
+    "_comment_schedule": "Options: every_5min, every_15min, every_30min, hourly, daily",
+    "sync_interval_minutes": 60,
+    "conflict_resolution": "most_recent",
+    "_comment_conflict": "Options: most_recent, keep_both, source_wins, target_wins, manual",
+    "sync_categories": [
+      "shared"
+    ],
+    "_comment_categories": "Categories to sync (empty = all)",
+    "bidirectional": true,
+    "_comment_bi": "Sync in both directions"
+  },
+
+  "audit_logging": {
+    "enabled": true,
+    "_comment": "Audit logging for all automated actions",
+    "log_all_actions": true,
+    "log_to_file": true,
+    "log_file_path": "logs/automation_audit.log",
+    "log_to_database": true,
+    "_comment_db": "Store audit logs in PostgreSQL for analytics",
+    "retention_days": 90,
+    "_comment_retention": "How long to keep audit logs",
+    "include_details": true,
+    "_comment_details": "Include full details (input/output) in logs",
+    "anonymize_sensitive_data": true,
+    "_comment_anonymize": "Anonymize sensitive data in logs"
+  },
+
+  "undo_management": {
+    "enabled": true,
+    "_comment": "Undo mechanism for automated actions",
+    "max_undo_history": 100,
+    "_comment_max": "Maximum number of undo operations to keep",
+    "undo_retention_days": 7,
+    "_comment_undo_retention": "How long to keep undo history",
+    "auto_cleanup": true,
+    "_comment_cleanup": "Automatically clean old undo history",
+    "preserve_originals": true,
+    "_comment_preserve": "Always preserve original data before modifications"
+  },
+
+  "notifications": {
+    "enabled": true,
+    "_comment": "Notification settings for automated actions",
+    "on_automation_success": false,
+    "_comment_success": "Notify on successful automation",
+    "on_automation_failure": true,
+    "_comment_failure": "Notify on automation failures",
+    "on_approval_required": true,
+    "_comment_approval": "Notify when user approval is required",
+    "on_destructive_action": true,
+    "_comment_destructive": "Notify before destructive actions",
+    "notification_channels": [
+      "log",
+      "dashboard"
+    ],
+    "_comment_channels": "Options: log, dashboard, email, webhook",
+    "batch_notifications": true,
+    "_comment_batch": "Batch notifications to reduce noise",
+    "batch_interval_minutes": 5
+  },
+
+  "approval_workflow": {
+    "enabled": true,
+    "_comment": "Approval workflow for automated operations",
+    "require_approval_deduplication": true,
+    "_comment_dedup": "Require approval for auto-deduplication",
+    "require_approval_summarization": false,
+    "_comment_summ": "Require approval for auto-summarization (preserves originals)",
+    "require_approval_deletion": true,
+    "_comment_delete": "Require approval for any deletion operations",
+    "require_approval_sharing": true,
+    "_comment_share": "Require approval for auto-sharing",
+    "approval_timeout_hours": 24,
+    "_comment_timeout": "Auto-reject pending approvals after this many hours",
+    "storage_path": "data/approvals",
+    "_comment_storage": "Path to store approval request data",
+    "auto_approve_safe_operations": true,
+    "_comment_auto": "Auto-approve operations that preserve originals (e.g., summarization)",
+    "max_pending_approvals": 50,
+    "_comment_max_pending": "Maximum pending approvals before queueing new requests"
+  },
+
+  "performance": {
+    "_comment": "Performance tuning settings",
+    "max_concurrent_automations": 5,
+    "_comment_concurrent": "Maximum concurrent automation operations",
+    "queue_size_limit": 100,
+    "_comment_queue": "Maximum queue size for pending automations",
+    "timeout_seconds": 300,
+    "_comment_timeout": "Timeout for automation operations",
+    "retry_attempts": 3,
+    "_comment_retry": "Number of retry attempts for failed operations",
+    "retry_delay_seconds": 5
+  },
+
+  "security": {
+    "_comment": "Security settings for automation",
+    "require_authentication": true,
+    "_comment_auth": "Require authentication for automation actions",
+    "allowed_agents": [],
+    "_comment_agents": "Empty = all agents allowed. Specific agents = whitelist",
+    "blocked_agents": [],
+    "_comment_blocked": "Agents blocked from automation",
+    "rate_limiting_enabled": true,
+    "_comment_rate_limit": "Enable rate limiting for automation",
+    "max_operations_per_hour": 100,
+    "_comment_max_ops": "Maximum automation operations per hour per agent"
+  },
+
+  "development": {
+    "_comment": "Development and debugging settings",
+    "debug_mode": false,
+    "_comment_debug": "Enable debug logging",
+    "dry_run_mode": false,
+    "_comment_dry_run": "Run all automations in dry-run mode (no actual changes)",
+    "verbose_logging": false,
+    "_comment_verbose": "Enable verbose logging",
+    "log_performance_metrics": true,
+    "_comment_perf": "Log performance metrics for analytics"
+  }
+}

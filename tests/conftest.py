@@ -147,7 +147,7 @@ def mock_llm_config() -> dict:
 # Real Database Fixtures (for integration tests)
 # ============================================================================
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def real_postgres_pool():
     """
     Real PostgreSQL connection pool for integration tests
@@ -198,7 +198,7 @@ def real_qdrant_client():
         pytest.skip(f"Qdrant not available: {e}")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def real_redis_client():
     """
     Real Redis client for integration tests

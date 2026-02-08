@@ -9,7 +9,7 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any, Tuple, Set
 from enum import Enum
 from dataclasses import dataclass, field
@@ -474,7 +474,7 @@ class SubAgentCoordinator:
             recent_messages = await self._get_recent_message_activity(hours=1)
 
             return {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "total_agents": len(self.agent_registry),
                 "active_agents": active_agents,
                 "system_avg_load": avg_load,
@@ -500,7 +500,7 @@ class SubAgentCoordinator:
             logger.error(f"Failed to get coordination overview: {e}")
             return {
                 "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(UTC).isoformat()
             }
 
     async def _find_suitable_agents(self, task: AgentTask) -> List[str]:
@@ -628,7 +628,7 @@ class SubAgentCoordinator:
         try:
             # This would query the message history from memory
             # For now, return message queue activity
-            cutoff_time = datetime.utcnow() - timedelta(hours=hours)
+            cutoff_time = datetime.now(UTC) - timedelta(hours=hours)
 
             recent_messages = [
                 {
@@ -713,7 +713,7 @@ async def example_coordination_scenarios():
         assigned_to=[],
         created_by="trading_manager",
         priority=TaskPriority.HIGH,
-        deadline=datetime.utcnow() + timedelta(hours=2)
+        deadline=datetime.now(UTC) + timedelta(hours=2)
     )
 
     success = await coordinator.assign_task(trading_task)

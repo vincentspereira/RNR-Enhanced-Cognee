@@ -5,8 +5,19 @@ Tests complete user workflows from start to finish
 
 import pytest
 import asyncio
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
+
+
+# Helper for async context manager mocking
+def create_mock_acquire_context(mock_conn):
+    """Create a proper async context manager for postgres_pool.acquire()"""
+    class MockAcquireContext:
+        async def __aenter__(self):
+            return mock_conn
+        async def __aexit__(self, *args):
+            pass
+    return MockAcquireContext()
 
 
 # ============================================================================
@@ -38,10 +49,10 @@ class TestMemoryLifecycle:
             "title": "Test Memory",
             "content": "Test content",
             "agent_id": "test-agent",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(UTC)
         })
         mock_conn.fetch = AsyncMock(return_value=[])
-        server.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        server.postgres_pool.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         # 1. Add memory
         add_result = await server.add_memory(
@@ -155,7 +166,7 @@ class TestMemorySharingWorkflow:
             "policy": "shared",
             "allowed_agents": None
         })
-        mock_pg.acquire = AsyncMock(return_value=mock_conn)
+        mock_pg.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         sharing = CrossAgentMemorySharing(mock_pg)
 
@@ -199,7 +210,7 @@ class TestDeduplicationWorkflow:
         mock_pg = AsyncMock()
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)  # No duplicate
-        mock_pg.acquire = AsyncMock(return_value=mock_conn)
+        mock_pg.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         mock_qdrant = Mock()
         mock_qdrant.search = Mock(return_value=[])
@@ -216,7 +227,7 @@ class TestDeduplicationWorkflow:
         # 2. Try to add same content (should detect duplicate)
         mock_conn.fetchrow = AsyncMock(return_value={
             "id": "existing-mem",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(UTC)
         })
 
         check_result2 = await deduplicator.check_duplicate(
@@ -250,7 +261,7 @@ class TestPerformanceMonitoringWorkflow:
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=100)
         mock_conn.fetch = AsyncMock(return_value=[])
-        mock_pg.acquire = AsyncMock(return_value=mock_conn)
+        mock_pg.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         mock_redis = AsyncMock()
         mock_redis.incrbyfloat = AsyncMock(return_value=1.0)
@@ -297,14 +308,18 @@ class TestMemoryManagementWorkflow:
         # Setup
         mock_pg = AsyncMock()
         mock_conn = AsyncMock()
-        mock_conn.fetch = AsyncMock(return_value=[])
-        mock_conn.fetchrow = AsyncMock(return_value={
-            "total_memories": 100,
-            "oldest_memory": datetime.utcnow(),
-            "newest_memory": datetime.utcnow()
-        })
+
+        # Mock fetch for age_distribution query
+        mock_conn.fetch = AsyncMock(return_value=[
+            {"age_bracket": "0-7 days", "count": 10},
+            {"age_bracket": "8-30 days", "count": 20}
+        ])
+
+        # Mock fetchval for total, oldest, newest
+        mock_conn.fetchval = AsyncMock(side_effect=[100, "2026-01-01", "2026-02-01"])
+
         mock_conn.execute = AsyncMock(return_value="UPDATE 1")
-        mock_pg.acquire = AsyncMock(return_value=mock_conn)
+        mock_pg.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         mock_redis = AsyncMock()
         mock_qdrant = Mock()
@@ -313,7 +328,8 @@ class TestMemoryManagementWorkflow:
 
         # 1. Get memory age stats
         stats = await manager.get_memory_stats_by_age()
-        assert stats["status"] == "success"
+        assert "total_memories" in stats
+        assert stats["total_memories"] == 100
 
         # 2. Set TTL for a memory
         mock_conn.fetchval = AsyncMock(return_value="mem-1")
@@ -403,7 +419,7 @@ class TestErrorRecovery:
         server.postgres_pool = AsyncMock()
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock(side_effect=Exception("DB Error"))
-        server.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        server.postgres_pool.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         # Should handle error gracefully
         result = await server.add_memory(content="test", agent_id="test-agent")
@@ -445,7 +461,7 @@ class TestDataConsistency:
         responses = {
             ("INSERT", memory_id): "INSERT 1",
             ("SELECT", memory_id): {"id": memory_id, "content": original_content, "title": "Test",
-                                   "agent_id": "test-agent", "created_at": datetime.utcnow()},
+                                   "agent_id": "test-agent", "created_at": datetime.now(UTC)},
             ("UPDATE", memory_id): "UPDATE 1",
             ("DELETE", memory_id): "DELETE 1"
         }
@@ -455,12 +471,12 @@ class TestDataConsistency:
 
         async def mock_fetchrow(query, *args):
             return {"id": memory_id, "content": original_content, "title": "Test",
-                   "agent_id": "test-agent", "created_at": datetime.utcnow()}
+                   "agent_id": "test-agent", "created_at": datetime.now(UTC)}
 
         mock_conn.execute = mock_execute
         mock_conn.fetchrow = mock_fetchrow
         mock_conn.fetch = AsyncMock(return_value=[])
-        server.postgres_pool.acquire = AsyncMock(return_value=mock_conn)
+        server.postgres_pool.acquire = lambda: create_mock_acquire_context(mock_conn)
 
         # Perform operations
         add_result = await server.add_memory(content=original_content, agent_id="test-agent")

@@ -7,7 +7,7 @@ ATS Category - Core trading engine with market analysis and signal generation
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import AgentMemoryIntegration
 from .ats_memory_wrapper import ATSMemoryWrapper
 
@@ -93,7 +93,7 @@ class AlgorithmicTradingSystem:
             if symbol:
                 self.trading_state["market_data_cache"][symbol] = {
                     "data": market_data,
-                    "timestamp": datetime.utcnow()
+                    "timestamp": datetime.now(UTC)
                 }
 
             # Generate trading signals
@@ -129,13 +129,13 @@ class AlgorithmicTradingSystem:
 
             # Create execution record
             execution = {
-                "execution_id": f"exec_{datetime.utcnow().timestamp()}",
+                "execution_id": f"exec_{datetime.now(UTC).timestamp()}",
                 "symbol": trade_request["symbol"],
                 "quantity": trade_request["quantity"],
                 "order_type": trade_request.get("order_type", "market"),
                 "direction": trade_request["direction"],
                 "status": "pending",
-                "created_at": datetime.utcnow().isoformat()
+                "created_at": datetime.now(UTC).isoformat()
             }
 
             # Store execution request
@@ -178,8 +178,8 @@ class AlgorithmicTradingSystem:
         """
         try:
             risk_assessment = {
-                "assessment_id": f"risk_{datetime.utcnow().timestamp()}",
-                "timestamp": datetime.utcnow().isoformat(),
+                "assessment_id": f"risk_{datetime.now(UTC).timestamp()}",
+                "timestamp": datetime.now(UTC).isoformat(),
                 "portfolio_value": self._calculate_portfolio_value(),
                 "position_count": len(self.trading_state["active_positions"]),
                 "risk_metrics": {
@@ -224,7 +224,7 @@ class AlgorithmicTradingSystem:
                 "active_positions": len(self.trading_state["active_positions"]),
                 "pending_orders": len(self.trading_state["pending_orders"]),
                 "current_signals": len(self.trading_state["current_signals"]),
-                "last_updated": datetime.utcnow().isoformat()
+                "last_updated": datetime.now(UTC).isoformat()
             })
 
             return performance
@@ -272,14 +272,14 @@ class AlgorithmicTradingSystem:
                 confidence = min(abs(price_change) * 10, 1.0)
 
                 return {
-                    "signal_id": f"momentum_{datetime.utcnow().timestamp()}",
+                    "signal_id": f"momentum_{datetime.now(UTC).timestamp()}",
                     "type": "momentum",
                     "symbol": market_data["symbol"],
                     "direction": direction,
                     "strength": "high" if confidence > 0.7 else "medium",
                     "confidence": confidence,
                     "reasoning": f"{'Positive' if price_change > 0 else 'Negative'} momentum detected: {price_change:.2%} change",
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.now(UTC).isoformat()
                 }
 
         return None
@@ -303,14 +303,14 @@ class AlgorithmicTradingSystem:
             confidence = min(abs(deviation) * 5, 1.0)
 
             return {
-                "signal_id": f"mean_rev_{datetime.utcnow().timestamp()}",
+                "signal_id": f"mean_rev_{datetime.now(UTC).timestamp()}",
                 "type": "mean_reversion",
                 "symbol": market_data["symbol"],
                 "direction": direction,
                 "strength": "medium",
                 "confidence": confidence,
                 "reasoning": f"Price {deviation:.2%} from {'above' if direction == 'sell' else 'below'} moving average",
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(UTC).isoformat()
             }
 
         return None
@@ -351,7 +351,7 @@ class AlgorithmicTradingSystem:
             "execution_time": execution_time,
             "slippage": slippage,
             "status": "filled",
-            "executed_at": datetime.utcnow().isoformat()
+            "executed_at": datetime.now(UTC).isoformat()
         }
 
     async def _update_trading_state(self, execution: Dict[str, Any]):
@@ -483,7 +483,7 @@ if __name__ == "__main__":
             "symbol": "AAPL",
             "price": 150.25,
             "volume": 1000000,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "sources": ["market_feed"]
         }
 

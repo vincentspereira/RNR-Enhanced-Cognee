@@ -7,7 +7,7 @@ OMA Category - Code quality analysis and review automation
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import AgentMemoryIntegration
 from .oma_memory_wrapper import OMAMemoryWrapper
 
@@ -83,7 +83,7 @@ class CodeReviewer:
         Review code changes and provide comprehensive analysis
         """
         try:
-            review_id = f"review_{datetime.utcnow().timestamp()}"
+            review_id = f"review_{datetime.now(UTC).timestamp()}"
 
             review_results = {
                 "review_id": review_id,
@@ -92,7 +92,7 @@ class CodeReviewer:
                 "branch": review_request.get("branch"),
                 "commit_hash": review_request.get("commit_hash"),
                 "files_changed": review_request.get("files_changed", []),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "overall_score": 0,
                 "status": "in_progress",
                 "issues_found": [],
@@ -152,13 +152,13 @@ class CodeReviewer:
         Perform comprehensive code quality analysis
         """
         try:
-            analysis_id = f"quality_{datetime.utcnow().timestamp()}"
+            analysis_id = f"quality_{datetime.now(UTC).timestamp()}"
 
             quality_analysis = {
                 "analysis_id": analysis_id,
                 "repository": analysis_request.get("repository"),
                 "scope": analysis_request.get("scope", "full_repository"),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "quality_score": 0,
                 "complexity_analysis": {},
                 "duplication_analysis": {},
@@ -219,13 +219,13 @@ class CodeReviewer:
         Perform security vulnerability scan on code
         """
         try:
-            scan_id = f"security_{datetime.utcnow().timestamp()}"
+            scan_id = f"security_{datetime.now(UTC).timestamp()}"
 
             security_scan = {
                 "scan_id": scan_id,
                 "repository": scan_request.get("repository"),
                 "scan_type": scan_request.get("scan_type", "full"),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "vulnerabilities_found": [],
                 "security_score": 100,  # Start with perfect score
                 "high_risk_issues": [],
@@ -284,7 +284,7 @@ class CodeReviewer:
             review_history = self.review_state.get("review_history", [])
 
             # Filter by date range
-            cutoff_date = datetime.utcnow() - timedelta(days=days_back)
+            cutoff_date = datetime.now(UTC) - timedelta(days=days_back)
             recent_reviews = [
                 review for review in review_history
                 if datetime.fromisoformat(review.get("timestamp", "")) >= cutoff_date

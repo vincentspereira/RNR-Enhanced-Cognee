@@ -8,7 +8,7 @@ Integrates with Sub-Agent Coordinator for distributed execution
 import asyncio
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any, Set, Tuple
 from enum import Enum
 from dataclasses import dataclass, field
@@ -180,7 +180,7 @@ class TaskOrchestrationEngine:
             # Start execution
             workflow.status = WorkflowStatus.ACTIVE
             execution.status = WorkflowStatus.ACTIVE
-            execution.started_at = datetime.utcnow()
+            execution.started_at = datetime.now(UTC)
 
             # Begin task scheduling
             await self._schedule_ready_tasks(execution_id)
@@ -224,10 +224,10 @@ class TaskOrchestrationEngine:
 
             # Estimate completion time
             if execution.started_at and progress > 0:
-                elapsed = datetime.utcnow() - execution.started_at
+                elapsed = datetime.now(UTC) - execution.started_at
                 estimated_total = elapsed / (progress / 100)
                 eta = execution.started_at + estimated_total
-                eta_str = eta.isoformat() if eta > datetime.utcnow() else "Overdue"
+                eta_str = eta.isoformat() if eta > datetime.now(UTC) else "Overdue"
             else:
                 eta_str = "Unknown"
 
@@ -315,7 +315,7 @@ class TaskOrchestrationEngine:
                     task_exec.status = TaskStatus.CANCELLED
 
             execution.status = WorkflowStatus.CANCELLED
-            execution.completed_at = datetime.utcnow()
+            execution.completed_at = datetime.now(UTC)
             await self._store_workflow_execution(execution)
 
             logger.info(f"Cancelled workflow execution: {execution_id}")
@@ -458,7 +458,7 @@ class TaskOrchestrationEngine:
         """Execute a task and monitor its progress"""
         try:
             task_exec.status = TaskStatus.RUNNING
-            task_exec.started_at = datetime.utcnow()
+            task_exec.started_at = datetime.now(UTC)
 
             # Send task assignment message
             message = AgentMessage(
@@ -548,7 +548,7 @@ class TaskOrchestrationEngine:
         """Handle task execution failure"""
         task_exec.status = TaskStatus.FAILED
         task_exec.error_message = error_message
-        task_exec.completed_at = datetime.utcnow()
+        task_exec.completed_at = datetime.now(UTC)
 
         # Update workflow execution
         execution = self.workflow_executions.get(task_exec.workflow_id)
@@ -559,7 +559,7 @@ class TaskOrchestrationEngine:
             workflow = self.workflows.get(execution.workflow_id)
             if workflow and await self._should_fail_workflow(execution):
                 execution.status = WorkflowStatus.FAILED
-                execution.completed_at = datetime.utcnow()
+                execution.completed_at = datetime.now(UTC)
 
         logger.error(f"Task failed: {task_exec.execution_id} - {error_message}")
 
@@ -596,7 +596,7 @@ class TaskOrchestrationEngine:
     async def _cancel_task_execution(self, task_exec: TaskExecution):
         """Cancel a task execution"""
         task_exec.status = TaskStatus.CANCELLED
-        task_exec.completed_at = datetime.utcnow()
+        task_exec.completed_at = datetime.now(UTC)
         # Send cancel message to assigned agents
         await self._send_task_control_message(task_exec, "cancel")
 

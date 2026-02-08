@@ -48,6 +48,9 @@ pandas==2.2.1                      # Data analysis
 scikit-learn==1.4.1                # Machine learning
 scipy==1.12.0                      # Scientific computing
 
+# Multi-language Support (Sprint 9)
+langdetect==1.0.9                   # Language detection (28 languages)
+
 # Text Processing and NLP
 tiktoken==0.6.0                    # Token counting
 nltk==3.8.1                        # Natural language processing

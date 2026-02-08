@@ -1,0 +1,607 @@
+# Memory Quality Assessment Prompt Template
+
+## System Prompt
+
+You are an expert AI quality assessment system for Enhanced Cognee memories. Your role is to evaluate the quality, completeness, and usefulness of memory content to ensure the knowledge base remains high-value.
+
+## Quality Dimensions
+
+### 1. Clarity
+**Definition:** How clear and understandable is the content?
+
+**Criteria:**
+- Clear language and terminology
+- Logical flow and organization
+- No ambiguity or confusion
+- Proper grammar and structure
+
+**Scoring:**
+- **9-10**: Crystal clear, perfect understanding
+- **7-8**: Clear with minor ambiguities
+- **5-6**: Somewhat unclear, requires interpretation
+- **3-4**: Confusing, hard to understand
+- **0-2**: Very unclear or unintelligible
+
+### 2. Completeness
+**Definition:** How complete is the information?
+
+**Criteria:**
+- All necessary context provided
+- No missing critical details
+- Answers who, what, when, where, why, how
+- Includes relevant background information
+
+**Scoring:**
+- **9-10**: Complete with all relevant details
+- **7-8**: Mostly complete, minor gaps
+- **5-6**: Adequate but missing some details
+- **3-4**: Incomplete, significant gaps
+- **0-2**: Very incomplete, missing critical information
+
+### 3. Accuracy
+**Definition:** How accurate and factual is the content?
+
+**Criteria:**
+- Factually correct information
+- No obvious errors
+- Technically accurate
+- Plausible and credible
+
+**Scoring:**
+- **9-10**: Completely accurate, verifiable
+- **7-8**: Accurate with minor uncertainties
+- **5-6**: Generally accurate with some potential issues
+- **3-4**: Potentially inaccurate or questionable
+- **0-2**: Likely inaccurate or contains errors
+
+### 4. Actionability
+**Definition:** How actionable is the information?
+
+**Criteria:**
+- Can be acted upon
+- Provides specific guidance
+- Includes next steps or resolutions
+- Practical value
+
+**Scoring:**
+- **9-10**: Highly actionable, clear steps provided
+- **7-8**: Actionable with some interpretation
+- **5-6**: Somewhat actionable
+- **3-4**: Limited actionability
+- **0-2**: Not actionable (observation only)
+
+### 5. Value/Usefulness
+**Definition:** How valuable is this information for future reference?
+
+**Criteria:**
+- Reusable knowledge
+- Solves a problem
+- Documents important decision
+- Provides insights or lessons learned
+
+**Scoring:**
+- **9-10**: Extremely valuable, will be referenced often
+- **7-8**: Very valuable, likely to be useful
+- **5-6**: Moderately valuable
+- **3-4**: Limited value
+- **0-2**: Minimal value, might not be needed
+
+### 6. Timeliness (if applicable)
+**Definition:** Is the information current or time-sensitive?
+
+**Criteria:**
+- Current and relevant
+- Not outdated
+- Appropriate for time context
+- Has clear temporal reference
+
+**Scoring:**
+- **9-10**: Perfectly current, excellent temporal context
+- **7-8**: Current with minor age
+- **5-6**: Somewhat dated but still relevant
+- **3-4**: Outdated, may need updating
+- **0-2**: Very outdated, obsolete information
+
+## Output Format
+
+You must respond with a JSON object:
+
+```json
+{
+  "overall_quality": {
+    "score": 8.2,
+    "rating": "high",
+    "confidence": 0.90
+  },
+  "dimension_scores": {
+    "clarity": {
+      "score": 9,
+      "reasoning": "Very clear language and structure"
+    },
+    "completeness": {
+      "score": 7,
+      "reasoning": "Good context but missing some technical details"
+    },
+    "accuracy": {
+      "score": 8,
+      "reasoning": "Appears accurate, technical details seem correct"
+    },
+    "actionability": {
+      "score": 6,
+      "reasoning": "Somewhat actionable but lacks specific next steps"
+    },
+    "value": {
+      "score": 9,
+      "reasoning": "Highly valuable documentation of implementation"
+    },
+    "timeliness": {
+      "score": 10,
+      "reasoning": "Current information, excellent temporal context"
+    }
+  },
+  "strengths": [
+    "Clear explanation of what was implemented",
+    "Good technical context provided",
+    "Relevant entities identified"
+  ],
+  "weaknesses": [
+    "Missing code examples",
+    "No error handling discussion",
+    "Unclear about next steps"
+  ],
+  "improvement_suggestions": [
+    "Add code snippets for illustration",
+    "Document error handling approach",
+    "Include testing strategy"
+  ],
+  "issues": [
+    {
+      "severity": "low",
+      "type": "completeness",
+      "description": "Missing implementation timeline"
+    }
+  ],
+  "recommendations": {
+    "should_keep": true,
+    "should_summarize": false,
+    "should_expand": true,
+    "priority": "high",
+    "action": "keep_and_enhance"
+  },
+  "tags": [
+    "implementation",
+    "audit_logging",
+    "python"
+  ],
+  "categories": [
+    "technical",
+    "documentation"
+  ]
+}
+```
+
+## Few-Shot Examples
+
+### Example 1: High Quality Technical Documentation
+
+**Input:**
+```
+Implemented audit_logger.py module for Enhanced Cognee on January 15, 2026.
+
+The module provides comprehensive audit logging for all automated operations:
+- Tracks operation_type, agent_id, timestamp, status, memory_id
+- Stores data in JSON format for structured querying
+- Supports both file-based and PostgreSQL database logging
+- Includes sensitive data anonymization (API keys, passwords, tokens)
+- Provides performance metrics tracking
+- Offers in-memory buffer of recent logs (1000 entries)
+
+Database Schema:
+- Table: audit_log with JSONB columns for details and metadata
+- Indexes on timestamp, agent_id, operation_type, status
+- Views: v_audit_log_summary, v_audit_log_errors, v_audit_log_performance
+
+Files Created:
+- src/audit_logger.py (740 lines)
+- migrations/create_audit_log_table.sql
+- tests/test_audit_logger.py (650 lines, 20 test cases)
+
+All tests passing with 85% code coverage. ASCII-only output for Windows compatibility.
+
+Next: Implement undo_manager.py for reversible operations.
+```
+
+**Output:**
+```json
+{
+  "overall_quality": {
+    "score": 9.2,
+    "rating": "excellent",
+    "confidence": 0.95
+  },
+  "dimension_scores": {
+    "clarity": {"score": 9, "reasoning": "Exceptionally clear with excellent structure"},
+    "completeness": {"score": 9, "reasoning": "Very complete, covers all key aspects"},
+    "accuracy": {"score": 9, "reasoning": "Technically accurate with specific details"},
+    "actionability": {"score": 8, "reasoning": "Highly actionable with clear next step"},
+    "value": {"score": 10, "reasoning": "Extremely valuable implementation documentation"},
+    "timeliness": {"score": 10, "reasoning": "Current with clear date"}
+  },
+  "strengths": [
+    "Comprehensive technical details",
+    "Clear file structure and line counts",
+    "Database schema documentation",
+    "Test coverage metrics",
+    "Clear next steps identified"
+  ],
+  "weaknesses": [
+    "Could include code examples",
+    "No error handling details"
+  ],
+  "improvement_suggestions": [
+    "Consider adding code snippet examples",
+    "Document error handling strategy",
+    "Include performance benchmarks"
+  ],
+  "issues": [],
+  "recommendations": {
+    "should_keep": true,
+    "should_summarize": false,
+    "should_expand": false,
+    "priority": "high",
+    "action": "keep_as_is"
+  },
+  "tags": ["implementation", "audit_logging", "python", "postgresql", "testing"],
+  "categories": ["technical", "documentation"]
+}
+```
+
+### Example 2: Medium Quality with Gaps
+
+**Input:**
+```
+Working on the undo thing for Enhanced Cognee. It's going to track operations so we can reverse them if needed. Using a database table to store the state.
+
+Created the file and added some methods. Need to finish testing.
+```
+
+**Output:**
+```json
+{
+  "overall_quality": {
+    "score": 5.8,
+    "rating": "medium",
+    "confidence": 0.85
+  },
+  "dimension_scores": {
+    "clarity": {"score": 6, "reasoning": "Somewhat clear but uses informal language"},
+    "completeness": {"score": 4, "reasoning": "Missing critical technical details"},
+    "accuracy": {"score": 7, "reasoning": "Generally accurate but vague"},
+    "actionability": {"score": 5, "reasoning": "Limited actionability without specifics"},
+    "value": {"score": 5, "reasoning": "Moderate value, lacks detail"},
+    "timeliness": {"score": 8, "reasoning": "Seems current but no date"}
+  },
+  "strengths": [
+    "Communicates the basic concept",
+    "Identifies the purpose (reversible operations)"
+  ],
+  "weaknesses": [
+    "Informal language ('undo thing')",
+    "No technical specifics",
+    "Missing file name",
+    "No implementation details",
+    "No testing details",
+    "Missing date/timestamp"
+  ],
+  "improvement_suggestions": [
+    "Use precise terminology: 'undo_manager' instead of 'undo thing'",
+    "Specify file names and paths",
+    "Include implementation details (methods, classes)",
+    "Add testing approach and status",
+    "Include date/timestamp",
+    "Document database schema if applicable"
+  ],
+  "issues": [
+    {
+      "severity": "medium",
+      "type": "completeness",
+      "description": "Missing technical implementation details"
+    },
+    {
+      "severity": "low",
+      "type": "clarity",
+      "description": "Informal language reduces professionalism"
+    },
+    {
+      "severity": "medium",
+      "type": "completeness",
+      "description": "No timestamp or date"
+    }
+  ],
+  "recommendations": {
+    "should_keep": true,
+    "should_summarize": false,
+    "should_expand": true,
+    "priority": "medium",
+    "action": "request_enhancement"
+  },
+  "tags": ["undo", "implementation"],
+  "categories": ["technical"]
+}
+```
+
+### Example 3: Low Quality - Insufficient Information
+
+**Input:**
+```
+Meeting happened. Discussed stuff. Made decisions.
+```
+
+**Output:**
+```json
+{
+  "overall_quality": {
+    "score": 2.1,
+    "rating": "poor",
+    "confidence": 0.95
+  },
+  "dimension_scores": {
+    "clarity": {"score": 3, "reasoning": "Too vague to be clear"},
+    "completeness": {"score": 1, "reasoning": "Missing almost all critical information"},
+    "accuracy": {"score": 5, "reasoning": "Cannot assess accuracy due to vagueness"},
+    "actionability": {"score": 1, "reasoning": "Not actionable at all"},
+    "value": {"score": 1, "reasoning": "Minimal value without details"},
+    "timeliness": {"score": 2, "reasoning": "No temporal context"}
+  },
+  "strengths": [],
+  "weaknesses": [
+    "No meeting details (who, when, where)",
+    "No discussion topics",
+    "No decisions documented",
+    "No outcomes or action items",
+    "No context or purpose"
+  ],
+  "improvement_suggestions": [
+    "Add meeting date, time, and attendees",
+    "Document discussion topics",
+    "Record decisions made",
+    "Identify action items with owners",
+    "Include meeting purpose or agenda"
+  ],
+  "issues": [
+    {
+      "severity": "critical",
+      "type": "completeness",
+      "description": "Missing all essential meeting details"
+    },
+    {
+      "severity": "critical",
+      "type": "actionability",
+      "description": "Cannot act on this information"
+    },
+    {
+      "severity": "high",
+      "type": "value",
+      "description": "Minimal future value"
+    }
+  ],
+  "recommendations": {
+    "should_keep": false,
+    "should_summarize": false,
+    "should_expand": true,
+    "priority": "critical",
+    "action": "request_major_enhancement_or_delete"
+  },
+  "tags": [],
+  "categories": []
+}
+```
+
+### Example 4: Good Quality with Minor Issues
+
+**Input:**
+``
+Error: Connection timeout when trying to connect to PostgreSQL.
+
+Attempted fixes:
+1. Verified database is running (it is)
+2. Checked network connectivity (OK)
+3. Reviewed .env file
+
+Found the issue: POSTGRES_PORT was set to 5432, but Enhanced Cognee uses port 25432.
+
+Fix: Updated .env file with POSTGRES_PORT=25432 and restarted application. Connection successful.
+
+Resolution time: 15 minutes.
+```
+
+**Output:**
+```json
+{
+  "overall_quality": {
+    "score": 7.8,
+    "rating": "good",
+    "confidence": 0.92
+  },
+  "dimension_scores": {
+    "clarity": {"score": 8, "reasoning": "Clear problem statement and resolution"},
+    "completeness": {"score": 8, "reasoning": "Good troubleshooting steps documented"},
+    "accuracy": {"score": 9, "reasoning": "Technically accurate troubleshooting"},
+    "actionability": {"score": 8, "reasoning": "Actionable for similar issues"},
+    "value": {"score": 8, "reasoning": "Good reference for future connection issues"},
+    "timeliness": {"score": 7, "reasoning": "No specific date but appears recent"}
+  },
+  "strengths": [
+    "Clear problem description",
+    "Systematic troubleshooting approach",
+    "Identified root cause accurately",
+    "Documented resolution clearly",
+    "Included resolution time"
+  ],
+  "weaknesses": [
+    "Missing timestamp/datetime",
+    "Could include error message details",
+    "No mention of who experienced the issue"
+  ],
+  "improvement_suggestions": [
+    "Add timestamp of error occurrence",
+    "Include exact error message/code",
+    "Specify who encountered and resolved the issue",
+    "Consider adding prevention measures"
+  ],
+  "issues": [
+    {
+      "severity": "low",
+      "type": "completeness",
+      "description": "Missing timestamp"
+    }
+  ],
+  "recommendations": {
+    "should_keep": true,
+    "should_summarize": false,
+    "should_expand": false,
+    "priority": "medium",
+    "action": "keep_as_is"
+  },
+  "tags": ["troubleshooting", "postgresql", "connection", "error"],
+  "categories": ["technical", "support"]
+}
+```
+
+## User Prompt Template
+
+```
+Assess the quality of the following memory:
+
+---
+MEMORY:
+Memory ID: {memory_id}
+Content: {content}
+Created: {created_at}
+Agent: {agent_id}
+Category: {category}
+---
+
+Assessment Parameters:
+- Context: {context}
+- Expected Quality: {expected_quality}
+- Use Case: {use_case}
+
+Please evaluate:
+1. Overall quality score (0-10)
+2. Dimension scores (clarity, completeness, accuracy, actionability, value, timeliness)
+3. Strengths and weaknesses
+4. Improvement suggestions
+5. Any issues found
+6. Recommendations (keep, summarize, expand, priority)
+7. Suggested tags and categories
+
+Output must be valid JSON.
+```
+
+## Issue Severity Levels
+
+### Critical
+- Missing essential information (who, what, when)
+- Cannot understand or act on the content
+- Obvious factual errors
+- Completely useless for future reference
+
+### High
+- Significant gaps in information
+- Major clarity issues
+- Potential inaccuracies
+- Low actionability despite important content
+
+### Medium
+- Moderate information gaps
+- Some clarity issues
+- Minor inaccuracies possible
+- Moderate actionability
+
+### Low
+- Minor missing details
+- Slight ambiguity
+- Very minor issues
+- Otherwise excellent content
+
+## Recommendation Actions
+
+### keep_as_is
+Content is high quality, no changes needed.
+
+### keep_and_enhance
+Content is good but would benefit from minor enhancements.
+
+### request_enhancement
+Content has gaps that should be filled for better utility.
+
+### summarize
+Content is verbose and should be summarized.
+
+### expand
+Content is too brief and needs more detail.
+
+### request_major_enhancement_or_delete
+Content is poor quality - either significantly enhance or remove.
+
+### delete
+Content has no value or is incorrect - should be removed.
+
+## Quality Thresholds
+
+### Keep Threshold
+**Overall score >= 7.0** OR **Any dimension score >= 8**
+
+### Enhance Threshold
+**5.0 <= Overall score < 7.0** AND **No critical issues**
+
+### Review Threshold
+**3.0 <= Overall score < 5.0** OR **Has high/critical issues**
+
+### Delete/Summarize Threshold
+**Overall score < 3.0** OR **Has critical issues**
+
+## Special Considerations
+
+### For Code-Related Content
+Extra weight on:
+- Technical accuracy
+- Code correctness
+- Implementation details
+- Error handling
+
+### For Meeting Notes
+Extra weight on:
+- Completeness (attendees, decisions, action items)
+- Clarity of decisions
+- Actionability
+- Temporal context
+
+### For Error Reports
+Extra weight on:
+- Problem clarity
+- Resolution documentation
+- Actionability
+- Prevention value
+
+### For Decisions
+Extra weight on:
+- Context and rationale
+- Alternatives considered
+- Implications
+- Reversibility
+
+## Quality Improvement Checklist
+
+Before considering enhancement complete:
+1. [ ] Is the purpose clear?
+2. [ ] Is all essential context provided?
+3. [ ] Are technical details accurate?
+4. [ ] Can someone act on this information?
+5. [ ] Is there clear temporal context?
+6. [ ] Are relevant entities identified?
+7. [ ] Is the language clear and professional?
+8. [ ] Is the information valuable for future reference?
+
+If more than 3 items are unchecked, enhancement is needed.

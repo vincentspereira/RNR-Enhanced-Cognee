@@ -9,7 +9,7 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any, Tuple, Set
 from enum import Enum
 from dataclasses import dataclass, field
@@ -148,7 +148,7 @@ class DistributedDecisionMaker:
             decision = Decision(
                 decision_id=str(uuid.uuid4()),
                 proposal=proposal,
-                created_at=datetime.utcnow()
+                created_at=datetime.now(UTC)
             )
 
             # Store decision
@@ -222,7 +222,7 @@ class DistributedDecisionMaker:
                 "agent_id": agent_id,
                 "message": message,
                 "message_type": message_type,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(UTC).isoformat()
             }
 
             decision.debate_messages.append(debate_message)
@@ -258,7 +258,7 @@ class DistributedDecisionMaker:
             # Check if voting deadline has passed
             deadline_passed = False
             if decision.proposal.voting_deadline:
-                deadline_passed = datetime.utcnow() > decision.proposal.voting_deadline
+                deadline_passed = datetime.now(UTC) > decision.proposal.voting_deadline
 
             return {
                 "decision_id": decision_id,
@@ -294,7 +294,7 @@ class DistributedDecisionMaker:
                 return False
 
             decision.status = DecisionStatus.CANCELLED
-            decision.completed_at = datetime.utcnow()
+            decision.completed_at = datetime.now(UTC)
 
             # Move to history
             self.decision_history.append(decision)
@@ -355,7 +355,7 @@ class DistributedDecisionMaker:
             return False
 
         # Check voting deadline
-        if proposal.voting_deadline and proposal.voting_deadline <= datetime.utcnow():
+        if proposal.voting_deadline and proposal.voting_deadline <= datetime.now(UTC):
             logger.error("Voting deadline must be in the future")
             return False
 
@@ -377,7 +377,7 @@ class DistributedDecisionMaker:
             return False
 
         # Check voting deadline
-        if decision.proposal.voting_deadline and datetime.utcnow() > decision.proposal.voting_deadline:
+        if decision.proposal.voting_deadline and datetime.now(UTC) > decision.proposal.voting_deadline:
             return False
 
         return True
@@ -421,7 +421,7 @@ class DistributedDecisionMaker:
             return False
 
         # Check if voting deadline has passed
-        if decision.proposal.voting_deadline and datetime.utcnow() > decision.proposal.voting_deadline:
+        if decision.proposal.voting_deadline and datetime.now(UTC) > decision.proposal.voting_deadline:
             return True
 
         # Check if consensus is already reached
@@ -472,7 +472,7 @@ class DistributedDecisionMaker:
             else:
                 decision.status = DecisionStatus.CONSENSUS_FAILED
 
-            decision.completed_at = datetime.utcnow()
+            decision.completed_at = datetime.now(UTC)
 
             # Move to history
             self.decision_history.append(decision)
@@ -652,7 +652,7 @@ class DistributedDecisionMaker:
             "decision_id": decision.decision_id,
             "implementation_status": "planned",
             "assigned_to": "task_scheduler",
-            "estimated_completion": datetime.utcnow() + timedelta(hours=1),
+            "estimated_completion": datetime.now(UTC) + timedelta(hours=1),
             "implementation_steps": await self._generate_implementation_steps(decision)
         }
 
@@ -863,7 +863,7 @@ async def example_decision_scenarios():
             "risk-management",
             "portfolio-optimizer"
         ],
-        voting_deadline=datetime.utcnow() + timedelta(hours=2),
+        voting_deadline=datetime.now(UTC) + timedelta(hours=2),
         consensus_threshold=0.8
     )
 

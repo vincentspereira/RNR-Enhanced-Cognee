@@ -1,0 +1,211 @@
+version: '3.8'
+
+# Enhanced Cognee Dashboard - Complete Stack
+# Includes: Databases (PostgreSQL, Qdrant, Neo4j, Redis) + Dashboard (Next.js) + Backend API (FastAPI)
+
+networks:
+  cognee-network:
+    driver: bridge
+    attachable: true
+
+volumes:
+  postgres_data:
+    driver: local
+  qdrant_storage:
+    driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  neo4j_import:
+    driver: local
+  redis_data:
+    driver: local
+
+services:
+  # PostgreSQL 18 + pgVector - Enhanced Relational Database
+  postgres:
+    image: pgvector/pgvector:pg18
+    container_name: postgres-enhanced-cognee
+    environment:
+      POSTGRES_DB: cognee_db
+      POSTGRES_USER: cognee_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cognee_password}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_SHARED_PRELOAD_LIBRARIES: "vector"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../../migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "25432:5432"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cognee_user -d cognee_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Qdrant - High-Performance Vector Database
+  qdrant:
+    image: qdrant/qdrant:v1.13.0
+    container_name: qdrant-enhanced-cognee
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    ports:
+      - "26333:6333"
+      - "26334:6334"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Neo4j 5.25 - Graph Database
+  neo4j:
+    image: neo4j:5.25.0-community
+    container_name: neo4j-enhanced-cognee
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-cognee_password}
+      NEO4J_dbms_default__database: enhanced_cognee
+      NEO4J_dbms_memory_heap_initial__size: 512m
+      NEO4J_dbms_memory_heap_max__size: 1G
+      NEO4J_dbms_memory_pagecache_size: 512m
+      NEO4J_dbms_connector_bolt_advertised__address: :27687
+      NEO4J_dbms_connector_http_advertised__address: :27474
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+    ports:
+      - "27474:7474"
+      - "27687:7687"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis 7 - High-Speed Cache
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis-enhanced-cognee
+    command: >
+      redis-server
+      --port 6379
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "26379:6379"
+    networks:
+      - cognee-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # FastAPI Backend - Dashboard REST API
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: enhanced-cognee-api
+    environment:
+      # Database connections (internal Docker network)
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: cognee_db
+      POSTGRES_USER: cognee_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cognee_password}
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cognee_password}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # API configuration
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:9050,http://localhost:8000}
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-change-in-production}
+      API_KEY: ${API_KEY:-your-api-key-change-in-production}
+    ports:
+      - "8000:8000"
+    networks:
+      - cognee-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Next.js Dashboard - Frontend
+  dashboard:
+    build:
+      context: ./nextjs-dashboard
+      dockerfile: Dockerfile
+    container_name: enhanced-cognee-dashboard
+    environment:
+      # API URL (internal Docker network)
+      NEXT_PUBLIC_API_URL: http://backend-api:8000
+      NEXT_PUBLIC_APP_URL: ${APP_URL:-http://localhost:9050}
+      # Feature flags
+      NEXT_PUBLIC_ENABLE_GRAPH: "true"
+      NEXT_PUBLIC_ENABLE_TIMELINE: "true"
+      NEXT_PUBLIC_ENABLE_ANALYTICS: "true"
+      # Build-time optimizations
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "9050:9050"
+    networks:
+      - cognee-network
+    depends_on:
+      - backend-api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9050"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: enhanced-cognee-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - cognee-network
+    depends_on:
+      - dashboard
+      - backend-api
+    restart: unless-stopped
+    profiles:
+      - production

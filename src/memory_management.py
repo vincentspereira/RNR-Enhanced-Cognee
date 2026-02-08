@@ -163,6 +163,7 @@ class MemoryManager:
                 newest = await conn.fetchval("SELECT MAX(created_at) FROM shared_memory.documents")
 
                 return {
+                    "status": "success",
                     "total_memories": total,
                     "oldest_memory": str(oldest) if oldest else None,
                     "newest_memory": str(newest) if newest else None,

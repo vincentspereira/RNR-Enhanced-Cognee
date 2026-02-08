@@ -1,0 +1,40 @@
+{
+  "tasks": {
+    "cleanup_expired_memories": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "description": "Delete memories older than 90 days",
+      "age_days": 90
+    },
+    "archive_old_sessions": {
+      "enabled": true,
+      "schedule": "0 3 * * 0",
+      "description": "Archive sessions older than 365 days",
+      "age_days": 365
+    },
+    "optimize_indexes": {
+      "enabled": true,
+      "schedule": "0 4 * * *",
+      "description": "Optimize database indexes"
+    },
+    "clear_cache": {
+      "enabled": true,
+      "schedule": "0 5 * * *",
+      "description": "Clear Redis cache"
+    },
+    "backup_verification": {
+      "enabled": true,
+      "schedule": "0 6 * * *",
+      "description": "Verify backup integrity"
+    }
+  },
+  "notifications": {
+    "enabled": false,
+    "on_failure": true,
+    "on_success": false
+  },
+  "retention": {
+    "task_history_days": 30,
+    "execution_logs_days": 7
+  }
+}

@@ -7,7 +7,7 @@ SMC Category - Context sharing and session management across agents
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from ...agent_memory_integration import AgentMemoryIntegration
 from .smc_memory_wrapper import SMCMemoryWrapper
 
@@ -83,7 +83,7 @@ class ContextManager:
         Create a new context session
         """
         try:
-            session_id = session_request.get("session_id") or f"session_{datetime.utcnow().timestamp()}"
+            session_id = session_request.get("session_id") or f"session_{datetime.now(UTC).timestamp()}"
             user_id = session_request.get("user_id")
             agent_id = session_request.get("agent_id")
 
@@ -95,9 +95,9 @@ class ContextManager:
                 "session_id": session_id,
                 "user_id": user_id,
                 "agent_id": agent_id,
-                "created_at": datetime.utcnow(),
-                "last_accessed": datetime.utcnow(),
-                "expires_at": datetime.utcnow() + timedelta(hours=self.context_settings["session_timeout_hours"]),
+                "created_at": datetime.now(UTC),
+                "last_accessed": datetime.now(UTC),
+                "expires_at": datetime.now(UTC) + timedelta(hours=self.context_settings["session_timeout_hours"]),
                 "status": "active",
                 "context_data": session_request.get("initial_context", {}),
                 "participants": [agent_id] if agent_id else [],
@@ -154,7 +154,7 @@ class ContextManager:
 
             # Update session context
             session["context_data"].update(context_data)
-            session["last_accessed"] = datetime.utcnow()
+            session["last_accessed"] = datetime.now(UTC)
 
             # Update agent-specific context if provided
             if agent_id:
@@ -230,7 +230,7 @@ class ContextManager:
                 result["shared_context"] = self.context_state["shared_contexts"][session_id]
 
             # Update last accessed time
-            session["last_accessed"] = datetime.utcnow()
+            session["last_accessed"] = datetime.now(UTC)
 
             logger.info(f"Retrieved context for session {session_id}")
 
@@ -266,7 +266,7 @@ class ContextManager:
                 "to_agents": to_agents,
                 "share_type": share_type,
                 "context_data": context_data,
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(UTC),
                 "shared": False
             }
 
@@ -289,7 +289,7 @@ class ContextManager:
             if session_id not in self.context_state["shared_contexts"]:
                 self.context_state["shared_contexts"][session_id] = {}
 
-            self.context_state["shared_contexts"][session_id][f"{from_agent}_{datetime.utcnow().timestamp()}"] = shared_context
+            self.context_state["shared_contexts"][session_id][f"{from_agent}_{datetime.now(UTC).timestamp()}"] = shared_context
 
             # Notify target agents
             await self._notify_agents_of_shared_context(shared_context)
@@ -327,11 +327,11 @@ class ContextManager:
 
             # Create snapshot
             snapshot = {
-                "snapshot_id": f"snapshot_{datetime.utcnow().timestamp()}",
+                "snapshot_id": f"snapshot_{datetime.now(UTC).timestamp()}",
                 "session_id": session_id,
                 "name": snapshot_name,
                 "description": description,
-                "created_at": datetime.utcnow(),
+                "created_at": datetime.now(UTC),
                 "session_context": session["context_data"].copy(),
                 "agent_contexts": self.context_state["agent_contexts"].get(session_id, {}).copy(),
                 "shared_contexts": self.context_state["shared_contexts"].get(session_id, {}).copy(),
@@ -400,13 +400,13 @@ class ContextManager:
             # Backup current state before restore
             backup_snapshot_id = await self.create_context_snapshot({
                 "session_id": session_id,
-                "snapshot_name": f"backup_before_restore_{datetime.utcnow().timestamp()}",
+                "snapshot_name": f"backup_before_restore_{datetime.now(UTC).timestamp()}",
                 "description": "Automatic backup before context restore"
             })
 
             # Restore context
             session["context_data"] = snapshot["session_context"].copy()
-            session["last_accessed"] = datetime.utcnow()
+            session["last_accessed"] = datetime.now(UTC)
 
             # Restore agent contexts
             self.context_state["agent_contexts"][session_id] = snapshot["agent_contexts"].copy()
@@ -422,7 +422,7 @@ class ContextManager:
                     "session_id": session_id,
                     "snapshot_id": snapshot_id,
                     "backup_snapshot_id": backup_snapshot_id.get("snapshot_id"),
-                    "restored_at": datetime.utcnow().isoformat()
+                    "restored_at": datetime.now(UTC).isoformat()
                 },
                 ttl_hours=self.context_settings["context_retention_days"] * 24,
                 metadata={"category": "context_restore"}
@@ -435,7 +435,7 @@ class ContextManager:
                 "snapshot_id": snapshot_id,
                 "backup_snapshot_id": backup_snapshot_id.get("snapshot_id"),
                 "status": "restored",
-                "restored_at": datetime.utcnow().isoformat()
+                "restored_at": datetime.now(UTC).isoformat()
             }
 
         except Exception as e:
@@ -447,7 +447,7 @@ class ContextManager:
         Clean up expired sessions and contexts
         """
         try:
-            current_time = datetime.utcnow()
+            current_time = datetime.now(UTC)
             expired_sessions = []
             cleaned_contexts = 0
 
@@ -496,7 +496,7 @@ class ContextManager:
         Get context management statistics
         """
         try:
-            current_time = datetime.utcnow()
+            current_time = datetime.now(UTC)
 
             # Calculate statistics
             active_sessions = len(self.context_state["active_sessions"])
@@ -547,7 +547,7 @@ class ContextManager:
             "session_id": session_id,
             "agent_id": agent_id,
             "context_data": context_data,
-            "timestamp": datetime.utcnow()
+            "timestamp": datetime.now(UTC)
         }
         self.context_state["sync_queue"].append(sync_item)
 
@@ -577,7 +577,7 @@ class ContextManager:
 
         for to_agent in shared_context["to_agents"]:
             notification = AgentMessage(
-                message_id=f"ctx_notify_{datetime.utcnow().timestamp()}",
+                message_id=f"ctx_notify_{datetime.now(UTC).timestamp()}",
                 from_agent=self.agent_config["agent_id"],
                 to_agent=to_agent,
                 message_type=MessageType.NOTIFICATION,

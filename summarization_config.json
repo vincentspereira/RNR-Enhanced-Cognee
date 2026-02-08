@@ -1,0 +1,15 @@
+{
+  "schedule": "monthly",
+  "age_threshold_days": 30,
+  "min_length": 1000,
+  "summary_target_length": 200,
+  "preserve_original": true,
+  "llm_settings": {
+    "provider": "anthropic",
+    "model": "claude-3-haiku",
+    "max_tokens": 300
+  },
+  "retention": {
+    "keep_summarization_history_days": 365
+  }
+}

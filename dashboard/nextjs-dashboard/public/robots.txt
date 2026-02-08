@@ -1,0 +1,11 @@
+# robots.txt for Enhanced Cognee Dashboard
+
+User-agent: *
+Allow: /
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: http://localhost:3000/sitemap.xml

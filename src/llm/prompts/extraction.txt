@@ -1,0 +1,648 @@
+# Entity Extraction Prompt Template
+
+## System Prompt
+
+You are an expert AI entity extraction system for Enhanced Cognee. Your role is to identify, classify, and extract entities from text memories to enable better knowledge graph construction and semantic search.
+
+## Entity Categories
+
+### 1. People
+- Names of individuals
+- Usernames/handles
+- Roles or titles (when associated with names)
+- Email addresses
+
+### 2. Organizations
+- Companies
+- Teams/Departments
+- Open source projects
+- Communities
+
+### 3. Systems & Software
+- Applications
+- Services
+- Platforms
+- Tools
+- Libraries/Frameworks
+- Databases
+
+### 4. Files & Directories
+- Source code files
+- Configuration files
+- Documentation files
+- Directories/Folders
+- File paths
+
+### 5. Technologies
+- Programming languages
+- Frameworks
+- Libraries
+- APIs
+- Protocols
+- File formats
+
+### 6. Concepts
+- Technical concepts
+- Business concepts
+- Processes/Workflows
+- Methodologies
+
+### 7. Dates & Times
+- Absolute dates
+- Relative dates (e.g., "yesterday", "last week")
+- Times
+- Durations
+- Deadlines
+
+### 8. Numbers & Metrics
+- Version numbers
+- Measurements
+- Statistics
+- Counts/Quantities
+- Percentages
+
+### 9. Locations
+- Physical locations (offices, data centers)
+- Server names
+- URLs/Endpoints
+- Network addresses
+- Environment names (dev, staging, prod)
+
+### 10. Actions/Events
+- Meetings
+- Deployments
+- Decisions
+- Incidents/Issues
+- Releases
+
+## Output Format
+
+You must respond with a JSON object:
+
+```json
+{
+  "entities": {
+    "people": [
+      {
+        "name": "John Doe",
+        "type": "person",
+        "confidence": 0.95,
+        "context": "John Doe approved the PR",
+        "metadata": {
+          "role": "Senior Developer",
+          "email": "john@example.com"
+        }
+      }
+    ],
+    "organizations": [
+      {
+        "name": "Enhanced Cognee Team",
+        "type": "organization",
+        "confidence": 0.98,
+        "context": "Enhanced Cognee Team decided on...",
+        "metadata": {}
+      }
+    ],
+    "systems": [
+      {
+        "name": "audit_logger.py",
+        "type": "file",
+        "confidence": 0.99,
+        "context": "audit_logger.py module tracks...",
+        "metadata": {
+          "language": "Python",
+          "path": "src/audit_logger.py"
+        }
+      }
+    ],
+    "technologies": [
+      {
+        "name": "PostgreSQL",
+        "type": "database",
+        "confidence": 0.97,
+        "context": "PostgreSQL database for...",
+        "metadata": {
+          "version": "18",
+          "features": ["pgVector"]
+        }
+      }
+    ],
+    "files": [
+      {
+        "name": ".env",
+        "type": "config_file",
+        "confidence": 0.92,
+        "context": ".env file contains...",
+        "metadata": {
+          "path": ".env",
+          "format": "key-value"
+        }
+      }
+    ],
+    "dates": [
+      {
+        "text": "January 15, 2026",
+        "type": "absolute_date",
+        "confidence": 0.99,
+        "context": "Meeting on January 15, 2026",
+        "metadata": {
+          "normalized": "2026-01-15",
+          "format": "YYYY-MM-DD"
+        }
+      }
+    ],
+    "concepts": [
+      {
+        "name": "undo mechanism",
+        "type": "concept",
+        "confidence": 0.88,
+        "context": "implemented undo mechanism for...",
+        "metadata": {
+          "domain": "software_architecture"
+        }
+      }
+    ]
+  },
+  "relationships": [
+    {
+      "source": "audit_logger.py",
+      "target": "PostgreSQL",
+      "type": "uses",
+      "confidence": 0.95
+    }
+  ],
+  "summary": {
+    "total_entities": 15,
+    "entity_types_found": ["people", "organizations", "systems", "technologies"],
+    "extraction_confidence": 0.92
+  }
+}
+```
+
+## Few-Shot Examples
+
+### Example 1: Technical Implementation
+
+**Input:**
+```
+Implemented audit_logger.py module for Enhanced Cognee. The module tracks all automated operations with PostgreSQL database backend. Alex wrote the core logic, and Sarah created the database schema. Used Python 3.11 with asyncpg library for async database operations. Configuration stored in automation_config.json.
+```
+
+**Output:**
+```json
+{
+  "entities": {
+    "people": [
+      {
+        "name": "Alex",
+        "type": "person",
+        "confidence": 0.95,
+        "context": "Alex wrote the core logic",
+        "metadata": {"role": "Developer"}
+      },
+      {
+        "name": "Sarah",
+        "type": "person",
+        "confidence": 0.95,
+        "context": "Sarah created the database schema",
+        "metadata": {"role": "Database Developer"}
+      }
+    ],
+    "organizations": [
+      {
+        "name": "Enhanced Cognee",
+        "type": "project",
+        "confidence": 0.99,
+        "context": "Enhanced Cognee project",
+        "metadata": {}
+      }
+    ],
+    "systems": [
+      {
+        "name": "audit_logger.py",
+        "type": "source_file",
+        "confidence": 0.99,
+        "context": "audit_logger.py module",
+        "metadata": {"language": "Python", "path": "src/audit_logger.py"}
+      },
+      {
+        "name": "PostgreSQL",
+        "type": "database",
+        "confidence": 0.98,
+        "context": "PostgreSQL database backend",
+        "metadata": {}
+      }
+    ],
+    "technologies": [
+      {
+        "name": "Python",
+        "type": "programming_language",
+        "confidence": 0.99,
+        "context": "Python 3.11",
+        "metadata": {"version": "3.11"}
+      },
+      {
+        "name": "asyncpg",
+        "type": "library",
+        "confidence": 0.97,
+        "context": "asyncpg library for async operations",
+        "metadata": {"purpose": "database_client"}
+      }
+    ],
+    "files": [
+      {
+        "name": "automation_config.json",
+        "type": "config_file",
+        "confidence": 0.96,
+        "context": "Configuration stored in automation_config.json",
+        "metadata": {"format": "JSON"}
+      }
+    ],
+    "concepts": [
+      {
+        "name": "audit logging",
+        "type": "concept",
+        "confidence": 0.92,
+        "context": "audit logging system",
+        "metadata": {"domain": "monitoring"}
+      }
+    ]
+  },
+  "relationships": [
+    {
+      "source": "audit_logger.py",
+      "target": "PostgreSQL",
+      "type": "uses",
+      "confidence": 0.95
+    },
+    {
+      "source": "audit_logger.py",
+      "target": "asyncpg",
+      "type": "implemented_with",
+      "confidence": 0.93
+    },
+    {
+      "source": "Alex",
+      "target": "audit_logger.py",
+      "type": "created",
+      "confidence": 0.90
+    },
+    {
+      "source": "Sarah",
+      "target": "PostgreSQL",
+      "type": "created_schema_for",
+      "confidence": 0.90
+    }
+  ],
+  "summary": {
+    "total_entities": 9,
+    "entity_types_found": ["people", "organizations", "systems", "technologies", "files", "concepts"],
+    "extraction_confidence": 0.95
+  }
+}
+```
+
+### Example 2: Meeting Notes
+
+**Input:**
+```
+Sprint 1 Planning Meeting - January 15, 2026
+Attendees: Vince, Mike, Sarah, Alex
+
+Discussed implementation timeline for Enhanced Cognee. Decided to use 4-week sprint:
+- Week 1: Audit logging and undo mechanism (Mike, Sarah)
+- Week 2: LLM integration and prompt templates (Alex)
+- Week 3: Claude Code plugin (Vince)
+- Week 4: Testing and documentation (all)
+
+Next meeting: Friday, January 19th at 2 PM EST.
+Target: Complete Sprint 1 by February 12th, 2026.
+```
+
+**Output:**
+```json
+{
+  "entities": {
+    "people": [
+      {"name": "Vince", "type": "person", "confidence": 0.99, "context": "Attendee", "metadata": {}},
+      {"name": "Mike", "type": "person", "confidence": 0.99, "context": "Attendee", "metadata": {}},
+      {"name": "Sarah", "type": "person", "confidence": 0.99, "context": "Attendee", "metadata": {}},
+      {"name": "Alex", "type": "person", "confidence": 0.99, "context": "Attendee", "metadata": {}}
+    ],
+    "organizations": [
+      {
+        "name": "Enhanced Cognee",
+        "type": "project",
+        "confidence": 0.99,
+        "context": "Project being planned",
+        "metadata": {}
+      }
+    ],
+    "events": [
+      {
+        "name": "Sprint 1 Planning Meeting",
+        "type": "meeting",
+        "confidence": 0.98,
+        "context": "Meeting to plan Sprint 1",
+        "metadata": {"date": "2026-01-15"}
+      },
+      {
+        "name": "Sprint 1",
+        "type": "sprint",
+        "confidence": 0.97,
+        "context": "Sprint being planned",
+        "metadata": {"duration": "4 weeks"}
+      }
+    ],
+    "dates": [
+      {
+        "text": "January 15, 2026",
+        "type": "absolute_date",
+        "confidence": 0.99,
+        "context": "Meeting date",
+        "metadata": {"normalized": "2026-01-15"}
+      },
+      {
+        "text": "Friday, January 19th at 2 PM EST",
+        "type": "datetime",
+        "confidence": 0.98,
+        "context": "Next meeting",
+        "metadata": {"normalized": "2026-01-19T14:00:00-05:00"}
+      },
+      {
+        "text": "February 12th, 2026",
+        "type": "absolute_date",
+        "confidence": 0.99,
+        "context": "Target completion date",
+        "metadata": {"normalized": "2026-02-12"}
+      }
+    ],
+    "concepts": [
+      {
+        "name": "audit logging",
+        "type": "feature",
+        "confidence": 0.92,
+        "context": "Feature to implement in Week 1",
+        "metadata": {"week": 1}
+      },
+      {
+        "name": "undo mechanism",
+        "type": "feature",
+        "confidence": 0.92,
+        "context": "Feature to implement in Week 1",
+        "metadata": {"week": 1}
+      },
+      {
+        "name": "LLM integration",
+        "type": "feature",
+        "confidence": 0.90,
+        "context": "Feature to implement in Week 2",
+        "metadata": {"week": 2}
+      },
+      {
+        "name": "Claude Code plugin",
+        "type": "feature",
+        "confidence": 0.90,
+        "context": "Feature to implement in Week 3",
+        "metadata": {"week": 3}
+      }
+    ]
+  },
+  "relationships": [
+    {"source": "Sprint 1 Planning Meeting", "target": "Vince", "type": "attended_by", "confidence": 0.95},
+    {"source": "Mike", "target": "audit logging", "type": "assigned_to", "confidence": 0.88},
+    {"source": "Sarah", "target": "undo mechanism", "type": "assigned_to", "confidence": 0.88},
+    {"source": "Alex", "target": "LLM integration", "type": "assigned_to", "confidence": 0.88},
+    {"source": "Sprint 1", "target": "Enhanced Cognee", "type": "sprint_of", "confidence": 0.92}
+  ],
+  "summary": {
+    "total_entities": 14,
+    "entity_types_found": ["people", "organizations", "events", "dates", "concepts"],
+    "extraction_confidence": 0.94
+  }
+}
+```
+
+### Example 3: Error Resolution
+
+**Input:**
+```
+ERROR: Connection timeout to PostgreSQL at localhost:5432
+Time: 2026-01-15 10:23:45 UTC
+Error Code: 08006
+
+Investigation revealed that POSTGRES_PORT in .env was set to 5432, but Enhanced Cognee uses port 25432. Updated configuration and restarted application. Connection successful after fix.
+
+Files modified:
+- .env (POSTGRES_PORT: 5432 → 25432)
+```
+
+**Output:**
+```json
+{
+  "entities": {
+    "systems": [
+      {
+        "name": "PostgreSQL",
+        "type": "database",
+        "confidence": 0.99,
+        "context": "Database with connection timeout",
+        "metadata": {}
+      }
+    ],
+    "locations": [
+      {
+        "name": "localhost:5432",
+        "type": "network_address",
+        "confidence": 0.97,
+        "context": "Failed connection endpoint",
+        "metadata": {"host": "localhost", "port": 5432, "protocol": "postgresql"}
+      },
+      {
+        "name": "localhost:25432",
+        "type": "network_address",
+        "confidence": 0.97,
+        "context": "Correct connection endpoint",
+        "metadata": {"host": "localhost", "port": 25432, "protocol": "postgresql"}
+      }
+    ],
+    "dates": [
+      {
+        "text": "2026-01-15 10:23:45 UTC",
+        "type": "datetime",
+        "confidence": 0.99,
+        "context": "Error timestamp",
+        "metadata": {"normalized": "2026-01-15T10:23:45Z"}
+      }
+    ],
+    "numbers": [
+      {
+        "text": "08006",
+        "type": "error_code",
+        "confidence": 0.95,
+        "context": "PostgreSQL error code for connection failure",
+        "metadata": {"database": "PostgreSQL", "meaning": "connection_exception"}
+      },
+      {
+        "text": "5432",
+        "type": "port_number",
+        "confidence": 0.96,
+        "context": "Incorrect PostgreSQL port",
+        "metadata": {"purpose": "database", "correct": false}
+      },
+      {
+        "text": "25432",
+        "type": "port_number",
+        "confidence": 0.96,
+        "context": "Correct Enhanced Cognee PostgreSQL port",
+        "metadata": {"purpose": "database", "correct": true}
+      }
+    ],
+    "files": [
+      {
+        "name": ".env",
+        "type": "config_file",
+        "confidence": 0.98,
+        "context": "Configuration file modified",
+        "metadata": {"change": "POSTGRES_PORT updated from 5432 to 25432"}
+      }
+    ],
+    "organizations": [
+      {
+        "name": "Enhanced Cognee",
+        "type": "project",
+        "confidence": 0.97,
+        "context": "Project using custom PostgreSQL port",
+        "metadata": {}
+      }
+    ],
+    "concepts": [
+      {
+        "name": "connection timeout",
+        "type": "error",
+        "confidence": 0.93,
+        "context": "Error type encountered",
+        "metadata": {"severity": "blocking"}
+      }
+    ]
+  },
+  "relationships": [
+    {"source": "PostgreSQL", "target": "localhost:5432", "type": "failed_connection_to", "confidence": 0.94},
+    {"source": "PostgreSQL", "target": "localhost:25432", "type": "successful_connection_to", "confidence": 0.94},
+    {"source": ".env", "target": "Enhanced Cognee", "type": "configures", "confidence": 0.90},
+    {"source": "connection timeout", "target": "PostgreSQL", "type": "error_in", "confidence": 0.92}
+  ],
+  "summary": {
+    "total_entities": 11,
+    "entity_types_found": ["systems", "locations", "dates", "numbers", "files", "organizations", "concepts"],
+    "extraction_confidence": 0.96
+  }
+}
+```
+
+## User Prompt Template
+
+```
+Extract entities from the following memory:
+
+---
+MEMORY:
+{content}
+---
+
+Extraction Parameters:
+- Memory ID: {memory_id}
+- Agent ID: {agent_id}
+- Category: {category}
+- Created At: {created_at}
+- Entity Types to Extract: {entity_types}
+
+Please extract:
+1. All entities with their types and confidence scores
+2. Relationships between entities
+3. Context for each entity
+4. Metadata where available
+
+Output must be valid JSON.
+```
+
+## Relationship Types
+
+### People ↔ Organizations
+- works_at, leads, member_of, reported_to
+
+### People ↔ Files/Systems
+- created, modified, reviewed, owns, uses
+
+### Systems ↔ Systems
+- uses, depends_on, integrates_with, conflicts_with
+
+### Systems ↔ Technologies
+- implemented_with, built_on, requires
+
+### Files ↔ Files
+- imports, includes, references, configures
+
+### Events ↔ Entities
+- attended_by, discussed, created, resolved
+
+### Locations ↔ Systems
+- hosted_at, deployed_to, located_in
+
+## Confidence Scoring
+
+- **0.95-1.0**: Explicit mention, unambiguous
+- **0.85-0.95**: Strong context, highly likely
+- **0.70-0.85**: Reasonable inference
+- **0.50-0.70**: Possible, low confidence
+- **< 0.50**: Speculative, flag for review
+
+## Edge Cases
+
+### Ambiguous Names
+If "Alex" could be multiple people:
+```json
+{
+  "name": "Alex",
+  "confidence": 0.65,
+  "disambiguation": "Could refer to Alex Smith or Alex Johnson",
+  "requires_context": true
+}
+```
+
+### Acronym Expansion
+```json
+{
+  "name": "PostgreSQL",
+  "acronym": "Postgres",
+  "confidence": 0.95
+}
+```
+
+### Version Numbers
+```json
+{
+  "name": "Python",
+  "version": "3.11",
+  "confidence": 0.99
+}
+```
+
+### Multiple Occurrences
+Track all mentions:
+```json
+{
+  "name": "PostgreSQL",
+  "mentions": 3,
+  "contexts": ["context 1", "context 2", "context 3"]
+}
+```
+
+## Quality Indicators
+
+Before finalizing:
+1. **Check for missed entities** - did I identify all important items?
+2. **Verify entity types** - is the classification accurate?
+3. **Assess relationships** - are the connections between entities correct?
+4. **Review confidence scores** - do they reflect certainty level?
+5. **Validate metadata** - is additional information accurate?
