@@ -110,7 +110,7 @@ class EnhancedCogneeInstaller:
         files_to_copy = [
             "cognee_mcp_universal.py",
             "cognee_mcp_wrapper.py",
-            "docker-compose-enhanced-cognee.yml",
+            "config/docker/docker-compose-enhanced-cognee.yml",
             "requirements.txt",
             "pyproject.toml",
             "README.md",
@@ -170,7 +170,7 @@ class EnhancedCogneeInstaller:
             print("ℹ️  Docker network already exists")
 
         # Start containers
-        compose_file = self.install_dir / "docker-compose-enhanced-cognee.yml"
+        compose_file = self.install_dir / "config/docker/docker-compose-enhanced-cognee.yml"
         if compose_file.exists():
             try:
                 subprocess.run(['docker-compose', '-f', str(compose_file), 'up', '-d'],
@@ -408,8 +408,8 @@ except Exception as e:
 
         print("\n🐳 Docker Status:")
         print("• Check containers: docker ps | grep cognee")
-        print("• View logs: docker-compose -f docker-compose-enhanced-cognee.yml logs")
-        print("• Restart: docker-compose -f docker-compose-enhanced-cognee.yml restart")
+        print("• View logs: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml logs")
+        print("• Restart: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml restart")
 
         print("\n❓ Need Help?")
         print("• GitHub Issues: https://github.com/your-username/enhanced-cognee/issues")

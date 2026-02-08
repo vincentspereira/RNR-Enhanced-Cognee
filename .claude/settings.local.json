@@ -22,7 +22,8 @@
       "Bash(.venv/Scripts/pip.exe install:*)",
       "Bash(docker ps:*)",
       "Bash(docker exec:*)",
-      "Bash(bc:*)"
+      "Bash(bc:*)",
+      "Bash(for dir in docs/*/)"
     ]
   }
 }

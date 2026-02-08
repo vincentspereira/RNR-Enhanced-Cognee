@@ -206,7 +206,7 @@ All planned enhancements have been implemented:
 - ✅ **Kilo Code** (VS Code extension)
 - ✅ **GitHub Copilot** (VS Code extension)
 
-**Setup Guide:** [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md)
+**Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
 #### 2. Memory Expiry & Archival Policies
 
@@ -692,7 +692,7 @@ git clone https://github.com/vincentspereira/Enhanced-Cognee.git
 cd Enhanced-Cognee
 
 # Start Enhanced databases (one command)
-docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
+docker compose -f config/docker/docker-compose-enhanced-cognee.yml up -d
 
 # Verify all services running
 docker ps | grep enhanced
@@ -825,7 +825,7 @@ OK Enhanced Cognee MCP Server starting...
 }
 ```
 
-**Other 7 AI IDEs:** See [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md)
+**Other 7 AI IDEs:** See [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
 ### 4. Use Enhanced Cognee
 
@@ -855,15 +855,15 @@ Enhanced Cognee works with **8 AI IDEs**:
 | IDE                     | Support Level | Setup Guide                                      |
 | ----------------------- | ------------- | ------------------------------------------------ |
 | **Claude Code**         | ✅ Native      | Built-in                                         |
-| **Cursor**              | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **Windsurf**            | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **Antigravity**         | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **Continue.dev**        | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **VS Code (+Continue)** | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **Kilo Code**           | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
-| **GitHub Copilot**      | ✅ Full        | [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md) |
+| **Cursor**              | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Windsurf**            | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Antigravity**         | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Continue.dev**        | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **VS Code (+Continue)** | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Kilo Code**           | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **GitHub Copilot**      | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 
-**Complete Setup Guide:** [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md)
+**Complete Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
 ---
 
@@ -1324,7 +1324,7 @@ Enhanced Cognee provides comprehensive support for coordinating **21 SDLC Sub Ag
 - ✅ Cache hit/miss statistics
 - ✅ Prometheus metrics export
 
-**Complete Integration Guide:** [SDLC_AGENTS_INTEGRATION.md](SDLC_AGENTS_INTEGRATION.md)
+**Complete Integration Guide:** [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)
 
 ---
 
@@ -1359,7 +1359,7 @@ open htmlcov/index.html
 - **Warnings:** 0
 - **Skipped Tests:** 0
 
-**Testing Guide:** [TESTING.md](TESTING.md)
+**Testing Guide:** [Testing Guide](docs/development/TESTING.md)
 
 ---
 
@@ -1370,22 +1370,22 @@ Comprehensive documentation is available:
 | Document                                                                               | Description                      |
 | -------------------------------------------------------------------------------------- | -------------------------------- |
 | [README.md](README.md)                                                                 | This file - project overview     |
-| [MCP_IDE_SETUP_GUIDE.md](MCP_IDE_SETUP_GUIDE.md)                                       | Multi-IDE setup for 8 AI IDEs    |
-| [SDLC_AGENTS_INTEGRATION.md](SDLC_AGENTS_INTEGRATION.md)                               | 21 SDLC agents integration guide |
-| [TESTING.md](TESTING.md)                                                               | Complete testing guide           |
-| [TASK_COMPLETION_SUMMARY.md](TASK_COMPLETION_SUMMARY.md)                               | Task completion summary          |
-| [CONTRIBUTING.md](CONTRIBUTING.md)                                                     | Contribution guidelines          |
-| [CONTRIBUTORS.md](CONTRIBUTORS.md)                                                     | Contributor history              |
-| [ENHANCEMENT_ROADMAP.md](ENHANCEMENT_ROADMAP.md)                                       | 12-month enhancement roadmap     |
-| [AUDIT_SUMMARY.md](AUDIT_SUMMARY.md)                                                   | Comprehensive audit summary      |
-| [FINAL_COMPLETION_SUMMARY.md](FINAL_COMPLETION_SUMMARY.md) | Final completion summary         |
-| [PRODUCTION_DEPLOYMENT_GUIDE.md](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)                  | Production deployment guide      |
-| [SECURITY_HARDENING_CHECKLIST.md](docs/SECURITY_HARDENING_CHECKLIST.md)                | Security hardening checklist     |
-| [MONITORING_SETUP_GUIDE.md](docs/MONITORING_SETUP_GUIDE.md)                            | Monitoring setup guide           |
-| [LITE_MODE_GUIDE.md](docs/LITE_MODE_GUIDE.md)                                          | Lite mode guide                  |
-| [MULTI_LANGUAGE_GUIDE.md](docs/MULTI_LANGUAGE_GUIDE.md)                                | Multi-language support guide     |
-| [DEDUPLICATION_GUIDE.md](docs/DEDUPLICATION_GUIDE.md)                                  | Deduplication guide              |
-| [SUMMARIZATION_GUIDE.md](docs/SUMMARIZATION_GUIDE.md)                                  | Summarization guide              |
+| [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                                    | Multi-IDE setup for 8 AI IDEs    |
+| [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)           | 21 SDLC agents integration guide |
+| [Testing Guide](docs/development/TESTING.md)                                           | Complete testing guide           |
+| [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)                      | Task completion summary          |
+| [Contributing Guidelines](docs/development/CONTRIBUTING.md)                            | Contribution guidelines          |
+| [Contributors](docs/policies/CONTRIBUTORS.md)                                          | Contributor history              |
+| [Enhancement Roadmap](docs/legacy/ENHANCEMENT_ROADMAP.md)                              | 12-month enhancement roadmap     |
+| [Audit Summary](docs/reports/audits/AUDIT_SUMMARY.md)                                  | Comprehensive audit summary      |
+| [Final Completion Summary](docs/reports/summaries/FINAL_COMPLETION_SUMMARY.md)         | Final completion summary         |
+| [Production Deployment Guide](docs/operations/PRODUCTION_DEPLOYMENT_GUIDE.md)          | Production deployment guide      |
+| [Security Hardening Checklist](docs/operations/SECURITY_HARDENING_CHECKLIST.md)        | Security hardening checklist     |
+| [Monitoring Setup Guide](docs/operations/MONITORING_SETUP_GUIDE.md)                    | Monitoring setup guide           |
+| [Lite Mode Guide](docs/guides/LITE_MODE_GUIDE.md)                                      | Lite mode guide                  |
+| [Multi-Language Guide](docs/guides/MULTI_LANGUAGE_GUIDE.md)                            | Multi-language support guide     |
+| [Deduplication Guide](docs/operations/DEDUPLICATION_GUIDE.md)                          | Deduplication guide              |
+| [Summarization Guide](docs/operations/SUMMARIZATION_GUIDE.md)                          | Summarization guide              |
 
 ---
 
@@ -1514,9 +1514,18 @@ enhanced-cognee/
 ├── requirements.txt                   # Runtime dependencies
 ├── requirements-test.txt              # Test dependencies
 ├── pytest.ini                         # Pytest configuration
-├── run_tests.py                       # Test runner script
-├── docker/                            # Docker configurations
-│   └── docker-compose-enhanced-cognee.yml
+├── bin/                               # Executable scripts
+│   ├── enhanced_cognee_mcp_server.py  # Main MCP server
+│   ├── install.py                     # Python installer
+│   └── run_tests.py                   # Test runner script
+├── setup/                             # Installation scripts
+│   ├── install.sh, install.ps1        # Platform-specific installers
+│   └── uninstall.sh, uninstall.ps1    # Uninstall scripts
+├── config/                            # Configuration files
+│   ├── docker/                        # Docker compose files
+│   │   └── docker-compose-enhanced-cognee.yml
+│   ├── environments/                  # Environment templates
+│   └── automation/                    # Automation configs
 ├── cognee/                            # Original Cognee framework
 │   └── infrastructure/                # Database adapters
 ├── src/                               # Enhanced Cognee modules
@@ -1532,8 +1541,7 @@ enhanced-cognee/
 │   ├── system/                        # System tests
 │   ├── e2e/                           # End-to-end tests
 │   └── conftest.py                    # Pytest fixtures
-├── enhanced_cognee_mcp_server.py      # Main MCP server
-└── docs/                              # Additional documentation
+└── docs/                              # Comprehensive documentation
 ```
 
 ### Running Tests
@@ -1553,7 +1561,7 @@ pytest --cov=src --cov-report=html
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guidelines](docs/development/CONTRIBUTING.md) for details.
 
 ### Development Setup
 
@@ -1656,6 +1664,6 @@ If you find Enhanced Cognee useful, please consider giving it a ⭐ on GitHub!
   [🐛 Report Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) ·
   [💡 Request Features](https://github.com/vincentspereira/Enhanced-Cognee/issues)
 
-  **[Documentation](docs/) · [Testing Guide](TESTING.md) · [Multi-IDE Setup](MCP_IDE_SETUP_GUIDE.md) · [21 SDLC Agents Guide](SDLC_AGENTS_INTEGRATION.md)**
+  **[Documentation](docs/) · [Testing Guide](docs/development/TESTING.md) · [Multi-IDE Setup](docs/guides/MCP_IDE_SETUP.md) · [21 SDLC Agents Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)**
 
 </div>
