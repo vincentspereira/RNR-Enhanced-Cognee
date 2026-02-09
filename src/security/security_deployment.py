@@ -17,8 +17,8 @@ from enum import Enum
 import asyncio
 from pathlib import Path
 import yaml
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import ssl
 import certifi
 import aiohttp

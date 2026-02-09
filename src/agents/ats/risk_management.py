@@ -115,7 +115,7 @@ class RiskManagement:
             risk_assessment.update(liquidity_risk)
 
             # Calculate overall risk score
-            risk_score = self._calculate_overall_risk_score(risk_assessment)
+            risk_score = await self._calculate_overall_risk_score(risk_assessment)
             risk_assessment["risk_score"] = risk_score
 
             # Determine final risk level

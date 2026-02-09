@@ -59,7 +59,7 @@ class WorkflowDefinition:
     dependencies: List[TaskDependency] = field(default_factory=list)
     global_parameters: Dict[str, Any] = field(default_factory=dict)
     status: WorkflowStatus = WorkflowStatus.DRAFT
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     scheduled_at: Optional[datetime] = None
     deadline: Optional[datetime] = None
 

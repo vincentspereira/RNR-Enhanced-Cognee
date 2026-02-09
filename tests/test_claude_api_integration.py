@@ -4,10 +4,14 @@ Comprehensive Tests for Claude API Integration
 Achieves 99%+ code coverage for claude_api_integration.py
 """
 
+import sys
 import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock, patch, MagicMock
 from datetime import datetime, UTC
+
+# Mock anthropic module before importing
+sys.modules['anthropic'] = MagicMock()
 
 from src.claude_api_integration import (
     ClaudeAPIClient,
@@ -25,7 +29,7 @@ from src.claude_api_integration import (
 @pytest.fixture
 def mock_anthropic_client():
     """Mock Anthropic client"""
-    with patch('src.claude_api_integration.AsyncAnthropic') as mock:
+    with patch('anthropic.AsyncAnthropic') as mock:
         client_instance = AsyncMock()
         mock.return_value = client_instance
         yield client_instance
@@ -77,7 +81,7 @@ class TestClaudeAPIClientInit:
 
     def test_init_default_values(self):
         """Test initialization with default values"""
-        with patch('src.claude_api_integration.AsyncAnthropic'):
+        with patch('anthropic.AsyncAnthropic'):
             client = ClaudeAPIClient(api_key="test-key")
 
             assert client.api_key == "test-key"
@@ -89,7 +93,7 @@ class TestClaudeAPIClientInit:
 
     def test_init_custom_values(self):
         """Test initialization with custom values"""
-        with patch('src.claude_api_integration.AsyncAnthropic'):
+        with patch('anthropic.AsyncAnthropic'):
             client = ClaudeAPIClient(
                 api_key="test-key",
                 model=ClaudeModel.CLAUDE_3_OPUS,
@@ -103,7 +107,7 @@ class TestClaudeAPIClientInit:
 
     def test_register_default_tools(self):
         """Test default tools are registered"""
-        with patch('src.claude_api_integration.AsyncAnthropic'):
+        with patch('anthropic.AsyncAnthropic'):
             client = ClaudeAPIClient(api_key="test-key")
 
             # Check all default tools are registered
@@ -193,7 +197,7 @@ class TestToolHandlers:
     @pytest.mark.asyncio
     async def test_tool_intelligent_summarize(self, claude_client):
         """Test intelligent_summarize tool handler"""
-        with patch('src.claude_api_integration.IntelligentMemorySummarizer') as mock_summarizer:
+        with patch('src.intelligent_summarization.IntelligentMemorySummarizer') as mock_summarizer:
             mock_summarizer_instance = AsyncMock()
             mock_summarizer.return_value = mock_summarizer_instance
 
@@ -221,7 +225,7 @@ class TestToolHandlers:
     @pytest.mark.asyncio
     async def test_tool_advanced_search(self, claude_client):
         """Test advanced_search tool handler"""
-        with patch('src.claude_api_integration.AdvancedSearchEngine') as mock_search:
+        with patch('src.advanced_search_reranking.AdvancedSearchEngine') as mock_search:
             mock_search_instance = AsyncMock()
             mock_search.return_value = mock_search_instance
 
@@ -270,11 +274,18 @@ class TestChat:
     async def test_chat_with_tools(self, claude_client):
         """Test chat with tool use enabled"""
         # Mock response with tool use
+        mock_text_block = Mock()
+        mock_text_block.type = "text"
+        mock_text_block.text = "Let me add that memory."
+
+        mock_tool_block = Mock()
+        mock_tool_block.type = "tool_use"
+        mock_tool_block.id = "tool_123"
+        mock_tool_block.name = "add_memory"
+        mock_tool_block.input = {"content": "Test"}
+
         mock_response = Mock()
-        mock_response.content = [
-            Mock(type="text", text="Let me add that memory."),
-            Mock(type="tool_use", id="tool_123", name="add_memory", input={"content": "Test"})
-        ]
+        mock_response.content = [mock_text_block, mock_tool_block]
         mock_response.usage = Mock()
         mock_response.usage.model_dump = lambda: {}
         mock_response.stop_reason = "tool_use"
@@ -324,19 +335,29 @@ class TestChat:
         mock_stream.__aenter__ = AsyncMock(return_value=mock_stream)
         mock_stream.__aexit__ = AsyncMock(return_value=None)
 
-        # Mock text_stream
-        async def mock_text_stream():
+        # Mock text_stream as an async generator
+        async def mock_text_stream_gen():
             yield "Hello"
             yield " World"
 
-        mock_stream.text_stream = mock_text_stream()
-        claude_client.client.messages.stream = AsyncMock(return_value=mock_stream)
+        # Create async iterator
+        class AsyncTextStream:
+            def __init__(self):
+                self.gen = mock_text_stream_gen()
+
+            def __aiter__(self):
+                return self.gen
+
+            async def __anext__(self):
+                return await self.gen.__anext__()
+
+        mock_stream.text_stream = AsyncTextStream()
+        claude_client.client.messages.stream = Mock(return_value=mock_stream)
 
         # Collect streamed chunks
         chunks = []
-        async for chunk in await claude_client.chat(
-            message="Hello",
-            stream=True
+        async for chunk in claude_client.chat_stream(
+            message="Hello"
         ):
             chunks.append(chunk)
 

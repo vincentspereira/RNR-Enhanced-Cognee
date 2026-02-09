@@ -122,6 +122,7 @@ class AlgorithmicTradingSystem:
         """
         Execute a trade based on signal or manual request
         """
+        execution = None  # Initialize to avoid UnboundLocalError
         try:
             # Validate trade request
             if not await self._validate_trade_request(trade_request):
@@ -169,7 +170,7 @@ class AlgorithmicTradingSystem:
             return {
                 "error": str(e),
                 "status": "failed",
-                "execution_id": execution.get("execution_id", "unknown")
+                "execution_id": execution.get("execution_id", "unknown") if execution else "unknown"
             }
 
     async def assess_portfolio_risk(self) -> Dict[str, Any]:

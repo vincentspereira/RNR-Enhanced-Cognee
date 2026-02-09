@@ -346,6 +346,9 @@ class RateLimiter:
                 await self.release_rate_lock(provider, api_key, success=False)
                 raise RateLimitError(f"Could not acquire rate lock for {provider.value} after {timeout}s")
 
+            # Define key before try block so it's available in except block
+            key = self._get_bucket_key(provider, api_key, "stats")
+
             try:
                 # Execute the function
                 start_time = time.time()
@@ -355,7 +358,6 @@ class RateLimiter:
                 # Record success
                 await self.release_rate_lock(provider, api_key, success=True)
 
-                key = self._get_bucket_key(provider, api_key, "stats")
                 self.stats[key]["total_wait_time"] += elapsed
                 if self.stats[key]["total_requests"] > 0:
                     self.stats[key]["average_wait_time"] = (

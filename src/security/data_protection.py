@@ -17,8 +17,7 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
-from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 
 logger = logging.getLogger(__name__)
@@ -42,12 +41,11 @@ class EncryptionManager:
             master_key = secrets.token_bytes(32)
 
         # Derive encryption key from master key
-        kdf = PBKDF2(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=b'enhanced-cognee-salt',
             iterations=100000,
-            backend=default_backend()
         )
         key = base64.urlsafe_b64encode(kdf.derive(master_key))
 

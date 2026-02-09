@@ -211,7 +211,7 @@ class AdvancedSearchEngine:
 
 Query: {query}
 
-Related queries:""""}
+Related queries: """}
                     ]
                 )
 

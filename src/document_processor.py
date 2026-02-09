@@ -11,6 +11,7 @@ Date: 2026-02-06
 
 import asyncio
 import fnmatch
+import json
 import logging
 import os
 from pathlib import Path

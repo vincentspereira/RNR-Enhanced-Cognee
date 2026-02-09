@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime, timezone
 import logging
 
-from .base import BaseLLMClient, LLMProvider
+from ..base import BaseLLMClient, LLMProvider
 from ..rate_limiter import RateLimiter, Provider as RateLimitProvider, RequestPriority
 from ..token_counter import TokenCounter
 
@@ -188,7 +188,7 @@ class AnthropicClient(BaseLLMClient):
         """
         try:
             # Create message
-            message = anthropic.messages.create(
+            message = self.client.messages.create(
                 model=self.model,
                 max_tokens=max_tokens,
                 temperature=temperature,

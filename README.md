@@ -8,12 +8,12 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-365%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-975%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-0%20Critical%20Vulns-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-  **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 58 MCP tools, 400-700% performance improvement, enterprise-grade multi-agent coordination, official Claude API integration, and real-time web dashboard**
+  **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 59 MCP tools, 400-700% performance improvement, enterprise-grade multi-agent coordination, official Claude API integration, and real-time web dashboard**
 
 </div>
 
@@ -58,7 +58,7 @@
 | **Caching Layer**               | FsCache                    | None                                      | **Redis (high-speed)**                  |
 | **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                |
 | **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                      |
-| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **58 comprehensive tools**              |
+| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **59 comprehensive tools**              |
 | **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                             |
 | **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                |
 | **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                   |
@@ -111,7 +111,7 @@
 
 **Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
 
-- ✅ **58 MCP tools** for comprehensive memory management
+- ✅ **59 MCP tools** for comprehensive memory management
 - ✅ **Real-time multi-agent synchronization** for coordinating 21+ SDLC agents
 - ✅ **Cross-agent memory sharing** with access control
 - ✅ **Automatic memory summarization** (10x storage compression)
@@ -132,7 +132,7 @@
 - ✅ **Production deployment** (Docker, monitoring, security hardened)
 - ✅ **CI/CD pipeline** (7 automated stages)
 - ✅ **Security audit** (0 critical vulnerabilities)
-- ✅ **92%+ test coverage** (365 tests, 100% pass rate)
+- ✅ **Comprehensive test coverage** (975 tests, 100% pass rate, 0 warnings, 0 skipped)
 - ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
 
 ### What is the Original Cognee?
@@ -162,7 +162,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - **Neo4j** (instead of Kuzu)
 - **Redis** (new caching layer)
 
-### 2. 58 MCP Tools
+### 2. 59 MCP Tools
 
 - Standard Memory MCP tools (add_memory, search_memories, etc.)
 - Enhanced memory management (expiry, archival, TTL)
@@ -184,7 +184,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - Docker deployment with health checks
 - Non-conflicting port mappings
 - Comprehensive error handling
-- 365 tests passing (100% pass rate, 92%+ coverage)
+- 975 tests passing (100% pass rate, comprehensive coverage)
 - Multi-IDE support (8 AI IDEs)
 
 ---
@@ -272,7 +272,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### 1: Test Suite & LLM Integration
 
-- Comprehensive test suite with 365 tests (92%+ coverage)
+- Comprehensive test suite with 975 tests (100% pass rate)
 - Multi-LLM integration (OpenAI, Anthropic, Ollama)
 - Token counting and rate limiting
 - Test infrastructure (pytest, fixtures, mocks)
@@ -338,7 +338,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 - 28 language support
 - Cross-language search
-- Comprehensive testing (365 tests, 100% pass rate)
+- Comprehensive testing (975 tests, 100% pass rate)
 - Performance optimization
 - **Files:** 15 files, 4,200+ lines
 
@@ -445,7 +445,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Graph Database**          | Kuzu            | Neo4j                                             |
 | **Caching Layer**           | None            | Redis                                             |
 | **Memory Categories**       | None            | Dynamic JSON-based                                |
-| **MCP Tools**               | None            | **58 tools**                                      |
+| **MCP Tools**               | None            | **59 tools**                                      |
 | **Multi-Agent Support**     | None            | **Real-time sync for 100+ agents**                |
 | **Memory Deduplication**    | None            | ✅ **95%+ storage savings**                        |
 | **Memory Summarization**    | None            | ✅ **10x+ compression**                            |
@@ -453,7 +453,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Cross-Agent Sharing**     | None            | ✅ **4 access policies**                           |
 | **TTL & Archival**          | None            | ✅ **Automated lifecycle**                         |
 | **IDE Support**             | None            | ✅ **8 AI IDEs**                                   |
-| **Test Coverage**           | Basic           | ✅ **365 passing (92%+ coverage, 100% pass rate)** |
+| **Test Coverage**           | Basic           | ✅ **975 passing (comprehensive coverage, 100% pass rate)** |
 | **Claude Code Integration** | No              | ✅ **Standard Memory MCP**                         |
 | **Port Configuration**      | Default ports   | Enhanced range (25000+)                           |
 | **Output Encoding**         | None            | ASCII-only (Windows compatible)                   |
@@ -485,7 +485,7 @@ flowchart LR
         CLI[CLI Tool]
     end
 
-    subgraph MCP["MCP Server Layer - 58 Tools"]
+    subgraph MCP["MCP Server Layer - 59 Tools"]
         MCP1[Standard Memory<br/>7 Tools]
         MCP2[Enhanced Cognee<br/>5 Tools]
         MCP3[Memory Management<br/>4 Tools]
@@ -584,7 +584,7 @@ Enhanced Cognee Memory Stack
 │   ├── Session management
 │   └── Performance metrics
 └── Enhanced Cognee MCP Server
-    ├── 58 MCP tools
+    ├── 59 MCP tools
     ├── Multi-IDE support (8 IDEs)
     └── ASCII-only output
 ```
@@ -798,7 +798,7 @@ OK Cross-Agent Sharing initialized
 OK Real-Time Sync initialized
 
 OK Enhanced Cognee MCP Server starting...
-  Available tools: 58 tools listed below...
+  Available tools: 59 tools listed below...
 ```
 
 ### 3. Configure Your AI IDE
@@ -869,7 +869,7 @@ Enhanced Cognee works with **8 AI IDEs**:
 
 ## MCP Tools Reference
 
-Enhanced Cognee provides **58 MCP tools** with comprehensive automation across three trigger types:
+Enhanced Cognee provides **59 MCP tools** with comprehensive automation across three trigger types:
 
 ### Standard Memory Tools (7)
 
@@ -1189,7 +1189,7 @@ System automatically triggers:
 - **10 tools** require explicit manual invocation (M)
 - **16 tools** are automatically triggered by AI IDEs (A)
 - **32 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 58 tools** with comprehensive automation chains
+- **Total: 59 tools** with comprehensive automation chains
 
 ### Hybrid Approach (Best of All Three)
 
@@ -1353,9 +1353,9 @@ open htmlcov/index.html
 ### Test Statistics
 
 - **Total Test Files:** 20+
-- **Total Test Cases:** 365 passing (100% pass rate)
+- **Total Test Cases:** 975 passing (100% pass rate)
 - **Code Coverage:** 92%+ overall (Unit: 92%+, Integration: 90%+, E2E: All critical paths)
-- **Success Rate:** 100% (365/365 tests passing)
+- **Success Rate:** 100% (975/975 tests passing)
 - **Warnings:** 0
 - **Skipped Tests:** 0
 

@@ -425,7 +425,7 @@ class ClaudeAPIClient:
         system_prompt: Optional[str] = None,
         tools_enabled: bool = True,
         stream: bool = False
-    ) -> ClaudeResponse:
+    ) -> Union[ClaudeResponse, AsyncIterator[str]]:
         """
         Send chat message to Claude
 
@@ -433,10 +433,10 @@ class ClaudeAPIClient:
             message: User message
             system_prompt: Optional system prompt
             tools_enabled: Whether to enable tool use
-            stream: Whether to stream response
+            stream: Whether to stream response (if True, returns async iterator)
 
         Returns:
-            ClaudeResponse with content and metadata
+            ClaudeResponse with content and metadata, or async iterator of text chunks
         """
         try:
             # Add user message to history
@@ -464,13 +464,99 @@ class ClaudeAPIClient:
 
             # Call Claude API
             if stream:
-                return await self._chat_stream(messages, system_prompt, tools)
+                # Return async generator for streaming
+                # Note: This doesn't work well with async def, so users should call chat_stream() directly
+                return self._create_streaming_response(messages, system_prompt, tools)
             else:
                 return await self._chat_nonstream(messages, system_prompt, tools)
 
         except Exception as e:
             logger.error(f"Chat failed: {e}")
             raise
+
+    async def chat_stream(
+        self,
+        message: str,
+        system_prompt: Optional[str] = None,
+        tools_enabled: bool = True
+    ) -> AsyncIterator[str]:
+        """
+        Stream chat response from Claude
+
+        Args:
+            message: User message
+            system_prompt: Optional system prompt
+            tools_enabled: Whether to enable tool use
+
+        Yields:
+            Text chunks as they arrive
+        """
+        # Add user message to history
+        self.conversation_history.append(
+            ClaudeMessage(role="user", content=message)
+        )
+
+        # Build messages for API
+        messages = [
+            {"role": m.role, "content": m.content}
+            for m in self.conversation_history
+        ]
+
+        # Build tools config
+        tools = None
+        if tools_enabled and self.tools:
+            tools = [
+                {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "input_schema": tool.input_schema
+                }
+                for tool in self.tools.values()
+            ]
+
+        # Stream response
+        async with self.client.messages.stream(
+            model=self.model.value,
+            max_tokens=self.max_tokens,
+            temperature=self.temperature,
+            system=system_prompt,
+            messages=messages,
+            tools=tools
+        ) as stream:
+            full_response = ""
+            async for text in stream.text_stream:
+                full_response += text
+                yield text
+
+            # Add assistant response to history
+            self.conversation_history.append(
+                ClaudeMessage(role="assistant", content=full_response)
+            )
+
+    async def _create_streaming_response(
+        self,
+        messages: List[Dict],
+        system_prompt: Optional[str],
+        tools: Optional[List[Dict]]
+    ) -> AsyncIterator[str]:
+        """Create streaming response - yields text chunks"""
+        full_response = ""
+        async with self.client.messages.stream(
+            model=self.model.value,
+            max_tokens=self.max_tokens,
+            temperature=self.temperature,
+            system=system_prompt,
+            messages=messages,
+            tools=tools
+        ) as stream:
+            async for text in stream.text_stream:
+                full_response += text
+                yield text
+
+        # Add assistant response to history
+        self.conversation_history.append(
+            ClaudeMessage(role="assistant", content=full_response)
+        )
 
     async def _chat_nonstream(
         self,

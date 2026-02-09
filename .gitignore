@@ -240,3 +240,24 @@ tmpclaude-*
 # Project specific ignores
 .beads/
 .beads-cognee-integration/
+
+# Claude Code local settings (should not be in git)
+.claude/settings.local.json
+
+# Temporary and backup files (should not be in git)
+* - Copy.md
+* - Copy.*
+backups/
+fix_*.py
+*_COPY*
+*_backup.*
+
+# Database files (should not be in git)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Temporary test reports (keep only final versions)
+MCP_TOOLS_TEST_COMPLETION_REPORT.md

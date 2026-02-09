@@ -8,6 +8,7 @@ Provides RESTful endpoints for external systems to interact with coordination la
 import asyncio
 import json
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
@@ -28,11 +29,46 @@ from .distributed_decision import (
 
 logger = logging.getLogger(__name__)
 
-# FastAPI app initialization
+# Global coordination components
+coordinator = None
+orchestrator = None
+decision_maker = None
+
+# Lifespan context manager for startup/shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage lifespan events for coordination API"""
+    global coordinator, orchestrator, decision_maker
+
+    # Startup
+    try:
+        from ..agent_memory_integration import AgentMemoryIntegration
+        integration = AgentMemoryIntegration()
+        await integration.initialize()
+
+        coordinator = SubAgentCoordinator(integration)
+        orchestrator = TaskOrchestrationEngine(coordinator)
+        decision_maker = DistributedDecisionMaker(coordinator)
+
+        logger.info("Coordination API initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize coordination API: {e}")
+        raise
+
+    yield
+
+    # Shutdown
+    if coordinator and hasattr(coordinator, 'integration'):
+        await coordinator.integration.close()
+
+    logger.info("Coordination API shutdown complete")
+
+# FastAPI app initialization with lifespan
 app = FastAPI(
     title="Enhanced Cognee Coordination API",
     description="Unified coordination interface for multi-agent system",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # CORS middleware
@@ -98,44 +134,11 @@ class CapabilityRequest(BaseModel):
     output_types: List[str]
     max_concurrent_tasks: int = 1
 
-# Global coordination instances
-coordinator: Optional[SubAgentCoordinator] = None
-orchestrator: Optional[TaskOrchestrationEngine] = None
-decision_maker: Optional[DistributedDecisionMaker] = None
-
+# Dependency injection function
 async def get_coordination_components():
     """Dependency injection for coordination components"""
     global coordinator, orchestrator, decision_maker
     return coordinator, orchestrator, decision_maker
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize coordination components on startup"""
-    global coordinator, orchestrator, decision_maker
-
-    try:
-        from ..agent_memory_integration import AgentMemoryIntegration
-        integration = AgentMemoryIntegration()
-        await integration.initialize()
-
-        coordinator = SubAgentCoordinator(integration)
-        orchestrator = TaskOrchestrationEngine(coordinator)
-        decision_maker = DistributedDecisionMaker(coordinator)
-
-        logger.info("Coordination API initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize coordination API: {e}")
-        raise
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup coordination components on shutdown"""
-    global coordinator
-
-    if coordinator and hasattr(coordinator, 'integration'):
-        await coordinator.integration.close()
-
-    logger.info("Coordination API shutdown complete")
 
 # Health check endpoint
 @app.get("/health")

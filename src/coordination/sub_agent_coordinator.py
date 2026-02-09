@@ -55,7 +55,7 @@ class AgentTask:
     assigned_to: List[str]
     created_by: str
     priority: TaskPriority
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     deadline: Optional[datetime] = None
     dependencies: List[str] = field(default_factory=list)
     status: str = "pending"
@@ -73,7 +73,7 @@ class AgentMessage:
     subject: str
     content: Dict[str, Any]
     priority: TaskPriority = TaskPriority.NORMAL
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     reply_to: Optional[str] = None
     requires_response: bool = False
     responded_at: Optional[datetime] = None
@@ -89,7 +89,7 @@ class AgentCapability:
     max_concurrent_tasks: int = 1
     avg_processing_time: Optional[float] = None  # in seconds
     success_rate: float = 1.0
-    last_updated: datetime = field(default_factory=datetime.utcnow)
+    last_updated: datetime = field(default_factory=lambda: datetime.now(UTC))
 
 class SubAgentCoordinator:
     """

@@ -68,7 +68,7 @@ class DecisionVote:
     confidence: float = 1.0
     reasoning: str = ""
     expertise_weight: float = 1.0
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
 @dataclass
 class DecisionProposal:
@@ -84,7 +84,7 @@ class DecisionProposal:
     required_participants: List[str] = field(default_factory=list)
     voting_deadline: Optional[datetime] = None
     consensus_threshold: float = 0.7  # 70% agreement for consensus
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
@@ -97,7 +97,7 @@ class Decision:
     result: Optional[Any] = None
     implementation_plan: Optional[Dict[str, Any]] = None
     debate_messages: List[Dict[str, Any]] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     completed_at: Optional[datetime] = None
     confidence_score: float = 0.0
 

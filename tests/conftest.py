@@ -16,6 +16,8 @@ import json
 # Add project to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "bin"))
+sys.path.insert(0, str(project_root / "src"))
 
 # Configure logging for tests
 logging.basicConfig(
@@ -75,10 +77,16 @@ async def mock_postgres_pool() -> AsyncGenerator:
         async def __aexit__(self, *args):
             pass
 
-    # Create the pool mock with acquire returning the context manager
-    mock_pool = Mock()
-    mock_pool.acquire = lambda: MockConnectionContext()
+    # Create pool object without using Mock() to avoid AsyncMock wrapping
+    class MockPool:
+        def __init__(self):
+            self._conn_ctx = MockConnectionContext()
 
+        def acquire(self):
+            """Return connection context - must NOT be async"""
+            return self._conn_ctx
+
+    mock_pool = MockPool()
     yield mock_pool
 
 

@@ -12,12 +12,15 @@ Comprehensive security implementation addressing all identified issues:
 """
 
 import os
+import sys
 import re
+import math
 import hashlib
 import secrets
 import logging
 import json
 import time
+import traceback
 import boto3
 import magic
 from datetime import datetime, timedelta
@@ -30,8 +33,8 @@ from functools import wraps
 import hashlib
 import bcrypt
 import passlib.hash
-from passlib.hash import bcrypt, argon2
-from passlib.password_hash import PasswordHash
+from passlib.hash import bcrypt as passlib_bcrypt, argon2
+from passlib.context import CryptContext
 from fastapi import HTTPException, Request, Response, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -589,9 +592,11 @@ class EnhancedPasswordPolicy:
         for char in password:
             char_count[char] = char_count.get(char, 0) + 1
 
-        max_count = max(char_count.values())
-        if max_count > len(password) * 0.5:
-            return True
+        # Handle empty password case
+        if char_count:
+            max_count = max(char_count.values())
+            if max_count > len(password) * 0.5:
+                return True
 
         return False
 

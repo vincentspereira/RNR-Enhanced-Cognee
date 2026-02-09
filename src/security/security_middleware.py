@@ -6,6 +6,7 @@ FastAPI middleware implementations for all security features
 
 import time
 import logging
+import secrets
 from datetime import datetime
 from typing import Dict, Any, Optional
 from fastapi import Request, Response, HTTPException, status
@@ -202,7 +203,7 @@ class FileUploadSecurityMiddleware(BaseHTTPMiddleware):
             for file_info in files_to_validate:
                 file = file_info['file']
                 file_content = await file.read()
-                await file.seek(0)  # Reset file pointer
+                file.seek(0)  # Reset file pointer (synchronous)
 
                 # Perform comprehensive validation
                 is_valid, validation_message = self.input_validator.validate_file_upload(
