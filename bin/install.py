@@ -132,8 +132,20 @@ class EnhancedCogneeInstaller:
                 print(f"⚠️  {item} not found, skipping")
 
         # Create virtual environment
-        print("\n🐍 Creating Python virtual environment...")
+        print("\n[INFO] Creating Python virtual environment...")
         venv_dir = self.install_dir / "venv"
+
+        # Path validation for security
+        import sys
+        sys.path.insert(0, str(self.install_dir / "src"))
+        from security_mcp import validate_path_safe
+
+        # Validate venv_dir is within allowed directory
+        try:
+            venv_dir = validate_path_safe(str(venv_dir), str(self.install_dir))
+        except Exception as e:
+            print(f"[ERROR] Path validation failed: {e}")
+            raise
 
         if self.system == "windows":
             subprocess.run([sys.executable, '-m', 'venv', str(venv_dir)], check=True)
@@ -145,8 +157,16 @@ class EnhancedCogneeInstaller:
             pip_exe = venv_dir / "bin" / "pip"
 
         # Install Python dependencies
-        print("\n📚 Installing Python dependencies...")
+        print("\n[INFO] Installing Python dependencies...")
         requirements_file = self.install_dir / "requirements.txt"
+
+        # Validate requirements_file path
+        try:
+            requirements_file = validate_path_safe(str(requirements_file), str(self.install_dir))
+        except Exception as e:
+            print(f"[ERROR] Path validation failed: {e}")
+            raise
+
         if requirements_file.exists():
             subprocess.run([str(pip_exe), 'install', '-r', str(requirements_file)], check=True)
         else:
@@ -161,24 +181,39 @@ class EnhancedCogneeInstaller:
         # Change to installation directory
         os.chdir(self.install_dir)
 
+        # Validate paths before docker operations
+        import sys
+        sys.path.insert(0, str(self.install_dir / "src"))
+        from security_mcp import validate_path_safe
+
         # Create Docker network
         try:
-            subprocess.run(['docker', 'network', 'create', 'enhanced-cognee-network'],
-                         capture_output=True, check=True)
-            print("✅ Created Docker network")
+            network_valid = True  # Network creation doesn't need path validation
+            if network_valid:
+                subprocess.run(['docker', 'network', 'create', 'enhanced-cognee-network'],
+                             capture_output=True, check=True)
+                print("[OK] Created Docker network")
         except subprocess.CalledProcessError:
-            print("ℹ️  Docker network already exists")
+            print("[INFO] Docker network already exists")
 
         # Start containers
         compose_file = self.install_dir / "config/docker/docker-compose-enhanced-cognee.yml"
+
+        # Validate compose_file path
+        try:
+            compose_file = validate_path_safe(str(compose_file), str(self.install_dir))
+        except Exception as e:
+            print(f"[ERROR] Path validation failed: {e}")
+            raise
+
         if compose_file.exists():
             try:
                 subprocess.run(['docker-compose', '-f', str(compose_file), 'up', '-d'],
                              check=True)
-                print("✅ Started Docker containers")
+                print("[OK] Started Docker containers")
 
                 # Wait for containers to be ready
-                print("⏳ Waiting for containers to be ready...")
+                print("[INFO] Waiting for containers to be ready...")
                 import time
                 time.sleep(10)
 

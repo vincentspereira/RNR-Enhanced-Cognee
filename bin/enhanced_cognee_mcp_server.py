@@ -53,6 +53,39 @@ from src.multi_language_search import multi_language_search
 from src.intelligent_summarization import IntelligentMemorySummarizer, SummaryStrategy
 from src.advanced_search_reranking import AdvancedSearchEngine, ReRankingStrategy
 
+# Security and validation
+from src.security_mcp import (
+    ValidationError,
+    AuthorizationError,
+    ConfirmationRequiredError,
+    validate_uuid,
+    validate_days,
+    validate_limit,
+    validate_agent_id,
+    validate_category,
+    validate_memory_content,
+    sanitize_string,
+    authorizer,
+    confirmation_manager,
+    require_agent_authorization,
+    validate_dry_run_safe,
+    handle_database_exception,
+    handle_backup_exception
+)
+
+# Code Quality: Response Formatting and Transaction Support
+from src.logging_config import get_logger
+from src.mcp_response_formatter import (
+    success_response,
+    error_response,
+    format_response
+)
+from src.transaction_manager import (
+    TransactionManager,
+    execute_in_transaction,
+    execute_operation_with_transaction
+)
+
 # Enhanced module instances
 memory_manager = None
 memory_deduplicator = None
@@ -68,6 +101,9 @@ multi_language_search_instance = None
 # Sprint 10 instances
 intelligent_summarizer = None
 advanced_search_engine = None
+
+# Code Quality instances
+app_logger = get_logger(__name__)
 
 # Initialize Enhanced stack connections
 postgres_pool = None
@@ -155,7 +191,12 @@ async def init_enhanced_stack():
     # Initialize Memory Deduplicator
     if postgres_pool and qdrant_client:
         memory_deduplicator = MemoryDeduplicator(postgres_pool, qdrant_client)
-        logger.info("OK Memory Deduplicator initialized")
+        app_logger.info("Memory Deduplicator initialized")
+
+    # Initialize Transaction Manager
+    if postgres_pool:
+        transaction_manager = TransactionManager(postgres_pool)
+        app_logger.info("Transaction Manager initialized")
 
     # Initialize Memory Summarizer
     if postgres_pool:
@@ -243,6 +284,8 @@ async def cognify(data: str) -> str:
     """
     Transform data into knowledge graph using Enhanced Cognee
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when processing data
+
     Parameters:
     -----------
     - data: Text data to process and add to the knowledge graph
@@ -310,6 +353,8 @@ async def search(query: str, limit: int = 10) -> str:
     """
     Search the knowledge graph using Enhanced Cognee
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when searching knowledge
+
     Parameters:
     -----------
     - query: Search query text
@@ -363,6 +408,8 @@ async def search(query: str, limit: int = 10) -> str:
 async def get_stats() -> str:
     """
     Get Enhanced Cognee statistics
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when checking system status
 
     Returns:
     --------
@@ -423,6 +470,8 @@ async def health() -> str:
     """
     Health check for Enhanced Cognee server
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs on startup to verify system status
+
     Returns:
     --------
     - Health status message
@@ -478,6 +527,8 @@ async def health() -> str:
 async def list_data() -> str:
     """
     List all data in the knowledge graph
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when listing documents
 
     Returns:
     --------
@@ -537,7 +588,7 @@ async def add_memory(
     This is the standard memory tool interface for Claude Code integration.
     Memories are stored in PostgreSQL and indexed in Qdrant for semantic search.
 
-    AUTO-TRIGGERED: When AI IDE wants to remember information
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when they want to remember information
 
     Parameters:
     -----------
@@ -553,6 +604,12 @@ async def add_memory(
     try:
         import uuid
         from datetime import datetime, UTC
+
+        # Input validation
+        content = validate_memory_content(content)
+        agent_id = validate_agent_id(agent_id)
+        if user_id:
+            user_id = sanitize_string(user_id, max_length=100)
 
         if not postgres_pool:
             return "ERR PostgreSQL not available - cannot add memory"
@@ -637,6 +694,9 @@ async def add_memory(
 
         return f"OK Memory added (ID: {memory_id})"
 
+    except ValidationError as e:
+        logger.error(f"add_memory validation failed: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"add_memory failed: {e}")
         return f"ERR Failed to add memory: {str(e)}"
@@ -655,6 +715,8 @@ async def search_memories(
     This is the standard memory search tool for Claude Code integration.
     Performs both text-based and semantic vector search.
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when searching for past information
+
     Parameters:
     -----------
     - query: Search query text
@@ -670,6 +732,14 @@ async def search_memories(
     start_time = time.time()
 
     try:
+        # Input validation
+        query = sanitize_string(query, max_length=1000)
+        limit = validate_limit(limit, "limit")
+        if user_id:
+            user_id = sanitize_string(user_id, max_length=100)
+        if agent_id:
+            agent_id = validate_agent_id(agent_id)
+
         if not postgres_pool:
             return "ERR PostgreSQL not available - cannot search memories"
 
@@ -739,6 +809,9 @@ async def search_memories(
             else:
                 return f"OK No memories found for query: {query}"
 
+    except ValidationError as e:
+        logger.error(f"search_memories validation failed: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"search_memories failed: {e}")
         return f"ERR Failed to search memories: {str(e)}"
@@ -752,6 +825,8 @@ async def get_memories(
 ) -> str:
     """
     List all memories with filters (Standard Memory MCP Tool)
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when loading context for sessions
 
     Parameters:
     -----------
@@ -816,6 +891,8 @@ async def get_memory(memory_id: str) -> str:
     """
     Retrieve a specific memory by ID (Standard Memory MCP Tool)
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when referencing specific memory IDs
+
     Parameters:
     -----------
     - memory_id: The unique ID of the memory to retrieve
@@ -870,7 +947,7 @@ async def update_memory(memory_id: str, content: str) -> str:
     """
     Update an existing memory (Standard Memory MCP Tool)
 
-    AUTO-TRIGGERED: When AI IDE needs to correct or update information
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when correcting or updating information
 
     Parameters:
     -----------
@@ -945,28 +1022,55 @@ async def update_memory(memory_id: str, content: str) -> str:
 
 
 @mcp.tool()
-async def delete_memory(memory_id: str) -> str:
+async def delete_memory(
+    memory_id: str,
+    agent_id: str = "claude-code",
+    confirm_token: Optional[str] = None
+) -> str:
     """
     Delete a specific memory (Standard Memory MCP Tool)
 
-    MANUAL - User must explicitly delete memories
+    TRIGGER TYPE: (M) Manual - User must explicitly trigger this destructive operation
+
+    SECURITY: Requires authorization and confirmation for non-admin agents.
 
     Parameters:
     -----------
     - memory_id: The unique ID of the memory to delete
+    - agent_id: Agent requesting deletion (default: claude-code)
+    - confirm_token: Optional confirmation token for non-dry-run operations
 
     Returns:
     --------
     - Status message indicating success or failure
     """
     try:
+        # Input validation
+        memory_id = validate_uuid(memory_id, "memory_id")
+        agent_id = validate_agent_id(agent_id)
+
+        # Require confirmation for destructive operation
+        confirmation_manager.require_confirmation(
+            operation="delete_memory",
+            details={"memory_id": memory_id, "agent_id": agent_id},
+            confirm_token=confirm_token
+        )
+
+        # Authorization check
+        await require_agent_authorization(
+            agent_id=agent_id,
+            operation="delete_memory",
+            memory_id=memory_id
+        )
+
         if not postgres_pool:
             return "ERR PostgreSQL not available - cannot delete memory"
 
         async with postgres_pool.acquire() as conn:
             # Check if memory exists
             existing = await conn.fetchval("""
-                SELECT id FROM shared_memory.documents WHERE id = $1
+                SELECT id, agent_id, data->>'category' as category
+                FROM shared_memory.documents WHERE id = $1
             """, memory_id)
 
             if not existing:
@@ -977,7 +1081,7 @@ async def delete_memory(memory_id: str) -> str:
                 DELETE FROM shared_memory.documents WHERE id = $1
             """, memory_id)
 
-            logger.info(f"OK Deleted memory: {memory_id}")
+            logger.info(f"OK Deleted memory: {memory_id} by agent: {agent_id}")
 
             # Publish deletion event for real-time sync
             if realtime_sync:
@@ -985,8 +1089,8 @@ async def delete_memory(memory_id: str) -> str:
                     await realtime_sync.publish_memory_event(
                         event_type="memory_deleted",
                         memory_id=memory_id,
-                        agent_id="system",
-                        data={}
+                        agent_id=agent_id,
+                        data=json.dumps({"authorized": True})
                     )
                 except Exception as e:
                     logger.warning(f"Failed to publish memory deletion event: {e}")
@@ -995,7 +1099,7 @@ async def delete_memory(memory_id: str) -> str:
             if cross_agent_sharing and realtime_sync:
                 try:
                     await realtime_sync.sync_agent_state(
-                        source_agent="system",
+                        source_agent=agent_id,
                         target_agent="all",
                         category="general"
                     )
@@ -1004,6 +1108,15 @@ async def delete_memory(memory_id: str) -> str:
 
             return f"OK Memory deleted (ID: {memory_id})"
 
+    except ValidationError as e:
+        logger.error(f"delete_memory validation failed: {e}")
+        return str(e)
+    except AuthorizationError as e:
+        logger.error(f"delete_memory authorization failed: {e}")
+        return str(e)
+    except ConfirmationRequiredError as e:
+        logger.info(f"delete_memory confirmation required: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"delete_memory failed: {e}")
         return f"ERR Failed to delete memory: {str(e)}"
@@ -1013,6 +1126,8 @@ async def delete_memory(memory_id: str) -> str:
 async def list_agents() -> str:
     """
     List all agents that have stored memories (Standard Memory MCP Tool)
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when listing available agents
 
     Returns:
     --------
@@ -1060,25 +1175,56 @@ async def list_agents() -> str:
 # ============================================================================
 
 @mcp.tool()
-async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
+async def expire_memories(
+    days: int = 90,
+    dry_run: bool = False,
+    agent_id: str = "claude-code",
+    confirm_token: Optional[str] = None
+) -> str:
     """
     Expire or archive memories older than specified days (Memory Management Tool)
 
-    MANUAL - User must explicitly trigger memory expiration
+    TRIGGER TYPE: (M) Manual - User must explicitly trigger this destructive operation
+
+    SECURITY: Requires confirmation for non-dry-run bulk deletion.
 
     Parameters:
     -----------
     - days: Number of days after which memories expire (default: 90)
     - dry_run: If True, simulate without actually deleting (default: False)
+    - agent_id: Agent requesting expiration (default: claude-code)
+    - confirm_token: Confirmation token for non-dry-run operations
 
     Returns:
     --------
     - Result of the expiry operation with memory count
     """
-    if not memory_manager:
-        return "ERR Memory Manager not available"
-
     try:
+        # Input validation
+        days = validate_days(days, "days")
+        agent_id = validate_agent_id(agent_id)
+
+        # Require confirmation for destructive operation (unless dry run)
+        if not dry_run:
+            confirmation_manager.require_confirmation(
+                operation="expire_memories",
+                details={
+                    "days": days,
+                    "agent_id": agent_id,
+                    "bulk_operation": True
+                },
+                confirm_token=confirm_token
+            )
+
+        # Authorization check for bulk deletion
+        await require_agent_authorization(
+            agent_id=agent_id,
+            operation="expire_memories_bulk"
+        )
+
+        if not memory_manager:
+            return "ERR Memory Manager not available"
+
         # AUTO-TRIGGER: Get memory age stats before expiring
         try:
             age_stats = await get_memory_age_stats()
@@ -1095,7 +1241,9 @@ async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
         memories_affected = result.get('memories_affected', 0)
 
         if result.get("status") == "dry_run":
-            return f"OK DRY RUN: Would expire {memories_affected} memories older than {days} days"
+            return (f"OK DRY RUN: Would expire {memories_affected} memories "
+                   f"older than {days} days\n"
+                   f"To confirm, re-run with dry_run=False and confirm_token")
 
         elif result.get("status") == "success":
             # AUTO-TRIGGER: Publish expiration event
@@ -1104,10 +1252,11 @@ async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
                     await realtime_sync.publish_memory_event(
                         event_type="memory_expired",
                         memory_id=f"expire_{days}",
-                        agent_id="system",
+                        agent_id=agent_id,
                         data=json.dumps({
                             "days": days,
-                            "memories_expired": memories_affected
+                            "memories_expired": memories_affected,
+                            "authorized": True
                         })
                     )
                 except Exception as e:
@@ -1140,6 +1289,15 @@ async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
         else:
             return f"ERR {result.get('error', 'Unknown error')}"
 
+    except ValidationError as e:
+        logger.error(f"expire_memories validation failed: {e}")
+        return str(e)
+    except AuthorizationError as e:
+        logger.error(f"expire_memories authorization failed: {e}")
+        return str(e)
+    except ConfirmationRequiredError as e:
+        logger.info(f"expire_memories confirmation required: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"expire_memories failed: {e}")
         return f"ERR Failed to expire memories: {str(e)}"
@@ -1149,6 +1307,8 @@ async def expire_memories(days: int = 90, dry_run: bool = False) -> str:
 async def get_memory_age_stats() -> str:
     """
     Get statistics about memory age distribution (Memory Management Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered by Enhanced Cognee for memory operations
 
     Returns:
     --------
@@ -1201,7 +1361,7 @@ async def set_memory_ttl(memory_id: str, ttl_days: int) -> str:
     """
     Set time-to-live (TTL) for a specific memory (Memory Management Tool)
 
-    MANUAL - User must explicitly set TTL policies
+    TRIGGER TYPE: (M) Manual - User must explicitly configure TTL policies
 
     Parameters:
     -----------
@@ -1257,25 +1417,40 @@ async def set_memory_ttl(memory_id: str, ttl_days: int) -> str:
 
 
 @mcp.tool()
-async def archive_category(category: str, days: int = 180) -> str:
+async def archive_category(
+    category: str,
+    days: int = 180,
+    agent_id: str = "system"
+) -> str:
     """
     Archive all memories from a specific category older than specified days
 
-    MANUAL - User must explicitly trigger archival operations
+    TRIGGER TYPE: (S) System - Automatically triggered by Enhanced Cognee based on age policy
+
+    The system automatically archives categories when:
+    - Memories exceed age threshold (default: 180 days)
+    - Category exceeds memory count threshold
+    - Scheduled archival policy is triggered
 
     Parameters:
     -----------
     - category: Memory category to archive (e.g., 'trading', 'development')
     - days: Age threshold for archiving (default: 180 days)
+    - agent_id: Agent triggering archival (default: system)
 
     Returns:
     --------
     - Result of archival operation
     """
-    if not memory_manager:
-        return "ERR Memory Manager not available"
-
     try:
+        # Input validation
+        category = validate_category(category)
+        days = validate_days(days, "days")
+        agent_id = validate_agent_id(agent_id)
+
+        if not memory_manager:
+            return "ERR Memory Manager not available"
+
         # AUTO-TRIGGER: Get memory age stats before archiving
         try:
             age_stats = await get_memory_age_stats()
@@ -1294,11 +1469,12 @@ async def archive_category(category: str, days: int = 180) -> str:
                     await realtime_sync.publish_memory_event(
                         event_type="memory_archived",
                         memory_id=f"archive_{category}",
-                        agent_id="system",
+                        agent_id=agent_id,
                         data=json.dumps({
                             "category": category,
                             "days": days,
-                            "memories_archived": memories_archived
+                            "memories_archived": memories_archived,
+                            "auto_triggered": True
                         })
                     )
                 except Exception as e:
@@ -1316,11 +1492,12 @@ async def archive_category(category: str, days: int = 180) -> str:
                 try:
                     await performance_analytics.log_operation(
                         operation="archive_category",
-                        agent_id="system",
+                        agent_id=agent_id,
                         metadata={
                             "category": category,
                             "days": days,
-                            "memories_archived": memories_archived
+                            "memories_archived": memories_archived,
+                            "auto_triggered": True
                         }
                     )
                 except Exception as e:
@@ -1331,6 +1508,9 @@ async def archive_category(category: str, days: int = 180) -> str:
         else:
             return f"ERR {result.get('error', 'Unknown error')}"
 
+    except ValidationError as e:
+        logger.error(f"archive_category validation failed: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"archive_category failed: {e}")
         return f"ERR Failed to archive category: {str(e)}"
@@ -1345,6 +1525,8 @@ async def archive_category(category: str, days: int = 180) -> str:
 async def check_duplicate(content: str, agent_id: str = "default") -> str:
     """
     Check if content is duplicate before adding (Memory Deduplication Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered before add_memory operations
 
     Parameters:
     -----------
@@ -1388,6 +1570,8 @@ async def check_duplicate(content: str, agent_id: str = "default") -> str:
 async def auto_deduplicate(agent_id: str = None) -> str:
     """
     Automatically find and handle duplicate memories (Memory Deduplication Tool)
+
+    TRIGGER TYPE: (S) System - Automatically scheduled for periodic deduplication maintenance
 
     Parameters:
     -----------
@@ -1464,6 +1648,8 @@ async def get_deduplication_stats() -> str:
     """
     Get statistics about memory deduplication (Memory Deduplication Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered for deduplication monitoring
+
     Returns:
     --------
     - Deduplication statistics
@@ -1505,96 +1691,15 @@ async def get_deduplication_stats() -> str:
 # ============================================================================
 # MEMORY SUMMARIZATION TOOLS - Automatic summarization for storage optimization
 # ============================================================================
-
-@mcp.tool()
-async def summarize_old_memories(days: int = 30, min_length: int = 1000, dry_run: bool = False) -> str:
-    """
-    Summarize memories older than specified days (Memory Summarization Tool)
-
-    Parameters:
-    -----------
-    - days: Age threshold for summarization (default: 30)
-    - min_length: Minimum content length to summarize (default: 1000)
-    - dry_run: If True, simulate without summarizing (default: False)
-
-    Returns:
-    --------
-    - Summarization results with compression statistics
-    """
-    if not memory_summarizer:
-        return "ERR Memory Summarizer not available"
-
-    try:
-        # AUTO-TRIGGER: Get memory age stats before summarizing
-        try:
-            age_stats = await get_memory_age_stats()
-            logger.info(f"Memory age stats before summarization: {age_stats}")
-        except Exception as e:
-            logger.warning(f"Failed to get memory age stats: {e}")
-
-        result = await memory_summarizer.summarize_old_memories(days, min_length, dry_run)
-
-        if result.get("status") == "success":
-            memories_summarized = result.get('memories_summarized', 0)
-            space_saved = result.get('space_saved_bytes', 0)
-
-            if dry_run:
-                return (f"OK DRY RUN: Found {result.get('candidates_found', 0)} memories to summarize "
-                       f"older than {days} days")
-            else:
-                # AUTO-TRIGGER: Publish summarization event
-                if realtime_sync:
-                    try:
-                        await realtime_sync.publish_memory_event(
-                            event_type="memory_summarized",
-                            memory_id=f"summarize_{days}",
-                            agent_id="system",
-                            data=json.dumps({
-                                "days": days,
-                                "memories_summarized": memories_summarized,
-                                "space_saved": space_saved
-                            })
-                        )
-                    except Exception as e:
-                        logger.warning(f"Failed to publish summarization event: {e}")
-
-                # AUTO-TRIGGER: Update summary statistics
-                try:
-                    summary_stats = await get_summary_stats()
-                    logger.info(f"Updated summary stats after summarization: {summary_stats}")
-                except Exception as e:
-                    logger.warning(f"Failed to update summary stats: {e}")
-
-                # AUTO-TRIGGER: Log performance metrics
-                if performance_analytics:
-                    try:
-                        await performance_analytics.log_operation(
-                            operation="summarize_old_memories",
-                            agent_id="system",
-                            metadata={
-                                "days": days,
-                                "min_length": min_length,
-                                "memories_summarized": memories_summarized,
-                                "space_saved": space_saved
-                            }
-                        )
-                    except Exception as e:
-                        logger.warning(f"Failed to log summarization performance: {e}")
-
-                return (f"OK Summarized {memories_summarized} memories:\n"
-                       f"  Space saved: {space_saved} bytes")
-        else:
-            return f"ERR {result.get('error', 'Unknown error')}"
-
-    except Exception as e:
-        logger.error(f"summarize_old_memories failed: {e}")
-        return f"ERR Failed to summarize memories: {str(e)}"
-
-
+# NOTE: summarize_old_memories implementation moved to line 3012 (Sprint 10 version)
+# This uses scheduled_summarization module for improved reliability
+# ============================================================================
 @mcp.tool()
 async def summarize_category(category: str, days: int = 30) -> str:
     """
     Summarize all memories in a category older than specified days (Memory Summarization Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered by policy or scheduled maintenance
 
     Parameters:
     -----------
@@ -1672,6 +1777,8 @@ async def get_summary_stats() -> str:
     """
     Get statistics about memory summarization (Memory Summarization Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered for summarization monitoring
+
     Returns:
     --------
     - Summarization statistics
@@ -1719,6 +1826,8 @@ async def get_summary_stats() -> str:
 async def get_performance_metrics() -> str:
     """
     Get comprehensive performance metrics (Performance Analytics Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered for performance monitoring
 
     Returns:
     --------
@@ -1791,6 +1900,8 @@ async def get_slow_queries(threshold_ms: float = 1000, limit: int = 10) -> str:
     """
     Get slow queries above threshold (Performance Analytics Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered on performance issues
+
     Parameters:
     -----------
     - threshold_ms: Query time threshold in ms (default: 1000)
@@ -1843,6 +1954,8 @@ async def get_prometheus_metrics() -> str:
     """
     Export metrics in Prometheus format (Performance Analytics Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered for monitoring export
+
     Returns:
     --------
     - Prometheus-compatible metrics text
@@ -1881,6 +1994,8 @@ async def get_prometheus_metrics() -> str:
 async def set_memory_sharing(memory_id: str, policy: str, allowed_agents: str = None) -> str:
     """
     Set sharing policy for a memory (Cross-Agent Sharing Tool)
+
+    TRIGGER TYPE: (M) Manual - User must explicitly configure sharing policies
 
     Parameters:
     -----------
@@ -1957,6 +2072,8 @@ async def check_memory_access(memory_id: str, agent_id: str) -> str:
     """
     Check if an agent can access a memory (Cross-Agent Sharing Tool)
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered before accessing shared memories
+
     Parameters:
     -----------
     - memory_id: ID of the memory
@@ -2003,6 +2120,8 @@ async def check_memory_access(memory_id: str, agent_id: str) -> str:
 async def get_shared_memories(agent_id: str, limit: int = 50) -> str:
     """
     Get all memories shared with this agent (Cross-Agent Sharing Tool)
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered when loading shared memories
 
     Parameters:
     -----------
@@ -2057,6 +2176,8 @@ async def get_shared_memories(agent_id: str, limit: int = 50) -> str:
 async def create_shared_space(space_name: str, member_agents: str) -> str:
     """
     Create a shared memory space for multiple agents (Cross-Agent Sharing Tool)
+
+    TRIGGER TYPE: (M) Manual - User must explicitly create shared spaces
 
     Parameters:
     -----------
@@ -2131,6 +2252,8 @@ async def publish_memory_event(event_type: str, memory_id: str, agent_id: str, d
     """
     Publish a memory event to all subscribers (Real-Time Sync Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered for memory change events
+
     Parameters:
     -----------
     - event_type: Type of event (memory_added, memory_updated, memory_deleted)
@@ -2169,6 +2292,8 @@ async def publish_memory_event(event_type: str, memory_id: str, agent_id: str, d
 async def get_sync_status() -> str:
     """
     Get synchronization status and statistics (Real-Time Sync Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered for sync diagnostics
 
     Returns:
     --------
@@ -2213,6 +2338,19 @@ async def get_sync_status() -> str:
 async def sync_agent_state(source_agent: str, target_agent: str, category: str = None) -> str:
     """
     Synchronize memory state between two agents (Real-Time Sync Tool)
+
+    Parameters:
+    -----------
+    - source_agent: Source agent ID to sync from
+    - target_agent: Target agent ID to sync to
+    - category: Optional category filter
+
+    Returns:
+    --------
+    - Sync result with memories synced
+    Synchronize memory state between two agents (Real-Time Sync Tool)
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs
 
     Parameters:
     -----------
@@ -2351,10 +2489,22 @@ async def create_backup(
     backup_type: str = "manual",
     databases: Optional[str] = None,
     compress: bool = True,
-    description: str = ""
+    description: str = "",
+    agent_id: str = "system",
+    auto_verify: bool = True
 ) -> str:
     """
     Create a backup of Enhanced Cognee databases (Backup Tool)
+
+    TRIGGER TYPE: (A) Auto - Can be automatically triggered by Claude Code
+
+    This tool can be triggered automatically based on:
+    - Scheduled periodic backups (daily, weekly, monthly)
+    - Pre-operation backup before major changes
+    - High memory count threshold
+    - Manual user request
+
+    SECURITY: Admin privileges required for backup creation.
 
     Parameters:
     -----------
@@ -2362,16 +2512,31 @@ async def create_backup(
     - databases: Comma-separated list of databases to backup (default: all)
     - compress: Whether to compress backups (default: True)
     - description: Optional description
+    - agent_id: Agent requesting backup (default: system)
+    - auto_verify: Auto-trigger verification after creation (default: True)
 
     Returns:
     --------
     - Backup ID and status message
     """
-    if not backup_manager:
-        return "ERR Backup Manager not available"
-
     try:
-        db_list = databases.split(",") if databases else None
+        # Input validation
+        backup_type = sanitize_string(backup_type, max_length=20)
+        description = sanitize_string(description, max_length=500)
+        agent_id = validate_agent_id(agent_id)
+
+        if databases:
+            db_list = [sanitize_string(db.strip(), max_length=50)
+                      for db in databases.split(",")]
+        else:
+            db_list = None
+
+        # Authorization check for backup operations
+        await authorizer.check_backup_permission(agent_id)
+
+        if not backup_manager:
+            return "ERR Backup Manager not available"
+
         backup_id = backup_manager.create_backup(
             backup_type=backup_type,
             databases=db_list,
@@ -2379,26 +2544,28 @@ async def create_backup(
             description=description
         )
 
-        logger.info(f"OK Backup created: {backup_id}")
+        logger.info(f"OK Backup created: {backup_id} by agent: {agent_id}")
 
         # AUTO-TRIGGER: Verify backup integrity
-        try:
-            verification = await verify_backup(backup_id)
-            logger.info(f"Backup verification: {verification}")
-        except Exception as e:
-            logger.warning(f"Backup verification failed: {e}")
+        if auto_verify:
+            try:
+                verification = await verify_backup(backup_id)
+                logger.info(f"Backup verification: {verification}")
+            except Exception as e:
+                logger.warning(f"Backup verification failed: {e}")
 
         # AUTO-TRIGGER: Log performance metrics
         if performance_analytics:
             try:
                 await performance_analytics.log_operation(
                     operation="create_backup",
-                    agent_id="system",
+                    agent_id=agent_id,
                     metadata={
                         "backup_id": backup_id,
                         "backup_type": backup_type,
                         "databases": db_list,
-                        "compressed": compress
+                        "compressed": compress,
+                        "auto_triggered": backup_type in ["daily", "weekly", "monthly"]
                     }
                 )
             except Exception as e:
@@ -2410,19 +2577,26 @@ async def create_backup(
                 await realtime_sync.publish_memory_event(
                     event_type="backup_created",
                     memory_id=backup_id,
-                    agent_id="system",
+                    agent_id=agent_id,
                     data=json.dumps({
                         "backup_type": backup_type,
                         "databases": db_list,
                         "compressed": compress,
-                        "description": description
+                        "description": description,
+                        "auto_triggered": backup_type in ["daily", "weekly", "monthly"]
                     })
                 )
             except Exception as e:
                 logger.warning(f"Failed to publish backup event: {e}")
 
-        return f"OK Backup created (ID: {backup_id})"
+        return f"OK Backup created (ID: {backup_id}) by {agent_id}"
 
+    except ValidationError as e:
+        logger.error(f"create_backup validation failed: {e}")
+        return str(e)
+    except AuthorizationError as e:
+        logger.error(f"create_backup authorization failed: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"create_backup failed: {e}")
         return f"ERR Failed to create backup: {str(e)}"
@@ -2435,6 +2609,7 @@ async def restore_backup(
     validate: bool = True
 ) -> str:
     """
+    TRIGGER TYPE: (M) Manual - User must explicitly trigger restores
     Restore databases from backup (Recovery Tool)
 
     Parameters:
@@ -2545,6 +2720,8 @@ async def list_backups(
     """
     List all backups (Backup Tool)
 
+    TRIGGER TYPE: (A) Auto - Automatically triggered when listing available backups
+
     Parameters:
     -----------
     - backup_type: Filter by backup type (optional)
@@ -2597,6 +2774,11 @@ async def verify_backup(backup_id: str) -> str:
     """
     Verify backup integrity (Backup Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered after create_backup
+
+    This tool is auto-triggered by the system after every backup creation
+    to ensure backup integrity and availability.
+
     Parameters:
     -----------
     - backup_id: Backup ID to verify
@@ -2605,10 +2787,13 @@ async def verify_backup(backup_id: str) -> str:
     --------
     - Verification result
     """
-    if not backup_manager:
-        return "ERR Backup Manager not available"
-
     try:
+        # Input validation
+        backup_id = sanitize_string(backup_id, max_length=100)
+
+        if not backup_manager:
+            return "ERR Backup Manager not available"
+
         backup = backup_manager.get_backup(backup_id)
 
         if not backup:
@@ -2630,7 +2815,8 @@ async def verify_backup(backup_id: str) -> str:
                     metadata={
                         "backup_id": backup_id,
                         "file_count": file_count,
-                        "backup_size": backup['total_size_bytes']
+                        "backup_size": backup['total_size_bytes'],
+                        "auto_triggered": True
                     }
                 )
             except Exception as e:
@@ -2641,6 +2827,9 @@ async def verify_backup(backup_id: str) -> str:
                f"Size: {backup['total_size_bytes']:,} bytes\n"
                f"Checksum: {backup['checksum'][:16]}...")
 
+    except ValidationError as e:
+        logger.error(f"verify_backup validation failed: {e}")
+        return str(e)
     except Exception as e:
         logger.error(f"verify_backup failed: {e}")
         return f"ERR Failed to verify backup: {str(e)}"
@@ -2650,6 +2839,8 @@ async def verify_backup(backup_id: str) -> str:
 async def rollback_restore() -> str:
     """
     Rollback the last restore operation (Recovery Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered on restore failure
 
     Returns:
     --------
@@ -2703,6 +2894,8 @@ async def schedule_task(
     """
     Schedule a maintenance task (Maintenance Scheduler Tool)
 
+    TRIGGER TYPE: (M) Manual - User must explicitly schedule maintenance tasks
+
     Parameters:
     -----------
     - task_name: Name of task (cleanup, archival, optimization, cache_clearing, backup_verification)
@@ -2746,6 +2939,13 @@ async def list_tasks() -> str:
     Returns:
     --------
     - Formatted list of scheduled tasks
+    List all scheduled maintenance tasks (Maintenance Scheduler Tool)
+
+    TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs
+
+    Returns:
+    --------
+    - Formatted list of scheduled tasks
     """
     if not maintenance_scheduler:
         return "ERR Maintenance Scheduler not available"
@@ -2782,6 +2982,17 @@ async def cancel_task(task_id: str) -> str:
     Returns:
     --------
     - Cancellation result
+    Cancel a scheduled maintenance task (Maintenance Scheduler Tool)
+
+    TRIGGER TYPE: (M) Manual - User must explicitly trigger this operation
+
+    Parameters:
+    -----------
+    - task_id: ID of task to cancel
+
+    Returns:
+    --------
+    - Cancellation result
     """
     if not maintenance_scheduler:
         return "ERR Maintenance Scheduler not available"
@@ -2806,6 +3017,7 @@ async def deduplicate(
     dry_run: bool = True
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically triggered for deduplication operations
     Perform memory deduplication (Deduplication Tool)
 
     Parameters:
@@ -2850,6 +3062,8 @@ async def schedule_deduplication(schedule: str = "weekly") -> str:
     """
     Schedule periodic deduplication (Deduplication Tool)
 
+    TRIGGER TYPE: (S) System - Automatically schedules deduplication
+
     Parameters:
     -----------
     - schedule: Schedule type ('weekly', 'daily', 'monthly')
@@ -2874,6 +3088,8 @@ async def schedule_deduplication(schedule: str = "weekly") -> str:
 async def deduplication_report(deduplication_id: Optional[str] = None) -> str:
     """
     Generate deduplication report (Deduplication Tool)
+
+    TRIGGER TYPE: (S) System - Automatically generates deduplication reports
 
     Parameters:
     -----------
@@ -2966,6 +3182,8 @@ async def schedule_summarization(schedule: str = "monthly") -> str:
     """
     Schedule periodic summarization (Summarization Tool)
 
+    TRIGGER TYPE: (S) System - Automatically schedules summarization
+
     Parameters:
     -----------
     - schedule: Schedule type ('monthly', 'weekly')
@@ -2990,6 +3208,8 @@ async def schedule_summarization(schedule: str = "monthly") -> str:
 async def summary_stats() -> str:
     """
     Get summarization statistics (Summarization Tool)
+
+    TRIGGER TYPE: (S) System - Automatically triggered for summary statistics
 
     Returns:
     --------
@@ -3025,6 +3245,8 @@ async def detect_language(text: str) -> str:
     """
     Detect language from text (Language Detection Tool)
 
+    TRIGGER TYPE: (S) System - Automatically detects text language
+
     Supports 28 languages: English, Spanish, French, German, Chinese (Simplified/Traditional),
     Japanese, Korean, Russian, Arabic, Portuguese, Italian, Dutch, Polish, Swedish, Danish,
     Norwegian, Finnish, Greek, Czech, Hungarian, Romanian, Bulgarian, Slovak, Croatian,
@@ -3058,6 +3280,8 @@ async def get_supported_languages() -> str:
     """
     Get list of all supported languages (Language Detection Tool)
 
+    TRIGGER TYPE: (S) System - Automatically lists supported languages
+
     Returns:
     --------
     - Complete list of 28 supported languages
@@ -3085,6 +3309,7 @@ async def search_by_language(
     limit: int = 10
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically searches by language filter
     Search memories with language filtering (Multi-Language Search Tool)
 
     Parameters:
@@ -3165,6 +3390,7 @@ async def get_language_distribution(
     agent_id: str = "claude-code"
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically gets language statistics
     Get distribution of languages across memories (Multi-Language Analytics Tool)
 
     Parameters:
@@ -3229,6 +3455,7 @@ async def cross_language_search(
     limit: int = 10
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically performs cross-language search
     Cross-language search with relevance boosting (Multi-Language Search Tool)
 
     Searches memories in any language, with relevance boosting for memories
@@ -3318,6 +3545,8 @@ async def get_search_facets(
     """
     Get search facets for advanced filtering (Advanced Search Tool)
 
+    TRIGGER TYPE: (S) System - Automatically triggered for search faceting
+
     Returns faceted counts for language, memory type, and category.
 
     Parameters:
@@ -3380,6 +3609,7 @@ async def intelligent_summarize(
     llm_provider: str = "openai"
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically triggered for LLM-powered summarization
     Summarize a memory using LLM-based intelligent summarization (Sprint 10)
 
     Parameters:
@@ -3452,6 +3682,7 @@ async def auto_summarize_old_memories(
     strategy: str = "standard"
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically batch summarizes old memories
     Automatically summarize old memories (Sprint 10)
 
     Parameters:
@@ -3512,6 +3743,7 @@ async def cluster_memories(
     limit: int = 100
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically clusters memories semantically
     Cluster related memories using semantic similarity (Sprint 10)
 
     Parameters:
@@ -3590,6 +3822,7 @@ async def advanced_search(
     expand_query: bool = True
 ) -> str:
     """
+    TRIGGER TYPE: (S) System - Automatically performs advanced search with re-ranking
     Advanced search with query expansion and re-ranking (Sprint 10)
 
     Parameters:
@@ -3652,6 +3885,8 @@ async def expand_search_query(query: str, max_expansions: int = 5) -> str:
     """
     Expand search query with related terms using LLM (Sprint 10)
 
+    TRIGGER TYPE: (S) System - Automatically expands queries with LLM
+
     Parameters:
     -----------
     - query: Original search query
@@ -3685,6 +3920,8 @@ async def expand_search_query(query: str, max_expansions: int = 5) -> str:
 async def get_search_analytics(days_back: int = 30) -> str:
     """
     Get search analytics and statistics (Sprint 10)
+
+    TRIGGER TYPE: (S) System - Automatically gets search analytics
 
     Parameters:
     -----------
@@ -3723,6 +3960,8 @@ async def get_search_analytics(days_back: int = 30) -> str:
 async def get_summarization_stats() -> str:
     """
     Get intelligent summarization statistics (Sprint 10)
+
+    TRIGGER TYPE: (S) System - Automatically triggered for summarization metrics
 
     Returns:
     --------
