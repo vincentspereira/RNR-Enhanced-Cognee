@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS shared_memory.embeddings (
     document_id UUID REFERENCES shared_memory.documents(id) ON DELETE CASCADE,
     chunk_index INTEGER NOT NULL,
     content TEXT NOT NULL,
-    embedding vector(1024) NOT NULL,  -- Using Enhanced dimensions
-    embedding_model VARCHAR(100) DEFAULT 'snowflake-arctic-embed2:568m',
+    embedding vector(2560) NOT NULL,  -- Using qwen3-embedding:4b-q4_K_M dimensions
+    embedding_model VARCHAR(100) DEFAULT 'qwen3-embedding:4b-q4_K_M',
     token_count INTEGER,
     chunk_metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS ats_memory.agent_memory (
     memory_type VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(1024),
+    embedding vector(2560),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP WITH TIME ZONE,
 
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS oma_memory.agent_memory (
     memory_type VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(1024),
+    embedding vector(2560),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP WITH TIME ZONE,
 
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS smc_memory.agent_memory (
     memory_type VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(1024),
+    embedding vector(2560),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP WITH TIME ZONE,
 
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS shared_memory.memory_usage (
 
 -- Enhanced stored procedures for memory operations
 CREATE OR REPLACE FUNCTION shared_memory.semantic_search(
-    query_vector vector(1024),
+    query_vector vector(2560),
     limit_count INTEGER DEFAULT 10,
     similarity_threshold FLOAT DEFAULT 0.7,
     memory_filter VARCHAR(10) DEFAULT NULL,

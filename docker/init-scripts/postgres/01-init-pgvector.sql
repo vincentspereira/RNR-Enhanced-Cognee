@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_cognee_config_key ON shared_memory.cognee_config(
 INSERT INTO shared_memory.cognee_config (key, value) VALUES
     ('enhanced_mode', 'true'),
     ('memory_categorization', 'true'),
-    ('vector_dimensions', '1024'),
+    ('vector_dimensions', '2560'),
     ('version', '0.3.9-enhanced')
 ON CONFLICT (key) DO NOTHING;
 

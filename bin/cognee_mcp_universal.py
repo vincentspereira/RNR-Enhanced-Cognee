@@ -118,11 +118,11 @@ def setup_project_environment(project_info):
     os.environ["PROJECT_NAME"] = project_info["name"]
     os.environ["PROJECT_PATH"] = project_info["path"]
 
-    # Multi-Provider LLM Configuration
-    os.environ["LLM_API_KEY"] = "***REMOVED***"
-    os.environ["LLM_MODEL"] = "glm-4.6"
-    os.environ["LLM_PROVIDER"] = "zai"
-    os.environ["LLM_ENDPOINT"] = "https://api.z.ai/v1"
+    # Multi-Provider LLM Configuration (Ollama - Local)
+    os.environ["LLM_API_KEY"] = "ollama"
+    os.environ["LLM_MODEL"] = "glm-4.7-flash:q4_K_M"
+    os.environ["LLM_PROVIDER"] = "ollama"
+    os.environ["LLM_ENDPOINT"] = "http://localhost:11434/v1"
 
     # Enhanced Database Stack Configuration
     os.environ["POSTGRES_HOST"] = "localhost"
@@ -156,10 +156,10 @@ def setup_project_environment(project_info):
 
     # Enhanced Embedding Configuration
     os.environ["EMBEDDING_PROVIDER"] = "ollama"
-    os.environ["EMBEDDING_MODEL"] = "snowflake-arctic-embed2:568m"
+    os.environ["EMBEDDING_MODEL"] = "qwen3-embedding:4b-q4_K_M"
     os.environ["EMBEDDING_ENDPOINT"] = "http://localhost:11434/api/embed"
-    os.environ["EMBEDDING_DIMENSIONS"] = "1024"
-    os.environ["HUGGINGFACE_TOKENIZER"] = "Snowflake/snowflake-arctic-embed2"
+    os.environ["EMBEDDING_DIMENSIONS"] = "2560"
+    os.environ["HUGGINGFACE_TOKENIZER"] = "Qwen/Qwen3-Embedding"
 
     # Project-Specific Memory Configuration
     os.environ["MEMORY_CATEGORIZATION"] = "true"

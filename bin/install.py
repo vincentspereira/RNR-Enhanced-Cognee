@@ -302,9 +302,9 @@ REDIS_PASSWORD=
 
 # Embedding Configuration
 EMBEDDING_PROVIDER=ollama
-EMBEDDING_MODEL=snowflake-arctic-embed2:568m
+EMBEDDING_MODEL=qwen3-embedding:4b-q4_K_M
 EMBEDDING_ENDPOINT=http://localhost:11434/api/embed
-EMBEDDING_DIMENSIONS=1024
+EMBEDDING_DIMENSIONS=2560
 """
 
         with open(env_template_path, 'w') as f:

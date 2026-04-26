@@ -261,3 +261,29 @@ fix_*.py
 
 # Temporary test reports (keep only final versions)
 MCP_TOOLS_TEST_COMPLETION_REPORT.md
+
+# =============================================================================
+# Graphify outputs and archives
+# =============================================================================
+
+# Graphify working files (temp, rebuilt each run)
+.graphify_*.json
+.graphify_*.txt
+.graphify_python
+
+# Graphify extraction cache (safe to delete, auto-regenerated)
+graphify-out/cache/
+*/graphify-out/cache/
+
+# Graphify Obsidian vaults (regeneratable from graph.json via graphify --obsidian)
+graphify-out/obsidian/
+*/graphify-out/obsidian/
+
+# Graphify chunk temp files
+graphify-out/.graphify_chunk_*.json
+*/graphify-out/.graphify_chunk_*.json
+graphify-out/.filelist_*.txt
+*/graphify-out/.filelist_*.txt
+
+# Archived temp files
+.archive/

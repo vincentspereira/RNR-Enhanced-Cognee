@@ -54,8 +54,8 @@ class OllamaEmbeddingEngine(EmbeddingEngine):
 
     def __init__(
         self,
-        model: Optional[str] = "avr/sfr-embedding-mistral:latest",
-        dimensions: Optional[int] = 1024,
+        model: Optional[str] = "qwen3-embedding:4b-q4_K_M",
+        dimensions: Optional[int] = 2560,
         max_completion_tokens: int = 512,
         endpoint: Optional[str] = "http://localhost:11434/api/embeddings",
         huggingface_tokenizer: Optional[str] = None,

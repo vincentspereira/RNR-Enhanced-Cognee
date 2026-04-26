@@ -18,16 +18,16 @@ Cognee is now successfully configured as your **primary memory MCP server** with
 
 ### Primary LLM (Z.ai)
 ```bash
-LLM_API_KEY="***REMOVED***"
-LLM_MODEL="glm-4.6"
+LLM_API_KEY="REDACTED"
+LLM_MODEL="zhipu/glm-5"
 LLM_PROVIDER="zai"
-LLM_ENDPOINT="https://api.z.ai/v1"
+LLM_ENDPOINT="https://api.z.ai/api/coding/paas/v4/"
 ```
 
 ### Fallback LLM (Ollama)
 ```bash
 LLM_API_KEY="ollama"
-LLM_MODEL="gpt-oss:20b"
+LLM_MODEL="glm-4.7-flash:q4_K_M"
 LLM_PROVIDER="ollama"
 LLM_ENDPOINT="http://localhost:11434/v1"
 ```
@@ -35,9 +35,9 @@ LLM_ENDPOINT="http://localhost:11434/v1"
 ### Embeddings (Ollama)
 ```bash
 EMBEDDING_PROVIDER="ollama"
-EMBEDDING_MODEL="snowflake-arctic-embed2:568m"
+EMBEDDING_MODEL="qwen3-embedding:4b-q4_K_M"
 EMBEDDING_ENDPOINT="http://localhost:11434/api/embed"
-EMBEDDING_DIMENSIONS=1024
+EMBEDDING_DIMENSIONS=2560
 ```
 
 ## 🛠️ Available Tools
@@ -55,7 +55,7 @@ EMBEDDING_DIMENSIONS=1024
 
 1. **Z.ai (Primary)**: Uses GLM-4.6 model
 2. **Ollama (Fallback)**: Automatically switches when Z.ai fails
-3. **Embeddings**: Always uses Ollama (snowflake-arctic-embed2)
+3. **Embeddings**: Always uses Ollama (qwen3-embedding:4b-q4_K_M)
 
 ## 🚀 Server Status
 

@@ -25,6 +25,7 @@ class LLMProvider(Enum):
     - GEMINI: Represents the Gemini provider.
     - MISTRAL: Represents the Mistral AI provider.
     - BEDROCK: Represents the AWS Bedrock provider.
+    - ZAI: Represents the Z.ai provider.
     """
 
     OPENAI = "openai"
@@ -34,6 +35,7 @@ class LLMProvider(Enum):
     GEMINI = "gemini"
     MISTRAL = "mistral"
     BEDROCK = "bedrock"
+    ZAI = "zai"
 
 
 def get_llm_client(raise_api_key_error: bool = True):
@@ -185,6 +187,26 @@ def get_llm_client(raise_api_key_error: bool = True):
             max_completion_tokens=max_completion_tokens,
             streaming=llm_config.llm_streaming,
             instructor_mode=llm_config.llm_instructor_mode.lower(),
+        )
+
+    elif provider == LLMProvider.ZAI:
+        if llm_config.llm_api_key is None and raise_api_key_error:
+            raise LLMAPIKeyNotSetError()
+
+        from cognee.infrastructure.llm.structured_output_framework.litellm_instructor.llm.generic_llm_api.adapter import (
+            GenericAPIAdapter,
+        )
+
+        return GenericAPIAdapter(
+            llm_config.llm_endpoint,
+            llm_config.llm_api_key,
+            llm_config.llm_model,
+            "zai",
+            max_completion_tokens=max_completion_tokens,
+            instructor_mode=llm_config.llm_instructor_mode.lower(),
+            fallback_api_key=llm_config.fallback_api_key,
+            fallback_endpoint=llm_config.fallback_endpoint,
+            fallback_model=llm_config.fallback_model,
         )
 
     else:

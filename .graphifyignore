@@ -1,0 +1,137 @@
+# =============================================================================
+# graphifyignore - Files and folders to exclude from knowledge graph extraction
+# =============================================================================
+
+# --- Version control ---
+.git/
+.git/
+.github/
+
+# --- Python bytecode and caches ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.mypy_cache/
+.pytest_cache/
+.cache/
+.pytype/
+.pyre/
+.dmypy.json
+dmypy.json
+.hypothesis/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Build artifacts ---
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+develop-eggs/
+eggs/
+.eggs/
+sdist/
+parts/
+wheels/
+*.manifest
+*.spec
+.Python
+lib/
+lib64/
+
+# --- IDE and editor files ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Coverage and test reports ---
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+nosetests.xml
+*.cover
+*.py,cover
+
+# --- Cognee data and cache directories ---
+.data/
+.data_storage/
+.cognee_system/
+.cognee_cache/
+.artifacts/
+cognee/data/
+cognee/cache/
+.chromadb_data/
+
+# --- Node.js ---
+node_modules/
+
+# --- Environment and secrets ---
+.env
+.env.local
+.env.*
+*.key
+*.pem
+
+# --- Docker data ---
+docker_volumes/
+container_data/
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Database files ---
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# --- Jupyter checkpoints ---
+.ipynb_checkpoints/
+
+# --- Generated/temporary files ---
+tmpclaude-*
+*.backup
+*.bak
+backups/
+fix_*.py
+
+# --- Misc ---
+.beads/
+.beads-cognee-integration/
+.kilocode/
+.anon_id
+.claude/
+
+# --- graphify output (prevent re-scanning previous runs) ---
+graphify-out/
+
+# --- Lock files ---
+poetry.lock
+Pipfile.lock
+pdm.lock
+
+# --- Binary files ---
+*.pyc
+*.pyd
+*.dll
+*.exe
+*.bin
+
+# --- Package manager caches ---
+.pdm.toml
+.python-version
+.installed.cfg
+pip-log.txt

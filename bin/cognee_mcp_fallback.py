@@ -18,18 +18,18 @@ sys.path.insert(0, str(cognee_path))
 def setup_environment():
     """Configure environment with fallback logic"""
 
-    # Set up Z.ai as primary
-    os.environ["LLM_API_KEY"] = "***REMOVED***"
-    os.environ["LLM_MODEL"] = "glm-4.6"
-    os.environ["LLM_PROVIDER"] = "zai"
-    os.environ["LLM_ENDPOINT"] = "https://api.z.ai/v1"
+    # Set up Ollama for LLM (local inference)
+    os.environ["LLM_API_KEY"] = "ollama"
+    os.environ["LLM_MODEL"] = "glm-4.7-flash:q4_K_M"
+    os.environ["LLM_PROVIDER"] = "ollama"
+    os.environ["LLM_ENDPOINT"] = "http://localhost:11434/v1"
 
     # Ollama as fallback for embeddings
     os.environ["EMBEDDING_PROVIDER"] = "ollama"
-    os.environ["EMBEDDING_MODEL"] = "snowflake-arctic-embed2:568m"
+    os.environ["EMBEDDING_MODEL"] = "qwen3-embedding:4b-q4_K_M"
     os.environ["EMBEDDING_ENDPOINT"] = "http://localhost:11434/api/embed"
-    os.environ["EMBEDDING_DIMENSIONS"] = "1024"
-    os.environ["HUGGINGFACE_TOKENIZER"] = "Snowflake/snowflake-arctic-embed2"
+    os.environ["EMBEDDING_DIMENSIONS"] = "2560"
+    os.environ["HUGGINGFACE_TOKENIZER"] = "Qwen/Qwen3-Embedding"
 
     # Default database settings
     os.environ["DB_PROVIDER"] = "sqlite"
