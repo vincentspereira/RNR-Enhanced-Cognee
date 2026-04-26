@@ -115,8 +115,9 @@ fix_*.py
 .anon_id
 .claude/
 
-# --- graphify output (prevent re-scanning previous runs) ---
-graphify-out/
+# --- graphify cache and working files (prevent re-scanning) ---
+graphify-out/cache/
+*/graphify-out/cache/
 
 # --- Lock files ---
 poetry.lock
