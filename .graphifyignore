@@ -136,3 +136,6 @@ pdm.lock
 .python-version
 .installed.cfg
 pip-log.txt
+
+# --- Previous graphify output ---
+graphify-out/
