@@ -287,3 +287,4 @@ graphify-out/.filelist_*.txt
 
 # Archived temp files
 .archive/
+.agent/
