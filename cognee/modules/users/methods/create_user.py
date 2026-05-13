@@ -1,18 +1,12 @@
-from uuid import UUID, uuid4
+from typing import Optional
+from uuid import UUID
+
 from fastapi_users.exceptions import UserAlreadyExists
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from cognee.infrastructure.databases.relational import get_relational_engine
-from cognee.modules.notebooks.models.Notebook import Notebook
-from cognee.modules.notebooks.methods.create_notebook import _create_tutorial_notebook
-from cognee.modules.users.exceptions import TenantNotFoundError
 from cognee.modules.users.get_user_manager import get_user_manager_context
 from cognee.modules.users.get_user_db import get_user_db_context
 from cognee.modules.users.models.User import UserCreate
-from cognee.modules.users.models.Tenant import Tenant
-
-from sqlalchemy import select
-from typing import Optional
 
 
 async def create_user(
@@ -22,6 +16,7 @@ async def create_user(
     is_active: bool = True,
     is_verified: bool = False,
     auto_login: bool = False,
+    parent_user_id: Optional[UUID] = None,
 ):
     try:
         relational_engine = get_relational_engine()
@@ -36,6 +31,7 @@ async def create_user(
                             is_superuser=is_superuser,
                             is_active=is_active,
                             is_verified=is_verified,
+                            parent_user_id=parent_user_id,
                         )
                     )
 

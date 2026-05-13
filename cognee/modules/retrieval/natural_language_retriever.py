@@ -25,10 +25,12 @@ class NaturalLanguageRetriever(BaseRetriever):
         self,
         system_prompt_path: str = "natural_language_retriever_system.txt",
         max_attempts: int = 3,
+        session_id: Optional[str] = None,
     ):
         """Initialize retriever with optional custom prompt paths."""
         self.system_prompt_path = system_prompt_path
         self.max_attempts = max_attempts
+        self.session_id = session_id
 
     async def _get_graph_schema(self, graph_engine) -> tuple:
         """Retrieve the node and edge schemas from the graph database."""
@@ -102,7 +104,29 @@ class NaturalLanguageRetriever(BaseRetriever):
         )
         return []
 
-    async def get_context(self, query: str) -> Optional[Any]:
+    async def get_retrieved_objects(self, query: str) -> Any:
+        graph_engine = await get_graph_engine()
+
+        # Postgres backends do not support Cypher generation/execution
+        from cognee.infrastructure.databases.graph.postgres.adapter import PostgresAdapter
+        from cognee.infrastructure.databases.hybrid.postgres.adapter import PostgresHybridAdapter
+
+        if isinstance(graph_engine, (PostgresAdapter, PostgresHybridAdapter)):
+            raise SearchTypeNotSupported(
+                "Natural language search is not supported with the Postgres graph backend. "
+                "This retriever generates and executes Cypher queries, which require a "
+                "graph-native backend (Neo4j, Ladybug)."
+            )
+
+        is_empty = await graph_engine.is_empty()
+
+        if is_empty:
+            logger.warning("Search attempt on an empty knowledge graph")
+            return []
+
+        return await self._execute_cypher_query(query, graph_engine)
+
+    async def get_context_from_objects(self, query: str, retrieved_objects: Any) -> Optional[Any]:
         """
         Retrieves relevant context using a natural language query converted to Cypher.
 
@@ -121,17 +145,11 @@ class NaturalLanguageRetriever(BaseRetriever):
             - Optional[Any]: Returns the context retrieved from the graph database based on the
               query.
         """
-        graph_engine = await get_graph_engine()
-        is_empty = await graph_engine.is_empty()
+        # TODO: Do we want to process retrieved_objects into a context string?
+        return retrieved_objects
 
-        if is_empty:
-            logger.warning("Search attempt on an empty knowledge graph")
-            return []
-
-        return await self._execute_cypher_query(query, graph_engine)
-
-    async def get_completion(
-        self, query: str, context: Optional[Any] = None, session_id: Optional[str] = None
+    async def get_completion_from_context(
+        self, query: str, retrieved_objects: Any, context: Optional[Any] = None
     ) -> Any:
         """
         Returns a completion based on the query and context.
@@ -154,7 +172,5 @@ class NaturalLanguageRetriever(BaseRetriever):
 
             - Any: Returns the completion derived from the given query and context.
         """
-        if context is None:
-            context = await self.get_context(query)
-
+        # TODO: Do we want to generate a completion using LLM here?
         return context

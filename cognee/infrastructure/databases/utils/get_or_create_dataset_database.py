@@ -1,3 +1,4 @@
+import os
 from uuid import UUID
 from typing import Union, Optional
 
@@ -85,8 +86,11 @@ async def get_or_create_dataset_database(
 
     # If dataset is given as name make sure the dataset is created first
     if isinstance(dataset, str):
+        from cognee.modules.data.methods import create_authorized_dataset
+
         async with db_engine.get_async_session() as session:
-            await create_dataset(dataset, user, session)
+            if isinstance(dataset, str):
+                dataset = await create_authorized_dataset(dataset, user)
 
     # If dataset database already exists return it
     existing_dataset_database = await _existing_dataset_database(dataset_id, user)

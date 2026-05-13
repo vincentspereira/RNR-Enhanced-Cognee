@@ -1,11 +1,51 @@
+import os
+import inspect
+from numbers import Number
+
 from .supported_databases import supported_databases
 from .embeddings import get_embedding_engine
-from cognee.infrastructure.databases.graph.config import get_graph_context_config
 
 from functools import lru_cache
+from cognee.shared.lru_cache import DATABASE_MAX_LRU_CACHE_SIZE
 
 
-@lru_cache
+def _get_create_vector_engine_optional_defaults() -> dict:
+    """Return default values for optional create_vector_engine parameters."""
+    signature = inspect.signature(create_vector_engine)
+    return {
+        name: parameter.default
+        for name, parameter in signature.parameters.items()
+        if parameter.default is not inspect.Parameter.empty
+    }
+
+
+def _normalize_optional_create_vector_engine_params(params: dict) -> dict:
+    """
+    Normalize optional create_vector_engine parameters:
+    - replace None with the function defaults
+    - convert numeric vector_db_port values to string
+    """
+    defaults = _get_create_vector_engine_optional_defaults()
+    normalized = dict(params)
+
+    for key, default_value in defaults.items():
+        if normalized.get(key) is None:
+            normalized[key] = default_value
+
+    if isinstance(normalized.get("vector_db_port"), Number) and not isinstance(
+        normalized["vector_db_port"], bool
+    ):
+        normalized["vector_db_port"] = str(normalized["vector_db_port"])
+
+    if not normalized.get("vector_dataset_database_handler"):
+        # We use lancedb as the default, otherwise it is expected that the user defined VECTOR_DATASET_DATABASE_HANDLER
+        normalized["vector_dataset_database_handler"] = os.getenv(
+            "VECTOR_DATASET_DATABASE_HANDLER", "lancedb"
+        )
+
+    return normalized
+
+
 def create_vector_engine(
     vector_db_provider: str,
     vector_db_url: str,
@@ -13,6 +53,68 @@ def create_vector_engine(
     vector_db_port: str = "",
     vector_db_key: str = "",
     vector_dataset_database_handler: str = "",
+    vector_db_username: str = "",
+    vector_db_password: str = "",
+    vector_db_host: str = "",
+):
+    """
+    Wrapper function to call create vector engine with caching.
+    For a detailed description, see _create_vector_engine.
+    """
+
+    normalized_optional_params = _normalize_optional_create_vector_engine_params(locals())
+    vector_db_port = normalized_optional_params["vector_db_port"]
+    vector_db_key = normalized_optional_params["vector_db_key"]
+    vector_dataset_database_handler = normalized_optional_params["vector_dataset_database_handler"]
+    vector_db_username = normalized_optional_params["vector_db_username"]
+    vector_db_password = normalized_optional_params["vector_db_password"]
+    vector_db_host = normalized_optional_params["vector_db_host"]
+
+    # Check USE_UNIFIED_PROVIDER outside the cache so it's always re-read
+    unified_provider = os.environ.get("USE_UNIFIED_PROVIDER", "")
+    if unified_provider == "pghybrid":
+        from cognee.infrastructure.databases.relational import get_relational_config
+
+        embedding_engine = get_embedding_engine()
+        relational_config = get_relational_config()
+        connection_string = (
+            f"postgresql+asyncpg://{relational_config.db_username}:{relational_config.db_password}"
+            f"@{relational_config.db_host}:{relational_config.db_port}"
+            f"/{relational_config.db_name}"
+        )
+
+        from .pgvector.PGVectorAdapter import PGVectorAdapter
+
+        return PGVectorAdapter(
+            connection_string,
+            vector_db_key,
+            embedding_engine,
+        )
+
+    return _create_vector_engine(
+        vector_db_provider,
+        vector_db_url,
+        vector_db_name,
+        vector_db_port,
+        vector_db_key,
+        vector_dataset_database_handler,
+        vector_db_username,
+        vector_db_password,
+        vector_db_host,
+    )
+
+
+@lru_cache(maxsize=DATABASE_MAX_LRU_CACHE_SIZE)
+def _create_vector_engine(
+    vector_db_provider: str,
+    vector_db_url: str,
+    vector_db_name: str,
+    vector_db_port: str,
+    vector_db_key: str,
+    vector_dataset_database_handler: str,
+    vector_db_username: str,
+    vector_db_password: str,
+    vector_db_host: str,
 ):
     """
     Create a vector database engine based on the specified provider.
@@ -53,22 +155,43 @@ def create_vector_engine(
         )
 
     if vector_db_provider.lower() == "pgvector":
-        from cognee.infrastructure.databases.relational import get_relational_config
+        from cognee.context_global_variables import backend_access_control_enabled
 
-        # Get configuration for postgres database
-        relational_config = get_relational_config()
-        db_username = relational_config.db_username
-        db_password = relational_config.db_password
-        db_host = relational_config.db_host
-        db_port = relational_config.db_port
-        db_name = relational_config.db_name
+        if backend_access_control_enabled():
+            connection_string: str = (
+                f"postgresql+asyncpg://{vector_db_username}:{vector_db_password}"
+                f"@{vector_db_host}:{vector_db_port}/{vector_db_name}"
+            )
+        else:
+            if (
+                vector_db_port
+                and vector_db_username
+                and vector_db_password
+                and vector_db_host
+                and vector_db_name
+            ):
+                connection_string: str = (
+                    f"postgresql+asyncpg://{vector_db_username}:{vector_db_password}"
+                    f"@{vector_db_host}:{vector_db_port}/{vector_db_name}"
+                )
+            else:
+                from cognee.infrastructure.databases.relational import get_relational_config
 
-        if not (db_host and db_port and db_name and db_username and db_password):
-            raise EnvironmentError("Missing requred pgvector credentials!")
+                # Get configuration for postgres database
+                relational_config = get_relational_config()
+                db_username = relational_config.db_username
+                db_password = relational_config.db_password
+                db_host = relational_config.db_host
+                db_port = relational_config.db_port
+                db_name = relational_config.db_name
 
-        connection_string: str = (
-            f"postgresql+asyncpg://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
-        )
+                if not (db_host and db_port and db_name and db_username and db_password):
+                    raise EnvironmentError("Missing required pgvector credentials!")
+
+                connection_string: str = (
+                    f"postgresql+asyncpg://{db_username}:{db_password}"
+                    f"@{db_host}:{db_port}/{db_name}"
+                )
 
         try:
             from .pgvector.PGVectorAdapter import PGVectorAdapter
@@ -129,7 +252,7 @@ def create_vector_engine(
 
     elif vector_db_provider.lower() == "qdrant":
         try:
-            from qdrant_client import QdrantClient
+            from qdrant_client import QdrantClient  # noqa: F401
         except ImportError:
             raise ImportError(
                 "Qdrant client is not installed. Please install it with 'pip install qdrant-client'"

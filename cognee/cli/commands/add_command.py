@@ -21,7 +21,7 @@ binary streams, then stores them in a specified dataset for further processing.
 
 Supported Input Types:
 - **Text strings**: Direct text content
-- **File paths**: Local file paths (absolute paths starting with "/")  
+- **File paths**: Local file paths (absolute paths starting with "/")
 - **File URLs**: "file:///absolute/path" or "file://relative/path"
 - **S3 paths**: "s3://bucket-name/path/to/file"
 - **Lists**: Multiple files or text strings in a single call
@@ -60,6 +60,10 @@ After adding data, use `cognee cognify` to process it into knowledge graphs.
             # Run the async add function
             async def run_add():
                 try:
+                    from cognee.cli.user_resolution import resolve_cli_user
+
+                    user = await resolve_cli_user(getattr(args, "user_id", None))
+
                     # Pass all data items as a list to cognee.add if multiple items
                     if len(args.data) == 1:
                         data_to_add = args.data[0]
@@ -67,7 +71,7 @@ After adding data, use `cognee cognify` to process it into knowledge graphs.
                         data_to_add = args.data
 
                     fmt.echo("Processing data...")
-                    await cognee.add(data=data_to_add, dataset_name=args.dataset_name)
+                    await cognee.add(data=data_to_add, dataset_name=args.dataset_name, user=user)
                     fmt.success(f"Successfully added data to dataset '{args.dataset_name}'")
                 except Exception as e:
                     raise CliCommandInnerException(f"Failed to add data: {str(e)}") from e

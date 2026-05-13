@@ -5,7 +5,7 @@ from pydantic import Field
 from typing import List, Optional
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from fastapi import APIRouter, WebSocket, Depends, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, Depends, WebSocketDisconnect, status
 from starlette.status import WS_1000_NORMAL_CLOSURE, WS_1008_POLICY_VIOLATION
 
 from cognee.api.DTO import InDTO
@@ -17,6 +17,8 @@ from cognee.modules.graph.methods import get_formatted_graph_data
 from cognee.modules.users.get_user_manager import get_user_manager_context
 from cognee.infrastructure.databases.relational import get_relational_engine
 from cognee.modules.users.authentication.default.default_jwt_strategy import DefaultJWTStrategy
+from cognee.shared.data_models import KnowledgeGraph
+from cognee.shared.graph_model_utils import graph_schema_to_graph_model
 from cognee.modules.pipelines.models.PipelineRunInfo import (
     PipelineRunCompleted,
     PipelineRunInfo,
@@ -29,7 +31,9 @@ from cognee.modules.pipelines.queues.pipeline_run_info_queues import (
 )
 from cognee.shared.logging_utils import get_logger
 from cognee.shared.utils import send_telemetry
+from cognee.shared.usage_logger import log_usage
 from cognee import __version__ as cognee_version
+from cognee.api.DTO import ErrorResponse
 
 logger = get_logger("api.cognify")
 
@@ -38,6 +42,7 @@ class CognifyPayloadDTO(InDTO):
     datasets: Optional[List[str]] = Field(default=None)
     dataset_ids: Optional[List[UUID]] = Field(default=None, examples=[[]])
     run_in_background: Optional[bool] = Field(default=False)
+    graph_model: Optional[dict] = Field(default=None, examples=[{}])
     custom_prompt: Optional[str] = Field(
         default="", description="Custom prompt for entity extraction and graph generation"
     )
@@ -46,12 +51,27 @@ class CognifyPayloadDTO(InDTO):
         examples=[[]],
         description="Reference to one or more previously uploaded ontologies",
     )
+    chunks_per_batch: Optional[int] = Field(
+        default=None,
+        description="Number of chunks to process per task batch in Cognify (overrides default).",
+        examples=[10, 20, 50, 100],
+    )
 
 
 def get_cognify_router() -> APIRouter:
     router = APIRouter()
 
-    @router.post("", response_model=dict)
+    @router.post(
+        "",
+        response_model=dict,
+        responses={
+            400: {"model": ErrorResponse},
+            403: {"model": ErrorResponse},
+            422: {"model": ErrorResponse},
+            500: {"model": ErrorResponse},
+        },
+    )
+    @log_usage(function_name="POST /v1/cognify", log_type="api_endpoint")
     async def cognify(payload: CognifyPayloadDTO, user: User = Depends(get_authenticated_user)):
         """
         Transform datasets into structured knowledge graphs through cognitive processing.
@@ -111,7 +131,10 @@ def get_cognify_router() -> APIRouter:
 
         if not payload.datasets and not payload.dataset_ids:
             return JSONResponse(
-                status_code=400, content={"error": "No datasets or dataset_ids provided"}
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content=ErrorResponse(
+                    error="No datasets or dataset_ids provided",
+                ).model_dump(),
             )
 
         from cognee.api.v1.cognify import cognify as cognee_cognify
@@ -140,20 +163,129 @@ def get_cognify_router() -> APIRouter:
                     }
                 }
 
+            # Resolve graph model and custom prompt: use payload values,
+            # fall back to stored DatasetConfiguration, then defaults.
+            graph_model_schema = payload.graph_model
+            custom_prompt = payload.custom_prompt
+
+            if datasets and (not graph_model_schema or not custom_prompt):
+                try:
+                    from uuid import UUID as _UUID
+                    from cognee.modules.data.models import DatasetConfiguration
+                    from cognee.infrastructure.databases.relational import get_relational_engine
+                    from sqlalchemy import select
+
+                    first_ds = datasets[0]
+                    try:
+                        ds_uuid = first_ds if isinstance(first_ds, _UUID) else _UUID(str(first_ds))
+                    except (ValueError, AttributeError):
+                        ds_uuid = None
+
+                    if ds_uuid:
+                        db_engine = get_relational_engine()
+                        async with db_engine.get_async_session() as session:
+                            config = await session.scalar(
+                                select(DatasetConfiguration).where(
+                                    DatasetConfiguration.dataset_id == ds_uuid
+                                )
+                            )
+                        if config:
+                            if not graph_model_schema and config.graph_schema:
+                                graph_model_schema = config.graph_schema
+                            if not custom_prompt and config.custom_prompt:
+                                custom_prompt = config.custom_prompt
+                except Exception as config_err:
+                    logger.debug("DatasetConfiguration lookup skipped: %s", config_err)
+
+            if not graph_model_schema:
+                graph_model = KnowledgeGraph
+            else:
+                graph_model = graph_schema_to_graph_model(graph_model_schema)
+
             cognify_run = await cognee_cognify(
                 datasets,
                 user,
+                graph_model=graph_model,
                 config=config_to_use,
                 run_in_background=payload.run_in_background,
-                custom_prompt=payload.custom_prompt,
+                custom_prompt=custom_prompt,
+                chunks_per_batch=payload.chunks_per_batch,
             )
+
+            # Persist schema and prompt to DatasetConfiguration for first dataset
+            if datasets and (graph_model_schema or custom_prompt):
+                try:
+                    from uuid import UUID as _UUID
+                    from cognee.modules.data.models import DatasetConfiguration
+                    from cognee.infrastructure.databases.relational import get_relational_engine
+                    from sqlalchemy import select
+
+                    first_ds = datasets[0]
+                    try:
+                        ds_uuid = first_ds if isinstance(first_ds, _UUID) else _UUID(str(first_ds))
+                    except (ValueError, AttributeError):
+                        ds_uuid = None
+
+                    if ds_uuid:
+                        db_engine = get_relational_engine()
+                        async with db_engine.get_async_session() as session:
+                            config = await session.scalar(
+                                select(DatasetConfiguration).where(
+                                    DatasetConfiguration.dataset_id == ds_uuid
+                                )
+                            )
+                            if config:
+                                if graph_model_schema:
+                                    config.graph_schema = graph_model_schema
+                                if custom_prompt:
+                                    config.custom_prompt = custom_prompt
+                            else:
+                                session.add(
+                                    DatasetConfiguration(
+                                        dataset_id=ds_uuid,
+                                        graph_schema=graph_model_schema,
+                                        custom_prompt=custom_prompt,
+                                    )
+                                )
+                            await session.commit()
+                except Exception as persist_err:
+                    logger.warning("Failed to persist dataset configuration: %s", persist_err)
 
             # If any cognify run errored return JSONResponse with proper error status code
             if any(isinstance(v, PipelineRunErrored) for v in cognify_run.values()):
-                return JSONResponse(status_code=420, content=jsonable_encoder(cognify_run))
+                first_err = next(
+                    (v for v in cognify_run.values() if isinstance(v, PipelineRunErrored)), None
+                )
+                detail = None
+                if first_err is not None:
+                    detail = getattr(first_err, "error", None) or str(first_err)
+
+                return JSONResponse(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content=ErrorResponse(
+                        error="Pipeline run errored",
+                        detail=detail,
+                    ).model_dump(),
+                )
             return cognify_run
+        except ValueError as e:
+            # Ontology key not found (OntologyService raises ValueError)
+            return JSONResponse(
+                status_code=status.HTTP_409_CONFLICT,
+                content=ErrorResponse(
+                    error=str(e),
+                ).model_dump(),
+            )
+
         except Exception as error:
-            return JSONResponse(status_code=409, content={"error": str(error)})
+            logger.exception("Cognify failed")
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content=ErrorResponse(
+                    error="Internal server error",
+                    detail=str(error),
+                ).model_dump(),
+            )
 
     @router.websocket("/subscribe/{pipeline_run_id}")
     async def subscribe_to_cognify_info(websocket: WebSocket, pipeline_run_id: str):

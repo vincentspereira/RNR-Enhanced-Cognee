@@ -1,38 +1,40 @@
-import base64
-import litellm
-import instructor
-from typing import Type
-from pydantic import BaseModel
-from openai import ContentFilterFinishReasonError
-from litellm.exceptions import ContentPolicyViolationError
-from instructor.core import InstructorRetryException
-
 import logging
+from typing import Any
+
+import instructor
+import litellm
+from instructor.core import InstructorRetryException
+from litellm.exceptions import ContentPolicyViolationError
+from openai import ContentFilterFinishReasonError
+from pydantic import BaseModel
 from tenacity import (
+    before_sleep_log,
     retry,
+    retry_if_not_exception_type,
     stop_after_delay,
     wait_exponential_jitter,
-    retry_if_not_exception_type,
-    before_sleep_log,
 )
 
-from cognee.infrastructure.llm.structured_output_framework.litellm_instructor.llm.llm_interface import (
-    LLMInterface,
-)
+from cognee.infrastructure.files.utils.open_data_file import open_data_file
 from cognee.infrastructure.llm.exceptions import (
     ContentPolicyFilterError,
 )
-from cognee.shared.rate_limiting import llm_rate_limiter_context_manager
-from cognee.infrastructure.files.utils.open_data_file import open_data_file
+from cognee.infrastructure.llm.structured_output_framework.litellm_instructor.llm.generic_llm_api.adapter import (
+    GenericAPIAdapter,
+)
+from cognee.infrastructure.llm.structured_output_framework.litellm_instructor.llm.types import (
+    TranscriptionReturnType,
+)
 from cognee.modules.observability.get_observe import get_observe
 from cognee.shared.logging_utils import get_logger
+from cognee.shared.rate_limiting import llm_rate_limiter_context_manager
 
 logger = get_logger()
 
 observe = get_observe()
 
 
-class OpenAIAdapter(LLMInterface):
+class OpenAIAdapter(GenericAPIAdapter):
     """
     Adapter for OpenAI's GPT-3, GPT-4 API.
 
@@ -53,12 +55,7 @@ class OpenAIAdapter(LLMInterface):
     - MAX_RETRIES
     """
 
-    name = "OpenAI"
-    model: str
-    api_key: str
-    api_version: str
     default_instructor_mode = "json_schema_mode"
-
     MAX_RETRIES = 5
 
     """Adapter for OpenAI's GPT-3, GPT=4 API"""
@@ -66,17 +63,32 @@ class OpenAIAdapter(LLMInterface):
     def __init__(
         self,
         api_key: str,
-        endpoint: str,
-        api_version: str,
         model: str,
-        transcription_model: str,
         max_completion_tokens: int,
-        instructor_mode: str = None,
+        endpoint: str | None = None,
+        api_version: str | None = None,
+        transcription_model: str | None = None,
+        instructor_mode: str | None = None,
         streaming: bool = False,
-        fallback_model: str = None,
-        fallback_api_key: str = None,
-        fallback_endpoint: str = None,
-    ):
+        fallback_model: str | None = None,
+        fallback_api_key: str | None = None,
+        fallback_endpoint: str | None = None,
+        llm_args: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(
+            api_key=api_key,
+            model=model,
+            max_completion_tokens=max_completion_tokens,
+            name="OpenAI",
+            endpoint=endpoint,
+            api_version=api_version,
+            transcription_model=transcription_model,
+            fallback_model=fallback_model,
+            fallback_api_key=fallback_api_key,
+            fallback_endpoint=fallback_endpoint,
+            llm_args=llm_args,
+        )
+        self.llm_args: dict[str, Any] = llm_args or {}
         self.instructor_mode = instructor_mode if instructor_mode else self.default_instructor_mode
         # TODO: With gpt5 series models OpenAI expects JSON_SCHEMA as a mode for structured outputs.
         #       Make sure all new gpt models will work with this mode as well.
@@ -91,28 +103,20 @@ class OpenAIAdapter(LLMInterface):
             self.aclient = instructor.from_litellm(litellm.acompletion)
             self.client = instructor.from_litellm(litellm.completion)
 
-        self.transcription_model = transcription_model
-        self.model = model
-        self.api_key = api_key
-        self.endpoint = endpoint
-        self.api_version = api_version
-        self.max_completion_tokens = max_completion_tokens
         self.streaming = streaming
-
-        self.fallback_model = fallback_model
-        self.fallback_api_key = fallback_api_key
-        self.fallback_endpoint = fallback_endpoint
 
     @observe(as_type="generation")
     @retry(
         stop=stop_after_delay(128),
         wait=wait_exponential_jitter(8, 128),
-        retry=retry_if_not_exception_type(litellm.exceptions.NotFoundError),
+        retry=retry_if_not_exception_type(
+            (litellm.exceptions.NotFoundError, litellm.exceptions.AuthenticationError)
+        ),
         before_sleep=before_sleep_log(logger, logging.DEBUG),
         reraise=True,
     )
     async def acreate_structured_output(
-        self, text_input: str, system_prompt: str, response_model: Type[BaseModel], **kwargs
+        self, text_input: str, system_prompt: str, response_model: type[BaseModel], **kwargs: Any
     ) -> BaseModel:
         """
         Generate a response from a user query.
@@ -135,18 +139,19 @@ class OpenAIAdapter(LLMInterface):
               BaseModel.
         """
 
+        merged_kwargs = {**self.llm_args, **kwargs}
         try:
             async with llm_rate_limiter_context_manager():
                 return await self.aclient.chat.completions.create(
                     model=self.model,
                     messages=[
                         {
-                            "role": "user",
-                            "content": f"""{text_input}""",
-                        },
-                        {
                             "role": "system",
                             "content": system_prompt,
+                        },
+                        {
+                            "role": "user",
+                            "content": f"""{text_input}""",
                         },
                     ],
                     api_key=self.api_key,
@@ -154,7 +159,7 @@ class OpenAIAdapter(LLMInterface):
                     api_version=self.api_version,
                     response_model=response_model,
                     max_retries=self.MAX_RETRIES,
-                    **kwargs,
+                    **merged_kwargs,
                 )
         except (
             ContentFilterFinishReasonError,
@@ -169,19 +174,19 @@ class OpenAIAdapter(LLMInterface):
                         model=self.fallback_model,
                         messages=[
                             {
-                                "role": "user",
-                                "content": f"""{text_input}""",
-                            },
-                            {
                                 "role": "system",
                                 "content": system_prompt,
+                            },
+                            {
+                                "role": "user",
+                                "content": f"""{text_input}""",
                             },
                         ],
                         api_key=self.fallback_api_key,
                         # api_base=self.fallback_endpoint,
                         response_model=response_model,
                         max_retries=self.MAX_RETRIES,
-                        **kwargs,
+                        **merged_kwargs,
                     )
             except (
                 ContentFilterFinishReasonError,
@@ -198,66 +203,17 @@ class OpenAIAdapter(LLMInterface):
                         f"The provided input contains content that is not aligned with our content policy: {text_input}"
                     ) from error
 
-    @observe
+    @observe(as_type="transcription")
     @retry(
         stop=stop_after_delay(128),
         wait=wait_exponential_jitter(2, 128),
-        retry=retry_if_not_exception_type(litellm.exceptions.NotFoundError),
+        retry=retry_if_not_exception_type(
+            (litellm.exceptions.NotFoundError, litellm.exceptions.AuthenticationError)
+        ),
         before_sleep=before_sleep_log(logger, logging.DEBUG),
         reraise=True,
     )
-    def create_structured_output(
-        self, text_input: str, system_prompt: str, response_model: Type[BaseModel], **kwargs
-    ) -> BaseModel:
-        """
-        Generate a response from a user query.
-
-        This method creates structured output by sending a synchronous request to the OpenAI API
-        using the provided parameters to generate a completion based on the user input and
-        system prompt.
-
-        Parameters:
-        -----------
-
-            - text_input (str): The input text provided by the user for generating a response.
-            - system_prompt (str): The system's prompt to guide the model's response.
-            - response_model (Type[BaseModel]): The expected model type for the response.
-
-        Returns:
-        --------
-
-            - BaseModel: A structured output generated by the model, returned as an instance of
-              BaseModel.
-        """
-
-        return self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"""{text_input}""",
-                },
-                {
-                    "role": "system",
-                    "content": system_prompt,
-                },
-            ],
-            api_key=self.api_key,
-            api_base=self.endpoint,
-            api_version=self.api_version,
-            response_model=response_model,
-            max_retries=self.MAX_RETRIES,
-            **kwargs,
-        )
-
-    @retry(
-        stop=stop_after_delay(128),
-        wait=wait_exponential_jitter(2, 128),
-        retry=retry_if_not_exception_type(litellm.exceptions.NotFoundError),
-        before_sleep=before_sleep_log(logger, logging.DEBUG),
-        reraise=True,
-    )
-    async def create_transcript(self, input, **kwargs):
+    async def create_transcript(self, input, **kwargs) -> TranscriptionReturnType:
         """
         Generate an audio transcript from a user query.
 
@@ -286,60 +242,6 @@ class OpenAIAdapter(LLMInterface):
                 max_retries=self.MAX_RETRIES,
                 **kwargs,
             )
+            return TranscriptionReturnType(transcription.text, transcription)
 
-        return transcription
-
-    @retry(
-        stop=stop_after_delay(128),
-        wait=wait_exponential_jitter(2, 128),
-        retry=retry_if_not_exception_type(litellm.exceptions.NotFoundError),
-        before_sleep=before_sleep_log(logger, logging.DEBUG),
-        reraise=True,
-    )
-    async def transcribe_image(self, input, **kwargs) -> BaseModel:
-        """
-        Generate a transcription of an image from a user query.
-
-        This method encodes the image and sends a request to the OpenAI API to obtain a
-        description of the contents of the image.
-
-        Parameters:
-        -----------
-
-            - input: The path to the image file that needs to be transcribed.
-
-        Returns:
-        --------
-
-            - BaseModel: A structured output generated by the model, returned as an instance of
-              BaseModel.
-        """
-        async with open_data_file(input, mode="rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
-
-        return litellm.completion(
-            model=self.model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": "What's in this image?",
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{encoded_image}",
-                            },
-                        },
-                    ],
-                }
-            ],
-            api_key=self.api_key,
-            api_base=self.endpoint,
-            api_version=self.api_version,
-            max_completion_tokens=300,
-            max_retries=self.MAX_RETRIES,
-            **kwargs,
-        )
+    # transcribe_image is inherited from GenericAPIAdapter

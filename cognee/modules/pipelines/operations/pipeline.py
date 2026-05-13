@@ -1,6 +1,6 @@
 import asyncio
 from uuid import UUID
-from typing import Union
+from typing import Optional, Union
 
 from cognee.modules.pipelines.layers.setup_and_check_environment import (
     setup_and_check_environment,
@@ -13,7 +13,7 @@ from cognee.modules.pipelines.operations.run_tasks import run_tasks
 from cognee.modules.pipelines.layers import validate_pipeline_tasks
 from cognee.modules.pipelines.tasks.task import Task
 from cognee.modules.users.models import User
-from cognee.context_global_variables import set_database_global_context_variables
+
 from cognee.modules.pipelines.layers.resolve_authorized_user_datasets import (
     resolve_authorized_user_datasets,
 )
@@ -33,12 +33,12 @@ update_status_lock = asyncio.Lock()
 async def run_pipeline(
     tasks: list[Task],
     data=None,
-    datasets: Union[str, list[str], list[UUID]] = None,
-    user: User = None,
+    datasets: Optional[Union[str, list[str], list[UUID]]] = None,
+    user: Optional[User] = None,
     pipeline_name: str = "custom_pipeline",
-    vector_db_config: dict = None,
-    graph_db_config: dict = None,
     use_pipeline_cache: bool = False,
+    vector_db_config: Optional[dict] = None,
+    graph_db_config: Optional[dict] = None,
     incremental_loading: bool = False,
     data_per_batch: int = 20,
 ):
@@ -54,7 +54,6 @@ async def run_pipeline(
             tasks=tasks,
             data=data,
             pipeline_name=pipeline_name,
-            context={"dataset": dataset},
             use_pipeline_cache=use_pipeline_cache,
             incremental_loading=incremental_loading,
             data_per_batch=data_per_batch,
@@ -66,18 +65,14 @@ async def run_pipeline_per_dataset(
     dataset: Dataset,
     user: User,
     tasks: list[Task],
-    data=None,
+    data: Optional[list[Data]] = None,
     pipeline_name: str = "custom_pipeline",
-    context: dict = None,
     use_pipeline_cache=False,
     incremental_loading=False,
     data_per_batch: int = 20,
 ):
-    # Will only be used if ENABLE_BACKEND_ACCESS_CONTROL is set to True
-    await set_database_global_context_variables(dataset.id, dataset.owner_id)
-
     if not data:
-        data: list[Data] = await get_dataset_data(dataset_id=dataset.id)
+        data = await get_dataset_data(dataset_id=dataset.id)
 
     process_pipeline_status = await check_pipeline_run_qualification(dataset, data, pipeline_name)
     if process_pipeline_status:
@@ -102,9 +97,8 @@ async def run_pipeline_per_dataset(
         data,
         user,
         pipeline_name,
-        context,
-        incremental_loading,
-        data_per_batch,
+        incremental_loading=incremental_loading,
+        data_per_batch=data_per_batch,
     )
 
     async for pipeline_run_info in pipeline_run:

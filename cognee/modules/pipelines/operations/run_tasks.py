@@ -1,19 +1,21 @@
 import os
 
 import asyncio
-from uuid import UUID
-from typing import Any, List
 from functools import wraps
+from typing import Any, List, Optional
+from uuid import UUID
 
 from cognee.infrastructure.databases.graph import get_graph_engine
 from cognee.infrastructure.databases.relational import get_relational_engine
 from cognee.modules.pipelines.operations.run_tasks_distributed import run_tasks_distributed
+from cognee.context_global_variables import set_database_global_context_variables
 from cognee.modules.users.models import User
 from cognee.shared.logging_utils import get_logger
 from cognee.modules.users.methods import get_default_user
 from cognee.modules.pipelines.utils import generate_pipeline_id
 from cognee.modules.pipelines.exceptions import PipelineRunFailedError
 from cognee.tasks.ingestion import resolve_data_directories
+from cognee.modules.pipelines.models import PipelineContext
 from cognee.modules.pipelines.models.PipelineRunInfo import (
     PipelineRunCompleted,
     PipelineRunErrored,
@@ -54,25 +56,23 @@ def override_run_tasks(new_gen):
 async def run_tasks(
     tasks: List[Task],
     dataset_id: UUID,
-    data: List[Any] = None,
-    user: User = None,
+    data: Optional[List[Any]] = None,
+    user: Optional[User] = None,
     pipeline_name: str = "unknown_pipeline",
-    context: dict = None,
     incremental_loading: bool = False,
     data_per_batch: int = 20,
+    extras: Optional[dict] = None,
 ):
     if not user:
         user = await get_default_user()
 
-    # Get Dataset object
-    db_engine = get_relational_engine()
-    async with db_engine.get_async_session() as session:
+    async with get_relational_engine().get_async_session() as session:
         from cognee.modules.data.models import Dataset
 
         dataset = await session.get(Dataset, dataset_id)
 
     pipeline_id = generate_pipeline_id(user.id, dataset.id, pipeline_name)
-    pipeline_run = await log_pipeline_run_start(pipeline_id, pipeline_name, dataset_id, data)
+    pipeline_run = await log_pipeline_run_start(pipeline_id, pipeline_name, dataset.id, data)
     pipeline_run_id = pipeline_run.pipeline_run_id
 
     yield PipelineRunStarted(
@@ -82,83 +82,106 @@ async def run_tasks(
         payload=data,
     )
 
-    try:
-        if not isinstance(data, list):
-            data = [data]
+    # Note: Setting of global context has to be done after yielding PipelineRunStarted due to running in
+    #       background mode requiring the pipeline run started yield.
+    async with set_database_global_context_variables(dataset.id, dataset.owner_id):
+        try:
+            if not isinstance(data, list):
+                data = [data]
 
-        if incremental_loading:
-            data = await resolve_data_directories(data)
+            if incremental_loading:
+                data = await resolve_data_directories(data)
 
-        # Create and gather batches of async tasks of data items that will run the pipeline for the data item
-        results = []
-        for start in range(0, len(data), data_per_batch):
-            data_batch = data[start : start + data_per_batch]
+            # Semaphore-based concurrency: all items are scheduled at once,
+            # but at most data_per_batch run concurrently at any time.
+            semaphore = asyncio.Semaphore(data_per_batch)
 
-            data_item_tasks = [
-                asyncio.create_task(
-                    run_tasks_data_item(
+            async def _run_item(data_item):
+                async with semaphore:
+                    return await run_tasks_data_item(
                         data_item,
                         dataset,
                         tasks,
                         pipeline_name,
                         pipeline_id,
                         pipeline_run_id,
-                        context,
+                        PipelineContext(
+                            user=user,
+                            data_item=data_item,
+                            dataset=dataset,
+                            pipeline_name=pipeline_name,
+                            extras=extras if isinstance(extras, dict) else {},
+                        ),
                         user,
                         incremental_loading,
                     )
-                )
-                for data_item in data_batch
-            ]
 
-            results.extend(await asyncio.gather(*data_item_tasks))
-
-        # Remove skipped data items from results
-        results = [result for result in results if result]
-
-        # If any data item could not be processed propagate error
-        errored_results = [
-            result for result in results if isinstance(result["run_info"], PipelineRunErrored)
-        ]
-        if errored_results:
-            raise PipelineRunFailedError(
-                message="Pipeline run failed. Data item could not be processed."
+            gathered = await asyncio.gather(
+                *[asyncio.create_task(_run_item(item)) for item in data],
+                return_exceptions=True,
             )
 
-        await log_pipeline_run_complete(
-            pipeline_run_id, pipeline_id, pipeline_name, dataset_id, data
-        )
+            # Separate successes from unhandled exceptions
+            results = []
+            for i, result in enumerate(gathered):
+                if isinstance(result, BaseException):
+                    logger.error(f"Item {i} failed: {result}", exc_info=result)
+                    results.append(
+                        {
+                            "run_info": PipelineRunErrored(
+                                pipeline_run_id=pipeline_run_id,
+                                payload=repr(result),
+                                dataset_id=dataset.id,
+                                dataset_name=dataset.name,
+                            ),
+                        }
+                    )
+                elif result:
+                    results.append(result)
 
-        yield PipelineRunCompleted(
-            pipeline_run_id=pipeline_run_id,
-            dataset_id=dataset.id,
-            dataset_name=dataset.name,
-            data_ingestion_info=results,
-        )
+            # If any data item could not be processed propagate error
+            errored_results = [
+                result for result in results if isinstance(result["run_info"], PipelineRunErrored)
+            ]
+            if errored_results:
+                raise PipelineRunFailedError(
+                    message="Pipeline run failed. Data item could not be processed."
+                )
 
-        graph_engine = await get_graph_engine()
-        if hasattr(graph_engine, "push_to_s3"):
-            await graph_engine.push_to_s3()
+            await log_pipeline_run_complete(
+                pipeline_run_id, pipeline_id, pipeline_name, dataset.id, data
+            )
 
-        relational_engine = get_relational_engine()
-        if hasattr(relational_engine, "push_to_s3"):
-            await relational_engine.push_to_s3()
+            yield PipelineRunCompleted(
+                pipeline_run_id=pipeline_run_id,
+                dataset_id=dataset.id,
+                dataset_name=dataset.name,
+                data_ingestion_info=results,
+            )
 
-    except Exception as error:
-        await log_pipeline_run_error(
-            pipeline_run_id, pipeline_id, pipeline_name, dataset_id, data, error
-        )
+            graph_engine = await get_graph_engine()
+            if hasattr(graph_engine, "push_to_s3"):
+                await graph_engine.push_to_s3()
 
-        yield PipelineRunErrored(
-            pipeline_run_id=pipeline_run_id,
-            payload=repr(error),
-            dataset_id=dataset.id,
-            dataset_name=dataset.name,
-            data_ingestion_info=locals().get(
-                "results"
-            ),  # Returns results if they exist or returns None
-        )
+            relational_engine = get_relational_engine()
+            if hasattr(relational_engine, "push_to_s3"):
+                await relational_engine.push_to_s3()
 
-        # In case of error during incremental loading of data just let the user know the pipeline Errored, don't raise error
-        if not isinstance(error, PipelineRunFailedError):
-            raise error
+        except Exception as error:
+            await log_pipeline_run_error(
+                pipeline_run_id, pipeline_id, pipeline_name, dataset.id, data, error
+            )
+
+            yield PipelineRunErrored(
+                pipeline_run_id=pipeline_run_id,
+                payload=repr(error),
+                dataset_id=dataset.id,
+                dataset_name=dataset.name,
+                data_ingestion_info=locals().get(
+                    "results"
+                ),  # Returns results if they exist or returns None
+            )
+
+            # In case of error during incremental loading of data just let the user know the pipeline Errored, don't raise error
+            if not isinstance(error, PipelineRunFailedError):
+                raise error

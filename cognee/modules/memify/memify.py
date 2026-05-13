@@ -14,9 +14,9 @@ from cognee.modules.pipelines.layers.resolve_authorized_user_datasets import (
 )
 from cognee.modules.engine.operations.setup import setup
 from cognee.modules.pipelines.layers.pipeline_execution_mode import get_pipeline_executor
-from cognee.tasks.memify.extract_subgraph_chunks import extract_subgraph_chunks
-from cognee.tasks.codingagents.coding_rule_associations import (
-    add_rule_associations,
+from cognee.memify_pipelines.memify_default_tasks import (
+    get_default_memify_enrichment_tasks,
+    get_default_memify_extraction_tasks,
 )
 
 logger = get_logger("memify")
@@ -60,19 +60,37 @@ async def memify(
                           If False, waits for completion before returning.
                           Background mode recommended for large datasets (>100MB).
                           Use pipeline_run_id from return value to monitor progress.
+
+    Returns:
+        Union[dict, list[PipelineRunInfo]]:
+            - **Blocking mode**: Dictionary mapping dataset_id -> PipelineRunInfo with:
+                * Processing status (completed/failed/in_progress)
+                * Processing duration and resource usage
+                * Error details if any failures occurred
+            - **Background mode**: List of PipelineRunInfo objects for tracking progress
+                * Use pipeline_run_id from return value to monitor status
+
+    Example:
+        ```python
+        import cognee
+
+        # Add and process data first
+        await cognee.add("Your document content")
+        await cognee.cognify()
+
+        # Enrich the existing knowledge graph with the default memify pipeline
+        await cognee.memify()
+
+        # Search the enriched graph
+        results = await cognee.search("What insights can you find?")
+        ```
     """
 
-    # Use default coding rules tasks if no tasks were provided
+    # Use default triplet embedding tasks if no tasks were provided
     if not extraction_tasks:
-        extraction_tasks = [Task(extract_subgraph_chunks)]
+        extraction_tasks = get_default_memify_extraction_tasks()
     if not enrichment_tasks:
-        enrichment_tasks = [
-            Task(
-                add_rule_associations,
-                rules_nodeset_name="coding_agent_rules",
-                task_config={"batch_size": 1},
-            )
-        ]
+        enrichment_tasks = get_default_memify_enrichment_tasks()
 
     await setup()
 
@@ -80,14 +98,12 @@ async def memify(
     authorized_dataset = authorized_dataset_list[0]
 
     if not data:
-        # Will only be used if ENABLE_BACKEND_ACCESS_CONTROL is set to True
-        await set_database_global_context_variables(
+        async with set_database_global_context_variables(
             authorized_dataset.id, authorized_dataset.owner_id
-        )
-
-        memory_fragment = await get_memory_fragment(node_type=node_type, node_name=node_name)
-        # Subgraphs should be a single element in the list to represent one data item
-        data = [memory_fragment]
+        ):
+            memory_fragment = await get_memory_fragment(node_type=node_type, node_name=node_name)
+            # Subgraphs should be a single element in the list to represent one data item
+            data = [memory_fragment]
 
     memify_tasks = [
         *extraction_tasks,  # Unpack tasks provided to memify pipeline
@@ -103,7 +119,7 @@ async def memify(
         tasks=memify_tasks,
         user=user,
         data=data,
-        datasets=authorized_dataset.id,
+        datasets=[authorized_dataset.id],
         vector_db_config=vector_db_config,
         graph_db_config=graph_db_config,
         use_pipeline_cache=False,

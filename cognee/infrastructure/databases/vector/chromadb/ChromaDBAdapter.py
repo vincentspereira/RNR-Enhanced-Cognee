@@ -3,6 +3,7 @@ import asyncio
 from uuid import UUID
 from typing import List, Optional
 from chromadb import AsyncHttpClient, Settings
+from pydantic import BaseModel
 
 from cognee.shared.logging_utils import get_logger
 from cognee.modules.storage.utils import get_own_properties
@@ -14,7 +15,6 @@ from cognee.infrastructure.databases.exceptions import MissingQueryParameterErro
 
 from ..embeddings.EmbeddingEngine import EmbeddingEngine
 from ..vector_db_interface import VectorDBInterface
-from ..utils import normalize_distances
 
 logger = get_logger("ChromaDBAdapter")
 
@@ -335,7 +335,12 @@ class ChromaDBAdapter(VectorDBInterface):
             Returns a list of ScoredResult instances containing the retrieved data points and
             their metadata.
         """
-        collection = await self.get_collection(collection_name)
+        try:
+            collection = await self.get_collection(collection_name)
+        except CollectionNotFoundError:
+            # If collection doesn't exist, return empty list (no items to retrieve)
+            return []
+
         results = await collection.get(ids=data_point_ids, include=["metadatas"])
 
         return [
@@ -354,7 +359,9 @@ class ChromaDBAdapter(VectorDBInterface):
         query_vector: List[float] = None,
         limit: Optional[int] = 15,
         with_vector: bool = False,
-        normalized: bool = True,
+        include_payload: bool = False,  # TODO: Add support for this parameter when set to False
+        node_name: Optional[List[str]] = None,  # TODO: Add support/functionality for this parameter
+        node_name_filter_operator: str = "OR",  # TODO: Add support/functionality for this parameter
     ):
         """
         Search for items in a collection using either a text or a vector query.
@@ -369,9 +376,6 @@ class ChromaDBAdapter(VectorDBInterface):
               query_text is provided. (default None)
             - limit (int): The maximum number of results to return; defaults to 15. (default 15)
             - with_vector (bool): Whether to include vectors in the results. (default False)
-            - normalized (bool): Whether to normalize the distance scores before returning them.
-              (default True)
-
         Returns:
         --------
 
@@ -416,10 +420,9 @@ class ChromaDBAdapter(VectorDBInterface):
 
                 vector_list.append(item)
 
-            # Normalize vector distance
-            normalized_values = normalize_distances(vector_list)
-            for i in range(len(normalized_values)):
-                vector_list[i]["score"] = normalized_values[i]
+            # Return backend raw cosine distance as score (lower is better)
+            for i in range(len(vector_list)):
+                vector_list[i]["score"] = float(vector_list[i]["_distance"])
 
             # Create and return ScoredResult objects
             return [
@@ -441,6 +444,7 @@ class ChromaDBAdapter(VectorDBInterface):
         query_texts: List[str],
         limit: int = 5,
         with_vectors: bool = False,
+        include_payload: bool = False,
     ):
         """
         Perform multiple searches in a single request for efficiency, returning results for each
@@ -492,14 +496,12 @@ class ChromaDBAdapter(VectorDBInterface):
 
                 vector_list.append(item)
 
-            normalized_values = normalize_distances(vector_list)
-
             query_results = []
-            for j, item in enumerate(vector_list):
+            for item in vector_list:
                 result = ScoredResult(
                     id=item["id"],
                     payload=item["payload"],
-                    score=normalized_values[j],
+                    score=float(item["_distance"]),
                 )
 
                 if with_vectors and "embeddings" in results:
@@ -528,6 +530,10 @@ class ChromaDBAdapter(VectorDBInterface):
 
             Returns True upon successful deletion of the data points.
         """
+        # Skip deletion if collection doesn't exist
+        if not await self.has_collection(collection_name):
+            return True
+
         collection = await self.get_collection(collection_name)
         await collection.delete(ids=data_point_ids)
         return True
@@ -558,3 +564,7 @@ class ChromaDBAdapter(VectorDBInterface):
         """
         client = await self.get_connection()
         return await client.list_collections()
+
+    async def run_migrations(self):
+        """Run ChromaDB adapter migrations (currently no-op)."""
+        return None
