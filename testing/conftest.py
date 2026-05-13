@@ -25,11 +25,15 @@ sys.path.insert(0, str(project_root / "cognee"))
 # Enhanced Cognee imports
 try:
     from src.agent_memory_integration import AgentMemoryIntegration
-    from src.agents.ats.algorithmic_trading_system import AlgorithmicTradingSystem
-    from src.agents.oma.code_reviewer import CodeReviewer
-    from src.agents.smc.context_manager import ContextManager
 except ImportError as e:
-    logging.warning(f"Could not import Enhanced Cognee modules: {e}")
+    logging.warning(f"Could not import AgentMemoryIntegration: {e}")
+    AgentMemoryIntegration = None
+
+# ats/oma/smc agent modules were archived in Phase 4 (hardcoded category violation).
+# Tests that depended on these are guarded with pytest.importorskip or mock-only.
+AlgorithmicTradingSystem = None
+CodeReviewer = None
+ContextManager = None
 
 # Test configuration
 TEST_CONFIG = {
