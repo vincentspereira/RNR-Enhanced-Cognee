@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 1 complete: full rebase of cognee/ onto v1.0.9. 461/461 unit tests pass."
+  "notes": "Phase 2 complete: 6 new MCP tools (remember/recall/forget/improve/save_interaction/cognify_status), updated search tool with 15 SearchType values, cloud connectivity toggle. 64 MCP tools total. 461/461 unit tests pass."
 }
