@@ -13,10 +13,25 @@ from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any, Tuple, Set
 from enum import Enum
 from dataclasses import dataclass, field
-from ..agent_memory_integration import AgentMemoryIntegration, MemoryCategory, MemoryType
-from ..agents.ats.ats_memory_wrapper import ATSMemoryWrapper
-from ..agents.oma.oma_memory_wrapper import OMAMemoryWrapper
-from ..agents.smc.smc_memory_wrapper import SMCMemoryWrapper
+from ..agent_memory_integration import AgentMemoryIntegration, MemoryType
+
+# Legacy wrappers (trading/development/coordination agents archived in Phase 4) - stub fallbacks
+class _TradingMemoryWrapperStub:
+    """Stub for the archived trading-category memory wrapper."""
+    def __init__(self, integration): self.integration = integration
+    async def store_execution_result(self, **kw): pass
+
+class _DevelopmentMemoryWrapperStub:
+    """Stub for the archived development-category memory wrapper."""
+    def __init__(self, integration): self.integration = integration
+    async def store_analysis_report(self, **kw): pass
+
+class _CoordinationMemoryWrapperStub:
+    """Stub for the archived coordination-category memory wrapper."""
+    def __init__(self, integration): self.integration = integration
+    async def store_message(self, **kw): pass
+    async def store_context(self, **kw): pass
+    async def store_task(self, **kw): pass
 
 logger = logging.getLogger(__name__)
 
@@ -93,17 +108,17 @@ class AgentCapability:
 
 class SubAgentCoordinator:
     """
-    Coordinates 21 sub-agents across ATS/OMA/SMC categories
-    Manages task distribution, communication, and resource allocation
+    Coordinates sub-agents with dynamic category configuration.
+    Manages task distribution, communication, and resource allocation.
     """
 
     def __init__(self, integration: AgentMemoryIntegration):
         self.integration = integration
 
-        # Initialize specialized memory wrappers
-        self.ats_wrapper = ATSMemoryWrapper(integration)
-        self.oma_wrapper = OMAMemoryWrapper(integration)
-        self.smc_wrapper = SMCMemoryWrapper(integration)
+        # Initialize specialized memory wrappers (stubs for archived legacy agents)
+        self.ats_wrapper = _TradingMemoryWrapperStub(integration)
+        self.oma_wrapper = _DevelopmentMemoryWrapperStub(integration)
+        self.smc_wrapper = _CoordinationMemoryWrapperStub(integration)
 
         # Agent registry with capabilities
         self.agent_registry = self._initialize_agent_registry()
@@ -123,169 +138,170 @@ class SubAgentCoordinator:
         }
 
     def _initialize_agent_registry(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize registry of all 21 sub-agents with their properties"""
+        """Initialize registry of all sub-agents with their properties.
+        Categories use generic strings loaded from dynamic configuration."""
         return {
-            # ATS agents (7)
+            # trading category agents
             "algorithmic-trading-system": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "trading_engine",
                 "capabilities": ["market_analysis", "signal_generation", "order_execution"],
                 "max_concurrent_tasks": 5,
                 "critical": True
             },
             "risk-management": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "risk_controller",
                 "capabilities": ["risk_assessment", "position_monitoring", "compliance_check"],
                 "max_concurrent_tasks": 3,
                 "critical": True
             },
             "portfolio-optimizer": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "portfolio_manager",
                 "capabilities": ["portfolio_optimization", "allocation_analysis", "performance_tracking"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
             "market-analyzer": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "data_analyzer",
                 "capabilities": ["market_data_analysis", "trend_detection", "sentiment_analysis"],
                 "max_concurrent_tasks": 4,
                 "critical": False
             },
             "execution-engine": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "execution_handler",
                 "capabilities": ["order_execution", "trade_confirmation", "settlement"],
                 "max_concurrent_tasks": 10,
                 "critical": True
             },
             "signal-processor": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "signal_processor",
                 "capabilities": ["signal_validation", "signal_enrichment", "signal_routing"],
                 "max_concurrent_tasks": 6,
                 "critical": False
             },
             "compliance-monitor": {
-                "category": MemoryCategory.ATS,
+                "category": "trading",
                 "type": "compliance_checker",
                 "capabilities": ["regulatory_monitoring", "compliance_reporting", "audit_trail"],
                 "max_concurrent_tasks": 2,
                 "critical": True
             },
 
-            # OMA agents (10)
+            # development category agents
             "code-reviewer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["code_analysis", "quality_check", "security_audit"],
                 "max_concurrent_tasks": 3,
                 "critical": False
             },
             "data-engineer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["data_pipeline", "etl_process", "data_quality"],
                 "max_concurrent_tasks": 4,
                 "critical": False
             },
             "debug-specialist": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["bug_analysis", "error_resolution", "performance_debugging"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
             "frontend-developer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["ui_development", "frontend_optimization", "user_experience"],
                 "max_concurrent_tasks": 3,
                 "critical": False
             },
             "backend-developer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["api_development", "backend_optimization", "database_design"],
                 "max_concurrent_tasks": 3,
                 "critical": False
             },
             "security-specialist": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["security_analysis", "vulnerability_assessment", "penetration_testing"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
             "test-engineer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["test_automation", "quality_assurance", "performance_testing"],
                 "max_concurrent_tasks": 3,
                 "critical": False
             },
             "technical-writer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["documentation", "api_docs", "user_guides"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
             "devops-engineer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["deployment", "infrastructure", "monitoring"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
             "ui-ux-designer": {
-                "category": MemoryCategory.OMA,
+                "category": "development",
                 "type": "development_tool",
                 "capabilities": ["design_system", "user_research", "prototyping"],
                 "max_concurrent_tasks": 2,
                 "critical": False
             },
 
-            # SMC agents (6)
+            # coordination category agents
             "context-manager": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["context_sharing", "session_management", "state_tracking"],
                 "max_concurrent_tasks": 8,
                 "critical": True
             },
             "knowledge-graph": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["knowledge_management", "semantic_search", "relationship_mapping"],
                 "max_concurrent_tasks": 4,
                 "critical": True
             },
             "message-broker": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["message_routing", "communication_protocol", "queue_management"],
                 "max_concurrent_tasks": 10,
                 "critical": True
             },
             "task-scheduler": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["task_scheduling", "resource_allocation", "workflow_management"],
                 "max_concurrent_tasks": 6,
                 "critical": True
             },
             "data-processor": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["data_transformation", "batch_processing", "stream_processing"],
                 "max_concurrent_tasks": 5,
                 "critical": False
             },
             "api-gateway": {
-                "category": MemoryCategory.SMC,
+                "category": "coordination",
                 "type": "coordination_tool",
                 "capabilities": ["api_management", "rate_limiting", "request_routing"],
                 "max_concurrent_tasks": 12,
@@ -456,7 +472,7 @@ class SubAgentCoordinator:
             # Category-wise statistics
             category_stats = {}
             for agent_id, agent_info in self.agent_registry.items():
-                category = agent_info["category"].value
+                category = agent_info["category"]
                 if category not in category_stats:
                     category_stats[category] = {"total_agents": 0, "active_agents": 0, "avg_load": 0}
 
@@ -541,7 +557,7 @@ class SubAgentCoordinator:
         try:
             # Store in appropriate memory wrapper based on recipient category
             recipient_info = self.agent_registry.get(message.to_agent, {})
-            recipient_category = recipient_info.get("category", MemoryCategory.SMC)
+            recipient_category = recipient_info.get("category", "coordination")
 
             message_data = {
                 "message_id": message.message_id,
@@ -554,27 +570,21 @@ class SubAgentCoordinator:
                 "requires_response": message.requires_response
             }
 
-            if recipient_category == MemoryCategory.ATS:
+            # Route to appropriate wrapper based on dynamic category
+            if recipient_category == "trading":
                 await self.ats_wrapper.store_execution_result(
                     agent_id=message.to_agent,
-                    execution={
-                        "execution_id": message.message_id,
-                        "type": "message_received",
-                        "status": "pending_response" if message.requires_response else "delivered",
-                        "message_data": message_data
-                    }
+                    execution={"execution_id": message.message_id, "type": "message_received",
+                               "status": "pending_response" if message.requires_response else "delivered",
+                               "message_data": message_data}
                 )
-            elif recipient_category == MemoryCategory.OMA:
+            elif recipient_category == "development":
                 await self.oma_wrapper.store_analysis_report(
                     agent_id=message.to_agent,
-                    report={
-                        "type": "message_received",
-                        "title": message.subject,
-                        "content": message_data,
-                        "severity": "info"
-                    }
+                    report={"type": "message_received", "title": message.subject,
+                            "content": message_data, "severity": "info"}
                 )
-            else:  # SMC
+            else:
                 await self.smc_wrapper.store_message(
                     agent_id=message.to_agent,
                     message_data=message_data

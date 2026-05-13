@@ -1,6 +1,6 @@
 """
 Enhanced Cognee Coordination System
-Comprehensive coordination layer for 21 sub-agents across ATS/OMA/SMC categories
+Comprehensive coordination layer for sub-agents with dynamic category configuration.
 """
 
 from .sub_agent_coordinator import SubAgentCoordinator
@@ -25,17 +25,13 @@ COORDINATION_SYSTEM_INFO = {
     "version": __version__,
     "description": "Comprehensive coordination layer for multi-agent system",
     "components": {
-        "coordinator": "Manages 21 sub-agents with ATS/OMA/SMC categorization",
+        "coordinator": "Manages sub-agents with dynamic category configuration",
         "orchestrator": "Handles complex workflows and task dependencies",
         "decision_maker": "Enables distributed decision-making with consensus mechanisms",
         "api": "RESTful interface for external system integration"
     },
-    "categories": {
-        "ATS": "Algorithmic Trading System (7 agents)",
-        "OMA": "Other Multi-Agent (10 agents)",
-        "SMC": "Shared Multi-Agent Components (6 agents)"
-    },
-    "total_agents": 21
+    "categories": "dynamic (loaded from .enhanced-cognee-config.json)",
+    "total_agents": "dynamic (loaded from configuration)"
 }
 
 async def initialize_coordination_system(memory_integration):

@@ -93,14 +93,6 @@ class EnhancedConfig:
                 except Exception as e:
                     logger.warning(f"Failed to load config from {config_path}: {e}")
 
-        # Fallback to legacy environment variables for backward compatibility
-        if os.getenv("ATS_MEMORY_PREFIX"):
-            return {
-                "ATS": os.getenv("ATS_MEMORY_PREFIX", "ats_"),
-                "OMA": os.getenv("OMA_MEMORY_PREFIX", "oma_"),
-                "SMC": os.getenv("SMC_MEMORY_PREFIX", "smc_"),
-            }
-
         # Default to no prefixes (simple mode)
         logger.info("Using default category configuration (no custom prefixes)")
         return {}

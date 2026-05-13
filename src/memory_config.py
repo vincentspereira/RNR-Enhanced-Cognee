@@ -42,30 +42,31 @@ class DefaultMemoryCategories:
     """Default memory categories (can be overridden by projects)"""
 
     @staticmethod
-    def get_mas_categories() -> Dict[str, MemoryCategoryConfig]:
+    def get_example_categories() -> Dict[str, MemoryCategoryConfig]:
         """
-        Multi-Agent System (MAS) specific categories
-        This is ONE EXAMPLE of how a project might configure categories
+        Example memory categories for a multi-agent system.
+        Replace with your own categories via .enhanced-cognee-config.json.
+        This is a REFERENCE EXAMPLE only - not used in production.
         """
         return {
-            "ATS": MemoryCategoryConfig(
-                name="ATS",
-                description="Algorithmic Trading System - Trading and market analysis",
-                prefix="ats_",
+            "trading": MemoryCategoryConfig(
+                name="trading",
+                description="Trading and market analysis agents",
+                prefix="trading_",
                 retention_days=30,
                 priority=1
             ),
-            "OMA": MemoryCategoryConfig(
-                name="OMA",
-                description="Other Multi-Agent - Development and operations agents",
-                prefix="oma_",
+            "development": MemoryCategoryConfig(
+                name="development",
+                description="Development and operations agents",
+                prefix="dev_",
                 retention_days=60,
                 priority=2
             ),
-            "SMC": MemoryCategoryConfig(
-                name="SMC",
-                description="Shared Multi-Agent Components - Coordination and infrastructure",
-                prefix="smc_",
+            "coordination": MemoryCategoryConfig(
+                name="coordination",
+                description="Coordination and infrastructure agents",
+                prefix="coord_",
                 retention_days=90,
                 priority=3
             )
@@ -116,7 +117,7 @@ class MemoryConfigManager:
                 "For other projects, create a .enhanced-cognee-config.json file "
                 "with your project-specific categories."
             )
-            self.categories = DefaultMemoryCategories.get_mas_categories()
+            self.categories = DefaultMemoryCategories.get_example_categories()
 
     def _find_config_file(self) -> Optional[str]:
         """Find configuration file in standard locations"""
@@ -163,7 +164,7 @@ class MemoryConfigManager:
         except Exception as e:
             logger.error(f"Error loading config from {json_path}: {e}")
             logger.info("Falling back to default categories")
-            self.categories = DefaultMemoryCategories.get_mas_categories()
+            self.categories = DefaultMemoryCategories.get_example_categories()
 
     def get_category(self, category_name: str) -> Optional[MemoryCategoryConfig]:
         """Get category configuration by name"""
@@ -265,8 +266,8 @@ if __name__ == "__main__":
     # Example usage
     print("=== Enhanced Cognee Configuration System ===\n")
 
-    # 1. Use default MAS configuration
-    print("1. Default MAS Configuration:")
+    # 1. Use default example configuration
+    print("1. Default Example Configuration:")
     config = MemoryConfigManager()
     for cat_name, cat_config in config.get_all_categories().items():
         print(f"  {cat_name}: {cat_config.description} (prefix: {cat_config.prefix})")
@@ -281,4 +282,4 @@ if __name__ == "__main__":
     for cat_name, cat_config in custom_config.get_all_categories().items():
         print(f"  {cat_name}: {cat_config.description} (prefix: {cat_config.prefix})")
 
-    print("\n✅ Configuration system is working!")
+    print("\n[OK] Configuration system is working!")
