@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 4 complete: archived ats/oma/smc agents, MCP server doc added, 36 new coverage tests (497 total), frontend v1.0.9 API clients (forget/improve/activity). 70 MCP tools. 497/497 unit tests pass."
+  "notes": "Phase 5 complete: upstream_diff.py, auto_port.py, GitHub Actions weekly monitor, mcp_modules framework (phase2/3 canonical modules), UPSTREAM_SYNC_RUNBOOK.md. 70 MCP tools. 497/497 unit tests pass."
 }
