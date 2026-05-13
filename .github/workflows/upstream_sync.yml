@@ -1,0 +1,254 @@
+name: Upstream Sync Monitor
+
+# Run every Monday at 08:00 UTC and allow manual trigger
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      baseline_override:
+        description: "Override local baseline tag (leave empty to use last_seen_release.txt)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-upstream:
+    name: Check topoteretes/cognee for new releases
+    runs-on: ubuntu-latest
+    outputs:
+      new_release: ${{ steps.check.outputs.new_release }}
+      upstream_latest: ${{ steps.check.outputs.upstream_latest }}
+      local_baseline: ${{ steps.check.outputs.local_baseline }}
+
+    steps:
+      - name: Checkout enhanced-cognee
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Read local baseline
+        id: baseline
+        run: |
+          BASELINE=$(cat .upstream-sync/last_seen_release.txt 2>/dev/null || echo "")
+          if [ -n "${{ github.event.inputs.baseline_override }}" ]; then
+            BASELINE="${{ github.event.inputs.baseline_override }}"
+          fi
+          echo "local_baseline=$BASELINE" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch upstream latest release
+        id: upstream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST=$(curl -s \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/topoteretes/cognee/releases/latest \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null || echo "")
+          echo "upstream_latest=$LATEST" >> "$GITHUB_OUTPUT"
+
+      - name: Compare releases
+        id: check
+        run: |
+          LOCAL="${{ steps.baseline.outputs.local_baseline }}"
+          LATEST="${{ steps.upstream.outputs.upstream_latest }}"
+          echo "local_baseline=$LOCAL" >> "$GITHUB_OUTPUT"
+          echo "upstream_latest=$LATEST" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL" != "$LATEST" ] && [ -n "$LATEST" ]; then
+            echo "new_release=true" >> "$GITHUB_OUTPUT"
+            echo "WARN New upstream release detected: $LATEST (local: $LOCAL)"
+          else
+            echo "new_release=false" >> "$GITHUB_OUTPUT"
+            echo "OK Enhanced Cognee is current with upstream ($LOCAL)"
+          fi
+
+  build-diff-report:
+    name: Build diff report
+    needs: check-upstream
+    if: needs.check-upstream.outputs.new_release == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout enhanced-cognee
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run upstream_diff.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/upstream_diff.py \
+            --token "$GITHUB_TOKEN" \
+            --output .upstream-sync/last_diff_report.json
+
+      - name: Run auto_port.py
+        run: |
+          python scripts/auto_port.py \
+            --report .upstream-sync/last_diff_report.json \
+            --out-stubs .upstream-sync/generated_stubs.py \
+            --out-todo .upstream-sync/PORTING_TODO.md || true
+
+      - name: Upload diff artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-diff-${{ needs.check-upstream.outputs.upstream_latest }}
+          path: |
+            .upstream-sync/last_diff_report.json
+            .upstream-sync/generated_stubs.py
+            .upstream-sync/PORTING_TODO.md
+          retention-days: 90
+
+  open-tracking-issue:
+    name: Open GitHub issue for new upstream release
+    needs: [check-upstream, build-diff-report]
+    if: needs.check-upstream.outputs.new_release == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout enhanced-cognee
+        uses: actions/checkout@v4
+
+      - name: Download diff artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: upstream-diff-${{ needs.check-upstream.outputs.upstream_latest }}
+          path: .upstream-sync/
+
+      - name: Parse diff report
+        id: parse
+        run: |
+          python3 - <<'EOF'
+          import json, os
+          try:
+              report = json.load(open(".upstream-sync/last_diff_report.json"))
+              delta = report.get("delta", {})
+              summary = (
+                  f"new_tasks={len(delta.get('new_tasks', []))} "
+                  f"new_routes={len(delta.get('new_api_routes', []))} "
+                  f"new_search_types={len(delta.get('new_search_types', []))} "
+                  f"changed_files={delta.get('changed_files_count', 0)}"
+              )
+          except Exception:
+              summary = "Could not parse diff report"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"summary={summary}\n")
+          EOF
+
+      - name: Check for existing open issue
+        id: find_issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM_TAG: ${{ needs.check-upstream.outputs.upstream_latest }}
+        run: |
+          EXISTING=$(gh issue list \
+            --label "upstream-sync" \
+            --state open \
+            --search "Upstream $UPSTREAM_TAG" \
+            --json number \
+            --jq '.[0].number // empty')
+          echo "issue_number=$EXISTING" >> "$GITHUB_OUTPUT"
+
+      - name: Create tracking issue
+        if: steps.find_issue.outputs.issue_number == ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM_TAG: ${{ needs.check-upstream.outputs.upstream_latest }}
+          LOCAL_TAG: ${{ needs.check-upstream.outputs.local_baseline }}
+        run: |
+          # Read TODO if it exists
+          TODO_EXCERPT=""
+          if [ -f ".upstream-sync/PORTING_TODO.md" ]; then
+            TODO_EXCERPT=$(head -60 .upstream-sync/PORTING_TODO.md)
+          fi
+
+          gh issue create \
+            --title "Upstream sync: port $UPSTREAM_TAG changes" \
+            --label "upstream-sync" \
+            --body "$(cat <<BODY
+          ## New upstream release detected
+
+          | | |
+          |---|---|
+          | **Local baseline** | \`$LOCAL_TAG\` |
+          | **Upstream latest** | \`$UPSTREAM_TAG\` |
+          | **Delta** | ${{ steps.parse.outputs.summary }} |
+
+          ## What to do
+
+          1. Download the \`upstream-diff-$UPSTREAM_TAG\` artifact from the workflow run
+          2. Review \`.upstream-sync/PORTING_TODO.md\` (excerpt below)
+          3. Copy stubs from \`.upstream-sync/generated_stubs.py\` into the MCP server
+          4. Implement each stub and run the test suite
+          5. Update \`.upstream-sync/last_seen_release.txt\` to \`$UPSTREAM_TAG\`
+          6. Close this issue
+
+          ## PORTING_TODO.md excerpt
+
+          \`\`\`markdown
+          $TODO_EXCERPT
+          \`\`\`
+
+          ---
+          *Auto-created by the upstream-sync workflow.*
+          BODY
+          )"
+
+  notify-email:
+    name: Send email notification
+    needs: [check-upstream, build-diff-report]
+    if: needs.check-upstream.outputs.new_release == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download diff artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: upstream-diff-${{ needs.check-upstream.outputs.upstream_latest }}
+          path: .upstream-sync/
+
+      - name: Send notification email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          secure: false
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "[Enhanced Cognee] New upstream release: ${{ needs.check-upstream.outputs.upstream_latest }}"
+          to: vincentspereira@outlook.com
+          from: Enhanced Cognee Monitor <${{ secrets.MAIL_USERNAME }}>
+          body: |
+            A new upstream topoteretes/cognee release has been detected.
+
+            Local baseline : ${{ needs.check-upstream.outputs.local_baseline }}
+            Upstream latest: ${{ needs.check-upstream.outputs.upstream_latest }}
+
+            Action required:
+            1. Check the tracking issue opened in the enhanced-cognee repo.
+            2. Download the diff artifact from the workflow run.
+            3. Follow the porting checklist in .upstream-sync/PORTING_TODO.md.
+
+            Workflow run URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  no-new-release:
+    name: Log no-op result
+    needs: check-upstream
+    if: needs.check-upstream.outputs.new_release == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log status
+        run: |
+          echo "OK Enhanced Cognee is current with upstream ${{ needs.check-upstream.outputs.local_baseline }}"
+          echo "No action required."
