@@ -569,14 +569,14 @@ This document provides:
 ```mermaid
 flowchart LR
     subgraph Clients["Client Layer"]
-        AIC[AI IDEs<br/>8 Supported]
+        AIC[MCP-Compatible<br/>IDEs]
         API[REST API]
         CLI[CLI Tool]
     end
 
-    subgraph MCP["MCP Server Layer - 59 Tools"]
+    subgraph MCP["MCP Server Layer - 70 Tools"]
         MCP1[Standard Memory<br/>7 Tools]
-        MCP2[Enhanced Cognee<br/>5 Tools]
+        MCP2[Enhanced Cognee<br/>6 Tools]
         MCP3[Memory Management<br/>4 Tools]
         MCP4[Deduplication<br/>5 Tools]
         MCP5[Summarization<br/>5 Tools]
@@ -588,6 +588,8 @@ flowchart LR
         MCP11[Scheduling Automation<br/>3 Tools]
         MCP12[Multi-Language<br/>6 Tools]
         MCP13[Advanced AI & Search<br/>6 Tools]
+        MCP14[Session Memory<br/>6 Tools]
+        MCP15[External Loaders<br/>6 Tools]
     end
 
     subgraph Memory["Memory Management Layer"]
@@ -617,7 +619,7 @@ flowchart LR
 
     MCP1 --> MM
     MCP2 --> MM
-    MCP3 --> MD
+    MCP3 --> MM
     MCP4 --> MD
     MCP5 --> MS
     MCP6 --> PA
@@ -625,9 +627,13 @@ flowchart LR
     MCP8 --> RTS
     MCP9 --> BR
     MCP10 --> SC
-    MCP11 --> ML
-    MCP12 --> AI
+    MCP11 --> SC
+    MCP12 --> ML
+    MCP13 --> AI
     MCP13 --> AS
+    MCP14 --> MM
+    MCP14 --> N4
+    MCP15 --> MM
 
     MM --> PG
     MM --> RD
@@ -768,32 +774,53 @@ stateDiagram-v2
 
 ### Search Workflow
 
+All 15 SearchType values are supported by the `recall` and `search` MCP tools.
+
 ```mermaid
 flowchart LR
-    A[User Query] --> B{Search Type}
+    A[User Query] --> R{Search Router\n15 SearchTypes}
 
-    B -->|GRAPH_COMPLETION| C[Neo4j Graph Traversal]
-    B -->|RAG_COMPLETION| D[Qdrant Vector Search]
-    B -->|CHUNKS| E[Semantic Chunk Search]
-    B -->|SUMMARIES| F[Hierarchical Summaries]
-    B -->|CODE| G[Code-Specific Search]
-    B -->|CYPHER| H[Direct Cypher Query]
-    B -->|FEELING_LUCKY| I[Auto-Select Best]
-    B -->|LEXICAL| J[Keyword Search]
+    subgraph GraphSearch["Graph Search - 5 types"]
+        G1[GRAPH_COMPLETION\ndefault recommended]
+        G2[GRAPH_COMPLETION_COT\nchain-of-thought]
+        G3[GRAPH_COMPLETION_DECOMPOSITION\nsub-questions]
+        G4[GRAPH_COMPLETION_CONTEXT_EXTENSION\nedge extension]
+        G5[GRAPH_SUMMARY_COMPLETION\ngraph summaries]
+    end
 
-    C --> K[Results]
-    D --> K
-    E --> K
-    F --> K
-    G --> K
-    H --> K
-    I --> K
-    J --> K
+    subgraph VectorChunk["Vector and Chunk Search - 4 types"]
+        V1[RAG_COMPLETION]
+        V2[CHUNKS]
+        V3[CHUNKS_LEXICAL\nBM25 keyword]
+        V4[TRIPLET_COMPLETION\nknowledge triplets]
+    end
+
+    subgraph SpecialSearch["Specialized Search - 4 types"]
+        S1[SUMMARIES\ndoc summaries]
+        S2[NATURAL_LANGUAGE\nNL query parser]
+        S3[TEMPORAL\ntime-aware]
+        S4[CODING_RULES\ncode patterns]
+    end
+
+    subgraph DirectQuery["Direct and Auto - 2 types"]
+        D1[CYPHER\ndirect Neo4j query]
+        D2[FEELING_LUCKY\nauto-select best]
+    end
+
+    R --> GraphSearch
+    R --> VectorChunk
+    R --> SpecialSearch
+    R --> DirectQuery
+
+    GraphSearch --> K[Results]
+    VectorChunk --> K
+    SpecialSearch --> K
+    DirectQuery --> K
 
     K --> L{Relevance Score}
     L -->|High| M[Return to User]
     L -->|Low| N[Refine Query]
-    N --> B
+    N --> R
 ```
 
 ---
