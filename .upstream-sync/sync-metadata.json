@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 5 complete: upstream_diff.py, auto_port.py, GitHub Actions weekly monitor, mcp_modules framework (phase2/3 canonical modules), UPSTREAM_SYNC_RUNBOOK.md. 70 MCP tools. 497/497 unit tests pass."
+  "notes": "Phase 6 complete: purged hardcoded ats/oma/smc from all 7 legacy src/ files. categories gate passes on full src/. 70 MCP tools. 497/497 unit tests pass."
 }
