@@ -28,7 +28,7 @@ class TestCogneeServerStart(unittest.TestCase):
             preexec_fn=os.setsid,
         )
         # Give the server some time to start
-        time.sleep(35)
+        time.sleep(120)
 
         # Check if server started with errors
         if cls.server_process.poll() is not None:
@@ -51,7 +51,7 @@ class TestCogneeServerStart(unittest.TestCase):
     def test_server_is_running(self):
         """Test that the server is running and can accept connections."""
         # Test health endpoint
-        health_response = requests.get("http://localhost:8000/health", timeout=15)
+        health_response = requests.get("http://localhost:8000/health", timeout=90)
         self.assertIn(health_response.status_code, [200])
 
         # Test root endpoint

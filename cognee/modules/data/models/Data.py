@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy import UUID, Column, DateTime, String, JSON, Integer
+from sqlalchemy import UUID, Column, DateTime, String, JSON, Integer, Float
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship
 
@@ -13,7 +13,7 @@ class Data(Base):
     __tablename__ = "data"
 
     id = Column(UUID, primary_key=True, default=uuid4)
-
+    label = Column(String, nullable=True)
     name = Column(String)
     extension = Column(String)
     mime_type = Column(String)
@@ -36,12 +36,14 @@ class Data(Base):
     data_size = Column(Integer, nullable=True)  # File size in bytes
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), onupdate=lambda: datetime.now(timezone.utc))
+    last_accessed = Column(DateTime(timezone=True), nullable=True)
+    importance_weight = Column(Float, nullable=True)
 
     datasets = relationship(
         "Dataset",
         secondary=DatasetData.__tablename__,
         back_populates="data",
-        lazy="noload",
+        lazy="selectin",
         cascade="all, delete",
     )
 
@@ -49,6 +51,7 @@ class Data(Base):
         return {
             "id": str(self.id),
             "name": self.name,
+            "label": self.label,
             "extension": self.extension,
             "mimeType": self.mime_type,
             "rawDataLocation": self.raw_data_location,

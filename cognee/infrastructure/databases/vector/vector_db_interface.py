@@ -1,4 +1,4 @@
-from typing import List, Protocol, Optional, Union, Any
+from typing import List, Protocol, Optional, Any
 from abc import abstractmethod
 from cognee.infrastructure.engine import DataPoint
 from .models.PayloadSchema import PayloadSchema
@@ -87,6 +87,9 @@ class VectorDBInterface(Protocol):
         query_vector: Optional[List[float]],
         limit: Optional[int],
         with_vector: bool = False,
+        include_payload: bool = False,
+        node_name: Optional[List[str]] = None,
+        node_name_filter_operator: str = "OR",
     ):
         """
         Perform a search in the specified collection using either a text query or a vector
@@ -103,6 +106,11 @@ class VectorDBInterface(Protocol):
             - limit (Optional[int]): The maximum number of results to return from the search.
             - with_vector (bool): Whether to return the vector representations with search
               results. (default False)
+            - include_payload (bool): Whether to include the payload data with search. Search is faster when set to False.
+              Payload contains metadata about the data point, useful for searches that are only based on embedding distances
+              like the RAG_COMPLETION search type, but not needed when search also contains graph data.
+            - node_name (Optional[List[str]]): An optional list of names of nodes. Search results are filtered
+              based on these, and only data which has at least one of the names in its "belongs_to_set" field is returned.
         """
         raise NotImplementedError
 
@@ -113,6 +121,8 @@ class VectorDBInterface(Protocol):
         query_texts: List[str],
         limit: Optional[int],
         with_vectors: bool = False,
+        include_payload: bool = False,
+        node_name: Optional[List[str]] = None,
     ):
         """
         Perform a batch search using multiple text queries against a collection.
@@ -125,13 +135,14 @@ class VectorDBInterface(Protocol):
             - limit (Optional[int]): The maximum number of results to return for each query.
             - with_vectors (bool): Whether to include vector representations with search
               results. (default False)
+            - include_payload (bool): Whether to include the payload data with search. Search is faster when set to False.
+              Payload contains metadata about the data point, useful for searches that are only based on embedding distances
+              like the RAG_COMPLETION search type, but not needed when search also contains graph data.
         """
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_data_points(
-        self, collection_name: str, data_point_ids: Union[List[str], list[str]]
-    ):
+    async def delete_data_points(self, collection_name: str, data_point_ids: List[UUID]):
         """
         Delete specified data points from a collection.
 
@@ -169,6 +180,13 @@ class VectorDBInterface(Protocol):
         raise NotImplementedError
 
     # Optional methods that may be implemented by adapters
+    async def run_migrations(self):
+        """
+        Run adapter-specific vector storage migrations.
+        Default implementation is a no-op.
+        """
+        return None
+
     async def get_connection(self):
         """
         Get a connection to the vector database.

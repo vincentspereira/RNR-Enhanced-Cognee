@@ -1,9 +1,10 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 import sys
 
 from cognee.infrastructure.engine import DataPoint
 from cognee.modules.engine.models import Triplet
+from cognee.modules.graph.utils import ensure_default_edge_properties
 from cognee.tasks.storage.add_data_points import (
     add_data_points,
     InvalidDataPointsInAddDataPointsError,
@@ -19,6 +20,17 @@ class SimplePoint(DataPoint):
     metadata: dict = {"index_fields": ["text"]}
 
 
+def _make_unified_mock():
+    """Create a mock UnifiedStoreEngine with graph and vector properties."""
+    graph_engine = AsyncMock()
+    vector_engine = MagicMock()
+    unified = AsyncMock()
+    unified.graph = graph_engine
+    unified.vector = vector_engine
+    unified.has_capability = MagicMock(return_value=False)
+    return unified, graph_engine, vector_engine
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize("bad_input", [None, ["not_datapoint"]])
 async def test_add_data_points_validates_inputs(bad_input):
@@ -29,11 +41,11 @@ async def test_add_data_points_validates_inputs(bad_input):
 @pytest.mark.asyncio
 @patch.object(adp_module, "index_graph_edges")
 @patch.object(adp_module, "index_data_points")
-@patch.object(adp_module, "get_graph_engine")
+@patch.object(adp_module, "get_unified_engine")
 @patch.object(adp_module, "deduplicate_nodes_and_edges")
 @patch.object(adp_module, "get_graph_from_model")
 async def test_add_data_points_indexes_nodes_and_edges(
-    mock_get_graph, mock_dedup, mock_get_engine, mock_index_nodes, mock_index_edges
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
 ):
     dp1 = SimplePoint(text="first")
     dp2 = SimplePoint(text="second")
@@ -43,8 +55,8 @@ async def test_add_data_points_indexes_nodes_and_edges(
 
     mock_get_graph.side_effect = [([dp1], [edge1]), ([dp2], [])]
     mock_dedup.side_effect = lambda n, e: (n, e)
-    graph_engine = AsyncMock()
-    mock_get_engine.return_value = graph_engine
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    mock_get_unified.return_value = unified
 
     result = await add_data_points([dp1, dp2], custom_edges=custom_edges)
 
@@ -52,19 +64,23 @@ async def test_add_data_points_indexes_nodes_and_edges(
     graph_engine.add_nodes.assert_awaited_once()
     mock_index_nodes.assert_awaited_once()
     assert graph_engine.add_edges.await_count == 2
-    assert edge1 in graph_engine.add_edges.await_args_list[0].args[0]
-    assert graph_engine.add_edges.await_args_list[1].args[0] == custom_edges
+    expected_main_edges = ensure_default_edge_properties([edge1])
+    expected_custom_edges = ensure_default_edge_properties(custom_edges)
+    first_call_edges = graph_engine.add_edges.await_args_list[0].args[0]
+    assert expected_main_edges[0] in first_call_edges
+    assert expected_custom_edges[0] in first_call_edges
+    assert graph_engine.add_edges.await_args_list[1].args[0] == expected_custom_edges
     assert mock_index_edges.await_count == 2
 
 
 @pytest.mark.asyncio
 @patch.object(adp_module, "index_graph_edges")
 @patch.object(adp_module, "index_data_points")
-@patch.object(adp_module, "get_graph_engine")
+@patch.object(adp_module, "get_unified_engine")
 @patch.object(adp_module, "deduplicate_nodes_and_edges")
 @patch.object(adp_module, "get_graph_from_model")
 async def test_add_data_points_indexes_triplets_when_enabled(
-    mock_get_graph, mock_dedup, mock_get_engine, mock_index_nodes, mock_index_edges
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
 ):
     dp1 = SimplePoint(text="source")
     dp2 = SimplePoint(text="target")
@@ -73,8 +89,8 @@ async def test_add_data_points_indexes_triplets_when_enabled(
 
     mock_get_graph.side_effect = [([dp1], [edge1]), ([dp2], [])]
     mock_dedup.side_effect = lambda n, e: (n, e)
-    graph_engine = AsyncMock()
-    mock_get_engine.return_value = graph_engine
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    mock_get_unified.return_value = unified
 
     await add_data_points([dp1, dp2], embed_triplets=True)
 
@@ -90,15 +106,15 @@ async def test_add_data_points_indexes_triplets_when_enabled(
 @pytest.mark.asyncio
 @patch.object(adp_module, "index_graph_edges")
 @patch.object(adp_module, "index_data_points")
-@patch.object(adp_module, "get_graph_engine")
+@patch.object(adp_module, "get_unified_engine")
 @patch.object(adp_module, "deduplicate_nodes_and_edges")
 @patch.object(adp_module, "get_graph_from_model")
 async def test_add_data_points_with_empty_list(
-    mock_get_graph, mock_dedup, mock_get_engine, mock_index_nodes, mock_index_edges
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
 ):
     mock_dedup.side_effect = lambda n, e: (n, e)
-    graph_engine = AsyncMock()
-    mock_get_engine.return_value = graph_engine
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    mock_get_unified.return_value = unified
 
     result = await add_data_points([])
 
@@ -110,23 +126,34 @@ async def test_add_data_points_with_empty_list(
 @pytest.mark.asyncio
 @patch.object(adp_module, "index_graph_edges")
 @patch.object(adp_module, "index_data_points")
-@patch.object(adp_module, "get_graph_engine")
+@patch.object(adp_module, "get_unified_engine")
 @patch.object(adp_module, "deduplicate_nodes_and_edges")
 @patch.object(adp_module, "get_graph_from_model")
 async def test_add_data_points_with_single_datapoint(
-    mock_get_graph, mock_dedup, mock_get_engine, mock_index_nodes, mock_index_edges
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
 ):
     dp = SimplePoint(text="single")
     mock_get_graph.side_effect = [([dp], [])]
     mock_dedup.side_effect = lambda n, e: (n, e)
-    graph_engine = AsyncMock()
-    mock_get_engine.return_value = graph_engine
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    mock_get_unified.return_value = unified
 
     result = await add_data_points([dp])
 
     assert result == [dp]
     mock_get_graph.assert_called_once()
     mock_index_nodes.assert_awaited_once()
+
+
+def test_entity_description_not_in_index_fields():
+    from cognee.modules.engine.models import Entity, EntityType
+
+    entity_type = EntityType(name="Person", description="A human being")
+    entity = Entity(name="Alice", description="A software engineer", is_a=entity_type)
+    text = _extract_embeddable_text_from_datapoint(entity)
+    # description is stored but not indexed — only name is embedded
+    assert "Alice" in text
+    assert "A software engineer" not in text
 
 
 def test_extract_embeddable_text_from_datapoint():
@@ -270,19 +297,60 @@ def test_create_triplets_skips_nodes_without_id():
 @pytest.mark.asyncio
 @patch.object(adp_module, "index_graph_edges")
 @patch.object(adp_module, "index_data_points")
-@patch.object(adp_module, "get_graph_engine")
+@patch.object(adp_module, "get_unified_engine")
 @patch.object(adp_module, "deduplicate_nodes_and_edges")
 @patch.object(adp_module, "get_graph_from_model")
 async def test_add_data_points_with_empty_custom_edges(
-    mock_get_graph, mock_dedup, mock_get_engine, mock_index_nodes, mock_index_edges
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
 ):
     dp = SimplePoint(text="test")
     mock_get_graph.side_effect = [([dp], [])]
     mock_dedup.side_effect = lambda n, e: (n, e)
-    graph_engine = AsyncMock()
-    mock_get_engine.return_value = graph_engine
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    mock_get_unified.return_value = unified
 
     result = await add_data_points([dp], custom_edges=[])
 
     assert result == [dp]
     assert graph_engine.add_edges.await_count == 1
+
+
+@pytest.mark.asyncio
+@patch.object(adp_module, "index_graph_edges")
+@patch.object(adp_module, "index_data_points")
+@patch.object(adp_module, "get_unified_engine")
+@patch.object(adp_module, "deduplicate_nodes_and_edges")
+@patch.object(adp_module, "get_graph_from_model")
+async def test_add_data_points_hybrid_write_path(
+    mock_get_graph, mock_dedup, mock_get_unified, mock_index_nodes, mock_index_edges
+):
+    """When unified engine has HYBRID_WRITE, use add_nodes_with_vectors and add_edges_with_vectors."""
+    from cognee.infrastructure.databases.unified.capabilities import EngineCapability
+
+    dp1 = SimplePoint(text="first")
+    dp2 = SimplePoint(text="second")
+
+    edge1 = (str(dp1.id), str(dp2.id), "related_to", {"edge_text": "connects"})
+    custom_edges = [(str(dp2.id), str(dp1.id), "custom_edge", {})]
+
+    mock_get_graph.side_effect = [([dp1], [edge1]), ([dp2], [])]
+    mock_dedup.side_effect = lambda n, e: (n, e)
+    unified, graph_engine, vector_engine = _make_unified_mock()
+    unified.has_capability = MagicMock(side_effect=lambda cap: cap == EngineCapability.HYBRID_WRITE)
+    mock_get_unified.return_value = unified
+
+    result = await add_data_points([dp1, dp2], custom_edges=custom_edges)
+
+    assert result == [dp1, dp2]
+
+    # Hybrid path: add_nodes_with_vectors called, not add_nodes
+    graph_engine.add_nodes_with_vectors.assert_awaited_once()
+    graph_engine.add_nodes.assert_not_awaited()
+
+    # Hybrid path: add_edges_with_vectors called, not add_edges
+    assert graph_engine.add_edges_with_vectors.await_count == 2
+    graph_engine.add_edges.assert_not_awaited()
+
+    # Standard index_data_points and index_graph_edges should NOT be called
+    mock_index_nodes.assert_not_awaited()
+    mock_index_edges.assert_not_awaited()

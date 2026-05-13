@@ -2,18 +2,23 @@
 Tests for CLI edge cases and error scenarios with proper mocking.
 """
 
+import os
 import pytest
 import sys
 import asyncio
 import argparse
-from unittest.mock import patch, MagicMock, AsyncMock, ANY, call
+from uuid import uuid4
+from unittest.mock import patch, MagicMock, AsyncMock, ANY
+
+import cognee
 from cognee.cli.commands.add_command import AddCommand
 from cognee.cli.commands.search_command import SearchCommand
 from cognee.cli.commands.cognify_command import CognifyCommand
 from cognee.cli.commands.delete_command import DeleteCommand
 from cognee.cli.commands.config_command import ConfigCommand
-from cognee.cli.exceptions import CliCommandException, CliCommandInnerException
+from cognee.cli.exceptions import CliCommandException
 from cognee.modules.data.methods.get_deletion_counts import DeletionCountsPreview
+from cognee.modules.engine.operations.setup import setup
 
 
 # Mock asyncio.run to properly handle coroutines
@@ -26,11 +31,21 @@ def _mock_run(coro):
         loop.close()
 
 
+def _mock_user():
+    u = MagicMock()
+    u.id = uuid4()
+    return u
+
+
+_RESOLVE_USER_PATCH = "cognee.cli.user_resolution.resolve_cli_user"
+
+
 class TestAddCommandEdgeCases:
     """Test edge cases for AddCommand"""
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.add_command.asyncio.run", side_effect=_mock_run)
-    def test_add_empty_data_list(self, mock_asyncio_run):
+    def test_add_empty_data_list(self, mock_asyncio_run, _mock_resolve):
         mock_cognee = MagicMock()
         mock_cognee.add = AsyncMock()
 
@@ -41,7 +56,7 @@ class TestAddCommandEdgeCases:
 
         mock_asyncio_run.assert_called_once()
         assert asyncio.iscoroutine(mock_asyncio_run.call_args[0][0])
-        mock_cognee.add.assert_awaited_once_with(data=[], dataset_name="test_dataset")
+        mock_cognee.add.assert_awaited_once_with(data=[], dataset_name="test_dataset", user=ANY)
 
     @patch("cognee.cli.commands.add_command.asyncio.run")
     def test_add_asyncio_run_exception(self, mock_asyncio_run):
@@ -78,8 +93,9 @@ class TestAddCommandEdgeCases:
 class TestSearchCommandEdgeCases:
     """Test edge cases for SearchCommand"""
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.search_command.asyncio.run", side_effect=_mock_run)
-    def test_search_empty_results(self, mock_asyncio_run):
+    def test_search_empty_results(self, mock_asyncio_run, _mock_resolve):
         """Test search command with empty results"""
         # Mock the cognee module and SearchType
         mock_cognee = MagicMock()
@@ -107,16 +123,19 @@ class TestSearchCommandEdgeCases:
         mock_cognee.search.assert_awaited_once_with(
             query_text="nonexistent query",
             query_type=ANY,
+            user=ANY,
             datasets=None,
             top_k=10,
             system_prompt_path="answer_simple_question.txt",
+            session_id=ANY,
         )
         # verify the enum’s name separately
         called_enum = mock_cognee.search.await_args.kwargs["query_type"]
         assert called_enum.name == "GRAPH_COMPLETION"
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.search_command.asyncio.run", side_effect=_mock_run)
-    def test_search_very_large_top_k(self, mock_asyncio_run):
+    def test_search_very_large_top_k(self, mock_asyncio_run, _mock_resolve):
         """Test search command with very large top-k value"""
         # Mock the cognee module and SearchType
         mock_cognee = MagicMock()
@@ -144,9 +163,11 @@ class TestSearchCommandEdgeCases:
         mock_cognee.search.assert_awaited_once_with(
             query_text="test query",
             query_type=ANY,
+            user=ANY,
             datasets=None,
             top_k=999999,
             system_prompt_path="answer_simple_question.txt",
+            session_id=ANY,
         )
         # verify the enum’s name separately
         called_enum = mock_cognee.search.await_args.kwargs["query_type"]
@@ -191,8 +212,9 @@ class TestSearchCommandEdgeCases:
         args = parser.parse_args([unicode_query])
         assert args.query_text == unicode_query
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.search_command.asyncio.run", side_effect=_mock_run)
-    def test_search_results_with_none_values(self, mock_asyncio_run):
+    def test_search_results_with_none_values(self, mock_asyncio_run, _mock_resolve):
         """Test search command when results contain None values"""
         # Mock the cognee module and SearchType
         mock_cognee = MagicMock()
@@ -219,9 +241,11 @@ class TestSearchCommandEdgeCases:
         mock_cognee.search.assert_awaited_once_with(
             query_text="test query",
             query_type=ANY,
+            user=ANY,
             datasets=None,
             top_k=10,
             system_prompt_path="answer_simple_question.txt",
+            session_id=ANY,
         )
         # verify the enum’s name separately
         called_enum = mock_cognee.search.await_args.kwargs["query_type"]
@@ -231,8 +255,9 @@ class TestSearchCommandEdgeCases:
 class TestCognifyCommandEdgeCases:
     """Test edge cases for CognifyCommand"""
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.cognify_command.asyncio.run", side_effect=_mock_run)
-    def test_cognify_invalid_chunk_size(self, mock_asyncio_run):
+    def test_cognify_invalid_chunk_size(self, mock_asyncio_run, _mock_resolve):
         """Test cognify command with invalid chunk size"""
         # Mock the cognee module
         mock_cognee = MagicMock()
@@ -258,14 +283,17 @@ class TestCognifyCommandEdgeCases:
 
         mock_cognee.cognify.assert_awaited_once_with(
             datasets=None,
+            user=ANY,
             chunk_size=-100,
             ontology_file_path=None,
             chunker=TextChunker,
             run_in_background=False,
+            chunks_per_batch=None,
         )
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.cognify_command.asyncio.run", side_effect=_mock_run)
-    def test_cognify_nonexistent_ontology_file(self, mock_asyncio_run):
+    def test_cognify_nonexistent_ontology_file(self, mock_asyncio_run, _mock_resolve):
         """Test cognify command with nonexistent ontology file"""
         # Mock the cognee module
         mock_cognee = MagicMock()
@@ -291,10 +319,12 @@ class TestCognifyCommandEdgeCases:
 
         mock_cognee.cognify.assert_awaited_once_with(
             datasets=None,
+            user=ANY,
             chunk_size=None,
             ontology_file_path="/nonexistent/path/ontology.owl",
             chunker=TextChunker,
             run_in_background=False,
+            chunks_per_batch=None,
         )
 
     @patch("cognee.cli.commands.cognify_command.asyncio.run")
@@ -343,8 +373,9 @@ class TestCognifyCommandEdgeCases:
         mock_asyncio_run.assert_called_once()
         assert asyncio.iscoroutine(mock_asyncio_run.call_args[0][0])
 
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.cognify_command.asyncio.run", side_effect=_mock_run)
-    def test_cognify_empty_datasets_list(self, mock_asyncio_run):
+    def test_cognify_empty_datasets_list(self, mock_asyncio_run, _mock_resolve):
         """Test cognify command with nonexistent ontology file"""
         # Mock the cognee module
         mock_cognee = MagicMock()
@@ -369,42 +400,54 @@ class TestCognifyCommandEdgeCases:
 
         mock_cognee.cognify.assert_awaited_once_with(
             datasets=None,
+            user=ANY,
             chunk_size=None,
             ontology_file_path=None,
             chunker=TextChunker,
             run_in_background=False,
+            chunks_per_batch=None,
         )
 
 
 class TestDeleteCommandEdgeCases:
     """Test edge cases for DeleteCommand"""
 
-    @patch("cognee.cli.commands.delete_command.get_deletion_counts")
-    @patch("cognee.cli.commands.delete_command.fmt.confirm")
+    @patch(_RESOLVE_USER_PATCH, new_callable=lambda: AsyncMock(return_value=_mock_user()))
     @patch("cognee.cli.commands.delete_command.asyncio.run", side_effect=_mock_run)
-    def test_delete_all_with_user_id(
-        self, mock_asyncio_run, mock_confirm, mock_get_deletion_counts
-    ):
-        """Test delete command with both --all and --user-id"""
-        # Mock the cognee module
-        mock_cognee = MagicMock()
-        mock_cognee.delete = AsyncMock()
-        mock_get_deletion_counts = AsyncMock()
-        mock_get_deletion_counts.return_value = DeletionCountsPreview()
+    @patch("cognee.cli.commands.delete_command.cognee_datasets")
+    def test_delete_all_with_user_id(self, datasets_mock, async_run_mock, _mock_resolve):
+        """Test delete command with --all and --force"""
+        data_directory_path = os.path.join(
+            os.path.dirname(__file__), ".data_storage/test_cli_commands"
+        )
+        cognee_directory_path = os.path.join(
+            os.path.dirname(__file__), ".cognee_system/test_cli_commands"
+        )
 
-        with patch.dict(sys.modules, {"cognee": mock_cognee}):
-            command = DeleteCommand()
-            args = argparse.Namespace(dataset_name=None, user_id="test_user", all=True, force=False)
+        cognee.config.data_root_directory(data_directory_path)
+        cognee.config.system_root_directory(cognee_directory_path)
 
-            mock_confirm.return_value = True
+        asyncio.run(cognee.prune.prune_data())
+        asyncio.run(cognee.prune.prune_system(metadata=True))
 
-            # Should handle both flags being set
-            command.execute(args)
+        asyncio.run(setup())
 
-        mock_confirm.assert_called_once_with("Delete ALL data from cognee?")
-        assert mock_asyncio_run.call_count == 2
-        assert asyncio.iscoroutine(mock_asyncio_run.call_args[0][0])
-        mock_cognee.delete.assert_awaited_once_with(dataset_name=None, user_id="test_user")
+        delete_all_mock = AsyncMock()
+        datasets_mock.delete_all = delete_all_mock
+
+        command = DeleteCommand()
+        args = argparse.Namespace(
+            dataset_name=None,
+            all=True,
+            force=True,
+        )
+
+        command.execute(args)
+
+        delete_all_mock.assert_awaited_once_with(user=ANY)
+
+        asyncio.run(cognee.prune.prune_data())
+        asyncio.run(cognee.prune.prune_system(metadata=True))
 
     @patch("cognee.cli.commands.delete_command.get_deletion_counts")
     @patch("cognee.cli.commands.delete_command.fmt.confirm")
@@ -414,7 +457,7 @@ class TestDeleteCommandEdgeCases:
         mock_get_deletion_counts.return_value = DeletionCountsPreview()
 
         command = DeleteCommand()
-        args = argparse.Namespace(dataset_name="test_dataset", user_id=None, all=False, force=False)
+        args = argparse.Namespace(dataset_name="test_dataset")
 
         mock_confirm.side_effect = KeyboardInterrupt()
 
