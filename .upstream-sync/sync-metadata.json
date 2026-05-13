@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 3 complete: 6 new MCP tools (ingest_url/ingest_db/translate_text/regex_extract_entities/extract_graph_v2/list_loaders). 70 MCP tools total. 975/975 unit tests pass."
+  "notes": "Phase 4 complete: archived ats/oma/smc agents, MCP server doc added, 36 new coverage tests (497 total), frontend v1.0.9 API clients (forget/improve/activity). 70 MCP tools. 497/497 unit tests pass."
 }
