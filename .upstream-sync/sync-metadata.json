@@ -1,7 +1,7 @@
 {
   "enhanced_cognee_baseline": "v0.5.1",
   "upstream_repo": "https://github.com/topoteretes/cognee",
-  "upstream_last_synced": "v0.5.1",
+  "upstream_last_synced": "v1.0.9",
   "upstream_target_rebase": "v1.0.9",
   "last_sync_date": "2026-05-13",
   "rebase_strategy": "Option A - full rebase onto v1.0.9",
@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 0 pre-flight complete. Gate G1 pending Vincent approval to begin Phase 1 (rebase worktree setup)."
+  "notes": "Phase 1 complete: full rebase of cognee/ onto v1.0.9. 461/461 unit tests pass."
 }
