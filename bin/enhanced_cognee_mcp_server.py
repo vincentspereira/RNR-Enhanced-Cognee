@@ -612,7 +612,7 @@ async def list_data() -> str:
 
 
 # ============================================================================
-# STANDARD MEMORY MCP TOOLS - For Claude Code Memory Integration
+# STANDARD MEMORY MCP TOOLS - Standard Memory MCP Integration
 # ============================================================================
 
 @mcp.tool()
@@ -625,7 +625,7 @@ async def add_memory(
     """
     Add a memory entry (Standard Memory MCP Tool)
 
-    This is the standard memory tool interface for Claude Code integration.
+    This is the standard memory tool interface for MCP-compatible IDEs.
     Memories are stored in PostgreSQL and indexed in Qdrant for semantic search.
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when they want to remember information
@@ -752,7 +752,7 @@ async def search_memories(
     """
     Search memories using semantic and text search (Standard Memory MCP Tool)
 
-    This is the standard memory search tool for Claude Code integration.
+    This is the standard memory search tool for MCP-compatible IDEs.
     Performs both text-based and semantic vector search.
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when searching for past information
@@ -2536,7 +2536,7 @@ async def create_backup(
     """
     Create a backup of Enhanced Cognee databases (Backup Tool)
 
-    TRIGGER TYPE: (A) Auto - Can be automatically triggered by Claude Code
+    TRIGGER TYPE: (A) Auto - Can be automatically triggered by AI IDEs
 
     This tool can be triggered automatically based on:
     - Scheduled periodic backups (daily, weekly, monthly)
@@ -4325,7 +4325,7 @@ async def save_interaction(
     """
     Save a coding interaction (user/assistant exchange) to the knowledge graph.
 
-    This enables Claude Code / Cursor / Windsurf to record interaction patterns
+    This enables MCP-compatible IDEs (Cursor, Windsurf, etc.) to record interaction patterns
     so they can be surfaced as rules and best practices via recall(search_type=CODING_RULES).
 
     TRIGGER TYPE: (A) Auto - trigger after significant user/assistant exchanges
@@ -4761,7 +4761,7 @@ async def main():
 
     print("\nOK Enhanced Cognee MCP Server starting...")
     print("  Available tools:")
-    print("    Standard Memory MCP Tools (for Claude Code integration):")
+    print("    Standard Memory MCP Tools (for MCP-compatible IDE integration):")
     print("      - add_memory: Add memory entry")
     print("      - search_memories: Search memories")
     print("      - get_memories: List all memories")

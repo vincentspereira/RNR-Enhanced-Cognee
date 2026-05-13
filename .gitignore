@@ -241,7 +241,6 @@ tmpclaude-*
 .beads/
 .beads-cognee-integration/
 
-# Claude Code local settings (should not be in git)
 .claude/settings.local.json
 
 # Temporary and backup files (should not be in git)

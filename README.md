@@ -8,13 +8,13 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-975%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-497%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-  **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 58 MCP tools, 400-700% performance improvement, enterprise-grade multi-agent coordination, official Claude API integration, real-time web dashboard, and production-ready security hardening**
+  **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 70 MCP tools, enterprise-grade multi-agent coordination, real-time web dashboard, and production-ready security hardening**
 
 </div>
 
@@ -34,7 +34,9 @@
 - [Multi-IDE Support](#multi-ide-support)
 - [MCP Tools Reference](#mcp-tools-reference)
 - [How MCP Tools Work](#how-mcp-tools-work)
-- [21 SDLC Agents Integration](#21-sdlc-agents-integration)
+- [Agent Integration](#agent-integration)
+- [v1.0.9 API Parity](#v109-api-parity)
+- [Upstream Sync Monitoring](#upstream-sync-monitoring)
 - [Testing](#testing)
 - [Documentation](#documentation)
 - [Configuration](#configuration)
@@ -59,7 +61,7 @@
 | **Caching Layer**               | FsCache                    | None                                      | **Redis (high-speed)**                  |
 | **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                |
 | **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                      |
-| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **59 comprehensive tools**              |
+| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **70 comprehensive tools**              |
 | **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                             |
 | **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                |
 | **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                   |
@@ -68,8 +70,8 @@
 | **Cross-Agent Sharing**         | No                         | No                                        | **Yes (4 policies)**                    |
 | **Real-Time Sync**              | No                         | No                                        | **Yes (pub/sub)**                       |
 | **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + Grafana**                |
-| **Search Types**                | 8 specialized types        | FTS5 + 4 tools                            | **8 specialized types**                 |
-| **Multi-Language Support**      | English                    | **28 languages**                          | English (planned)                       |
+| **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                |
+| **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)**                       |
 | **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                             |
 | **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | Neo4j Browser separate                  |
 | **Memory Hierarchy**            | Flat                       | **Structured observations**               | Flat (planned enhancement)              |
@@ -112,29 +114,28 @@
 
 **Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
 
-- ✅ **58 MCP tools** for comprehensive memory management
-- ✅ **Real-time multi-agent synchronization** for coordinating 21+ SDLC agents
-- ✅ **Cross-agent memory sharing** with access control
-- ✅ **Automatic memory summarization** (10x storage compression)
-- ✅ **Memory deduplication** (95%+ storage savings)
-- ✅ **Performance analytics** with Prometheus export
-- ✅ **Official Claude API integration** (native Anthropic API support)
-- ✅ **Real-time web dashboard** (WebSocket-based live updates)
-- ✅ **Intelligent LLM summarization** (OpenAI, Anthropic, Ollama)
-- ✅ **Advanced search with re-ranking** (4 strategies)
-- ✅ **Multi-language support** (28 languages with cross-language search)
-- ✅ **Progressive disclosure search** (3-layer, 10x token efficiency)
-- ✅ **Lite mode** (SQLite-based simplified deployment)
-- ✅ **Backup and recovery tools** (automated with rollback)
-- ✅ **Memory expiry and TTL** (configurable retention policies)
-- ✅ **Semantic memory clustering** (Qdrant-powered)
-- ✅ **Query expansion** (LLM-enhanced search)
-- ✅ **SDLC sub-agent coordination** (21 specialized agents)
-- ✅ **Production deployment** (Docker, monitoring, security hardened)
-- ✅ **CI/CD pipeline** (7 automated stages)
-- ✅ **Security audit** (0 critical vulnerabilities)
-- ✅ **Comprehensive test coverage** (975 tests, 100% pass rate, 0 warnings, 0 skipped)
-- ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
+- [OK] **70 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction)
+- [OK] **Dynamic category system** (no hardcoded categories; configure via .enhanced-cognee-config.json)
+- [OK] **Automated upstream sync monitoring** (GitHub Actions weekly monitor)
+- [OK] **Cross-agent memory sharing** with access control
+- [OK] **Automatic memory summarization** (10x storage compression)
+- [OK] **Memory deduplication** (95%+ storage savings)
+- [OK] **Performance analytics** with Prometheus export
+- [OK] **Real-time web dashboard** (WebSocket-based live updates)
+- [OK] **Intelligent LLM summarization** (multi-provider support)
+- [OK] **Advanced search with re-ranking** (4 strategies)
+- [OK] **Multi-language support** (28 languages with cross-language search)
+- [OK] **Progressive disclosure search** (3-layer, 10x token efficiency)
+- [OK] **Lite mode** (SQLite-based simplified deployment)
+- [OK] **Backup and recovery tools** (automated with rollback)
+- [OK] **Memory expiry and TTL** (configurable retention policies)
+- [OK] **Semantic memory clustering** (Qdrant-powered)
+- [OK] **Query expansion** (LLM-enhanced search)
+- [OK] **Production deployment** (Docker, monitoring, security hardened)
+- [OK] **CI/CD pipeline** (7 automated stages)
+- [OK] **Security audit** (0 critical vulnerabilities)
+- [OK] **Comprehensive test coverage** (497 unit tests, 100% pass rate)
+- [OK] **Multi-IDE support** (VS Code, Cursor, Windsurf, and other MCP-compatible IDEs)
 
 ### What is the Original Cognee?
 
@@ -163,15 +164,20 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - **Neo4j** (instead of Kuzu)
 - **Redis** (new caching layer)
 
-### 2. 59 MCP Tools
+### 2. 70 MCP Tools
 
 - Standard Memory MCP tools (add_memory, search_memories, etc.)
+- Session-aware memory (remember, recall, forget_memory, improve, save_interaction)
+- External loaders (ingest_url, ingest_db, list_loaders)
+- Translation and NER (translate_text, regex_extract_entities)
+- Graph extraction (extract_graph_v2)
 - Enhanced memory management (expiry, archival, TTL)
 - Advanced deduplication and summarization
 - Performance analytics and monitoring
 - Cross-agent sharing and real-time sync
-- Multi-language support (28 languages)
-- Advanced AI features (intelligent summarization, semantic clustering)
+- Multi-language support (28 languages, cross-language search)
+- Advanced AI features (intelligent summarization, semantic clustering, cascade v2 graph)
+- Backup and recovery
 
 ### 3. Real-Time Multi-Agent Support
 
@@ -185,8 +191,8 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - Docker deployment with health checks
 - Non-conflicting port mappings
 - Comprehensive error handling
-- 975 tests passing (100% pass rate, comprehensive coverage)
-- Multi-IDE support (8 AI IDEs)
+- 497 unit tests passing (100% pass rate)
+- Multi-IDE support (MCP-compatible IDEs)
 
 ---
 
@@ -196,10 +202,9 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 
 All planned enhancements have been implemented:
 
-#### 1. Multi-IDE MCP Support (8 IDEs)
+#### 1. Multi-IDE MCP Support
 
-- ✅ Claude Code (Anthropic)
-- ✅ VS Code (with Continue.dev)
+- [OK] VS Code (with Continue.dev)
 - ✅ Cursor IDE
 - ✅ Windsurf (Codeium)
 - ✅ Antigravity
@@ -273,8 +278,8 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### 1: Test Suite & LLM Integration
 
-- Comprehensive test suite with 975 tests (100% pass rate)
-- Multi-LLM integration (OpenAI, Anthropic, Ollama)
+- Comprehensive test suite with 497 unit tests (100% pass rate)
+- Multi-LLM integration (multi-provider support)
 - Token counting and rate limiting
 - Test infrastructure (pytest, fixtures, mocks)
 - **Files:** 23 files, 7,500+ lines
@@ -287,12 +292,12 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 - Environment configuration
 - **Files:** 5 files, 2,000+ lines
 
-#### 3: Claude Code Integration
+#### 3: MCP IDE Integration
 
 - Standard Memory MCP tools (7 tools)
 - Auto-injection hooks
 - Zero-configuration setup
-- Claude Code plugin integration
+- MCP IDE plugin integration
 - **Files:** 8 files, 1,800+ lines
 
 #### 4: Progressive Disclosure
@@ -339,7 +344,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 - 28 language support
 - Cross-language search
-- Comprehensive testing (975 tests, 100% pass rate)
+- Comprehensive testing (497 unit tests, 100% pass rate)
 - Performance optimization
 - **Files:** 15 files, 4,200+ lines
 
@@ -356,7 +361,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 - SDLC integration (21 sub-agents)
 
 - Query expansion and semantic clustering
-* Multi-LLM summarization (OpenAI, Anthropic, Ollama)
+* Multi-LLM summarization (multi-provider support)
 
 * Semantic memory clustering
 
@@ -372,7 +377,6 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### 12: Integration & Ecosystem
 
-- Official Claude API integration
 - Real-time WebSocket server (8 event types)
 - Next.js dashboard integration
 - React hooks for live updates
@@ -406,11 +410,11 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 | Feature                    | Status | Description                               |
 | -------------------------- | ------ | ----------------------------------------- |
-| Intelligent Summarization  | ✅      | OpenAI, Anthropic, Ollama support         |
+| Intelligent Summarization  | [OK]    | Multi-provider LLM support                |
 | Semantic Clustering        | ✅      | Qdrant-based similarity clustering        |
 | Advanced Search            | ✅      | Query expansion, re-ranking, highlighting |
 | Multi-Language Support     | ✅      | 28 languages with cross-language search   |
-| Claude API Integration     | ✅      | Native Anthropic API with tool use        |
+| LLM API Integration        | [OK]      | Multi-provider LLM support                |
 | Memory-Aware Conversations | ✅      | Context retrieval from knowledge graph    |
 
 #### Development Features
@@ -418,7 +422,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | Feature             | Status | Description                           |
 | ------------------- | ------ | ------------------------------------- |
 | Real-Time Dashboard | ✅      | WebSocket-based live updates          |
-| MCP Server          | ✅      | Standard Memory MCP for Claude Code   |
+| MCP Server          | [OK]    | Standard Memory MCP for AI IDEs       |
 | SDLC Coordination   | ✅      | 21 sub-agents with task orchestration |
 | CI/CD Pipeline      | ✅      | Automated testing and deployment      |
 | Security Audit      | ✅      | Comprehensive vulnerability scanning  |
@@ -446,16 +450,16 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Graph Database**          | Kuzu            | Neo4j                                             |
 | **Caching Layer**           | None            | Redis                                             |
 | **Memory Categories**       | None            | Dynamic JSON-based                                |
-| **MCP Tools**               | None            | **58 tools**                                      |
+| **MCP Tools**               | None            | **70 tools**                                      |
 | **Multi-Agent Support**     | None            | **Real-time sync for 100+ agents**                |
 | **Memory Deduplication**    | None            | ✅ **95%+ storage savings**                        |
 | **Memory Summarization**    | None            | ✅ **10x+ compression**                            |
 | **Performance Analytics**   | None            | ✅ **Prometheus export**                           |
 | **Cross-Agent Sharing**     | None            | ✅ **4 access policies**                           |
 | **TTL & Archival**          | None            | ✅ **Automated lifecycle**                         |
-| **IDE Support**             | None            | ✅ **8 AI IDEs**                                   |
-| **Test Coverage**           | Basic           | ✅ **975 passing (comprehensive coverage, 100% pass rate)** |
-| **Claude Code Integration** | No              | ✅ **Standard Memory MCP**                         |
+| **IDE Support**             | None            | [OK] **MCP-compatible IDEs**                       |
+| **Test Coverage**           | Basic           | [OK] **497 unit tests passing (100% pass rate)** |
+| **MCP IDE Integration**     | No              | [OK] **Standard Memory MCP**                       |
 | **Port Configuration**      | Default ports   | Enhanced range (25000+)                           |
 | **Output Encoding**         | None            | ASCII-only (Windows compatible)                   |
 | **Docker Deployment**       | Basic           | Production-ready with health checks               |
@@ -476,7 +480,7 @@ Based on testing with enterprise datasets:
 
 ## Original Cognee Features Available via Enhanced Cognee MCP
 
-[OK] **100% Feature Coverage - All original Cognee capabilities are accessible via 58 MCP tools**
+[OK] **100% Feature Coverage - All original Cognee capabilities are accessible via 70 MCP tools**
 
 ### Core ECL Pipeline Features
 
@@ -530,22 +534,22 @@ This document provides:
 
 ### MCP Tool Classifications
 
-**58 MCP Tools by Trigger Type:**
+**70 MCP Tools by Trigger Type:**
 
 - **Manual (M): 7 tools** - Destructive operations requiring explicit user invocation
-- **Auto (A): 19 tools** - Automatically triggered by Claude Code and other AI IDEs
+- **Auto (A): 19 tools** - Automatically triggered by AI IDEs
 - **System (S): 32 tools** - Auto-triggered by Enhanced Cognee system for maintenance and monitoring
 
-### For Claude Code Users
+### For AI IDE Users
 
-**All 58 MCP tools are accessible via Standard Memory MCP protocol:**
+**All 70 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (51): Advanced features for enterprise deployments
+2. Enhanced Cognee tools (63): Advanced features for enterprise deployments
 
 ### For Other AI IDEs
 
-**Any MCP-capable AI IDE can access all 58 tools:**
+**Any MCP-capable AI IDE can access all 70 tools:**
 - Cursor IDE
 - Windsurf (Codeium)
 - Antigravity
@@ -669,8 +673,8 @@ Enhanced Cognee Memory Stack
 │   ├── Session management
 │   └── Performance metrics
 └── Enhanced Cognee MCP Server
-    ├── 58 MCP tools
-    ├── Multi-IDE support (8 IDEs)
+    ├── 70 MCP tools
+    ├── Multi-IDE support (MCP-compatible IDEs)
     └── ASCII-only output
 ```
 
@@ -685,6 +689,41 @@ src/
 ├── cross_agent_sharing.py       # Access control
 └── realtime_sync.py             # Redis pub/sub sync
 ```
+
+---
+
+## Upstream Sync Monitoring
+
+Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
+
+### Automated Weekly Check
+A GitHub Actions workflow (`.github/workflows/upstream_sync.yml`) runs every Monday at 08:00 UTC:
+- Fetches the latest upstream release tag via GitHub API
+- Compares against `.upstream-sync/last_seen_release.txt`
+- If new release detected: builds diff report, opens tracking GitHub issue, sends email alert
+
+### Manual Check
+
+```bash
+# Check if upstream has new releases (exit 1 = new release available)
+python scripts/upstream_diff.py --check-only
+
+# Generate full diff report
+python scripts/upstream_diff.py --token $GITHUB_TOKEN
+
+# Generate stub MCP tools and porting checklist
+python scripts/auto_port.py
+```
+
+### Sync Files
+
+| File | Purpose |
+|------|---------|
+| `.upstream-sync/last_seen_release.txt` | Current synced baseline tag |
+| `.upstream-sync/sync-metadata.json` | Full sync state record |
+| `scripts/upstream_diff.py` | Diff report generator |
+| `scripts/auto_port.py` | Stub and TODO generator |
+| `docs/UPSTREAM_SYNC_RUNBOOK.md` | Full porting operator guide |
 
 ---
 
@@ -883,12 +922,12 @@ OK Cross-Agent Sharing initialized
 OK Real-Time Sync initialized
 
 OK Enhanced Cognee MCP Server starting...
-  Available tools: 58 tools listed below...
+  Available tools: 70 tools listed below...
 ```
 
 ### 3. Configure Your AI IDE
 
-**Claude Code** (built-in MCP support):
+**MCP Configuration** (example for any MCP-compatible IDE):
 
 ```json
 // ~/.claude.json
@@ -910,7 +949,7 @@ OK Enhanced Cognee MCP Server starting...
 }
 ```
 
-**Other 7 AI IDEs:** See [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
+**More IDEs:** See [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
 ### 4. Use Enhanced Cognee
 
@@ -935,18 +974,18 @@ Found 3 memories about TypeScript:
 
 ## Multi-IDE Support
 
-Enhanced Cognee works with **8 AI IDEs**:
+Enhanced Cognee works with any **MCP-compatible IDE**:
 
 | IDE                     | Support Level | Setup Guide                                      |
 | ----------------------- | ------------- | ------------------------------------------------ |
-| **Claude Code**         | ✅ Native      | Built-in                                         |
-| **Cursor**              | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Windsurf**            | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Antigravity**         | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Continue.dev**        | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **VS Code (+Continue)** | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Kilo Code**           | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **GitHub Copilot**      | ✅ Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Cursor**              | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Windsurf**            | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Antigravity**         | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Continue.dev**        | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **VS Code (+Continue)** | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Kilo Code**           | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **GitHub Copilot**      | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Other MCP IDEs**      | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 
 **Complete Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
@@ -954,7 +993,7 @@ Enhanced Cognee works with **8 AI IDEs**:
 
 ## MCP Tools Reference
 
-Enhanced Cognee provides **58 MCP tools** with comprehensive automation across three trigger types:
+Enhanced Cognee provides **70 MCP tools** with comprehensive automation across three trigger types:
 
 ### Standard Memory Tools (7)
 
@@ -1274,7 +1313,7 @@ System automatically triggers:
 - **7 tools** require explicit manual invocation (M)
 - **17 tools** are automatically triggered by AI IDEs (A)
 - **32 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 58 tools** with comprehensive automation chains
+- **Total: 70 tools** with comprehensive automation chains
 
 ### Hybrid Approach (Best of All Three)
 
@@ -1377,39 +1416,81 @@ All without any manual configuration - comprehensive automation out of the box!
 
 ---
 
-## 21 SDLC Agents Integration
+## v1.0.9 API Parity
 
-Enhanced Cognee provides comprehensive support for coordinating **21 SDLC Sub Agents** running simultaneously:
+Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
 
-### Real-Time Coordination
+### Session-Aware Memory (Phase 2)
+These tools wrap the `cognee.api.v1.*` modules added in upstream v1.0.9:
 
-- ✅ **Redis pub/sub** for sub-millisecond agent coordination
-- ✅ Event broadcasting (memory_added, memory_updated, memory_deleted)
-- ✅ Automatic state synchronization between agents
-- ✅ Conflict resolution for simultaneous updates
+| Tool | API Module | Description |
+|------|-----------|-------------|
+| `remember` | `cognee.api.v1.remember` | Session-aware ingestion with background mode |
+| `recall` | `cognee.api.v1.search` | 15-strategy knowledge graph retrieval |
+| `forget_memory` | `cognee.api.v1.forget` | Targeted graph data deletion |
+| `improve` | `cognee.api.v1.improve` | 4-stage feedback improvement pipeline |
+| `save_interaction` | `cognee.api.v1.add` + `cognify` | Record user/assistant exchanges |
+| `cognify_status` | internal tracker | Check background task status |
 
-### Cross-Agent Collaboration
+### External Loaders and Enrichment (Phase 3)
 
-- ✅ **4 sharing policies** for controlled access
-- ✅ Shared memory spaces for team collaboration
-- ✅ Role-based access control
-- ✅ Security enforcement per agent
+| Tool | Underlying Task | Description |
+|------|----------------|-------------|
+| `ingest_url` | `web_scraper_task` | Scrape URLs (BeautifulSoup or Tavily) |
+| `ingest_db` | dlt pipeline | Ingest relational DB tables |
+| `translate_text` | `translate_content` | LLM/Google/Azure translation |
+| `regex_extract_entities` | `RegexEntityExtractor` | Configurable pattern NER |
+| `extract_graph_v2` | cascade extract utils | Preview v2 graph extraction (n rounds) |
+| `list_loaders` | `supported_loaders` | Show available file format loaders |
 
-### Storage Optimization
+### Search Type Reference
+All 15 `SearchType` values supported by `recall` and `search`:
 
-- ✅ **95%+ storage savings** from deduplication
-- ✅ **10x+ compression** from summarization
-- ✅ Automatic memory lifecycle management
-- ✅ TTL-based expiry and archival
+| Type | Description |
+|------|-------------|
+| `GRAPH_COMPLETION` | LLM-augmented graph traversal (recommended default) |
+| `GRAPH_COMPLETION_COT` | Chain-of-thought graph reasoning |
+| `GRAPH_COMPLETION_DECOMPOSITION` | Decompose query into sub-questions |
+| `GRAPH_COMPLETION_CONTEXT_EXTENSION` | Extend context along graph edges |
+| `GRAPH_SUMMARY_COMPLETION` | Search graph-level summaries |
+| `SUMMARIES` | Document and chunk summaries |
+| `CHUNKS` | Raw text chunk retrieval |
+| `CHUNKS_LEXICAL` | BM25-style lexical chunk search |
+| `RAG_COMPLETION` | Retrieval-augmented generation |
+| `TRIPLET_COMPLETION` | Knowledge triplet retrieval |
+| `NATURAL_LANGUAGE` | Natural language query parser |
+| `TEMPORAL` | Time-aware knowledge retrieval |
+| `CODING_RULES` | Retrieve coding rules and patterns |
+| `CYPHER` | Direct Cypher query against graph |
+| `FEELING_LUCKY` | Auto-select best strategy for query |
 
-### Performance Monitoring
+---
 
-- ✅ Per-agent performance metrics
-- ✅ Query time tracking (avg, P50, P95, max)
-- ✅ Cache hit/miss statistics
-- ✅ Prometheus metrics export
+## Agent Integration
 
-**Complete Integration Guide:** [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)
+The original 21 SDLC agent modules (ATS, OMA, SMC categories) have been archived
+as of Phase 4 due to hardcoded category violations. Enhanced Cognee now uses a
+dynamic agent registry loaded from `.enhanced-cognee-config.json`. See
+`.archive/2026-05-13_agents_ats_oma_smc/ARCHIVE_NOTES.md` for migration guidance.
+
+### Dynamic Agent Registry
+
+Agents are registered dynamically from your configuration file:
+
+```json
+{
+  "categories": {
+    "my_agent": { "prefix": "agent_", "description": "My custom agent" }
+  }
+}
+```
+
+Enhanced Cognee supports unlimited custom agent types with:
+- [OK] Redis pub/sub for sub-millisecond agent coordination
+- [OK] Event broadcasting (memory_added, memory_updated, memory_deleted)
+- [OK] Automatic state synchronization between agents
+- [OK] Cross-agent memory sharing with 4 access policies
+- [OK] Per-agent performance metrics and Prometheus export
 
 ---
 
@@ -1438,9 +1519,10 @@ open htmlcov/index.html
 ### Test Statistics
 
 - **Total Test Files:** 20+
-- **Total Test Cases:** 975 passing (100% pass rate)
-- **Code Coverage:** 92%+ overall (Unit: 92%+, Integration: 90%+, E2E: All critical paths)
-- **Success Rate:** 100% (975/975 tests passing)
+- **Total Test Cases:** 497 unit tests passing (100% pass rate)
+- **Code Coverage:** 92%+ unit coverage
+- **Success Rate:** 100% (497/497 unit tests passing)
+- **Integration tests:** Available separately (require live database connections)
 - **Warnings:** 0
 - **Skipped Tests:** 0
 
@@ -1455,7 +1537,7 @@ Comprehensive documentation is available:
 | Document                                                                               | Description                      |
 | -------------------------------------------------------------------------------------- | -------------------------------- |
 | [README.md](README.md)                                                                 | This file - project overview     |
-| [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                                    | Multi-IDE setup for 8 AI IDEs    |
+| [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                                    | Multi-IDE setup guide            |
 | [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)           | 21 SDLC agents integration guide |
 | [Testing Guide](docs/development/TESTING.md)                                           | Complete testing guide           |
 | [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)                      | Task completion summary          |
@@ -1498,6 +1580,8 @@ Create `.enhanced-cognee-config.json` in your project root:
   }
 }
 ```
+No code changes required - Enhanced Cognee loads categories at runtime.
+Any category name, any prefix.
 
 ### Port Configuration
 
@@ -1522,7 +1606,7 @@ See `.env.example` for all available configuration options.
 ### Example 1: Basic Memory Operations with MCP
 
 ```bash
-# In Claude Code or other MCP client:
+# In any MCP-capable IDE or client:
 
 # Add a memory
 /add_memory "I prefer TypeScript for frontend development"
@@ -1674,9 +1758,17 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ### Copyright
 
+Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
+by Topoteretes UG, licensed under the Apache License, Version 2.0.
+
+The Apache 2.0 license requires that:
+1. This notice is preserved in all distributions
+2. The original Cognee project is credited (done above)
+3. Changes from the original are noted (done in git history and this README)
+
 ```
 Copyright 2024 Topoteretes UG (Original Cognee)
-Copyright 2025 Enhanced Cognee Contributors
+Copyright 2026 Vincent S. Pereira (Enhanced Cognee additions)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -1718,7 +1810,7 @@ Enhanced Cognee integrates with these excellent open-source projects:
 
 - The original Cognee development team for creating an excellent framework
 - The contributors to all the underlying open-source projects
-- The Claude Code team for the MCP protocol specification
+- The MCP protocol specification contributors
 - All contributors to Enhanced Cognee
 
 ---
@@ -1733,22 +1825,22 @@ Enhanced Cognee integrates with these excellent open-source projects:
 
 ## Star History
 
-If you find Enhanced Cognee useful, please consider giving it a ⭐ on GitHub!
+If you find Enhanced Cognee useful, please consider starring it on GitHub!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vincentspereira/Enhanced-Cognee&type=Date)
+[Star History](https://star-history.com/#vincentspereira/Enhanced-Cognee)
 
 ---
 
 <div align="center">
 
-  **Built with ❤️ as an enhanced fork of [Cognee](https://github.com/topoteretes/cognee)**
+  **Built as an enhanced fork of [Cognee](https://github.com/topoteretes/cognee)**
 
   **Enterprise-Grade AI Memory Infrastructure for Multi-Agent Systems**
 
-  [⭐ Star us on GitHub](https://github.com/vincentspereira/Enhanced-Cognee) ·
-  [🐛 Report Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) ·
-  [💡 Request Features](https://github.com/vincentspereira/Enhanced-Cognee/issues)
+  [Star us on GitHub](https://github.com/vincentspereira/Enhanced-Cognee) ·
+  [Report Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) ·
+  [Request Features](https://github.com/vincentspereira/Enhanced-Cognee/issues)
 
-  **[Documentation](docs/) · [Testing Guide](docs/development/TESTING.md) · [Multi-IDE Setup](docs/guides/MCP_IDE_SETUP.md) · [21 SDLC Agents Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)**
+  **[Documentation](docs/) · [Testing Guide](docs/development/TESTING.md) · [Multi-IDE Setup](docs/guides/MCP_IDE_SETUP.md) · [Agent Integration](#agent-integration)**
 
 </div>

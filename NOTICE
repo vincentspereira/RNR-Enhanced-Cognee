@@ -1,0 +1,32 @@
+Enhanced Cognee
+Copyright 2026 Vincent S. Pereira
+
+This product is a derivative work of Cognee
+(https://github.com/topoteretes/cognee)
+Copyright 2024 Topoteretes UG
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Third-party components:
+- PostgreSQL: https://www.postgresql.org/ (PostgreSQL License)
+- pgvector: https://github.com/pgvector/pgvector (MIT License)
+- Qdrant: https://qdrant.tech/ (Apache License 2.0)
+- Neo4j Community Edition: https://neo4j.com/ (GNU General Public License v3)
+- Redis: https://redis.io/ (RSALv2 and Server Side Public License v1)
+- FastMCP: https://github.com/jlowin/fastmcp (MIT License)
+- LiteLLM: https://github.com/BerriAI/litellm (MIT License)
+- dlt (data load tool): https://github.com/dlt-hub/dlt (Apache License 2.0)
+
+Note on Neo4j: Neo4j Community Edition is distributed under the GNU GPL v3.
+If you distribute Enhanced Cognee as a product, review GPL compatibility with
+your use case or use Neo4j Enterprise Edition under a commercial license.
