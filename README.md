@@ -14,7 +14,7 @@
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-  **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 70 MCP tools, enterprise-grade multi-agent coordination, real-time web dashboard, and production-ready security hardening**
+**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 70 MCP tools, enterprise-grade multi-agent coordination, real-time web dashboard, and production-ready security hardening**
 
 </div>
 
@@ -52,34 +52,34 @@
 
 ### Enhanced Cognee vs Original Cognee vs Claude-Mem
 
-| Feature                         | Original Cognee            | Claude-Mem                                | **Enhanced Cognee**                     |
-| ------------------------------- | -------------------------- | ----------------------------------------- | --------------------------------------- |
-| **Primary Use Case**            | AI agent memory platform   | Claude Code session memory                | Enterprise multi-agent memory           |
-| **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + Neo4j + Redis** |
-| **Vector Search**               | Optional (LanceDB, Qdrant) | ChromaDB (optional)                       | **Qdrant (built-in)**                   |
-| **Graph Database**              | Neo4j, Kuzu, Neptune       | None                                      | **Neo4j (primary)**                     |
-| **Caching Layer**               | FsCache                    | None                                      | **Redis (high-speed)**                  |
-| **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                |
-| **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                      |
-| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **70 comprehensive tools**              |
-| **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                             |
-| **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                |
-| **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                   |
-| **Memory Deduplication**        | No                         | No                                        | **Yes (auto-deduplication)**            |
-| **TTL/Expiry**                  | No                         | No                                        | **Yes (configurable)**                  |
-| **Cross-Agent Sharing**         | No                         | No                                        | **Yes (4 policies)**                    |
-| **Real-Time Sync**              | No                         | No                                        | **Yes (pub/sub)**                       |
-| **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + Grafana**                |
-| **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                |
-| **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)**                       |
-| **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                             |
-| **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | Neo4j Browser separate                  |
-| **Memory Hierarchy**            | Flat                       | **Structured observations**               | Flat (planned enhancement)              |
-| **Scalability**                 | Single machine             | Single machine                            | **Distributed architecture**            |
-| **Concurrent Agents**           | Limited                    | Not applicable                            | **100+ agents**                         |
-| **Enterprise Features**         | Basic permissions          | No                                        | **RBAC, audit logging, backup**         |
-| **Performance**                 | Baseline                   | Optimized for single user                 | **400-700% faster**                     |
-| **Target User**                 | Developers                 | Individual developers                     | **Enterprise teams**                    |
+| Feature                         | Original Cognee            | Claude-Mem                                | **Enhanced Cognee**                               |
+| ------------------------------- | -------------------------- | ----------------------------------------- | ------------------------------------------------- |
+| **Primary Use Case**            | AI agent memory platform   | Claude Code session memory                | Enterprise multi-agent memory                     |
+| **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + Neo4j + Redis**           |
+| **Vector Search**               | Optional (LanceDB, Qdrant) | ChromaDB (optional)                       | **Qdrant (built-in)**                             |
+| **Graph Database**              | Neo4j, Kuzu, Neptune       | None                                      | **Neo4j (primary)**                               |
+| **Caching Layer**               | FsCache                    | None                                      | **Redis (high-speed)**                            |
+| **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                          |
+| **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                                |
+| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **70 comprehensive tools**                        |
+| **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                                       |
+| **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                          |
+| **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                             |
+| **Memory Deduplication**        | No                         | No                                        | **Yes (auto-deduplication)**                      |
+| **TTL/Expiry**                  | No                         | No                                        | **Yes (configurable)**                            |
+| **Cross-Agent Sharing**         | No                         | No                                        | **Yes (4 policies)**                              |
+| **Real-Time Sync**              | No                         | No                                        | **Yes (pub/sub)**                                 |
+| **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + Grafana**                          |
+| **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                          |
+| **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)** |
+| **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                                       |
+| **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | Neo4j Browser separate                            |
+| **Memory Hierarchy**            | Flat                       | **Structured observations**               | Flat (planned enhancement)                        |
+| **Scalability**                 | Single machine             | Single machine                            | **Distributed architecture**                      |
+| **Concurrent Agents**           | Limited                    | Not applicable                            | **100+ agents**                                   |
+| **Enterprise Features**         | Basic permissions          | No                                        | **RBAC, audit logging, backup**                   |
+| **Performance**                 | Baseline                   | Optimized for single user                 | **400-700% faster**                               |
+| **Target User**                 | Developers                 | Individual developers                     | **Enterprise teams**                              |
 
 ### Decision Guide
 
@@ -110,32 +110,89 @@
 
 ---
 
+## Why Use Enhanced Cognee
+
+### If you need enterprise-grade memory across many agents
+
+Enhanced Cognee is the right tool when you need:
+- Memory shared across 10+ concurrent agents with access control
+- Knowledge graph relationships (not just flat key-value storage)
+- Production monitoring with Prometheus metrics
+- Memory deduplication, summarization, TTL, and lifecycle policies
+- Automated backup and recovery
+- 70 MCP tools covering the complete memory lifecycle
+
+### How to invoke Enhanced Cognee
+
+**Step 1 - Start the database stack:**
+```bash
+docker compose -f config/docker/docker-compose-enhanced-cognee.yml up -d
+```
+
+**Step 2 - Start the MCP server:**
+```bash
+python bin/enhanced_cognee_mcp_server.py
+```
+
+**Step 3 - Connect your MCP-compatible IDE** (see [Multi-IDE Setup](#multi-ide-support))
+
+**Step 4 - Start using memory tools.** The IDE will automatically call:
+- `add_memory` when you say "remember that..."
+- `search_memories` when you ask about past context
+- `health` on session start to verify connections
+
+**When to use which tool:**
+
+| Your Goal | Use This Tool | Trigger |
+|-----------|--------------|---------|
+| Store any knowledge | `add_memory` or `remember` | Auto / Manual |
+| Find past information | `search_memories` or `recall` | Auto |
+| Deep graph search (15 strategies) | `recall` with `search_type` | Manual |
+| Ingest a website | `ingest_url` | Manual |
+| Ingest a database | `ingest_db` | Manual |
+| Translate stored text | `translate_text` | Manual |
+| Extract named entities | `regex_extract_entities` | Manual |
+| Remove outdated data | `expire_memories` or `forget_memory` | Manual |
+| Check system health | `health` | Auto |
+
+### Updated Decision Guide
+
+| Need | Best Choice |
+|------|-------------|
+| Single developer, zero config, quick setup | Session-memory plugin (e.g., Claude-Mem) |
+| Multi-agent enterprise system | **Enhanced Cognee** |
+| Flexible DB choice, simple SDK | Original Cognee |
+| Knowledge graph + enterprise features + 70 MCP tools | **Enhanced Cognee** |
+| Token-efficient progressive search | Session-memory plugin |
+
+---
+
 ## Overview
 
 **Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
 
-- [OK] **70 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction)
-- [OK] **Dynamic category system** (no hardcoded categories; configure via .enhanced-cognee-config.json)
-- [OK] **Automated upstream sync monitoring** (GitHub Actions weekly monitor)
-- [OK] **Cross-agent memory sharing** with access control
-- [OK] **Automatic memory summarization** (10x storage compression)
-- [OK] **Memory deduplication** (95%+ storage savings)
-- [OK] **Performance analytics** with Prometheus export
-- [OK] **Real-time web dashboard** (WebSocket-based live updates)
-- [OK] **Intelligent LLM summarization** (multi-provider support)
-- [OK] **Advanced search with re-ranking** (4 strategies)
-- [OK] **Multi-language support** (28 languages with cross-language search)
-- [OK] **Progressive disclosure search** (3-layer, 10x token efficiency)
-- [OK] **Lite mode** (SQLite-based simplified deployment)
-- [OK] **Backup and recovery tools** (automated with rollback)
-- [OK] **Memory expiry and TTL** (configurable retention policies)
-- [OK] **Semantic memory clustering** (Qdrant-powered)
-- [OK] **Query expansion** (LLM-enhanced search)
-- [OK] **Production deployment** (Docker, monitoring, security hardened)
-- [OK] **CI/CD pipeline** (7 automated stages)
-- [OK] **Security audit** (0 critical vulnerabilities)
-- [OK] **Comprehensive test coverage** (497 unit tests, 100% pass rate)
-- [OK] **Multi-IDE support** (VS Code, Cursor, Windsurf, and other MCP-compatible IDEs)
+- ✅ **70 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction)
+- ✅ **Dynamic category system** (no hardcoded categories; configure via .enhanced-cognee-config.json)
+- ✅ **Automated upstream sync monitoring** (GitHub Actions weekly monitor)
+- ✅ **Cross-agent memory sharing** with access control
+- ✅ **Automatic memory summarization** (10x storage compression)
+- ✅ **Memory deduplication** (95%+ storage savings)
+- ✅ **Performance analytics** with Prometheus export
+- ✅ **Real-time web dashboard** (WebSocket-based live updates)
+- ✅ **Intelligent LLM summarization** (multi-provider support)
+- ✅ **Advanced search with re-ranking** (4 strategies)
+- ✅ **Multi-language support** (28 languages with cross-language search)
+- ✅ **Progressive disclosure search** (3-layer, 10x token efficiency)
+- ✅ **Lite mode** (SQLite-based simplified deployment)
+- ✅ **Backup and recovery tools** (automated with rollback)
+- ✅ **Memory expiry and TTL** (configurable retention policies)
+- ✅ **Semantic memory clustering** (Qdrant-powered)
+- ✅ **Query expansion** (LLM-enhanced search)
+- ✅ **Production deployment** (Docker, monitoring, security hardened)
+- ✅ **CI/CD pipeline** (7 automated stages)
+- ✅ **Security audit** (0 critical vulnerabilities)
+- ✅ **Comprehensive test coverage** (497 unit tests, 100% pass rate)
+- ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
 
 ### What is the Original Cognee?
 
@@ -204,7 +261,8 @@ All planned enhancements have been implemented:
 
 #### 1. Multi-IDE MCP Support
 
-- [OK] VS Code (with Continue.dev)
+- ✅ Claude Code (Anthropic)
+- ✅ VS Code (with Continue.dev)
 - ✅ Cursor IDE
 - ✅ Windsurf (Codeium)
 - ✅ Antigravity
@@ -361,7 +419,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 - SDLC integration (21 sub-agents)
 
 - Query expansion and semantic clustering
-* Multi-LLM summarization (multi-provider support)
+* Multi-LLM summarization (multi-provider support, including OpenAI, Anthropic, Ollama)
 
 * Semantic memory clustering
 
@@ -408,21 +466,21 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### Advanced AI Features
 
-| Feature                    | Status | Description                               |
-| -------------------------- | ------ | ----------------------------------------- |
-| Intelligent Summarization  | [OK]    | Multi-provider LLM support                |
-| Semantic Clustering        | ✅      | Qdrant-based similarity clustering        |
-| Advanced Search            | ✅      | Query expansion, re-ranking, highlighting |
-| Multi-Language Support     | ✅      | 28 languages with cross-language search   |
-| LLM API Integration        | [OK]      | Multi-provider LLM support                |
-| Memory-Aware Conversations | ✅      | Context retrieval from knowledge graph    |
+| Feature                    | Status | Description                                                             |
+| -------------------------- | ------ | ----------------------------------------------------------------------- |
+| Intelligent Summarization  | ✅      | Multi-provider LLM support, including OpenAI, Anthropic, Ollama support |
+| Semantic Clustering        | ✅      | Qdrant-based similarity clustering                                      |
+| Advanced Search            | ✅      | Query expansion, re-ranking, highlighting                               |
+| Multi-Language Support     | ✅      | 28 languages with cross-language search                                 |
+| LLM API Integration        | ✅      | Multi-provider LLM support                                              |
+| Memory-Aware Conversations | ✅      | Context retrieval from knowledge graph                                  |
 
 #### Development Features
 
 | Feature             | Status | Description                           |
 | ------------------- | ------ | ------------------------------------- |
 | Real-Time Dashboard | ✅      | WebSocket-based live updates          |
-| MCP Server          | [OK]    | Standard Memory MCP for AI IDEs       |
+| MCP Server          | ✅      | Standard Memory MCP for AI IDEs       |
 | SDLC Coordination   | ✅      | 21 sub-agents with task orchestration |
 | CI/CD Pipeline      | ✅      | Automated testing and deployment      |
 | Security Audit      | ✅      | Comprehensive vulnerability scanning  |
@@ -443,27 +501,27 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 ## Comparison with Original Cognee
 
-| Feature                     | Original Cognee | Enhanced Cognee                                   |
-| --------------------------- | --------------- | ------------------------------------------------- |
-| **Relational Database**     | SQLite          | PostgreSQL + pgVector                             |
-| **Vector Database**         | LanceDB         | Qdrant                                            |
-| **Graph Database**          | Kuzu            | Neo4j                                             |
-| **Caching Layer**           | None            | Redis                                             |
-| **Memory Categories**       | None            | Dynamic JSON-based                                |
-| **MCP Tools**               | None            | **70 tools**                                      |
-| **Multi-Agent Support**     | None            | **Real-time sync for 100+ agents**                |
-| **Memory Deduplication**    | None            | ✅ **95%+ storage savings**                        |
-| **Memory Summarization**    | None            | ✅ **10x+ compression**                            |
-| **Performance Analytics**   | None            | ✅ **Prometheus export**                           |
-| **Cross-Agent Sharing**     | None            | ✅ **4 access policies**                           |
-| **TTL & Archival**          | None            | ✅ **Automated lifecycle**                         |
-| **IDE Support**             | None            | [OK] **MCP-compatible IDEs**                       |
-| **Test Coverage**           | Basic           | [OK] **497 unit tests passing (100% pass rate)** |
-| **MCP IDE Integration**     | No              | [OK] **Standard Memory MCP**                       |
-| **Port Configuration**      | Default ports   | Enhanced range (25000+)                           |
-| **Output Encoding**         | None            | ASCII-only (Windows compatible)                   |
-| **Docker Deployment**       | Basic           | Production-ready with health checks               |
-| **API Compatibility**       | N/A             | Full Cognee API compatibility                     |
+| Feature                   | Original Cognee | Enhanced Cognee                               |
+| ------------------------- | --------------- | --------------------------------------------- |
+| **Relational Database**   | SQLite          | PostgreSQL + pgVector                         |
+| **Vector Database**       | LanceDB         | Qdrant                                        |
+| **Graph Database**        | Kuzu            | Neo4j                                         |
+| **Caching Layer**         | None            | Redis                                         |
+| **Memory Categories**     | None            | Dynamic JSON-based                            |
+| **MCP Tools**             | None            | ✅ **70 tools**                                |
+| **Multi-Agent Support**   | None            | ✅ **Real-time sync for 100+ agents**          |
+| **Memory Deduplication**  | None            | ✅ **95%+ storage savings**                    |
+| **Memory Summarization**  | None            | ✅ **10x+ compression**                        |
+| **Performance Analytics** | None            | ✅ **Prometheus export**                       |
+| **Cross-Agent Sharing**   | None            | ✅ **4 access policies**                       |
+| **TTL & Archival**        | None            | ✅ **Automated lifecycle**                     |
+| **IDE Support**           | None            | ✅ **MCP-compatible IDEs**                     |
+| **Test Coverage**         | Basic           | ✅ **497 unit tests passing (100% pass rate)** |
+| **MCP IDE Integration**   | No              | ✅ **Standard Memory MCP**                     |
+| **Port Configuration**    | Default ports   | Enhanced range (25000+)                       |
+| **Output Encoding**       | None            | ASCII-only (Windows compatible)               |
+| **Docker Deployment**     | Basic           | Production-ready with health checks           |
+| **API Compatibility**     | N/A             | Full Cognee API compatibility                 |
 
 ### Performance Improvements
 
@@ -480,52 +538,53 @@ Based on testing with enterprise datasets:
 
 ## Original Cognee Features Available via Enhanced Cognee MCP
 
-[OK] **100% Feature Coverage - All original Cognee capabilities are accessible via 70 MCP tools**
+✅ **100% Feature Coverage - All original Cognee capabilities are accessible via 70 MCP tools**
 
 ### Core ECL Pipeline Features
 
-| Original Cognee Feature | Enhanced MCP Tool | Trigger Type | Status |
-|------------------------|-------------------|--------------|--------|
-| `add()` | `add_memory` | Auto (A) | [OK] Available |
-| `cognify()` | `cognify` | Auto (A) | [OK] Available |
-| `search()` | `search` | Auto (A) | [OK] Available |
-| `list_data()` equivalent | `list_data` | Auto (A) | [OK] Available |
-| `get_stats()` equivalent | `get_stats` | Auto (A) | [OK] Available |
+| Original Cognee Feature  | Enhanced MCP Tool | Trigger Type | Status      |
+| ------------------------ | ----------------- | ------------ | ----------- |
+| `add()`                  | `add_memory`      | Auto (A)     | ✅ Available |
+| `cognify()`              | `cognify`         | Auto (A)     | ✅ Available |
+| `search()`               | `search`          | Auto (A)     | ✅ Available |
+| `list_data()` equivalent | `list_data`       | Auto (A)     | ✅ Available |
+| `get_stats()` equivalent | `get_stats`       | Auto (A)     | ✅ Available |
 
 ### Knowledge Graph & Vector Stores
 
-| Original Feature | Enhanced MCP Implementation | Status |
-|----------------|--------------------------|--------|
-| Neo4j Support | Neo4j (port 27687) | [OK] Active |
-| Vector Stores (LanceDB/Qdrant/PGVector) | Qdrant (port 26333) + PGVector (port 25432) | [OK] Enhanced |
-| Graph Databases (NetworkX/Neo4j) | Neo4j + internal NetworkX | [OK] Active |
+| Original Feature                        | Enhanced MCP Implementation                 | Status     |
+| --------------------------------------- | ------------------------------------------- | ---------- |
+| Neo4j Support                           | Neo4j (port 27687)                          | ✅ Active   |
+| Vector Stores (LanceDB/Qdrant/PGVector) | Qdrant (port 26333) + PGVector (port 25432) | ✅ Enhanced |
+| Graph Databases (NetworkX/Neo4j)        | Neo4j + internal NetworkX                   | ✅ Active   |
 
 ### Database Comparison
 
-| Aspect | Original Cognee | Enhanced Cognee MCP |
-|---------|-----------------|---------------------|
+| Aspect       | Original Cognee       | Enhanced Cognee MCP                                     |
+| ------------ | --------------------- | ------------------------------------------------------- |
 | Architecture | Single database setup | **4-database stack** (PostgreSQL, Qdrant, Neo4j, Redis) |
-| Performance | Baseline | **400-700% faster** |
-| Ports | Default ports | **Enhanced port range** (25000+) |
+| Performance  | Baseline              | **400-700% faster**                                     |
+| Ports        | Default ports         | **Enhanced port range** (25000+)                        |
 
 ### Enhanced Features NOT in Original Cognee
 
 The following **50+ enterprise features** are exclusive to Enhanced Cognee MCP:
 
-- [OK] **Backup & Recovery** (5 tools) - `create_backup`, `restore_backup`, `list_backups`, `verify_backup`, `rollback_restore`
-- [OK] **Performance Monitoring** (3 tools) - `get_performance_metrics`, `get_slow_queries`, `get_prometheus_metrics`
-- [OK] **Multi-Language Support** (6 tools) - `detect_language`, `get_supported_languages`, `search_by_language`, `get_language_distribution`, `cross_language_search`, `get_search_facets`
-- [OK] **Real-Time Sync** (3 tools) - `publish_memory_event`, `get_sync_status`, `sync_agent_state`
-- [OK] **Cross-Agent Collaboration** (4 tools) - `set_memory_sharing`, `check_memory_access`, `get_shared_memories`, `create_shared_space`
-- [OK] **Advanced AI Operations** (6 tools) - `intelligent_summarize`, `auto_summarize_old_memories`, `cluster_memories`, `advanced_search`, `expand_search_query`, `get_search_analytics`
-- [OK] **Memory Lifecycle Management** (4 tools) - `expire_memories`, `get_memory_age_stats`, `set_memory_ttl`, `archive_category`
-- [OK] **Scheduling & Automation** (3 tools) - `schedule_task`, `schedule_deduplication`, `schedule_summarization`
+- ✅ **Backup & Recovery** (5 tools) - `create_backup`, `restore_backup`, `list_backups`, `verify_backup`, `rollback_restore`
+- ✅ **Performance Monitoring** (3 tools) - `get_performance_metrics`, `get_slow_queries`, `get_prometheus_metrics`
+- ✅ **Multi-Language Support** (6 tools) - `detect_language`, `get_supported_languages`, `search_by_language`, `get_language_distribution`, `cross_language_search`, `get_search_facets`
+- ✅ **Real-Time Sync** (3 tools) - `publish_memory_event`, `get_sync_status`, `sync_agent_state`
+- ✅ **Cross-Agent Collaboration** (4 tools) - `set_memory_sharing`, `check_memory_access`, `get_shared_memories`, `create_shared_space`
+- ✅ **Advanced AI Operations** (6 tools) - `intelligent_summarize`, `auto_summarize_old_memories`, `cluster_memories`, `advanced_search`, `expand_search_query`, `get_search_analytics`
+- ✅ **Memory Lifecycle Management** (4 tools) - `expire_memories`, `get_memory_age_stats`, `set_memory_ttl`, `archive_category`
+- ✅ **Scheduling & Automation** (3 tools) - `schedule_task`, `schedule_deduplication`, `schedule_summarization`
 
 ### Detailed Comparison Document
 
 For complete feature-by-feature analysis, see: **[COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md)**
 
 This document provides:
+
 - Line-by-line feature mapping
 - Tool availability matrix
 - API compatibility comparison
@@ -536,20 +595,21 @@ This document provides:
 
 **70 MCP Tools by Trigger Type:**
 
-- **Manual (M): 7 tools** - Destructive operations requiring explicit user invocation
-- **Auto (A): 19 tools** - Automatically triggered by AI IDEs
-- **System (S): 32 tools** - Auto-triggered by Enhanced Cognee system for maintenance and monitoring
+- **Manual (M): 19 tools** - Destructive or policy operations requiring explicit user invocation
+- **Auto (A): 17 tools** - Automatically triggered by MCP-compatible IDEs
+- **System (S): 34 tools** - Auto-triggered by Enhanced Cognee system for maintenance and monitoring
 
-### For AI IDE Users
+### For MCP IDE Users
 
 **All 70 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (63): Advanced features for enterprise deployments
+2. Enhanced Cognee tools (63): Advanced features for enterprise deployments (including Phase 2 session memory and Phase 3 external loaders)
 
 ### For Other AI IDEs
 
 **Any MCP-capable AI IDE can access all 70 tools:**
+
 - Cursor IDE
 - Windsurf (Codeium)
 - Antigravity
@@ -560,6 +620,7 @@ This document provides:
 **No LLM API keys required** - All configuration is server-side.
 
 ---
+
 ---
 
 ## Architecture
@@ -703,7 +764,9 @@ src/
 Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
 
 ### Automated Weekly Check
+
 A GitHub Actions workflow (`.github/workflows/upstream_sync.yml`) runs every Monday at 08:00 UTC:
+
 - Fetches the latest upstream release tag via GitHub API
 - Compares against `.upstream-sync/last_seen_release.txt`
 - If new release detected: builds diff report, opens tracking GitHub issue, sends email alert
@@ -723,13 +786,13 @@ python scripts/auto_port.py
 
 ### Sync Files
 
-| File | Purpose |
-|------|---------|
+| File                                   | Purpose                     |
+| -------------------------------------- | --------------------------- |
 | `.upstream-sync/last_seen_release.txt` | Current synced baseline tag |
-| `.upstream-sync/sync-metadata.json` | Full sync state record |
-| `scripts/upstream_diff.py` | Diff report generator |
-| `scripts/auto_port.py` | Stub and TODO generator |
-| `docs/UPSTREAM_SYNC_RUNBOOK.md` | Full porting operator guide |
+| `.upstream-sync/sync-metadata.json`    | Full sync state record      |
+| `scripts/upstream_diff.py`             | Diff report generator       |
+| `scripts/auto_port.py`                 | Stub and TODO generator     |
+| `docs/UPSTREAM_SYNC_RUNBOOK.md`        | Full porting operator guide |
 
 ---
 
@@ -1003,16 +1066,16 @@ Found 3 memories about TypeScript:
 
 Enhanced Cognee works with any **MCP-compatible IDE**:
 
-| IDE                     | Support Level | Setup Guide                                      |
-| ----------------------- | ------------- | ------------------------------------------------ |
-| **Cursor**              | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Windsurf**            | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Antigravity**         | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Continue.dev**        | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **VS Code (+Continue)** | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Kilo Code**           | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **GitHub Copilot**      | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Other MCP IDEs**      | [OK] Full        | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| IDE                     | Support Level | Setup Guide                                         |
+| ----------------------- | ------------- | --------------------------------------------------- |
+| **Cursor**              | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Windsurf**            | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Antigravity**         | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Continue.dev**        | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **VS Code (+Continue)** | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Kilo Code**           | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **GitHub Copilot**      | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Other MCP IDEs**      | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 
 **Complete Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
@@ -1036,13 +1099,13 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 
 ### Enhanced Cognee Tools (6)
 
-| Tool           | Purpose                           | Trigger Type | Automation Chain                                     |
-| -------------- | --------------------------------- | ------------ | ---------------------------------------------------- |
-| `cognify`      | Transform data to knowledge graph | (A) Auto     | Processes data → logs performance                    |
-| `search`       | Search knowledge graph            | (A) Auto     | Searches graph → logs performance                    |
-| `list_data`    | List all documents                | (A) Auto     | Lists documents → logs performance                   |
-| `get_stats`    | Get system statistics             | (A) Auto     | Calls all stats functions → logs performance         |
-| `health`       | Health check all databases        | (A) Auto     | Checks connections → logs performance (if unhealthy) |
+| Tool            | Purpose                           | Trigger Type | Automation Chain                                                                                  |
+| --------------- | --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
+| `cognify`       | Transform data to knowledge graph | (A) Auto     | Processes data → logs performance                                                                 |
+| `search`        | Search knowledge graph            | (A) Auto     | Searches graph → logs performance                                                                 |
+| `list_data`     | List all documents                | (A) Auto     | Lists documents → logs performance                                                                |
+| `get_stats`     | Get system statistics             | (A) Auto     | Calls all stats functions → logs performance                                                      |
+| `health`        | Health check all databases        | (A) Auto     | Checks connections → logs performance (if unhealthy)                                              |
 | `create_backup` | Create system backup              | (A) Auto     | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
 
 ### Memory Management Tools (4)
@@ -1056,23 +1119,23 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 
 ### Memory Deduplication Tools (5)
 
-| Tool                  | Purpose                  | Trigger Type | Automation Chain                                                    |
-| --------------------- | ------------------------ | ------------ | ------------------------------------------------------------------- |
-| `check_duplicate`     | Check if duplicate       | (S) System   | Checks duplicate → logs performance                                 |
-| `auto_deduplicate`    | Auto-find duplicates     | (S) System   | Finds duplicates → gets stats → publishes events → logs performance |
-| `get_deduplication_stats` | Deduplication stats   | (S) System   | Gets stats → logs performance                                       |
-| `deduplicate`         | Manual deduplication     | (S) System   | Runs deduplication → gets stats → logs performance                 |
-| `deduplication_report`| Get deduplication report | (S) System   | Gets report → logs performance                                     |
+| Tool                      | Purpose                  | Trigger Type | Automation Chain                                                    |
+| ------------------------- | ------------------------ | ------------ | ------------------------------------------------------------------- |
+| `check_duplicate`         | Check if duplicate       | (S) System   | Checks duplicate → logs performance                                 |
+| `auto_deduplicate`        | Auto-find duplicates     | (S) System   | Finds duplicates → gets stats → publishes events → logs performance |
+| `get_deduplication_stats` | Deduplication stats      | (S) System   | Gets stats → logs performance                                       |
+| `deduplicate`             | Manual deduplication     | (S) System   | Runs deduplication → gets stats → logs performance                  |
+| `deduplication_report`    | Get deduplication report | (S) System   | Gets report → logs performance                                      |
 
 ### Memory Summarization Tools (5)
 
-| Tool                      | Purpose                       | Trigger Type | Automation Chain                                                                                |
-| ------------------------- | ----------------------------- | ------------ | ----------------------------------------------------------------------------------------------- |
-| `summarize_old_memories`  | Summarize old memories        | (S) System   | Summarizes memories → gets age stats → publishes events → gets summary stats → logs performance |
-| `summarize_category`      | Summarize specific category   | (S) System   | Summarizes category → gets summary stats → publishes events → logs performance                  |
-| `get_summary_stats`       | Summarization stats           | (S) System   | Gets stats → logs performance                                                                   |
-| `get_summarization_stats` | Get summarization stats       | (S) System   | Gets stats → logs performance                                                                   |
-| `summary_stats`           | Get summary statistics        | (S) System   | Gets stats → logs performance                                                                   |
+| Tool                      | Purpose                     | Trigger Type | Automation Chain                                                                                |
+| ------------------------- | --------------------------- | ------------ | ----------------------------------------------------------------------------------------------- |
+| `summarize_old_memories`  | Summarize old memories      | (S) System   | Summarizes memories → gets age stats → publishes events → gets summary stats → logs performance |
+| `summarize_category`      | Summarize specific category | (S) System   | Summarizes category → gets summary stats → publishes events → logs performance                  |
+| `get_summary_stats`       | Summarization stats         | (S) System   | Gets stats → logs performance                                                                   |
+| `get_summarization_stats` | Get summarization stats     | (S) System   | Gets stats → logs performance                                                                   |
+| `summary_stats`           | Get summary statistics      | (S) System   | Gets stats → logs performance                                                                   |
 
 ### Performance Analytics Tools (3)
 
@@ -1101,51 +1164,77 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 
 ### Backup & Recovery Tools (5)
 
-| Tool               | Purpose                   | Trigger Type | Automation Chain                                                                                  |
-| ------------------ | ------------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
-| `create_backup`    | Create system backup      | (M) Manual   | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
-| `restore_backup`   | Restore from backup       | (M) Manual   | Restores backup → health check (on failure: rollback) → publishes events → logs performance       |
-| `list_backups`     | List all backups          | (A) Auto     | Lists backups → logs performance                                                                  |
-| `verify_backup`    | Verify backup integrity   | (S) System   | Verifies backup → logs performance                                                                |
-| `rollback_restore` | Rollback failed restore   | (S) System   | Rollbacks restore → health check → logs performance                                               |
+| Tool               | Purpose                 | Trigger Type | Automation Chain                                                                                  |
+| ------------------ | ----------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
+| `create_backup`    | Create system backup    | (M) Manual   | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
+| `restore_backup`   | Restore from backup     | (M) Manual   | Restores backup → health check (on failure: rollback) → publishes events → logs performance       |
+| `list_backups`     | List all backups        | (A) Auto     | Lists backups → logs performance                                                                  |
+| `verify_backup`    | Verify backup integrity | (S) System   | Verifies backup → logs performance                                                                |
+| `rollback_restore` | Rollback failed restore | (S) System   | Rollbacks restore → health check → logs performance                                               |
 
 ### Scheduling Tools (3)
 
-| Tool                   | Purpose                       | Trigger Type | Automation Chain                                  |
-| ---------------------- | ----------------------------- | ------------ | ------------------------------------------------- |
-| `schedule_task`        | Schedule maintenance task     | (M) Manual   | Schedules task → logs performance                |
-| `list_tasks`           | List scheduled tasks          | (A) Auto     | Lists tasks → logs performance                   |
-| `cancel_task`          | Cancel scheduled task         | (M) Manual   | Cancels task → logs performance                  |
+| Tool            | Purpose                   | Trigger Type | Automation Chain                  |
+| --------------- | ------------------------- | ------------ | --------------------------------- |
+| `schedule_task` | Schedule maintenance task | (M) Manual   | Schedules task → logs performance |
+| `list_tasks`    | List scheduled tasks      | (A) Auto     | Lists tasks → logs performance    |
+| `cancel_task`   | Cancel scheduled task     | (M) Manual   | Cancels task → logs performance   |
 
 ### Scheduling Automation Tools (3)
 
-| Tool                     | Purpose                         | Trigger Type | Automation Chain                                  |
-| ------------------------ | ------------------------------- | ------------ | ------------------------------------------------- |
-| `schedule_deduplication` | Schedule auto-deduplication     | (S) System   | Schedules deduplication → logs performance        |
-| `schedule_summarization` | Schedule auto-summarization     | (S) System   | Schedules summarization → logs performance        |
-| `deduplication_report`   | Get deduplication report        | (S) System   | Gets report → logs performance                   |
+| Tool                     | Purpose                     | Trigger Type | Automation Chain                           |
+| ------------------------ | --------------------------- | ------------ | ------------------------------------------ |
+| `schedule_deduplication` | Schedule auto-deduplication | (S) System   | Schedules deduplication → logs performance |
+| `schedule_summarization` | Schedule auto-summarization | (S) System   | Schedules summarization → logs performance |
+| `deduplication_report`   | Get deduplication report    | (S) System   | Gets report → logs performance             |
 
 ### Multi-Language Tools (6)
 
-| Tool                    | Purpose                      | Trigger Type | Automation Chain                                   |
-| ----------------------- | ---------------------------- | ------------ | -------------------------------------------------- |
-| `detect_language`       | Detect text language         | (S) System   | Detects language → logs performance                |
-| `get_supported_languages`| List supported languages     | (S) System   | Lists languages → logs performance                 |
-| `search_by_language`    | Search by language filter    | (S) System   | Searches by language → logs performance            |
-| `get_language_distribution`| Get language statistics    | (S) System   | Gets distribution → logs performance               |
-| `cross_language_search`  | Cross-language search        | (S) System   | Cross-language search → logs performance           |
-| `get_search_facets`      | Get search facets            | (S) System   | Gets facets → logs performance                    |
+| Tool                        | Purpose                   | Trigger Type | Automation Chain                         |
+| --------------------------- | ------------------------- | ------------ | ---------------------------------------- |
+| `detect_language`           | Detect text language      | (S) System   | Detects language → logs performance      |
+| `get_supported_languages`   | List supported languages  | (S) System   | Lists languages → logs performance       |
+| `search_by_language`        | Search by language filter | (S) System   | Searches by language → logs performance  |
+| `get_language_distribution` | Get language statistics   | (S) System   | Gets distribution → logs performance     |
+| `cross_language_search`     | Cross-language search     | (S) System   | Cross-language search → logs performance |
+| `get_search_facets`         | Get search facets         | (S) System   | Gets facets → logs performance           |
 
 ### Advanced AI & Search Tools (6)
 
-| Tool                    | Purpose                      | Trigger Type | Automation Chain                                   |
-| ----------------------- | ---------------------------- | ------------ | -------------------------------------------------- |
-| `intelligent_summarize` | LLM-powered summarization    | (S) System   | Summarizes with LLM → logs performance             |
-| `auto_summarize_old_memories` | Auto batch summarize | (S) System | Batch summarizes → logs performance            |
-| `cluster_memories`      | Cluster memories semantically | (S) System   | Clusters memories → logs performance               |
-| `advanced_search`       | Advanced search with re-ranking | (S) System  | Searches → re-ranks → logs performance            |
-| `expand_search_query`   | Expand search query with LLM  | (S) System   | Expands query → logs performance                   |
-| `get_search_analytics`  | Get search analytics          | (S) System   | Gets analytics → logs performance                  |
+| Tool                          | Purpose                         | Trigger Type | Automation Chain                       |
+| ----------------------------- | ------------------------------- | ------------ | -------------------------------------- |
+| `intelligent_summarize`       | LLM-powered summarization       | (S) System   | Summarizes with LLM → logs performance |
+| `auto_summarize_old_memories` | Auto batch summarize            | (S) System   | Batch summarizes → logs performance    |
+| `cluster_memories`            | Cluster memories semantically   | (S) System   | Clusters memories → logs performance   |
+| `advanced_search`             | Advanced search with re-ranking | (S) System   | Searches → re-ranks → logs performance |
+| `expand_search_query`         | Expand search query with LLM    | (S) System   | Expands query → logs performance       |
+| `get_search_analytics`        | Get search analytics            | (S) System   | Gets analytics → logs performance      |
+
+### Session-Aware Memory Tools (6)
+
+These tools wrap the cognee v1.0.9 `cognee.api.v1.*` session memory API.
+
+| Tool                | Purpose                              | Trigger Type | Automation Chain                                           |
+| ------------------- | ------------------------------------ | ------------ | ---------------------------------------------------------- |
+| `remember`          | Session-aware knowledge ingestion    | (M) Manual   | Stores data via v1.0.9 pipeline -> logs performance        |
+| `recall`            | 15-strategy knowledge graph search   | (M) Manual   | Searches KG with chosen strategy -> logs performance       |
+| `forget_memory`     | Delete graph data by id/dataset      | (M) Manual   | Deletes from graph -> publishes events -> logs performance  |
+| `improve`           | 4-stage feedback improvement pipeline| (M) Manual   | Runs improvement stages -> logs performance                |
+| `save_interaction`  | Record user/assistant exchange       | (A) Auto     | Adds interaction -> cognifies -> logs performance          |
+| `cognify_status`    | Check background task status         | (S) System   | Reads internal task registry -> logs performance           |
+
+### External Loaders and Enrichment Tools (6)
+
+These tools expose the cognee v1.0.9 ingestion and enrichment tasks via MCP.
+
+| Tool                      | Purpose                              | Trigger Type | Automation Chain                                         |
+| ------------------------- | ------------------------------------ | ------------ | -------------------------------------------------------- |
+| `ingest_url`              | Scrape URLs into knowledge graph     | (M) Manual   | Scrapes URL(s) via web_scraper_task -> logs performance  |
+| `ingest_db`               | Ingest relational DB via dlt         | (M) Manual   | Ingests DB tables via dlt pipeline -> logs performance   |
+| `translate_text`          | Translate text (LLM/Google/Azure)    | (M) Manual   | Translates via provider -> logs performance              |
+| `regex_extract_entities`  | Named entity extraction via regex    | (M) Manual   | Extracts entities via RegexEntityExtractor               |
+| `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (M) Manual   | Runs cascade extract (n rounds) -> returns graph         |
+| `list_loaders`            | List available file format loaders   | (M) Manual   | Checks supported_loaders registry -> logs performance    |
 
 ---
 
@@ -1188,16 +1277,32 @@ User explicitly triggers:
 → delete_memory(memory_id="xyz-789") [MANUAL - DESTRUCTIVE]
 ```
 
-**Tools requiring manual invocation (7 tools):**
+**Tools requiring manual invocation (19 tools):**
 
+Core operations:
 - `delete_memory` - You must explicitly delete memories (destructive operation)
 - `expire_memories` - You must explicitly trigger memory expiration (destructive operation)
 - `set_memory_ttl` - You must explicitly configure TTL policies (policy setting)
+- `archive_category` - You must explicitly archive a category (destructive operation)
 - `set_memory_sharing` - You must explicitly configure sharing policies (policy setting)
 - `restore_backup` - You must explicitly trigger restores (system operation)
 - `create_shared_space` - You must explicitly create shared spaces (policy setting)
 - `schedule_task` - You must explicitly schedule maintenance tasks (scheduling operation)
 - `cancel_task` - You must explicitly cancel scheduled tasks (scheduling operation)
+
+Session memory and knowledge graph (Phase 2):
+- `remember` - You must explicitly trigger knowledge ingestion with session context
+- `recall` - You must explicitly search the knowledge graph
+- `forget_memory` - You must explicitly delete graph data (destructive operation)
+- `improve` - You must explicitly run the feedback improvement pipeline
+
+External loaders and enrichment (Phase 3):
+- `ingest_url` - You must explicitly trigger URL scraping
+- `ingest_db` - You must explicitly trigger database ingestion
+- `translate_text` - You must explicitly trigger text translation
+- `regex_extract_entities` - You must explicitly trigger entity extraction
+- `extract_graph_v2` - You must explicitly trigger v2 cascade graph extraction
+- `list_loaders` - You must explicitly request the loader list
 
 #### 2. Automatic Invocation (A) - AI IDE Controlled
 
@@ -1232,25 +1337,25 @@ AI IDE automatically calls:
 → Returns memory ID
 ```
 
-**Tools automatically triggered by AI IDEs (17 tools):**
+**Tools automatically triggered by MCP-compatible IDEs (17 tools):**
 
-- `add_memory` - When AI wants to remember information
+- `add_memory` - When the IDE wants to remember information
 - `search_memories` - When you ask about past information
 - `get_memories` - When loading context for new sessions
 - `get_memory` - When referencing specific memory IDs
-- `update_memory` - When AI needs to correct information
+- `update_memory` - When the IDE needs to correct information
 - `list_agents` - When listing available agents
 - `cognify` - When processing data into knowledge
 - `search` - When searching knowledge graph
 - `list_data` - When listing documents
 - `get_stats` - When checking system status
 - `health` - On startup to verify system status
-- `create_backup` - When creating system backups (promoted from Manual)
-- `check_memory_access` - Before accessing shared memories
+- `create_backup` - When creating system backups
 - `get_shared_memories` - When loading shared memories
 - `list_backups` - When listing available backups
 - `list_tasks` - When listing scheduled tasks
 - `sync_agent_state` - When synchronizing agent states
+- `save_interaction` - After significant user/assistant exchanges (Phase 2)
 
 #### 3. System Invocation (S) - Enhanced Cognee Controlled
 
@@ -1286,9 +1391,10 @@ System automatically triggers:
 →   → get_performance_metrics() [SYSTEM - logs performance]
 ```
 
-**Tools triggered by Enhanced Cognee system (32 tools):**
+**Tools triggered by Enhanced Cognee system (34 tools):**
 
 **Performance & Monitoring (5 tools):**
+
 - `check_duplicate` - Automatically called before add_memory
 - `publish_memory_event` - Automatically called after memory changes
 - `get_performance_metrics` - Automatically called after operations
@@ -1296,6 +1402,7 @@ System automatically triggers:
 - `get_prometheus_metrics` - Automatically called for monitoring
 
 **Statistics (7 tools):**
+
 - `get_memory_age_stats` - Automatically called by memory operations
 - `get_deduplication_stats` - Automatically called by deduplication
 - `get_summary_stats` - Automatically called by summarization
@@ -1305,6 +1412,7 @@ System automatically triggers:
 - `check_memory_access` - Automatically called before memory access
 
 **Deduplication (5 tools):**
+
 - `auto_deduplicate` - Automatically scheduled (maintenance)
 - `deduplicate` - Automatically triggered for deduplication
 - `deduplication_report` - Automatically generates reports
@@ -1312,6 +1420,7 @@ System automatically triggers:
 - `verify_backup` - Automatically called after create_backup
 
 **Summarization (6 tools):**
+
 - `summarize_old_memories` - Automatically scheduled (maintenance)
 - `summarize_category` - Automatically triggered by policy
 - `intelligent_summarize` - Automatically triggered for LLM summarization
@@ -1320,6 +1429,7 @@ System automatically triggers:
 - `rollback_restore` - Automatically called on restore failure
 
 **Multi-Language (6 tools):**
+
 - `detect_language` - Automatically detects text language
 - `get_supported_languages` - Automatically lists supported languages
 - `search_by_language` - Automatically searches by language
@@ -1327,19 +1437,22 @@ System automatically triggers:
 - `cross_language_search` - Automatically performs cross-language search
 - `get_search_facets` - Automatically gets search facets
 
-**Advanced AI & Search (6 tools):**
+**Advanced AI & Search (4 tools):**
+
 - `cluster_memories` - Automatically clusters memories
 - `advanced_search` - Automatically performs advanced search
 - `expand_search_query` - Automatically expands queries
 - `get_search_analytics` - Automatically gets analytics
-- `intelligent_summarize` - (already counted above)
-- `auto_summarize_old_memories` - (already counted above)
+
+**Background task monitoring (Phase 2) (1 tool):**
+
+- `cognify_status` - Automatically tracks background remember/improve task status
 
 **Summary:**
 
-- **7 tools** require explicit manual invocation (M)
+- **19 tools** require explicit manual invocation (M)
 - **17 tools** are automatically triggered by AI IDEs (A)
-- **32 tools** are automatically triggered by Enhanced Cognee system (S)
+- **34 tools** are automatically triggered by Enhanced Cognee system (S)
 - **Total: 70 tools** with comprehensive automation chains
 
 ### Hybrid Approach (Best of All Three)
@@ -1448,48 +1561,50 @@ All without any manual configuration - comprehensive automation out of the box!
 Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
 
 ### Session-Aware Memory (Phase 2)
+
 These tools wrap the `cognee.api.v1.*` modules added in upstream v1.0.9:
 
-| Tool | API Module | Description |
-|------|-----------|-------------|
-| `remember` | `cognee.api.v1.remember` | Session-aware ingestion with background mode |
-| `recall` | `cognee.api.v1.search` | 15-strategy knowledge graph retrieval |
-| `forget_memory` | `cognee.api.v1.forget` | Targeted graph data deletion |
-| `improve` | `cognee.api.v1.improve` | 4-stage feedback improvement pipeline |
-| `save_interaction` | `cognee.api.v1.add` + `cognify` | Record user/assistant exchanges |
-| `cognify_status` | internal tracker | Check background task status |
+| Tool               | API Module                      | Description                                  |
+| ------------------ | ------------------------------- | -------------------------------------------- |
+| `remember`         | `cognee.api.v1.remember`        | Session-aware ingestion with background mode |
+| `recall`           | `cognee.api.v1.search`          | 15-strategy knowledge graph retrieval        |
+| `forget_memory`    | `cognee.api.v1.forget`          | Targeted graph data deletion                 |
+| `improve`          | `cognee.api.v1.improve`         | 4-stage feedback improvement pipeline        |
+| `save_interaction` | `cognee.api.v1.add` + `cognify` | Record user/assistant exchanges              |
+| `cognify_status`   | internal tracker                | Check background task status                 |
 
 ### External Loaders and Enrichment (Phase 3)
 
-| Tool | Underlying Task | Description |
-|------|----------------|-------------|
-| `ingest_url` | `web_scraper_task` | Scrape URLs (BeautifulSoup or Tavily) |
-| `ingest_db` | dlt pipeline | Ingest relational DB tables |
-| `translate_text` | `translate_content` | LLM/Google/Azure translation |
-| `regex_extract_entities` | `RegexEntityExtractor` | Configurable pattern NER |
-| `extract_graph_v2` | cascade extract utils | Preview v2 graph extraction (n rounds) |
-| `list_loaders` | `supported_loaders` | Show available file format loaders |
+| Tool                     | Underlying Task        | Description                            |
+| ------------------------ | ---------------------- | -------------------------------------- |
+| `ingest_url`             | `web_scraper_task`     | Scrape URLs (BeautifulSoup or Tavily)  |
+| `ingest_db`              | dlt pipeline           | Ingest relational DB tables            |
+| `translate_text`         | `translate_content`    | LLM/Google/Azure translation           |
+| `regex_extract_entities` | `RegexEntityExtractor` | Configurable pattern NER               |
+| `extract_graph_v2`       | cascade extract utils  | Preview v2 graph extraction (n rounds) |
+| `list_loaders`           | `supported_loaders`    | Show available file format loaders     |
 
 ### Search Type Reference
+
 All 15 `SearchType` values supported by `recall` and `search`:
 
-| Type | Description |
-|------|-------------|
-| `GRAPH_COMPLETION` | LLM-augmented graph traversal (recommended default) |
-| `GRAPH_COMPLETION_COT` | Chain-of-thought graph reasoning |
-| `GRAPH_COMPLETION_DECOMPOSITION` | Decompose query into sub-questions |
-| `GRAPH_COMPLETION_CONTEXT_EXTENSION` | Extend context along graph edges |
-| `GRAPH_SUMMARY_COMPLETION` | Search graph-level summaries |
-| `SUMMARIES` | Document and chunk summaries |
-| `CHUNKS` | Raw text chunk retrieval |
-| `CHUNKS_LEXICAL` | BM25-style lexical chunk search |
-| `RAG_COMPLETION` | Retrieval-augmented generation |
-| `TRIPLET_COMPLETION` | Knowledge triplet retrieval |
-| `NATURAL_LANGUAGE` | Natural language query parser |
-| `TEMPORAL` | Time-aware knowledge retrieval |
-| `CODING_RULES` | Retrieve coding rules and patterns |
-| `CYPHER` | Direct Cypher query against graph |
-| `FEELING_LUCKY` | Auto-select best strategy for query |
+| Type                                 | Description                                         |
+| ------------------------------------ | --------------------------------------------------- |
+| `GRAPH_COMPLETION`                   | LLM-augmented graph traversal (recommended default) |
+| `GRAPH_COMPLETION_COT`               | Chain-of-thought graph reasoning                    |
+| `GRAPH_COMPLETION_DECOMPOSITION`     | Decompose query into sub-questions                  |
+| `GRAPH_COMPLETION_CONTEXT_EXTENSION` | Extend context along graph edges                    |
+| `GRAPH_SUMMARY_COMPLETION`           | Search graph-level summaries                        |
+| `SUMMARIES`                          | Document and chunk summaries                        |
+| `CHUNKS`                             | Raw text chunk retrieval                            |
+| `CHUNKS_LEXICAL`                     | BM25-style lexical chunk search                     |
+| `RAG_COMPLETION`                     | Retrieval-augmented generation                      |
+| `TRIPLET_COMPLETION`                 | Knowledge triplet retrieval                         |
+| `NATURAL_LANGUAGE`                   | Natural language query parser                       |
+| `TEMPORAL`                           | Time-aware knowledge retrieval                      |
+| `CODING_RULES`                       | Retrieve coding rules and patterns                  |
+| `CYPHER`                             | Direct Cypher query against graph                   |
+| `FEELING_LUCKY`                      | Auto-select best strategy for query                 |
 
 ---
 
@@ -1513,6 +1628,7 @@ Agents are registered dynamically from your configuration file:
 ```
 
 Enhanced Cognee supports unlimited custom agent types with:
+
 - [OK] Redis pub/sub for sub-millisecond agent coordination
 - [OK] Event broadcasting (memory_added, memory_updated, memory_deleted)
 - [OK] Automatic state synchronization between agents
@@ -1561,25 +1677,26 @@ open htmlcov/index.html
 
 Comprehensive documentation is available:
 
-| Document                                                                               | Description                      |
-| -------------------------------------------------------------------------------------- | -------------------------------- |
-| [README.md](README.md)                                                                 | This file - project overview     |
-| [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                                    | Multi-IDE setup guide            |
-| [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)           | 21 SDLC agents integration guide |
-| [Testing Guide](docs/development/TESTING.md)                                           | Complete testing guide           |
-| [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)                      | Task completion summary          |
-| [Contributing Guidelines](docs/development/CONTRIBUTING.md)                            | Contribution guidelines          |
-| [Contributors](docs/policies/CONTRIBUTORS.md)                                          | Contributor history              |
-| [Enhancement Roadmap](docs/legacy/ENHANCEMENT_ROADMAP.md)                              | 12-month enhancement roadmap     |
-| [Audit Summary](docs/reports/audits/AUDIT_SUMMARY.md)                                  | Comprehensive audit summary      |
-| [Final Completion Summary](docs/reports/summaries/FINAL_COMPLETION_SUMMARY.md)         | Final completion summary         |
-| [Production Deployment Guide](docs/operations/PRODUCTION_DEPLOYMENT_GUIDE.md)          | Production deployment guide      |
-| [Security Hardening Checklist](docs/operations/SECURITY_HARDENING_CHECKLIST.md)        | Security hardening checklist     |
-| [Monitoring Setup Guide](docs/operations/MONITORING_SETUP_GUIDE.md)                    | Monitoring setup guide           |
-| [Lite Mode Guide](docs/guides/LITE_MODE_GUIDE.md)                                      | Lite mode guide                  |
-| [Multi-Language Guide](docs/guides/MULTI_LANGUAGE_GUIDE.md)                            | Multi-language support guide     |
-| [Deduplication Guide](docs/operations/DEDUPLICATION_GUIDE.md)                          | Deduplication guide              |
-| [Summarization Guide](docs/operations/SUMMARIZATION_GUIDE.md)                          | Summarization guide              |
+| Document                                                                        | Description                      |
+| ------------------------------------------------------------------------------- | -------------------------------- |
+| [README.md](README.md)                                                          | This file - project overview                            |
+| [Master Implementation Plan](docs/plans/MASTER_IMPLEMENTATION_PLAN.md)          | Comprehensive project roadmap and plans                 |
+| [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                             | Multi-IDE setup for MCP-compatible IDEs                 |
+| [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)    | 21 SDLC agents integration guide                        |
+| [Testing Guide](docs/development/TESTING.md)                                    | Complete testing guide           |
+| [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)               | Task completion summary          |
+| [Contributing Guidelines](docs/development/CONTRIBUTING.md)                     | Contribution guidelines          |
+| [Contributors](docs/policies/CONTRIBUTORS.md)                                   | Contributor history              |
+| [Enhancement Roadmap](docs/legacy/ENHANCEMENT_ROADMAP.md)                       | 12-month enhancement roadmap     |
+| [Audit Summary](docs/reports/audits/AUDIT_SUMMARY.md)                           | Comprehensive audit summary      |
+| [Final Completion Summary](docs/reports/summaries/FINAL_COMPLETION_SUMMARY.md)  | Final completion summary         |
+| [Production Deployment Guide](docs/operations/PRODUCTION_DEPLOYMENT_GUIDE.md)   | Production deployment guide      |
+| [Security Hardening Checklist](docs/operations/SECURITY_HARDENING_CHECKLIST.md) | Security hardening checklist     |
+| [Monitoring Setup Guide](docs/operations/MONITORING_SETUP_GUIDE.md)             | Monitoring setup guide           |
+| [Lite Mode Guide](docs/guides/LITE_MODE_GUIDE.md)                               | Lite mode guide                  |
+| [Multi-Language Guide](docs/guides/MULTI_LANGUAGE_GUIDE.md)                     | Multi-language support guide     |
+| [Deduplication Guide](docs/operations/DEDUPLICATION_GUIDE.md)                   | Deduplication guide              |
+| [Summarization Guide](docs/operations/SUMMARIZATION_GUIDE.md)                   | Summarization guide              |
 
 ---
 
@@ -1607,6 +1724,7 @@ Create `.enhanced-cognee-config.json` in your project root:
   }
 }
 ```
+
 No code changes required - Enhanced Cognee loads categories at runtime.
 Any category name, any prefix.
 
@@ -1789,6 +1907,7 @@ Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
 by Topoteretes UG, licensed under the Apache License, Version 2.0.
 
 The Apache 2.0 license requires that:
+
 1. This notice is preserved in all distributions
 2. The original Cognee project is credited (done above)
 3. Changes from the original are noted (done in git history and this README)
