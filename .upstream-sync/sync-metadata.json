@@ -9,5 +9,5 @@
   "auto_merge": false,
   "graph_backend": "neo4j",
   "cloud_mode": "optional_opt_in",
-  "notes": "Phase 2 complete: 6 new MCP tools (remember/recall/forget/improve/save_interaction/cognify_status), updated search tool with 15 SearchType values, cloud connectivity toggle. 64 MCP tools total. 461/461 unit tests pass."
+  "notes": "Phase 3 complete: 6 new MCP tools (ingest_url/ingest_db/translate_text/regex_extract_entities/extract_graph_v2/list_loaders). 70 MCP tools total. 975/975 unit tests pass."
 }
