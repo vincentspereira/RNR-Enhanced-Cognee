@@ -13,8 +13,25 @@ from datetime import datetime, timezone
 from unittest.mock import Mock, AsyncMock, patch, MagicMock
 from typing import Dict, List, Any, Optional
 
-# Mark all tests as unit tests
-pytestmark = [pytest.mark.unit, pytest.mark.agents]
+# ats/oma/smc agent modules were archived in Phase 4 (hardcoded category violation).
+# These tests are skipped when the modules are not present.
+try:
+    import src.agents.ats
+    import src.agents.oma
+    import src.agents.smc
+    _AGENTS_AVAILABLE = True
+except ImportError:
+    _AGENTS_AVAILABLE = False
+
+# Mark all tests as unit tests; skip entire module when archived agents are absent
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.agents,
+    pytest.mark.skipif(
+        not _AGENTS_AVAILABLE,
+        reason="ATS/OMA/SMC agents archived in Phase 4 (hardcoded category violation)",
+    ),
+]
 
 
 class TestATSAgents:

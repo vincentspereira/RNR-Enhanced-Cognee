@@ -28,12 +28,13 @@ from .test_data_generator import TestDataGenerator, DataCategory, MemoryType, Te
 # Import Enhanced Cognee components (will be mocked if not available)
 try:
     from src.agent_memory_integration import AgentMemoryIntegration
-    from src.agents.ats.algorithmic_trading_system import AlgorithmicTradingSystem
-    from src.agents.oma.code_reviewer import CodeReviewer
-    from src.agents.smc.context_manager import ContextManager
 except ImportError:
-    # Components not available, will be mocked
-    pass
+    AgentMemoryIntegration = None
+
+# ats/oma/smc agent modules archived in Phase 4 (hardcoded category violation).
+AlgorithmicTradingSystem = None
+CodeReviewer = None
+ContextManager = None
 
 # Test environment configuration
 TEST_CONFIG = {

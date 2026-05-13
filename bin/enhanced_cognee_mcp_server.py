@@ -1,7 +1,34 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee MCP Server - Simplified
-Works directly with Enhanced stack without complex migrations
+Enhanced Cognee MCP Server
+===========================
+Version:  1.0.9-enhanced (Phase 4 hardened)
+Tools:    70 MCP tools across 9 functional areas
+Backends: PostgreSQL+pgVector | Qdrant | Neo4j | Redis
+
+Functional areas
+----------------
+1.  Stack init / lifecycle      (init_enhanced_stack, cleanup_enhanced_stack)
+2.  Core knowledge graph        (cognify, search, get_stats, health, list_data)
+3.  Standard memory CRUD        (add_memory, search_memories, get_memory, ...)
+4.  Memory lifecycle            (expire_memories, archive_category, set_memory_ttl, ...)
+5.  Deduplication & summarize   (deduplicate, summarize_category, ...)
+6.  Performance & monitoring    (get_performance_metrics, get_prometheus_metrics, ...)
+7.  Cross-agent sharing / sync  (set_memory_sharing, sync_agent_state, ...)
+8.  Backup & recovery           (create_backup, restore_backup, ...)
+9.  Language & search           (detect_language, cross_language_search, ...)
+10. Phase 2 - v1.0.9 KG API    (remember, recall, forget_memory, improve, ...)
+11. Phase 3 - external loaders  (ingest_url, ingest_db, translate_text, ...)
+
+Refactoring note (Phase 4)
+--------------------------
+The tool implementations live inline in this file. A full module split
+(bin/mcp_modules/) is planned for Phase 5. For now, section headers below
+serve as navigation anchors for editors that support code folding.
+
+ASCII-only output (CLAUDE.md mandate)
+--------------------------------------
+All tool return strings use ASCII-only characters.  No Unicode symbols.
 """
 
 import os
