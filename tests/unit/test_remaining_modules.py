@@ -836,13 +836,13 @@ class TestDefaultMemoryCategories:
     """Test DefaultMemoryCategories functionality."""
 
     def test_get_mas_categories(self):
-        """Test getting MAS categories."""
-        categories = DefaultMemoryCategories.get_mas_categories()
+        """Test getting example categories (get_mas_categories renamed to get_example_categories)."""
+        categories = DefaultMemoryCategories.get_example_categories()
 
-        assert "ATS" in categories
-        assert "OMA" in categories
-        assert "SMC" in categories
-        assert categories["ATS"].prefix == "ats_"
+        assert "trading" in categories
+        assert "development" in categories
+        assert "coordination" in categories
+        assert categories["trading"].prefix == "trading_"
 
     def test_get_default_categories(self):
         """Test getting default categories."""
@@ -870,9 +870,9 @@ class TestMemoryConfigManager:
     def test_get_category(self):
         """Test getting category."""
         manager = MemoryConfigManager()
-        category = manager.get_category("ATS")
+        category = manager.get_category("trading")
         assert category is not None
-        assert category.name == "ATS"
+        assert category.name == "trading"
 
     def test_get_all_categories(self):
         """Test getting all categories."""
@@ -917,14 +917,14 @@ class TestMemoryConfigManager:
     def test_validate_category(self):
         """Test validating category."""
         manager = MemoryConfigManager()
-        assert manager.validate_category("ATS") is True
+        assert manager.validate_category("trading") is True
         assert manager.validate_category("nonexistent") is False
 
     def test_get_prefix_for_category(self):
         """Test getting prefix for category."""
         manager = MemoryConfigManager()
-        prefix = manager.get_prefix_for_category("ATS")
-        assert prefix == "ats_"
+        prefix = manager.get_prefix_for_category("trading")
+        assert prefix == "trading_"
 
 
 def test_get_config_manager():

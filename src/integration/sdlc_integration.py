@@ -151,19 +151,9 @@ class SDLCIntegrationManager:
 
             category = enhanced_agent_id.split("_")[0].lower()
 
-            if category == "ats":
-                from ..agents.ats.ats_memory_wrapper import ATSMemoryWrapper
-                return ATSMemoryWrapper(self.memory_integration)
-            elif category == "oma":
-                from ..agents.oma.oma_memory_wrapper import OMAMemoryWrapper
-                return OMAMemoryWrapper(self.memory_integration)
-            elif category == "smc":
-                from ..agents.smc.smc_memory_wrapper import SMCMemoryWrapper
-                return SMCMemoryWrapper(self.memory_integration)
-            else:
-                # Default wrapper
-                from ..agent_memory_integration import AgentMemoryIntegration
-                return AgentMemoryIntegration
+            # Category-based wrapper lookup - categories are dynamic
+            # Legacy ATS/OMA/SMC wrappers are archived; return None (no wrapper available)
+            return None
 
         except Exception as e:
             logger.error(f"Failed to get memory client for agent {agent_id}: {e}")
@@ -370,12 +360,12 @@ class SDLCIntegrationManager:
     def _map_agent_type_to_category(self, agent_type: str) -> str:
         """Map existing agent type to Enhanced Cognee category"""
         # Enhanced Cognee category mapping
-        if "trading" in agent_type.lower() or "ats" in agent_type.lower():
-            return "ATS"
+        if "trading" in agent_type.lower():
+            return "trading"
         elif "development" in agent_type.lower() or "sdlc" in agent_type.lower():
-            return "OMA"
+            return "development"
         else:
-            return "SMC"
+            return "coordination"
 
     async def _create_agent_memory_wrapper(self, agent_id: str, category: str):
         """Create appropriate memory wrapper for agent"""
