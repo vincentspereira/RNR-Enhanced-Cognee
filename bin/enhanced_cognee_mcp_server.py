@@ -349,9 +349,13 @@ async def cognify(data: str) -> str:
 
 
 @mcp.tool()
-async def search(query: str, limit: int = 10) -> str:
+async def search(query: str, limit: int = 10, search_type: Optional[str] = None) -> str:
     """
-    Search the knowledge graph using Enhanced Cognee
+    Search Enhanced Cognee knowledge.
+
+    When search_type is omitted: searches the Enhanced PostgreSQL memory store (fast text search).
+    When search_type is provided: routes to the cognee knowledge graph using that strategy.
+    Use recall() for full control over knowledge graph search strategies.
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when searching knowledge
 
@@ -359,11 +363,20 @@ async def search(query: str, limit: int = 10) -> str:
     -----------
     - query: Search query text
     - limit: Maximum number of results to return (default: 10)
+    - search_type: Optional graph search strategy. When set, bypasses PostgreSQL and uses
+      the cognee knowledge graph. One of: GRAPH_COMPLETION, SUMMARIES, CHUNKS,
+      NATURAL_LANGUAGE, TEMPORAL, CHUNKS_LEXICAL, FEELING_LUCKY, CODING_RULES,
+      GRAPH_COMPLETION_COT, GRAPH_COMPLETION_DECOMPOSITION, GRAPH_SUMMARY_COMPLETION,
+      CYPHER, RAG_COMPLETION, TRIPLET_COMPLETION, GRAPH_COMPLETION_CONTEXT_EXTENSION.
 
     Returns:
     --------
     - Search results as formatted text
     """
+    # If a search_type is provided, delegate to the knowledge graph recall tool
+    if search_type:
+        return await recall(query=query, search_type=search_type, top_k=limit)
+
     try:
         if postgres_pool:
             async with postgres_pool.acquire() as conn:
@@ -375,7 +388,7 @@ async def search(query: str, limit: int = 10) -> str:
                     LIMIT $2
                 """, f"%{query}%", limit)
 
-                # AUTO-TRIGGER: Log performance metrics
+                # Log performance metrics
                 if performance_analytics:
                     try:
                         await performance_analytics.log_operation(
@@ -3987,6 +4000,356 @@ async def get_summarization_stats() -> str:
         return f"ERR Failed to get summarization stats: {str(e)}"
 
 
+# ---------------------------------------------------------------------------
+# Phase 2 - P1 Ports: Session-Aware Memory + Knowledge Graph Search
+# Wires cognee v1.0.9 remember/recall/forget/improve API into MCP tools.
+# All output is ASCII-only per CLAUDE.md requirements.
+# ---------------------------------------------------------------------------
+
+_VALID_SEARCH_TYPES = {
+    "SUMMARIES", "CHUNKS", "RAG_COMPLETION", "TRIPLET_COMPLETION",
+    "GRAPH_COMPLETION", "GRAPH_COMPLETION_DECOMPOSITION", "GRAPH_SUMMARY_COMPLETION",
+    "CYPHER", "NATURAL_LANGUAGE", "GRAPH_COMPLETION_COT",
+    "GRAPH_COMPLETION_CONTEXT_EXTENSION", "FEELING_LUCKY",
+    "TEMPORAL", "CODING_RULES", "CHUNKS_LEXICAL",
+}
+
+# Background cognify task tracking (pipeline_run_id -> status string)
+_cognify_tasks: dict = {}
+
+
+@mcp.tool()
+async def remember(
+    data: str,
+    dataset_name: str = "main_dataset",
+    session_id: Optional[str] = None,
+    run_in_background: bool = False,
+) -> str:
+    """
+    Store data into the cognee knowledge graph (session-aware ingestion).
+
+    This is the v1.0.9 remember() API - richer than cognify() because it
+    supports session context, self-improvement feedback, and typed memory
+    entries (QA, Trace, Feedback). Use cognify() for simple document storage.
+
+    TRIGGER TYPE: (M) Manual - triggered by user when storing knowledge
+
+    Parameters:
+    -----------
+    - data: Text, URL, or structured content to store
+    - dataset_name: Target dataset name (default: 'main_dataset')
+    - session_id: Optional session ID to associate this memory with a conversation
+    - run_in_background: If True, returns immediately with a task ID
+
+    Returns:
+    --------
+    - Status string with task ID if background mode, else completion status
+    """
+    try:
+        import cognee
+        from cognee.api.v1.remember.remember import remember as cognee_remember
+
+        if run_in_background:
+            task_id = f"remember_{len(_cognify_tasks) + 1}"
+            _cognify_tasks[task_id] = "running"
+
+            async def _run():
+                try:
+                    await cognee_remember(
+                        data=data,
+                        dataset_name=dataset_name,
+                        session_id=session_id,
+                        run_in_background=False,
+                    )
+                    _cognify_tasks[task_id] = "completed"
+                except Exception as exc:
+                    _cognify_tasks[task_id] = f"failed: {exc}"
+
+            asyncio.create_task(_run())
+            return f"OK remember task started in background (task_id: {task_id})"
+
+        await cognee_remember(
+            data=data,
+            dataset_name=dataset_name,
+            session_id=session_id,
+        )
+        return f"OK Data stored in dataset '{dataset_name}'" + (
+            f" (session: {session_id})" if session_id else ""
+        )
+
+    except Exception as e:
+        logger.error(f"remember failed: {e}")
+        return f"ERR remember failed: {str(e)}"
+
+
+@mcp.tool()
+async def recall(
+    query: str,
+    search_type: str = "GRAPH_COMPLETION",
+    dataset_name: Optional[str] = None,
+    session_id: Optional[str] = None,
+    top_k: int = 10,
+) -> str:
+    """
+    Search the cognee knowledge graph with 15 available search strategies.
+
+    This wraps cognee v1.0.9 recall() / search() - far more powerful than the
+    Enhanced search() tool which only does PostgreSQL text search.
+
+    TRIGGER TYPE: (M) Manual - triggered when searching stored knowledge
+
+    Available search_type values:
+    - GRAPH_COMPLETION         : LLM-augmented graph traversal (recommended default)
+    - GRAPH_COMPLETION_COT     : Chain-of-thought graph reasoning
+    - GRAPH_COMPLETION_DECOMPOSITION : Decompose query into sub-questions
+    - GRAPH_COMPLETION_CONTEXT_EXTENSION : Extend context along graph edges
+    - GRAPH_SUMMARY_COMPLETION : Search graph-level summaries
+    - SUMMARIES                : Document and chunk summaries
+    - CHUNKS                   : Raw text chunk retrieval
+    - CHUNKS_LEXICAL           : BM25-style lexical chunk search
+    - RAG_COMPLETION           : Retrieval-augmented generation
+    - TRIPLET_COMPLETION       : Knowledge triplet retrieval
+    - NATURAL_LANGUAGE         : Natural language query parser
+    - TEMPORAL                 : Time-aware knowledge retrieval
+    - CODING_RULES             : Retrieve coding rules and patterns
+    - CYPHER                   : Direct Cypher query against graph
+    - FEELING_LUCKY            : Auto-select best strategy for query
+
+    Parameters:
+    -----------
+    - query: Search query text
+    - search_type: Strategy name (see above, default: GRAPH_COMPLETION)
+    - dataset_name: Optional dataset to scope the search
+    - session_id: Optional session ID for session-scoped recall
+    - top_k: Maximum results to return (default: 10)
+
+    Returns:
+    --------
+    - Formatted search results with content and source references
+    """
+    search_type_upper = search_type.upper()
+    if search_type_upper not in _VALID_SEARCH_TYPES:
+        valid = ", ".join(sorted(_VALID_SEARCH_TYPES))
+        return f"ERR Invalid search_type '{search_type}'. Valid: {valid}"
+
+    try:
+        from cognee.api.v1.search.search import search as cognee_search
+        from cognee.modules.search.methods.get_search_type_retriever_instance import SearchType
+
+        s_type = SearchType[search_type_upper]
+
+        datasets = [dataset_name] if dataset_name else None
+        results = await cognee_search(
+            query_text=query,
+            query_type=s_type,
+            datasets=datasets,
+            top_k=top_k,
+        )
+
+        if not results:
+            return f"OK No results found for query: '{query}' (strategy: {search_type_upper})"
+
+        lines = [f"OK {len(results)} result(s) (strategy: {search_type_upper}):\n"]
+        for i, item in enumerate(results[:top_k], 1):
+            if isinstance(item, dict):
+                content = item.get("text") or item.get("content") or str(item)
+                score = item.get("score") or item.get("relevance_score", "")
+                score_str = f" | score: {score:.3f}" if isinstance(score, float) else ""
+                lines.append(f"{i}. {content[:200].strip()}{score_str}")
+            else:
+                lines.append(f"{i}. {str(item)[:200]}")
+
+        return "\n".join(lines)
+
+    except Exception as e:
+        logger.error(f"recall failed: {e}")
+        return f"ERR recall failed: {str(e)}"
+
+
+@mcp.tool()
+async def forget_memory(
+    data_id: Optional[str] = None,
+    dataset: Optional[str] = None,
+    everything: bool = False,
+) -> str:
+    """
+    Remove data from the cognee knowledge graph.
+
+    Note: This operates on the cognee graph (not Enhanced PostgreSQL memories).
+    To delete an Enhanced memory entry, use delete_memory() instead.
+
+    TRIGGER TYPE: (M) Manual - triggered by explicit user deletion request
+
+    Parameters:
+    -----------
+    - data_id: UUID of a specific data item to forget
+    - dataset: Dataset name or UUID to forget entirely
+    - everything: If True, wipe all graph data (requires dataset=None and data_id=None)
+
+    Returns:
+    --------
+    - Status message confirming deletion
+    """
+    if everything and (data_id or dataset):
+        return "ERR Cannot combine everything=True with data_id or dataset"
+
+    if not everything and not data_id and not dataset:
+        return "ERR Provide data_id, dataset, or set everything=True"
+
+    try:
+        from cognee.api.v1.forget.forget import forget as cognee_forget
+
+        from uuid import UUID as _UUID
+        parsed_id = None
+        if data_id:
+            try:
+                parsed_id = _UUID(data_id)
+            except ValueError:
+                return f"ERR data_id must be a valid UUID, got: {data_id}"
+
+        result = await cognee_forget(
+            data_id=parsed_id,
+            dataset=dataset,
+            everything=everything,
+        )
+
+        if everything:
+            return "OK All graph data deleted"
+        if data_id:
+            return f"OK Data item {data_id} deleted from knowledge graph"
+        return f"OK Dataset '{dataset}' deleted from knowledge graph"
+
+    except Exception as e:
+        logger.error(f"forget_memory failed: {e}")
+        return f"ERR forget_memory failed: {str(e)}"
+
+
+@mcp.tool()
+async def improve(
+    dataset: str = "main_dataset",
+    session_ids: Optional[str] = None,
+    run_in_background: bool = False,
+) -> str:
+    """
+    Run the 4-stage feedback improvement pipeline on a dataset.
+
+    This is cognee v1.0.9's improve() API. It applies:
+      Stage 1: Extract feedback QAs from sessions
+      Stage 2: Apply feedback weights to graph edges
+      Stage 3: Persist session data to permanent graph
+      Stage 4: Sync enriched graph back to session cache
+
+    Use this after storing several interactions to improve knowledge quality.
+
+    TRIGGER TYPE: (M) Manual - triggered by user to improve knowledge quality
+
+    Parameters:
+    -----------
+    - dataset: Dataset name to improve (default: 'main_dataset')
+    - session_ids: Comma-separated session IDs to use as feedback source
+    - run_in_background: If True, returns immediately with a task ID
+
+    Returns:
+    --------
+    - Completion status or background task ID
+    """
+    try:
+        from cognee.api.v1.improve.improve import improve as cognee_improve
+
+        parsed_sessions = None
+        if session_ids:
+            parsed_sessions = [s.strip() for s in session_ids.split(",") if s.strip()]
+
+        if run_in_background:
+            task_id = f"improve_{len(_cognify_tasks) + 1}"
+            _cognify_tasks[task_id] = "running"
+
+            async def _run():
+                try:
+                    await cognee_improve(
+                        dataset=dataset,
+                        session_ids=parsed_sessions,
+                        run_in_background=False,
+                    )
+                    _cognify_tasks[task_id] = "completed"
+                except Exception as exc:
+                    _cognify_tasks[task_id] = f"failed: {exc}"
+
+            asyncio.create_task(_run())
+            return f"OK improve task started in background (task_id: {task_id})"
+
+        await cognee_improve(
+            dataset=dataset,
+            session_ids=parsed_sessions,
+        )
+        sessions_str = f" using sessions [{session_ids}]" if session_ids else ""
+        return f"OK Knowledge improvement pipeline complete for dataset '{dataset}'{sessions_str}"
+
+    except Exception as e:
+        logger.error(f"improve failed: {e}")
+        return f"ERR improve failed: {str(e)}"
+
+
+@mcp.tool()
+async def save_interaction(
+    data: str,
+    dataset_name: str = "main_dataset",
+) -> str:
+    """
+    Save a coding interaction (user/assistant exchange) to the knowledge graph.
+
+    This enables Claude Code / Cursor / Windsurf to record interaction patterns
+    so they can be surfaced as rules and best practices via recall(search_type=CODING_RULES).
+
+    TRIGGER TYPE: (A) Auto - trigger after significant user/assistant exchanges
+
+    Format for data (recommended):
+      'user: <user message>\\nassistant: <assistant response>'
+
+    Parameters:
+    -----------
+    - data: The interaction text (user + assistant turn)
+    - dataset_name: Target dataset (default: 'main_dataset')
+
+    Returns:
+    --------
+    - Status confirming the interaction was saved
+    """
+    try:
+        from cognee.api.v1.add.add import add as cognee_add
+        from cognee.api.v1.cognify.cognify import cognify as cognee_cognify
+
+        await cognee_add(data=data, dataset_name=dataset_name)
+        await cognee_cognify(datasets=[dataset_name])
+        return f"OK Interaction saved to dataset '{dataset_name}'"
+
+    except Exception as e:
+        logger.error(f"save_interaction failed: {e}")
+        return f"ERR save_interaction failed: {str(e)}"
+
+
+@mcp.tool()
+async def cognify_status(dataset_name: Optional[str] = None) -> str:
+    """
+    Check the status of background cognify / remember / improve tasks.
+
+    Parameters:
+    -----------
+    - dataset_name: Optional dataset name filter (not yet used, reserved for future)
+
+    Returns:
+    --------
+    - Status of all tracked background tasks
+    """
+    if not _cognify_tasks:
+        return "OK No background tasks recorded"
+
+    lines = [f"OK Background task status ({len(_cognify_tasks)} task(s)):\n"]
+    for task_id, status in list(_cognify_tasks.items())[-20:]:
+        lines.append(f"  {task_id}: {status}")
+    return "\n".join(lines)
+
+
 async def main():
     """Main entry point"""
     print("""
@@ -4069,6 +4432,14 @@ async def main():
     print("      - publish_memory_event: Publish memory event")
     print("      - get_sync_status: Get sync status")
     print("      - sync_agent_state: Sync agent state")
+    print("    Phase 2 - Knowledge Graph (v1.0.9 API):")
+    print("      - remember: Session-aware cognee ingestion")
+    print("      - recall: Knowledge graph search (15 search types)")
+    print("      - forget_memory: Delete from cognee knowledge graph")
+    print("      - improve: 4-stage feedback improvement pipeline")
+    print("      - save_interaction: Save coding interactions as knowledge")
+    print("      - cognify_status: Check background task status")
+    print("      search() now accepts search_type= for graph routing")
     print()
 
     try:
@@ -4079,6 +4450,35 @@ async def main():
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Enhanced Cognee MCP Server")
+    parser.add_argument(
+        "--serve-url",
+        default=os.environ.get("COGNEE_SERVICE_URL", ""),
+        help=(
+            "Optional URL of a remote Cognee Cloud or Enhanced instance to bridge to. "
+            "When set, cognee.serve(url=...) is called before starting the MCP server. "
+            "Default: empty (local-only mode). Can also be set via COGNEE_SERVICE_URL env var."
+        ),
+    )
+    parser.add_argument(
+        "--serve-api-key",
+        default=os.environ.get("COGNEE_SERVICE_API_KEY", ""),
+        help="API key for the remote Cognee instance (used with --serve-url).",
+    )
+    args = parser.parse_args()
+
+    # Cloud connectivity toggle (optional, opt-in only)
+    if args.serve_url:
+        try:
+            from cognee.api.v1.serve.serve import serve as cognee_serve
+            cognee_serve(url=args.serve_url, api_key=args.serve_api_key or None)
+            print(f"OK Cloud connectivity enabled: {args.serve_url}")
+        except Exception as _serve_err:
+            print(f"WARN Could not enable cloud connectivity: {_serve_err}")
+            print("INFO Continuing in local-only mode")
+
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
