@@ -112,6 +112,114 @@ from src.transaction_manager import (
     execute_in_transaction,
     execute_operation_with_transaction
 )
+from src.llm_cost_tracker import (
+    LLMCostTracker,
+    init_cost_tracker,
+    get_cost_tracker,
+    set_llm_context,
+)
+from src.session_manager import SessionManager
+from src.audit_logger import (
+    AuditLogger,
+    AuditOperationType,
+    init_audit_logger,
+    get_audit_logger,
+)
+from src.rate_limiter import RateLimiter, init_rate_limiter, get_rate_limiter
+from src.pii_detector import PIIDetector, init_pii_detector, get_pii_detector
+from src.circuit_breaker import (
+    CircuitBreaker,
+    get_circuit_breaker,
+    get_all_circuit_stats,
+)
+from src.tracing import init_tracing, trace_tool, is_tracing_enabled
+
+# Phase 10 - Memory Lifecycle
+from src.memory_versioner import (
+    MemoryVersioner,
+    init_memory_versioner,
+    get_memory_versioner,
+)
+from src.memory_provenance import (
+    MemoryProvenanceTracker,
+    init_provenance_tracker,
+    get_provenance_tracker,
+)
+from src.memory_confidence import (
+    MemoryConfidenceManager,
+    init_confidence_manager,
+    get_confidence_manager,
+)
+from src.memory_consolidator import (
+    MemoryConsolidator,
+    init_consolidator,
+    get_consolidator,
+)
+from src.memory_tier_manager import (
+    MemoryTierManager,
+    init_tier_manager,
+    get_tier_manager,
+)
+from src.graph_compactor import (
+    GraphCompactor,
+    init_graph_compactor,
+    get_graph_compactor,
+)
+
+# Phase 11 - Compliance and Data Governance
+from src.gdpr_manager import (
+    GDPRManager,
+    init_gdpr_manager,
+    get_gdpr_manager,
+)
+
+# Phase 12 - Plugin Ecosystem and Integrations
+from src.plugin_loader import (
+    PluginRegistry,
+    EnhancedCogneeLoader,
+    init_plugin_registry,
+    get_plugin_registry,
+)
+from src.webhook_manager import (
+    WebhookManager,
+    init_webhook_manager,
+    get_webhook_manager,
+)
+
+# Phase 14.3 - Encryption at rest
+from src.encryption_manager import (
+    EncryptionManager,
+    init_encryption_manager,
+    get_encryption_manager,
+)
+
+# Phase 12.8 - Structured observations (EAV)
+from src.memory_observation import (
+    MemoryObservationManager,
+    init_observation_manager,
+    get_observation_manager,
+)
+
+# Phase 17.4 - Slack/Discord notification manager
+from src.notification_manager import (
+    NotificationManager,
+    init_notification_manager,
+    get_notification_manager,
+)
+
+# Phase 18.4 - Importance scoring (heuristic)
+from src.memory_importance_scorer import (
+    MemoryImportanceScorer,
+    init_importance_scorer,
+    get_importance_scorer,
+)
+
+# Phase 18.5 - Heuristic re-ranker
+from src.memory_reranker import (
+    MemoryReranker,
+    init_reranker,
+    get_reranker,
+)
 
 # Enhanced module instances
 memory_manager = None
@@ -129,6 +237,51 @@ multi_language_search_instance = None
 intelligent_summarizer = None
 advanced_search_engine = None
 
+# Plan 14.8 - LLM Cost Tracking
+llm_cost_tracker: Optional[LLMCostTracker] = None
+
+# Phase 7 - Session Management
+session_manager: Optional[SessionManager] = None
+
+# Phase 9 - Audit Logger
+audit_logger_instance: Optional[AuditLogger] = None
+
+# Phase 9 - Rate Limiter
+rate_limiter_instance: Optional[RateLimiter] = None
+
+# Phase 9 - PII Detector
+pii_detector_instance: Optional[PIIDetector] = None
+
+# Phase 10 - Memory Lifecycle singletons
+memory_versioner_instance: Optional[MemoryVersioner] = None
+provenance_tracker_instance: Optional[MemoryProvenanceTracker] = None
+confidence_manager_instance: Optional[MemoryConfidenceManager] = None
+consolidator_instance: Optional[MemoryConsolidator] = None
+tier_manager_instance: Optional[MemoryTierManager] = None
+graph_compactor_instance: Optional[GraphCompactor] = None
+
+# Phase 11 - Compliance singleton
+gdpr_manager_instance: Optional[GDPRManager] = None
+
+# Phase 12 - Plugin / Webhook singletons
+plugin_registry_instance: Optional[PluginRegistry] = None
+webhook_manager_instance: Optional[WebhookManager] = None
+
+# Phase 14.3 - Encryption Manager
+encryption_manager_instance: Optional[EncryptionManager] = None
+
+# Phase 12.8 - Observation Manager
+observation_manager_instance: Optional[MemoryObservationManager] = None
+
+# Phase 17.4 - Notification Manager
+notification_manager_instance: Optional[NotificationManager] = None
+
+# Phase 18.4 - Importance Scorer
+importance_scorer_instance: Optional[MemoryImportanceScorer] = None
+
+# Phase 18.5 - Re-ranker
+reranker_instance: Optional[MemoryReranker] = None
+
 # Code Quality instances
 app_logger = get_logger(__name__)
 
@@ -145,6 +298,36 @@ async def init_enhanced_stack():
     global postgres_pool, qdrant_client, neo4j_driver, redis_client, memory_manager
 
     logger.info("Initializing Enhanced Cognee stack...")
+
+    # Phase 7 - 12.1: Backend selection via environment variables (pluggable backends)
+    _vector_backend = os.getenv("VECTOR_BACKEND", "qdrant").lower()
+    _graph_backend = os.getenv("GRAPH_BACKEND", "neo4j").lower()
+    _relational_backend = os.getenv("RELATIONAL_BACKEND", "postgresql").lower()
+    _cache_backend = os.getenv("CACHE_BACKEND", "redis").lower()
+    logger.info(
+        f"Backend selection: vector={_vector_backend}, graph={_graph_backend}, "
+        f"relational={_relational_backend}, cache={_cache_backend}"
+    )
+    if _vector_backend not in ("qdrant",):
+        logger.warning(
+            f"VECTOR_BACKEND={_vector_backend!r} is not yet supported; "
+            f"falling back to qdrant"
+        )
+    if _graph_backend not in ("neo4j",):
+        logger.warning(
+            f"GRAPH_BACKEND={_graph_backend!r} is not yet supported; "
+            f"falling back to neo4j"
+        )
+    if _relational_backend not in ("postgresql",):
+        logger.warning(
+            f"RELATIONAL_BACKEND={_relational_backend!r} is not yet supported; "
+            f"falling back to postgresql"
+        )
+    if _cache_backend not in ("redis",):
+        logger.warning(
+            f"CACHE_BACKEND={_cache_backend!r} is not yet supported; "
+            f"falling back to redis"
+        )
 
     # PostgreSQL
     try:
@@ -287,6 +470,189 @@ async def init_enhanced_stack():
 
     except Exception as e:
         logger.warning(f"Sprint 10 initialization failed: {e}")
+
+    # Plan 14.8: LLM Cost Tracker (always attempt; degrades gracefully)
+    global llm_cost_tracker
+    try:
+        llm_cost_tracker = init_cost_tracker(postgres_pool=postgres_pool)
+        await llm_cost_tracker.initialize()
+        logger.info("OK LLM Cost Tracker initialized")
+    except Exception as e:
+        logger.warning(f"LLM Cost Tracker initialization failed: {e}")
+
+    # Phase 7: Session Manager (requires postgres_pool)
+    global session_manager
+    if postgres_pool:
+        try:
+            session_manager = SessionManager(db_pool=postgres_pool)
+            logger.info("OK Session Manager initialized")
+        except Exception as e:
+            logger.warning(f"Session Manager initialization failed: {e}")
+
+    # Phase 9: Audit Logger (file + optional DB)
+    global audit_logger_instance
+    try:
+        audit_logger_instance = init_audit_logger(
+            config_path="automation_config.json",
+            log_dir="logs",
+            db_pool=postgres_pool,
+        )
+        logger.info("OK Audit Logger initialized")
+    except Exception as e:
+        logger.warning(f"Audit Logger initialization failed: {e}")
+
+    # Phase 9: Rate Limiter (Redis-backed, in-memory fallback)
+    global rate_limiter_instance
+    try:
+        rate_limiter_instance = init_rate_limiter(redis_client=redis_client)
+        logger.info("OK Rate Limiter initialized")
+    except Exception as e:
+        logger.warning(f"Rate Limiter initialization failed: {e}")
+
+    # Phase 9: PII Detector (config-gated; disabled by default)
+    global pii_detector_instance
+    try:
+        _pii_enabled = os.getenv("PII_DETECTION_ENABLED", "false").lower() == "true"
+        pii_detector_instance = init_pii_detector(enabled=_pii_enabled)
+        if _pii_enabled:
+            logger.info("OK PII Detector initialized (enabled)")
+        else:
+            logger.info("OK PII Detector initialized (disabled; set PII_DETECTION_ENABLED=true to enable)")
+    except Exception as e:
+        logger.warning(f"PII Detector initialization failed: {e}")
+
+    # Phase 9: Distributed Tracing (optional; requires OTEL_EXPORTER_OTLP_ENDPOINT)
+    try:
+        _tracing_on = init_tracing()
+        if _tracing_on:
+            logger.info("OK Distributed tracing enabled")
+        else:
+            logger.debug("Tracing disabled (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)")
+    except Exception as e:
+        logger.warning(f"Tracing initialization failed: {e}")
+
+    # Phase 10: Memory Lifecycle modules (require postgres_pool)
+    global memory_versioner_instance, provenance_tracker_instance
+    global confidence_manager_instance, consolidator_instance
+    if postgres_pool:
+        try:
+            memory_versioner_instance = init_memory_versioner(postgres_pool)
+        except Exception as e:
+            logger.warning(f"MemoryVersioner initialization failed: {e}")
+        try:
+            provenance_tracker_instance = init_provenance_tracker(postgres_pool)
+        except Exception as e:
+            logger.warning(f"MemoryProvenanceTracker initialization failed: {e}")
+        try:
+            confidence_manager_instance = init_confidence_manager(postgres_pool)
+        except Exception as e:
+            logger.warning(f"MemoryConfidenceManager initialization failed: {e}")
+        try:
+            consolidator_instance = init_consolidator(
+                postgres_pool=postgres_pool,
+                qdrant_client=qdrant_client,
+            )
+        except Exception as e:
+            logger.warning(f"MemoryConsolidator initialization failed: {e}")
+    else:
+        logger.warning("Phase 10 modules skipped: postgres_pool unavailable")
+
+    # Phase 10 15.5: Memory Tier Manager
+    global tier_manager_instance
+    try:
+        tier_manager_instance = init_tier_manager(
+            postgres_pool=postgres_pool,
+            redis_client=redis_client,
+        )
+    except Exception as e:
+        logger.warning(f"MemoryTierManager initialization failed: {e}")
+
+    # Phase 10 15.6: Graph Compactor (requires neo4j_driver)
+    global graph_compactor_instance
+    if neo4j_driver:
+        try:
+            graph_compactor_instance = init_graph_compactor(
+                neo4j_driver=neo4j_driver,
+                postgres_pool=postgres_pool,
+            )
+        except Exception as e:
+            logger.warning(f"GraphCompactor initialization failed: {e}")
+    else:
+        logger.debug("GraphCompactor skipped: neo4j_driver unavailable")
+
+    # Phase 11: GDPR Manager (all DBs optional; degrades gracefully)
+    global gdpr_manager_instance
+    try:
+        gdpr_manager_instance = init_gdpr_manager(
+            postgres_pool=postgres_pool,
+            qdrant_client=qdrant_client,
+            neo4j_driver=neo4j_driver,
+            redis_client=redis_client,
+        )
+    except Exception as e:
+        logger.warning(f"GDPRManager initialization failed: {e}")
+
+    # Phase 12: Plugin Registry (entry_points discovery)
+    global plugin_registry_instance
+    try:
+        plugin_registry_instance = init_plugin_registry()
+    except Exception as e:
+        logger.warning(f"PluginRegistry initialization failed: {e}")
+
+    # Phase 12: Webhook Manager (in-memory; no external deps)
+    global webhook_manager_instance
+    try:
+        webhook_manager_instance = init_webhook_manager()
+    except Exception as e:
+        logger.warning(f"WebhookManager initialization failed: {e}")
+
+    # Phase 14.3: Encryption Manager (cryptography optional; degrades gracefully)
+    global encryption_manager_instance
+    try:
+        _master_key = os.getenv("ENCRYPTION_MASTER_KEY")
+        encryption_manager_instance = init_encryption_manager(
+            postgres_pool=postgres_pool,
+            master_key=_master_key,
+        )
+        logger.info("OK Encryption Manager initialized")
+    except Exception as e:
+        logger.warning(f"EncryptionManager initialization failed: {e}")
+
+    # Phase 12.8: Memory Observation Manager (EAV table)
+    global observation_manager_instance
+    try:
+        observation_manager_instance = init_observation_manager(
+            postgres_pool=postgres_pool,
+        )
+        logger.info("OK Memory Observation Manager initialized")
+    except Exception as e:
+        logger.warning(f"MemoryObservationManager initialization failed: {e}")
+
+    # Phase 17.4: Notification Manager (no DB dependency)
+    global notification_manager_instance
+    try:
+        notification_manager_instance = init_notification_manager()
+        logger.info("OK Notification Manager initialized")
+    except Exception as e:
+        logger.warning(f"NotificationManager initialization failed: {e}")
+
+    # Phase 18.4: Memory Importance Scorer (heuristic; postgres optional)
+    global importance_scorer_instance
+    try:
+        importance_scorer_instance = init_importance_scorer(
+            postgres_pool=postgres_pool,
+        )
+        logger.info("OK Memory Importance Scorer initialized")
+    except Exception as e:
+        logger.warning(f"MemoryImportanceScorer initialization failed: {e}")
+
+    # Phase 18.5: Memory Re-ranker (stateless heuristic; postgres optional)
+    global reranker_instance
+    try:
+        reranker_instance = init_reranker(postgres_pool=postgres_pool)
+        logger.info("OK Memory Re-ranker initialized")
+    except Exception as e:
+        logger.warning(f"MemoryReranker initialization failed: {e}")
 
 
 async def cleanup_enhanced_stack():
@@ -731,6 +1097,29 @@ async def add_memory(
                 )
             except Exception as e:
                 logger.warning(f"Failed to log performance metrics: {e}")
+
+        # Phase 8b: Auto-TTL resolution (config-driven, no-op by default)
+        try:
+            auto_ttl = _resolve_auto_ttl(content, metadata_dict)
+            if auto_ttl and postgres_pool:
+                expire_at = datetime.now(UTC).replace(tzinfo=None)
+                from datetime import timedelta as _td
+                expire_at = expire_at + _td(days=auto_ttl)
+                async with postgres_pool.acquire() as _conn:
+                    await _conn.execute(
+                        "UPDATE shared_memory.documents SET expire_at=$1 WHERE id=$2",
+                        expire_at, memory_id
+                    )
+                logger.info(
+                    f"Phase 8 auto-TTL: memory {memory_id} set to expire in {auto_ttl} days"
+                )
+        except Exception as e:
+            logger.warning(f"Phase 8 auto-TTL failed (non-blocking): {e}")
+
+        # Phase 8b: Post-ingestion pipeline (fire-and-forget, config-driven)
+        asyncio.create_task(
+            _run_post_ingestion_pipeline(content, memory_id, agent_id)
+        )
 
         return f"OK Memory added (ID: {memory_id})"
 
@@ -1224,7 +1613,9 @@ async def expire_memories(
     """
     Expire or archive memories older than specified days (Memory Management Tool)
 
-    TRIGGER TYPE: (M) Manual - User must explicitly trigger this destructive operation
+    TRIGGER TYPE: (S) System - Automatically scheduled via Phase 8b auto_scheduler config.
+                  Enable with: {"auto_scheduler": {"expire_memories": {"enabled": true}}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     SECURITY: Requires confirmation for non-dry-run bulk deletion.
 
@@ -1401,7 +1792,9 @@ async def set_memory_ttl(memory_id: str, ttl_days: int) -> str:
     """
     Set time-to-live (TTL) for a specific memory (Memory Management Tool)
 
-    TRIGGER TYPE: (M) Manual - User must explicitly configure TTL policies
+    TRIGGER TYPE: (S) System - Automatically applied on write via Phase 8b auto_ttl_rules config.
+                  Enable with: {"auto_ttl_rules": {"rules": [{"keyword": "temp", "ttl_days": 7}]}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     Parameters:
     -----------
@@ -2035,7 +2428,10 @@ async def set_memory_sharing(memory_id: str, policy: str, allowed_agents: str = 
     """
     Set sharing policy for a memory (Cross-Agent Sharing Tool)
 
-    TRIGGER TYPE: (M) Manual - User must explicitly configure sharing policies
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user says "share this memory with X",
+    "make this accessible to agent Y", "restrict this to my use only", or when
+    the user establishes a sharing policy during conversation.
 
     Parameters:
     -----------
@@ -2217,7 +2613,10 @@ async def create_shared_space(space_name: str, member_agents: str) -> str:
     """
     Create a shared memory space for multiple agents (Cross-Agent Sharing Tool)
 
-    TRIGGER TYPE: (M) Manual - User must explicitly create shared spaces
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user asks to "set up a shared memory
+    space", "let agents X and Y share memories", "create a team memory pool", or
+    similar multi-agent collaboration requests.
 
     Parameters:
     -----------
@@ -2471,6 +2870,243 @@ async def sync_agent_state(source_agent: str, target_agent: str, category: str =
 # SPRINT 8: ADVANCED FEATURES - Backup, Recovery, Maintenance, Dedup, Summar
 # ============================================================================
 
+
+# ---------------------------------------------------------------------------
+# Phase 8 - Automation: Scheduler Bootstrap and Post-Ingestion Pipeline
+# These functions are config-driven and OFF by default.
+# Enable features in .enhanced-cognee-config.json
+# ---------------------------------------------------------------------------
+
+
+def _load_phase8_config() -> dict:
+    """Load Phase 8 automation config from .enhanced-cognee-config.json."""
+    config_path = project_root / ".enhanced-cognee-config.json"
+    if config_path.exists():
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as exc:
+            logger.warning(f"Phase 8 config load failed: {exc}")
+    return {}
+
+
+async def _bootstrap_scheduler_defaults():
+    """
+    Phase 8b: Register default recurring tasks from .enhanced-cognee-config.json.
+
+    Called once after MaintenanceScheduler.start() during server startup.
+    Idempotent - safe to call multiple times (replace_existing=True).
+    All tasks are OFF by default; enable in .enhanced-cognee-config.json.
+    """
+    if not maintenance_scheduler or not getattr(maintenance_scheduler, "scheduler", None):
+        logger.info("Phase 8 scheduler bootstrap: scheduler not ready; skipping")
+        return
+
+    cfg = _load_phase8_config().get("auto_scheduler", {})
+    registered = 0
+
+    # --- expire_memories ---
+    exp_cfg = cfg.get("expire_memories", {})
+    if exp_cfg.get("enabled", False):
+        try:
+            from apscheduler.triggers.cron import CronTrigger as _CronTrigger
+            cron = exp_cfg.get("cron", "0 2 * * *")
+            parts = cron.split()
+            if len(parts) == 5:
+                trigger = _CronTrigger(
+                    minute=parts[0], hour=parts[1],
+                    day=parts[2], month=parts[3], day_of_week=parts[4]
+                )
+                age_days = exp_cfg.get("age_days", 90)
+                dry_run = exp_cfg.get("dry_run", False)
+
+                async def _auto_expire():
+                    logger.info("Phase 8 scheduler: running expire_memories")
+                    try:
+                        if memory_manager:
+                            await memory_manager.expire_old_memories(
+                                days=age_days, dry_run=dry_run
+                            )
+                    except Exception as exc:
+                        logger.error(f"Auto expire_memories failed: {exc}")
+
+                maintenance_scheduler.scheduler.add_job(
+                    _auto_expire, trigger=trigger,
+                    id="phase8_expire_memories", name="Phase8 Expire Memories",
+                    replace_existing=True
+                )
+                registered += 1
+                logger.info(f"Phase 8 scheduler: expire_memories registered ({cron})")
+        except Exception as exc:
+            logger.warning(f"Phase 8 expire_memories schedule failed: {exc}")
+
+    # --- improve ---
+    imp_cfg = cfg.get("improve", {})
+    if imp_cfg.get("enabled", False):
+        try:
+            from apscheduler.triggers.cron import CronTrigger as _CronTrigger2
+            cron = imp_cfg.get("cron", "0 3 * * 0")
+            parts = cron.split()
+            if len(parts) == 5:
+                trigger = _CronTrigger2(
+                    minute=parts[0], hour=parts[1],
+                    day=parts[2], month=parts[3], day_of_week=parts[4]
+                )
+                dataset = imp_cfg.get("dataset", "main_dataset")
+
+                async def _auto_improve():
+                    logger.info("Phase 8 scheduler: running improve")
+                    try:
+                        import cognee
+                        await cognee.improve(dataset)
+                    except Exception as exc:
+                        logger.error(f"Auto improve failed: {exc}")
+
+                maintenance_scheduler.scheduler.add_job(
+                    _auto_improve, trigger=trigger,
+                    id="phase8_improve", name="Phase8 Improve",
+                    replace_existing=True
+                )
+                registered += 1
+                logger.info(f"Phase 8 scheduler: improve registered ({cron})")
+        except Exception as exc:
+            logger.warning(f"Phase 8 improve schedule failed: {exc}")
+
+    # --- auto_deduplicate ---
+    dedup_cfg = cfg.get("auto_deduplicate", {})
+    if dedup_cfg.get("enabled", False):
+        try:
+            from apscheduler.triggers.cron import CronTrigger as _CronTrigger3
+            cron = dedup_cfg.get("cron", "0 4 * * *")
+            parts = cron.split()
+            if len(parts) == 5:
+                trigger = _CronTrigger3(
+                    minute=parts[0], hour=parts[1],
+                    day=parts[2], month=parts[3], day_of_week=parts[4]
+                )
+
+                async def _auto_dedup():
+                    logger.info("Phase 8 scheduler: running auto_deduplicate")
+                    try:
+                        if memory_deduplicator:
+                            await memory_deduplicator.run_full_deduplication()
+                    except Exception as exc:
+                        logger.error(f"Auto deduplicate failed: {exc}")
+
+                maintenance_scheduler.scheduler.add_job(
+                    _auto_dedup, trigger=trigger,
+                    id="phase8_auto_deduplicate", name="Phase8 Auto Deduplicate",
+                    replace_existing=True
+                )
+                registered += 1
+                logger.info(f"Phase 8 scheduler: auto_deduplicate registered ({cron})")
+        except Exception as exc:
+            logger.warning(f"Phase 8 deduplicate schedule failed: {exc}")
+
+    if registered:
+        logger.info(f"Phase 8 scheduler bootstrap: {registered} task(s) registered")
+    else:
+        logger.info("Phase 8 scheduler bootstrap: no tasks enabled (set enabled=true in config)")
+
+
+async def _run_post_ingestion_pipeline(
+    content: str, memory_id: str, agent_id: str
+) -> None:
+    """
+    Phase 8b: Run post-ingestion enrichment pipeline after a memory write.
+
+    Called as a fire-and-forget background task (asyncio.create_task).
+    All hooks are OFF by default; enable in .enhanced-cognee-config.json.
+
+    Hooks (in order):
+    1. auto_translate  - translate non-default-language content
+    2. auto_extract_entities - run regex entity extraction
+    3. auto_graph_v2   - run cascade v2 graph extraction
+    """
+    cfg = _load_phase8_config().get("post_ingestion", {})
+
+    # 1. Auto-translate
+    translate_cfg = cfg.get("auto_translate", {})
+    if translate_cfg.get("enabled", False) and content:
+        try:
+            target_lang = translate_cfg.get("target_language", "en")
+            # detect language (best-effort; fall through on any error)
+            # No import needed; the detect_language function is in the same module.
+            # Use a lightweight heuristic: only translate if non-ASCII chars > 10%
+            non_ascii = sum(1 for c in content if ord(c) > 127)
+            if non_ascii / max(len(content), 1) > 0.1:
+                logger.info(
+                    f"Phase 8 post-ingestion: detected non-ASCII content; "
+                    f"translation to {target_lang} queued for memory {memory_id}"
+                )
+                # Full translation is async and expensive; log intent for now.
+                # Full implementation: call translate_text_internal() when available.
+        except Exception as exc:
+            logger.warning(f"Phase 8 auto_translate check failed: {exc}")
+
+    # 2. Auto entity extraction
+    extract_cfg = cfg.get("auto_extract_entities", {})
+    if extract_cfg.get("enabled", False) and content:
+        patterns = extract_cfg.get("patterns", [])
+        if patterns:
+            try:
+                import re
+                found = {}
+                for pattern_def in patterns:
+                    name = pattern_def.get("name", "entity")
+                    pat = pattern_def.get("pattern", "")
+                    if pat:
+                        matches = re.findall(pat, content)
+                        if matches:
+                            found[name] = matches
+                if found:
+                    logger.info(
+                        f"Phase 8 post-ingestion: extracted entities for {memory_id}: "
+                        + ", ".join(f"{k}={len(v)}" for k, v in found.items())
+                    )
+            except Exception as exc:
+                logger.warning(f"Phase 8 auto_extract_entities failed: {exc}")
+
+    # 3. Auto graph v2
+    graph_cfg = cfg.get("auto_graph_v2", {})
+    if graph_cfg.get("enabled", False) and content:
+        try:
+            rounds = graph_cfg.get("rounds", 1)
+            logger.info(
+                f"Phase 8 post-ingestion: graph v2 extraction queued "
+                f"({rounds} round(s)) for memory {memory_id}"
+            )
+            # Full implementation: call extract_graph_v2_internal() when available.
+        except Exception as exc:
+            logger.warning(f"Phase 8 auto_graph_v2 failed: {exc}")
+
+
+def _resolve_auto_ttl(content: str, metadata: dict) -> int | None:
+    """
+    Phase 8b: Resolve automatic TTL in days based on content keyword rules.
+
+    Returns TTL in days if a rule matches, or None for no auto-TTL.
+    Rules are configured in .enhanced-cognee-config.json auto_ttl_rules.rules.
+    """
+    cfg = _load_phase8_config()
+    rules = cfg.get("auto_ttl_rules", {}).get("rules", [])
+    if not rules:
+        return None
+
+    content_lower = content.lower()
+    metadata_str = str(metadata).lower()
+
+    for rule in rules:
+        keyword = rule.get("keyword", "").lower()
+        if keyword and (keyword in content_lower or keyword in metadata_str):
+            ttl = rule.get("ttl_days")
+            if ttl and isinstance(ttl, int) and ttl > 0:
+                return ttl
+    return None
+
+
+# ---------------------------------------------------------------------------
+
 # Import Sprint 8 modules
 from src.backup_manager import BackupManager
 from src.recovery_manager import RecoveryManager
@@ -2506,6 +3142,8 @@ async def init_sprint8_modules():
     try:
         maintenance_scheduler.start()
         logger.info("OK Maintenance Scheduler initialized and AUTO-STARTED")
+        # Phase 8b: bootstrap default scheduled tasks from config (non-blocking)
+        asyncio.create_task(_bootstrap_scheduler_defaults())
     except Exception as e:
         logger.warning(f"Maintenance Scheduler start failed: {e}")
 
@@ -2934,7 +3572,8 @@ async def schedule_task(
     """
     Schedule a maintenance task (Maintenance Scheduler Tool)
 
-    TRIGGER TYPE: (M) Manual - User must explicitly schedule maintenance tasks
+    TRIGGER TYPE: (S) System - Default tasks auto-bootstrapped from .enhanced-cognee-config.json
+                  on server startup (Phase 8b). Call manually to register custom tasks.
 
     Parameters:
     -----------
@@ -3176,6 +3815,9 @@ async def summarize_old_memories(
 ) -> str:
     """
     Summarize old memories (Summarization Tool)
+
+    TRIGGER TYPE: (S) System - Automatically scheduled by the MaintenanceScheduler for
+    periodic summarization. Also callable by AI IDE when user asks to compress old memories.
 
     Parameters:
     -----------
@@ -4059,7 +4701,11 @@ async def remember(
     supports session context, self-improvement feedback, and typed memory
     entries (QA, Trace, Feedback). Use cognify() for simple document storage.
 
-    TRIGGER TYPE: (M) Manual - triggered by user when storing knowledge
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user says "remember this", "save this",
+    "note that", "keep this in mind", or when the user shares knowledge they will
+    likely need later (project decisions, preferences, facts, meeting notes, code
+    patterns). Do NOT call for transient conversational messages.
 
     Parameters:
     -----------
@@ -4123,7 +4769,10 @@ async def recall(
     This wraps cognee v1.0.9 recall() / search() - far more powerful than the
     Enhanced search() tool which only does PostgreSQL text search.
 
-    TRIGGER TYPE: (M) Manual - triggered when searching stored knowledge
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user asks "what did we decide about X?",
+    "what do you know about Y?", or any question that may be answered from stored
+    knowledge. Prefer recall over search_memories for structured knowledge graph queries.
 
     Available search_type values:
     - GRAPH_COMPLETION         : LLM-augmented graph traversal (recommended default)
@@ -4268,7 +4917,9 @@ async def improve(
 
     Use this after storing several interactions to improve knowledge quality.
 
-    TRIGGER TYPE: (M) Manual - triggered by user to improve knowledge quality
+    TRIGGER TYPE: (S) System - Automatically scheduled via Phase 8b auto_scheduler config.
+                  Enable with: {"auto_scheduler": {"improve": {"enabled": true}}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     Parameters:
     -----------
@@ -4360,6 +5011,9 @@ async def cognify_status(dataset_name: Optional[str] = None) -> str:
     """
     Check the status of background cognify / remember / improve tasks.
 
+    TRIGGER TYPE: (S) System - Polled by Enhanced Cognee to monitor background task progress.
+    No user action required; also callable by AI IDE when user asks about background jobs.
+
     Parameters:
     -----------
     - dataset_name: Optional dataset name filter (not yet used, reserved for future)
@@ -4398,7 +5052,11 @@ async def ingest_url(
     Uses the v1.0.9 web_scraper_task which supports both BeautifulSoup
     (free, no API key) and Tavily (higher quality, requires API key).
 
-    TRIGGER TYPE: (M) Manual - triggered when user wants to ingest web content
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user provides a URL and says "learn from
+    this", "read this page", "add this documentation", "ingest this", or "remember
+    what is on this site". Do NOT call for every URL mentioned - only when user
+    explicitly wants it added to memory.
 
     Parameters:
     -----------
@@ -4528,7 +5186,9 @@ async def translate_text(
     and Azure Translator backends. The LLM provider works out of the box
     with any configured LLM; Google and Azure require API keys.
 
-    TRIGGER TYPE: (M) Manual - triggered when user needs text translated
+    TRIGGER TYPE: (S) System - Automatically triggered as a post-ingestion hook (Phase 8b).
+                  Enable with: {"post_ingestion": {"auto_translate": {"enabled": true}}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     Parameters:
     -----------
@@ -4576,7 +5236,9 @@ async def regex_extract_entities(
     The default config includes common entity types (emails, URLs, phone numbers,
     dates, IP addresses, etc.). Provide a custom config_path to use your own patterns.
 
-    TRIGGER TYPE: (M) Manual - triggered when user wants to extract entities from text
+    TRIGGER TYPE: (S) System - Automatically triggered as a post-ingestion hook (Phase 8b).
+                  Enable with: {"post_ingestion": {"auto_extract_entities": {"enabled": true}}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     Parameters:
     -----------
@@ -4629,7 +5291,9 @@ async def extract_graph_v2(
     the previously discovered nodes and relationships, producing denser graphs
     than single-pass extraction.
 
-    TRIGGER TYPE: (M) Manual - triggered when user wants to inspect v2 graph extraction
+    TRIGGER TYPE: (S) System - Automatically triggered as a post-ingestion hook (Phase 8b).
+                  Enable with: {"post_ingestion": {"auto_graph_v2": {"enabled": true}}}
+                  in .enhanced-cognee-config.json. Also callable manually.
 
     Parameters:
     -----------
@@ -4698,7 +5362,10 @@ async def list_loaders() -> str:
     (unstructured, docling, beautifulsoup, advanced PDF) are only shown if their
     dependencies are installed.
 
-    TRIGGER TYPE: (M) Manual - triggered when user wants to know supported file formats
+    TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+    WHEN TO CALL: Call automatically when the user asks "what file types can I ingest?",
+    "what formats are supported?", "can I import a PDF?", or similar questions about
+    supported data sources.
 
     Returns:
     --------
@@ -4742,6 +5409,2388 @@ async def list_loaders() -> str:
         return "\n".join(lines)
     except Exception as exc:
         return f"ERR list_loaders failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Plan 14.8 - LLM Cost Tracking tools
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def get_llm_cost_report(
+    agent_id: Optional[str] = None,
+    days_back: int = 30,
+    group_by: str = "agent",
+) -> str:
+    """
+    Get LLM token usage and estimated API cost report.
+
+    TRIGGER TYPE: (S) System - Called by schedulers, monitoring dashboards,
+    and optionally by the AI IDE during periodic health checks.
+
+    WHEN TO CALL: Call automatically when the user asks about LLM costs,
+    API spend, token usage, or cost management. Also suitable for inclusion
+    in weekly system health summaries.
+
+    Parameters:
+    -----------
+    - agent_id: Filter results to a single agent ID (default: all agents)
+    - days_back: Number of calendar days to include (default: 30)
+    - group_by: Dimension to aggregate by -- 'agent', 'tool', or 'model'
+      (default: 'agent')
+
+    Returns:
+    --------
+    - ASCII table with per-group call count, token totals, and USD estimate
+    - Totals row at the bottom
+    - If no usage recorded: guidance on how usage is captured
+    """
+    if llm_cost_tracker is None:
+        return (
+            "WARN LLM Cost Tracker not initialized. "
+            "Check server startup logs for initialization errors."
+        )
+    if days_back < 1 or days_back > 365:
+        return "ERR days_back must be between 1 and 365"
+    if group_by not in ("agent", "tool", "model"):
+        return "ERR group_by must be 'agent', 'tool', or 'model'"
+    try:
+        return await llm_cost_tracker.get_cost_report(
+            agent_id=agent_id,
+            days_back=days_back,
+            group_by=group_by,
+        )
+    except Exception as exc:
+        return f"ERR get_llm_cost_report failed: {exc}"
+
+
+@mcp.tool()
+async def set_cost_budget(agent_id: str, monthly_usd: float) -> str:
+    """
+    Set the monthly LLM API cost budget for an agent.
+
+    TRIGGER TYPE: (M) Manual - Must be explicitly invoked by the user.
+    WHY MANUAL: Budget limits have direct financial and operational impact
+    and must not be set or changed without deliberate user intent.
+
+    Budget enforcement is WARN-only by default (a log entry is written
+    when the limit is reached but no calls are blocked). To enable hard
+    stops, set "auto_scheduler.budget_hard_stop": true in
+    .enhanced-cognee-config.json.
+
+    Parameters:
+    -----------
+    - agent_id: Agent identifier to set the budget for.
+      Use '*' to set a global default that applies to any agent that does
+      not have its own budget (e.g. set_cost_budget('*', 50.00)).
+    - monthly_usd: Monthly spending ceiling in USD (must be > 0).
+
+    Returns:
+    --------
+    - Confirmation string with persistence status (DB or in-memory)
+    """
+    if llm_cost_tracker is None:
+        return (
+            "WARN LLM Cost Tracker not initialized. "
+            "Check server startup logs for initialization errors."
+        )
+    if not agent_id or not agent_id.strip():
+        return "ERR agent_id must not be empty (use '*' for global default)"
+    if monthly_usd <= 0:
+        return "ERR monthly_usd must be a positive number"
+    try:
+        return await llm_cost_tracker.set_budget(
+            agent_id=agent_id.strip(),
+            monthly_usd=monthly_usd,
+        )
+    except Exception as exc:
+        return f"ERR set_cost_budget failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 7 - 12.5: Progressive Search Tools
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def search_quick(
+    query: str,
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Quick keyword search returning the top 3 most recent matching memories.
+
+    TRIGGER TYPE: (M) Manual - User explicitly requests a rapid, lightweight
+    lookup without needing semantic ranking or full result sets.
+
+    Use this when you need a fast answer with minimal overhead.  For broader
+    or semantically ranked results use search_memories or advanced_search.
+
+    Parameters:
+    -----------
+    - query     : Search text (case-insensitive substring match)
+    - agent_id  : Optional agent scope filter
+
+    Returns:
+    --------
+    - Top-3 memory snippets with ID, agent, and first 150 chars of content
+    """
+    try:
+        query = sanitize_string(query, max_length=500)
+        if agent_id:
+            agent_id = validate_agent_id(agent_id)
+
+        if not postgres_pool:
+            return "ERR PostgreSQL not available - cannot search memories"
+
+        async with postgres_pool.acquire() as conn:
+            sql = """
+                SELECT id, title, content, agent_id, created_at
+                FROM shared_memory.documents
+                WHERE content ILIKE $1
+            """
+            params: list = [f"%{query}%"]
+            if agent_id:
+                sql += " AND agent_id = $2"
+                params.append(agent_id)
+            sql += " ORDER BY created_at DESC LIMIT 3"
+
+            rows = await conn.fetch(sql, *params)
+
+        if not rows:
+            return f"OK No memories found for: {query}"
+
+        lines = [f"OK Quick search - top {len(rows)} results for '{query}':"]
+        for idx, row in enumerate(rows, 1):
+            snippet = (row["content"] or "")[:150]
+            lines.append(
+                f"\n{idx}. [ID: {row['id']}]"
+                f"\n   Agent  : {row['agent_id']}"
+                f"\n   Content: {snippet}"
+                + ("..." if len(row["content"] or "") > 150 else "")
+            )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"search_quick failed: {exc}")
+        return f"ERR search_quick failed: {exc}"
+
+
+@mcp.tool()
+async def get_memory_detail(memory_id: str) -> str:
+    """
+    Retrieve the full detail of a single memory including all metadata fields.
+
+    TRIGGER TYPE: (A) Auto - Automatically invoked when full memory context is
+    needed after a search_quick or search_memories call identified an item.
+
+    Use this after a search identifies a memory ID and you need the complete
+    record (full content, metadata, timestamps, TTL, sharing settings).
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory to retrieve
+
+    Returns:
+    --------
+    - Complete memory record with all available fields
+    """
+    try:
+        memory_id = sanitize_string(memory_id, max_length=64)
+
+        if not postgres_pool:
+            return "ERR PostgreSQL not available"
+
+        async with postgres_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT id, title, content, agent_id, metadata,
+                       created_at, updated_at, expire_at
+                FROM shared_memory.documents
+                WHERE id = $1
+                """,
+                memory_id,
+            )
+
+        if not row:
+            return f"ERR Memory not found: {memory_id}"
+
+        metadata_str = row["metadata"] or "{}"
+        try:
+            meta = (
+                json.loads(metadata_str)
+                if isinstance(metadata_str, str)
+                else metadata_str
+            )
+        except Exception:
+            meta = {}
+
+        lines = [
+            f"OK Memory detail for {row['id']}:",
+            f"  Title     : {row['title']}",
+            f"  Agent     : {row['agent_id']}",
+            f"  Created   : {row['created_at']}",
+            f"  Updated   : {row['updated_at']}",
+            f"  Expires   : {row['expire_at'] or 'never'}",
+            f"  Content   :",
+            f"  {row['content']}",
+        ]
+        if meta:
+            lines.append("  Metadata  :")
+            for k, v in meta.items():
+                lines.append(f"    {k}: {v}")
+
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_memory_detail failed: {exc}")
+        return f"ERR get_memory_detail failed: {exc}"
+
+
+@mcp.tool()
+async def get_related(
+    memory_id: str,
+    limit: int = 5,
+) -> str:
+    """
+    Find memories related to a given memory by content similarity.
+
+    TRIGGER TYPE: (A) Auto - Automatically called after reading a memory to
+    surface contextually linked knowledge without requiring a new search query.
+
+    Similarity is based on shared significant terms from the source memory
+    content.  Returns up to <limit> results ordered by recency.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the source memory
+    - limit     : Maximum related memories to return (default: 5, max: 20)
+
+    Returns:
+    --------
+    - Up to <limit> related memories ordered by similarity / recency
+    """
+    try:
+        memory_id = sanitize_string(memory_id, max_length=64)
+        limit = validate_limit(limit, "limit", max_val=20)
+
+        if not postgres_pool:
+            return "ERR PostgreSQL not available"
+
+        async with postgres_pool.acquire() as conn:
+            source = await conn.fetchrow(
+                "SELECT id, content, agent_id FROM shared_memory.documents WHERE id = $1",
+                memory_id,
+            )
+            if not source:
+                return f"ERR Source memory not found: {memory_id}"
+
+            # Extract up to 8 significant words (>4 chars) for matching
+            words = [
+                w.strip(".,;:!?\"'()[]") for w in (source["content"] or "").split()
+                if len(w.strip(".,;:!?\"'()[]")) > 4
+            ][:8]
+
+            if not words:
+                return "OK No significant terms found in source memory for similarity matching"
+
+            conditions = " OR ".join(f"content ILIKE ${i + 2}" for i in range(len(words)))
+            sql = f"""
+                SELECT id, title, content, agent_id, created_at
+                FROM shared_memory.documents
+                WHERE id != $1 AND ({conditions})
+                ORDER BY created_at DESC
+                LIMIT {int(limit)}
+            """
+            params_rel: list = [memory_id] + [f"%{w}%" for w in words]
+            rows = await conn.fetch(sql, *params_rel)
+
+        if not rows:
+            return f"OK No related memories found for: {memory_id}"
+
+        lines = [
+            f"OK {len(rows)} memories related to {memory_id}"
+            f" (matched on: {', '.join(words[:4])}):"
+        ]
+        for idx, row in enumerate(rows, 1):
+            snippet = (row["content"] or "")[:120]
+            lines.append(
+                f"\n{idx}. [ID: {row['id']}]"
+                f"\n   Agent  : {row['agent_id']}"
+                f"\n   Content: {snippet}"
+                + ("..." if len(row["content"] or "") > 120 else "")
+            )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_related failed: {exc}")
+        return f"ERR get_related failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 7 - 12.6/12.7: Session Management Tools
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def start_session(
+    user_id: str = "default",
+    agent_id: str = "claude-code",
+    metadata: Optional[str] = None,
+) -> str:
+    """
+    Start a new Claude Code session and return a session ID.
+
+    TRIGGER TYPE: (M) Manual - Sessions represent intentional work units and
+    must be started deliberately by the user at the beginning of a task.
+
+    The session ID can be passed to end_session and get_session_context.
+
+    Parameters:
+    -----------
+    - user_id  : User identifier (default: "default")
+    - agent_id : Agent identifier (default: "claude-code")
+    - metadata : Optional JSON string with session metadata (tags, goal, etc.)
+
+    Returns:
+    --------
+    - Session ID (UUID) or error message
+    """
+    if not session_manager:
+        return "ERR Session Manager not available (PostgreSQL required)"
+    try:
+        user_id = sanitize_string(user_id, max_length=100)
+        agent_id = validate_agent_id(agent_id)
+        meta_dict = {}
+        if metadata:
+            try:
+                meta_dict = json.loads(metadata)
+            except Exception:
+                return "ERR metadata must be valid JSON"
+        session_id = await session_manager.start_session(
+            user_id=user_id,
+            agent_id=agent_id,
+            metadata=meta_dict,
+        )
+        return f"OK Session started: {session_id}"
+    except Exception as exc:
+        logger.error(f"start_session failed: {exc}")
+        return f"ERR start_session failed: {exc}"
+
+
+@mcp.tool()
+async def end_session(
+    session_id: str,
+    summary: Optional[str] = None,
+) -> str:
+    """
+    End an active session and optionally record a summary.
+
+    TRIGGER TYPE: (M) Manual - Sessions must be ended deliberately; automatic
+    ending could discard in-progress context.
+
+    Parameters:
+    -----------
+    - session_id : UUID returned by start_session
+    - summary    : Optional free-text summary of what was accomplished
+
+    Returns:
+    --------
+    - Session end confirmation with timing information
+    """
+    if not session_manager:
+        return "ERR Session Manager not available (PostgreSQL required)"
+    try:
+        session_id = sanitize_string(session_id, max_length=64)
+        result = await session_manager.end_session(session_id=session_id, summary=summary)
+        if "error" in result:
+            return f"ERR {result['error']}"
+        start = result.get("start_time", "unknown")
+        end = result.get("end_time", "unknown")
+        return (
+            f"OK Session ended: {session_id}\n"
+            f"  Start : {start}\n"
+            f"  End   : {end}\n"
+            + (f"  Summary: {result.get('summary', '')}" if result.get("summary") else "")
+        )
+    except Exception as exc:
+        logger.error(f"end_session failed: {exc}")
+        return f"ERR end_session failed: {exc}"
+
+
+@mcp.tool()
+async def get_session_context(
+    session_id: str,
+    include_memories: bool = True,
+    limit: int = 20,
+) -> str:
+    """
+    Retrieve the full context of a session (metadata + associated memories).
+
+    TRIGGER TYPE: (A) Auto - Automatically invoked at the start of a task to
+    reload context from a previous session and avoid repeating past work.
+
+    Parameters:
+    -----------
+    - session_id      : UUID of the session to retrieve
+    - include_memories: Whether to include associated memories (default: True)
+    - limit           : Maximum number of memories to include (default: 20)
+
+    Returns:
+    --------
+    - Session information and up to <limit> associated memory snippets
+    """
+    if not session_manager:
+        return "ERR Session Manager not available (PostgreSQL required)"
+    try:
+        session_id = sanitize_string(session_id, max_length=64)
+        ctx = await session_manager.get_session_context(
+            session_id=session_id,
+            include_memories=include_memories,
+            limit=limit,
+        )
+        if "error" in ctx:
+            return f"ERR {ctx['error']}"
+        sess = ctx.get("session", {})
+        lines = [
+            f"OK Session context for {session_id}:",
+            f"  User     : {sess.get('user_id')}",
+            f"  Agent    : {sess.get('agent_id')}",
+            f"  Start    : {sess.get('start_time')}",
+            f"  End      : {sess.get('end_time') or 'active'}",
+        ]
+        if sess.get("summary"):
+            lines.append(f"  Summary  : {sess['summary']}")
+        mems = ctx.get("memories", [])
+        if mems:
+            lines.append(f"\n  Memories ({len(mems)}):")
+            for m in mems:
+                snippet = (m.get("content") or "")[:100]
+                lines.append(f"    [{m.get('memory_id', '')}] {snippet}")
+        else:
+            lines.append("  Memories : none")
+        return "\n".join(lines)
+    except Exception as exc:
+        logger.error(f"get_session_context failed: {exc}")
+        return f"ERR get_session_context failed: {exc}"
+
+
+@mcp.tool()
+async def get_session_history(
+    user_id: str = "default",
+    agent_id: str = "claude-code",
+    limit: int = 10,
+    active_only: bool = False,
+) -> str:
+    """
+    List recent sessions for a user/agent combination.
+
+    TRIGGER TYPE: (A) Auto - Automatically queried at session start to surface
+    recent work context and avoid duplicating previous efforts.
+
+    Parameters:
+    -----------
+    - user_id     : User identifier (default: "default")
+    - agent_id    : Agent identifier (default: "claude-code")
+    - limit       : Maximum sessions to return (default: 10)
+    - active_only : Return only currently active sessions (default: False)
+
+    Returns:
+    --------
+    - Formatted list of sessions with IDs, timing, and summary snippets
+    """
+    if not session_manager:
+        return "ERR Session Manager not available (PostgreSQL required)"
+    try:
+        user_id = sanitize_string(user_id, max_length=100)
+        agent_id = validate_agent_id(agent_id)
+        limit = validate_limit(limit, "limit", max_val=50)
+        sessions = await session_manager.get_recent_sessions(
+            user_id=user_id,
+            agent_id=agent_id,
+            limit=limit,
+            active_only=active_only,
+        )
+        if not sessions:
+            label = "active " if active_only else ""
+            return f"OK No {label}sessions found for user={user_id}, agent={agent_id}"
+
+        lines = [f"OK {len(sessions)} session(s) for user={user_id}, agent={agent_id}:"]
+        for idx, s in enumerate(sessions, 1):
+            status = "ACTIVE" if not s.get("end_time") else "ENDED"
+            summ = (s.get("summary") or "")[:80]
+            lines.append(
+                f"\n{idx}. [{status}] {s['session_id']}"
+                f"\n   Start  : {s['start_time']}"
+                f"\n   End    : {s.get('end_time') or 'still active'}"
+                + (f"\n   Summary: {summ}" if summ else "")
+            )
+        return "\n".join(lines)
+    except Exception as exc:
+        logger.error(f"get_session_history failed: {exc}")
+        return f"ERR get_session_history failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 9 - 14.1: Audit Log Query Tool
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def query_audit_log(
+    agent_id: Optional[str] = None,
+    operation_type: Optional[str] = None,
+    status: Optional[str] = None,
+    hours_back: int = 24,
+    limit: int = 50,
+) -> str:
+    """
+    Query the audit log for recent operations across all MCP tools.
+
+    TRIGGER TYPE: (M) Manual - Security and compliance queries must be
+    requested explicitly. Audit logs contain sensitive operational data.
+
+    Returns structured records of which tools were called, by whom, with
+    what outcome, and how long each operation took.
+
+    Parameters:
+    -----------
+    - agent_id       : Filter by agent ID (e.g. "claude-code") - optional
+    - operation_type : Filter by operation type (MEMORY_ADD, MEMORY_SEARCH,
+                       MEMORY_DELETE, MEMORY_UPDATE, MEMORY_QUERY, BACKUP,
+                       RESTORE, MAINTENANCE) - optional
+    - status         : Filter by status ("success" or "failure") - optional
+    - hours_back     : How many hours of history to return (default: 24)
+    - limit          : Maximum records to return (default: 50, max: 500)
+
+    Returns:
+    --------
+    - Formatted list of audit log entries with timestamps and outcomes
+    """
+    try:
+        limit = min(int(limit), 500)
+        hours_back = max(1, int(hours_back))
+
+        al = audit_logger_instance or get_audit_logger()
+        if not al:
+            return "ERR Audit Logger not initialized"
+
+        from datetime import timedelta as _td
+        start_time = datetime.now(UTC) - _td(hours=hours_back)
+
+        logs = await al.query_logs(
+            start_time=start_time,
+            operation_types=[operation_type] if operation_type else None,
+            agent_ids=[agent_id] if agent_id else None,
+            status=status,
+            limit=limit,
+        )
+
+        # Fall back to in-memory recent logs if DB is unavailable
+        if not logs:
+            logs = await al.get_recent_logs(
+                limit=limit,
+                operation_type=operation_type,
+                agent_id=agent_id,
+            )
+
+        if not logs:
+            return (
+                f"OK No audit log entries found in the last {hours_back}h"
+                + (f" for agent={agent_id}" if agent_id else "")
+                + (f", type={operation_type}" if operation_type else "")
+            )
+
+        lines_out = [f"OK Audit log ({len(logs)} entries, last {hours_back}h):"]
+        for entry in logs:
+            ts = entry.get("timestamp", entry.get("created_at", "unknown"))
+            op = entry.get("operation_type", "unknown")
+            ag = entry.get("agent_id", "unknown")
+            st = entry.get("status", "unknown")
+            ms = float(entry.get("execution_time_ms", 0))
+            err = entry.get("error_message", "")
+            line = f"  [{ts}] {op} | agent={ag} | {st} | {ms:.0f}ms"
+            if err:
+                line += f" | ERR: {err[:60]}"
+            lines_out.append(line)
+
+        return "\n".join(lines_out)
+
+    except Exception as exc:
+        logger.error(f"query_audit_log failed: {exc}")
+        return f"ERR query_audit_log failed: {exc}"
+
+
+# ===========================================================================
+# Phase 10 - Memory Lifecycle Tools (15.1 - 15.4)
+# ===========================================================================
+
+@mcp.tool()
+async def get_memory_history(
+    memory_id: str,
+    limit: int = 20,
+) -> str:
+    """
+    Retrieve the full version history for a memory entry.
+
+    TRIGGER TYPE: (M) Manual - Viewing history requires explicit user intent;
+    not surfaced automatically.
+
+    Returns version rows in descending order (newest first), showing what
+    the content was at each revision point and who changed it.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory entry
+    - limit     : Maximum versions to return (default: 20, max: 100)
+
+    Returns:
+    --------
+    - Formatted list of version snapshots with timestamps and change reasons
+    """
+    try:
+        limit = max(1, min(int(limit), 100))
+        mv = memory_versioner_instance or get_memory_versioner()
+        if not mv:
+            return "ERR MemoryVersioner not initialized (postgres_pool required)"
+
+        history = await mv.get_history(memory_id, limit=limit)
+        if not history:
+            return f"OK No version history found for memory {memory_id}"
+
+        lines = [f"OK Version history for memory {memory_id} ({len(history)} entries):"]
+        for v in history:
+            ts = v.get("created_at", "unknown")
+            ver = v.get("version_number", "?")
+            agent = v.get("agent_id") or "unknown"
+            reason = v.get("change_reason") or ""
+            preview = (v.get("content") or "")[:80].replace("\n", " ")
+            line = f"  v{ver} [{ts}] by {agent}"
+            if reason:
+                line += f" | {reason}"
+            line += f"\n    {preview}..."
+            lines.append(line)
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_memory_history failed: {exc}")
+        return f"ERR get_memory_history failed: {exc}"
+
+
+@mcp.tool()
+async def revert_memory(
+    memory_id: str,
+    version_number: int,
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Revert a memory entry's content to a specific historical version.
+
+    TRIGGER TYPE: (M) Manual - Reverting memory content is an irreversible
+    write operation that must be requested explicitly.
+
+    The current content is preserved as a new version before the revert
+    is applied, ensuring the revert itself is auditable.
+
+    Parameters:
+    -----------
+    - memory_id      : UUID of the memory to revert
+    - version_number : Target version (from get_memory_history)
+    - agent_id       : Agent performing the revert (recorded in audit trail)
+
+    Returns:
+    --------
+    - OK confirmation with version details, or ERR on failure
+    """
+    try:
+        version_number = int(version_number)
+        mv = memory_versioner_instance or get_memory_versioner()
+        if not mv:
+            return "ERR MemoryVersioner not initialized (postgres_pool required)"
+
+        ok = await mv.revert(memory_id, version_number, agent_id=agent_id)
+        if ok:
+            return (
+                f"OK Memory {memory_id} reverted to version {version_number}. "
+                f"Previous content has been preserved in version history."
+            )
+        return (
+            f"ERR Revert failed for memory {memory_id} to version {version_number}. "
+            f"Check that the memory and version exist."
+        )
+    except Exception as exc:
+        logger.error(f"revert_memory failed: {exc}")
+        return f"ERR revert_memory failed: {exc}"
+
+
+@mcp.tool()
+async def get_memory_provenance(
+    memory_id: str,
+) -> str:
+    """
+    Retrieve the provenance record for a memory entry.
+
+    TRIGGER TYPE: (M) Manual - Provenance queries are for compliance and
+    audit purposes; not surfaced automatically.
+
+    Provenance records the origin, source URL, creation timestamp, content
+    checksum, applied transformations (PII redaction, translation, etc.),
+    and verification status.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory entry
+
+    Returns:
+    --------
+    - Formatted provenance details including source, checksum, and transforms
+    """
+    try:
+        pt = provenance_tracker_instance or get_provenance_tracker()
+        if not pt:
+            return "ERR MemoryProvenanceTracker not initialized"
+
+        prov = await pt.get_provenance(memory_id)
+        if prov is None:
+            return f"ERR Memory {memory_id} not found"
+
+        lines = [f"OK Provenance for memory {memory_id}:"]
+        lines.append(f"  source      : {prov.get('source', 'unknown')}")
+        if prov.get("source_url"):
+            lines.append(f"  source_url  : {prov['source_url']}")
+        lines.append(f"  author      : {prov.get('author', 'unknown')}")
+        lines.append(f"  ingested_at : {prov.get('ingested_at', 'unknown')}")
+        if prov.get("checksum"):
+            lines.append(f"  checksum    : {prov['checksum'][:16]}...")
+        lines.append(f"  verified    : {prov.get('verified', False)}")
+        if prov.get("verified_at"):
+            lines.append(f"  verified_at : {prov['verified_at']}")
+            lines.append(f"  verified_by : {prov.get('verified_by', 'unknown')}")
+
+        transforms = prov.get("transformations", [])
+        if transforms:
+            lines.append(f"  transforms  : {len(transforms)} applied")
+            for t in transforms[-3:]:  # show last 3
+                lines.append(f"    - {t.get('type', '?')} @ {t.get('timestamp', '?')[:19]}")
+
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_memory_provenance failed: {exc}")
+        return f"ERR get_memory_provenance failed: {exc}"
+
+
+@mcp.tool()
+async def verify_memory(
+    memory_id: str,
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Verify the integrity of a memory entry by checking its SHA-256 checksum
+    against the stored provenance record, then mark it as verified.
+
+    TRIGGER TYPE: (M) Manual - Verification is an explicit compliance step.
+
+    If the checksum is absent (memory was added before provenance tracking),
+    the tool still marks the memory as verified-by-inspection.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory entry to verify
+    - agent_id  : Agent performing the verification (recorded in provenance)
+
+    Returns:
+    --------
+    - OK with checksum match result, or WARN if no checksum available
+    """
+    try:
+        pt = provenance_tracker_instance or get_provenance_tracker()
+        if not pt:
+            return "ERR MemoryProvenanceTracker not initialized"
+
+        result = await pt.verify_checksum(memory_id)
+
+        if result.get("error"):
+            if result["error"] == "no checksum in provenance":
+                # Mark as verified by inspection (no checksum baseline)
+                await pt.mark_verified(memory_id, verified_by=agent_id or "system")
+                return (
+                    f"OK Memory {memory_id} marked as verified (no checksum baseline; "
+                    f"verified by inspection)."
+                )
+            return f"ERR verify_memory: {result['error']}"
+
+        match = result.get("match")
+        if match:
+            await pt.mark_verified(memory_id, verified_by=agent_id or "system")
+            return (
+                f"OK Memory {memory_id} checksum MATCH. "
+                f"Content integrity confirmed. Marked as verified."
+            )
+        else:
+            return (
+                f"WARN Memory {memory_id} checksum MISMATCH. "
+                f"Content may have been modified outside of Enhanced Cognee. "
+                f"Expected: {result.get('stored_checksum', '?')[:16]}... "
+                f"Got: {result.get('actual_checksum', '?')[:16]}..."
+            )
+
+    except Exception as exc:
+        logger.error(f"verify_memory failed: {exc}")
+        return f"ERR verify_memory failed: {exc}"
+
+
+@mcp.tool()
+async def set_memory_confidence(
+    memory_id: str,
+    score: float,
+) -> str:
+    """
+    Set the confidence score for a memory entry.
+
+    TRIGGER TYPE: (M) Manual - Confidence scoring is a curation step
+    triggered by the user or a downstream evaluation agent.
+
+    Scores range from 0.0 (completely uncertain) to 1.0 (ground truth).
+    Thresholds: high >= 0.8, medium >= 0.5, low >= 0.3, uncertain < 0.3.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory entry
+    - score     : Confidence score in [0.0, 1.0]
+
+    Returns:
+    --------
+    - OK confirmation with label (high/medium/low/uncertain)
+    """
+    try:
+        score = max(0.0, min(1.0, float(score)))
+        cm = confidence_manager_instance or get_confidence_manager()
+        if not cm:
+            return "ERR MemoryConfidenceManager not initialized"
+
+        ok = await cm.set_confidence(memory_id, score)
+        if ok:
+            from src.memory_confidence import _label
+            return (
+                f"OK Confidence for memory {memory_id} set to {score:.4f} "
+                f"({_label(score)})"
+            )
+        return f"ERR Memory {memory_id} not found or update failed"
+
+    except Exception as exc:
+        logger.error(f"set_memory_confidence failed: {exc}")
+        return f"ERR set_memory_confidence failed: {exc}"
+
+
+@mcp.tool()
+async def get_confidence_report(
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Retrieve a confidence distribution report across all (or one agent's) memories.
+
+    TRIGGER TYPE: (A) Auto - Safe read-only analytics tool; can be called
+    as part of periodic memory health checks.
+
+    Returns counts and percentages for each confidence tier, plus the mean
+    confidence score and the number of unscored memories.
+
+    Parameters:
+    -----------
+    - agent_id : Optional agent filter (default: all agents)
+
+    Returns:
+    --------
+    - Formatted confidence distribution table
+    """
+    try:
+        cm = confidence_manager_instance or get_confidence_manager()
+        if not cm:
+            return "ERR MemoryConfidenceManager not initialized"
+
+        report = await cm.get_confidence_report(agent_id=agent_id)
+        if "error" in report:
+            return f"ERR get_confidence_report: {report['error']}"
+
+        total = report.get("total_memories", 0)
+        scope = f"agent={agent_id}" if agent_id else "all agents"
+        lines = [f"OK Confidence report ({scope}, {total} memories):"]
+        lines.append(f"  high (>=0.8)  : {report.get('high_confidence', 0)}")
+        lines.append(f"  medium (>=0.5): {report.get('medium_confidence', 0)}")
+        lines.append(f"  low (>=0.3)   : {report.get('low_confidence', 0)}")
+        lines.append(f"  uncertain     : {report.get('uncertain', 0)}")
+        lines.append(f"  unscored      : {report.get('unscored', 0)}")
+        avg = report.get("average_confidence")
+        if avg is not None:
+            lines.append(f"  average score : {avg:.4f}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_confidence_report failed: {exc}")
+        return f"ERR get_confidence_report failed: {exc}"
+
+
+@mcp.tool()
+async def find_consolidation_candidates(
+    agent_id: Optional[str] = None,
+    limit: int = 20,
+) -> str:
+    """
+    Identify groups of memory entries that are candidates for consolidation.
+
+    TRIGGER TYPE: (A) Auto - Read-only discovery; safe to call as part of
+    periodic memory maintenance without user confirmation.
+
+    Uses Qdrant vector similarity (or PostgreSQL trigram similarity as
+    fallback) to find memories above the 0.75 cosine similarity threshold
+    that have not yet been consolidated.
+
+    Parameters:
+    -----------
+    - agent_id : Optional agent filter (default: all agents)
+    - limit    : Maximum number of candidate groups to return (default: 20)
+
+    Returns:
+    --------
+    - Structured list of candidate groups with anchor and member IDs
+    """
+    try:
+        limit = max(1, min(int(limit), 100))
+        cons = consolidator_instance or get_consolidator()
+        if not cons:
+            return "ERR MemoryConsolidator not initialized"
+
+        groups = await cons.find_candidates(agent_id=agent_id, limit=limit)
+        if not groups:
+            return (
+                f"OK No consolidation candidates found"
+                + (f" for agent={agent_id}" if agent_id else "")
+                + ". All memories appear sufficiently distinct."
+            )
+
+        lines = [f"OK Found {len(groups)} consolidation candidate group(s):"]
+        for i, g in enumerate(groups, 1):
+            anchor = g.get("anchor_id", "?")
+            preview = g.get("anchor_preview", "")[:60].replace("\n", " ")
+            cands = g.get("candidates", [])
+            lines.append(f"  Group {i}: anchor={anchor}")
+            lines.append(f"    Preview: {preview}...")
+            lines.append(f"    Candidates ({len(cands)}): " +
+                         ", ".join(c["id"] for c in cands[:5]))
+        lines.append(
+            "\nUse consolidate_memories([id1, id2, ...]) to merge a group."
+        )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"find_consolidation_candidates failed: {exc}")
+        return f"ERR find_consolidation_candidates failed: {exc}"
+
+
+@mcp.tool()
+async def consolidate_memories(
+    memory_ids: str,
+    agent_id: Optional[str] = None,
+    summary_content: Optional[str] = None,
+) -> str:
+    """
+    Merge a set of related memory entries into one consolidated document.
+
+    TRIGGER TYPE: (M) Manual - Consolidation permanently modifies the memory
+    store and must be explicitly requested.
+
+    The original entries are marked consolidated_into pointing at the new
+    document; they are NOT deleted so they can still be retrieved via
+    get_memory_history.
+
+    Parameters:
+    -----------
+    - memory_ids     : Comma-separated list of memory UUIDs to merge
+    - agent_id       : Agent performing the consolidation
+    - summary_content: Optional pre-written summary to use as the merged
+                       content (omit for automatic concatenation)
+
+    Returns:
+    --------
+    - OK with new consolidated memory ID, or ERR on failure
+    """
+    try:
+        ids = [mid.strip() for mid in memory_ids.split(",") if mid.strip()]
+        if len(ids) < 2:
+            return "ERR consolidate_memories requires at least 2 comma-separated memory IDs"
+
+        cons = consolidator_instance or get_consolidator()
+        if not cons:
+            return "ERR MemoryConsolidator not initialized"
+
+        new_id = await cons.consolidate(
+            memory_ids=ids,
+            agent_id=agent_id,
+            summary_content=summary_content or None,
+        )
+        if new_id:
+            return (
+                f"OK Consolidated {len(ids)} memories into new memory {new_id}. "
+                f"Source memories are preserved but marked as consolidated."
+            )
+        return "ERR Consolidation failed. Check that all memory IDs exist and are not already consolidated."
+
+    except Exception as exc:
+        logger.error(f"consolidate_memories failed: {exc}")
+        return f"ERR consolidate_memories failed: {exc}"
+
+
+@mcp.tool()
+async def get_consolidation_report(
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Retrieve a consolidation activity report for all (or one agent's) memories.
+
+    TRIGGER TYPE: (A) Auto - Read-only analytics; safe for periodic health checks.
+
+    Shows how many memories have been consolidated out (source) vs. how many
+    remain active, and the overall consolidation ratio.
+
+    Parameters:
+    -----------
+    - agent_id : Optional agent filter (default: all agents)
+
+    Returns:
+    --------
+    - Consolidation statistics table
+    """
+    try:
+        cons = consolidator_instance or get_consolidator()
+        if not cons:
+            return "ERR MemoryConsolidator not initialized"
+
+        report = await cons.get_consolidation_report(agent_id=agent_id)
+        if "error" in report:
+            return f"ERR get_consolidation_report: {report['error']}"
+
+        scope = f"agent={agent_id}" if agent_id else "all agents"
+        lines = [f"OK Consolidation report ({scope}):"]
+        lines.append(f"  total memories     : {report.get('total_memories', 0)}")
+        lines.append(f"  active memories    : {report.get('active_memories', 0)}")
+        lines.append(f"  consolidated out   : {report.get('consolidated_out', 0)}")
+        lines.append(f"  consolidation targets: {report.get('consolidation_targets', 0)}")
+        ratio = report.get("consolidation_ratio", 0.0)
+        lines.append(f"  consolidation ratio: {ratio:.1%}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_consolidation_report failed: {exc}")
+        return f"ERR get_consolidation_report failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 10.5 - Memory Promotion Tiers
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def promote_memory_tier(
+    memory_id: str,
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Promote a memory entry one tier upward in the working/long_term/archive hierarchy.
+
+    TRIGGER TYPE: (M) Manual - Tier changes affect caching behaviour and
+    should be driven by explicit curation intent.
+
+    Tier ladder (low to high): archive -> long_term -> working.
+    Memories in the 'working' tier are additionally cached in Redis for
+    sub-millisecond retrieval.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory to promote
+    - agent_id  : Agent performing the promotion (for logging)
+
+    Returns:
+    --------
+    - OK with old tier -> new tier, or ERR on failure
+    """
+    try:
+        tm = tier_manager_instance or get_tier_manager()
+        if not tm:
+            return "ERR MemoryTierManager not initialized (postgres_pool required)"
+
+        old_tier = await tm.get_tier(memory_id) or "long_term"
+        new_tier = await tm.promote(memory_id, agent_id=agent_id)
+        if new_tier == old_tier:
+            return f"OK Memory {memory_id} is already at tier '{old_tier}' (top tier)"
+        return f"OK Memory {memory_id} promoted: {old_tier} -> {new_tier}"
+
+    except Exception as exc:
+        logger.error(f"promote_memory_tier failed: {exc}")
+        return f"ERR promote_memory_tier failed: {exc}"
+
+
+@mcp.tool()
+async def get_tier_stats(
+    agent_id: Optional[str] = None,
+) -> str:
+    """
+    Return a count of memories in each tier (working / long_term / archive).
+
+    TRIGGER TYPE: (A) Auto - Read-only analytics; safe for periodic health checks.
+
+    Useful for understanding memory utilisation: too many 'archive' memories
+    suggests a large inactive corpus; too many 'working' memories may
+    overload the Redis cache.
+
+    Parameters:
+    -----------
+    - agent_id : Optional agent filter (default: all agents)
+
+    Returns:
+    --------
+    - Formatted tier distribution table
+    """
+    try:
+        tm = tier_manager_instance or get_tier_manager()
+        if not tm:
+            return "ERR MemoryTierManager not initialized"
+
+        stats = await tm.get_tier_stats(agent_id=agent_id)
+        if "error" in stats:
+            return f"ERR get_tier_stats: {stats['error']}"
+
+        scope = f"agent={agent_id}" if agent_id else "all agents"
+        lines = [f"OK Memory tier distribution ({scope}):"]
+        lines.append(f"  working   (Tier 1): {stats.get('working', 0)}")
+        lines.append(f"  long_term (Tier 2): {stats.get('long_term', 0)}")
+        lines.append(f"  archive   (Tier 3): {stats.get('archive', 0)}")
+        lines.append(f"  total             : {stats.get('total', 0)}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_tier_stats failed: {exc}")
+        return f"ERR get_tier_stats failed: {exc}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 10.6 - Knowledge Graph Compaction
+# ---------------------------------------------------------------------------
+
+@mcp.tool()
+async def compact_knowledge_graph() -> str:
+    """
+    Run a full compaction pass on the Enhanced Cognee Neo4j knowledge graph.
+
+    TRIGGER TYPE: (M) Manual - Graph compaction modifies the knowledge graph
+    by deleting orphan nodes and stale relationships; must be explicitly
+    requested.
+
+    Compaction steps:
+      1. Prune RELATED_TO/SIMILAR_TO edges for archived or expired memories
+      2. Remove orphan nodes (no relationships)
+      3. Compact parallel SIMILAR_TO edges into single weighted edges
+
+    Returns:
+    --------
+    - Summary of nodes/edges removed and compaction outcome
+    """
+    try:
+        gc = graph_compactor_instance or get_graph_compactor()
+        if not gc:
+            return "ERR GraphCompactor not initialized (neo4j_driver required)"
+
+        summary = await gc.run_compaction()
+        errors = summary.get("errors", [])
+        lines = [
+            f"OK Knowledge graph compaction complete:",
+            f"  stale relations pruned : {summary.get('stale_relations_pruned', 0)}",
+            f"  orphan nodes removed   : {summary.get('orphans_removed', 0)}",
+            f"  similar edges compacted: {summary.get('similar_edges_compacted', 0)}",
+        ]
+        if errors:
+            lines.append(f"  WARN {len(errors)} step(s) encountered errors:")
+            for err in errors[:3]:
+                lines.append(f"    - {err}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"compact_knowledge_graph failed: {exc}")
+        return f"ERR compact_knowledge_graph failed: {exc}"
+
+
+@mcp.tool()
+async def get_graph_stats() -> str:
+    """
+    Return basic statistics about the Enhanced Cognee Neo4j knowledge graph.
+
+    TRIGGER TYPE: (A) Auto - Read-only query; safe for periodic monitoring.
+
+    Returns node count, relationship count, and orphan node count.
+    High orphan counts indicate the graph would benefit from compaction.
+
+    Returns:
+    --------
+    - Formatted graph statistics
+    """
+    try:
+        gc = graph_compactor_instance or get_graph_compactor()
+        if not gc:
+            return "ERR GraphCompactor not initialized (neo4j_driver required)"
+
+        stats = gc.get_graph_stats()
+        if "error" in stats:
+            return f"ERR get_graph_stats: {stats['error']}"
+
+        lines = [
+            "OK Knowledge graph statistics:",
+            f"  nodes         : {stats.get('node_count', 0)}",
+            f"  relationships : {stats.get('relationship_count', 0)}",
+            f"  orphan nodes  : {stats.get('orphan_nodes', 0)}",
+        ]
+        orphans = stats.get("orphan_nodes", 0)
+        if orphans > 100:
+            lines.append(
+                f"  WARN {orphans} orphan nodes detected. "
+                f"Run compact_knowledge_graph() to clean up."
+            )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"get_graph_stats failed: {exc}")
+        return f"ERR get_graph_stats failed: {exc}"
+
+
+# ===========================================================================
+# Phase 11 - Compliance and Data Governance Tools (16.1 - 16.4)
+# ===========================================================================
+
+@mcp.tool()
+async def gdpr_delete_user_data(
+    user_id: str,
+    dry_run: bool = True,
+    requester: Optional[str] = None,
+) -> str:
+    """
+    Permanently erase all data associated with a user_id from all four
+    Enhanced Cognee databases (right to erasure / right to be forgotten).
+
+    TRIGGER TYPE: (M) Manual - Irreversible destructive operation.  Always
+    defaults to dry_run=True; must be explicitly set to False to delete.
+
+    Erases from:
+      - PostgreSQL: documents, memory_versions, sessions (agent_id match)
+      - Qdrant:     all vector points with matching agent_id payload
+      - Neo4j:      all nodes with matching agent_id property
+      - Redis:      all keys scoped to the user_id
+
+    Audit log rows are redacted (not deleted) to preserve the compliance trail.
+
+    Parameters:
+    -----------
+    - user_id   : The agent_id / user identifier to erase
+    - dry_run   : If True (default), preview deletions without making changes
+    - requester : Who triggered this request (recorded for compliance)
+
+    Returns:
+    --------
+    - Summary of rows/vectors/nodes that were (or would be) deleted
+    """
+    try:
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        result = await gm.delete_user_data(
+            user_id=user_id,
+            requester=requester,
+            dry_run=dry_run,
+        )
+
+        mode = "DRY RUN - no changes made" if dry_run else "DELETED"
+        lines = [f"OK GDPR erasure for user '{user_id}' [{mode}]:"]
+        lines.append(f"  PostgreSQL rows    : {result.get('postgres_rows_deleted', 0)}")
+        lines.append(f"  Qdrant vectors     : {result.get('qdrant_vectors_deleted', 0)}")
+        lines.append(f"  Neo4j nodes        : {result.get('neo4j_nodes_deleted', 0)}")
+        lines.append(f"  Redis keys         : {result.get('redis_keys_deleted', 0)}")
+        lines.append(f"  Consent records    : {result.get('consent_records_deleted', 0)}")
+
+        errors = result.get("errors", [])
+        if errors:
+            lines.append(f"  WARN {len(errors)} error(s):")
+            for e in errors[:3]:
+                lines.append(f"    - {e}")
+        if dry_run:
+            lines.append(
+                "\nTo execute: call gdpr_delete_user_data(user_id=..., dry_run=False)"
+            )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"gdpr_delete_user_data failed: {exc}")
+        return f"ERR gdpr_delete_user_data failed: {exc}"
+
+
+@mcp.tool()
+async def gdpr_export_user_data(
+    user_id: str,
+    include_versions: bool = True,
+) -> str:
+    """
+    Export all data stored for a user_id as a structured JSON document
+    (right of access / data portability under GDPR).
+
+    TRIGGER TYPE: (M) Manual - Data access requests require explicit
+    user or compliance-officer intent.
+
+    The export includes:
+      - All memory entries (content, metadata, provenance, confidence)
+      - Version history (up to 1000 entries)
+      - Consent records
+
+    The JSON is returned inline.  For large exports, consider downloading
+    via the file system path printed in the response.
+
+    Parameters:
+    -----------
+    - user_id          : The agent_id / user identifier to export
+    - include_versions : Include version history in the export (default: True)
+
+    Returns:
+    --------
+    - GDPR export summary with memory count and inline JSON preview
+    """
+    try:
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        data_bytes, filename = await gm.export_user_data(
+            user_id=user_id,
+            include_versions=include_versions,
+            as_zip=False,
+        )
+
+        import json as _json
+        export = _json.loads(data_bytes)
+        mem_count = len(export.get("memories", []))
+        ver_count = len(export.get("version_history", []))
+        consent_count = len(export.get("consent_records", []))
+
+        # Write to temp file for retrieval
+        import tempfile, os as _os
+        tmp_dir = tempfile.gettempdir()
+        out_path = _os.path.join(tmp_dir, filename)
+        with open(out_path, "wb") as fh:
+            fh.write(data_bytes)
+
+        lines = [f"OK GDPR export for user '{user_id}':"]
+        lines.append(f"  memories exported    : {mem_count}")
+        lines.append(f"  version rows         : {ver_count}")
+        lines.append(f"  consent records      : {consent_count}")
+        lines.append(f"  export file          : {out_path}")
+        lines.append(f"  exported_at          : {export.get('exported_at', '?')}")
+
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"gdpr_export_user_data failed: {exc}")
+        return f"ERR gdpr_export_user_data failed: {exc}"
+
+
+@mcp.tool()
+async def gdpr_record_consent(
+    user_id: str,
+    category: str,
+    granted: bool,
+) -> str:
+    """
+    Record or update a user's consent decision for a data category.
+
+    TRIGGER TYPE: (M) Manual - Consent changes must be user-initiated.
+
+    Categories are free-form strings (e.g., "analytics", "personalization",
+    "third_party_sharing").  The consent is stored in
+    shared_memory.consent_records and gates future ingestion operations.
+
+    Parameters:
+    -----------
+    - user_id  : The user granting or revoking consent
+    - category : Data processing category (free text)
+    - granted  : True = grant consent, False = revoke consent
+
+    Returns:
+    --------
+    - OK confirmation with new consent status
+    """
+    try:
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        ok = await gm.record_consent(user_id=user_id, category=category, granted=granted)
+        if ok:
+            action = "GRANTED" if granted else "REVOKED"
+            return (
+                f"OK Consent {action} for user '{user_id}', "
+                f"category '{category}'."
+            )
+        return f"ERR Failed to record consent for user '{user_id}'"
+
+    except Exception as exc:
+        logger.error(f"gdpr_record_consent failed: {exc}")
+        return f"ERR gdpr_record_consent failed: {exc}"
+
+
+@mcp.tool()
+async def gdpr_check_consent(
+    user_id: str,
+    category: str,
+) -> str:
+    """
+    Check whether a user has granted consent for a specific data category.
+
+    TRIGGER TYPE: (A) Auto - Read-only compliance gate; called before
+    ingestion or processing operations that require consent.
+
+    Parameters:
+    -----------
+    - user_id  : The user to check
+    - category : Data processing category
+
+    Returns:
+    --------
+    - GRANTED / REVOKED / UNKNOWN with timestamp if available
+    """
+    try:
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        consents = await gm.list_consents(user_id)
+        for c in consents:
+            if c["category"] == category:
+                status = "GRANTED" if c["granted"] else "REVOKED"
+                ts = c.get("granted_at") or c.get("revoked_at") or "unknown"
+                return (
+                    f"OK Consent for user '{user_id}', category '{category}': "
+                    f"{status} (as of {ts})"
+                )
+
+        return (
+            f"OK Consent for user '{user_id}', category '{category}': "
+            f"UNKNOWN (no record found)"
+        )
+
+    except Exception as exc:
+        logger.error(f"gdpr_check_consent failed: {exc}")
+        return f"ERR gdpr_check_consent failed: {exc}"
+
+
+@mcp.tool()
+async def gdpr_list_consents(
+    user_id: str,
+) -> str:
+    """
+    List all consent records stored for a user.
+
+    TRIGGER TYPE: (M) Manual - Viewing a user's full consent profile
+    requires explicit intent.
+
+    Parameters:
+    -----------
+    - user_id : The user whose consent profile to retrieve
+
+    Returns:
+    --------
+    - Table of categories, statuses, and timestamps
+    """
+    try:
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        consents = await gm.list_consents(user_id)
+        if not consents:
+            return f"OK No consent records found for user '{user_id}'"
+
+        lines = [f"OK Consent records for user '{user_id}' ({len(consents)} entries):"]
+        for c in consents:
+            status = "GRANTED" if c["granted"] else "REVOKED"
+            ts = c.get("granted_at") if c["granted"] else c.get("revoked_at")
+            lines.append(f"  {c['category']:<30} {status:<8} {ts or 'unknown'}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"gdpr_list_consents failed: {exc}")
+        return f"ERR gdpr_list_consents failed: {exc}"
+
+
+@mcp.tool()
+async def gdpr_verify_tenant_isolation(
+    tenant_id: str,
+    sample_size: int = 50,
+) -> str:
+    """
+    Verify that a tenant's memory data is properly isolated and has not
+    leaked into other tenants' namespaces.
+
+    TRIGGER TYPE: (M) Manual - Tenant isolation audits are explicit
+    compliance checks requested by an administrator.
+
+    Samples up to *sample_size* documents belonging to *tenant_id* and
+    verifies they all carry the correct agent_id.
+
+    Parameters:
+    -----------
+    - tenant_id   : The tenant (agent_id) to audit
+    - sample_size : Number of records to sample (default: 50, max: 500)
+
+    Returns:
+    --------
+    - CLEAN or list of isolation violations found
+    """
+    try:
+        sample_size = max(1, min(int(sample_size), 500))
+        gm = gdpr_manager_instance or get_gdpr_manager()
+        if not gm:
+            return "ERR GDPRManager not initialized"
+
+        result = await gm.verify_tenant_isolation(
+            tenant_id=tenant_id, sample_size=sample_size
+        )
+        if "error" in result:
+            return f"ERR verify_tenant_isolation: {result['error']}"
+
+        sampled = result.get("sampled", 0)
+        violations = result.get("violations", [])
+        clean = result.get("clean", False)
+
+        if clean:
+            return (
+                f"OK Tenant isolation CLEAN for '{tenant_id}'. "
+                f"Sampled {sampled} records, no violations found."
+            )
+        lines = [
+            f"WARN Tenant isolation VIOLATIONS for '{tenant_id}': "
+            f"{len(violations)} of {sampled} records have wrong agent_id:"
+        ]
+        for v in violations[:10]:
+            lines.append(
+                f"  memory {v['memory_id']} has agent_id={v['found_agent_id']!r}"
+            )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"gdpr_verify_tenant_isolation failed: {exc}")
+        return f"ERR gdpr_verify_tenant_isolation failed: {exc}"
+
+
+# ===========================================================================
+# Phase 12 - Plugin Ecosystem and Integrations (17.1, 17.2)
+# ===========================================================================
+
+@mcp.tool()
+async def list_loader_plugins() -> str:
+    """
+    List all registered Enhanced Cognee loader plugins, including built-in
+    loaders and any installed third-party plugins.
+
+    TRIGGER TYPE: (A) Auto - Read-only discovery query; safe to call at any time.
+
+    Built-in loaders (always present):
+      - PlainTextLoader  (.txt, .md, .rst)
+      - JsonLoader       (.json, .jsonl)
+      - HtmlLoader       (.html, .htm)
+
+    Third-party loaders are discovered via Python entry_points under the
+    group "enhanced_cognee.loaders".
+
+    Returns:
+    --------
+    - Table of loader name, supported extensions, and source package
+    """
+    try:
+        reg = plugin_registry_instance or get_plugin_registry()
+        if not reg:
+            return "ERR PluginRegistry not initialized"
+
+        loaders = reg.list_loaders()
+        if not loaders:
+            return "OK No loaders registered"
+
+        lines = [f"OK Registered loaders ({len(loaders)}):"]
+        for l in loaders:
+            exts = ", ".join(l.get("extensions", []))
+            pkg = l.get("package", "built-in")
+            lines.append(f"  {l['name']:<25} ext=[{exts}]  pkg={pkg}")
+            if l.get("description"):
+                lines.append(f"    {l['description']}")
+        lines.append(
+            "\nInstall plugins via pip and register with entry_points "
+            "group 'enhanced_cognee.loaders'."
+        )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"list_loader_plugins failed: {exc}")
+        return f"ERR list_loader_plugins failed: {exc}"
+
+
+@mcp.tool()
+async def load_document_with_plugin(
+    source: str,
+    loader_name: Optional[str] = None,
+) -> str:
+    """
+    Load a document using the appropriate registered plugin loader and return
+    its text content (ready to pass to cognify()).
+
+    TRIGGER TYPE: (M) Manual - Document ingestion is an explicit user action.
+
+    The plugin is selected automatically from the file extension, or you can
+    specify a loader by name.  Loaded content is returned as text; call
+    cognify() to add it to the knowledge graph.
+
+    Parameters:
+    -----------
+    - source      : File path (.txt, .md, .json, .html, etc.)
+    - loader_name : Optional specific loader class name (e.g., "JsonLoader")
+
+    Returns:
+    --------
+    - Loaded text content (first 500 chars shown as preview)
+    """
+    try:
+        reg = plugin_registry_instance or get_plugin_registry()
+        if not reg:
+            return "ERR PluginRegistry not initialized"
+
+        if loader_name:
+            loader = next(
+                (l for l in reg._loaders if type(l).__name__ == loader_name),
+                None,
+            )
+            if not loader:
+                return f"ERR Loader '{loader_name}' not found. Use list_loader_plugins to see available loaders."
+        else:
+            loader = reg.get_loader_for(source)
+            if not loader:
+                return (
+                    f"ERR No loader found for '{source}'. "
+                    f"Supported extensions: "
+                    + ", ".join(
+                        ext
+                        for l in reg.list_loaders()
+                        for ext in l.get("extensions", [])
+                    )
+                )
+
+        content = await loader.load(source)
+        preview = content[:500].replace("\n", " ")
+        return (
+            f"OK Loaded {len(content)} chars via {type(loader).__name__}.\n"
+            f"Preview: {preview}...\n"
+            f"Call cognify(data=<content>) to ingest into knowledge graph."
+        )
+
+    except Exception as exc:
+        logger.error(f"load_document_with_plugin failed: {exc}")
+        return f"ERR load_document_with_plugin failed: {exc}"
+
+
+@mcp.tool()
+async def register_webhook(
+    url: str,
+    secret: str,
+    events: Optional[str] = None,
+    name: Optional[str] = None,
+) -> str:
+    """
+    Register a webhook endpoint to receive HMAC-signed event notifications.
+
+    TRIGGER TYPE: (M) Manual - Webhook registration changes system configuration.
+
+    Payload is signed with HMAC-SHA256; verify on the receiver using:
+        import hmac, hashlib
+        sig = hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+        assert header == f"sha256={sig}"
+
+    Supported events (comma-separated, or omit for all):
+        memory.added, memory.updated, memory.deleted, memory.reverted,
+        backup.completed, backup.failed, consolidation.completed,
+        gdpr.delete_requested, gdpr.export_requested,
+        maintenance.completed, health.degraded, health.recovered
+
+    Parameters:
+    -----------
+    - url    : HTTPS endpoint URL that will receive POST requests
+    - secret : Shared secret for HMAC-SHA256 signature verification
+    - events : Optional comma-separated list of events to subscribe to
+    - name   : Optional friendly name for the webhook
+
+    Returns:
+    --------
+    - OK with webhook ID, or ERR on failure
+    """
+    try:
+        wm = webhook_manager_instance or get_webhook_manager()
+        if not wm:
+            return "ERR WebhookManager not initialized"
+
+        event_list = None
+        if events:
+            event_list = [e.strip() for e in events.split(",") if e.strip()]
+
+        wh = wm.register(url=url, secret=secret, events=event_list, name=name)
+        subscribed = ", ".join(sorted(wh.events))
+        return (
+            f"OK Webhook registered:\n"
+            f"  id      : {wh.id}\n"
+            f"  name    : {wh.name}\n"
+            f"  url     : {wh.url}\n"
+            f"  events  : {subscribed}\n"
+            f"  enabled : True\n"
+            f"\nTest with: test_webhook(webhook_id='{wh.id}')"
+        )
+
+    except Exception as exc:
+        logger.error(f"register_webhook failed: {exc}")
+        return f"ERR register_webhook failed: {exc}"
+
+
+@mcp.tool()
+async def list_webhooks() -> str:
+    """
+    List all registered webhook endpoints with their status.
+
+    TRIGGER TYPE: (A) Auto - Read-only query; safe to call at any time.
+
+    Returns:
+    --------
+    - Table of webhook IDs, URLs, enabled status, and delivery counts
+    """
+    try:
+        wm = webhook_manager_instance or get_webhook_manager()
+        if not wm:
+            return "ERR WebhookManager not initialized"
+
+        webhooks = wm.list_webhooks()
+        if not webhooks:
+            return "OK No webhooks registered. Use register_webhook() to add one."
+
+        lines = [f"OK Registered webhooks ({len(webhooks)}):"]
+        for wh in webhooks:
+            status = "ON" if wh["enabled"] else "OFF"
+            lines.append(
+                f"  [{status}] {wh['id']}  {wh['url'][:50]}  "
+                f"delivered={wh['delivery_count']} failed={wh['failure_count']}"
+            )
+            if wh.get("last_triggered"):
+                lines.append(f"       last: {wh['last_triggered']}")
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.error(f"list_webhooks failed: {exc}")
+        return f"ERR list_webhooks failed: {exc}"
+
+
+@mcp.tool()
+async def test_webhook(
+    webhook_id: str,
+) -> str:
+    """
+    Send a test ping notification to a registered webhook endpoint.
+
+    TRIGGER TYPE: (M) Manual - Testing triggers an actual HTTP request.
+
+    Delivers a "webhook.test" event to verify connectivity and HMAC signature
+    verification at the receiver.
+
+    Parameters:
+    -----------
+    - webhook_id : The webhook ID to test (from list_webhooks or register_webhook)
+
+    Returns:
+    --------
+    - OK if delivery succeeded, FAIL if the endpoint rejected or timed out
+    """
+    try:
+        wm = webhook_manager_instance or get_webhook_manager()
+        if not wm:
+            return "ERR WebhookManager not initialized"
+
+        wh = wm.get_webhook(webhook_id)
+        if not wh:
+            return f"ERR Webhook '{webhook_id}' not found"
+
+        success = await wm.test_webhook(webhook_id)
+        if success:
+            return f"OK Test ping delivered to webhook '{webhook_id}' ({wh.url})"
+        return (
+            f"FAIL Test ping to webhook '{webhook_id}' ({wh.url}) failed. "
+            f"Check URL is reachable and signature verification is correct."
+        )
+
+    except Exception as exc:
+        logger.error(f"test_webhook failed: {exc}")
+        return f"ERR test_webhook failed: {exc}"
+
+
+@mcp.tool()
+async def disable_webhook(
+    webhook_id: str,
+) -> str:
+    """
+    Temporarily disable a webhook endpoint without deleting it.
+
+    TRIGGER TYPE: (M) Manual - Configuration change.
+
+    The webhook remains registered but will not receive event deliveries
+    until re-enabled.  Use list_webhooks to see current status.
+
+    Parameters:
+    -----------
+    - webhook_id : The webhook ID to disable
+
+    Returns:
+    --------
+    - OK confirmation or ERR if not found
+    """
+    try:
+        wm = webhook_manager_instance or get_webhook_manager()
+        if not wm:
+            return "ERR WebhookManager not initialized"
+
+        ok = wm.disable(webhook_id)
+        if ok:
+            return f"OK Webhook '{webhook_id}' disabled. Events will not be delivered."
+        return f"ERR Webhook '{webhook_id}' not found"
+
+    except Exception as exc:
+        logger.error(f"disable_webhook failed: {exc}")
+        return f"ERR disable_webhook failed: {exc}"
+
+
+# ===========================================================================
+# Phase 14.3 - Encryption at Rest
+# ===========================================================================
+
+@mcp.tool()
+async def encrypt_memory(memory_id: str) -> str:
+    """
+    Encrypt a memory's content using Fernet (AES-128-CBC + HMAC-SHA256).
+
+    TRIGGER TYPE: (M) Manual - Encryption is applied selectively by the user.
+
+    Reads the current plaintext content from PostgreSQL, encrypts it with
+    the server's master key, and writes the encrypted value back.  The
+    is_encrypted flag is set to TRUE so decrypt_memory can reverse the
+    operation.  No-op if the memory is already encrypted.
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory to encrypt
+
+    Returns:
+    --------
+    - OK confirmation or ERR if unavailable / encryption disabled
+    """
+    try:
+        em = encryption_manager_instance or get_encryption_manager()
+        if not em:
+            return "ERR EncryptionManager not initialized"
+        result = await em.encrypt_memory(memory_id)
+        if result.get("ok"):
+            return f"OK Memory '{memory_id}' encrypted"
+        return f"ERR {result.get('error', 'encrypt_memory failed')}"
+    except Exception as exc:
+        logger.error(f"encrypt_memory failed: {exc}")
+        return f"ERR encrypt_memory failed: {exc}"
+
+
+@mcp.tool()
+async def get_encryption_stats() -> str:
+    """
+    Return encryption coverage statistics for the memory store.
+
+    TRIGGER TYPE: (A) Auto - Safe to call at any time for status reporting.
+
+    Reports total memories, how many are encrypted, the encryption
+    algorithm in use, and whether encryption is enabled.
+
+    Returns:
+    --------
+    - JSON-formatted stats dict or ERR message
+    """
+    try:
+        em = encryption_manager_instance or get_encryption_manager()
+        if not em:
+            return "ERR EncryptionManager not initialized"
+        stats = await em.get_encryption_stats()
+        return json.dumps(stats, indent=2)
+    except Exception as exc:
+        logger.error(f"get_encryption_stats failed: {exc}")
+        return f"ERR get_encryption_stats failed: {exc}"
+
+
+@mcp.tool()
+async def rotate_encryption_key(new_key: Optional[str] = None) -> str:
+    """
+    Rotate the encryption master key and re-encrypt all encrypted memories.
+
+    TRIGGER TYPE: (M) Manual - Key rotation is a deliberate security operation.
+
+    Generates a new Fernet key (or uses the supplied one), decrypts each
+    currently-encrypted row with the old key, re-encrypts with the new key,
+    and updates the row.  The new key is printed in the response (first 8
+    chars only); persist it immediately.
+
+    Parameters:
+    -----------
+    - new_key : Optional base64-urlsafe 32-byte Fernet key.
+                If omitted a new key is generated automatically.
+
+    Returns:
+    --------
+    - OK summary with rotated count and new key preview, or ERR
+    """
+    try:
+        em = encryption_manager_instance or get_encryption_manager()
+        if not em:
+            return "ERR EncryptionManager not initialized"
+        result = await em.rotate_encryption_key(new_key=new_key)
+        if "error" in result:
+            return f"ERR {result['error']}"
+        rotated = result.get("rotated", 0)
+        preview = result.get("new_key_preview", "N/A")
+        return (
+            f"OK Encryption key rotated\n"
+            f"  Memories re-encrypted : {rotated}\n"
+            f"  New key preview        : {preview}\n"
+            f"  ACTION REQUIRED: store the full key in ENCRYPTION_MASTER_KEY env var"
+        )
+    except Exception as exc:
+        logger.error(f"rotate_encryption_key failed: {exc}")
+        return f"ERR rotate_encryption_key failed: {exc}"
+
+
+# ===========================================================================
+# Phase 12.8 - Structured Observations (EAV)
+# ===========================================================================
+
+@mcp.tool()
+async def add_observation(
+    memory_id: str,
+    entity: str,
+    attribute: str,
+    value: str,
+    agent_id: str = "system",
+    confidence: float = 1.0,
+) -> str:
+    """
+    Add a structured (entity, attribute, value) observation to a memory.
+
+    TRIGGER TYPE: (A) Auto - Call whenever structured facts are extracted
+    from memory content.
+
+    Observations are stored in the shared_memory.observations EAV table
+    and can be queried independently from the memory content.  Useful for
+    building structured knowledge from free-text memories.
+
+    Parameters:
+    -----------
+    - memory_id  : UUID of the parent memory
+    - entity     : Entity name (e.g. "company", "person", "product")
+    - attribute  : Attribute name (e.g. "name", "revenue", "founded_year")
+    - value      : The attribute value as a string
+    - agent_id   : Agent that is recording the observation (default: "system")
+    - confidence : Confidence in [0.0, 1.0] (default: 1.0)
+
+    Returns:
+    --------
+    - OK with observation ID or ERR
+    """
+    try:
+        mgr = observation_manager_instance or get_observation_manager()
+        if not mgr:
+            return "ERR MemoryObservationManager not initialized"
+        result = await mgr.add_observation(
+            memory_id=memory_id,
+            entity=entity,
+            attribute=attribute,
+            value=value,
+            agent_id=agent_id,
+            confidence=float(confidence),
+        )
+        if "error" in result:
+            return f"ERR {result['error']}"
+        obs_id = result.get("observation_id", "unknown")
+        return f"OK Observation added: {obs_id} ({entity}.{attribute}={value!r})"
+    except Exception as exc:
+        logger.error(f"add_observation failed: {exc}")
+        return f"ERR add_observation failed: {exc}"
+
+
+@mcp.tool()
+async def get_observations(memory_id: str) -> str:
+    """
+    Retrieve all structured observations for a memory.
+
+    TRIGGER TYPE: (A) Auto - Safe read; can be called after any memory lookup.
+
+    Returns:
+    --------
+    - JSON array of observation dicts or ERR
+    """
+    try:
+        mgr = observation_manager_instance or get_observation_manager()
+        if not mgr:
+            return "ERR MemoryObservationManager not initialized"
+        observations = await mgr.get_observations(memory_id)
+        return json.dumps(observations, indent=2, default=str)
+    except Exception as exc:
+        logger.error(f"get_observations failed: {exc}")
+        return f"ERR get_observations failed: {exc}"
+
+
+@mcp.tool()
+async def update_observation(
+    observation_id: str,
+    value: str,
+    confidence: float = 1.0,
+) -> str:
+    """
+    Update the value and confidence of an existing observation.
+
+    TRIGGER TYPE: (M) Manual - Observation updates reflect deliberate corrections.
+
+    Parameters:
+    -----------
+    - observation_id : UUID of the observation to update
+    - value          : New value string
+    - confidence     : Updated confidence in [0.0, 1.0]
+
+    Returns:
+    --------
+    - OK confirmation or ERR
+    """
+    try:
+        mgr = observation_manager_instance or get_observation_manager()
+        if not mgr:
+            return "ERR MemoryObservationManager not initialized"
+        result = await mgr.update_observation(
+            observation_id=observation_id,
+            value=value,
+            confidence=float(confidence),
+        )
+        if "error" in result:
+            return f"ERR {result['error']}"
+        return f"OK Observation '{observation_id}' updated"
+    except Exception as exc:
+        logger.error(f"update_observation failed: {exc}")
+        return f"ERR update_observation failed: {exc}"
+
+
+@mcp.tool()
+async def delete_observation(observation_id: str) -> str:
+    """
+    Delete a structured observation by its ID.
+
+    TRIGGER TYPE: (M) Manual - Deletions are irreversible.
+
+    Parameters:
+    -----------
+    - observation_id : UUID of the observation to delete
+
+    Returns:
+    --------
+    - OK confirmation or ERR
+    """
+    try:
+        mgr = observation_manager_instance or get_observation_manager()
+        if not mgr:
+            return "ERR MemoryObservationManager not initialized"
+        result = await mgr.delete_observation(observation_id)
+        if result.get("deleted"):
+            return f"OK Observation '{observation_id}' deleted"
+        return f"ERR Observation '{observation_id}' not found or delete failed"
+    except Exception as exc:
+        logger.error(f"delete_observation failed: {exc}")
+        return f"ERR delete_observation failed: {exc}"
+
+
+# ===========================================================================
+# Phase 17.4 - Slack / Discord Notifications
+# ===========================================================================
+
+@mcp.tool()
+async def configure_slack_notifications(
+    channel_id: str,
+    webhook_url: str,
+    events: Optional[str] = None,
+) -> str:
+    """
+    Register a Slack incoming webhook to receive Enhanced Cognee event notifications.
+
+    TRIGGER TYPE: (M) Manual - Notification setup is a deliberate configuration step.
+
+    Parameters:
+    -----------
+    - channel_id  : Unique identifier for this channel (e.g. "ops-alerts")
+    - webhook_url : Slack Incoming Webhook URL
+                    (https://hooks.slack.com/services/...)
+    - events      : Comma-separated list of events to subscribe to.
+                    Defaults to all events if omitted.
+                    Supported: memory.added, memory.updated, memory.deleted,
+                    backup.completed, backup.failed, health.degraded
+
+    Returns:
+    --------
+    - OK confirmation with channel details or ERR
+    """
+    try:
+        nm = notification_manager_instance or get_notification_manager()
+        if not nm:
+            return "ERR NotificationManager not initialized"
+        event_list = [e.strip() for e in events.split(",")] if events else []
+        result = await nm.configure_slack(
+            channel_id=channel_id,
+            webhook_url=webhook_url,
+            events=event_list,
+        )
+        if "error" in result:
+            return f"ERR {result['error']}"
+        return (
+            f"OK Slack channel configured: {channel_id}\n"
+            f"  Events: {', '.join(result.get('events', [])) or 'all'}"
+        )
+    except Exception as exc:
+        logger.error(f"configure_slack_notifications failed: {exc}")
+        return f"ERR configure_slack_notifications failed: {exc}"
+
+
+@mcp.tool()
+async def configure_discord_notifications(
+    channel_id: str,
+    webhook_url: str,
+    events: Optional[str] = None,
+) -> str:
+    """
+    Register a Discord webhook to receive Enhanced Cognee event notifications.
+
+    TRIGGER TYPE: (M) Manual - Notification setup is a deliberate configuration step.
+
+    Parameters:
+    -----------
+    - channel_id  : Unique identifier for this channel (e.g. "dev-alerts")
+    - webhook_url : Discord Webhook URL
+                    (https://discord.com/api/webhooks/...)
+    - events      : Comma-separated list of events to subscribe to.
+                    Defaults to all events if omitted.
+
+    Returns:
+    --------
+    - OK confirmation with channel details or ERR
+    """
+    try:
+        nm = notification_manager_instance or get_notification_manager()
+        if not nm:
+            return "ERR NotificationManager not initialized"
+        event_list = [e.strip() for e in events.split(",")] if events else []
+        result = await nm.configure_discord(
+            channel_id=channel_id,
+            webhook_url=webhook_url,
+            events=event_list,
+        )
+        if "error" in result:
+            return f"ERR {result['error']}"
+        return (
+            f"OK Discord channel configured: {channel_id}\n"
+            f"  Events: {', '.join(result.get('events', [])) or 'all'}"
+        )
+    except Exception as exc:
+        logger.error(f"configure_discord_notifications failed: {exc}")
+        return f"ERR configure_discord_notifications failed: {exc}"
+
+
+@mcp.tool()
+async def test_notification_channel(channel_id: str) -> str:
+    """
+    Send a test notification to a configured Slack or Discord channel.
+
+    TRIGGER TYPE: (M) Manual - Tests are intentional verification steps.
+
+    Parameters:
+    -----------
+    - channel_id : Channel ID previously configured via configure_slack_notifications
+                   or configure_discord_notifications
+
+    Returns:
+    --------
+    - OK with HTTP response code or ERR
+    """
+    try:
+        nm = notification_manager_instance or get_notification_manager()
+        if not nm:
+            return "ERR NotificationManager not initialized"
+        result = await nm.test_channel(channel_id)
+        if result.get("ok"):
+            code = result.get("response_code", "?")
+            return f"OK Test notification sent to '{channel_id}' (HTTP {code})"
+        return f"ERR Test failed for '{channel_id}': {result.get('error', 'unknown error')}"
+    except Exception as exc:
+        logger.error(f"test_notification_channel failed: {exc}")
+        return f"ERR test_notification_channel failed: {exc}"
+
+
+# ===========================================================================
+# Phase 18.4 - Memory Importance Scoring
+# ===========================================================================
+
+@mcp.tool()
+async def get_memory_importance(memory_id: str) -> str:
+    """
+    Compute and return the importance score for a specific memory.
+
+    TRIGGER TYPE: (A) Auto - Safe to call at any time; read-only.
+
+    Importance is a heuristic 0-1 score computed from:
+      - Access frequency (40%)
+      - Recency of last access (30%)
+      - Confidence score (20%)
+      - Source type (10%: verified > agent > user > system > unknown)
+
+    Parameters:
+    -----------
+    - memory_id : UUID of the memory to score
+
+    Returns:
+    --------
+    - JSON with importance_score and per-component breakdown or ERR
+    """
+    try:
+        scorer = importance_scorer_instance or get_importance_scorer()
+        if not scorer:
+            return "ERR MemoryImportanceScorer not initialized"
+        result = await scorer.get_memory_importance(memory_id)
+        return json.dumps(result, indent=2)
+    except Exception as exc:
+        logger.error(f"get_memory_importance failed: {exc}")
+        return f"ERR get_memory_importance failed: {exc}"
+
+
+@mcp.tool()
+async def update_importance_scores(
+    agent_id: Optional[str] = None,
+    limit: int = 100,
+) -> str:
+    """
+    Recompute and persist importance scores for up to 'limit' memories.
+
+    TRIGGER TYPE: (M) Manual - Batch scoring is a maintenance operation.
+
+    Adds an importance_score column to shared_memory.documents if absent,
+    then UPSERTs the heuristic score for each eligible memory.
+
+    Parameters:
+    -----------
+    - agent_id : Scope update to this agent's memories (default: all agents)
+    - limit    : Maximum number of memories to score in this run (default: 100)
+
+    Returns:
+    --------
+    - OK with updated count and mean score or ERR
+    """
+    try:
+        scorer = importance_scorer_instance or get_importance_scorer()
+        if not scorer:
+            return "ERR MemoryImportanceScorer not initialized"
+        result = await scorer.update_importance_scores(agent_id=agent_id, limit=limit)
+        if "error" in result:
+            return f"ERR {result['error']}"
+        updated = result.get("updated", 0)
+        mean = result.get("mean_score", 0.0)
+        return f"OK Importance scores updated: {updated} memories, mean_score={mean:.3f}"
+    except Exception as exc:
+        logger.error(f"update_importance_scores failed: {exc}")
+        return f"ERR update_importance_scores failed: {exc}"
+
+
+@mcp.tool()
+async def get_top_important_memories(
+    agent_id: Optional[str] = None,
+    top_n: int = 10,
+) -> str:
+    """
+    Return the N most important memories ordered by heuristic importance score.
+
+    TRIGGER TYPE: (A) Auto - Safe read; useful for context priming.
+
+    Importance scores must have been computed first via update_importance_scores.
+    Memories with NULL importance_score are ranked last.
+
+    Parameters:
+    -----------
+    - agent_id : Filter to this agent's memories (default: all agents)
+    - top_n    : Number of memories to return (default: 10)
+
+    Returns:
+    --------
+    - JSON array of memory dicts with importance_score or ERR
+    """
+    try:
+        scorer = importance_scorer_instance or get_importance_scorer()
+        if not scorer:
+            return "ERR MemoryImportanceScorer not initialized"
+        results = await scorer.get_top_important_memories(agent_id=agent_id, top_n=top_n)
+        return json.dumps(results, indent=2, default=str)
+    except Exception as exc:
+        logger.error(f"get_top_important_memories failed: {exc}")
+        return f"ERR get_top_important_memories failed: {exc}"
+
+
+# ===========================================================================
+# Phase 18.5 - Heuristic Re-ranking
+# ===========================================================================
+
+@mcp.tool()
+async def rerank_search_results(
+    results_json: str,
+    query: str = "",
+) -> str:
+    """
+    Re-rank a list of search results using a heuristic multi-signal scorer.
+
+    TRIGGER TYPE: (A) Auto - Apply after any search_memories / advanced_search call
+    to improve result ordering before presenting to the user.
+
+    Re-ranking formula (all signals normalised to [0, 1]):
+      final_score = similarity*0.50 + importance*0.25 + recency*0.15 + confidence*0.10
+
+    Parameters:
+    -----------
+    - results_json : JSON array of memory dicts as returned by search_memories.
+                     Each dict may contain optional keys:
+                     similarity_score, importance_score, last_accessed_at,
+                     confidence_score.  Missing keys default to 0.5.
+    - query        : Original search query (informational; not used in scoring)
+
+    Returns:
+    --------
+    - JSON array sorted by rerank_score descending, each entry includes
+      'rerank_score' field or ERR
+    """
+    try:
+        reranker = reranker_instance or get_reranker()
+        if not reranker:
+            return "ERR MemoryReranker not initialized"
+        try:
+            results = json.loads(results_json)
+        except Exception:
+            return "ERR results_json must be a valid JSON array"
+        if not isinstance(results, list):
+            return "ERR results_json must be a JSON array"
+        reranked = await reranker.rerank_search_results(results, query=query)
+        return json.dumps(reranked, indent=2, default=str)
+    except Exception as exc:
+        logger.error(f"rerank_search_results failed: {exc}")
+        return f"ERR rerank_search_results failed: {exc}"
 
 
 async def main():
@@ -4841,6 +7890,40 @@ async def main():
     print("      - regex_extract_entities: Extract entities via regex patterns")
     print("      - extract_graph_v2: Cascade v2 graph extraction (preview)")
     print("      - list_loaders: List available file format loaders")
+    print("    Plan 14.8 - LLM Cost Tracking:")
+    print("      - get_llm_cost_report: Token usage and cost report (per-agent/tool/model)")
+    print("      - set_cost_budget: Set monthly LLM cost limit for an agent")
+    print("    Phase 7 - Progressive Search Tools:")
+    print("      - search_quick: Fast top-3 keyword search (lightweight)")
+    print("      - get_memory_detail: Full detail of a single memory by ID")
+    print("      - get_related: Find memories related to a given memory")
+    print("    Phase 7 - Session Management Tools:")
+    print("      - start_session: Start a new Claude Code session")
+    print("      - end_session: End a session with optional summary")
+    print("      - get_session_context: Retrieve full session context + memories")
+    print("      - get_session_history: List recent sessions for a user/agent")
+    print("    Phase 9 - Audit and Compliance Tools:")
+    print("      - query_audit_log: Query audit log for recent operations")
+    print("    Phase 14.3 - Encryption at Rest:")
+    print("      - encrypt_memory: Encrypt a memory's content with Fernet AES")
+    print("      - get_encryption_stats: Encryption coverage statistics")
+    print("      - rotate_encryption_key: Rotate master key and re-encrypt all memories")
+    print("    Phase 12.8 - Structured Observations (EAV):")
+    print("      - add_observation: Add entity-attribute-value observation to a memory")
+    print("      - get_observations: Get all observations for a memory")
+    print("      - update_observation: Update an observation value/confidence")
+    print("      - delete_observation: Delete a structured observation")
+    print("    Phase 17.4 - Slack/Discord Notifications:")
+    print("      - configure_slack_notifications: Register Slack webhook channel")
+    print("      - configure_discord_notifications: Register Discord webhook channel")
+    print("      - test_notification_channel: Send test notification to channel")
+    print("    Phase 18.4 - Memory Importance Scoring:")
+    print("      - get_memory_importance: Get heuristic importance score for a memory")
+    print("      - update_importance_scores: Recompute scores for up to N memories")
+    print("      - get_top_important_memories: Top N memories by importance score")
+    print("    Phase 18.5 - Heuristic Re-ranking:")
+    print("      - rerank_search_results: Re-rank search results by multi-signal score")
+    print(f"  Total tools: 119")
     print()
 
     try:

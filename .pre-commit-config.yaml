@@ -1,20 +1,86 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# Enhanced Cognee - Pre-commit hooks
+# Run: pre-commit install   (once)
+# Run: pre-commit run --all-files  (check all)
+
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+  # Standard file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.9.5
-  hooks:
-    # Run the linter.
-    - id: ruff
-      types_or: [ python, pyi ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi ]
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+        exclude: ^(dashboard/|cognee-frontend/|cognee-starter-kit/)
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: detect-private-key
+
+  # Python formatting and linting (ruff replaces black + old ruff)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # Security scanning
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.8
+    hooks:
+      - id: bandit
+        args: [-c, pyproject.toml]
+        additional_dependencies: ["bandit[toml]"]
+
+  # Project-specific: no hardcoded categories
+  - repo: local
+    hooks:
+      - id: check-no-hardcoded-categories
+        name: No hardcoded ATS/OMA/SMC categories
+        language: python
+        entry: python
+        args:
+          - -c
+          - |
+            import sys, re, pathlib
+            pattern = re.compile(r'\b(ATS|OMA|SMC)\s*=\s*["\']', re.IGNORECASE)
+            failures = []
+            for f in pathlib.Path('src').rglob('*.py'):
+                text = f.read_text(encoding='utf-8', errors='replace')
+                if pattern.search(text):
+                    failures.append(str(f))
+            if failures:
+                print('ERR Hardcoded categories found in:', failures)
+                sys.exit(1)
+        pass_filenames: false
+
+      - id: check-ascii-output
+        name: ASCII-only string literals in output paths
+        language: python
+        entry: python
+        args:
+          - -c
+          - |
+            import sys, re, pathlib
+            # Check for unicode symbols in print/logger.info/return string literals
+            pattern = re.compile(r'(print|logger\.(info|warning|error))\s*\([^)]*[✀-➿☀-⛿⌀-⏿]')
+            failures = []
+            for f in pathlib.Path('src').rglob('*.py'):
+                text = f.read_text(encoding='utf-8', errors='replace')
+                if pattern.search(text):
+                    failures.append(str(f))
+            if failures:
+                print('WARN Possible Unicode in output strings:', failures)
+                # Non-fatal: just warn
+        pass_filenames: false
+
+      - id: fast-unit-tests
+        name: Fast unit tests (non-DB)
+        language: python
+        entry: python
+        args: [-m, pytest, tests/unit/, -x, -q, --timeout=30,
+               --ignore=tests/unit/test_phase13_property_based.py]
+        pass_filenames: false
+        stages: [pre-push]

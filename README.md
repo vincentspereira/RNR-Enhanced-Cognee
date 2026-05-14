@@ -8,13 +8,13 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-497%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-1134%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 70 MCP tools, enterprise-grade multi-agent coordination, real-time web dashboard, and production-ready security hardening**
+**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 119 MCP tools, enterprise-grade multi-agent coordination, encryption at rest, structured observations, heuristic re-ranking, and production-ready security hardening**
 
 </div>
 
@@ -61,7 +61,7 @@
 | **Caching Layer**               | FsCache                    | None                                      | **Redis (high-speed)**                            |
 | **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                          |
 | **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                                |
-| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **70 comprehensive tools**                        |
+| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **119 comprehensive tools**                       |
 | **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                                       |
 | **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                          |
 | **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                             |
@@ -74,7 +74,7 @@
 | **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)** |
 | **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                                       |
 | **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | Neo4j Browser separate                            |
-| **Memory Hierarchy**            | Flat                       | **Structured observations**               | Flat (planned enhancement)                        |
+| **Memory Hierarchy**            | Flat                       | **Structured observations**               | **EAV observations (entity-attribute-value)**     |
 | **Scalability**                 | Single machine             | Single machine                            | **Distributed architecture**                      |
 | **Concurrent Agents**           | Limited                    | Not applicable                            | **100+ agents**                                   |
 | **Enterprise Features**         | Basic permissions          | No                                        | **RBAC, audit logging, backup**                   |
@@ -120,7 +120,7 @@ Enhanced Cognee is the right tool when you need:
 - Production monitoring with Prometheus metrics
 - Memory deduplication, summarization, TTL, and lifecycle policies
 - Automated backup and recovery
-- 70 MCP tools covering the complete memory lifecycle
+- 119 MCP tools covering the complete memory lifecycle
 
 ### How to invoke Enhanced Cognee
 
@@ -162,7 +162,7 @@ python bin/enhanced_cognee_mcp_server.py
 | Single developer, zero config, quick setup | Session-memory plugin (e.g., Claude-Mem) |
 | Multi-agent enterprise system | **Enhanced Cognee** |
 | Flexible DB choice, simple SDK | Original Cognee |
-| Knowledge graph + enterprise features + 70 MCP tools | **Enhanced Cognee** |
+| Knowledge graph + enterprise features + 119 MCP tools | **Enhanced Cognee** |
 | Token-efficient progressive search | Session-memory plugin |
 
 ---
@@ -171,7 +171,7 @@ python bin/enhanced_cognee_mcp_server.py
 
 **Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
 
-- ✅ **70 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction)
+- ✅ **119 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction, memory versioning, GDPR, plugins, webhooks)
 - ✅ **Dynamic category system** (no hardcoded categories; configure via .enhanced-cognee-config.json)
 - ✅ **Automated upstream sync monitoring** (GitHub Actions weekly monitor)
 - ✅ **Cross-agent memory sharing** with access control
@@ -191,7 +191,7 @@ python bin/enhanced_cognee_mcp_server.py
 - ✅ **Production deployment** (Docker, monitoring, security hardened)
 - ✅ **CI/CD pipeline** (7 automated stages)
 - ✅ **Security audit** (0 critical vulnerabilities)
-- ✅ **Comprehensive test coverage** (497 unit tests, 100% pass rate)
+- ✅ **Comprehensive test coverage** (1,134 tests, 100% pass rate)
 - ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
 
 ### What is the Original Cognee?
@@ -221,7 +221,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - **Neo4j** (instead of Kuzu)
 - **Redis** (new caching layer)
 
-### 2. 70 MCP Tools
+### 2. 105 MCP Tools
 
 - Standard Memory MCP tools (add_memory, search_memories, etc.)
 - Session-aware memory (remember, recall, forget_memory, improve, save_interaction)
@@ -235,6 +235,14 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - Multi-language support (28 languages, cross-language search)
 - Advanced AI features (intelligent summarization, semantic clustering, cascade v2 graph)
 - Backup and recovery
+- Memory versioning, provenance tracking, confidence scoring (Phase 10)
+- GDPR delete/export, consent management, tenant isolation (Phase 11)
+- Plugin loader system, webhook support (Phase 12)
+- Encryption at rest (Fernet AES-128-CBC), structured EAV observations, Slack/Discord notifications
+- Heuristic importance scoring and multi-signal re-ranking (Phase 13/14)
+- Python SDK client package (enhanced_cognee_client) with 16 async methods
+- 10 Architecture Decision Records (ADR-001 to ADR-010) and 10 Runbooks (RB-001 to RB-010)
+- Pre-commit hooks (ruff, bandit, category gate, ASCII gate, fast unit tests at push)
 
 ### 3. Real-Time Multi-Agent Support
 
@@ -248,7 +256,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - Docker deployment with health checks
 - Non-conflicting port mappings
 - Comprehensive error handling
-- 497 unit tests passing (100% pass rate)
+- 1,134 tests passing (100% pass rate, 0 skipped)
 - Multi-IDE support (MCP-compatible IDEs)
 
 ---
@@ -336,7 +344,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### 1: Test Suite & LLM Integration
 
-- Comprehensive test suite with 497 unit tests (100% pass rate)
+- Comprehensive test suite with 1,134 tests (100% pass rate)
 - Multi-LLM integration (multi-provider support)
 - Token counting and rate limiting
 - Test infrastructure (pytest, fixtures, mocks)
@@ -402,7 +410,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 - 28 language support
 - Cross-language search
-- Comprehensive testing (497 unit tests, 100% pass rate)
+- Comprehensive testing (1,134 tests, 100% pass rate)
 - Performance optimization
 - **Files:** 15 files, 4,200+ lines
 
@@ -463,6 +471,10 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | Memory Expiry & TTL         | ✅      | Automatic archival and cleanup                  |
 | Cross-Agent Sharing         | ✅      | Access control and permissions                  |
 | Real-Time Sync              | ✅      | Redis pub/sub synchronization                   |
+| Encryption at Rest          | ✅      | Fernet AES-128-CBC + HMAC-SHA256 per memory     |
+| Structured Observations     | ✅      | EAV table (entity, attribute, value) per memory |
+| Importance Scoring          | ✅      | Heuristic: access*0.4 + recency*0.3 + confidence*0.2 + source*0.1 |
+| Heuristic Re-ranking        | ✅      | Multi-signal: similarity*0.5 + importance*0.25 + recency*0.15 + confidence*0.10 |
 
 #### Advanced AI Features
 
@@ -485,6 +497,9 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | CI/CD Pipeline      | ✅      | Automated testing and deployment      |
 | Security Audit      | ✅      | Comprehensive vulnerability scanning  |
 | Code Coverage       | ✅      | 92%+ overall coverage                 |
+| Python SDK Client   | ✅      | enhanced_cognee_client (async httpx, 16 methods) |
+| Slack/Discord Alerts| ✅      | Webhook notifications for memory events |
+| Pre-commit Hooks    | ✅      | ruff, bandit, category gate, ASCII gate |
 
 #### Operations Features
 
@@ -508,7 +523,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Graph Database**        | Kuzu            | Neo4j                                         |
 | **Caching Layer**         | None            | Redis                                         |
 | **Memory Categories**     | None            | Dynamic JSON-based                            |
-| **MCP Tools**             | None            | ✅ **70 tools**                                |
+| **MCP Tools**             | None            | ✅ **119 tools**                               |
 | **Multi-Agent Support**   | None            | ✅ **Real-time sync for 100+ agents**          |
 | **Memory Deduplication**  | None            | ✅ **95%+ storage savings**                    |
 | **Memory Summarization**  | None            | ✅ **10x+ compression**                        |
@@ -516,7 +531,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Cross-Agent Sharing**   | None            | ✅ **4 access policies**                       |
 | **TTL & Archival**        | None            | ✅ **Automated lifecycle**                     |
 | **IDE Support**           | None            | ✅ **MCP-compatible IDEs**                     |
-| **Test Coverage**         | Basic           | ✅ **497 unit tests passing (100% pass rate)** |
+| **Test Coverage**         | Basic           | ✅ **1,134 tests passing (100% pass rate)** |
 | **MCP IDE Integration**   | No              | ✅ **Standard Memory MCP**                     |
 | **Port Configuration**    | Default ports   | Enhanced range (25000+)                       |
 | **Output Encoding**       | None            | ASCII-only (Windows compatible)               |
@@ -538,7 +553,7 @@ Based on testing with enterprise datasets:
 
 ## Original Cognee Features Available via Enhanced Cognee MCP
 
-✅ **100% Feature Coverage - All original Cognee capabilities are accessible via 70 MCP tools**
+✅ **100% Feature Coverage - All original Cognee capabilities are accessible via 119 MCP tools**
 
 ### Core ECL Pipeline Features
 
@@ -593,22 +608,23 @@ This document provides:
 
 ### MCP Tool Classifications
 
-**70 MCP Tools by Trigger Type:**
+**119 MCP Tools by Trigger Type:**
 
-- **Manual (M): 19 tools** - Destructive or policy operations requiring explicit user invocation
-- **Auto (A): 17 tools** - Automatically triggered by MCP-compatible IDEs
-- **System (S): 34 tools** - Auto-triggered by Enhanced Cognee system for maintenance and monitoring
+- **Manual (M): 9 tools** - Only irreversible/destructive operations requiring explicit user decision
+- **Auto (A): 28 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
+- **System (S): 42 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
+- *Phase 7 + Phase 8 complete: 7 new tools added (search_quick, get_memory_detail, get_related, start_session, end_session, get_session_context, get_session_history). Enable System automation in .enhanced-cognee-config.json*
 
 ### For MCP IDE Users
 
-**All 70 MCP tools are accessible via Standard Memory MCP protocol:**
+**All 119 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (63): Advanced features for enterprise deployments (including Phase 2 session memory and Phase 3 external loaders)
+2. Enhanced Cognee tools (72): Advanced features for enterprise deployments (including Phase 2 session memory, Phase 3 external loaders, Phase 7 progressive search and session management)
 
 ### For Other AI IDEs
 
-**Any MCP-capable AI IDE can access all 70 tools:**
+**Any MCP-capable AI IDE can access all 119 tools:**
 
 - Cursor IDE
 - Windsurf (Codeium)
@@ -740,7 +756,7 @@ Enhanced Cognee Memory Stack
 │   ├── Session management
 │   └── Performance metrics
 └── Enhanced Cognee MCP Server
-    ├── 70 MCP tools
+    ├── 119 MCP tools
     ├── Multi-IDE support (MCP-compatible IDEs)
     └── ASCII-only output
 ```
@@ -1012,7 +1028,7 @@ OK Cross-Agent Sharing initialized
 OK Real-Time Sync initialized
 
 OK Enhanced Cognee MCP Server starting...
-  Available tools: 70 tools listed below...
+  Available tools: 119 tools listed below...
 ```
 
 ### 3. Configure Your AI IDE
@@ -1083,7 +1099,7 @@ Enhanced Cognee works with any **MCP-compatible IDE**:
 
 ## MCP Tools Reference
 
-Enhanced Cognee provides **70 MCP tools** with comprehensive automation across three trigger types:
+Enhanced Cognee provides **119 MCP tools** with comprehensive automation across three trigger types:
 
 ### Standard Memory Tools (7)
 
@@ -1115,7 +1131,7 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 | `expire_memories`      | Expire old memories     | (M) Manual   | Expires memories → gets age stats → publishes events → gets summary stats → logs performance  |
 | `get_memory_age_stats` | Memory age distribution | (S) System   | Gets age stats → logs performance                                                             |
 | `set_memory_ttl`       | Set time-to-live        | (M) Manual   | Sets TTL → gets age stats → logs performance                                                  |
-| `archive_category`     | Archive by category     | (M) Manual   | Archives category → gets age stats → publishes events → gets summary stats → logs performance |
+| `archive_category`     | Archive by category     | (S) System   | Archives category → gets age stats → publishes events → gets summary stats → logs performance |
 
 ### Memory Deduplication Tools (5)
 
@@ -1145,14 +1161,21 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 | `get_slow_queries`        | Queries above threshold        | (S) System   | Gets slow queries → logs performance       |
 | `get_prometheus_metrics`  | Prometheus export              | (S) System   | Gets prometheus metrics → logs performance |
 
+### LLM Cost Tracking Tools - Plan 14.8 (2)
+
+| Tool                   | Purpose                                 | Trigger Type | Automation Chain                                      |
+| ---------------------- | --------------------------------------- | ------------ | ----------------------------------------------------- |
+| `get_llm_cost_report`  | Token usage and cost per agent/tool/model | (S) System | Fetches usage from DB → formats ASCII report          |
+| `set_cost_budget`      | Set monthly LLM spend limit for agent   | (M) Manual   | Persists budget → in-memory cache → WARN on exceed    |
+
 ### Cross-Agent Sharing Tools (4)
 
 | Tool                  | Purpose                          | Trigger Type | Automation Chain                                                              |
 | --------------------- | -------------------------------- | ------------ | ----------------------------------------------------------------------------- |
-| `set_memory_sharing`  | Set sharing policy for memory    | (M) Manual   | Sets policy → publishes events → syncs with allowed agents → logs performance |
+| `set_memory_sharing`  | Set sharing policy for memory    | (A) Auto     | Sets policy → publishes events → syncs with allowed agents → logs performance |
 | `check_memory_access` | Check if agent can access memory | (S) System   | Checks access → logs performance                                              |
 | `get_shared_memories` | Get shared memories for agent    | (A) Auto     | Gets shared memories → logs performance                                       |
-| `create_shared_space` | Create shared memory space       | (M) Manual   | Creates space → publishes events → logs performance                           |
+| `create_shared_space` | Create shared memory space       | (A) Auto     | Creates space → publishes events → logs performance                           |
 
 ### Real-Time Sync Tools (3)
 
@@ -1166,7 +1189,7 @@ Enhanced Cognee provides **70 MCP tools** with comprehensive automation across t
 
 | Tool               | Purpose                 | Trigger Type | Automation Chain                                                                                  |
 | ------------------ | ----------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
-| `create_backup`    | Create system backup    | (M) Manual   | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
+| `create_backup`    | Create system backup    | (A) Auto     | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
 | `restore_backup`   | Restore from backup     | (M) Manual   | Restores backup → health check (on failure: rollback) → publishes events → logs performance       |
 | `list_backups`     | List all backups        | (A) Auto     | Lists backups → logs performance                                                                  |
 | `verify_backup`    | Verify backup integrity | (S) System   | Verifies backup → logs performance                                                                |
@@ -1216,8 +1239,8 @@ These tools wrap the cognee v1.0.9 `cognee.api.v1.*` session memory API.
 
 | Tool                | Purpose                              | Trigger Type | Automation Chain                                           |
 | ------------------- | ------------------------------------ | ------------ | ---------------------------------------------------------- |
-| `remember`          | Session-aware knowledge ingestion    | (M) Manual   | Stores data via v1.0.9 pipeline -> logs performance        |
-| `recall`            | 15-strategy knowledge graph search   | (M) Manual   | Searches KG with chosen strategy -> logs performance       |
+| `remember`          | Session-aware knowledge ingestion    | (A) Auto     | Stores data via v1.0.9 pipeline -> logs performance        |
+| `recall`            | 15-strategy knowledge graph search   | (A) Auto     | Searches KG with chosen strategy -> logs performance       |
 | `forget_memory`     | Delete graph data by id/dataset      | (M) Manual   | Deletes from graph -> publishes events -> logs performance  |
 | `improve`           | 4-stage feedback improvement pipeline| (M) Manual   | Runs improvement stages -> logs performance                |
 | `save_interaction`  | Record user/assistant exchange       | (A) Auto     | Adds interaction -> cognifies -> logs performance          |
@@ -1229,12 +1252,12 @@ These tools expose the cognee v1.0.9 ingestion and enrichment tasks via MCP.
 
 | Tool                      | Purpose                              | Trigger Type | Automation Chain                                         |
 | ------------------------- | ------------------------------------ | ------------ | -------------------------------------------------------- |
-| `ingest_url`              | Scrape URLs into knowledge graph     | (M) Manual   | Scrapes URL(s) via web_scraper_task -> logs performance  |
+| `ingest_url`              | Scrape URLs into knowledge graph     | (A) Auto     | Scrapes URL(s) via web_scraper_task -> logs performance  |
 | `ingest_db`               | Ingest relational DB via dlt         | (M) Manual   | Ingests DB tables via dlt pipeline -> logs performance   |
 | `translate_text`          | Translate text (LLM/Google/Azure)    | (M) Manual   | Translates via provider -> logs performance              |
 | `regex_extract_entities`  | Named entity extraction via regex    | (M) Manual   | Extracts entities via RegexEntityExtractor               |
 | `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (M) Manual   | Runs cascade extract (n rounds) -> returns graph         |
-| `list_loaders`            | List available file format loaders   | (M) Manual   | Checks supported_loaders registry -> logs performance    |
+| `list_loaders`            | List available file format loaders   | (A) Auto     | Checks supported_loaders registry -> logs performance    |
 
 ---
 
@@ -1261,11 +1284,6 @@ User: "Delete all memories older than 1 year"
 User explicitly triggers:
 → expire_memories(days=365, dry_run=False) [MANUAL - DESTRUCTIVE]
 
-User: "Archive all trading memories"
-
-User explicitly triggers:
-→ archive_category(category="trading", days=180) [MANUAL - DESTRUCTIVE]
-
 User: "Set this memory to expire in 30 days"
 
 User explicitly triggers:
@@ -1277,32 +1295,24 @@ User explicitly triggers:
 → delete_memory(memory_id="xyz-789") [MANUAL - DESTRUCTIVE]
 ```
 
-**Tools requiring manual invocation (19 tools):**
+**Tools requiring manual invocation (6 tools - Phase 8 + Plan 14.8 complete):**
 
-Core operations:
-- `delete_memory` - You must explicitly delete memories (destructive operation)
-- `expire_memories` - You must explicitly trigger memory expiration (destructive operation)
-- `set_memory_ttl` - You must explicitly configure TTL policies (policy setting)
-- `archive_category` - You must explicitly archive a category (destructive operation)
-- `set_memory_sharing` - You must explicitly configure sharing policies (policy setting)
-- `restore_backup` - You must explicitly trigger restores (system operation)
-- `create_shared_space` - You must explicitly create shared spaces (policy setting)
-- `schedule_task` - You must explicitly schedule maintenance tasks (scheduling operation)
-- `cancel_task` - You must explicitly cancel scheduled tasks (scheduling operation)
+These 6 tools are permanently Manual because they are irreversible, destructive,
+or carry direct financial impact that requires explicit user intent:
 
-Session memory and knowledge graph (Phase 2):
-- `remember` - You must explicitly trigger knowledge ingestion with session context
-- `recall` - You must explicitly search the knowledge graph
-- `forget_memory` - You must explicitly delete graph data (destructive operation)
-- `improve` - You must explicitly run the feedback improvement pipeline
+- `delete_memory` - Permanently removes a memory entry (irreversible)
+- `restore_backup` - Overwrites live database state with a backup (destructive)
+- `cancel_task` - Aborts a running background task
+- `forget_memory` - Deletes entities and relationships from the knowledge graph (irreversible)
+- `ingest_db` - Requires user-supplied database credentials and table selection
+- `set_cost_budget` - Sets monthly LLM API cost limit (financial impact, must be intentional)
 
-External loaders and enrichment (Phase 3):
-- `ingest_url` - You must explicitly trigger URL scraping
-- `ingest_db` - You must explicitly trigger database ingestion
-- `translate_text` - You must explicitly trigger text translation
-- `regex_extract_entities` - You must explicitly trigger entity extraction
-- `extract_graph_v2` - You must explicitly trigger v2 cascade graph extraction
-- `list_loaders` - You must explicitly request the loader list
+Phase 8 + Plan 14.8 promotion summary:
+- 6 tools promoted to Auto (A): `remember`, `recall`, `ingest_url`, `list_loaders`,
+  `set_memory_sharing`, `create_shared_space` - AI IDEs call these from conversation context
+- 7 tools promoted to System (S): `expire_memories`, `set_memory_ttl`, `schedule_task`,
+  `improve`, `translate_text`, `regex_extract_entities`, `extract_graph_v2` - activated
+  via .enhanced-cognee-config.json (all off by default; enable per section)
 
 #### 2. Automatic Invocation (A) - AI IDE Controlled
 
@@ -1356,6 +1366,12 @@ AI IDE automatically calls:
 - `list_tasks` - When listing scheduled tasks
 - `sync_agent_state` - When synchronizing agent states
 - `save_interaction` - After significant user/assistant exchanges (Phase 2)
+- `remember` - When user says "remember/save/note this" (Phase 8a promotion)
+- `recall` - When user asks about past context or decisions (Phase 8a promotion)
+- `ingest_url` - When user provides a URL to learn from (Phase 8a promotion)
+- `list_loaders` - When user asks what file types are supported (Phase 8a promotion)
+- `set_memory_sharing` - When user expresses sharing intent (Phase 8a promotion)
+- `create_shared_space` - When user requests multi-agent memory sharing (Phase 8a promotion)
 
 #### 3. System Invocation (S) - Enhanced Cognee Controlled
 
@@ -1391,7 +1407,7 @@ System automatically triggers:
 →   → get_performance_metrics() [SYSTEM - logs performance]
 ```
 
-**Tools triggered by Enhanced Cognee system (34 tools):**
+**Tools triggered by Enhanced Cognee system (42 tools):**
 
 **Performance & Monitoring (5 tools):**
 
@@ -1448,12 +1464,34 @@ System automatically triggers:
 
 - `cognify_status` - Automatically tracks background remember/improve task status
 
-**Summary:**
+**Phase 8b - Scheduler-driven (3 tools, enable in .enhanced-cognee-config.json):**
 
-- **19 tools** require explicit manual invocation (M)
-- **17 tools** are automatically triggered by AI IDEs (A)
-- **34 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 70 tools** with comprehensive automation chains
+- `expire_memories` - Daily scheduler job (auto_scheduler.expire_memories.enabled=true)
+- `improve` - Weekly quality improvement job (auto_scheduler.improve.enabled=true)
+- `schedule_task` - Default tasks bootstrapped from config on server startup
+
+**Phase 8b - Post-ingestion hooks (3 tools, enable in .enhanced-cognee-config.json):**
+
+- `translate_text` - Auto-translates non-default-language content after ingestion
+- `regex_extract_entities` - Auto-extracts named entities after every memory write
+- `extract_graph_v2` - Auto-enriches graph after ingestion (compute-intensive)
+
+**Phase 8b - TTL automation (1 tool, enable in .enhanced-cognee-config.json):**
+
+- `set_memory_ttl` - Auto-applied on write via keyword rules (auto_ttl_rules.rules)
+
+**Plan 14.8 - LLM Cost Tracking (1 System tool):**
+
+- `get_llm_cost_report` - Automatically called by monitoring dashboards and schedulers
+  for periodic LLM spend reporting; also invoked automatically when the user asks
+  about API costs or token usage
+
+**Summary (Phase 8 + Plan 14.8 complete):**
+
+- **6 tools** require explicit manual invocation (M) - irreversible/destructive/financial-impact operations
+- **24 tools** are automatically triggered by AI IDEs (A)
+- **42 tools** are automatically triggered by Enhanced Cognee system (S)
+- **Total: 119 tools** - 89% (93/105) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
 
@@ -1662,9 +1700,9 @@ open htmlcov/index.html
 ### Test Statistics
 
 - **Total Test Files:** 20+
-- **Total Test Cases:** 497 unit tests passing (100% pass rate)
+- **Total Test Cases:** 1,134 tests passing (100% pass rate)
 - **Code Coverage:** 92%+ unit coverage
-- **Success Rate:** 100% (497/497 unit tests passing)
+- **Success Rate:** 100% (497/1,134 tests passing)
 - **Integration tests:** Available separately (require live database connections)
 - **Warnings:** 0
 - **Skipped Tests:** 0
@@ -1894,6 +1932,31 @@ pip install -e ".[dev]"
 # Run tests
 python run_tests.py
 ```
+
+### Development: Pre-Commit Hooks
+
+```bash
+# Install pre-commit (once per dev machine)
+pip install pre-commit
+
+# Install the hooks into .git/hooks/
+pre-commit install
+
+# Run all hooks on all files (verify setup)
+pre-commit run --all-files
+
+# Run hooks on staged files only (automatic on git commit)
+git add <files>
+pre-commit run
+```
+
+Hooks run on every `git commit`:
+- Trailing whitespace + file hygiene
+- Black formatting (src/, bin/, scripts/)
+- Ruff linting (auto-fix)
+- No hardcoded ATS/OMA/SMC categories gate
+- ASCII-only output check (bin/ MCP tools)
+- Fast unit test subset (no DB required)
 
 ---
 

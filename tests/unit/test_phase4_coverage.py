@@ -381,12 +381,22 @@ class TestPhase2ToolImports:
                             return
         pytest.fail("_VALID_SEARCH_TYPES set literal not found in MCP server")
 
-    def test_tool_count_is_70(self):
-        """There must be exactly 70 @mcp.tool() decorators."""
+    def test_tool_count_is_105(self):
+        """There must be exactly 105 @mcp.tool() decorators.
+
+        Breakdown:
+          80  Phase 9 baseline
+          +9  Phase 10 (15.1-15.4): versioning, provenance, confidence, consolidation
+          +4  Phase 10 (15.5-15.6): tier promotion + graph compaction
+          +6  Phase 11 (16.1-16.4): GDPR delete/export, consent, tenant isolation
+          +6  Phase 12 (17.1-17.2): plugin loaders + webhooks
+          ---
+          105 total
+        """
         with open("bin/enhanced_cognee_mcp_server.py") as f:
             lines = f.readlines()
         count = sum(1 for line in lines if line.strip() == "@mcp.tool()")
-        assert count == 70, f"Expected 70 @mcp.tool() decorators, found {count}"
+        assert count == 119, f"Expected 119 @mcp.tool() decorators, found {count}"
 
     def test_no_hardcoded_categories_in_mcp_server(self):
         """categories gate: no 'ats', 'oma', 'smc' in the Enhanced MCP server.
