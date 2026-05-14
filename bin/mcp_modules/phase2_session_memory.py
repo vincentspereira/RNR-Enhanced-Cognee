@@ -62,7 +62,11 @@ def register(mcp: "FastMCP") -> None:
         supports session context, self-improvement feedback, and typed memory
         entries (QA, Trace, Feedback). Use cognify() for simple document storage.
 
-        TRIGGER TYPE: (M) Manual - triggered by user when storing knowledge
+        TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+        WHEN TO CALL: Call automatically when the user says "remember this", "save this",
+        "note that", "keep this in mind", or when the user shares knowledge they will
+        likely need later (project decisions, preferences, facts, meeting notes, code
+        patterns). Do NOT call for transient conversational messages.
 
         Parameters:
         -----------
@@ -138,7 +142,10 @@ def register(mcp: "FastMCP") -> None:
         - CYPHER                   : Direct Cypher query against graph
         - FEELING_LUCKY            : Auto-select best strategy for query
 
-        TRIGGER TYPE: (M) Manual - triggered when searching stored knowledge
+        TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
+        WHEN TO CALL: Call automatically when the user asks "what did we decide about X?",
+        "what do you know about Y?", or any question that may be answered from stored
+        knowledge. Prefer recall over search_memories for structured knowledge graph queries.
 
         Parameters:
         -----------
@@ -255,7 +262,9 @@ def register(mcp: "FastMCP") -> None:
           Stage 3: Persist session data to permanent graph
           Stage 4: Sync enriched graph back to session cache
 
-        TRIGGER TYPE: (M) Manual - triggered by user to improve knowledge quality
+        TRIGGER TYPE: (S) System - Automatically scheduled via Phase 8b auto_scheduler config.
+        Enable with: {"auto_scheduler": {"improve": {"enabled": true}}}
+        in .enhanced-cognee-config.json. Also callable manually.
 
         Parameters:
         -----------

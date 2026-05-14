@@ -14,7 +14,7 @@ availability for Claude Code and other AI IDEs
 
 - **100% of original Cognee core features are available via MCP**
 - **100+ additional enterprise features** beyond original Cognee
-- **119 production-ready MCP tools** accessible to Claude Code (up from 58 in the Feb 2026 report)
+- **122 production-ready MCP tools** accessible to Claude Code (up from 58 in the Feb 2026 report)
 - **4-database Enhanced stack** (vs. single database in original Cognee)
 - **1,134 unit tests** with 100% pass rate
 - **Python SDK** available: `pip install enhanced-cognee-client` (PyPI v1.0.0)
@@ -104,7 +104,7 @@ await search(query, limit)                       # Search knowledge graph
 | Milvus | [INFO] Not used | N/A | Replaced by Qdrant |
 
 **MCP Integration:**
-- All 119 MCP tools use Qdrant + PGVector for vector operations
+- All 122 MCP tools use Qdrant + PGVector for vector operations
 - No separate configuration needed - works automatically
 - Vector similarity search available via `search()` and `search_memories()`
 
@@ -495,7 +495,7 @@ scores (Phase 14) and confidence scores (Phase 10) with vector similarity and re
 
 ---
 
-## PART 3: COMPLETE 119-TOOL REFERENCE TABLE
+## PART 3: COMPLETE 122-TOOL REFERENCE TABLE
 
 **Key:** M = Manual (requires explicit user invocation), A = Auto (triggered by Claude Code or AI IDE),
 S = System (triggered by Enhanced Cognee system or scheduled task)
@@ -515,9 +515,9 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 11 | `get_stats` | Enhanced Cognee Core | A |
 | 12 | `health` | Enhanced Cognee Core | A |
 | 13 | `create_backup` | Enhanced Cognee Core / Backup | A |
-| 14 | `expire_memories` | Memory Management / TTL | M |
+| 14 | `expire_memories` | Memory Management / TTL | S |
 | 15 | `get_memory_age_stats` | Memory Management / TTL | S |
-| 16 | `set_memory_ttl` | Memory Management / TTL | M |
+| 16 | `set_memory_ttl` | Memory Management / TTL | A |
 | 17 | `archive_category` | Memory Management / TTL | M |
 | 18 | `check_duplicate` | Deduplication | S |
 | 19 | `auto_deduplicate` | Deduplication | S |
@@ -538,17 +538,17 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 34 | `get_prometheus_metrics` | Performance Analytics | S |
 | 35 | `get_llm_cost_report` | LLM Cost Tracking | S |
 | 36 | `set_cost_budget` | LLM Cost Tracking | M |
-| 37 | `set_memory_sharing` | Cross-Agent Sharing | M |
+| 37 | `set_memory_sharing` | Cross-Agent Sharing | A |
 | 38 | `check_memory_access` | Cross-Agent Sharing | S |
 | 39 | `get_shared_memories` | Cross-Agent Sharing | A |
-| 40 | `create_shared_space` | Cross-Agent Sharing | M |
+| 40 | `create_shared_space` | Cross-Agent Sharing | A |
 | 41 | `publish_memory_event` | Real-Time Sync | S |
 | 42 | `get_sync_status` | Real-Time Sync | S |
 | 43 | `sync_agent_state` | Real-Time Sync | S |
 | 44 | `restore_backup` | Backup and Recovery | M |
 | 45 | `list_backups` | Backup and Recovery | A |
 | 46 | `verify_backup` | Backup and Recovery | S |
-| 47 | `rollback_restore` | Backup and Recovery | M |
+| 47 | `rollback_restore` | Backup and Recovery | S |
 | 48 | `schedule_task` | Scheduling | S |
 | 49 | `list_tasks` | Scheduling | A |
 | 50 | `cancel_task` | Scheduling | M |
@@ -578,7 +578,7 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 74 | `extract_graph_v2` | External Loaders and Enrichment | S |
 | 75 | `list_loaders` | External Loaders and Enrichment | A |
 | 76 | `start_session` | Session Management | A |
-| 77 | `end_session` | Session Management | M |
+| 77 | `end_session` | Session Management | A |
 | 78 | `get_session_context` | Session Management | A |
 | 79 | `get_session_history` | Session Management | A |
 | 80 | `query_audit_log` | Audit and Provenance | S |
@@ -596,16 +596,16 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 92 | `compact_knowledge_graph` | Consolidation and Tier Promotion | S |
 | 93 | `get_graph_stats` | Consolidation and Tier Promotion | S |
 | 94 | `gdpr_delete_user_data` | GDPR Compliance | M |
-| 95 | `gdpr_export_user_data` | GDPR Compliance | M |
+| 95 | `gdpr_export_user_data` | GDPR Compliance | A |
 | 96 | `gdpr_record_consent` | GDPR Compliance | M |
 | 97 | `gdpr_check_consent` | GDPR Compliance | S |
 | 98 | `gdpr_list_consents` | GDPR Compliance | S |
 | 99 | `gdpr_verify_tenant_isolation` | GDPR Compliance | S |
 | 100 | `list_loader_plugins` | Plugin Loaders | A |
 | 101 | `load_document_with_plugin` | Plugin Loaders | A |
-| 102 | `register_webhook` | Webhooks | M |
+| 102 | `register_webhook` | Webhooks | A |
 | 103 | `list_webhooks` | Webhooks | A |
-| 104 | `test_webhook` | Webhooks | M |
+| 104 | `test_webhook` | Webhooks | A |
 | 105 | `disable_webhook` | Webhooks | M |
 | 106 | `encrypt_memory` | Encryption at Rest (Phase 14) | S |
 | 107 | `get_encryption_stats` | Encryption at Rest (Phase 14) | S |
@@ -613,53 +613,45 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 109 | `add_observation` | Structured Observations (Phase 14) | S |
 | 110 | `get_observations` | Structured Observations (Phase 14) | S |
 | 111 | `update_observation` | Structured Observations (Phase 14) | S |
-| 112 | `delete_observation` | Structured Observations (Phase 14) | M |
-| 113 | `configure_slack_notifications` | Notifications (Phase 14) | M |
-| 114 | `configure_discord_notifications` | Notifications (Phase 14) | M |
-| 115 | `test_notification_channel` | Notifications (Phase 14) | M |
+| 112 | `delete_observation` | Structured Observations (Phase 14) | A |
+| 113 | `configure_slack_notifications` | Notifications (Phase 14) | A |
+| 114 | `configure_discord_notifications` | Notifications (Phase 14) | A |
+| 115 | `test_notification_channel` | Notifications (Phase 14) | A |
 | 116 | `get_memory_importance` | Importance Scoring (Phase 14) | S |
 | 117 | `update_importance_scores` | Importance Scoring (Phase 14) | S |
 | 118 | `get_top_important_memories` | Importance Scoring (Phase 14) | S |
 | 119 | `rerank_search_results` | Re-ranking (Phase 14) | S |
+| 120 | `undo_last` | Undo Operations | M |
+| 121 | `get_undo_history` | Undo Operations | A |
+| 122 | `redo_last` | Undo Operations | M |
 
 ---
 
 ## PART 4: MCP TOOL CLASSIFICATIONS
 
 Tools are classified by who triggers them:
-**25 Manual (M), 28 Auto (A), 66 System (S).**
+**14 Manual (M), 40 Auto (A), 68 System (S).**
 
-### Manual Tools (M) - 25
+### Manual Tools (M) - 14
 
 These require explicit user invocation due to destructive or policy-setting nature:
 
 1. `delete_memory` - Delete specific memory
-2. `expire_memories` - Bulk expire old memories
-3. `set_memory_ttl` - Set per-memory time-to-live
-4. `set_memory_sharing` - Configure sharing policy
+2. `deduplicate` - Manual deduplication pass (user-initiated, not scheduled)
+3. `set_cost_budget` - Set LLM cost budget
+4. `archive_category` - Archive a memory category
 5. `restore_backup` - Restore from backup
-6. `rollback_restore` - Roll back a failed restore
-7. `create_shared_space` - Create multi-agent collaboration space
-8. `cancel_task` - Cancel scheduled task
-9. `deduplicate` - Manual deduplication pass
-10. `set_cost_budget` - Set LLM cost budget
-11. `archive_category` - Archive a memory category
-12. `forget_memory` - Forget a memory (session-scoped)
-13. `end_session` - End a session
-14. `revert_memory` - Revert memory to previous version
-15. `gdpr_delete_user_data` - GDPR right to erasure
-16. `gdpr_export_user_data` - GDPR data portability
-17. `gdpr_record_consent` - Record consent decision
-18. `register_webhook` - Register new webhook
-19. `test_webhook` - Test a webhook endpoint
-20. `disable_webhook` - Disable a webhook
-21. `rotate_encryption_key` - Rotate encryption key
-22. `delete_observation` - Delete an observation
-23. `configure_slack_notifications` - Configure Slack webhook
-24. `configure_discord_notifications` - Configure Discord webhook
-25. `test_notification_channel` - Test a notification channel
+6. `cancel_task` - Cancel scheduled task
+7. `forget_memory` - Forget a memory (session-scoped)
+8. `revert_memory` - Revert memory to previous version
+9. `gdpr_delete_user_data` - GDPR right to erasure
+10. `gdpr_record_consent` - Record consent decision
+11. `disable_webhook` - Disable a webhook
+12. `rotate_encryption_key` - Rotate encryption key
+13. `undo_last` - Undo the last automated memory operation
+14. `redo_last` - Re-apply the most recently undone operation
 
-### Auto Tools (A) - 28
+### Auto Tools (A) - 40
 
 Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
 
@@ -691,118 +683,132 @@ Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
 26. `list_webhooks` - List registered webhooks
 27. `list_loader_plugins` - List loader plugins
 28. `load_document_with_plugin` - Plugin-based loading
+29. `get_undo_history` - Retrieve undo history for an agent
+30. `set_memory_sharing` - Set sharing policy (AI IDE infers from conversation)
+31. `create_shared_space` - Create multi-agent collaboration space
+32. `set_memory_ttl` - Set time-to-live (AI IDE infers "remember for X days")
+33. `end_session` - End a session (AI IDE closes on conversation end)
+34. `test_webhook` - Test a webhook endpoint (AI IDE verifies after registration)
+35. `test_notification_channel` - Test a notification channel (AI IDE verification)
+36. `configure_slack_notifications` - Configure Slack webhook (from user-provided URL)
+37. `configure_discord_notifications` - Configure Discord webhook (from user-provided URL)
+38. `gdpr_export_user_data` - GDPR data portability (user asks "export my data")
+39. `register_webhook` - Register new webhook (from user-provided endpoint)
+40. `delete_observation` - Delete an observation (AI IDE manages observations)
 
-### System Tools (S) - 66
+### System Tools (S) - 68
 
 Auto-triggered by the Enhanced Cognee system, schedulers, or background processes:
 
-**Memory Management / TTL (1):**
+**Memory Management / TTL (2):**
 1. `get_memory_age_stats` - Age statistics for TTL decisions
+2. `expire_memories` - Bulk expire memories past their TTL (scheduler-triggered)
 
 **Deduplication (5):**
-2. `check_duplicate` - Check if a memory is a duplicate
-3. `auto_deduplicate` - Automatic deduplication run
-4. `get_deduplication_stats` - Deduplication statistics
-5. `deduplication_report` - Full deduplication report
-6. `schedule_deduplication` - Schedule a deduplication job
+3. `check_duplicate` - Check if a memory is a duplicate
+4. `auto_deduplicate` - Automatic deduplication run
+5. `get_deduplication_stats` - Deduplication statistics
+6. `deduplication_report` - Full deduplication report
+7. `schedule_deduplication` - Schedule a deduplication job
 
 **Summarization (8):**
-7. `summarize_old_memories` - Summarize aged memories
-8. `summarize_category` - Summarize a category
-9. `intelligent_summarize` - AI-powered summarization
-10. `auto_summarize_old_memories` - Auto-triggered summarization
-11. `get_summary_stats` - Summary statistics
-12. `get_summarization_stats` - Summarization run statistics
-13. `summary_stats` - Alias for summary statistics
-14. `schedule_summarization` - Schedule a summarization job
+8. `summarize_old_memories` - Summarize aged memories
+9. `summarize_category` - Summarize a category
+10. `intelligent_summarize` - AI-powered summarization
+11. `auto_summarize_old_memories` - Auto-triggered summarization
+12. `get_summary_stats` - Summary statistics
+13. `get_summarization_stats` - Summarization run statistics
+14. `summary_stats` - Alias for summary statistics
+15. `schedule_summarization` - Schedule a summarization job
 
 **Performance Analytics (3):**
-15. `get_performance_metrics` - Query and write latency metrics
-16. `get_slow_queries` - Identify slow queries
-17. `get_prometheus_metrics` - Prometheus-format metrics export
+16. `get_performance_metrics` - Query and write latency metrics
+17. `get_slow_queries` - Identify slow queries
+18. `get_prometheus_metrics` - Prometheus-format metrics export
 
 **LLM Cost Tracking (1):**
-18. `get_llm_cost_report` - LLM API cost report
+19. `get_llm_cost_report` - LLM API cost report
 
 **Cross-Agent Sharing (1):**
-19. `check_memory_access` - Check sharing permission for a memory
+20. `check_memory_access` - Check sharing permission for a memory
 
 **Real-Time Sync (3):**
-20. `publish_memory_event` - Publish event to Redis pub-sub
-21. `get_sync_status` - Real-time sync status
-22. `sync_agent_state` - Sync agent state across instances
+21. `publish_memory_event` - Publish event to Redis pub-sub
+22. `get_sync_status` - Real-time sync status
+23. `sync_agent_state` - Sync agent state across instances
 
-**Backup and Recovery (1):**
-23. `verify_backup` - Verify backup integrity
+**Backup and Recovery (2):**
+24. `verify_backup` - Verify backup integrity
+25. `rollback_restore` - Roll back a failed restore operation (auto-triggered on failure)
 
 **Scheduling (1):**
-24. `schedule_task` - Register a scheduled background task
+26. `schedule_task` - Register a scheduled background task
 
 **Multi-Language (5):**
-25. `detect_language` - Detect language of text
-26. `search_by_language` - Filter search by language
-27. `get_language_distribution` - Language distribution of memories
-28. `cross_language_search` - Search across all languages
-29. `get_search_facets` - Faceted search metadata
+27. `detect_language` - Detect language of text
+28. `search_by_language` - Filter search by language
+29. `get_language_distribution` - Language distribution of memories
+30. `cross_language_search` - Search across all languages
+31. `get_search_facets` - Faceted search metadata
 
 **Advanced AI and Search (4):**
-30. `cluster_memories` - Cluster memories by topic
-31. `advanced_search` - Multi-strategy advanced search
-32. `expand_search_query` - Query expansion
-33. `get_search_analytics` - Search analytics
+32. `cluster_memories` - Cluster memories by topic
+33. `advanced_search` - Multi-strategy advanced search
+34. `expand_search_query` - Query expansion
+35. `get_search_analytics` - Search analytics
 
 **Progressive Search (3):**
-34. `search_quick` - Fast shallow search
-35. `get_memory_detail` - Deep detail for a result
-36. `get_related` - Related memories for a result
+36. `search_quick` - Fast shallow search
+37. `get_memory_detail` - Deep detail for a result
+38. `get_related` - Related memories for a result
 
 **Session-Aware Memory / v1.0.9 API (2):**
-37. `improve` - Improve a memory based on feedback
-38. `save_interaction` - Save interaction to session
+39. `improve` - Improve a memory based on feedback
+40. `save_interaction` - Save interaction to session
 
 **External Loaders and Enrichment (3):**
-39. `translate_text` - Translate memory content
-40. `regex_extract_entities` - Extract entities via regex
-41. `extract_graph_v2` - Extract knowledge graph entities
+41. `translate_text` - Translate memory content
+42. `regex_extract_entities` - Extract entities via regex
+43. `extract_graph_v2` - Extract knowledge graph entities
 
 **Audit and Provenance (6):**
-42. `query_audit_log` - Query the audit log
-43. `get_memory_history` - Full history of a memory
-44. `get_memory_provenance` - Source provenance of a memory
-45. `verify_memory` - Verify memory integrity
-46. `set_memory_confidence` - Set confidence score
-47. `get_confidence_report` - Confidence report across memories
+44. `query_audit_log` - Query the audit log
+45. `get_memory_history` - Full history of a memory
+46. `get_memory_provenance` - Source provenance of a memory
+47. `verify_memory` - Verify memory integrity
+48. `set_memory_confidence` - Set confidence score
+49. `get_confidence_report` - Confidence report across memories
 
 **Consolidation and Tier Promotion (7):**
-48. `find_consolidation_candidates` - Find memories to consolidate
-49. `consolidate_memories` - Merge memory group into summary
-50. `get_consolidation_report` - Consolidation run report
-51. `promote_memory_tier` - Promote memory to higher tier
-52. `get_tier_stats` - Tier distribution statistics
-53. `compact_knowledge_graph` - Compact the knowledge graph
-54. `get_graph_stats` - Knowledge graph statistics
+50. `find_consolidation_candidates` - Find memories to consolidate
+51. `consolidate_memories` - Merge memory group into summary
+52. `get_consolidation_report` - Consolidation run report
+53. `promote_memory_tier` - Promote memory to higher tier
+54. `get_tier_stats` - Tier distribution statistics
+55. `compact_knowledge_graph` - Compact the knowledge graph
+56. `get_graph_stats` - Knowledge graph statistics
 
 **GDPR Compliance (3):**
-55. `gdpr_check_consent` - Check consent record for a user
-56. `gdpr_list_consents` - List all consent records
-57. `gdpr_verify_tenant_isolation` - Verify tenant data isolation
+57. `gdpr_check_consent` - Check consent record for a user
+58. `gdpr_list_consents` - List all consent records
+59. `gdpr_verify_tenant_isolation` - Verify tenant data isolation
 
 **Encryption at Rest - Phase 14 (2):**
-58. `encrypt_memory` - Encrypt memory content at rest
-59. `get_encryption_stats` - Encryption coverage statistics
+60. `encrypt_memory` - Encrypt memory content at rest
+61. `get_encryption_stats` - Encryption coverage statistics
 
 **Structured Observations - Phase 14 (3):**
-60. `add_observation` - Add EAV observation to a memory
-61. `get_observations` - Get all observations for a memory
-62. `update_observation` - Update an observation value
+62. `add_observation` - Add EAV observation to a memory
+63. `get_observations` - Get all observations for a memory
+64. `update_observation` - Update an observation value
 
 **Importance Scoring - Phase 14 (3):**
-63. `get_memory_importance` - Get importance score for a memory
-64. `update_importance_scores` - Bulk recalculate importance scores
-65. `get_top_important_memories` - Top N memories by importance
+65. `get_memory_importance` - Get importance score for a memory
+66. `update_importance_scores` - Bulk recalculate importance scores
+67. `get_top_important_memories` - Top N memories by importance
 
 **Re-ranking - Phase 14 (1):**
-66. `rerank_search_results` - Multi-signal re-rank a result set
+68. `rerank_search_results` - Multi-signal re-rank a result set
 
 ---
 
@@ -848,8 +854,8 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 - [OK] Compatible with Claude Code default memory interface
 - [OK] Compatible with other MCP-capable AI IDEs
 
-**Enhanced Cognee MCP Tools (112 additional tools):**
-- [OK] All 119 tools accessible via MCP protocol
+**Enhanced Cognee MCP Tools (115 additional tools):**
+- [OK] All 122 tools accessible via MCP protocol
 - [OK] No LLM API key required from the IDE
 - [OK] Automatic database connection management
 - [OK] Server-side configuration via environment variables
@@ -888,7 +894,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 
 ### Compatibility Notes
 
-- Any MCP-capable AI IDE can access all 119 tools
+- Any MCP-capable AI IDE can access all 122 tools
 - Standard Memory MCP interface ensures broad compatibility across IDE generations
 - Production-ready security: authorization, transactions, confirmation tokens, 17+ exception types
 
@@ -938,7 +944,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 **Overall Feature Coverage:**
 - Original Cognee features: 100% available via MCP
 - New exclusive features: 100+ additional capabilities across 25 feature groups
-- Total MCP tools: 119 production-ready tools (up from 58 in Feb 2026)
+- Total MCP tools: 122 production-ready tools (up from 58 in Feb 2026)
 
 ---
 
@@ -1034,7 +1040,7 @@ iterations per tool to characterize tool invocation overhead independently of da
 
 | Metric | Value |
 |--------|-------|
-| Tools benchmarked | 119 |
+| Tools benchmarked | 119 (baseline) |
 | Benchmark suite p50 | 0.00 ms |
 | Benchmark suite p95 | 0.07 ms |
 | Slowest tool mean | 0.22 ms (get_memory_importance) |
@@ -1043,7 +1049,7 @@ iterations per tool to characterize tool invocation overhead independently of da
 
 ### Interpretation
 
-All 119 tools complete their Python dispatch in sub-millisecond time. In production, measured
+All 119 baseline tools complete their Python dispatch in sub-millisecond time. In production, measured
 latency will be dominated by database round-trips (PostgreSQL, Qdrant, Neo4j, Redis), not by
 the tool dispatch layer itself. This result confirms the server adds no meaningful overhead
 beyond the underlying database operations.
@@ -1194,7 +1200,7 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 
 | Metric | Feb 2026 State | May 2026 State | Change |
 |--------|---------------|---------------|--------|
-| Total MCP tools | 58 | 119 | +61 tools |
+| Total MCP tools | 58 | 122 | +64 tools |
 | Feature groups | 13 | 33 | +20 groups |
 | Unit tests | Not tracked | 1,134 | +1,134 |
 | Test pass rate | Not tracked | 100% | [OK] |
@@ -1207,7 +1213,7 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 
 ### For Claude Code Users
 
-1. All original Cognee capabilities available via 119 MCP tools
+1. All original Cognee capabilities available via 122 MCP tools
 2. Standard Memory MCP protocol ensures seamless integration
 3. No LLM keys required from Claude Code
 4. 4-database Enhanced stack provides 400-700% performance improvement
@@ -1233,7 +1239,7 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 
 ### For Other AI IDEs
 
-- Any MCP-capable AI IDE can access all 119 tools
+- Any MCP-capable AI IDE can access all 122 tools
 - Standard Memory MCP tools ensure broad compatibility
 - Server-side configuration simplifies IDE integration
 - Production-ready security with authorization and transactions
@@ -1265,6 +1271,6 @@ Enhanced Cognee MCP server is recommended for:
 - Cognee API Reference: https://docs.cognee.ai/api-reference/introduction
 - Claude Agent SDK Integration: https://www.cognee.ai/blog/integrations/claude-agent-sdk-persistent-memory-with-cognee-integration
 - LobeHub MCP Servers: https://lobehub.com/zh/mcp/vincentspereira-enhanced-cognee
-- Local: bin/enhanced_cognee_mcp_server.py (Phase 14 hardened, 119 tools)
+- Local: bin/enhanced_cognee_mcp_server.py (Phase 14 hardened, 122 tools)
 - Local: docs/plans/COGNEE_UPSTREAM_PARITY_AND_SYNC_PLAN.md (2026-05-13, approved)
 - Local: docs/reports/sprints/ (Sprints 1-10, all complete)

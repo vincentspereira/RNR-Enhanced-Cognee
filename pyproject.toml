@@ -204,6 +204,7 @@ Upstream = "https://github.com/topoteretes/cognee"
 
 [project.scripts]
 cognee-cli = "cognee.cli._cognee:main"
+enhanced-cognee = "bin.enhanced_cognee_cli:cli"
 
 [build-system]
 requires = ["hatchling"]
@@ -247,3 +248,15 @@ exclude = [
 
 [tool.ruff.lint]
 ignore = ["F401"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+exclude = '''
+/(
+    cognee
+  | cognee-frontend
+  | dashboard
+  | \.venv
+)/
+'''

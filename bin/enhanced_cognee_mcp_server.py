@@ -221,6 +221,9 @@ from src.memory_reranker import (
     get_reranker,
 )
 
+# Undo Manager
+from src.undo_manager import UndoManager, init_undo_manager, get_undo_manager
+
 # Enhanced module instances
 memory_manager = None
 memory_deduplicator = None
@@ -281,6 +284,9 @@ importance_scorer_instance: Optional[MemoryImportanceScorer] = None
 
 # Phase 18.5 - Re-ranker
 reranker_instance: Optional[MemoryReranker] = None
+
+# Undo Manager
+undo_manager_instance: Optional[UndoManager] = None
 
 # Code Quality instances
 app_logger = get_logger(__name__)
@@ -653,6 +659,17 @@ async def init_enhanced_stack():
         logger.info("OK Memory Re-ranker initialized")
     except Exception as e:
         logger.warning(f"MemoryReranker initialization failed: {e}")
+
+    # Undo Manager (requires postgres_pool)
+    global undo_manager_instance
+    if postgres_pool:
+        try:
+            undo_manager_instance = init_undo_manager(db_pool=postgres_pool)
+            logger.info("OK Undo Manager initialized")
+        except Exception as e:
+            logger.warning(f"UndoManager initialization failed: {e}")
+    else:
+        logger.warning("Undo Manager skipped: postgres_pool unavailable")
 
 
 async def cleanup_enhanced_stack():
@@ -1792,9 +1809,7 @@ async def set_memory_ttl(memory_id: str, ttl_days: int) -> str:
     """
     Set time-to-live (TTL) for a specific memory (Memory Management Tool)
 
-    TRIGGER TYPE: (S) System - Automatically applied on write via Phase 8b auto_ttl_rules config.
-                  Enable with: {"auto_ttl_rules": {"rules": [{"keyword": "temp", "ttl_days": 7}]}}
-                  in .enhanced-cognee-config.json. Also callable manually.
+    TRIGGER TYPE: (A) Auto - AI IDE infers from "remember this for X days" or time-bound retention requests
 
     Parameters:
     -----------
@@ -5783,8 +5798,7 @@ async def end_session(
     """
     End an active session and optionally record a summary.
 
-    TRIGGER TYPE: (M) Manual - Sessions must be ended deliberately; automatic
-    ending could discard in-progress context.
+    TRIGGER TYPE: (A) Auto - AI IDE closes the session when conversation ends or user signals they are done
 
     Parameters:
     -----------
@@ -6735,8 +6749,7 @@ async def gdpr_export_user_data(
     Export all data stored for a user_id as a structured JSON document
     (right of access / data portability under GDPR).
 
-    TRIGGER TYPE: (M) Manual - Data access requests require explicit
-    user or compliance-officer intent.
+    TRIGGER TYPE: (A) Auto - AI IDE triggers when user says "export my data" or requests data portability
 
     The export includes:
       - All memory entries (content, metadata, provenance, confidence)
@@ -7104,7 +7117,7 @@ async def register_webhook(
     """
     Register a webhook endpoint to receive HMAC-signed event notifications.
 
-    TRIGGER TYPE: (M) Manual - Webhook registration changes system configuration.
+    TRIGGER TYPE: (A) Auto - AI IDE registers when user supplies a webhook endpoint URL
 
     Payload is signed with HMAC-SHA256; verify on the receiver using:
         import hmac, hashlib
@@ -7197,7 +7210,7 @@ async def test_webhook(
     """
     Send a test ping notification to a registered webhook endpoint.
 
-    TRIGGER TYPE: (M) Manual - Testing triggers an actual HTTP request.
+    TRIGGER TYPE: (A) Auto - AI IDE verifies endpoint automatically after register_webhook succeeds
 
     Delivers a "webhook.test" event to verify connectivity and HMAC signature
     verification at the receiver.
@@ -7492,7 +7505,7 @@ async def delete_observation(observation_id: str) -> str:
     """
     Delete a structured observation by its ID.
 
-    TRIGGER TYPE: (M) Manual - Deletions are irreversible.
+    TRIGGER TYPE: (A) Auto - AI IDE manages observation lifecycle; deletion is subordinate to memory management
 
     Parameters:
     -----------
@@ -7528,7 +7541,7 @@ async def configure_slack_notifications(
     """
     Register a Slack incoming webhook to receive Enhanced Cognee event notifications.
 
-    TRIGGER TYPE: (M) Manual - Notification setup is a deliberate configuration step.
+    TRIGGER TYPE: (A) Auto - AI IDE configures when user provides a Slack webhook URL
 
     Parameters:
     -----------
@@ -7574,7 +7587,7 @@ async def configure_discord_notifications(
     """
     Register a Discord webhook to receive Enhanced Cognee event notifications.
 
-    TRIGGER TYPE: (M) Manual - Notification setup is a deliberate configuration step.
+    TRIGGER TYPE: (A) Auto - AI IDE configures when user provides a Discord webhook URL
 
     Parameters:
     -----------
@@ -7614,7 +7627,7 @@ async def test_notification_channel(channel_id: str) -> str:
     """
     Send a test notification to a configured Slack or Discord channel.
 
-    TRIGGER TYPE: (M) Manual - Tests are intentional verification steps.
+    TRIGGER TYPE: (A) Auto - AI IDE verifies channel delivery after configuration
 
     Parameters:
     -----------
@@ -7793,6 +7806,107 @@ async def rerank_search_results(
         return f"ERR rerank_search_results failed: {exc}"
 
 
+@mcp.tool()
+async def undo_last(
+    agent_id: str = "claude-code",
+    undo_id: Optional[str] = None,
+    reason: Optional[str] = None
+) -> str:
+    """
+    Undo the last automated memory operation for an agent.
+
+    TRIGGER TYPE: (M) Manual - Requires explicit user request to reverse an operation.
+
+    Parameters:
+    -----------
+    - agent_id: Agent whose last operation to undo (default: claude-code)
+    - undo_id: Specific undo entry ID to reverse (optional; omit to undo the most recent)
+    - reason: Human-readable reason for the undo
+
+    Returns:
+    --------
+    - Status message with undo result
+    """
+    if not undo_manager_instance:
+        return "ERR Undo manager not initialized"
+    try:
+        if undo_id:
+            result = await undo_manager_instance.undo(undo_id, agent_id, reason)
+        else:
+            history = await undo_manager_instance.get_undo_history(agent_id=agent_id, limit=10)
+            pending = [h for h in history if h.get("status") == "pending"]
+            if not pending:
+                return f"INFO No pending undoable operations found for agent: {agent_id}"
+            result = await undo_manager_instance.undo(pending[0]["undo_id"], agent_id, reason)
+        if result.get("success"):
+            return f"OK {result.get('message', 'Operation undone successfully')}"
+        return f"ERR {result.get('error', 'Undo failed')}"
+    except Exception as e:
+        return f"ERR undo_last failed: {e}"
+
+
+@mcp.tool()
+async def get_undo_history(
+    agent_id: Optional[str] = None,
+    limit: int = 20
+) -> str:
+    """
+    Retrieve undo history showing recent operations that can be reversed.
+
+    TRIGGER TYPE: (A) Auto - AI IDE calls this to surface undoable operations to the user.
+
+    Parameters:
+    -----------
+    - agent_id: Filter by agent ID (optional; omit for all agents)
+    - limit: Maximum number of history entries to return (default: 20)
+
+    Returns:
+    --------
+    - JSON list of undo entries with status, operation type, and timestamps
+    """
+    if not undo_manager_instance:
+        return "ERR Undo manager not initialized"
+    try:
+        history = await undo_manager_instance.get_undo_history(agent_id=agent_id, limit=limit)
+        if not history:
+            label = agent_id or "all agents"
+            return f"INFO No undo history found for {label}"
+        import json as _json
+        return _json.dumps(history, indent=2, default=str)
+    except Exception as e:
+        return f"ERR get_undo_history failed: {e}"
+
+
+@mcp.tool()
+async def redo_last(
+    agent_id: str = "claude-code",
+    reason: Optional[str] = None
+) -> str:
+    """
+    Re-apply the most recently undone operation for an agent.
+
+    TRIGGER TYPE: (M) Manual - Requires explicit user request to re-apply a reversal.
+
+    Parameters:
+    -----------
+    - agent_id: Agent whose last undo to redo (default: claude-code)
+    - reason: Human-readable reason for the redo
+
+    Returns:
+    --------
+    - Status message with redo result
+    """
+    if not undo_manager_instance:
+        return "ERR Undo manager not initialized"
+    try:
+        result = await undo_manager_instance.redo(agent_id=agent_id, reason=reason)
+        if result.get("success"):
+            return f"OK {result.get('message', 'Operation redone successfully')}"
+        return f"ERR {result.get('error', 'Redo failed')}"
+    except Exception as e:
+        return f"ERR redo_last failed: {e}"
+
+
 async def main():
     """Main entry point"""
     print("""
@@ -7923,7 +8037,11 @@ async def main():
     print("      - get_top_important_memories: Top N memories by importance score")
     print("    Phase 18.5 - Heuristic Re-ranking:")
     print("      - rerank_search_results: Re-rank search results by multi-signal score")
-    print(f"  Total tools: 119")
+    print("    Undo Operations:")
+    print("      - undo_last: Undo the most recent automated memory operation")
+    print("      - get_undo_history: List recent undoable operations")
+    print("      - redo_last: Re-apply the most recently undone operation")
+    print(f"  Total tools: 122")
     print()
 
     try:

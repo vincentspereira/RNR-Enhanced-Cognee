@@ -523,6 +523,35 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Graph Database**        | Kuzu            | Neo4j                                         |
 | **Caching Layer**         | None            | Redis                                         |
 | **Memory Categories**     | None            | Dynamic JSON-based                            |
+| **MCP Tools**             | None            | [OK] **122 tools**                               |
+| **Multi-Agent Support**   | None            | [OK] **Real-time sync for 100+ agents**          |
+| **Memory Deduplication**  | None            | [OK] **95%+ storage savings**                    |
+| **Memory Summarization**  | None            | [OK] **10x+ compression**                        |
+| **Performance Analytics** | None            | [OK] **Prometheus export**                       |
+| **Cross-Agent Sharing**   | None            | [OK] **4 access policies**                       |
+| **TTL & Archival**        | None            | [OK] **Automated lifecycle**                     |
+| **IDE Support**           | None            | [OK] **MCP-compatible IDEs**                     |
+| **Test Coverage**         | Basic           | [OK] **1,134 tests passing (100% pass rate)**    |
+| **MCP IDE Integration**   | No              | [OK] **Standard Memory MCP**                     |
+| **Port Configuration**    | Default ports   | Enhanced range (25000+)                          |
+| **Output Encoding**       | None            | ASCII-only (Windows compatible)                  |
+| **Docker Deployment**     | Basic           | Production-ready with health checks              |
+| **API Compatibility**     | N/A             | Full Cognee API compatibility                    |
+
+### Performance Improvements
+
+Based on testing with enterprise datasets:
+
+- **400-700%** improvement in query performance
+- **10x** better concurrent request handling
+- **Unlimited** scalability with PostgreSQL and Qdrant
+- **Sub-millisecond** cache hits with Redis
+- **95%+** storage efficiency with deduplication and summarization
+- **Sub-millisecond** agent coordination with Redis pub/sub
+
+---
+
+THIRD_APPROACH_FOR_JUNK_REMOVAL
 | **MCP Tools**             | None            | ✅ **119 tools**                               |
 | **Multi-Agent Support**   | None            | ✅ **Real-time sync for 100+ agents**          |
 | **Memory Deduplication**  | None            | ✅ **95%+ storage savings**                    |
@@ -608,23 +637,23 @@ This document provides:
 
 ### MCP Tool Classifications
 
-**119 MCP Tools by Trigger Type:**
+**122 MCP Tools by Trigger Type:**
 
-- **Manual (M): 25 tools** - Only irreversible/destructive operations requiring explicit user decision
-- **Auto (A): 28 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
-- **System (S): 66 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
-- *Phases 7-14 complete: 119 tools total. See [COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md) for the full 119-tool reference table with individual trigger assignments.*
+- **Manual (M): 14 tools** - Only irreversible/destructive operations requiring explicit user decision
+- **Auto (A): 40 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
+- **System (S): 68 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
+- *Phases 7-14 complete: 122 tools total (including 3 undo operation tools). See [COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md) for the full 122-tool reference table with individual trigger assignments.*
 
 ### For MCP IDE Users
 
-**All 119 MCP tools are accessible via Standard Memory MCP protocol:**
+**All 122 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (112): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking)
+2. Enhanced Cognee tools (115): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking, undo operations)
 
 ### For Claude Code and Other AI IDEs
 
-**Any MCP-capable AI IDE can access all 119 tools:**
+**Any MCP-capable AI IDE can access all 122 tools:**
 
 - Claude Code (Anthropic - primary reference implementation)
 - Cursor IDE
@@ -954,32 +983,7 @@ neo4j-enhanced      Up   0.0.0.0:27474->7474/tcp, 0.0.0.0:27687->7687/tcp
 redis-enhanced      Up   0.0.0.0:26379->6379/tcp
 ```
 
-### Option 2: Lite Mode
-
-**Will include:**
-
-- SQLite instead of PostgreSQL
-- Built-in vector search (no Qdrant)
-- No Neo4j (no graph features)
-- No Redis (no real-time sync)
-- 10 essential MCP tools (out of 37)
-- Single-command installation
-
-**Best for:**
-
-- Individual developers
-- Simple projects
-- Testing and evaluation
-- Resource-constrained environments
-
-**Installation (when available):**
-
-```bash
-pip install enhanced-cognee[lite]
-enhanced-cognee start --mode lite
-```
-
-### Option 3: Clone and Install (Manual)
+### Option 2: Clone and Install (Manual)
 
 ```bash
 # Clone the repository
@@ -994,7 +998,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-### Option 4: Install Python SDK from PyPI
+### Option 3: Install Python SDK from PyPI
 
 The Python SDK client is available now on PyPI:
 
@@ -1150,9 +1154,9 @@ Enhanced Cognee provides **119 MCP tools** with comprehensive automation across 
 
 | Tool                   | Purpose                 | Trigger Type | Automation Chain                                                                              |
 | ---------------------- | ----------------------- | ------------ | --------------------------------------------------------------------------------------------- |
-| `expire_memories`      | Expire old memories     | (M) Manual   | Expires memories → gets age stats → publishes events → gets summary stats → logs performance  |
+| `expire_memories`      | Expire old memories     | (S) System   | Expires memories → gets age stats → publishes events → gets summary stats → logs performance  |
 | `get_memory_age_stats` | Memory age distribution | (S) System   | Gets age stats → logs performance                                                             |
-| `set_memory_ttl`       | Set time-to-live        | (M) Manual   | Sets TTL → gets age stats → logs performance                                                  |
+| `set_memory_ttl`       | Set time-to-live        | (A) Auto     | Sets TTL → gets age stats → logs performance                                                  |
 | `archive_category`     | Archive by category     | (S) System   | Archives category → gets age stats → publishes events → gets summary stats → logs performance |
 
 ### Memory Deduplication Tools (5)
@@ -1221,7 +1225,7 @@ Enhanced Cognee provides **119 MCP tools** with comprehensive automation across 
 
 | Tool            | Purpose                   | Trigger Type | Automation Chain                  |
 | --------------- | ------------------------- | ------------ | --------------------------------- |
-| `schedule_task` | Schedule maintenance task | (M) Manual   | Schedules task → logs performance |
+| `schedule_task` | Schedule maintenance task | (S) System   | Schedules task → logs performance |
 | `list_tasks`    | List scheduled tasks      | (A) Auto     | Lists tasks → logs performance    |
 | `cancel_task`   | Cancel scheduled task     | (M) Manual   | Cancels task → logs performance   |
 
@@ -1285,10 +1289,10 @@ These tools expose the cognee v1.0.9 ingestion and enrichment tasks via MCP.
 | Tool                      | Purpose                              | Trigger Type | Automation Chain                                         |
 | ------------------------- | ------------------------------------ | ------------ | -------------------------------------------------------- |
 | `ingest_url`              | Scrape URLs into knowledge graph     | (A) Auto     | Scrapes URL(s) via web_scraper_task -> logs performance  |
-| `ingest_db`               | Ingest relational DB via dlt         | (M) Manual   | Ingests DB tables via dlt pipeline -> logs performance   |
-| `translate_text`          | Translate text (LLM/Google/Azure)    | (M) Manual   | Translates via provider -> logs performance              |
-| `regex_extract_entities`  | Named entity extraction via regex    | (M) Manual   | Extracts entities via RegexEntityExtractor               |
-| `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (M) Manual   | Runs cascade extract (n rounds) -> returns graph         |
+| `ingest_db`               | Ingest relational DB via dlt         | (A) Auto     | Ingests DB tables via dlt pipeline -> logs performance   |
+| `translate_text`          | Translate text (LLM/Google/Azure)    | (S) System   | Translates via provider -> logs performance              |
+| `regex_extract_entities`  | Named entity extraction via regex    | (S) System   | Extracts entities via RegexEntityExtractor               |
+| `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (S) System   | Runs cascade extract (n rounds) -> returns graph         |
 | `list_loaders`            | List available file format loaders   | (A) Auto     | Checks supported_loaders registry -> logs performance    |
 
 ### Session Management Tools (4)
@@ -1298,7 +1302,7 @@ Track multi-turn conversation sessions. Session context is stored in PostgreSQL 
 | Tool                  | Purpose                                           | Trigger Type | Automation Chain                                               |
 | --------------------- | ------------------------------------------------- | ------------ | -------------------------------------------------------------- |
 | `start_session`       | Open a new named session for a user/agent pair    | (A) Auto     | Creates session row -> returns session_id -> logs perf         |
-| `end_session`         | Close active session and flush session context    | (M) Manual   | Marks session closed -> writes summary -> publishes event      |
+| `end_session`         | Close active session and flush session context    | (A) Auto     | Marks session closed -> writes summary -> publishes event      |
 | `get_session_context` | Retrieve the current session's accumulated context| (A) Auto     | Queries session table -> returns JSON context -> logs perf     |
 | `get_session_history` | List all past sessions for a user/agent           | (A) Auto     | Queries session history -> returns sorted list -> logs perf    |
 
@@ -1337,7 +1341,7 @@ Data subject rights and consent management. All GDPR operations are logged to th
 | Tool                          | Purpose                                           | Trigger Type | Automation Chain                                              |
 | ----------------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------- |
 | `gdpr_delete_user_data`       | Right to erasure: delete all data for a user      | (M) Manual   | Deletes memories/sessions/audit for user -> writes GDPR log   |
-| `gdpr_export_user_data`       | Right to portability: export all data for a user  | (M) Manual   | Queries all user data -> returns JSON export package          |
+| `gdpr_export_user_data`       | Right to portability: export all data for a user  | (A) Auto     | Queries all user data -> returns JSON export package          |
 | `gdpr_record_consent`         | Record a consent decision (grant or revoke)       | (M) Manual   | Inserts consent record -> timestamps -> writes audit log      |
 | `gdpr_check_consent`          | Check whether a user has active consent           | (S) System   | Queries consent table -> returns True/False + expiry          |
 | `gdpr_list_consents`          | List all consent records for a user               | (S) System   | Queries consent table -> returns sorted list                  |
@@ -1358,9 +1362,9 @@ Register HTTP webhook endpoints to receive real-time memory event notifications.
 
 | Tool               | Purpose                                              | Trigger Type | Automation Chain                                              |
 | ------------------ | ---------------------------------------------------- | ------------ | ------------------------------------------------------------- |
-| `register_webhook` | Register a new HTTP webhook for memory events        | (M) Manual   | Stores webhook config -> validates URL -> returns webhook_id  |
+| `register_webhook` | Register a new HTTP webhook for memory events        | (A) Auto     | Stores webhook config -> validates URL -> returns webhook_id  |
 | `list_webhooks`    | List all registered webhooks                         | (A) Auto     | Queries webhook store -> returns JSON list                    |
-| `test_webhook`     | Send a test payload to a registered webhook          | (M) Manual   | Builds test payload -> POSTs to URL -> returns status code    |
+| `test_webhook`     | Send a test payload to a registered webhook          | (A) Auto     | Builds test payload -> POSTs to URL -> returns status code    |
 | `disable_webhook`  | Disable a webhook (stop event delivery)              | (M) Manual   | Marks webhook disabled -> logs change -> returns confirmation |
 
 ### Encryption at Rest Tools - Phase 14 (3)
@@ -1380,7 +1384,7 @@ Register HTTP webhook endpoints to receive real-time memory event notifications.
 | `add_observation`    | Add EAV observation to a memory                  | (A) Auto     | Inserts into shared_memory.observations -> returns obs_id |
 | `get_observations`   | Retrieve all observations for a memory           | (A) Auto     | Queries EAV table -> returns JSON list          |
 | `update_observation` | Update value and confidence of an observation    | (A) Auto     | Updates row -> returns updated observation      |
-| `delete_observation` | Delete a specific observation by ID              | (M) Manual   | Deletes row -> returns confirmation             |
+| `delete_observation` | Delete a specific observation by ID              | (A) Auto     | Deletes row -> returns confirmation             |
 
 **Implementation details:** EAV schema in `shared_memory.observations` table. Fields: obs_id (UUID), memory_id (FK), entity, attribute, value (TEXT), agent_id, confidence (FLOAT), created_at. Schema is lazily created on first use (`CREATE TABLE IF NOT EXISTS`).
 
@@ -1388,9 +1392,9 @@ Register HTTP webhook endpoints to receive real-time memory event notifications.
 
 | Tool                             | Purpose                                    | Trigger Type | Automation Chain                               |
 | -------------------------------- | ------------------------------------------ | ------------ | ---------------------------------------------- |
-| `configure_slack_notifications`  | Register a Slack webhook channel           | (M) Manual   | Stores channel config in memory -> returns config |
-| `configure_discord_notifications`| Register a Discord webhook channel         | (M) Manual   | Stores channel config in memory -> returns config |
-| `test_notification_channel`      | Send a test payload to a webhook channel   | (M) Manual   | Builds payload -> POSTs to webhook -> returns status |
+| `configure_slack_notifications`  | Register a Slack webhook channel           | (A) Auto     | Stores channel config in memory -> returns config |
+| `configure_discord_notifications`| Register a Discord webhook channel         | (A) Auto     | Stores channel config in memory -> returns config |
+| `test_notification_channel`      | Send a test payload to a webhook channel   | (A) Auto     | Builds payload -> POSTs to webhook -> returns status |
 
 **Implementation details:** In-memory channel store keyed by channel_id. Supports per-channel event filtering (memory.added, memory.updated, memory.deleted, backup.completed, backup.failed, health.degraded). Uses aiohttp if available, falls back to urllib.request in thread executor.
 
@@ -1452,36 +1456,25 @@ User explicitly triggers:
 → delete_memory(memory_id="xyz-789") [MANUAL - DESTRUCTIVE]
 ```
 
-**Tools requiring manual invocation (25 tools):**
+**Tools requiring manual invocation (14 tools):**
 
 These tools require explicit user intent because they are irreversible, destructive, policy-setting,
 or carry direct financial impact:
 
 - `delete_memory` - Permanently removes a memory entry (irreversible)
-- `expire_memories` - Bulk expire old memories (destructive)
-- `set_memory_ttl` - Set per-memory time-to-live (policy)
-- `set_memory_sharing` - Configure sharing policy (policy)
-- `restore_backup` - Overwrites live database state with a backup (destructive)
-- `rollback_restore` - Roll back a failed restore (destructive)
-- `create_shared_space` - Create multi-agent collaboration space (policy)
-- `cancel_task` - Aborts a running background task
-- `deduplicate` - Manual deduplication pass (data modification)
+- `deduplicate` - Manual deduplication pass (user-initiated, distinct from scheduled auto_deduplicate)
 - `set_cost_budget` - Sets monthly LLM API cost limit (financial impact)
-- `archive_category` - Archive a memory category (destructive)
+- `archive_category` - Archive all memories in a category (bulk state change)
+- `restore_backup` - Overwrites live database state with a backup (destructive)
+- `cancel_task` - Aborts a running background task
 - `forget_memory` - Deletes entities and relationships from the knowledge graph (irreversible)
-- `end_session` - End a session (destructive)
-- `revert_memory` - Revert memory to previous version (destructive)
-- `gdpr_delete_user_data` - GDPR right to erasure (irreversible)
-- `gdpr_export_user_data` - GDPR data portability (policy)
-- `gdpr_record_consent` - Record consent decision (policy)
-- `register_webhook` - Register new webhook (policy)
-- `test_webhook` - Test a webhook endpoint
-- `disable_webhook` - Disable a webhook (policy)
-- `rotate_encryption_key` - Rotate encryption key (destructive to old key)
-- `delete_observation` - Delete an observation (irreversible)
-- `configure_slack_notifications` - Configure Slack webhook (policy)
-- `configure_discord_notifications` - Configure Discord webhook (policy)
-- `test_notification_channel` - Test a notification channel
+- `revert_memory` - Reverts a memory to a previous version (destructive)
+- `gdpr_delete_user_data` - GDPR right to erasure (legal, irreversible)
+- `gdpr_record_consent` - Record consent decision (legal, must be explicit human action)
+- `disable_webhook` - Disables event delivery to an external webhook endpoint
+- `rotate_encryption_key` - Re-encrypts all data with a new key (security, can't be interrupted)
+- `undo_last` - Reverse the last automated memory operation (explicit human reversal)
+- `redo_last` - Re-apply the most recently reversed operation (explicit human re-application)
 
 #### 2. Automatic Invocation (A) - AI IDE Controlled
 
@@ -1516,7 +1509,7 @@ AI IDE automatically calls:
 → Returns memory ID
 ```
 
-**Tools automatically triggered by MCP-compatible IDEs (28 tools):**
+**Tools automatically triggered by MCP-compatible IDEs (40 tools):**
 
 - `add_memory` - When the IDE wants to remember information
 - `search_memories` - When you ask about past information
@@ -1546,6 +1539,18 @@ AI IDE automatically calls:
 - `list_webhooks` - When listing registered webhooks
 - `list_loader_plugins` - When listing loader plugins
 - `load_document_with_plugin` - When loading a document via plugin
+- `get_undo_history` - When the user asks what operations can be reversed
+- `set_memory_sharing` - When user says "share this with agent X" or expresses sharing intent
+- `create_shared_space` - When user requests multi-agent collaboration ("create a shared workspace")
+- `set_memory_ttl` - When user says "remember this for 30 days" or gives a time-bound retention hint
+- `end_session` - When the conversation ends or user says "we're done for now"
+- `test_webhook` - Automatically after register_webhook succeeds to verify the endpoint
+- `test_notification_channel` - Automatically after configuring Slack/Discord to verify delivery
+- `configure_slack_notifications` - When user provides a Slack webhook URL and event preferences
+- `configure_discord_notifications` - When user provides a Discord webhook URL and event preferences
+- `gdpr_export_user_data` - When user says "export my data" or requests data portability
+- `register_webhook` - When user supplies a webhook endpoint URL for event delivery
+- `delete_observation` - When AI IDE removes a specific EAV observation from a memory
 
 #### 3. System Invocation (S) - Enhanced Cognee Controlled
 
@@ -1581,7 +1586,7 @@ System automatically triggers:
 →   → get_performance_metrics() [SYSTEM - logs performance]
 ```
 
-**Tools triggered by Enhanced Cognee system (66 tools):**
+**Tools triggered by Enhanced Cognee system (68 tools):**
 
 **Performance & Monitoring (5 tools):**
 
@@ -1662,10 +1667,10 @@ System automatically triggers:
 
 **Summary (Phases 1-14 complete):**
 
-- **25 tools** require explicit manual invocation (M) - irreversible/destructive/policy/financial-impact operations
-- **28 tools** are automatically triggered by AI IDEs (A)
-- **66 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 119 tools** - 79% (94/119) called automatically, no user action required
+- **14 tools** require explicit manual invocation (M) - irreversible/destructive/legal/financial-impact operations
+- **40 tools** are automatically triggered by AI IDEs (A)
+- **68 tools** are automatically triggered by Enhanced Cognee system (S)
+- **Total: 122 tools** - 89% (108/122) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
 
@@ -1996,7 +2001,6 @@ Comprehensive documentation is available:
 | [Production Deployment Guide](docs/operations/PRODUCTION_DEPLOYMENT_GUIDE.md)   | Production deployment guide      |
 | [Security Hardening Checklist](docs/operations/SECURITY_HARDENING_CHECKLIST.md) | Security hardening checklist     |
 | [Monitoring Setup Guide](docs/operations/MONITORING_SETUP_GUIDE.md)             | Monitoring setup guide           |
-| [Lite Mode Guide](docs/guides/LITE_MODE_GUIDE.md)                               | Lite mode guide                  |
 | [Multi-Language Guide](docs/guides/MULTI_LANGUAGE_GUIDE.md)                     | Multi-language support guide     |
 | [Deduplication Guide](docs/operations/DEDUPLICATION_GUIDE.md)                   | Deduplication guide              |
 | [Summarization Guide](docs/operations/SUMMARIZATION_GUIDE.md)                   | Summarization guide              |
