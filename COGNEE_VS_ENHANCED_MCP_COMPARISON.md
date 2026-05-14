@@ -539,7 +539,7 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 35 | `get_llm_cost_report` | LLM Cost Tracking | S |
 | 36 | `set_cost_budget` | LLM Cost Tracking | M |
 | 37 | `set_memory_sharing` | Cross-Agent Sharing | A |
-| 38 | `check_memory_access` | Cross-Agent Sharing | S |
+| 38 | `check_memory_access` | Cross-Agent Sharing | A |
 | 39 | `get_shared_memories` | Cross-Agent Sharing | A |
 | 40 | `create_shared_space` | Cross-Agent Sharing | A |
 | 41 | `publish_memory_event` | Real-Time Sync | S |
@@ -572,7 +572,7 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 68 | `save_interaction` | Session-Aware Memory / v1.0.9 API | S |
 | 69 | `cognify_status` | Session-Aware Memory / v1.0.9 API | A |
 | 70 | `ingest_url` | External Loaders and Enrichment | A |
-| 71 | `ingest_db` | External Loaders and Enrichment | A |
+| 71 | `ingest_db` | External Loaders and Enrichment | M |
 | 72 | `translate_text` | External Loaders and Enrichment | S |
 | 73 | `regex_extract_entities` | External Loaders and Enrichment | S |
 | 74 | `extract_graph_v2` | External Loaders and Enrichment | S |
@@ -582,25 +582,25 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 78 | `get_session_context` | Session Management | A |
 | 79 | `get_session_history` | Session Management | A |
 | 80 | `query_audit_log` | Audit and Provenance | S |
-| 81 | `get_memory_history` | Audit and Provenance | S |
+| 81 | `get_memory_history` | Audit and Provenance | M |
 | 82 | `revert_memory` | Audit and Provenance | M |
 | 83 | `get_memory_provenance` | Audit and Provenance | S |
 | 84 | `verify_memory` | Audit and Provenance | S |
-| 85 | `set_memory_confidence` | Audit and Provenance | S |
+| 85 | `set_memory_confidence` | Audit and Provenance | M |
 | 86 | `get_confidence_report` | Audit and Provenance | S |
 | 87 | `find_consolidation_candidates` | Consolidation and Tier Promotion | S |
-| 88 | `consolidate_memories` | Consolidation and Tier Promotion | S |
+| 88 | `consolidate_memories` | Consolidation and Tier Promotion | M |
 | 89 | `get_consolidation_report` | Consolidation and Tier Promotion | S |
 | 90 | `promote_memory_tier` | Consolidation and Tier Promotion | S |
-| 91 | `get_tier_stats` | Consolidation and Tier Promotion | S |
-| 92 | `compact_knowledge_graph` | Consolidation and Tier Promotion | S |
+| 91 | `get_tier_stats` | Consolidation and Tier Promotion | A |
+| 92 | `compact_knowledge_graph` | Consolidation and Tier Promotion | M |
 | 93 | `get_graph_stats` | Consolidation and Tier Promotion | S |
 | 94 | `gdpr_delete_user_data` | GDPR Compliance | M |
 | 95 | `gdpr_export_user_data` | GDPR Compliance | A |
 | 96 | `gdpr_record_consent` | GDPR Compliance | M |
-| 97 | `gdpr_check_consent` | GDPR Compliance | S |
-| 98 | `gdpr_list_consents` | GDPR Compliance | S |
-| 99 | `gdpr_verify_tenant_isolation` | GDPR Compliance | S |
+| 97 | `gdpr_check_consent` | GDPR Compliance | A |
+| 98 | `gdpr_list_consents` | GDPR Compliance | M |
+| 99 | `gdpr_verify_tenant_isolation` | GDPR Compliance | M |
 | 100 | `list_loader_plugins` | Plugin Loaders | A |
 | 101 | `load_document_with_plugin` | Plugin Loaders | A |
 | 102 | `register_webhook` | Webhooks | A |
@@ -608,7 +608,7 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 104 | `test_webhook` | Webhooks | A |
 | 105 | `disable_webhook` | Webhooks | M |
 | 106 | `encrypt_memory` | Encryption at Rest (Phase 14) | S |
-| 107 | `get_encryption_stats` | Encryption at Rest (Phase 14) | S |
+| 107 | `get_encryption_stats` | Encryption at Rest (Phase 14) | A |
 | 108 | `rotate_encryption_key` | Encryption at Rest (Phase 14) | M |
 | 109 | `add_observation` | Structured Observations (Phase 14) | S |
 | 110 | `get_observations` | Structured Observations (Phase 14) | S |
@@ -617,9 +617,9 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 113 | `configure_slack_notifications` | Notifications (Phase 14) | A |
 | 114 | `configure_discord_notifications` | Notifications (Phase 14) | A |
 | 115 | `test_notification_channel` | Notifications (Phase 14) | A |
-| 116 | `get_memory_importance` | Importance Scoring (Phase 14) | S |
+| 116 | `get_memory_importance` | Importance Scoring (Phase 14) | A |
 | 117 | `update_importance_scores` | Importance Scoring (Phase 14) | S |
-| 118 | `get_top_important_memories` | Importance Scoring (Phase 14) | S |
+| 118 | `get_top_important_memories` | Importance Scoring (Phase 14) | A |
 | 119 | `rerank_search_results` | Re-ranking (Phase 14) | S |
 | 120 | `undo_last` | Undo Operations | M |
 | 121 | `get_undo_history` | Undo Operations | A |
@@ -630,16 +630,16 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 ## PART 4: MCP TOOL CLASSIFICATIONS
 
 Tools are classified by who triggers them:
-**14 Manual (M), 40 Auto (A), 68 System (S).**
+**21 Manual (M), 45 Auto (A), 56 System (S).**
 
-### Manual Tools (M) - 14
+### Manual Tools (M) - 21
 
-These require explicit user invocation due to destructive or policy-setting nature:
+These require explicit user invocation due to destructive, irreversible, or compliance-sensitive nature:
 
 1. `delete_memory` - Delete specific memory
 2. `deduplicate` - Manual deduplication pass (user-initiated, not scheduled)
 3. `set_cost_budget` - Set LLM cost budget
-4. `archive_category` - Archive a memory category
+4. `archive_category` - Archive a memory category (bulk destructive)
 5. `restore_backup` - Restore from backup
 6. `cancel_task` - Cancel scheduled task
 7. `forget_memory` - Forget a memory (session-scoped)
@@ -650,8 +650,15 @@ These require explicit user invocation due to destructive or policy-setting natu
 12. `rotate_encryption_key` - Rotate encryption key
 13. `undo_last` - Undo the last automated memory operation
 14. `redo_last` - Re-apply the most recently undone operation
+15. `ingest_db` - Database ingestion (user supplies connection string)
+16. `get_memory_history` - Full version history (compliance audit query)
+17. `set_memory_confidence` - Set confidence score (deliberate curation step)
+18. `consolidate_memories` - Merge memory group into summary (permanently modifies data)
+19. `compact_knowledge_graph` - Compact the knowledge graph (structural modification)
+20. `gdpr_list_consents` - List all consent records (sensitive compliance query)
+21. `gdpr_verify_tenant_isolation` - Verify tenant data isolation (explicit security audit)
 
-### Auto Tools (A) - 40
+### Auto Tools (A) - 45
 
 Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
 
@@ -675,28 +682,33 @@ Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
 18. `recall` - Session-first retrieval
 19. `cognify_status` - Background task status
 20. `ingest_url` - URL ingestion
-21. `ingest_db` - Database ingestion
-22. `list_loaders` - List available loaders
-23. `start_session` - Start a memory session
-24. `get_session_context` - Get session context
-25. `get_session_history` - Get session history
-26. `list_webhooks` - List registered webhooks
-27. `list_loader_plugins` - List loader plugins
-28. `load_document_with_plugin` - Plugin-based loading
-29. `get_undo_history` - Retrieve undo history for an agent
-30. `set_memory_sharing` - Set sharing policy (AI IDE infers from conversation)
-31. `create_shared_space` - Create multi-agent collaboration space
-32. `set_memory_ttl` - Set time-to-live (AI IDE infers "remember for X days")
-33. `end_session` - End a session (AI IDE closes on conversation end)
-34. `test_webhook` - Test a webhook endpoint (AI IDE verifies after registration)
-35. `test_notification_channel` - Test a notification channel (AI IDE verification)
-36. `configure_slack_notifications` - Configure Slack webhook (from user-provided URL)
-37. `configure_discord_notifications` - Configure Discord webhook (from user-provided URL)
-38. `gdpr_export_user_data` - GDPR data portability (user asks "export my data")
-39. `register_webhook` - Register new webhook (from user-provided endpoint)
-40. `delete_observation` - Delete an observation (AI IDE manages observations)
+21. `list_loaders` - List available loaders
+22. `start_session` - Start a memory session
+23. `get_session_context` - Get session context
+24. `get_session_history` - Get session history
+25. `list_webhooks` - List registered webhooks
+26. `list_loader_plugins` - List loader plugins
+27. `load_document_with_plugin` - Plugin-based loading
+28. `get_undo_history` - Retrieve undo history for an agent
+29. `set_memory_sharing` - Set sharing policy (AI IDE infers from conversation)
+30. `create_shared_space` - Create multi-agent collaboration space
+31. `set_memory_ttl` - Set time-to-live (AI IDE infers "remember for X days")
+32. `end_session` - End a session (AI IDE closes on conversation end)
+33. `test_webhook` - Test a webhook endpoint (AI IDE verifies after registration)
+34. `test_notification_channel` - Test a notification channel (AI IDE verification)
+35. `configure_slack_notifications` - Configure Slack webhook (from user-provided URL)
+36. `configure_discord_notifications` - Configure Discord webhook (from user-provided URL)
+37. `gdpr_export_user_data` - GDPR data portability (user asks "export my data")
+38. `register_webhook` - Register new webhook (from user-provided endpoint)
+39. `delete_observation` - Delete an observation (AI IDE manages observations)
+40. `check_memory_access` - Check sharing permission (read-only authorization gate)
+41. `get_tier_stats` - Tier distribution statistics (read-only health check)
+42. `gdpr_check_consent` - Check consent record (read-only compliance gate)
+43. `get_encryption_stats` - Encryption coverage statistics (read-only status)
+44. `get_memory_importance` - Get importance score for a memory (read-only)
+45. `get_top_important_memories` - Top N memories by importance (read-only ranking)
 
-### System Tools (S) - 68
+### System Tools (S) - 56
 
 Auto-triggered by the Enhanced Cognee system, schedulers, or background processes:
 
@@ -729,86 +741,70 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 **LLM Cost Tracking (1):**
 19. `get_llm_cost_report` - LLM API cost report
 
-**Cross-Agent Sharing (1):**
-20. `check_memory_access` - Check sharing permission for a memory
-
 **Real-Time Sync (3):**
-21. `publish_memory_event` - Publish event to Redis pub-sub
-22. `get_sync_status` - Real-time sync status
-23. `sync_agent_state` - Sync agent state across instances
+20. `publish_memory_event` - Publish event to Redis pub-sub
+21. `get_sync_status` - Real-time sync status
+22. `sync_agent_state` - Sync agent state across instances
 
 **Backup and Recovery (2):**
-24. `verify_backup` - Verify backup integrity
-25. `rollback_restore` - Roll back a failed restore operation (auto-triggered on failure)
+23. `verify_backup` - Verify backup integrity
+24. `rollback_restore` - Roll back a failed restore operation (auto-triggered on failure)
 
 **Scheduling (1):**
-26. `schedule_task` - Register a scheduled background task
+25. `schedule_task` - Register a scheduled background task
 
 **Multi-Language (5):**
-27. `detect_language` - Detect language of text
-28. `search_by_language` - Filter search by language
-29. `get_language_distribution` - Language distribution of memories
-30. `cross_language_search` - Search across all languages
-31. `get_search_facets` - Faceted search metadata
+26. `detect_language` - Detect language of text
+27. `search_by_language` - Filter search by language
+28. `get_language_distribution` - Language distribution of memories
+29. `cross_language_search` - Search across all languages
+30. `get_search_facets` - Faceted search metadata
 
 **Advanced AI and Search (4):**
-32. `cluster_memories` - Cluster memories by topic
-33. `advanced_search` - Multi-strategy advanced search
-34. `expand_search_query` - Query expansion
-35. `get_search_analytics` - Search analytics
+31. `cluster_memories` - Cluster memories by topic
+32. `advanced_search` - Multi-strategy advanced search
+33. `expand_search_query` - Query expansion
+34. `get_search_analytics` - Search analytics
 
 **Progressive Search (3):**
-36. `search_quick` - Fast shallow search
-37. `get_memory_detail` - Deep detail for a result
-38. `get_related` - Related memories for a result
+35. `search_quick` - Fast shallow search
+36. `get_memory_detail` - Deep detail for a result
+37. `get_related` - Related memories for a result
 
 **Session-Aware Memory / v1.0.9 API (2):**
-39. `improve` - Improve a memory based on feedback
-40. `save_interaction` - Save interaction to session
+38. `improve` - Improve a memory based on feedback
+39. `save_interaction` - Save interaction to session
 
 **External Loaders and Enrichment (3):**
-41. `translate_text` - Translate memory content
-42. `regex_extract_entities` - Extract entities via regex
-43. `extract_graph_v2` - Extract knowledge graph entities
+40. `translate_text` - Translate memory content
+41. `regex_extract_entities` - Extract entities via regex
+42. `extract_graph_v2` - Extract knowledge graph entities
 
-**Audit and Provenance (6):**
-44. `query_audit_log` - Query the audit log
-45. `get_memory_history` - Full history of a memory
-46. `get_memory_provenance` - Source provenance of a memory
-47. `verify_memory` - Verify memory integrity
-48. `set_memory_confidence` - Set confidence score
-49. `get_confidence_report` - Confidence report across memories
+**Audit and Provenance (4):**
+43. `query_audit_log` - Query the audit log
+44. `get_memory_provenance` - Source provenance of a memory
+45. `verify_memory` - Verify memory integrity
+46. `get_confidence_report` - Confidence report across memories
 
-**Consolidation and Tier Promotion (7):**
-50. `find_consolidation_candidates` - Find memories to consolidate
-51. `consolidate_memories` - Merge memory group into summary
-52. `get_consolidation_report` - Consolidation run report
-53. `promote_memory_tier` - Promote memory to higher tier
-54. `get_tier_stats` - Tier distribution statistics
-55. `compact_knowledge_graph` - Compact the knowledge graph
-56. `get_graph_stats` - Knowledge graph statistics
+**Consolidation and Tier Promotion (4):**
+47. `find_consolidation_candidates` - Find memories to consolidate
+48. `get_consolidation_report` - Consolidation run report
+49. `promote_memory_tier` - Promote memory to higher tier
+50. `get_graph_stats` - Knowledge graph statistics
 
-**GDPR Compliance (3):**
-57. `gdpr_check_consent` - Check consent record for a user
-58. `gdpr_list_consents` - List all consent records
-59. `gdpr_verify_tenant_isolation` - Verify tenant data isolation
-
-**Encryption at Rest - Phase 14 (2):**
-60. `encrypt_memory` - Encrypt memory content at rest
-61. `get_encryption_stats` - Encryption coverage statistics
+**Encryption at Rest - Phase 14 (1):**
+51. `encrypt_memory` - Encrypt memory content at rest
 
 **Structured Observations - Phase 14 (3):**
-62. `add_observation` - Add EAV observation to a memory
-63. `get_observations` - Get all observations for a memory
-64. `update_observation` - Update an observation value
+52. `add_observation` - Add EAV observation to a memory
+53. `get_observations` - Get all observations for a memory
+54. `update_observation` - Update an observation value
 
-**Importance Scoring - Phase 14 (3):**
-65. `get_memory_importance` - Get importance score for a memory
-66. `update_importance_scores` - Bulk recalculate importance scores
-67. `get_top_important_memories` - Top N memories by importance
+**Importance Scoring - Phase 14 (1):**
+55. `update_importance_scores` - Bulk recalculate importance scores
 
 **Re-ranking - Phase 14 (1):**
-68. `rerank_search_results` - Multi-signal re-rank a result set
+56. `rerank_search_results` - Multi-signal re-rank a result set
 
 ---
 

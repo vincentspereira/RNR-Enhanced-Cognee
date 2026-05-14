@@ -639,9 +639,9 @@ This document provides:
 
 **122 MCP Tools by Trigger Type:**
 
-- **Manual (M): 14 tools** - Only irreversible/destructive operations requiring explicit user decision
-- **Auto (A): 40 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
-- **System (S): 68 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
+- **Manual (M): 21 tools** - Only irreversible/destructive/compliance-sensitive operations requiring explicit user decision
+- **Auto (A): 45 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
+- **System (S): 56 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
 - *Phases 7-14 complete: 122 tools total (including 3 undo operation tools). See [COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md) for the full 122-tool reference table with individual trigger assignments.*
 
 ### For MCP IDE Users
@@ -1670,7 +1670,7 @@ System automatically triggers:
 - **14 tools** require explicit manual invocation (M) - irreversible/destructive/legal/financial-impact operations
 - **40 tools** are automatically triggered by AI IDEs (A)
 - **68 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 122 tools** - 89% (108/122) called automatically, no user action required
+- **Total: 122 tools** - 83% (101/122) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
 

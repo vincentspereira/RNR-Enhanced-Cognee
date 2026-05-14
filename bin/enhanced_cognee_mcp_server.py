@@ -1873,7 +1873,7 @@ async def archive_category(
     """
     Archive all memories from a specific category older than specified days
 
-    TRIGGER TYPE: (S) System - Automatically triggered by Enhanced Cognee based on age policy
+    TRIGGER TYPE: (M) Manual - Archive is destructive (bulk-removes a category); requires explicit user approval
 
     The system automatically archives categories when:
     - Memories exceed age threshold (default: 180 days)
@@ -3977,7 +3977,7 @@ async def get_supported_languages() -> str:
     """
     Get list of all supported languages (Language Detection Tool)
 
-    TRIGGER TYPE: (S) System - Automatically lists supported languages
+    TRIGGER TYPE: (A) Auto - AI IDE auto-calls this before offering translation or language-filtered search
 
     Returns:
     --------
