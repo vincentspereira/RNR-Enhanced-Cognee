@@ -1,0 +1,890 @@
+{
+  "benchmark_info": {
+    "n_iterations": 50,
+    "total_functions_benchmarked": 119,
+    "total_categories": 19,
+    "overall_p50_ms": 0.001,
+    "overall_p95_ms": 0.066,
+    "slowest_function": {
+      "name": "get_memory_importance",
+      "mean_ms": 0.222
+    },
+    "fastest_function": {
+      "name": "list_agents",
+      "mean_ms": 0.0
+    }
+  },
+  "results_by_category": {
+    "core_memory": {
+      "remember": {
+        "mean_ms": 0.096,
+        "p50_ms": 0.081,
+        "p95_ms": 0.104,
+        "min_ms": 0.075,
+        "max_ms": 0.726
+      },
+      "recall": {
+        "mean_ms": 0.041,
+        "p50_ms": 0.039,
+        "p95_ms": 0.048,
+        "min_ms": 0.038,
+        "max_ms": 0.076
+      },
+      "forget_memory": {
+        "mean_ms": 0.068,
+        "p50_ms": 0.059,
+        "p95_ms": 0.069,
+        "min_ms": 0.055,
+        "max_ms": 0.451
+      },
+      "improve": {
+        "mean_ms": 0.04,
+        "p50_ms": 0.038,
+        "p95_ms": 0.049,
+        "min_ms": 0.037,
+        "max_ms": 0.065
+      },
+      "save_interaction": {
+        "mean_ms": 0.038,
+        "p50_ms": 0.038,
+        "p95_ms": 0.041,
+        "min_ms": 0.037,
+        "max_ms": 0.058
+      },
+      "cognify_status": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.009
+      },
+      "add_memory": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.008
+      },
+      "search_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.002,
+        "min_ms": 0.001,
+        "max_ms": 0.006
+      },
+      "get_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "get_memory": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "update_memory": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "delete_memory": {
+        "mean_ms": 0.014,
+        "p50_ms": 0.012,
+        "p95_ms": 0.019,
+        "min_ms": 0.01,
+        "max_ms": 0.055
+      },
+      "list_agents": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "knowledge_graph": {
+      "cognify": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.003
+      },
+      "search": {
+        "mean_ms": 0.041,
+        "p50_ms": 0.038,
+        "p95_ms": 0.057,
+        "min_ms": 0.038,
+        "max_ms": 0.072
+      },
+      "get_stats": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.005,
+        "p95_ms": 0.01,
+        "min_ms": 0.004,
+        "max_ms": 0.037
+      },
+      "health": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.002,
+        "min_ms": 0.001,
+        "max_ms": 0.004
+      },
+      "list_data": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      }
+    },
+    "ttl_archive": {
+      "expire_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.002,
+        "min_ms": 0.001,
+        "max_ms": 0.004
+      },
+      "get_memory_age_stats": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "set_memory_ttl": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "archive_category": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.002
+      }
+    },
+    "deduplication": {
+      "check_duplicate": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "auto_deduplicate": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "get_deduplication_stats": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "deduplicate": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "schedule_deduplication": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "deduplication_report": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      }
+    },
+    "summarization": {
+      "summarize_category": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "get_summary_stats": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "summarize_old_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "schedule_summarization": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "summary_stats": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "auto_summarize_old_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.01
+      },
+      "get_summarization_stats": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "intelligent_summarize": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "performance_mon": {
+      "get_performance_metrics": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "get_slow_queries": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "get_prometheus_metrics": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      }
+    },
+    "sharing_sync": {
+      "set_memory_sharing": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "check_memory_access": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "get_shared_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "create_shared_space": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "publish_memory_event": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "get_sync_status": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      },
+      "sync_agent_state": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "backup": {
+      "create_backup": {
+        "mean_ms": 0.015,
+        "p50_ms": 0.014,
+        "p95_ms": 0.021,
+        "min_ms": 0.012,
+        "max_ms": 0.055
+      },
+      "restore_backup": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "list_backups": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "verify_backup": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "rollback_restore": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "scheduling": {
+      "schedule_task": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "list_tasks": {
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "cancel_task": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      }
+    },
+    "language": {
+      "detect_language": {
+        "mean_ms": 0.059,
+        "p50_ms": 0.05,
+        "p95_ms": 0.07,
+        "min_ms": 0.047,
+        "max_ms": 0.406
+      },
+      "get_supported_languages": {
+        "mean_ms": 0.049,
+        "p50_ms": 0.039,
+        "p95_ms": 0.049,
+        "min_ms": 0.036,
+        "max_ms": 0.474
+      },
+      "search_by_language": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "get_language_distribution": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.003
+      },
+      "cross_language_search": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "get_search_facets": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "search_advanced": {
+      "advanced_search": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "expand_search_query": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "get_search_analytics": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "search_quick": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.003
+      }
+    },
+    "ingestion": {
+      "ingest_url": {
+        "mean_ms": 0.046,
+        "p50_ms": 0.036,
+        "p95_ms": 0.049,
+        "min_ms": 0.032,
+        "max_ms": 0.504
+      },
+      "ingest_db": {
+        "mean_ms": 0.015,
+        "p50_ms": 0.014,
+        "p95_ms": 0.019,
+        "min_ms": 0.013,
+        "max_ms": 0.037
+      },
+      "translate_text": {
+        "mean_ms": 0.014,
+        "p50_ms": 0.014,
+        "p95_ms": 0.015,
+        "min_ms": 0.013,
+        "max_ms": 0.026
+      },
+      "regex_extract_entities": {
+        "mean_ms": 0.02,
+        "p50_ms": 0.019,
+        "p95_ms": 0.023,
+        "min_ms": 0.019,
+        "max_ms": 0.032
+      },
+      "extract_graph_v2": {
+        "mean_ms": 0.034,
+        "p50_ms": 0.026,
+        "p95_ms": 0.063,
+        "min_ms": 0.024,
+        "max_ms": 0.13
+      },
+      "list_loaders": {
+        "mean_ms": 0.019,
+        "p50_ms": 0.018,
+        "p95_ms": 0.024,
+        "min_ms": 0.018,
+        "max_ms": 0.038
+      }
+    },
+    "cost": {
+      "get_llm_cost_report": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "set_cost_budget": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.0,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.001
+      }
+    },
+    "session": {
+      "start_session": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "end_session": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.009
+      },
+      "get_session_context": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      },
+      "get_session_history": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.002
+      }
+    },
+    "audit_prov": {
+      "query_audit_log": {
+        "mean_ms": 0.01,
+        "p50_ms": 0.009,
+        "p95_ms": 0.012,
+        "min_ms": 0.007,
+        "max_ms": 0.056
+      },
+      "get_memory_history": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.008,
+        "min_ms": 0.005,
+        "max_ms": 0.02
+      },
+      "revert_memory": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.012,
+        "min_ms": 0.005,
+        "max_ms": 0.014
+      },
+      "get_memory_provenance": {
+        "mean_ms": 0.068,
+        "p50_ms": 0.056,
+        "p95_ms": 0.074,
+        "min_ms": 0.052,
+        "max_ms": 0.558
+      },
+      "verify_memory": {
+        "mean_ms": 0.063,
+        "p50_ms": 0.056,
+        "p95_ms": 0.071,
+        "min_ms": 0.053,
+        "max_ms": 0.287
+      },
+      "set_memory_confidence": {
+        "mean_ms": 0.064,
+        "p50_ms": 0.056,
+        "p95_ms": 0.074,
+        "min_ms": 0.053,
+        "max_ms": 0.387
+      },
+      "get_confidence_report": {
+        "mean_ms": 0.062,
+        "p50_ms": 0.056,
+        "p95_ms": 0.066,
+        "min_ms": 0.053,
+        "max_ms": 0.293
+      }
+    },
+    "consolidation": {
+      "find_consolidation_candidates": {
+        "mean_ms": 0.065,
+        "p50_ms": 0.057,
+        "p95_ms": 0.071,
+        "min_ms": 0.054,
+        "max_ms": 0.387
+      },
+      "consolidate_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.005
+      },
+      "get_consolidation_report": {
+        "mean_ms": 0.068,
+        "p50_ms": 0.059,
+        "p95_ms": 0.103,
+        "min_ms": 0.053,
+        "max_ms": 0.287
+      },
+      "promote_memory_tier": {
+        "mean_ms": 0.066,
+        "p50_ms": 0.057,
+        "p95_ms": 0.068,
+        "min_ms": 0.055,
+        "max_ms": 0.435
+      },
+      "get_tier_stats": {
+        "mean_ms": 0.071,
+        "p50_ms": 0.059,
+        "p95_ms": 0.111,
+        "min_ms": 0.054,
+        "max_ms": 0.271
+      },
+      "compact_knowledge_graph": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.022
+      },
+      "get_graph_stats": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.017
+      }
+    },
+    "gdpr": {
+      "gdpr_delete_user_data": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.028
+      },
+      "gdpr_export_user_data": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.009,
+        "min_ms": 0.005,
+        "max_ms": 0.012
+      },
+      "gdpr_record_consent": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.009,
+        "min_ms": 0.005,
+        "max_ms": 0.01
+      },
+      "gdpr_check_consent": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.008,
+        "min_ms": 0.005,
+        "max_ms": 0.009
+      },
+      "gdpr_list_consents": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.013,
+        "min_ms": 0.005,
+        "max_ms": 0.013
+      },
+      "gdpr_verify_tenant_isolation": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.008,
+        "min_ms": 0.005,
+        "max_ms": 0.011
+      }
+    },
+    "plugins_webhooks": {
+      "list_loader_plugins": {
+        "mean_ms": 0.08,
+        "p50_ms": 0.067,
+        "p95_ms": 0.081,
+        "min_ms": 0.063,
+        "max_ms": 0.653
+      },
+      "load_document_with_plugin": {
+        "mean_ms": 0.104,
+        "p50_ms": 0.092,
+        "p95_ms": 0.122,
+        "min_ms": 0.081,
+        "max_ms": 0.604
+      },
+      "register_webhook": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.027
+      },
+      "list_webhooks": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.007,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.011
+      },
+      "test_webhook": {
+        "mean_ms": 0.009,
+        "p50_ms": 0.008,
+        "p95_ms": 0.011,
+        "min_ms": 0.008,
+        "max_ms": 0.013
+      },
+      "disable_webhook": {
+        "mean_ms": 0.008,
+        "p50_ms": 0.008,
+        "p95_ms": 0.011,
+        "min_ms": 0.005,
+        "max_ms": 0.022
+      }
+    },
+    "phase14": {
+      "encrypt_memory": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.007,
+        "min_ms": 0.005,
+        "max_ms": 0.018
+      },
+      "get_encryption_stats": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.01,
+        "min_ms": 0.005,
+        "max_ms": 0.016
+      },
+      "rotate_encryption_key": {
+        "mean_ms": 0.006,
+        "p50_ms": 0.006,
+        "p95_ms": 0.007,
+        "min_ms": 0.005,
+        "max_ms": 0.01
+      },
+      "add_observation": {
+        "mean_ms": 0.069,
+        "p50_ms": 0.057,
+        "p95_ms": 0.07,
+        "min_ms": 0.055,
+        "max_ms": 0.544
+      },
+      "get_observations": {
+        "mean_ms": 0.076,
+        "p50_ms": 0.059,
+        "p95_ms": 0.115,
+        "min_ms": 0.053,
+        "max_ms": 0.294
+      },
+      "update_observation": {
+        "mean_ms": 0.07,
+        "p50_ms": 0.061,
+        "p95_ms": 0.083,
+        "min_ms": 0.054,
+        "max_ms": 0.369
+      },
+      "delete_observation": {
+        "mean_ms": 0.069,
+        "p50_ms": 0.058,
+        "p95_ms": 0.101,
+        "min_ms": 0.053,
+        "max_ms": 0.279
+      },
+      "configure_slack_notifications": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.006,
+        "p95_ms": 0.008,
+        "min_ms": 0.006,
+        "max_ms": 0.027
+      },
+      "configure_discord_notifications": {
+        "mean_ms": 0.007,
+        "p50_ms": 0.007,
+        "p95_ms": 0.009,
+        "min_ms": 0.006,
+        "max_ms": 0.013
+      },
+      "test_notification_channel": {
+        "mean_ms": 0.008,
+        "p50_ms": 0.007,
+        "p95_ms": 0.009,
+        "min_ms": 0.007,
+        "max_ms": 0.011
+      },
+      "get_memory_importance": {
+        "mean_ms": 0.222,
+        "p50_ms": 0.057,
+        "p95_ms": 0.091,
+        "min_ms": 0.053,
+        "max_ms": 7.735
+      },
+      "update_importance_scores": {
+        "mean_ms": 0.064,
+        "p50_ms": 0.058,
+        "p95_ms": 0.073,
+        "min_ms": 0.054,
+        "max_ms": 0.312
+      },
+      "get_top_important_memories": {
+        "mean_ms": 0.062,
+        "p50_ms": 0.056,
+        "p95_ms": 0.067,
+        "min_ms": 0.053,
+        "max_ms": 0.291
+      },
+      "rerank_search_results": {
+        "mean_ms": 0.074,
+        "p50_ms": 0.064,
+        "p95_ms": 0.081,
+        "min_ms": 0.059,
+        "max_ms": 0.507
+      },
+      "cluster_memories": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.0,
+        "max_ms": 0.004
+      },
+      "get_memory_detail": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.003
+      },
+      "get_related": {
+        "mean_ms": 0.001,
+        "p50_ms": 0.001,
+        "p95_ms": 0.001,
+        "min_ms": 0.001,
+        "max_ms": 0.003
+      }
+    }
+  }
+}
