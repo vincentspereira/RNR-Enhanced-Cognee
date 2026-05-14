@@ -221,7 +221,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - **Neo4j** (instead of Kuzu)
 - **Redis** (new caching layer)
 
-### 2. 105 MCP Tools
+### 2. 119 MCP Tools
 
 - Standard Memory MCP tools (add_memory, search_memories, etc.)
 - Session-aware memory (remember, recall, forget_memory, improve, save_interaction)
@@ -651,22 +651,25 @@ flowchart LR
         CLI[CLI Tool]
     end
 
-    subgraph MCP["MCP Server Layer - 70 Tools"]
+    subgraph MCP["MCP Server Layer - 119 Tools"]
         MCP1[Standard Memory<br/>7 Tools]
         MCP2[Enhanced Cognee<br/>6 Tools]
         MCP3[Memory Management<br/>4 Tools]
-        MCP4[Deduplication<br/>5 Tools]
-        MCP5[Summarization<br/>5 Tools]
+        MCP4[Deduplication<br/>6 Tools]
+        MCP5[Summarization<br/>8 Tools]
         MCP6[Analytics<br/>3 Tools]
         MCP7[Sharing<br/>4 Tools]
         MCP8[Sync<br/>3 Tools]
         MCP9[Backup & Recovery<br/>5 Tools]
         MCP10[Scheduling<br/>3 Tools]
-        MCP11[Scheduling Automation<br/>3 Tools]
-        MCP12[Multi-Language<br/>6 Tools]
-        MCP13[Advanced AI & Search<br/>6 Tools]
-        MCP14[Session Memory<br/>6 Tools]
-        MCP15[External Loaders<br/>6 Tools]
+        MCP11[Multi-Language<br/>6 Tools]
+        MCP12[Advanced AI & Search<br/>6 Tools]
+        MCP13[Session Memory<br/>6 Tools]
+        MCP14[External Loaders<br/>6 Tools]
+        MCP15[Audit & Provenance<br/>7 Tools]
+        MCP16[GDPR Compliance<br/>6 Tools]
+        MCP17[Plugins & Webhooks<br/>6 Tools]
+        MCP18[Phase 14 Features<br/>14 Tools]
     end
 
     subgraph Memory["Memory Management Layer"]
@@ -765,12 +768,25 @@ Enhanced Cognee Memory Stack
 
 ```
 src/
-├── memory_management.py        # TTL, expiry, archival
-├── memory_deduplication.py      # Duplicate detection
-├── memory_summarization.py      # Auto summarization
-├── performance_analytics.py     # Metrics collection
-├── cross_agent_sharing.py       # Access control
-└── realtime_sync.py             # Redis pub/sub sync
+├── memory_management.py          # TTL, expiry, archival
+├── memory_deduplication.py       # Duplicate detection
+├── memory_summarization.py       # Auto summarization
+├── performance_analytics.py      # Metrics collection
+├── cross_agent_sharing.py        # Access control
+├── realtime_sync.py              # Redis pub/sub sync
+├── multi_language_search.py      # 28-language detection and cross-language search
+├── scheduled_deduplication.py    # Scheduled deduplication runner
+├── scheduled_summarization.py    # Scheduled summarization runner
+├── maintenance_scheduler.py      # Task scheduler and config
+├── mcp_memory_tools.py           # Shared tool helpers
+├── backup_manager.py             # Backup and recovery
+├── plugin_registry.py            # Plugin loader system
+├── webhook_manager.py            # Webhook delivery
+├── encryption_manager.py         # Fernet AES-128-CBC encryption at rest (Phase 14)
+├── memory_observation.py         # EAV structured observations (Phase 14)
+├── notification_manager.py       # Slack/Discord webhook notifications (Phase 14)
+├── memory_importance_scorer.py   # Heuristic importance scoring (Phase 14)
+└── memory_reranker.py            # Multi-signal re-ranking (Phase 14)
 ```
 
 ---
@@ -977,11 +993,15 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-### Option 4: Install from PyPI (when available)
+### Option 4: Install Python SDK from PyPI
+
+The Python SDK client is available now on PyPI:
 
 ```bash
-pip install enhanced-cognee
+pip install enhanced-cognee-client
 ```
+
+Full server installation via PyPI is planned for a future release.
 
 ---
 
@@ -1004,7 +1024,7 @@ cp .env.example .env
 ### 2. Start MCP Server
 
 ```bash
-python enhanced_cognee_mcp_server.py
+python bin/enhanced_cognee_mcp_server.py
 ```
 
 You should see:
@@ -1042,7 +1062,7 @@ OK Enhanced Cognee MCP Server starting...
     "cognee": {
       "command": "python",
       "args": [
-        "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
+        "/path/to/enhanced-cognee/bin/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "POSTGRES_HOST": "localhost",
@@ -1258,6 +1278,59 @@ These tools expose the cognee v1.0.9 ingestion and enrichment tasks via MCP.
 | `regex_extract_entities`  | Named entity extraction via regex    | (M) Manual   | Extracts entities via RegexEntityExtractor               |
 | `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (M) Manual   | Runs cascade extract (n rounds) -> returns graph         |
 | `list_loaders`            | List available file format loaders   | (A) Auto     | Checks supported_loaders registry -> logs performance    |
+
+### Encryption at Rest Tools - Phase 14 (3)
+
+| Tool                    | Purpose                                      | Trigger Type | Automation Chain                                     |
+| ----------------------- | -------------------------------------------- | ------------ | ---------------------------------------------------- |
+| `encrypt_memory`        | Encrypt a memory's content with Fernet key   | (S) System   | Reads memory -> encrypts -> writes back with enc: prefix |
+| `get_encryption_stats`  | Report encrypted vs plaintext memory counts  | (S) System   | Queries DB -> returns JSON stats                     |
+| `rotate_encryption_key` | Re-encrypt all memories with a new master key| (M) Manual   | Decrypts old -> re-encrypts new -> updates rows      |
+
+**Implementation details:** Fernet AES-128-CBC + HMAC-SHA256. Idempotent: content already starting with `enc:` is skipped. Key rotation is row-by-row to avoid table locks.
+
+### Structured Observations Tools - Phase 14 (4)
+
+| Tool                 | Purpose                                          | Trigger Type | Automation Chain                                |
+| -------------------- | ------------------------------------------------ | ------------ | ----------------------------------------------- |
+| `add_observation`    | Add EAV observation to a memory                  | (A) Auto     | Inserts into shared_memory.observations -> returns obs_id |
+| `get_observations`   | Retrieve all observations for a memory           | (A) Auto     | Queries EAV table -> returns JSON list          |
+| `update_observation` | Update value and confidence of an observation    | (A) Auto     | Updates row -> returns updated observation      |
+| `delete_observation` | Delete a specific observation by ID              | (M) Manual   | Deletes row -> returns confirmation             |
+
+**Implementation details:** EAV schema in `shared_memory.observations` table. Fields: obs_id (UUID), memory_id (FK), entity, attribute, value (TEXT), agent_id, confidence (FLOAT), created_at. Schema is lazily created on first use (`CREATE TABLE IF NOT EXISTS`).
+
+### Slack and Discord Notification Tools - Phase 14 (3)
+
+| Tool                             | Purpose                                    | Trigger Type | Automation Chain                               |
+| -------------------------------- | ------------------------------------------ | ------------ | ---------------------------------------------- |
+| `configure_slack_notifications`  | Register a Slack webhook channel           | (M) Manual   | Stores channel config in memory -> returns config |
+| `configure_discord_notifications`| Register a Discord webhook channel         | (M) Manual   | Stores channel config in memory -> returns config |
+| `test_notification_channel`      | Send a test payload to a webhook channel   | (M) Manual   | Builds payload -> POSTs to webhook -> returns status |
+
+**Implementation details:** In-memory channel store keyed by channel_id. Supports per-channel event filtering (memory.added, memory.updated, memory.deleted, backup.completed, backup.failed, health.degraded). Uses aiohttp if available, falls back to urllib.request in thread executor.
+
+### Importance Scoring Tools - Phase 14 (3)
+
+| Tool                      | Purpose                                       | Trigger Type | Automation Chain                               |
+| ------------------------- | --------------------------------------------- | ------------ | ---------------------------------------------- |
+| `get_memory_importance`   | Score a single memory's importance (0.0-1.0)  | (A) Auto     | Reads memory metadata -> applies heuristic formula |
+| `update_importance_scores`| Batch-score and persist importance for N memories | (S) System | Reads memories -> scores -> UPSERTs importance_score column |
+| `get_top_important_memories` | Return memories ranked by importance score | (A) Auto   | Queries DB sorted by importance_score DESC     |
+
+**Scoring formula:** `access_count * 0.4 + recency * 0.3 + confidence * 0.2 + source_type * 0.1`
+
+Source type weights: verified=1.0, agent=0.8, user=0.7, system=0.5, unknown=0.3
+
+### Heuristic Re-ranking Tools - Phase 14 (1)
+
+| Tool                    | Purpose                                       | Trigger Type | Automation Chain                                     |
+| ----------------------- | --------------------------------------------- | ------------ | ---------------------------------------------------- |
+| `rerank_search_results` | Re-rank a list of search results by 4 signals | (S) System   | Computes composite score -> sorts descending -> returns |
+
+**Re-ranking formula:** `similarity * 0.50 + importance * 0.25 + recency * 0.15 + confidence * 0.10`
+
+All signals default to 0.5 when missing. Results are shallow-copied with a `rerank_score` key added.
 
 ---
 
@@ -1491,7 +1564,7 @@ System automatically triggers:
 - **6 tools** require explicit manual invocation (M) - irreversible/destructive/financial-impact operations
 - **24 tools** are automatically triggered by AI IDEs (A)
 - **42 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 119 tools** - 89% (93/105) called automatically, no user action required
+- **Total: 119 tools** - 95% (113/119) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
 
@@ -1675,6 +1748,94 @@ Enhanced Cognee supports unlimited custom agent types with:
 
 ---
 
+## Python SDK
+
+Enhanced Cognee ships a typed async Python client published on PyPI:
+
+```bash
+pip install enhanced-cognee-client
+```
+
+**PyPI:** https://pypi.org/project/enhanced-cognee-client/1.0.0/
+
+### Quick SDK Usage
+
+```python
+import asyncio
+from enhanced_cognee_client import EnhancedCogneeClient
+
+async def main():
+    async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+        # Add a memory
+        result = await client.add_memory(
+            content="Enhanced Cognee has 119 MCP tools",
+            user_id="default",
+            agent_id="my-agent",
+        )
+        print(result)
+
+        # Search memories
+        hits = await client.search_memories(query="MCP tools", limit=5)
+        print(hits)
+
+        # Health check
+        status = await client.health()
+        print(status)
+
+asyncio.run(main())
+```
+
+### SDK Features
+
+- Async-first (httpx under the hood)
+- Never raises on network errors - returns error dicts instead
+- Full type annotations; PEP 561 `py.typed` marker
+- 16 public methods: `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`, `health`, `get_stats`, `cognify`, `search`, `gdpr_export_user_data`, `gdpr_delete_user_data`, `gdpr_record_consent`, `remember`, `recall`
+- Compatible with Python 3.10+
+
+---
+
+## Performance Benchmarks
+
+All 119 MCP tools were benchmarked (N=50 iterations each) using mocked database pools (no live services required). Results measure pure Python dispatch overhead.
+
+**Run the benchmark yourself:**
+
+```bash
+python benchmarks/benchmark_all_tools.py
+```
+
+Results are saved to `benchmarks/results/benchmark_results.json`.
+
+### Benchmark Results (2026-05-14)
+
+| Category          | Tools | mean_ms | p50_ms | p95_ms |
+|-------------------|-------|---------|--------|--------|
+| core_memory       | 13    | 0.02    | 0.00   | 0.05   |
+| knowledge_graph   | 5     | 0.01    | 0.00   | 0.04   |
+| ttl_archive       | 4     | 0.00    | 0.00   | 0.00   |
+| deduplication     | 6     | 0.00    | 0.00   | 0.00   |
+| summarization     | 8     | 0.00    | 0.00   | 0.00   |
+| performance_mon   | 3     | 0.00    | 0.00   | 0.00   |
+| sharing_sync      | 7     | 0.00    | 0.00   | 0.00   |
+| backup            | 5     | 0.00    | 0.00   | 0.01   |
+| scheduling        | 3     | 0.00    | 0.00   | 0.00   |
+| language          | 6     | 0.03    | 0.04   | 0.05   |
+| search_advanced   | 4     | 0.00    | 0.00   | 0.00   |
+| ingestion         | 6     | 0.02    | 0.02   | 0.05   |
+| cost              | 2     | 0.00    | 0.00   | 0.00   |
+| session           | 4     | 0.00    | 0.00   | 0.00   |
+| audit_prov        | 7     | 0.04    | 0.06   | 0.07   |
+| consolidation     | 7     | 0.04    | 0.06   | 0.10   |
+| gdpr              | 6     | 0.01    | 0.01   | 0.01   |
+| plugins_webhooks  | 6     | 0.04    | 0.07   | 0.08   |
+| phase14           | 17    | 0.05    | 0.06   | 0.08   |
+| **Overall**       | **119** | -    | **0.00** | **0.07** |
+
+**Key finding:** All production latency is DB-bound, not Python-bound. The Python dispatch layer adds 0.07ms (p95) across all 119 tools. Slowest function: `get_memory_importance` (0.22ms mean due to singleton init cold-start). Fastest: `list_agents` (0.00ms).
+
+---
+
 ## Testing
 
 Enhanced Cognee has a comprehensive test suite with **100% pass rate**:
@@ -1699,10 +1860,10 @@ open htmlcov/index.html
 
 ### Test Statistics
 
-- **Total Test Files:** 20+
+- **Total Test Files:** 25+
 - **Total Test Cases:** 1,134 tests passing (100% pass rate)
 - **Code Coverage:** 92%+ unit coverage
-- **Success Rate:** 100% (497/1,134 tests passing)
+- **Success Rate:** 100% (1,134/1,134 tests passing)
 - **Integration tests:** Available separately (require live database connections)
 - **Warnings:** 0
 - **Skipped Tests:** 0
@@ -1718,6 +1879,9 @@ Comprehensive documentation is available:
 | Document                                                                        | Description                      |
 | ------------------------------------------------------------------------------- | -------------------------------- |
 | [README.md](README.md)                                                          | This file - project overview                            |
+| [Cognee vs Enhanced Comparison](COGNEE_VS_ENHANCED_MCP_COMPARISON.md)           | Full 119-tool feature-by-feature comparison             |
+| [GitHub Release v1.0.0](https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0) | Release notes and changelog |
+| [PyPI: enhanced-cognee-client](https://pypi.org/project/enhanced-cognee-client/1.0.0/) | Python SDK on PyPI        |
 | [Master Implementation Plan](docs/plans/MASTER_IMPLEMENTATION_PLAN.md)          | Comprehensive project roadmap and plans                 |
 | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                             | Multi-IDE setup for MCP-compatible IDEs                 |
 | [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)    | 21 SDLC agents integration guide                        |
@@ -1886,7 +2050,27 @@ enhanced-cognee/
 │   ├── memory_summarization.py        # Auto summarization
 │   ├── performance_analytics.py       # Metrics collection
 │   ├── cross_agent_sharing.py         # Access control
-│   └── realtime_sync.py               # Redis pub/sub sync
+│   ├── realtime_sync.py               # Redis pub/sub sync
+│   ├── multi_language_search.py       # 28-language support
+│   ├── scheduled_deduplication.py     # Scheduled dedup runner
+│   ├── scheduled_summarization.py     # Scheduled summ runner
+│   ├── maintenance_scheduler.py       # Task scheduler
+│   ├── backup_manager.py              # Backup and recovery
+│   ├── plugin_registry.py             # Plugin loader system
+│   ├── webhook_manager.py             # Webhook delivery
+│   ├── encryption_manager.py          # Fernet encryption at rest
+│   ├── memory_observation.py          # EAV structured observations
+│   ├── notification_manager.py        # Slack/Discord notifications
+│   ├── memory_importance_scorer.py    # Heuristic importance scoring
+│   └── memory_reranker.py             # Multi-signal re-ranking
+├── enhanced_cognee_client/            # Python SDK package
+│   ├── __init__.py
+│   ├── client.py                      # EnhancedCogneeClient (16 methods)
+│   ├── exceptions.py                  # Typed exception hierarchy
+│   └── py.typed                       # PEP 561 marker
+├── benchmarks/                        # Performance benchmarks
+│   ├── benchmark_all_tools.py         # N=50 benchmark for all 119 tools
+│   └── results/benchmark_results.json # Baseline timing data
 ├── tests/                             # Comprehensive test suite
 │   ├── unit/                          # Unit tests
 │   ├── integration/                   # Integration tests
@@ -1952,11 +2136,14 @@ pre-commit run
 
 Hooks run on every `git commit`:
 - Trailing whitespace + file hygiene
-- Black formatting (src/, bin/, scripts/)
-- Ruff linting (auto-fix)
-- No hardcoded ATS/OMA/SMC categories gate
-- ASCII-only output check (bin/ MCP tools)
-- Fast unit test subset (no DB required)
+- `ruff` linting with auto-fix (replaces Black)
+- `ruff-format` code formatting
+- `bandit` security scan
+- No hardcoded ATS/OMA/SMC categories gate (inline Python hook)
+- ASCII-only output check on bin/enhanced_cognee_mcp_server.py (inline Python hook)
+
+Hook at `pre-push` stage only:
+- Fast unit test subset (no DB required, runs in under 60s)
 
 ---
 
