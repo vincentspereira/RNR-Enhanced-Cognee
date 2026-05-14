@@ -610,22 +610,23 @@ This document provides:
 
 **119 MCP Tools by Trigger Type:**
 
-- **Manual (M): 9 tools** - Only irreversible/destructive operations requiring explicit user decision
+- **Manual (M): 25 tools** - Only irreversible/destructive operations requiring explicit user decision
 - **Auto (A): 28 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
-- **System (S): 42 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
-- *Phase 7 + Phase 8 complete: 7 new tools added (search_quick, get_memory_detail, get_related, start_session, end_session, get_session_context, get_session_history). Enable System automation in .enhanced-cognee-config.json*
+- **System (S): 66 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
+- *Phases 7-14 complete: 119 tools total. See [COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md) for the full 119-tool reference table with individual trigger assignments.*
 
 ### For MCP IDE Users
 
 **All 119 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (72): Advanced features for enterprise deployments (including Phase 2 session memory, Phase 3 external loaders, Phase 7 progressive search and session management)
+2. Enhanced Cognee tools (112): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking)
 
-### For Other AI IDEs
+### For Claude Code and Other AI IDEs
 
 **Any MCP-capable AI IDE can access all 119 tools:**
 
+- Claude Code (Anthropic - primary reference implementation)
 - Cursor IDE
 - Windsurf (Codeium)
 - Antigravity
@@ -1104,6 +1105,7 @@ Enhanced Cognee works with any **MCP-compatible IDE**:
 
 | IDE                     | Support Level | Setup Guide                                         |
 | ----------------------- | ------------- | --------------------------------------------------- |
+| **Claude Code**         | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 | **Cursor**              | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 | **Windsurf**            | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 | **Antigravity**         | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
@@ -1253,6 +1255,16 @@ Enhanced Cognee provides **119 MCP tools** with comprehensive automation across 
 | `expand_search_query`         | Expand search query with LLM    | (S) System   | Expands query → logs performance       |
 | `get_search_analytics`        | Get search analytics            | (S) System   | Gets analytics → logs performance      |
 
+### Progressive Search Tools (3)
+
+Two-phase search pattern: run a fast shallow search, then drill into one result for detail or find related memories.
+
+| Tool                 | Purpose                                          | Trigger Type | Automation Chain                                              |
+| -------------------- | ------------------------------------------------ | ------------ | ------------------------------------------------------------- |
+| `search_quick`       | Fast shallow memory search (no embedding lookup) | (S) System   | Runs text-match search -> returns top N results -> logs perf  |
+| `get_memory_detail`  | Full detail (content, metadata, history) for one memory | (S) System | Fetches single memory with full metadata -> logs perf |
+| `get_related`        | Memories related to a given memory ID            | (S) System   | Queries cosine similarity neighbours -> returns ranked list   |
+
 ### Session-Aware Memory Tools (6)
 
 These tools wrap the cognee v1.0.9 `cognee.api.v1.*` session memory API.
@@ -1278,6 +1290,78 @@ These tools expose the cognee v1.0.9 ingestion and enrichment tasks via MCP.
 | `regex_extract_entities`  | Named entity extraction via regex    | (M) Manual   | Extracts entities via RegexEntityExtractor               |
 | `extract_graph_v2`        | Cascade v2 knowledge graph extraction| (M) Manual   | Runs cascade extract (n rounds) -> returns graph         |
 | `list_loaders`            | List available file format loaders   | (A) Auto     | Checks supported_loaders registry -> logs performance    |
+
+### Session Management Tools (4)
+
+Track multi-turn conversation sessions. Session context is stored in PostgreSQL and linked to memories.
+
+| Tool                  | Purpose                                           | Trigger Type | Automation Chain                                               |
+| --------------------- | ------------------------------------------------- | ------------ | -------------------------------------------------------------- |
+| `start_session`       | Open a new named session for a user/agent pair    | (A) Auto     | Creates session row -> returns session_id -> logs perf         |
+| `end_session`         | Close active session and flush session context    | (M) Manual   | Marks session closed -> writes summary -> publishes event      |
+| `get_session_context` | Retrieve the current session's accumulated context| (A) Auto     | Queries session table -> returns JSON context -> logs perf     |
+| `get_session_history` | List all past sessions for a user/agent           | (A) Auto     | Queries session history -> returns sorted list -> logs perf    |
+
+### Audit and Provenance Tools (7)
+
+Full audit trail and version history for every memory. Stored in `shared_memory.audit_log` and `shared_memory.memory_history`.
+
+| Tool                    | Purpose                                           | Trigger Type | Automation Chain                                              |
+| ----------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| `query_audit_log`       | Query the full audit log with filters             | (S) System   | Queries audit_log table -> returns JSON events -> logs perf   |
+| `get_memory_history`    | Full version history of a single memory           | (S) System   | Queries memory_history -> returns sorted versions -> logs perf|
+| `revert_memory`         | Revert a memory to a previous version             | (M) Manual   | Fetches version -> writes revert -> appends audit log         |
+| `get_memory_provenance` | Source and chain-of-custody for a memory          | (S) System   | Traces provenance chain -> returns JSON -> logs perf          |
+| `verify_memory`         | Check memory integrity against stored hash        | (S) System   | Computes hash -> compares stored -> returns PASS/FAIL         |
+| `set_memory_confidence` | Set confidence score (0.0-1.0) for a memory       | (S) System   | Updates confidence column -> logs perf                        |
+| `get_confidence_report` | Confidence distribution across all memories       | (S) System   | Aggregates confidence scores -> returns JSON report           |
+
+### Consolidation and Tier Promotion Tools (7)
+
+Identify redundant memories, merge them into summaries, and promote high-value memories to faster storage tiers.
+
+| Tool                          | Purpose                                           | Trigger Type | Automation Chain                                              |
+| ----------------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| `find_consolidation_candidates` | Find groups of memories suitable for merging    | (S) System   | Runs similarity clustering -> returns candidate groups        |
+| `consolidate_memories`        | Merge a group of memories into one summary        | (S) System   | Merges group -> writes summary memory -> deletes originals    |
+| `get_consolidation_report`    | Report on consolidation runs and space saved      | (S) System   | Queries consolidation history -> returns JSON report          |
+| `promote_memory_tier`         | Promote a memory to a higher-priority storage tier| (S) System   | Moves memory to hot tier -> updates tier column -> logs perf  |
+| `get_tier_stats`              | Distribution of memories across storage tiers     | (S) System   | Aggregates tier column -> returns JSON breakdown              |
+| `compact_knowledge_graph`     | Remove orphan nodes and stale edges from graph    | (S) System   | Runs Neo4j compaction -> returns deleted node/edge counts     |
+| `get_graph_stats`             | Node and edge counts for the knowledge graph      | (S) System   | Queries Neo4j stats -> returns JSON -> logs perf              |
+
+### GDPR Compliance Tools (6)
+
+Data subject rights and consent management. All GDPR operations are logged to the audit trail.
+
+| Tool                          | Purpose                                           | Trigger Type | Automation Chain                                              |
+| ----------------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| `gdpr_delete_user_data`       | Right to erasure: delete all data for a user      | (M) Manual   | Deletes memories/sessions/audit for user -> writes GDPR log   |
+| `gdpr_export_user_data`       | Right to portability: export all data for a user  | (M) Manual   | Queries all user data -> returns JSON export package          |
+| `gdpr_record_consent`         | Record a consent decision (grant or revoke)       | (M) Manual   | Inserts consent record -> timestamps -> writes audit log      |
+| `gdpr_check_consent`          | Check whether a user has active consent           | (S) System   | Queries consent table -> returns True/False + expiry          |
+| `gdpr_list_consents`          | List all consent records for a user               | (S) System   | Queries consent table -> returns sorted list                  |
+| `gdpr_verify_tenant_isolation`| Verify no cross-tenant data leakage               | (S) System   | Runs isolation queries -> returns PASS/FAIL + violation list  |
+
+### Plugin Loaders Tools (2)
+
+Dynamic document loader plugins. Plugins are discovered at startup from the `loaders/` directory.
+
+| Tool                        | Purpose                                           | Trigger Type | Automation Chain                                              |
+| --------------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| `list_loader_plugins`       | List all installed document loader plugins        | (A) Auto     | Scans plugin registry -> returns JSON list with capabilities  |
+| `load_document_with_plugin` | Load and ingest a document using a named plugin   | (A) Auto     | Loads file via plugin -> cognifies content -> logs perf       |
+
+### Webhooks Tools (4)
+
+Register HTTP webhook endpoints to receive real-time memory event notifications.
+
+| Tool               | Purpose                                              | Trigger Type | Automation Chain                                              |
+| ------------------ | ---------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| `register_webhook` | Register a new HTTP webhook for memory events        | (M) Manual   | Stores webhook config -> validates URL -> returns webhook_id  |
+| `list_webhooks`    | List all registered webhooks                         | (A) Auto     | Queries webhook store -> returns JSON list                    |
+| `test_webhook`     | Send a test payload to a registered webhook          | (M) Manual   | Builds test payload -> POSTs to URL -> returns status code    |
+| `disable_webhook`  | Disable a webhook (stop event delivery)              | (M) Manual   | Marks webhook disabled -> logs change -> returns confirmation |
 
 ### Encryption at Rest Tools - Phase 14 (3)
 
@@ -1368,24 +1452,36 @@ User explicitly triggers:
 → delete_memory(memory_id="xyz-789") [MANUAL - DESTRUCTIVE]
 ```
 
-**Tools requiring manual invocation (6 tools - Phase 8 + Plan 14.8 complete):**
+**Tools requiring manual invocation (25 tools):**
 
-These 6 tools are permanently Manual because they are irreversible, destructive,
-or carry direct financial impact that requires explicit user intent:
+These tools require explicit user intent because they are irreversible, destructive, policy-setting,
+or carry direct financial impact:
 
 - `delete_memory` - Permanently removes a memory entry (irreversible)
+- `expire_memories` - Bulk expire old memories (destructive)
+- `set_memory_ttl` - Set per-memory time-to-live (policy)
+- `set_memory_sharing` - Configure sharing policy (policy)
 - `restore_backup` - Overwrites live database state with a backup (destructive)
+- `rollback_restore` - Roll back a failed restore (destructive)
+- `create_shared_space` - Create multi-agent collaboration space (policy)
 - `cancel_task` - Aborts a running background task
+- `deduplicate` - Manual deduplication pass (data modification)
+- `set_cost_budget` - Sets monthly LLM API cost limit (financial impact)
+- `archive_category` - Archive a memory category (destructive)
 - `forget_memory` - Deletes entities and relationships from the knowledge graph (irreversible)
-- `ingest_db` - Requires user-supplied database credentials and table selection
-- `set_cost_budget` - Sets monthly LLM API cost limit (financial impact, must be intentional)
-
-Phase 8 + Plan 14.8 promotion summary:
-- 6 tools promoted to Auto (A): `remember`, `recall`, `ingest_url`, `list_loaders`,
-  `set_memory_sharing`, `create_shared_space` - AI IDEs call these from conversation context
-- 7 tools promoted to System (S): `expire_memories`, `set_memory_ttl`, `schedule_task`,
-  `improve`, `translate_text`, `regex_extract_entities`, `extract_graph_v2` - activated
-  via .enhanced-cognee-config.json (all off by default; enable per section)
+- `end_session` - End a session (destructive)
+- `revert_memory` - Revert memory to previous version (destructive)
+- `gdpr_delete_user_data` - GDPR right to erasure (irreversible)
+- `gdpr_export_user_data` - GDPR data portability (policy)
+- `gdpr_record_consent` - Record consent decision (policy)
+- `register_webhook` - Register new webhook (policy)
+- `test_webhook` - Test a webhook endpoint
+- `disable_webhook` - Disable a webhook (policy)
+- `rotate_encryption_key` - Rotate encryption key (destructive to old key)
+- `delete_observation` - Delete an observation (irreversible)
+- `configure_slack_notifications` - Configure Slack webhook (policy)
+- `configure_discord_notifications` - Configure Discord webhook (policy)
+- `test_notification_channel` - Test a notification channel
 
 #### 2. Automatic Invocation (A) - AI IDE Controlled
 
@@ -1420,7 +1516,7 @@ AI IDE automatically calls:
 → Returns memory ID
 ```
 
-**Tools automatically triggered by MCP-compatible IDEs (17 tools):**
+**Tools automatically triggered by MCP-compatible IDEs (28 tools):**
 
 - `add_memory` - When the IDE wants to remember information
 - `search_memories` - When you ask about past information
@@ -1437,14 +1533,19 @@ AI IDE automatically calls:
 - `get_shared_memories` - When loading shared memories
 - `list_backups` - When listing available backups
 - `list_tasks` - When listing scheduled tasks
-- `sync_agent_state` - When synchronizing agent states
-- `save_interaction` - After significant user/assistant exchanges (Phase 2)
-- `remember` - When user says "remember/save/note this" (Phase 8a promotion)
-- `recall` - When user asks about past context or decisions (Phase 8a promotion)
-- `ingest_url` - When user provides a URL to learn from (Phase 8a promotion)
-- `list_loaders` - When user asks what file types are supported (Phase 8a promotion)
-- `set_memory_sharing` - When user expresses sharing intent (Phase 8a promotion)
-- `create_shared_space` - When user requests multi-agent memory sharing (Phase 8a promotion)
+- `get_supported_languages` - When listing supported languages
+- `remember` - When user says "remember/save/note this"
+- `recall` - When user asks about past context or decisions
+- `cognify_status` - When checking background task status
+- `ingest_url` - When user provides a URL to learn from
+- `ingest_db` - When user supplies database credentials for ingestion
+- `list_loaders` - When user asks what file types are supported
+- `start_session` - When starting a new memory session
+- `get_session_context` - When retrieving active session context
+- `get_session_history` - When browsing session history
+- `list_webhooks` - When listing registered webhooks
+- `list_loader_plugins` - When listing loader plugins
+- `load_document_with_plugin` - When loading a document via plugin
 
 #### 3. System Invocation (S) - Enhanced Cognee Controlled
 
@@ -1480,7 +1581,7 @@ System automatically triggers:
 →   → get_performance_metrics() [SYSTEM - logs performance]
 ```
 
-**Tools triggered by Enhanced Cognee system (42 tools):**
+**Tools triggered by Enhanced Cognee system (66 tools):**
 
 **Performance & Monitoring (5 tools):**
 
@@ -1559,12 +1660,12 @@ System automatically triggers:
   for periodic LLM spend reporting; also invoked automatically when the user asks
   about API costs or token usage
 
-**Summary (Phase 8 + Plan 14.8 complete):**
+**Summary (Phases 1-14 complete):**
 
-- **6 tools** require explicit manual invocation (M) - irreversible/destructive/financial-impact operations
-- **24 tools** are automatically triggered by AI IDEs (A)
-- **42 tools** are automatically triggered by Enhanced Cognee system (S)
-- **Total: 119 tools** - 95% (113/119) called automatically, no user action required
+- **25 tools** require explicit manual invocation (M) - irreversible/destructive/policy/financial-impact operations
+- **28 tools** are automatically triggered by AI IDEs (A)
+- **66 tools** are automatically triggered by Enhanced Cognee system (S)
+- **Total: 119 tools** - 79% (94/119) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
 
