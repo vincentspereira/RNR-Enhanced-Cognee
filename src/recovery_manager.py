@@ -38,7 +38,7 @@ import asyncio
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.lite_mode.sqlite_manager import SQLiteManager
+from src.sqlite_manager import SQLiteManager
 
 logger = logging.getLogger(__name__)
 
