@@ -452,8 +452,8 @@ class AgentMemoryIntegration:
 
     def _extract_entities(self, text: str) -> List[str]:
         """Simple entity extraction (could be enhanced with NLP)"""
-        # Simple keyword extraction for demo
-        words = text.lower().split()
+        # Preserve case so isupper() can identify capitalized tokens
+        words = text.split()
         entities = []
 
         # Look for capitalized words (simple approach)
