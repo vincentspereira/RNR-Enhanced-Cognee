@@ -287,3 +287,28 @@ graphify-out/.filelist_*.txt
 # Archived temp files
 .archive/
 .agent/
+
+# Claude Code session artifacts (worktrees, plans, etc)
+.claude/worktrees/
+.claude/agents/
+.claude/output/
+
+# Local README backups
+README - Old*.md
+README.old*.md
+
+# Temp build files
+_tmp_*.py
+*.tmp.py
+
+# Graphify generated outputs (regenerable, large)
+graphify-out/converted/
+graphify-out/graph.json
+graphify-out/.graphify_chunk_*.json
+
+# Legacy planning docs (already migrated to docs/plans/ or archived)
+docs/PHASE-0-REPORT.md
+docs/TASKS-PHASE-*.md
+
+# Enhanced Cognee local config (machine-specific)
+.enhanced-cognee-config.json
