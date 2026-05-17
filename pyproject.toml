@@ -88,7 +88,7 @@ scraping = [
     "lxml>=5,<6 ; python_version >= '3.13' and python_version < '3.14'",
     "lxml>=6.0.1,<7 ; python_version >= '3.14'",
     "protego>=0.1",
-    "APScheduler>=3.10.0,<=3.11.0"
+    "APScheduler>=3.10.0,<=3.11.2"
 ]
 
 # fastembed is now an optional group (was in core in v0.5.1)
