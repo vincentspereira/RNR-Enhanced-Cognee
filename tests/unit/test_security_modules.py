@@ -1373,9 +1373,12 @@ class TestSecurityMonitoring:
         assert metrics.security_incidents_total is not None
         assert metrics.blocked_requests_total is not None
 
+    @pytest.mark.skipif(not SECURITY_FRAMEWORK_AVAILABLE, reason="SecurityEvent requires security framework")
     @pytest.mark.asyncio
     async def test_alert_manager_process_event(self):
         """Test alert manager processing security event"""
+        from src.security.enhanced_security_framework import SecurityEvent
+
         config = {
             "email": {"enabled": False},
             "slack": {"enabled": False}
