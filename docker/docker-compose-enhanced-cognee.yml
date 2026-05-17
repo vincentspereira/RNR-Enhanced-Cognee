@@ -167,16 +167,11 @@ services:
       - "26379:6379"  # Valkey (Redis-compatible port; kept REDIS_* env vars for backwards compat)
     networks:
       - cognee-network
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          memory: 1.5G
-        reservations:
-          memory: 512M
+    # Note: `deploy.placement.constraints` and `deploy.replicas` removed --
+    # those are Swarm-only directives that fail on standalone Docker. The
+    # `mem_limit` below works on both standalone and Swarm.
+    mem_limit: 1500m
+    mem_reservation: 512m
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "valkey-cli", "ping"]
