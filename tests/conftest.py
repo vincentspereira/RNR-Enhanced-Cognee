@@ -390,6 +390,39 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(pytest.mark.slow)
 
 
+def pytest_collection_finish(session):
+    """Purge stubs that test-unit modules installed into sys.modules at import time.
+
+    Some unit tests (test_coordination_api, test_recovery_manager,
+    test_security_deployment) replace real modules with stubs at module load
+    time so the system-under-test can be imported in isolation. These stubs
+    persist into the execution phase and poison downstream integration tests
+    (e.g. TestSubAgentCoordinator gets a no-arg stub class).
+
+    Popping them here forces a fresh real import the next time anyone uses them.
+    The unit tests that need the stubs have their own scope=module fixtures
+    that re-install on demand.
+    """
+    # Only pop entries that *integration* tests need real that *unit* tests
+    # have force-replaced (not setdefault). Leave alone:
+    #   - src.agent_memory_integration: test_agent_memory_integration captures
+    #     AgentMemoryIntegration at module import time; popping would orphan
+    #     the class reference from later patches.
+    #   - src.sqlite_manager: test_recovery_manager calls into RecoveryManager
+    #     which imports SQLiteManager at function call time; needs the stub.
+    #   - src.recovery_manager: imported at module level by its test file.
+    #   - src.security.*: same module-level import pattern.
+    _POLLUTED_KEYS = (
+        "src.coordination",
+        "src.coordination.sub_agent_coordinator",
+        "src.coordination.task_orchestration",
+        "src.coordination.distributed_decision",
+        "src.coordination.coordination_api",
+    )
+    for k in _POLLUTED_KEYS:
+        sys.modules.pop(k, None)
+
+
 def pytest_report_header(config):
     """Add custom header to pytest output"""
     return [
