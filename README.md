@@ -50,6 +50,12 @@
 
 ## Quick Comparison
 
+> **Looking for a broader market comparison?** See
+> [`docs/COMPARE_TO_ALTERNATIVES.md`](docs/COMPARE_TO_ALTERNATIVES.md) for a
+> feature-by-feature table comparing Enhanced Cognee against Mem0, Letta
+> (formerly MemGPT), LangChain Memory, and upstream Cognee. Includes cost
+> tables, migration paths, and "when to choose each" recommendations.
+
 ### Enhanced Cognee vs Original Cognee vs Claude-Mem
 
 | Feature                         | Original Cognee            | Claude-Mem                                | **Enhanced Cognee**                               |
