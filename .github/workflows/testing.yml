@@ -139,7 +139,7 @@ jobs:
             --benchmark-json=reports/benchmark/benchmark-unit-${{ matrix.python-version }}.json
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           file: testing/reports/coverage/coverage-unit-${{ matrix.python-version }}.xml
           flags: unit-tests
