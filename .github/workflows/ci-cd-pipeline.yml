@@ -92,7 +92,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: security-reports
           path: |
@@ -188,7 +188,7 @@ jobs:
           name: codecov-umbrella
 
       - name: Archive coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-reports
           path: |
@@ -266,7 +266,7 @@ jobs:
             --junitxml=junit-integration.xml
 
       - name: Archive integration test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-results
           path: |
@@ -305,7 +305,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: dashboard/playwright-report/
@@ -447,7 +447,7 @@ jobs:
         run: locust -f tests/load/locustfile.py --headless --users 100 --spawn-rate 10 --run-time 30s --host http://localhost:8000
 
       - name: Upload performance results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: performance-results
           path: |
