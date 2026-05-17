@@ -87,15 +87,15 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Redis
+# 4. Valkey (cache; Apache-2.0 Redis replacement)
 # ---------------------------------------------------------------------------
 
-log "Backing up Redis"
-docker exec cognee-mcp-redis redis-cli BGSAVE > /dev/null
+log "Backing up Valkey"
+docker exec cognee-mcp-valkey valkey-cli BGSAVE > /dev/null
 sleep 3   # let BGSAVE finish for small dbs
-docker cp cognee-mcp-redis:/data/dump.rdb "$TARGET/redis-dump.rdb" 2>/dev/null \
-    && log "  redis dump OK ($(du -h "$TARGET/redis-dump.rdb" | cut -f1))" \
-    || warn "  redis dump failed"
+docker cp cognee-mcp-valkey:/data/dump.rdb "$TARGET/valkey-dump.rdb" 2>/dev/null \
+    && log "  valkey dump OK ($(du -h "$TARGET/valkey-dump.rdb" | cut -f1))" \
+    || warn "  valkey dump failed"
 
 # ---------------------------------------------------------------------------
 # 5. Manifest

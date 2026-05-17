@@ -105,7 +105,7 @@ if [ "$SKIP_DOCKER" -eq 0 ]; then
     docker compose -f "$COMPOSE_FILE" up -d
 
     step "Waiting for services to become healthy (up to 60s)"
-    services=("cognee-mcp-postgres" "cognee-mcp-qdrant" "cognee-mcp-neo4j" "cognee-mcp-redis")
+    services=("cognee-mcp-postgres" "cognee-mcp-qdrant" "cognee-mcp-neo4j" "cognee-mcp-valkey")
     deadline=$(($(date +%s) + 60))
     while [ "$(date +%s)" -lt "$deadline" ]; do
         all_healthy=1

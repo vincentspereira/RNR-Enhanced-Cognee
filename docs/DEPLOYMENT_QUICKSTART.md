@@ -33,7 +33,7 @@ You should see 4 containers, all `(healthy)`:
 - `cognee-mcp-postgres` (port 25432)
 - `cognee-mcp-qdrant` (port 26333)
 - `cognee-mcp-neo4j` (port 27687)
-- `cognee-mcp-redis` (port 26379)
+- `cognee-mcp-valkey` (port 26379)
 
 If any are missing or unhealthy:
 
@@ -59,7 +59,7 @@ curl http://localhost:26333/healthz
 
 # Valkey (Redis-compatible cache; replaces Redis 7.4+ for license reasons,
 # see docs/LICENSE_AUDIT.md)
-docker exec cognee-mcp-redis valkey-cli PING
+docker exec cognee-mcp-valkey valkey-cli PING
 # Expected: PONG
 
 # Neo4j

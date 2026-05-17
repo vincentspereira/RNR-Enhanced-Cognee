@@ -152,9 +152,14 @@ services:
   # Valkey - Apache-2.0 Redis fork; wire-compatible cache layer
   # (Replaced Redis 7.4 which switched to BSL/SSPL; see docs/LICENSE_AUDIT.md)
   # The Python `redis` client library still works unchanged against Valkey.
+  #
+  # NOTE: service name kept as 'redis' so that other services' connection
+  # strings (REDIS_HOST: redis) keep working without env-var rewrites.
+  # The container_name is the user-visible name (cognee-mcp-valkey) to match
+  # the cognee-mcp-* pattern of the other services.
   redis:
     image: valkey/valkey:8-alpine
-    container_name: valkey-enhanced-cognee
+    container_name: cognee-mcp-valkey
     command: valkey-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data

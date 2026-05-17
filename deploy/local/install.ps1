@@ -120,7 +120,7 @@ if (-not $SkipDocker) {
 
     Write-Step "Waiting for services to become healthy (up to 60s)"
     $deadline = (Get-Date).AddSeconds(60)
-    $services = @("cognee-mcp-postgres", "cognee-mcp-qdrant", "cognee-mcp-neo4j", "cognee-mcp-redis")
+    $services = @("cognee-mcp-postgres", "cognee-mcp-qdrant", "cognee-mcp-neo4j", "cognee-mcp-valkey")
     while ((Get-Date) -lt $deadline) {
         $allHealthy = $true
         foreach ($svc in $services) {

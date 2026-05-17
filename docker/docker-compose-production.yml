@@ -122,7 +122,7 @@ services:
   # Kept service alias "redis-enhanced" so existing connection strings still resolve.
   redis-enhanced:
     image: valkey/valkey:8-alpine
-    container_name: cognee-valkey-prod
+    container_name: cognee-mcp-valkey
     restart: unless-stopped
     command: valkey-server --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
     volumes:
