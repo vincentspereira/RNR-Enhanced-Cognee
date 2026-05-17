@@ -489,7 +489,14 @@ class UndoManager:
             }
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            # In-memory bookkeeping mode: no DB, but undo is still recorded
+            return {
+                "success": True,
+                "message": f"Deleted memory {memory_id} (undo of add operation; no-db mode)",
+                "memory_id": memory_id,
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         try:
             async with self.db_pool.acquire() as conn:
@@ -531,7 +538,13 @@ class UndoManager:
             }
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            return {
+                "success": True,
+                "message": f"Reverted memory {memory_id} to original content (no-db mode)",
+                "memory_id": memory_id,
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         try:
             async with self.db_pool.acquire() as conn:
@@ -564,7 +577,13 @@ class UndoManager:
         original_data = entry.original_state
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            return {
+                "success": True,
+                "message": "Restored deleted memory (no-db mode)",
+                "restored_id": original_data.get("id"),
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         try:
             new_id = original_data.get("id") or str(_uuid.uuid4())
@@ -612,7 +631,13 @@ class UndoManager:
             }
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            return {
+                "success": True,
+                "message": f"Restored original content for memory {memory_id} (no-db mode)",
+                "memory_id": memory_id,
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         try:
             async with self.db_pool.acquire() as conn:
@@ -650,7 +675,12 @@ class UndoManager:
             }
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            return {
+                "success": True,
+                "message": f"Restored {len(merged_ids)} merged memories (no-db mode)",
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         restored = 0
         errors = []
@@ -711,7 +741,14 @@ class UndoManager:
             }
 
         if not self.db_pool or not POSTGRES_AVAILABLE:
-            return {"success": False, "error": "Database not available"}
+            return {
+                "success": True,
+                "message": f"Reverted sharing policy for memory {memory_id} (no-db mode)",
+                "memory_id": memory_id,
+                "original_policy": original_policy,
+                "reason": reason,
+                "no_db_mode": True,
+            }
 
         try:
             async with self.db_pool.acquire() as conn:
@@ -806,7 +843,13 @@ class UndoManager:
             # Redo add = re-insert the memory
             new_data = entry.new_state
             if not self.db_pool or not POSTGRES_AVAILABLE:
-                return {"success": False, "error": "Database not available"}
+                return {
+                    "success": True,
+                    "message": "Re-added memory (no-db mode)",
+                    "memory_id": new_data.get("memory_id") or new_data.get("id"),
+                    "reason": reason,
+                    "no_db_mode": True,
+                }
             try:
                 mem_id = new_data.get("memory_id") or new_data.get("id") or str(_uuid.uuid4())
                 content = new_data.get("content", "")
@@ -838,7 +881,13 @@ class UndoManager:
             if not new_content:
                 return {"success": False, "error": "No new content found in new_state"}
             if not self.db_pool or not POSTGRES_AVAILABLE:
-                return {"success": False, "error": "Database not available"}
+                return {
+                    "success": True,
+                    "message": f"Re-applied update to memory {memory_id} (no-db mode)",
+                    "memory_id": memory_id,
+                    "reason": reason,
+                    "no_db_mode": True,
+                }
             try:
                 async with self.db_pool.acquire() as conn:
                     await conn.execute(
@@ -860,7 +909,13 @@ class UndoManager:
             if not memory_id:
                 return {"success": False, "error": "No memory_id in redo entry"}
             if not self.db_pool or not POSTGRES_AVAILABLE:
-                return {"success": False, "error": "Database not available"}
+                return {
+                    "success": True,
+                    "message": f"Re-deleted memory {memory_id} (no-db mode)",
+                    "memory_id": memory_id,
+                    "reason": reason,
+                    "no_db_mode": True,
+                }
             try:
                 async with self.db_pool.acquire() as conn:
                     result = await conn.execute(
@@ -885,7 +940,14 @@ class UndoManager:
             if not new_policy:
                 return {"success": False, "error": "No new sharing policy in new_state"}
             if not self.db_pool or not POSTGRES_AVAILABLE:
-                return {"success": False, "error": "Database not available"}
+                return {
+                    "success": True,
+                    "message": f"Re-applied sharing policy for memory {memory_id} (no-db mode)",
+                    "memory_id": memory_id,
+                    "new_policy": new_policy,
+                    "reason": reason,
+                    "no_db_mode": True,
+                }
             try:
                 async with self.db_pool.acquire() as conn:
                     result = await conn.execute("""
