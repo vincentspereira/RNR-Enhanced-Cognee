@@ -1,0 +1,208 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1715900000000,
+  "links": [],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total MCP Tool Calls (last 1h)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(increase(cognee_mcp_tool_calls_total[1h]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Active MCP Tools (122)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "cognee_mcp_registered_tools_total",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "Postgres Pool Used / Max",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "cognee_postgres_pool_in_use / cognee_postgres_pool_max",
+          "refId": "A"
+        }
+      ],
+      "options": {"colorMode": "background"},
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 0.7, "color": "yellow"},
+              {"value": 0.9, "color": "red"}
+            ]
+          },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "id": 3
+    },
+    {
+      "type": "stat",
+      "title": "LLM Spend Today (USD)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(increase(cognee_llm_cost_usd_total[1d]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "id": 4
+    },
+    {
+      "type": "timeseries",
+      "title": "MCP Tool Call Rate by Trigger Type",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (trigger_type) (rate(cognee_mcp_tool_calls_total[5m]))",
+          "legendFormat": "{{trigger_type}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "MCP Tool Latency p50 / p95 / p99 (seconds)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(cognee_mcp_tool_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(cognee_mcp_tool_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(cognee_mcp_tool_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "Qdrant Query Rate",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(qdrant_collections_vector_total[5m])",
+          "legendFormat": "{{collection}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "Undo Operations / Hour",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (operation_type) (rate(cognee_undo_operations_total[1h]))",
+          "legendFormat": "{{operation_type}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12},
+      "id": 8
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Deduplication Hits",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(cognee_dedup_duplicates_found_total[15m])",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 12},
+      "id": 9
+    },
+    {
+      "type": "logs",
+      "title": "Recent Errors (Loki)",
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "{job=\"enhanced-cognee\"} |= \"ERROR\"",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "wrapLogMessage": true
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 20},
+      "id": 10
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": ["enhanced-cognee", "production"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+  },
+  "timezone": "browser",
+  "title": "Enhanced Cognee Overview",
+  "uid": "enhanced-cognee",
+  "version": 1
+}

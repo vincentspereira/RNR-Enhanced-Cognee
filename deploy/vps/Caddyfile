@@ -1,0 +1,62 @@
+# Caddyfile for Enhanced Cognee VPS deployment.
+# Replace 'cognee.example.com' with your actual domain.
+# Drop in: /etc/caddy/Caddyfile
+
+cognee.example.com {
+    # Automatic HTTPS via Let's Encrypt (free)
+    encode gzip zstd
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove server banner
+        -Server
+    }
+
+    # Health probe (unauthenticated, used by uptime monitors)
+    handle /health {
+        reverse_proxy localhost:8000
+    }
+
+    # Prometheus metrics endpoint (restrict to monitoring IPs in production)
+    handle /metrics {
+        # Uncomment + edit to restrict:
+        # @allowed remote_ip 10.0.0.0/8 192.168.0.0/16
+        # not @allowed respond 403
+        reverse_proxy localhost:8000
+    }
+
+    # MCP tool endpoints (authenticated via app-level middleware)
+    handle /mcp/* {
+        # Rate limiting at proxy level (defence-in-depth)
+        rate_limit {
+            zone mcp_tools {
+                key {remote_host}
+                events 600
+                window 1m
+            }
+        }
+        reverse_proxy localhost:8000 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Catch-all -> 404
+    handle {
+        respond "Not Found" 404
+    }
+
+    # Logging (structured JSON for log aggregation)
+    log {
+        output file /var/log/caddy/enhanced-cognee.log {
+            roll_size 100mb
+            roll_keep 14
+        }
+        format json
+    }
+}

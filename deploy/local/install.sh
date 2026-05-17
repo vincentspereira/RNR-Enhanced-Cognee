@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+# Enhanced Cognee local installer for Linux / macOS.
+# Idempotent: safe to re-run.
+#
+# Usage:
+#   ./install.sh                # Full install
+#   ./install.sh --skip-docker  # Don't bring up the Docker stack
+#   ./install.sh --autostart    # Create systemd user unit for stack auto-start
+#                               # (Linux only; macOS uses launchd, not yet wired)
+
+set -euo pipefail
+
+# ----------------------------------------------------------------------------
+# Helpers (ASCII-only output)
+# ----------------------------------------------------------------------------
+
+step() { printf '\033[1;36m[STEP]\033[0m %s\n' "$1"; }
+ok()   { printf '\033[1;32m[OK]  \033[0m %s\n' "$1"; }
+warn() { printf '\033[1;33m[WARN]\033[0m %s\n' "$1"; }
+err()  { printf '\033[1;31m[ERR] \033[0m %s\n' "$1" >&2; }
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+VENV="$REPO_ROOT/.venv"
+COMPOSE_FILE="$REPO_ROOT/docker/docker-compose-enhanced-cognee.yml"
+CLAUDE_CFG="$HOME/.claude.json"
+
+SKIP_DOCKER=0
+AUTOSTART=0
+for arg in "$@"; do
+    case "$arg" in
+        --skip-docker) SKIP_DOCKER=1 ;;
+        --autostart)   AUTOSTART=1 ;;
+        -h|--help)
+            sed -n '2,12p' "$0"
+            exit 0
+            ;;
+    esac
+done
+
+step "Enhanced Cognee installer starting"
+echo "  Repo:    $REPO_ROOT"
+echo "  Venv:    $VENV"
+echo "  Compose: $COMPOSE_FILE"
+echo
+
+# ----------------------------------------------------------------------------
+# 1. Python check
+# ----------------------------------------------------------------------------
+
+step "Checking Python >=3.11"
+PY=""
+for cand in python3.13 python3.12 python3.11 python3 python; do
+    if command -v "$cand" >/dev/null 2>&1; then
+        ver=$("$cand" -c 'import sys; print(sys.version_info[:2])')
+        if "$cand" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)'; then
+            PY="$cand"
+            break
+        fi
+    fi
+done
+if [ -z "$PY" ]; then
+    err "Need Python 3.11+. None found on PATH."
+    exit 1
+fi
+ok "Found: $($PY --version)"
+
+# ----------------------------------------------------------------------------
+# 2. Venv
+# ----------------------------------------------------------------------------
+
+step "Setting up .venv"
+if [ ! -d "$VENV" ]; then
+    "$PY" -m venv "$VENV"
+    ok "Created $VENV"
+else
+    ok "Venv already exists"
+fi
+
+# shellcheck disable=SC1091
+source "$VENV/bin/activate"
+
+# ----------------------------------------------------------------------------
+# 3. Install
+# ----------------------------------------------------------------------------
+
+step "Upgrading pip + installing Enhanced Cognee (editable)"
+pip install --upgrade pip --quiet
+pip install -e "$REPO_ROOT" --quiet
+ok "Installed editable package"
+
+# ----------------------------------------------------------------------------
+# 4. Docker stack
+# ----------------------------------------------------------------------------
+
+if [ "$SKIP_DOCKER" -eq 0 ]; then
+    step "Checking Docker"
+    if ! command -v docker >/dev/null 2>&1; then
+        err "Docker not found. Install from https://docs.docker.com/get-docker/"
+        exit 1
+    fi
+    ok "Docker found"
+
+    step "Starting Enhanced Cognee Docker stack"
+    docker compose -f "$COMPOSE_FILE" up -d
+
+    step "Waiting for services to become healthy (up to 60s)"
+    services=("cognee-mcp-postgres" "cognee-mcp-qdrant" "cognee-mcp-neo4j" "cognee-mcp-redis")
+    deadline=$(($(date +%s) + 60))
+    while [ "$(date +%s)" -lt "$deadline" ]; do
+        all_healthy=1
+        for svc in "${services[@]}"; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' "$svc" 2>/dev/null || echo "missing")
+            if [ "$status" != "healthy" ]; then
+                all_healthy=0
+                break
+            fi
+        done
+        if [ "$all_healthy" -eq 1 ]; then
+            ok "All 4 services healthy"
+            break
+        fi
+        sleep 3
+    done
+fi
+
+# ----------------------------------------------------------------------------
+# 5. Register MCP server
+# ----------------------------------------------------------------------------
+
+step "Registering MCP server in $CLAUDE_CFG"
+"$PY" - <<PYEOF
+import json, os
+cfg_path = os.path.expanduser("~/.claude.json")
+cfg = {}
+if os.path.exists(cfg_path):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+cfg.setdefault("mcpServers", {})
+cfg["mcpServers"]["cognee"] = {
+    "command": "$VENV/bin/python",
+    "args": ["$REPO_ROOT/bin/enhanced_cognee_mcp_server.py"],
+    "env": {
+        "ENHANCED_COGNEE_MODE": "true",
+        "POSTGRES_HOST": "localhost",
+        "POSTGRES_PORT": "25432",
+        "POSTGRES_DB": "cognee_db",
+        "POSTGRES_USER": "cognee_user",
+        "POSTGRES_PASSWORD": "cognee_password",
+        "QDRANT_HOST": "localhost",
+        "QDRANT_PORT": "26333",
+        "NEO4J_URI": "bolt://localhost:27687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "cognee_password",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "26379",
+    },
+}
+with open(cfg_path, "w") as f:
+    json.dump(cfg, f, indent=2)
+print("[OK]  MCP server 'cognee' registered")
+PYEOF
+
+# ----------------------------------------------------------------------------
+# 6. Optional: systemd user unit (Linux only)
+# ----------------------------------------------------------------------------
+
+if [ "$AUTOSTART" -eq 1 ]; then
+    case "$(uname -s)" in
+        Linux*)
+            step "Installing systemd user unit for stack auto-start"
+            UNIT_DIR="$HOME/.config/systemd/user"
+            mkdir -p "$UNIT_DIR"
+            cat > "$UNIT_DIR/enhanced-cognee-stack.service" <<UNIT
+[Unit]
+Description=Enhanced Cognee Docker Stack
+After=docker.service network-online.target
+Wants=docker.service network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/docker compose -f $COMPOSE_FILE up -d
+ExecStop=/usr/bin/docker compose -f $COMPOSE_FILE down
+
+[Install]
+WantedBy=default.target
+UNIT
+            systemctl --user daemon-reload
+            systemctl --user enable enhanced-cognee-stack.service
+            ok "Auto-start registered. Will start on next login."
+            ok "To start now: systemctl --user start enhanced-cognee-stack"
+            ;;
+        Darwin*)
+            warn "macOS auto-start (launchd) not yet wired. Set up manually if needed."
+            ;;
+        *)
+            warn "Unknown OS; skipping auto-start."
+            ;;
+    esac
+fi
+
+# ----------------------------------------------------------------------------
+# Done
+# ----------------------------------------------------------------------------
+
+echo
+ok "Enhanced Cognee installation complete"
+echo
+echo "Next steps:"
+echo "  1. Restart Claude Code to pick up the new MCP server"
+echo "  2. Verify with: claude mcp list"
+echo "  3. Test:        make smoke   (or  python -m pytest tests/system/ -q)"
+echo
+if [ "$AUTOSTART" -eq 0 ]; then
+    echo "Tip: re-run with --autostart to enable auto-start on login (Linux only)."
+fi

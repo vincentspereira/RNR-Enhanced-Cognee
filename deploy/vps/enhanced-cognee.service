@@ -1,0 +1,73 @@
+[Unit]
+Description=Enhanced Cognee MCP Server (FastAPI variant)
+After=network-online.target docker.service
+Wants=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=cognee
+Group=cognee
+WorkingDirectory=/opt/enhanced-cognee
+
+# Wait for Docker stack to be healthy before starting
+ExecStartPre=/bin/bash -c 'for i in {1..30}; do docker compose -f /opt/enhanced-cognee/docker/docker-compose-enhanced-cognee.yml ps --filter "health=healthy" --format json | grep -q cognee-mcp-postgres && exit 0 || sleep 2; done; exit 1'
+
+# Run the FastAPI MCP variant on port 8000 (Caddy reverse-proxies HTTPS)
+ExecStart=/opt/enhanced-cognee/.venv/bin/uvicorn src.enhanced_cognee_mcp:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --workers 2 \
+    --log-level info \
+    --access-log
+
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+
+# Resource limits (defence-in-depth)
+LimitNOFILE=65536
+MemoryMax=2G
+CPUQuota=180%
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/enhanced-cognee /var/log/enhanced-cognee /var/backups/enhanced-cognee
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+
+# Environment
+Environment="ENHANCED_COGNEE_MODE=true"
+Environment="POSTGRES_HOST=localhost"
+Environment="POSTGRES_PORT=25432"
+Environment="POSTGRES_DB=cognee_db"
+Environment="POSTGRES_USER=cognee_user"
+Environment="POSTGRES_PASSWORD=cognee_password"
+Environment="QDRANT_HOST=localhost"
+Environment="QDRANT_PORT=26333"
+Environment="NEO4J_URI=bolt://localhost:27687"
+Environment="NEO4J_USER=neo4j"
+Environment="NEO4J_PASSWORD=cognee_password"
+Environment="REDIS_HOST=localhost"
+Environment="REDIS_PORT=26379"
+Environment="LOG_LEVEL=INFO"
+
+# For production, override DB passwords via EnvironmentFile= pointing at
+# a 600-perm file in /etc/enhanced-cognee/, not from the unit file.
+# EnvironmentFile=-/etc/enhanced-cognee/secrets.env
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=enhanced-cognee
+
+[Install]
+WantedBy=multi-user.target
