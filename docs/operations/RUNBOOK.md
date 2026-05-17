@@ -323,7 +323,7 @@ docker exec cognee-mcp-postgres psql -U cognee_user -d cognee_db -c "
 # Qdrant total memory size
 curl -s http://localhost:26333/collections | jq '.result.collections[].points_count' | awk '{s+=$1} END {print s, "points"}'
 
-# Redis memory + key count
-docker exec cognee-mcp-redis redis-cli INFO memory | grep used_memory_human
-docker exec cognee-mcp-redis redis-cli DBSIZE
+# Valkey memory + key count (Valkey replaces Redis - see docs/LICENSE_AUDIT.md)
+docker exec cognee-mcp-redis valkey-cli INFO memory | grep used_memory_human
+docker exec cognee-mcp-redis valkey-cli DBSIZE
 ```

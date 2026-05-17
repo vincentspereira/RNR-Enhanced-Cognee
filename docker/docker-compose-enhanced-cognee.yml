@@ -149,15 +149,17 @@ services:
       timeout: 10s
       retries: 3
 
-  # Redis - High-Performance Cache Layer (new component)
+  # Valkey - Apache-2.0 Redis fork; wire-compatible cache layer
+  # (Replaced Redis 7.4 which switched to BSL/SSPL; see docs/LICENSE_AUDIT.md)
+  # The Python `redis` client library still works unchanged against Valkey.
   redis:
-    image: redis:7.4-alpine
-    container_name: redis-enhanced-cognee
-    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    image: valkey/valkey:8-alpine
+    container_name: valkey-enhanced-cognee
+    command: valkey-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     ports:
-      - "26379:6379"  # Redis (changed to avoid conflict)
+      - "26379:6379"  # Valkey (Redis-compatible port; kept REDIS_* env vars for backwards compat)
     networks:
       - cognee-network
     deploy:
@@ -172,7 +174,7 @@ services:
           memory: 512M
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "valkey-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3

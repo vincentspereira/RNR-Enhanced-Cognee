@@ -133,8 +133,8 @@ smoke:	## Quick health probe of stack and MCP server
 	@docker exec cognee-mcp-postgres pg_isready -U cognee_user || echo "FAIL"
 	@echo "[3] Qdrant /healthz:"
 	@curl -s -o /dev/null -w "  HTTP %{http_code}\n" http://localhost:26333/healthz || echo "FAIL"
-	@echo "[4] Redis PING:"
-	@docker exec cognee-mcp-redis redis-cli PING || echo "FAIL"
+	@echo "[4] Valkey (Redis-compatible) PING:"
+	@docker exec cognee-mcp-redis valkey-cli PING 2>/dev/null || docker exec cognee-mcp-redis redis-cli PING || echo "FAIL"
 	@echo "[5] Neo4j HTTP:"
 	@curl -s -o /dev/null -w "  HTTP %{http_code}\n" http://localhost:27474 || echo "FAIL"
 

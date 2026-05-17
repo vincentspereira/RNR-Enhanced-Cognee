@@ -57,8 +57,9 @@ docker exec cognee-mcp-postgres pg_isready -U cognee_user
 curl http://localhost:26333/healthz
 # Expected: 200 OK
 
-# Redis
-docker exec cognee-mcp-redis redis-cli PING
+# Valkey (Redis-compatible cache; replaces Redis 7.4+ for license reasons,
+# see docs/LICENSE_AUDIT.md)
+docker exec cognee-mcp-redis valkey-cli PING
 # Expected: PONG
 
 # Neo4j

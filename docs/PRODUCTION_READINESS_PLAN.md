@@ -64,7 +64,10 @@ to "deployed in production."
 
 - [x] **Phase A** — Stabilise 7 failing integration tests (DONE 2026-05-17, 845/845 pass)
 - [x] **Phase B** — Zero-warning hygiene (DONE 2026-05-17, 1101/1101 pass, 0 skipped, 0 warnings)
-- [~] **Phase C** — Coverage to 85%+ (T1 DONE 2026-05-17: 65% coverage, 1727 tests, 10 modules done; T2/T3 remaining for 85% target)
+- [x] **Phase C** — Coverage to 85%+ (DONE 2026-05-18, **92% coverage**, ~4047 tests passing; T1+T2+T3+FastAPI variant all complete)
+- [x] **Phase D** — CI/CD secrets and missing infrastructure (DONE 2026-05-17, Gmail App Password configured, Makefile + performance benchmarks + Locust load tests + Dependabot configured)
+- [x] **Phase E** — Production deployment (laptop + VPS) (DONE 2026-05-17, Windows + Linux installers, VPS runbook, Caddyfile, systemd unit, backup.sh, MAS integration guide, operations RUNBOOK)
+- [x] **Phase F** — Quality polish (DONE 2026-05-18 design docs + monitoring stack; multi-tenant + OpenTelemetry implementation deferred to post-launch)
 - [ ] **Phase D** — CI/CD secrets and missing infrastructure
 - [ ] **Phase E** — Production deployment (laptop + VPS)
 - [ ] **Phase F** — Quality polish (parallel / deferrable)

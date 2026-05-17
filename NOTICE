@@ -1,5 +1,5 @@
 Enhanced Cognee
-Copyright 2026 Vincent S. Pereira
+Copyright 2024-2026 Vincent S. Pereira
 
 This product is a derivative work of Cognee
 (https://github.com/topoteretes/cognee)
@@ -17,16 +17,94 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Third-party components:
-- PostgreSQL: https://www.postgresql.org/ (PostgreSQL License)
-- pgvector: https://github.com/pgvector/pgvector (MIT License)
-- Qdrant: https://qdrant.tech/ (Apache License 2.0)
-- Neo4j Community Edition: https://neo4j.com/ (GNU General Public License v3)
-- Redis: https://redis.io/ (RSALv2 and Server Side Public License v1)
-- FastMCP: https://github.com/jlowin/fastmcp (MIT License)
-- LiteLLM: https://github.com/BerriAI/litellm (MIT License)
-- dlt (data load tool): https://github.com/dlt-hub/dlt (Apache License 2.0)
+================================================================================
+THIRD-PARTY COMPONENTS (Database & Infrastructure)
+================================================================================
 
-Note on Neo4j: Neo4j Community Edition is distributed under the GNU GPL v3.
-If you distribute Enhanced Cognee as a product, review GPL compatibility with
-your use case or use Neo4j Enterprise Edition under a commercial license.
+PostgreSQL + pgvector
+  Copyright PostgreSQL Global Development Group
+  License: PostgreSQL License (BSD-style permissive)
+  https://www.postgresql.org/about/licence/
+  https://github.com/pgvector/pgvector (PostgreSQL License)
+
+Qdrant
+  Copyright Qdrant authors
+  License: Apache-2.0
+  https://github.com/qdrant/qdrant
+
+Neo4j Community Edition
+  Copyright Neo4j Inc.
+  License: GPLv3 (Community Edition); Commercial license available for Enterprise
+  Used as a separate network service via Docker; no copyleft obligation on
+  Enhanced Cognee's own code per the "mere aggregation" + "network service"
+  patterns. See docs/LICENSE_AUDIT.md for the full analysis. If you require
+  a fully Apache-2.0 graph database, see the alternatives section in that doc
+  (Apache AGE on PostgreSQL is the recommended swap when needed).
+  https://neo4j.com/licensing/
+
+Valkey
+  Copyright The Valkey Project / The Linux Foundation
+  License: Apache-2.0
+  Drop-in Redis-compatible cache; replaced upstream Redis 7.4+ (which switched
+  to BSL/SSPL, then AGPLv3 in 8.0) for license compatibility with Apache-2.0.
+  The Python `redis` client library is unchanged and works with Valkey via the
+  shared RESP wire protocol. See docs/LICENSE_AUDIT.md.
+  https://github.com/valkey-io/valkey
+
+Caddy (used in deploy/vps/Caddyfile for HTTPS reverse proxy)
+  Copyright Caddy authors
+  License: Apache-2.0
+  https://github.com/caddyserver/caddy
+
+Docker
+  Copyright Docker Inc.
+  License: Apache-2.0
+  https://www.docker.com/
+
+================================================================================
+PYTHON LIBRARIES (Runtime Dependencies)
+================================================================================
+
+All Python packages carry permissive licenses (Apache-2.0, MIT, BSD, PSF, or
+LGPL with dynamic-linking compatibility). Individual package licenses are
+preserved in installed package metadata (`pip show <package>`).
+
+  anthropic (Apache-2.0)
+  argon2-cffi (MIT)
+  asyncpg (Apache-2.0)
+  cryptography (Apache-2.0 / BSD dual)
+  FastMCP (https://github.com/jlowin/fastmcp, MIT License)
+  fastapi, fastapi-users (MIT)
+  httpx (BSD-3-Clause)
+  litellm (MIT)
+  neo4j Python driver (Apache-2.0)
+  openai Python SDK (Apache-2.0)
+  passlib (BSD-2-Clause)
+  pgvector Python (MIT)
+  prometheus_client (Apache-2.0)
+  psycopg2 (LGPL - dynamic linking compatible)
+  pytest and plugins (MIT)
+  qdrant-client (Apache-2.0)
+  redis Python client (MIT - works against both Redis and Valkey)
+  SQLAlchemy (MIT)
+  uvicorn (BSD)
+  dlt (Apache-2.0)
+
+================================================================================
+OPTIONAL MONITORING STACK (separate docker-compose, not bundled)
+================================================================================
+
+  Prometheus (Apache-2.0)
+  Grafana OSS (AGPLv3 since 2021)
+  Loki (AGPLv3)
+  Promtail (Apache-2.0)
+  Jaeger (Apache-2.0)
+
+Grafana and Loki are AGPLv3. They are NOT redistributed by Enhanced Cognee;
+operators bring them up separately via monitoring/docker-compose-monitoring.yml
+if desired. AGPL obligations apply to the operator of those services, not to
+Enhanced Cognee. See docs/LICENSE_AUDIT.md for the full analysis.
+
+================================================================================
+END OF NOTICE
+================================================================================
