@@ -1194,7 +1194,7 @@ class TestRBACManager:
 # Security Middleware Tests
 # ============================================================================
 
-@pytest.mark.skipif(not MIDDLEWARE_AVAILABLE, reason="Security middleware not available")
+@pytest.mark.skipif(not (MIDDLEWARE_AVAILABLE and SECURITY_FRAMEWORK_AVAILABLE), reason="Security middleware or framework not available")
 class TestSecurityMiddleware:
     """Test security middleware"""
 
@@ -1233,7 +1233,7 @@ class TestSecurityMiddleware:
 # File Upload Middleware Tests
 # ============================================================================
 
-@pytest.mark.skipif(not MIDDLEWARE_AVAILABLE, reason="Security middleware not available")
+@pytest.mark.skipif(not (MIDDLEWARE_AVAILABLE and SECURITY_FRAMEWORK_AVAILABLE), reason="Security middleware or framework not available")
 class TestFileUploadSecurityMiddleware:
     """Test file upload security middleware"""
 
@@ -1287,7 +1287,7 @@ class TestFileUploadSecurityMiddleware:
 # Input Sanitization Middleware Tests
 # ============================================================================
 
-@pytest.mark.skipif(not MIDDLEWARE_AVAILABLE, reason="Security middleware not available")
+@pytest.mark.skipif(not (MIDDLEWARE_AVAILABLE and SECURITY_FRAMEWORK_AVAILABLE), reason="Security middleware or framework not available")
 class TestInputSanitizationMiddleware:
     """Test input sanitization middleware"""
 
