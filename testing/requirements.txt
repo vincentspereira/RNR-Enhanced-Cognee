@@ -24,7 +24,7 @@ aiohttp==3.13.5
 # Load and Stress Testing
 py-libs==0.1.0
 concurrent-futures==3.1.1
-psutil==5.9.6
+psutil==7.2.2
 memory-profiler==0.61.0
 
 # Security Testing
