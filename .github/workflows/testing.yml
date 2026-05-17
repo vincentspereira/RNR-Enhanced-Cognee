@@ -58,7 +58,7 @@ jobs:
       test-database-url: ${{ steps.setup.outputs.database-url }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -106,7 +106,7 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -178,7 +178,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -235,7 +235,7 @@ jobs:
     if: github.event.inputs.test_category == 'all' || github.event.inputs.test_category == 'system' || github.event.inputs.test_category == ''
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -290,7 +290,7 @@ jobs:
         performance-level: ${{ github.event.inputs.performance_level == '' && fromJson('["medium"]') || fromJson('["light", "medium", "heavy"]') }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -354,7 +354,7 @@ jobs:
     if: github.event.inputs.test_category == 'all' || github.event.inputs.test_category == 'security' || github.event.inputs.test_category == ''
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -438,7 +438,7 @@ jobs:
     if: (github.event.inputs.test_category == 'all' || github.event.inputs.test_category == 'chaos' || github.event.inputs.chaos_testing == 'true') && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -494,7 +494,7 @@ jobs:
     if: github.event.inputs.test_category == 'all' || github.event.inputs.test_category == 'compliance' || github.event.inputs.test_category == ''
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -547,7 +547,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -612,7 +612,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Stop and cleanup testing infrastructure
         run: |

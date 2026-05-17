@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Check out ${{ inputs.flavour }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.flavour }}
       - name: Install uv
@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Check out ${{ inputs.flavour }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.flavour }}
       
@@ -94,7 +94,7 @@ jobs:
 
     steps:
       - name: Check out ${{ inputs.flavour }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.flavour }}
 
