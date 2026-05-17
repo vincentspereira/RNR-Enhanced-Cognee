@@ -126,7 +126,7 @@ async def _load_coordination_settings(coordinator):
         # This would load previously saved coordination settings
         # For now, use default settings
         pass
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         print(f"Warning: Failed to load coordination settings: {e}")
 
 def get_coordination_system_info():

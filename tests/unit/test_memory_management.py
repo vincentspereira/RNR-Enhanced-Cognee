@@ -467,3 +467,94 @@ class TestPerformance:
         assert result["status"] == "success"
         # Should complete in reasonable time (< 5 seconds for mock)
         assert elapsed < 5.0
+
+
+# ============================================================================
+# Additional coverage: uncovered error branches
+# ============================================================================
+
+class TestCleanupExpiredCacheError:
+    """Cover cleanup_expired_cache exception path (lines 119-137)."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_cleanup_cache_success(self, memory_manager):
+        memory_manager.redis_client.info = AsyncMock(return_value={"expired_keys": 42})
+        result = await memory_manager.cleanup_expired_cache()
+        assert result["status"] == "success"
+        assert result["expired_keys"] == 42
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_cleanup_cache_redis_error(self, memory_manager):
+        memory_manager.redis_client.info = AsyncMock(side_effect=RuntimeError("redis down"))
+        result = await memory_manager.cleanup_expired_cache()
+        assert result["status"] == "error"
+
+
+class TestArchiveMemoriesByCategoryError:
+    """Cover archive_memories_by_category exception path (lines 218-223)."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_archive_error_returns_error(self, memory_manager, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(side_effect=RuntimeError("archive fail"))
+        ctx = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await memory_manager.archive_memories_by_category("cat", 30)
+        assert result["status"] == "error"
+
+
+class TestSetMemoryTTLBranches:
+    """Cover set_memory_ttl branches (lines 255-275)."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_set_ttl_zero_sets_no_expiry(self, memory_manager, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
+        ctx = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await memory_manager.set_memory_ttl("mem-1", ttl_days=0)
+        assert result["status"] == "success"
+        assert result["expiry_date"] is None
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_set_ttl_not_found(self, memory_manager, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value=0)
+        ctx = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await memory_manager.set_memory_ttl("missing", ttl_days=10)
+        assert result["status"] == "not_found"
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_set_ttl_error(self, memory_manager, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(side_effect=RuntimeError("db error"))
+        ctx = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await memory_manager.set_memory_ttl("m1", 30)
+        assert result["status"] == "error"
+
+
+class TestBulkSetTTLByCategoryError:
+    """Cover bulk_set_ttl_by_category exception path (lines 315-320)."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_bulk_ttl_error(self, memory_manager, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(side_effect=RuntimeError("bulk fail"))
+        ctx = create_async_context_manager(mock_conn)
+        memory_manager.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await memory_manager.bulk_set_ttl_by_category("cat", 30)
+        assert result["status"] == "error"

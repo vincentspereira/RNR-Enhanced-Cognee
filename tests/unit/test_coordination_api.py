@@ -131,6 +131,22 @@ def _build_sub_agent_coordinator_stub():
     class SubAgentCoordinator:
         pass
 
+    # Legacy stub wrappers (needed by test_sub_agent_coordinator when it
+    # runs after this file has already pre-populated sys.modules)
+    class _TradingMemoryWrapperStub:
+        def __init__(self, integration): self.integration = integration
+        async def store_execution_result(self, **kw): pass
+
+    class _DevelopmentMemoryWrapperStub:
+        def __init__(self, integration): self.integration = integration
+        async def store_analysis_report(self, **kw): pass
+
+    class _CoordinationMemoryWrapperStub:
+        def __init__(self, integration): self.integration = integration
+        async def store_message(self, **kw): pass
+        async def store_context(self, **kw): pass
+        async def store_task(self, **kw): pass
+
     mod = types.ModuleType("src.coordination.sub_agent_coordinator")
     mod.AgentStatus = AgentStatus
     mod.TaskPriority = TaskPriority
@@ -139,6 +155,9 @@ def _build_sub_agent_coordinator_stub():
     mod.AgentMessage = AgentMessage
     mod.AgentCapability = AgentCapability
     mod.SubAgentCoordinator = SubAgentCoordinator
+    mod._TradingMemoryWrapperStub = _TradingMemoryWrapperStub
+    mod._DevelopmentMemoryWrapperStub = _DevelopmentMemoryWrapperStub
+    mod._CoordinationMemoryWrapperStub = _CoordinationMemoryWrapperStub
     return mod
 
 
@@ -254,6 +273,31 @@ def _build_distributed_decision_stub():
         consensus_threshold: float = 0.7
         created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
+    @dataclass
+    class DecisionVote:
+        vote_id: str
+        decision_id: str
+        agent_id: str
+        vote_type: "VoteType"
+        option_id: Optional[str] = None
+        confidence: float = 1.0
+        reasoning: str = ""
+        expertise_weight: float = 1.0
+        timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+
+    @dataclass
+    class Decision:
+        decision_id: str
+        proposal: "DecisionProposal"
+        votes: List["DecisionVote"] = field(default_factory=list)
+        status: "DecisionStatus" = field(default_factory=lambda: DecisionStatus.PROPOSED)
+        result: Optional[Any] = None
+        implementation_plan: Optional[Dict[str, Any]] = None
+        debate_messages: List[Dict[str, Any]] = field(default_factory=list)
+        created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+        completed_at: Optional[datetime] = None
+        confidence_score: float = 0.0
+
     class DistributedDecisionMaker:
         pass
 
@@ -263,6 +307,8 @@ def _build_distributed_decision_stub():
     mod.VoteType = VoteType
     mod.DecisionOption = DecisionOption
     mod.DecisionProposal = DecisionProposal
+    mod.DecisionVote = DecisionVote
+    mod.Decision = Decision
     mod.DistributedDecisionMaker = DistributedDecisionMaker
     return mod
 

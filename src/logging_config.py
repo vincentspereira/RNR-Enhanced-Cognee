@@ -163,7 +163,7 @@ def setup_logging(
 
 
 # Example usage and testing
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Test logger
     logger = get_logger(__name__)
     logger.info("Testing enhanced logging")

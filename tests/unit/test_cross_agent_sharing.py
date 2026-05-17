@@ -511,3 +511,89 @@ class TestCategorySharedAccess:
         result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
 
         assert result["can_access"] is False
+
+
+# ============================================================================
+# Additional coverage: uncovered branches
+# ============================================================================
+
+class TestUnknownPolicyBranch:
+    """Cover the 'else: unknown_policy' branch in can_agent_access_memory."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_unknown_policy_returns_false(self, cross_agent_sharing, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.fetchrow = AsyncMock(return_value={
+            "id": "mem-1",
+            "owner_id": "agent-1",
+            "policy": "some_future_policy",
+            "allowed_agents": None,
+        })
+        ctx = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
+        assert result["can_access"] is False
+        assert result["reason"] == "unknown_policy"
+
+
+class TestCheckAccessError:
+    """Cover the exception path in can_agent_access_memory."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_db_error_returns_error(self, cross_agent_sharing, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.fetchrow = AsyncMock(side_effect=RuntimeError("db gone"))
+        ctx = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await cross_agent_sharing.can_agent_access_memory("mem-1", "agent-2")
+        assert result["can_access"] is False
+        assert "error" in result
+
+
+class TestGetSharedMemoriesError:
+    """Cover exception path in get_shared_memories."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_error_returns_empty_list(self, cross_agent_sharing, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(side_effect=RuntimeError("db error"))
+        ctx = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await cross_agent_sharing.get_shared_memories("agent-1")
+        assert result == []
+
+
+class TestGetSharingStatsError:
+    """Cover exception path in get_sharing_stats."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_error_returns_error_dict(self, cross_agent_sharing, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(side_effect=RuntimeError("stats error"))
+        ctx = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await cross_agent_sharing.get_sharing_stats()
+        assert "error" in result
+
+
+class TestCreateSharedSpaceError:
+    """Cover exception path in create_shared_space."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_error_returns_error_dict(self, cross_agent_sharing, create_async_context_manager):
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(side_effect=RuntimeError("insert error"))
+        ctx = create_async_context_manager(mock_conn)
+        cross_agent_sharing.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await cross_agent_sharing.create_shared_space("space", ["agent-1"])
+        assert result["status"] == "error"

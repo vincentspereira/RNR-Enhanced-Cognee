@@ -153,7 +153,7 @@ def format_response_compact(response: Dict[str, Any]) -> str:
 
 
 # Example usage and documentation
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Success response example
     success = success_response(
         data={"memory_id": "abc123", "created": True},

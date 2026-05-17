@@ -591,3 +591,177 @@ class TestSyncEventDataclass:
         assert event.event_type == "memory_added"
         assert event.memory_id == "mem-1"
         assert event.agent_id == "agent-1"
+
+
+# ============================================================================
+# Additional coverage tests for missed branches
+# ============================================================================
+
+class TestSubscribeError:
+    """Cover the subscribe_to_updates exception branch."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_subscribe_raises_returns_error(self, realtime_sync):
+        """Force exception path inside subscribe_to_updates."""
+        class _BadDict(dict):
+            def __setitem__(self, k, v):
+                raise RuntimeError("storage failure")
+
+        realtime_sync.subscriptions = _BadDict()
+        result = await realtime_sync.subscribe_to_updates("agent-x", AsyncMock())
+        assert result["status"] == "error"
+
+
+class TestStartSyncListener:
+    """Cover start_sync_listener (exception path)."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_start_sync_listener_redis_error(self, realtime_sync):
+        """start_sync_listener catches and logs exceptions; should not raise."""
+        realtime_sync.redis_client.pubsub = Mock(side_effect=Exception("redis unavailable"))
+        # Should complete without raising
+        await realtime_sync.start_sync_listener()
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_start_sync_listener_processes_messages(self, realtime_sync):
+        """Covers the async-for loop path inside start_sync_listener."""
+        events_processed = []
+
+        async def fake_listen():
+            yield MagicMock(type="message", data=json.dumps({
+                "event_type": "memory_added",
+                "memory_id": "m1",
+                "agent_id": "a1",
+                "data": {}
+            }))
+            # yield a non-message to cover the if-branch falsy path
+            yield MagicMock(type="subscribe", data=None)
+
+        mock_pubsub = AsyncMock()
+        mock_pubsub.subscribe = AsyncMock()
+        mock_pubsub.listen = fake_listen
+        realtime_sync.redis_client.pubsub = Mock(return_value=mock_pubsub)
+
+        # subscribe a callback to verify event handling works
+        cb = AsyncMock()
+        await realtime_sync.subscribe_to_updates("other-agent", cb)
+
+        await realtime_sync.start_sync_listener()
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_start_sync_listener_bad_json_does_not_raise(self, realtime_sync):
+        """Cover inner exception handling for bad JSON messages."""
+        async def fake_listen():
+            yield MagicMock(type="message", data="not-valid-json")
+
+        mock_pubsub = AsyncMock()
+        mock_pubsub.subscribe = AsyncMock()
+        mock_pubsub.listen = fake_listen
+        realtime_sync.redis_client.pubsub = Mock(return_value=mock_pubsub)
+
+        await realtime_sync.start_sync_listener()
+
+
+class TestBroadcastErrors:
+    """Cover error branches in broadcast_memory_update."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_broadcast_db_error_returns_error(self, realtime_sync):
+        """Pool raises -> returns error dict."""
+        class _BadPool:
+            def acquire(self):
+                raise RuntimeError("pool exhausted")
+
+        realtime_sync.postgres_pool = _BadPool()
+        result = await realtime_sync.broadcast_memory_update(
+            memory_id="m1", update_type="updated", agent_id="a1"
+        )
+        assert result["status"] == "error"
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_broadcast_callback_failure_counted(self, realtime_sync, create_async_context_manager):
+        """Callback that raises does not prevent other callbacks."""
+        bad_cb = AsyncMock(side_effect=RuntimeError("fail"))
+        good_cb = AsyncMock()
+        await realtime_sync.subscribe_to_updates("agent-bad", bad_cb)
+        await realtime_sync.subscribe_to_updates("agent-good", good_cb)
+
+        mock_conn = AsyncMock()
+        mock_conn.fetchrow = AsyncMock(return_value={
+            "id": "m1", "content": "c", "agent_id": "sender", "memory_category": "x"
+        })
+        ctx = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await realtime_sync.broadcast_memory_update(
+            memory_id="m1", update_type="updated", agent_id="sender"
+        )
+        # good callback should still have been attempted
+        good_cb.assert_called_once()
+        assert result["status"] == "success"
+
+
+class TestGetSyncStatusError:
+    """Cover error path in get_sync_status."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_get_sync_status_redis_error(self, realtime_sync):
+        realtime_sync.redis_client.info = AsyncMock(side_effect=Exception("redis down"))
+        result = await realtime_sync.get_sync_status()
+        assert result["status"] == "error"
+
+
+class TestSyncAgentStateErrors:
+    """Cover error paths in sync_agent_state."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_sync_agent_state_pool_error(self, realtime_sync):
+        class _BadPool:
+            def acquire(self):
+                raise RuntimeError("db down")
+
+        realtime_sync.postgres_pool = _BadPool()
+        result = await realtime_sync.sync_agent_state("src-agent", "tgt-agent")
+        assert result["status"] == "error"
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_sync_agent_state_individual_memory_error(self, realtime_sync, create_async_context_manager):
+        """Cover inner error path when a single memory copy fails."""
+        mock_conn = AsyncMock()
+        mock_conn.fetch = AsyncMock(return_value=[
+            {"id": "m1", "content": "c", "metadata": {}}
+        ])
+        # Make execute raise to trigger the inner error capture
+        mock_conn.execute = AsyncMock(side_effect=RuntimeError("constraint"))
+        ctx = create_async_context_manager(mock_conn)
+        realtime_sync.postgres_pool.acquire = Mock(return_value=ctx)
+
+        result = await realtime_sync.sync_agent_state("agent-src", "agent-tgt")
+        assert result["status"] == "success"
+        assert len(result["errors"]) == 1
+
+
+class TestResolveConflictErrors:
+    """Cover error path in resolve_conflict."""
+
+    @pytest.mark.unit
+    @pytest.mark.asyncio
+    async def test_resolve_conflict_db_error(self, realtime_sync):
+        class _BadPool:
+            def acquire(self):
+                raise RuntimeError("db failure")
+
+        realtime_sync.postgres_pool = _BadPool()
+        result = await realtime_sync.resolve_conflict(
+            memory_id="m1", conflict_data={}, resolution_strategy="keep_newest"
+        )
+        assert result["status"] == "error"
