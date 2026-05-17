@@ -1,0 +1,51 @@
+{
+  "_comment": "Enhanced Cognee configuration file. All Phase 8 automation features are OFF by default.",
+  "categories": {
+    "general": {"prefix": "gen_", "description": "General purpose memories"},
+    "trading": {"prefix": "trading_", "description": "Trading system memories"},
+    "development": {"prefix": "dev_", "description": "Development memories"},
+    "research": {"prefix": "res_", "description": "Research notes"}
+  },
+  "auto_scheduler": {
+    "_comment": "Phase 8b: Scheduler bootstrap - set enabled=true to activate",
+    "expire_memories": {
+      "enabled": false,
+      "cron": "0 2 * * *",
+      "age_days": 90,
+      "dry_run": false
+    },
+    "improve": {
+      "enabled": false,
+      "cron": "0 3 * * 0",
+      "dataset": "main_dataset"
+    },
+    "auto_deduplicate": {
+      "enabled": false,
+      "cron": "0 4 * * *"
+    }
+  },
+  "post_ingestion": {
+    "_comment": "Phase 8b: Post-ingestion hooks - set enabled=true to activate each hook",
+    "auto_translate": {
+      "enabled": false,
+      "target_language": "en"
+    },
+    "auto_extract_entities": {
+      "enabled": false,
+      "patterns": []
+    },
+    "auto_graph_v2": {
+      "enabled": false,
+      "rounds": 1
+    }
+  },
+  "auto_ttl_rules": {
+    "_comment": "Phase 8b: Automatic TTL assignment - add rules to activate",
+    "rules": []
+  },
+  "session_context": {
+    "auto_load": false,
+    "limit": 20,
+    "days_back": 7
+  }
+}

@@ -35,13 +35,16 @@ to "deployed in production."
 | Metric                          | Value                                        |
 | ------------------------------- | -------------------------------------------- |
 | MCP tools shipped               | 122 (final classification: 21M / 45A / 56S)  |
-| Total automated tests           | 838 (680 unit+system + 158 live integration) |
-| Tests currently passing         | 831                                          |
-| Tests currently failing         | 7 (all in `TestUndoManager` integration)     |
-| Code coverage                   | 31% (target: 85%+)                           |
-| Resource warnings from our code | 1 (audit_logger unclosed file handle)        |
+| Total automated tests           | 1101 (was 838 before Phase B unlock)         |
+| Tests currently passing         | 1101 (100%)                                  |
+| Tests currently failing         | 0                                            |
+| Tests currently skipped         | 0                                            |
+| Test warnings                   | 0                                            |
+| Code coverage                   | 51% (target: 85%+; revised Phase C scope)    |
+| Dead code deleted               | 2,408 lines (sprint10_coordination, enhanced_ai_capabilities) |
+| Resource warnings from our code | 0 (audit_logger leak fixed)                  |
 | Docker stack                    | All 4 services healthy                       |
-| CI/CD pipeline                  | Defined but secrets missing                  |
+| CI/CD pipeline                  | upstream_sync workflow green, full pipeline pending |
 | Python SDK                      | `enhanced-cognee-client` published on PyPI   |
 | Grafana dashboard               | Not yet built                                |
 
@@ -137,44 +140,84 @@ Before Phase B starts: all 838 tests must be green.
 
 ---
 
-## Phase C — Coverage to 85%+
+## Phase C — Coverage to 85%+ (REVISED 2026-05-17 after Phase B)
 
 **Goal:** `pytest --cov=src --cov-fail-under=85` succeeds.
-**Effort:** 2-3 days of focused work; parallelisable across multiple sessions.
+**Effort:** Revised down from 2-3 days to **1.5-2 days** after Phase B unlocked 256
+silent-skipped tests (baseline jumped 31% -> 41%) and deleted 2,408 lines of dead
+code (41% -> 51%).
 
-### Coverage tiers (current state)
+**Current baseline (post-Phase-B cleanup): 51%** (5,776 missing / 11,768 total).
+**Target: 85%** (max 1,765 missing lines).
+**Lines still to cover: ~4,011.**
 
-**T1 — Highest priority (production hot path, currently <30%):**
+### Dead code already deleted (Q6 answer applied)
 
-- `src/scheduler.py` (0%)
-- `src/enhanced_cognee_mcp.py` (0%)
-- `src/recovery_manager.py` (11%)
-- `src/transaction_manager.py` (15%)
-- `src/maintenance_scheduler.py` (16%)
-- `src/undo_manager.py` (18%)
-- `src/mcp_memory_tools.py` (21%)
-- `src/intelligent_summarization.py` (22%)
-- `src/scheduled_deduplication.py` (27%)
-- `src/sqlite_manager.py` (27%)
-- `src/rate_limiter.py` (28%)
+- `src/coordination/sprint10_coordination.py` (421 lines, 0 importers) -- DELETED
+- `src/agents/enhanced_ai_capabilities.py` (1,987 lines, 0 importers) -- DELETED
 
-**T2 — Medium priority (30-50%):**
+### Reserved for Phase E (not covered in Phase C)
 
-- `src/gdpr_manager.py` (31%)
-- `src/graph_compactor.py` (32%)
-- `src/llm_cost_tracker.py` (32%)
-- `src/memory_consolidator.py` (32%)
-- `src/scheduled_summarization.py` (18%)
-- `src/memory_provenance.py` (28%)
-- `src/security/security_deployment.py` (28%)
+- `src/enhanced_cognee_mcp.py` (299 lines, 0%) -- FastAPI variant used in Phase E2/E3
+  VPS deployment behind Caddy reverse proxy. Tests written when it's wired up.
 
-**T3 — Decent (50-79%):** llm/*, security/*, integration/*, notification_manager, etc.
+### Coverage tiers (revised)
 
-**T4 — Already good (80%+):** memory_reranker (95%), memory_summarization (96%),
-performance_analytics (94%), structured_memory (91%), multi_language_search (89%),
-progressive_disclosure (88%), memory_deduplication (87%), memory_management (80%).
+**T1 -- Critical, <30% (est. 6-8 hours):**
 
-**T5 — Skip (out of scope):** `cognee/*` upstream code.
+| Module                                  | Missing | Cov% | New tests needed (est.)                                                |
+| --------------------------------------- | ------- | ---- | ---------------------------------------------------------------------- |
+| `src/transaction_manager.py`            | 99      | 15%  | ~25 (commit/rollback flows, isolation levels, deadlock retry)          |
+| `src/advanced_search_reranking.py`      | 200     | 17%  | ~40 (multi-signal scoring, personalisation, fallbacks)                 |
+| `src/agent_memory_integration.py`       | 266     | 18%  | ~50 (memory ops, agent registry, deduplication)                        |
+| `src/mcp_memory_tools.py`               | 150     | 21%  | ~35 (each tool happy path + error cases)                               |
+| `src/recovery_manager.py`               | 256     | 21%  | ~45 (restore flows, rollback, schema validation)                       |
+| `src/intelligent_summarization.py`      | 187     | 22%  | ~35 (token windows, hierarchical summarisation, LLM mocking)           |
+| `src/memory_provenance.py`              | 73      | 28%  | ~20 (source tracking, audit chain)                                     |
+| `src/rate_limiter.py`                   | 62      | 28%  | ~15 (token bucket, queue management, retry)                            |
+| `src/security/security_deployment.py`   | 253     | 28%  | ~50 (incident handling, alerting, metrics)                             |
+| `src/coordination/coordination_api.py`  | 225     | 29%  | ~40 (task dispatch, agent selection, fault tolerance)                  |
+
+**T1 subtotal:** ~1,771 lines to cover, ~355 new tests.
+
+**T2 -- Moderate, 30-50% (est. 4-6 hours):**
+
+| Module                                       | Missing | Cov% |
+| -------------------------------------------- | ------- | ---- |
+| `src/gdpr_manager.py`                        | 109     | 31%  |
+| `src/graph_compactor.py`                     | 61      | 32%  |
+| `src/llm_cost_tracker.py`                    | 126     | 32%  |
+| `src/memory_consolidator.py`                 | 77      | 32%  |
+| `src/mcp_response_formatter.py`              | 22      | 33%  |
+| `src/coordination/__init__.py`               | 26      | 33%  |
+| `src/agents/__init__.py`                     | 41      | 36%  |
+| `src/tracing.py`                             | 48      | 36%  |
+| `src/pii_detector.py`                        | 59      | 39%  |
+| `src/coordination/task_orchestration.py`     | 218     | 40%  |
+| `src/logging_config.py`                      | 36      | 41%  |
+| `src/security/security_middleware.py`        | 136     | 41%  |
+| `src/memory_confidence.py`                   | 49      | 42%  |
+| `src/undo_manager.py`                        | 219     | 45%  |
+| `src/memory_observation.py`                  | 59      | 46%  |
+| `src/backup_manager.py`                      | 131     | 48%  |
+| `src/memory_tier_manager.py`                 | 68      | 48%  |
+| `src/memory_versioner.py`                    | 47      | 48%  |
+| `src/realtime_websocket_server.py`           | 92      | 49%  |
+
+**T2 subtotal:** ~1,624 lines, ~220 new tests.
+
+**T3 -- Push to 85% (est. 3-4 hours):** ~30 modules currently 50-79%. Most need only
+5-15 new tests each for missing edge cases. Includes scheduler, maintenance_scheduler,
+session_manager, audit_logger, plugin_loader, webhook_manager, integration/sdlc_integration,
+security/auth, security/data_protection, all llm/*, etc.
+
+**T4 -- Already at/near 85% (no work needed):**
+memory_reranker (95%), memory_summarization (96%), performance_analytics (94%),
+performance_optimizer (95%), language_detector (98%), multi_language_search (98%),
+structured_memory (91%), progressive_disclosure (88%), memory_deduplication (87%),
+cross_agent_sharing (84%), memory_management (80%).
+
+**T5 -- Skip (out of scope):** `cognee/*` upstream code.
 
 ### Tasks
 
