@@ -127,7 +127,7 @@ pre-commit==3.6.0                  # Git hooks
 
 # Documentation
 sphinx==7.2.6                      # Documentation generation
-sphinx-rtd-theme==2.0.0            # ReadTheDocs theme
+sphinx-rtd-theme==3.1.0            # ReadTheDocs theme
 
 # Utilities
 python-dateutil==2.8.2            # Date utilities
