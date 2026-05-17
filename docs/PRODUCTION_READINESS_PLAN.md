@@ -60,7 +60,7 @@ to "deployed in production."
 ## Phase Progress Tracker
 
 - [x] **Phase A** — Stabilise 7 failing integration tests (DONE 2026-05-17, 845/845 pass)
-- [ ] **Phase B** — Zero-warning hygiene
+- [x] **Phase B** — Zero-warning hygiene (DONE 2026-05-17, 1101/1101 pass, 0 skipped, 0 warnings)
 - [ ] **Phase C** — Coverage to 85%+
 - [ ] **Phase D** — CI/CD secrets and missing infrastructure
 - [ ] **Phase E** — Production deployment (laptop + VPS)

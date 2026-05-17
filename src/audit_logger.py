@@ -158,7 +158,13 @@ class AuditLogger:
         self.file_logger = logging.getLogger("cognee_audit")
         self.file_logger.setLevel(logging.DEBUG)
 
-        # Clear existing handlers
+        # Close any existing handlers before clearing -- prevents
+        # ResourceWarning: unclosed file when re-initialising the logger
+        for existing in list(self.file_logger.handlers):
+            try:
+                existing.close()
+            except Exception:
+                pass
         self.file_logger.handlers.clear()
 
         # File handler
@@ -465,9 +471,24 @@ class AuditLogger:
 
     def close(self):
         """Close the audit logger and cleanup resources."""
-        for handler in self.file_logger.handlers:
-            handler.close()
+        # Iterate over a copy: handler.close() may mutate the list
+        for handler in list(self.file_logger.handlers):
+            try:
+                handler.close()
+            except Exception:
+                pass
         self.file_logger.handlers.clear()
+
+    def __del__(self):
+        """Best-effort cleanup on garbage collection.
+
+        Guarded with try/except because interpreter shutdown may have
+        already torn down logging module internals.
+        """
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
 # Global audit logger instance

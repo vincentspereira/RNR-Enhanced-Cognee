@@ -24,7 +24,7 @@ import redis.asyncio as redis
 import numpy as np
 
 # Import dynamic memory configuration system
-from memory_config import (
+from src.memory_config import (
     MemoryConfigManager,
     MemoryCategoryConfig,
     AgentConfig,
