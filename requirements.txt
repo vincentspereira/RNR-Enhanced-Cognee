@@ -2,72 +2,72 @@
 # Enterprise-grade memory stack dependencies with Enhanced features
 
 # Enhanced Stack Database Dependencies
-psycopg2-binary==2.9.9            # PostgreSQL adapter (replaces SQLite)
-pgvector==0.3.2                    # Vector support for PostgreSQL
-qdrant-client==1.10.0             # Qdrant vector database client (replaces LanceDB)
+psycopg2-binary==2.9.12            # PostgreSQL adapter (replaces SQLite)
+pgvector==0.4.2                    # Vector support for PostgreSQL
+qdrant-client==1.18.0             # Qdrant vector database client (replaces LanceDB)
 neo4j==5.25.0                      # Neo4j graph database client (replaces Kuzu)
 redis==5.1.1                       # Redis client (new cache layer)
 
 # Web Framework and API
-fastapi==0.110.0                   # Web framework
-uvicorn==0.27.1                    # ASGI server
-pydantic==2.6.1                    # Data validation
-pydantic-settings==2.1.0           # Settings management
+fastapi==0.136.1                   # Web framework
+uvicorn==0.47.0                    # ASGI server
+pydantic==2.13.4                    # Data validation
+pydantic-settings==2.14.1           # Settings management
 
 # Database and ORM
-sqlalchemy==2.0.25                 # SQL ORM
-alembic==1.13.1                    # Database migrations
-asyncpg==0.29.0                    # Async PostgreSQL driver
+sqlalchemy==2.0.49                 # SQL ORM
+alembic==1.18.4                    # Database migrations
+asyncpg==0.31.0                    # Async PostgreSQL driver
 
 # Authentication and Security
-python-jose[cryptography]==3.3.0   # JWT handling
+python-jose[cryptography]==3.5.0   # JWT handling
 passlib[bcrypt]==1.7.4             # Password hashing
-python-multipart==0.0.9            # Form data parsing
+python-multipart==0.0.29            # Form data parsing
 cryptography==42.0.5                # Cryptographic operations
 
 # HTTP and Networking
-httpx==0.26.0                      # Async HTTP client
+httpx==0.28.1                      # Async HTTP client
 aiofiles==23.2.1                   # Async file operations
-requests==2.31.0                   # HTTP requests (for some integrations)
+requests==2.34.2                   # HTTP requests (for some integrations)
 
 # Configuration and Environment
-python-dotenv==1.0.1               # Environment variables
+python-dotenv==1.2.2               # Environment variables
 python-decouple==3.8               # Configuration management
-pyyaml==6.0.1                      # YAML parsing
+pyyaml==6.0.3                      # YAML parsing
 
 # Logging and Monitoring
 structlog==24.1.0                  # Structured logging
 rich==13.7.0                       # Rich console output
-prometheus-client==0.20.0          # Prometheus metrics
-opentelemetry-api==1.22.0          # OpenTelemetry tracing
-opentelemetry-sdk==1.22.0
+prometheus-client==0.25.0          # Prometheus metrics
+opentelemetry-api==1.41.1          # OpenTelemetry tracing
+opentelemetry-sdk==1.41.1
 
 # Data Processing and Analysis
 numpy==1.26.4                      # Numerical computing
 pandas==2.2.1                      # Data analysis
-scikit-learn==1.4.1                # Machine learning
-scipy==1.12.0                      # Scientific computing
+scikit-learn==1.7.2                # Machine learning
+scipy==1.15.3                      # Scientific computing
 
 # Multi-language Support (Sprint 9)
 langdetect==1.0.9                   # Language detection (28 languages)
 
 # Text Processing and NLP
-tiktoken==0.6.0                    # Token counting
-nltk==3.8.1                        # Natural language processing
-spacy==3.8.2                       # NLP pipeline
-textstat==0.7.3                    # Text statistics
+tiktoken==0.13.0                    # Token counting
+nltk==3.9.4                        # Natural language processing
+spacy==3.8.14                       # NLP pipeline
+textstat==0.7.13                    # Text statistics
 
 # Machine Learning and AI
 transformers==4.40.1               # HuggingFace transformers
-torch==2.2.1                       # PyTorch
+torch==2.12.0                       # PyTorch
 sentence-transformers==2.6.1       # Sentence embeddings
 accelerate==0.28.0                 # PyTorch acceleration
 datasets==2.18.0                   # Dataset handling
 
 # AI Provider SDKs
 openai==1.12.0                     # OpenAI API
-anthropic==0.8.1                   # Anthropic API
-google-generativeai==0.5.0         # Google AI
+anthropic==0.102.0                   # Anthropic API
+google-generativeai==0.8.6         # Google AI
 
 # Memory and Caching
 redis==5.1.1                       # Redis client
@@ -75,48 +75,48 @@ hiredis==2.3.2                     # Redis parser
 diskcache==5.6.3                   # Disk-based caching
 
 # Task Queue and Background Jobs
-celery==5.3.6                      # Distributed task queue
-kombu==5.3.4                       # messaging library
+celery==5.6.3                      # Distributed task queue
+kombu==5.6.2                       # messaging library
 
 # Template Engine
-jinja2==3.1.3                      # Template rendering
+jinja2==3.1.6                      # Template rendering
 markupsafe==2.1.5                  # Secure markup
 
 # CLI and Utilities
-typer==0.9.0                       # CLI framework
-click==8.1.7                       # Command line interface
+typer==0.25.1                       # CLI framework
+click==8.4.0                       # Command line interface
 rich-cli==4.3.0                    # Rich CLI utilities
 
 # File Processing
 python-magic==0.4.27               # File type detection
 pillow==10.2.0                     # Image processing
-python-docx==1.1.0                 # Word document processing
-openpyxl==3.1.2                    # Excel file processing
-pdfplumber==0.11.0                 # PDF processing
+python-docx==1.2.0                 # Word document processing
+openpyxl==3.1.5                    # Excel file processing
+pdfplumber==0.11.9                 # PDF processing
 
 # Data Validation and Serialization
 marshmallow==3.21.2                # Object serialization
-cerberus==1.3.5                    # Data validation
+cerberus==1.3.8                    # Data validation
 
 # Graph Processing (Neo4j integration)
 neo4j==5.25.0                      # Neo4j official Python driver
 py2neo==2021.2.4                   # Alternative Neo4j client
-networkx==3.2.1                    # Network analysis
+networkx==3.4.2                    # Network analysis
 
 # Vector Operations
-faiss-cpu==1.8.0                   # Vector similarity search (alternative)
+faiss-cpu==1.13.2                   # Vector similarity search (alternative)
 annoy==1.17.3                      # Approximate nearest neighbors
 hnswlib==0.8.0                     # Hierarchical navigable small world
 
 # Async Support
 asyncio==3.4.3                     # Async programming
-asyncio-mqtt==0.16.1               # MQTT async client
-aiohttp==3.9.3                     # Async HTTP client/server
+asyncio-mqtt==0.16.2               # MQTT async client
+aiohttp==3.13.5                     # Async HTTP client/server
 
 # Testing (development only)
 pytest==8.1.1                      # Testing framework
 pytest-asyncio==0.23.4             # Async testing
-pytest-mock==3.14.0                # Mocking in tests
+pytest-mock==3.15.1                # Mocking in tests
 pytest-cov==4.1.0                  # Coverage reporting
 
 # Development Tools
@@ -130,21 +130,21 @@ sphinx==8.1.3                      # Documentation generation
 sphinx-rtd-theme==3.1.0            # ReadTheDocs theme
 
 # Utilities
-python-dateutil==2.8.2            # Date utilities
+python-dateutil==2.9.0.post0            # Date utilities
 pytz==2024.1                       # Timezone handling
-schedule==1.2.0                    # Task scheduling
+schedule==1.2.2                    # Task scheduling
 watchdog==3.0.0                    # File system watching
 
 # Error Handling and Monitoring
 sentry-sdk==1.43.0                 # Error monitoring
-rollbar==1.0.2                     # Error tracking
+rollbar==1.3.0                     # Error tracking
 notifier==1.3.3                    # Notification system
 
 # Performance Optimization
-numba==0.59.1                      # JIT compiler
-cython==3.0.10                     # C extensions
-orjson==3.10.3                     # Fast JSON
+numba==0.65.1                      # JIT compiler
+cython==3.2.4                     # C extensions
+orjson==3.11.9                     # Fast JSON
 
 # Development Environment
 ipython==8.22.2                    # Enhanced Python REPL
-jupyter==1.0.0                      # Jupyter notebook support
+jupyter==1.1.1                      # Jupyter notebook support

@@ -5,16 +5,16 @@
 pytest==8.0.0
 pytest-asyncio==0.23.4
 pytest-cov==4.1.0
-pytest-mock==3.12.0
+pytest-mock==3.15.1
 
 # Coverage
-coverage==7.4.1
+coverage==7.14.0
 
 # Async Testing
 asyncio==3.4.3
 
 # Mocking
-pytest-mock==3.12.0
+pytest-mock==3.15.1
 
 # Type Checking (for test development)
 mypy==1.8.0
@@ -29,16 +29,16 @@ black==24.1.1
 isort==5.13.2
 
 # Security Checks
-bandit==1.7.6
+bandit==1.9.4
 
 # Performance Profiling
 pytest-profiling==1.8.1
 
 # HTML Coverage Reports
-pytest-html==4.1.1
+pytest-html==4.2.0
 
 # JSON Schema Validation
-jsonschema==4.20.0
+jsonschema==4.26.0
 
 # Timezone Support
 tzdata==2024.1
