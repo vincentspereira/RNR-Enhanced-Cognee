@@ -403,6 +403,70 @@ class TestIsRateLimitError:
         limiter = _make_rate_limiter()
         assert limiter._is_rate_limit_error(ValueError("invalid input")) is False
 
+    # ----- BUG-FIX REGRESSION TESTS -----
+    # Previously _is_rate_limit_error used a naive substring check on
+    # `"rate limit" in error_str.lower()`, which caused false positives for
+    # messages that *mentioned* rate limiting but did not describe one.
+    # The fix uses class-name detection + HTTP status_code + word-anchored
+    # regex with a negation guard. Verify all the false-positive cases.
+
+    def test_negation_not_a_rate_limit_error(self):
+        limiter = _make_rate_limiter()
+        # Previously returned True (false positive). Now False.
+        assert limiter._is_rate_limit_error(
+            Exception("not a rate limit error")
+        ) is False
+
+    def test_negation_no_rate_limit_applicable(self):
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(
+            Exception("no rate limit applicable to this endpoint")
+        ) is False
+
+    def test_negation_without_rate_limit(self):
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(
+            Exception("operation completed without rate limit interference")
+        ) is False
+
+    def test_class_name_detection_anthropic_style(self):
+        # Real-world: anthropic-py raises a RateLimitError class with empty
+        # message. Substring check would have missed it; class-name check finds it.
+        class RateLimitError(Exception):
+            pass
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(RateLimitError("")) is True
+
+    def test_class_name_detection_openai_style(self):
+        class TooManyRequestsError(Exception):
+            pass
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(TooManyRequestsError()) is True
+
+    def test_http_status_attribute_detection(self):
+        # httpx / requests-style: error carries a .status_code attribute
+        err = Exception("Something happened")
+        err.status_code = 429
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(err) is True
+
+    def test_response_nested_status_detection(self):
+        # openai-py / anthropic-py-style: status nested under .response
+        class FakeResponse:
+            status_code = 429
+        err = Exception("API error")
+        err.response = FakeResponse()
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(err) is True
+
+    def test_429_not_standalone_returns_false(self):
+        # "1429 transactions" should NOT match (was a false positive with
+        # substring matching).
+        limiter = _make_rate_limiter()
+        assert limiter._is_rate_limit_error(
+            Exception("Processed 1429 transactions in batch")
+        ) is False
+
 
 # ---------------------------------------------------------------------------
 # get_queue_status

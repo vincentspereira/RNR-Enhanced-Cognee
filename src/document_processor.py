@@ -14,6 +14,7 @@ import fnmatch
 import json
 import logging
 import os
+import re  # fnmatch.fnmatch internally raises re.error for malformed patterns
 from pathlib import Path
 from typing import Set, Optional, Dict, Any, List
 from datetime import datetime, timezone

@@ -153,7 +153,8 @@ async def execute_in_transaction(
         result["error"] = str(e)
         if "rollback" in str(e).lower():
             result["rollback"] = True
-        return result
+
+    return result
 
 
 async def execute_operation_with_transaction(
@@ -221,7 +222,8 @@ async def execute_operation_with_transaction(
         result["error"] = str(e)
         if "rollback" in str(e).lower():
             result["rolled_back"] = True
-        return result
+
+    return result
 
 
 async def create_savepoint(

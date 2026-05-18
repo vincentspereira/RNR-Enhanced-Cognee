@@ -319,16 +319,23 @@ class TestMatchesExcludePatterns:
         processor = _make_processor(exclude_patterns=[])
         assert processor._matches_exclude_patterns("/path/any.md") is False
 
-    def test_invalid_pattern_none_raises_due_to_source_bug(self):
-        # NOTE: document_processor.py line 190 catches 're.error' but 're' is not
-        # imported in that module -- this is a genuine source bug. When a None
-        # pattern triggers AttributeError inside fnmatch.fnmatch, the except clause
-        # itself raises NameError. We document the behavior here.
+    def test_invalid_pattern_swallowed(self):
+        # BUG FIX: document_processor.py now imports `re` at module level so
+        # the `except (re.error, AttributeError)` clause works as intended.
+        # Bad patterns (None, malformed) are silently skipped instead of
+        # crashing the matcher.
         processor = _make_processor(exclude_patterns=["*.log"])
         processor.exclude_patterns = [None, "*.log"]
-        # The NameError propagates out because 're' is not defined in the module.
-        with pytest.raises(NameError):
-            processor._matches_exclude_patterns("/path/server.log")
+        # None triggers AttributeError inside fnmatch (via .lower()),
+        # which is now properly caught. The remaining "*.log" pattern matches.
+        assert processor._matches_exclude_patterns("/path/server.log") is True
+
+    def test_invalid_pattern_alone_returns_false(self):
+        # BUG FIX: a bad pattern with no other matchers cleanly returns False
+        # (was: raised NameError due to undefined `re`).
+        processor = _make_processor(exclude_patterns=[None])
+        processor.exclude_patterns = [None]
+        assert processor._matches_exclude_patterns("/path/server.log") is False
 
 
 # ---------------------------------------------------------------------------

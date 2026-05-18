@@ -250,17 +250,22 @@ class TestExecuteInTransaction:
             called.append(2)
             return "result-2"
 
-        # Success path returns None (no explicit return in source)
+        # Success path now returns the result dict (BUG FIX: source previously
+        # had no return on success path -- returned implicit None)
         result = await execute_in_transaction(pool, [op1, op2], "test-op")
-        assert result is None  # source has no return on success path
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
+        assert result["data"]["steps_executed"] == 2
         assert called == [1, 2]
 
     async def test_empty_operations_list_no_exception(self):
         conn = _make_conn()
         pool = _make_pool(conn)
-        # Success path returns None
+        # Success path returns the result dict (zero ops still succeeds)
         result = await execute_in_transaction(pool, [], "empty-op")
-        assert result is None
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
+        assert result["data"]["steps_executed"] == 0
 
     async def test_operation_failure_returns_error(self):
         conn = _make_conn()
@@ -356,7 +361,8 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, operation, "insert-op"
         )
-        assert result is None  # source success path does not return result
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
         assert called  # operation was actually called
 
     async def test_validate_before_passes_no_exception(self):
@@ -374,7 +380,8 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, operation, "op", validate_before=validate
         )
-        assert result is None
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
         assert called
 
     async def test_validate_before_fails_returns_none(self):
@@ -393,8 +400,11 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, operation, "op", validate_before=bad_validate
         )
-        # ValueError caught -> result["validation_error"] set, but no return
-        assert result is None
+        # ValueError caught -> result["validation_error"] set; function now
+        # returns the populated result dict (BUG FIX)
+        assert isinstance(result, dict)
+        assert result["status"] == "error"
+        assert result.get("validation_error") is True
         assert not op_called  # operation must not have been called
 
     async def test_validate_after_passes_no_exception(self):
@@ -410,7 +420,8 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, operation, "op", validate_after=validate
         )
-        assert result is None  # success path returns None
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
 
     async def test_validate_after_fails_returns_none(self):
         conn = _make_conn()
@@ -425,8 +436,10 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, operation, "op", validate_after=bad_after
         )
-        # ValueError path returns None
-        assert result is None
+        # ValueError path now returns the populated result dict (BUG FIX)
+        assert isinstance(result, dict)
+        assert result["status"] == "error"
+        assert result.get("validation_error") is True
 
     async def test_operation_raises_value_error_returns_none(self):
         conn = _make_conn()
@@ -436,8 +449,9 @@ class TestExecuteOperationWithTransaction:
             raise ValueError("bad input")
 
         result = await execute_operation_with_transaction(pool, op, "op")
-        # ValueError handler does not return result explicitly -> None
-        assert result is None
+        # ValueError handler now falls through to the return result statement
+        assert isinstance(result, dict)
+        assert result["status"] == "error"
 
     async def test_operation_raises_generic_exception_returns_result(self):
         """Generic Exception branch has an explicit return result."""
@@ -470,7 +484,8 @@ class TestExecuteOperationWithTransaction:
         result = await execute_operation_with_transaction(
             pool, op, "full-op", validate_before=v_before, validate_after=v_after
         )
-        assert result is None  # success path returns None
+        assert isinstance(result, dict)
+        assert result["status"] == "success"
         assert called == [42]
 
     async def test_generic_exception_result_contains_operation_name(self):

@@ -393,18 +393,70 @@ class RateLimiter:
                     raise
 
     def _is_rate_limit_error(self, error: Exception) -> bool:
-        """Check if error is a rate limit error."""
+        """Check if error is a rate limit error.
+
+        Uses three layered checks to avoid the substring false-positive
+        problem where messages like "this is not a rate limit error" or
+        "rate limit not applicable" would have incorrectly matched:
+
+        1. The exception class itself: classes whose name contains
+           "RateLimit" / "TooManyRequests" / "Throttle".
+        2. An HTTP status_code attribute equal to 429 (set by httpx,
+           requests, openai-py, anthropic-py, etc).
+        3. Anchored regex matches for known affirmative phrases -- the
+           pattern requires the keyword be at the start, followed by
+           whitespace/punctuation, or matched on tokens with word
+           boundaries. "not a rate limit error" no longer matches.
+        """
+        # 1. Exception class name -- strongest signal
+        cls_name = type(error).__name__.lower()
+        if any(marker in cls_name for marker in (
+            "ratelimit", "toomanyrequests", "throttle"
+        )):
+            return True
+
+        # 2. HTTP status code attribute (httpx, requests, etc.)
+        status = getattr(error, "status_code", None) or getattr(error, "status", None)
+        if status == 429:
+            return True
+
+        # Some libs nest the status on a .response attribute
+        response = getattr(error, "response", None)
+        if response is not None:
+            resp_status = getattr(response, "status_code", None) or getattr(response, "status", None)
+            if resp_status == 429:
+                return True
+
+        # 3. Word-anchored string check (no substring traps)
+        # Allow explicit affirmative phrases only; require word boundaries.
+        import re as _re
         error_str = str(error).lower()
 
-        # HTTP 429
-        if "429" in error_str or "rate limit" in error_str:
+        # Match "429" only as a standalone status (with word boundary or punctuation)
+        if _re.search(r"\b429\b", error_str):
             return True
 
-        # Provider-specific errors
-        if "rate_limit_exceeded" in error_str:
-            return True
-        if "too_many_requests" in error_str:
-            return True
+        # Affirmative rate-limit phrases. The negation guard below prevents
+        # "not a rate limit" / "no rate limit" / "without rate limit" matches.
+        affirmative_patterns = (
+            r"\brate[\s_-]?limit(?:ed|ing|s)?\s+(?:exceeded|reached|hit|error|reset|encountered)\b",
+            r"\brate[\s_-]?limit(?:ed|ing|s)?\s+by\b",
+            r"\bexceeded\s+(?:the\s+)?rate[\s_-]?limit\b",
+            r"\brate_limit_exceeded\b",
+            r"\btoo[\s_]?many[\s_]?requests\b",
+        )
+
+        # Negation guard -- if any of these precede a "rate limit" mention,
+        # treat it as a NON-rate-limit error.
+        negation_pattern = _re.compile(
+            r"\b(?:not|no|isn['t]+|without|never)\s+(?:a\s+|the\s+|any\s+)?rate[\s_-]?limit"
+        )
+        if negation_pattern.search(error_str):
+            return False
+
+        for pattern in affirmative_patterns:
+            if _re.search(pattern, error_str):
+                return True
 
         return False
 
