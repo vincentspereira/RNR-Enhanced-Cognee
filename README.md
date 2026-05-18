@@ -14,6 +14,13 @@
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
+![Tests](https://img.shields.io/badge/tests-4158%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
+![License](https://img.shields.io/badge/license-Apache--2.0-blue)
+![Valkey](https://img.shields.io/badge/cache-Valkey%208-orange)
+![MCP Tools](https://img.shields.io/badge/MCP%20tools-122-9cf)
+
 **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, encryption at rest, structured observations, heuristic re-ranking, and production-ready security hardening**
 
 </div>
@@ -48,18 +55,47 @@ Full session summary in
 
 ---
 
+## Install in 30 Seconds
+
+**Windows:**
+```powershell
+git clone https://github.com/vincentspereira/Enhanced-Cognee.git
+cd Enhanced-Cognee
+powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
+```
+
+**Linux / macOS:**
+```bash
+git clone https://github.com/vincentspereira/Enhanced-Cognee.git
+cd Enhanced-Cognee
+./deploy/local/install.sh
+```
+
+Both installers are idempotent and:
+- Detect Python 3.11+
+- Create `.venv` and use `uv` (~20x faster than pip)
+- Bring up the 4-database Docker stack (PostgreSQL + Qdrant + Neo4j + Valkey)
+- Register the MCP server in `~/.claude.json`
+
+Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKSTART.md).
+
+---
+
 ## Table of Contents
 
+- [Install in 30 Seconds](#install-in-30-seconds)
 - [Quick Comparison](#quick-comparison)
 - [Overview](#overview)
 - [What is Enhanced Cognee?](#what-is-enhanced-cognee)
 - [New Features](#new-features)
 - [Comparison with Original Cognee](#comparison-with-original-cognee)
+- [Screenshots and Demos](#screenshots-and-demos)
 - [Architecture](#architecture)
 - [System Workflow](#system-workflow)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Multi-IDE Support](#multi-ide-support)
+- [Quick Examples](#quick-examples)
 - [MCP Tools Reference](#mcp-tools-reference)
 - [How MCP Tools Work](#how-mcp-tools-work)
 - [Agent Integration](#agent-integration)
@@ -73,6 +109,10 @@ Full session summary in
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
+- [Project Files](#project-files)
+- [Contributors](#contributors)
+- [Roadmap](#roadmap)
+- [Star History](#star-history)
 
 ---
 
@@ -253,7 +293,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - **PostgreSQL + pgVector** (instead of SQLite)
 - **Qdrant** (instead of LanceDB)
 - **Neo4j** (instead of Kuzu)
-- **Redis** (new caching layer)
+- **Valkey 8** (Apache-2.0 cache layer, Redis-compatible)
 
 ### 2. 122 MCP Tools
 
@@ -280,7 +320,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 
 ### 3. Real-Time Multi-Agent Support
 
-- **Redis pub/sub** for instant agent coordination
+- **Valkey pub/sub** (Redis protocol-compatible) for instant agent coordination
 - **Cross-agent memory sharing** with access control
 - **Conflict resolution** for simultaneous updates
 - **Scalable to 100+ concurrent agents**
@@ -365,7 +405,7 @@ All planned enhancements have been implemented:
 
 #### 9. Real-Time Memory Synchronization
 
-- ✅ Redis pub/sub event broadcasting
+- ✅ Valkey pub/sub event broadcasting (Redis-compatible)
 - ✅ Agent subscription management
 - ✅ Conflict resolution
 - ✅ State synchronization between agents
@@ -498,13 +538,13 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 | Feature                     | Status | Description                                     |
 | --------------------------- | ------ | ----------------------------------------------- |
-| Multi-Database Architecture | ✅      | PostgreSQL, Qdrant, Neo4j, Redis                |
+| Multi-Database Architecture | ✅      | PostgreSQL, Qdrant, Neo4j, Valkey               |
 | Standard Memory MCP Tools   | ✅      | add_memory, search_memories, get_memories, etc. |
 | Memory Deduplication        | ✅      | Semantic similarity detection                   |
 | Memory Summarization        | ✅      | LLM-based with 4 strategies                     |
 | Memory Expiry & TTL         | ✅      | Automatic archival and cleanup                  |
 | Cross-Agent Sharing         | ✅      | Access control and permissions                  |
-| Real-Time Sync              | ✅      | Redis pub/sub synchronization                   |
+| Real-Time Sync              | ✅      | Valkey pub/sub synchronization                  |
 | Encryption at Rest          | ✅      | Fernet AES-128-CBC + HMAC-SHA256 per memory     |
 | Structured Observations     | ✅      | EAV table (entity, attribute, value) per memory |
 | Importance Scoring          | ✅      | Heuristic: access*0.4 + recency*0.3 + confidence*0.2 + source*0.1 |
@@ -555,7 +595,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Relational Database**   | SQLite          | PostgreSQL + pgVector                         |
 | **Vector Database**       | LanceDB         | Qdrant                                        |
 | **Graph Database**        | Kuzu            | Neo4j                                         |
-| **Caching Layer**         | None            | Redis                                         |
+| **Caching Layer**         | None            | Valkey 8                                      |
 | **Memory Categories**     | None            | Dynamic JSON-based                            |
 | **MCP Tools**             | None            | [OK] **122 tools**                               |
 | **Multi-Agent Support**   | None            | [OK] **Real-time sync for 100+ agents**          |
@@ -579,14 +619,13 @@ Based on testing with enterprise datasets:
 - **400-700%** improvement in query performance
 - **10x** better concurrent request handling
 - **Unlimited** scalability with PostgreSQL and Qdrant
-- **Sub-millisecond** cache hits with Redis
+- **Sub-millisecond** cache hits with Valkey
 - **95%+** storage efficiency with deduplication and summarization
-- **Sub-millisecond** agent coordination with Redis pub/sub
+- **Sub-millisecond** agent coordination with Valkey pub/sub
 
----
+> See "Comparison with Original Cognee" above for the side-by-side feature table, or [`docs/COMPARE_TO_ALTERNATIVES.md`](docs/COMPARE_TO_ALTERNATIVES.md) for broader market context.
 
-THIRD_APPROACH_FOR_JUNK_REMOVAL
-| **MCP Tools**             | None            | ✅ **122 tools**                               |
+✅ **122 tools**                               |
 | **Multi-Agent Support**   | None            | ✅ **Real-time sync for 100+ agents**          |
 | **Memory Deduplication**  | None            | ✅ **95%+ storage savings**                    |
 | **Memory Summarization**  | None            | ✅ **10x+ compression**                        |
@@ -596,27 +635,11 @@ THIRD_APPROACH_FOR_JUNK_REMOVAL
 | **IDE Support**           | None            | ✅ **MCP-compatible IDEs**                     |
 | **Test Coverage**         | Basic           | ✅ **4,158 tests passing (100% pass rate)** |
 | **MCP IDE Integration**   | No              | ✅ **Standard Memory MCP**                     |
-| **Port Configuration**    | Default ports   | Enhanced range (25000+)                       |
-| **Output Encoding**       | None            | ASCII-only (Windows compatible)               |
-| **Docker Deployment**     | Basic           | Production-ready with health checks           |
-| **API Compatibility**     | N/A             | Full Cognee API compatibility                 |
-
-### Performance Improvements
-
-Based on testing with enterprise datasets:
-
-- **400-700%** improvement in query performance
-- **10x** better concurrent request handling
-- **Unlimited** scalability with PostgreSQL and Qdrant
-- **Sub-millisecond** cache hits with Redis
-- **95%+** storage efficiency with deduplication and summarization
-- **Sub-millisecond** agent coordination with Redis pub/sub
-
 ---
 
 ## Original Cognee Features Available via Enhanced Cognee MCP
 
-✅ **100% Feature Coverage - All original Cognee capabilities are accessible via 122 MCP tools**
+[OK] **100% Feature Coverage - All original Cognee capabilities are accessible via 122 MCP tools**
 
 ### Core ECL Pipeline Features
 
@@ -640,7 +663,7 @@ Based on testing with enterprise datasets:
 
 | Aspect       | Original Cognee       | Enhanced Cognee MCP                                     |
 | ------------ | --------------------- | ------------------------------------------------------- |
-| Architecture | Single database setup | **4-database stack** (PostgreSQL, Qdrant, Neo4j, Redis) |
+| Architecture | Single database setup | **4-database stack** (PostgreSQL, Qdrant, Neo4j, Valkey) |
 | Performance  | Baseline              | **400-700% faster**                                     |
 | Ports        | Default ports         | **Enhanced port range** (25000+)                        |
 
@@ -701,6 +724,16 @@ This document provides:
 
 ---
 
+## Screenshots and Demos
+
+> **TODO:** Add terminal GIFs / screenshots showing:
+> - Claude Code calling `add_memory` and `search_memories` via MCP
+> - The Grafana dashboard with live metrics
+> - A typical `undo_last` workflow
+> - Multi-agent shared memory in action
+>
+> Contributions welcome -- record with `asciinema` or `peek` and submit a PR.
+
 ---
 
 ## Architecture
@@ -754,7 +787,7 @@ flowchart LR
         PG[(PostgreSQL<br/>Port 25432)]
         QD[(Qdrant<br/>Port 26333)]
         N4[(Neo4j<br/>Port 27687)]
-        RD[(Redis<br/>Port 26379)]
+        RD[(Valkey 8<br/>Port 26379)]
     end
 
     AIC --> MCP
@@ -837,7 +870,7 @@ src/
 ├── memory_summarization.py       # Auto summarization
 ├── performance_analytics.py      # Metrics collection
 ├── cross_agent_sharing.py        # Access control
-├── realtime_sync.py              # Redis pub/sub sync
+├── realtime_sync.py              # Valkey pub/sub sync (Redis protocol)
 ├── multi_language_search.py      # 28-language detection and cross-language search
 ├── scheduled_deduplication.py    # Scheduled deduplication runner
 ├── scheduled_summarization.py    # Scheduled summarization runner
@@ -909,7 +942,7 @@ stateDiagram-v2
     StorageDecision --> PostgreSQL: Relational data
     StorageDecision --> Qdrant: Vector embeddings
     StorageDecision --> Neo4j: Graph relationships
-    StorageDecision --> Redis: Cache layer
+    StorageDecision --> Valkey: Cache layer
 
     PostgreSQL --> DeduplicationCheck: Query
     Qdrant --> DeduplicationCheck: Search
@@ -1071,14 +1104,14 @@ You should see:
 ```
 ==================================================================
          Enhanced Cognee MCP Server - Enhanced Stack
-    PostgreSQL+pgVector | Qdrant | Neo4j | Redis
+    PostgreSQL+pgVector | Qdrant | Neo4j | Valkey
 ==================================================================
 
 OK Initializing Enhanced Cognee stack...
 OK PostgreSQL connected
 OK Qdrant connected (5 collections)
 OK Neo4j connected
-OK Redis connected
+OK Valkey connected
 OK Memory Manager initialized
 OK Memory Deduplicator initialized
 OK Memory Summarizer initialized
@@ -1154,6 +1187,52 @@ Enhanced Cognee works with any **MCP-compatible IDE**:
 | **Other MCP IDEs**      | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 
 **Complete Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
+
+---
+
+## Quick Examples
+
+A taste of the most-used MCP tools. These work from any MCP-compatible IDE (Claude Code, Cursor, Copilot).
+
+### From Claude Code (natural language)
+
+```
+> Remember that I prefer async/await over callbacks.
+> Search my memories for "async patterns".
+> Undo my last memory operation -- I shared something I shouldn't have.
+> Show me a summary of my last 10 conversations with the trading bot.
+```
+
+Claude reads the intent and calls the right MCP tool automatically:
+`remember()`, `search_memories()`, `undo_last()`, `get_session_history()`.
+
+### From Python (via the SDK)
+
+```python
+from enhanced_cognee_client import EnhancedCogneeClient
+
+async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+    # Store a memory
+    result = await client.add_memory(
+        content="Production deployed Enhanced Cognee on Hetzner CX22",
+        user_id="default",
+        agent_id="ops-bot",
+    )
+
+    # Search by semantic + text
+    hits = await client.search_memories(
+        query="production deployment",
+        limit=5,
+    )
+
+    # Roll back the last write (24-hour window)
+    await client.undo_last(agent_id="ops-bot")
+
+    # Health check
+    status = await client.health()
+```
+
+Full tool reference: see [MCP Tools Reference](#mcp-tools-reference) below.
 
 ---
 
@@ -1880,7 +1959,7 @@ Agents are registered dynamically from your configuration file:
 
 Enhanced Cognee supports unlimited custom agent types with:
 
-- [OK] Redis pub/sub for sub-millisecond agent coordination
+- [OK] Valkey pub/sub for sub-millisecond agent coordination
 - [OK] Event broadcasting (memory_added, memory_updated, memory_deleted)
 - [OK] Automatic state synchronization between agents
 - [OK] Cross-agent memory sharing with 4 access policies
@@ -2079,7 +2158,7 @@ Enhanced Cognee uses non-standard ports to avoid conflicts:
 | Qdrant     | 6333         | **26333**     |
 | Neo4j Bolt | 7687         | **27687**     |
 | Neo4j HTTP | 7474         | **27474**     |
-| Redis      | 6379         | **26379**     |
+| Valkey     | 6379         | **26379**     |
 
 ### Environment Variables
 
@@ -2189,7 +2268,7 @@ enhanced-cognee/
 │   ├── memory_summarization.py        # Auto summarization
 │   ├── performance_analytics.py       # Metrics collection
 │   ├── cross_agent_sharing.py         # Access control
-│   ├── realtime_sync.py               # Redis pub/sub sync
+│   ├── realtime_sync.py               # Valkey pub/sub sync (Redis protocol)
 │   ├── multi_language_search.py       # 28-language support
 │   ├── scheduled_deduplication.py     # Scheduled dedup runner
 │   ├── scheduled_summarization.py     # Scheduled summ runner
@@ -2338,7 +2417,7 @@ Enhanced Cognee integrates with these excellent open-source projects:
 - **pgVector**: https://github.com/pgvector/pgvector
 - **Qdrant**: https://qdrant.tech/
 - **Neo4j**: https://neo4j.com/
-- **Redis**: https://redis.io/
+- **Valkey**: https://valkey.io/
 - **FastMCP**: https://github.com/jlowin/fastmcp
 
 ### Special Thanks
@@ -2358,11 +2437,62 @@ Enhanced Cognee integrates with these excellent open-source projects:
 
 ---
 
+## Project Files
+
+Key documents and references:
+
+| File | Purpose |
+|---|---|
+| [LICENSE](LICENSE) | Apache-2.0 license text |
+| [NOTICE](NOTICE) | Third-party attributions (Apache-2.0 requirement) |
+| [SECURITY.md](SECURITY.md) | Responsible disclosure policy |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Contributor Covenant v2.1 |
+| [docs/DEPLOYMENT_QUICKSTART.md](docs/DEPLOYMENT_QUICKSTART.md) | Local + VPS deployment runbooks |
+| [docs/LICENSE_AUDIT.md](docs/LICENSE_AUDIT.md) | Full license analysis of every component |
+| [docs/PRODUCTION_READINESS_PLAN.md](docs/PRODUCTION_READINESS_PLAN.md) | Six-phase roadmap (all phases complete) |
+| [docs/COMPARE_TO_ALTERNATIVES.md](docs/COMPARE_TO_ALTERNATIVES.md) | Enhanced Cognee vs Mem0 / Letta / LangChain |
+| [docs/operations/RUNBOOK.md](docs/operations/RUNBOOK.md) | 10 incident playbooks |
+| [docs/operations/MULTI_TENANT_DESIGN.md](docs/operations/MULTI_TENANT_DESIGN.md) | Multi-tenant architecture (deferred) |
+| [docs/operations/OPENTELEMETRY_GUIDE.md](docs/operations/OPENTELEMETRY_GUIDE.md) | Distributed tracing setup |
+| [docs/operations/SECRETS_MANAGEMENT.md](docs/operations/SECRETS_MANAGEMENT.md) | Secret-handling approaches |
+| [deploy/local/install.ps1](deploy/local/install.ps1) | Windows installer |
+| [deploy/local/install.sh](deploy/local/install.sh) | Linux/macOS installer |
+| [deploy/vps/README.md](deploy/vps/README.md) | Hetzner CX22 deployment runbook |
+| [deploy/integration-with-mas/README.md](deploy/integration-with-mas/README.md) | Multi-Agent System integration |
+
+---
+
+## Contributors
+
+<a href="https://github.com/vincentspereira/Enhanced-Cognee/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vincentspereira/Enhanced-Cognee" alt="Contributors" />
+</a>
+
+Contributions welcome! See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the contributor covenant and [SECURITY.md](SECURITY.md) for responsible disclosure.
+
+---
+
+## Roadmap
+
+Production-ready today. Post-launch enhancements (in priority order):
+
+| Status | Item | Notes |
+|---|---|---|
+| Designed | Multi-tenant tools (`create_tenant`, `list_tenants`, etc) | Schema-per-tenant isolation. See `docs/operations/MULTI_TENANT_DESIGN.md`. Build when first paying customer onboards. |
+| Designed | OpenTelemetry / Jaeger wiring | `src/tracing.py` exists; one-pass wiring needed. See `docs/operations/OPENTELEMETRY_GUIDE.md`. |
+| Considered | Pluggable database backends | User-selectable PostgreSQL / Qdrant alternatives (e.g., Apache AGE on PG instead of Neo4j; Weaviate or Milvus instead of Qdrant). |
+| Considered | Apache AGE replacing Neo4j | Removes the GPLv3 service dependency entirely. |
+| Considered | sops + age encrypted secrets | When multi-developer deploys begin. |
+| Future | Web UI dashboard | Currently terminal/MCP-only. |
+| Future | Distributed deployment (Swarm/K8s) | Single-node only today. |
+
+See [`docs/PRODUCTION_READINESS_PLAN.md`](docs/PRODUCTION_READINESS_PLAN.md) for the full roadmap with effort estimates.
+
+---
+
 ## Star History
 
-If you find Enhanced Cognee useful, please consider starring it on GitHub!
-
-[Star History](https://star-history.com/#vincentspereira/Enhanced-Cognee)
+[![Star History Chart](https://api.star-history.com/svg?repos=vincentspereira/Enhanced-Cognee&type=Date)](https://star-history.com/#vincentspereira/Enhanced-Cognee&Date)
 
 ---
 
