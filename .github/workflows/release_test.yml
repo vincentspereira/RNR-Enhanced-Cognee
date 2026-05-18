@@ -1,14 +1,15 @@
 # Long-running, heavy and resource-consuming tests for release validation
-name: Release Test Workflow
+# NOTE (Enhanced Cognee): converted to manual-only because the underlying
+# load_tests.yml requires upstream-only secrets (LLM_API_KEY, AWS_*, etc.)
+# that this fork does not configure. Run manually via the Actions tab when
+# you have those secrets provisioned.
+name: Release Test Workflow (manual only)
 
 permissions:
   contents: read
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
 
 jobs:
   load-tests:

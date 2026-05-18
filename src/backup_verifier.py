@@ -164,8 +164,11 @@ class BackupVerifier:
 
             sha256_hash = hashlib.sha256()
 
+            # Sort dirs and files for deterministic checksums across file
+            # systems (ext4 vs NTFS) and runs. os.walk doesn't guarantee order.
             for root, dirs, files in os.walk(backup_path):
-                for file in files:
+                dirs.sort()
+                for file in sorted(files):
                     filepath = os.path.join(root, file)
                     with open(filepath, "rb") as f:
                         for byte_block in iter(lambda: f.read(4096), b""):

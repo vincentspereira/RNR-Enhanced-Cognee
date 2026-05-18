@@ -515,14 +515,29 @@ def test_backup_neo4j_docker_fails_uses_cypher(tmp_path):
 
 
 def test_backup_neo4j_exception(tmp_path):
+    """Both docker and cypher-export paths fail -> RuntimeError propagates.
+
+    The implementation tries Docker first; on any Exception it falls back to
+    a Cypher driver export. The test must therefore poison BOTH paths to
+    reach the outer "Neo4j backup failed" raise (otherwise CI with a real
+    Neo4j env will see the fallback succeed and the test will incorrectly
+    expect no exception).
+    """
     mgr = _make_manager(tmp_path)
     backup_path = tmp_path / "backups" / "neo4j_exc"
     backup_path.mkdir(parents=True)
 
+    # Mock neo4j module so the cypher-export fallback also blows up.
+    mock_neo4j_mod = MagicMock()
+    mock_neo4j_mod.GraphDatabase.driver.side_effect = RuntimeError(
+        "cypher driver unavailable"
+    )
+
     with patch("src.backup_manager.subprocess.run",
                side_effect=RuntimeError("subprocess error")):
-        with pytest.raises(RuntimeError, match="Neo4j backup failed"):
-            mgr._backup_neo4j(backup_path, compress=False)
+        with patch.dict("sys.modules", {"neo4j": mock_neo4j_mod}):
+            with pytest.raises(RuntimeError, match="Neo4j backup failed"):
+                mgr._backup_neo4j(backup_path, compress=False)
 
 
 # ---------------------------------------------------------------------------

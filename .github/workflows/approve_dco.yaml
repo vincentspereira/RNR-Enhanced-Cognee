@@ -1,8 +1,10 @@
-name: community | DCO Check
+name: community | DCO Check (manual only)
 
+# NOTE (Enhanced Cognee): The upstream DCO check hard-codes
+# `YOUR_ORGANIZATION_NAME` and requires Topoteretes' DCO text. Not applicable
+# to this single-maintainer fork. Converted to manual-only.
 on:
-  pull_request:
-    types: [opened, edited, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
 
 jobs:
   check-dco:

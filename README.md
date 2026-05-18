@@ -55,32 +55,6 @@ Full session summary in
 
 ---
 
-## Install in 30 Seconds
-
-**Windows:**
-```powershell
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
-powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
-```
-
-**Linux / macOS:**
-```bash
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
-./deploy/local/install.sh
-```
-
-Both installers are idempotent and:
-- Detect Python 3.11+
-- Create `.venv` and use `uv` (~20x faster than pip)
-- Bring up the 4-database Docker stack (PostgreSQL + Qdrant + Neo4j + Valkey)
-- Register the MCP server in `~/.claude.json`
-
-Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKSTART.md).
-
----
-
 ## Table of Contents
 
 - [Install in 30 Seconds](#install-in-30-seconds)
@@ -113,6 +87,31 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 - [Contributors](#contributors)
 - [Roadmap](#roadmap)
 - [Star History](#star-history)
+
+---
+## Install in 30 Seconds
+
+**Windows:**
+```powershell
+git clone https://github.com/vincentspereira/Enhanced-Cognee.git
+cd Enhanced-Cognee
+powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
+```
+
+**Linux / macOS:**
+```bash
+git clone https://github.com/vincentspereira/Enhanced-Cognee.git
+cd Enhanced-Cognee
+./deploy/local/install.sh
+```
+
+Both installers are idempotent and:
+- Detect Python 3.11+
+- Create `.venv` and use `uv` (~20x faster than pip)
+- Bring up the 4-database Docker stack (PostgreSQL + Qdrant + Neo4j + Valkey)
+- Register the MCP server in `~/.claude.json`
+
+Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKSTART.md).
 
 ---
 

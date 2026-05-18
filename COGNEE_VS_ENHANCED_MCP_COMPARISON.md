@@ -16,7 +16,7 @@ availability for Claude Code and other AI IDEs
 - **100+ additional enterprise features** beyond original Cognee
 - **122 production-ready MCP tools** accessible to Claude Code (up from 58 in the Feb 2026 report)
 - **4-database Enhanced stack** (vs. single database in original Cognee)
-- **1,134 unit tests** with 100% pass rate
+- **4,158 unit tests** with 100% pass rate
 - **Python SDK** available: `pip install enhanced-cognee-client` (PyPI v1.0.0)
 - **GitHub Release:** https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0
 
@@ -742,7 +742,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 19. `get_llm_cost_report` - LLM API cost report
 
 **Real-Time Sync (3):**
-20. `publish_memory_event` - Publish event to Redis pub-sub
+20. `publish_memory_event` - Publish event to Valkey pub-sub (Redis-compatible)
 21. `get_sync_status` - Real-time sync status
 22. `sync_agent_state` - Sync agent state across instances
 
@@ -825,8 +825,8 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
   - PostgreSQL + pgVector (port 25432)
   - Qdrant (port 26333)
   - Neo4j (port 27687)
-  - Redis cache + pub-sub (port 26379)
-- **Redis caching layer** for performance and real-time pub-sub events
+  - Valkey 8 cache + pub-sub, port 26379 (Apache-2.0, Redis-compatible)
+- **Valkey caching layer (Apache-2.0, Redis-compatible)** for performance and real-time pub-sub events
 - **400-700% performance improvement** over single-database setups
 - **Docker Compose orchestration** (`docker/docker-compose-enhanced-cognee.yml`)
 
@@ -837,7 +837,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 | PostgreSQL | 5432 | 25432 | Avoids collision with existing installations |
 | Qdrant | 6333 | 26333 | Avoids collision with existing installations |
 | Neo4j | 7687 | 27687 | Avoids collision with existing installations |
-| Redis | 6379 | 26379 | Avoids collision with existing installations |
+| Valkey | 6379 | 26379 | Avoids collision with existing installations |
 
 ---
 
@@ -1036,7 +1036,7 @@ iterations per tool to characterize tool invocation overhead independently of da
 
 | Metric | Value |
 |--------|-------|
-| Tools benchmarked | 119 (baseline) |
+| Tools benchmarked | 122 (Phases 1-14 + Undo Operations) |
 | Benchmark suite p50 | 0.00 ms |
 | Benchmark suite p95 | 0.07 ms |
 | Slowest tool mean | 0.22 ms (get_memory_importance) |
@@ -1045,8 +1045,8 @@ iterations per tool to characterize tool invocation overhead independently of da
 
 ### Interpretation
 
-All 119 baseline tools complete their Python dispatch in sub-millisecond time. In production, measured
-latency will be dominated by database round-trips (PostgreSQL, Qdrant, Neo4j, Redis), not by
+All 122 tools complete their Python dispatch in sub-millisecond time. In production, measured
+latency will be dominated by database round-trips (PostgreSQL, Qdrant, Neo4j, Valkey (Redis-compatible)), not by
 the tool dispatch layer itself. This result confirms the server adds no meaningful overhead
 beyond the underlying database operations.
 
@@ -1060,13 +1060,13 @@ The following gates run automatically before each commit and push:
 | bandit security scan | pre-commit | Security patterns |
 | no-hardcoded-categories | pre-commit | Enforces dynamic categories |
 | ASCII-output check | pre-commit | Enforces Windows console safety |
-| fast-unit-tests | pre-push | 1,134 unit tests at 100% pass rate |
+| fast-unit-tests | pre-push | 4,158 unit tests at 100% pass rate |
 
 ### Unit Test Coverage
 
 | Metric | Value |
 |--------|-------|
-| Total unit tests | 1,134 |
+| Total unit tests | 4,158 |
 | Pass rate | 100% |
 | Test gate | pre-push hook |
 
@@ -1083,7 +1083,7 @@ The following capability groups exist exclusively in Enhanced Cognee:
 - PostgreSQL + pgVector (port 25432)
 - Qdrant (port 26333)
 - Neo4j (port 27687)
-- Redis (port 26379)
+- Valkey (port 26379, Apache-2.0; Redis-compatible)
 - 400-700% performance improvement over single-database setups
 
 #### 2. Standard Memory MCP Protocol (7 tools)
@@ -1104,7 +1104,7 @@ The following capability groups exist exclusively in Enhanced Cognee:
 
 #### 4. Real-Time Synchronization
 
-- Redis pub/sub for multi-agent sync
+- Valkey pub/sub (Redis-compatible) for multi-agent sync
 - Real-time event publishing via `publish_memory_event()`
 - Sync status tracking via `get_sync_status()`
 - Cross-agent state synchronization via `sync_agent_state()`
@@ -1198,7 +1198,7 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 |--------|---------------|---------------|--------|
 | Total MCP tools | 58 | 122 | +64 tools |
 | Feature groups | 13 | 33 | +20 groups |
-| Unit tests | Not tracked | 1,134 | +1,134 |
+| Unit tests | Not tracked | 4,158 | +4,158 |
 | Test pass rate | Not tracked | 100% | [OK] |
 | Tool p50 latency | Not tracked | 0.00 ms | [OK] |
 | Python SDK | None | v1.0.0 on PyPI | NEW |

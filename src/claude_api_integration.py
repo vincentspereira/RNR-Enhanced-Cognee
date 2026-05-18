@@ -7,7 +7,7 @@ Provides native Anthropic Claude API integration with streaming, tool use, and f
 import asyncio
 import json
 import logging
-from typing import Dict, List, Optional, Any, Callable, AsyncIterator
+from typing import Dict, List, Optional, Any, Callable, AsyncIterator, Union
 from datetime import datetime, UTC
 from dataclasses import dataclass, field
 from enum import Enum

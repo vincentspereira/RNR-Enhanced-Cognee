@@ -37,7 +37,7 @@ pyyaml==6.0.3                      # YAML parsing
 
 # Logging and Monitoring
 structlog==24.1.0                  # Structured logging
-rich==13.7.0                       # Rich console output
+rich>=13.8.0,<14.0                 # Rich console output (must be >=13.8 for typer 0.25.x)
 prometheus-client==0.25.0          # Prometheus metrics
 opentelemetry-api==1.41.1          # OpenTelemetry tracing
 opentelemetry-sdk==1.41.1
@@ -54,7 +54,7 @@ langdetect==1.0.9                   # Language detection (28 languages)
 # Text Processing and NLP
 tiktoken==0.13.0                    # Token counting
 nltk==3.9.4                        # Natural language processing
-spacy==3.8.14                       # NLP pipeline
+spacy>=3.8.13,<3.9                 # NLP pipeline (3.8.14 doesn't exist on PyPI; 3.8.13 is latest in the 3.8.x line)
 textstat==0.7.13                    # Text statistics
 
 # Machine Learning and AI
@@ -65,9 +65,27 @@ accelerate==0.28.0                 # PyTorch acceleration
 datasets==2.18.0                   # Dataset handling
 
 # AI Provider SDKs
-openai==1.12.0                     # OpenAI API
+openai>=1.80.1,<2.0                # OpenAI API (pyproject requires >=1.80.1)
 anthropic==0.102.0                   # Anthropic API
 google-generativeai==0.8.6         # Google AI
+mcp>=1.0.0                         # Model Context Protocol SDK (FastMCP server for MCP tools)
+
+# AWS SDK (imported at module level by src/security/enhanced_security_framework.py
+# for credential rotation tooling; required even if AWS features aren't used)
+boto3>=1.34,<2.0
+botocore>=1.34,<2.0
+
+# Rate-limiting for FastAPI (imported at module level by enhanced_security_framework.py)
+slowapi>=0.1.9,<1.0
+
+# More module-level imports found by clean-CI install audit (each one fails
+# test-collection at import time because they are imported unconditionally):
+PyJWT>=2.8,<3.0                    # `import jwt` in src/security/{auth,enhanced_security_framework}.py
+bleach>=6.0,<7.0                   # HTML/XSS sanitization
+dataclasses-json>=0.6,<1.0         # JSON (de)serialization for @dataclass
+feedparser>=6.0,<7.0               # RSS/Atom feed parsing (used by ingest_url)
+plotly>=5.18,<7.0                  # Charting (knowledge-graph viz endpoints)
+markdown>=3.5,<4.0                 # Markdown -> HTML rendering
 
 # Memory and Caching
 redis==5.1.1                       # Redis client
@@ -85,7 +103,9 @@ markupsafe==2.1.5                  # Secure markup
 # CLI and Utilities
 typer==0.25.1                       # CLI framework
 click==8.4.0                       # Command line interface
-rich-cli==4.3.0                    # Rich CLI utilities
+# rich-cli removed: it's a phantom dependency -- never imported in our code,
+# and the pinned version 4.3.0 doesn't exist on PyPI (max published is 1.8.1).
+# The `rich` package (transitive via typer) provides everything we need.
 
 # File Processing
 python-magic==0.4.27               # File type detection
@@ -114,10 +134,10 @@ asyncio-mqtt==0.16.2               # MQTT async client
 aiohttp==3.13.5                     # Async HTTP client/server
 
 # Testing (development only)
-pytest==8.1.1                      # Testing framework
-pytest-asyncio==0.23.4             # Async testing
-pytest-mock==3.15.1                # Mocking in tests
-pytest-cov==4.1.0                  # Coverage reporting
+pytest>=8.1.0,<9.0                 # Testing framework (pinned to 8.x; 9.x removes APIs we use)
+pytest-asyncio>=0.24.0,<2.0        # Async testing (0.24 added pytest 8 support; 1.x is current)
+pytest-mock>=3.14,<4.0             # Mocking in tests
+pytest-cov>=5.0,<8.0               # Coverage reporting (5+ supports pytest 8)
 
 # Development Tools
 black==24.3.0                      # Code formatting
@@ -138,7 +158,10 @@ watchdog==3.0.0                    # File system watching
 # Error Handling and Monitoring
 sentry-sdk==1.43.0                 # Error monitoring
 rollbar==1.3.0                     # Error tracking
-notifier==1.3.3                    # Notification system
+# notifier removed: phantom dependency -- never imported, and the pinned
+# version 1.3.3 does not exist on PyPI (max published is 1.0.3). This was
+# breaking CI dependency resolution. If notification batching is needed,
+# we already have the Slack/Discord/email channels in src/notifications/.
 
 # Performance Optimization
 numba==0.65.1                      # JIT compiler

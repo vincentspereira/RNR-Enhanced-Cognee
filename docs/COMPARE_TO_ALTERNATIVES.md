@@ -20,7 +20,7 @@ Enhanced Cognee fits their use case.
 
 | Feature | Enhanced Cognee | Cognee (upstream) | Mem0 | Zep | Letta | LangChain Memory |
 |---|---|---|---|---|---|---|
-| **Setup** | Docker Compose | Docker / pip | Hosted (SaaS) | Docker | Docker / pip | pip install |
+| **Setup** | Docker Compose + pip/uv (one-command installer) | Docker / pip | Hosted (SaaS) | Docker | Docker / pip | pip install |
 | **Self-hostable** | Yes | Yes | Open-source variant | Yes (Apache-2.0) | Yes | N/A |
 | **MCP tools** | **122** | 0 (REST API only) | 0 | 0 | 0 | 0 |
 | **Databases** | 4 (Postgres + Qdrant + Neo4j + Valkey) | 1 (pick one) | Their cloud | Postgres + custom store | LanceDB | Whatever you bring |

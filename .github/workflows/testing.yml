@@ -1,17 +1,11 @@
-name: Enhanced Cognee Testing Pipeline
+name: Enhanced Cognee Testing Pipeline (legacy - manual only)
 
+# NOTE (Enhanced Cognee): This legacy "Comprehensive Testing Pipeline" predates
+# `ci-cd-pipeline.yml` and references infrastructure (chaos toolkit, applitools,
+# matrix Python 3.9/3.10/3.11, etc.) that is not all provisioned in this fork.
+# Converted to manual-only to avoid spurious failures. Authoritative CI is
+# `ci-cd-pipeline.yml`.
 on:
-  push:
-    branches: [ main, develop, testing ]
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-  pull_request:
-    branches: [ main, develop ]
-    types: [opened, synchronize, reopened]
-  schedule:
-    # Run comprehensive tests daily at 2 AM UTC
-    - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       test_category:
