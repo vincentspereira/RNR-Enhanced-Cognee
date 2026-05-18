@@ -88,11 +88,32 @@ $VenvPip = Join-Path $VenvPath "Scripts\pip.exe"
 # 3. Install dependencies
 # ----------------------------------------------------------------------------
 
-Write-Step "Upgrading pip + installing Enhanced Cognee (editable)"
-& $VenvPy -m pip install --upgrade pip --quiet
+Write-Step "Installing Enhanced Cognee (editable; prefers uv for ~10x speedup)"
 Push-Location $RepoRoot
 try {
-    & $VenvPip install -e . --quiet
+    $uvExists = Get-Command uv -ErrorAction SilentlyContinue
+    $UvInVenv = Join-Path $VenvPath "Scripts\uv.exe"
+
+    if ($uvExists) {
+        $uvVersion = & uv --version 2>&1
+        Write-Ok "Using uv ($uvVersion)"
+        & uv pip install --python $VenvPy --upgrade pip --quiet
+        & uv pip install --python $VenvPy -e . --quiet
+    } elseif (Test-Path $UvInVenv) {
+        Write-Ok "Using uv from venv"
+        & $UvInVenv pip install --python $VenvPy --upgrade pip --quiet
+        & $UvInVenv pip install --python $VenvPy -e . --quiet
+    } else {
+        Write-Step "uv not found -- bootstrapping it for faster installs (one-time)"
+        & $VenvPy -m pip install --upgrade pip uv --quiet
+        if (Test-Path $UvInVenv) {
+            Write-Ok "Bootstrapped uv; using it now"
+            & $UvInVenv pip install --python $VenvPy -e . --quiet
+        } else {
+            Write-Warn "uv bootstrap failed; falling back to plain pip"
+            & $VenvPip install -e . --quiet
+        }
+    }
     Write-Ok "Installed editable package"
 } finally {
     Pop-Location

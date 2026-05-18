@@ -63,10 +63,18 @@ help:	## Show this help
 # Install
 # ============================================================================
 
-install:	## Install Python dependencies in editable mode
-	$(PIP) install --upgrade pip
-	$(PIP) install -e .
-	$(PIP) install -r requirements-dev.txt 2>/dev/null || $(PIP) install pytest pytest-cov pytest-asyncio pytest-mock pytest-benchmark hypothesis ruff black
+install:	## Install Python dependencies in editable mode (uses uv if available for ~10x speedup)
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "[install] using uv $$(uv --version | awk '{print $$2}')"; \
+		uv pip install --upgrade pip; \
+		uv pip install -e .; \
+		uv pip install pytest pytest-cov pytest-asyncio pytest-mock pytest-benchmark hypothesis ruff black; \
+	else \
+		echo "[install] uv not found, bootstrapping..."; \
+		$(PIP) install --upgrade pip uv && \
+		$(PY) -m uv pip install -e . && \
+		$(PY) -m uv pip install pytest pytest-cov pytest-asyncio pytest-mock pytest-benchmark hypothesis ruff black; \
+	fi
 
 # ============================================================================
 # Tests

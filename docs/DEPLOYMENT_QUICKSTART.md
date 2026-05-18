@@ -268,7 +268,13 @@ cd /opt/enhanced-cognee
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install -e .
+
+# Install uv for ~20x faster Python package installs (recommended)
+pip install uv
+uv pip install -e .
+
+# Or, if you prefer plain pip (slower but no extra dep):
+# pip install -e .
 ```
 
 ### B7. Configure Caddy with your domain

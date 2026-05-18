@@ -81,12 +81,31 @@ fi
 source "$VENV/bin/activate"
 
 # ----------------------------------------------------------------------------
-# 3. Install
+# 3. Install (prefers uv for ~10x speedup; falls back to pip if uv missing)
 # ----------------------------------------------------------------------------
 
-step "Upgrading pip + installing Enhanced Cognee (editable)"
-pip install --upgrade pip --quiet
-pip install -e "$REPO_ROOT" --quiet
+step "Installing Enhanced Cognee (editable)"
+if command -v uv >/dev/null 2>&1; then
+    UV_VERSION=$(uv --version | awk '{print $2}')
+    ok "Using uv $UV_VERSION (faster than pip)"
+    # uv pip uses the active venv automatically (we sourced activate above)
+    uv pip install --upgrade pip --quiet
+    uv pip install -e "$REPO_ROOT" --quiet
+elif "$PY" -m pip show uv >/dev/null 2>&1; then
+    ok "Using uv (via python -m uv)"
+    "$PY" -m uv pip install --upgrade pip --quiet
+    "$PY" -m uv pip install -e "$REPO_ROOT" --quiet
+else
+    step "uv not found -- bootstrapping it for faster installs (one-time)"
+    pip install --upgrade pip uv --quiet
+    if "$PY" -m pip show uv >/dev/null 2>&1; then
+        ok "Bootstrapped uv; using it now"
+        "$PY" -m uv pip install -e "$REPO_ROOT" --quiet
+    else
+        warn "uv bootstrap failed; falling back to plain pip"
+        pip install -e "$REPO_ROOT" --quiet
+    fi
+fi
 ok "Installed editable package"
 
 # ----------------------------------------------------------------------------
