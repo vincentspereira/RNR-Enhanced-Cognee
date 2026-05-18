@@ -135,6 +135,86 @@ from fastapi import Request, Response, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
 
+
+def _evict_stubbed_security_modules_with_real_passlib():
+    """Evict any stub security modules and re-import using REAL passlib.
+
+    Two pollution problems converge here:
+    1. test_security_deployment.py installs a stub for
+       src.security.enhanced_security_framework that's missing most names.
+    2. THIS file installs MagicMock for sys.modules['passlib.hash'] etc.
+       (above) for its OWN tests.
+
+    If we just evict and let the framework re-import, it will bind argon2 to
+    the MagicMock passlib.hash, breaking other tests
+    (tests/test_enhanced_security.py) that need real argon2.
+
+    Solution: temporarily restore real passlib BEFORE the re-import, then
+    re-install our mocks AFTER. The framework module captures real argon2
+    in its globals; this file's other tests still see the mocked passlib.
+    """
+    _SECURITY_MODULES = [
+        "src.security.enhanced_security_framework",
+        "src.security.security_middleware",
+        "src.security.auth",
+        "src.security.data_protection",
+    ]
+
+    # Detect whether anything is stubbed
+    needs_reimport = False
+    for mod_name in _SECURITY_MODULES:
+        mod = sys.modules.get(mod_name)
+        if mod is None:
+            continue
+        if mod_name.endswith("enhanced_security_framework"):
+            if not hasattr(mod, "SecurityConfig") or not hasattr(mod, "FileScanner"):
+                needs_reimport = True
+                del sys.modules[mod_name]
+        elif mod_name.endswith("security_middleware"):
+            if not hasattr(mod, "SecurityMiddleware"):
+                needs_reimport = True
+                del sys.modules[mod_name]
+        elif mod_name.endswith("auth"):
+            if not hasattr(mod, "JWTAuthenticator"):
+                needs_reimport = True
+                del sys.modules[mod_name]
+        elif mod_name.endswith("data_protection"):
+            if not hasattr(mod, "EncryptionManager"):
+                needs_reimport = True
+                del sys.modules[mod_name]
+
+    if not needs_reimport:
+        return
+
+    # Stash our mock passlib so we can restore it after framework re-import
+    _PASSLIB_KEYS = [
+        "passlib", "passlib.hash", "passlib.hash.bcrypt",
+        "passlib.hash.argon2", "passlib.context",
+    ]
+    _mocked = {}
+    for k in _PASSLIB_KEYS:
+        if k in sys.modules:
+            _mocked[k] = sys.modules.pop(k)
+
+    # Force the framework to re-import using REAL passlib. The framework
+    # captures argon2/bcrypt in its module globals; these references will
+    # outlive the subsequent re-mocking and be available to other test files.
+    try:
+        import src.security.enhanced_security_framework  # noqa: F401
+        import src.security.security_middleware  # noqa: F401
+        import src.security.auth  # noqa: F401
+        import src.security.data_protection  # noqa: F401
+    except Exception:
+        pass
+
+    # Restore our passlib mocks for this file's tests
+    for k, v in _mocked.items():
+        sys.modules[k] = v
+
+
+_evict_stubbed_security_modules_with_real_passlib()
+
+
 # Import security modules with graceful handling of missing dependencies
 try:
     from src.security.enhanced_security_framework import (

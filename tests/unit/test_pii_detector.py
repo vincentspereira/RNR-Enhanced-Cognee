@@ -439,10 +439,14 @@ class TestPresidioPath:
 
     @pytest.mark.unit
     def test_init_presidio_failure_disables_presidio(self):
-        """If AnalyzerEngine() raises, _use_presidio is set to False."""
-        from src.pii_detector import PIIDetector, _PRESIDIO_AVAILABLE
-        if not _PRESIDIO_AVAILABLE:
-            pytest.skip("Presidio not installed - cannot test _init_presidio failure path")
+        """If AnalyzerEngine() raises, _use_presidio is set to False.
+
+        Works even when Presidio is not installed: patch.object with
+        create=True will inject the missing name into the module namespace
+        for the duration of the patch.
+        """
+        from src.pii_detector import PIIDetector
+        import src.pii_detector as pii_mod
 
         d = PIIDetector.__new__(PIIDetector)
         d.enabled = True
@@ -452,7 +456,13 @@ class TestPresidioPath:
         d._analyzer = None
         d._anonymizer = None
 
-        with patch("src.pii_detector.AnalyzerEngine", side_effect=Exception("init failed")):
+        # create=True so this works whether or not Presidio is installed
+        with patch.object(pii_mod, "AnalyzerEngine",
+                          side_effect=Exception("init failed"),
+                          create=True), \
+             patch.object(pii_mod, "AnonymizerEngine",
+                          new=MagicMock(),
+                          create=True):
             d._init_presidio()
 
         assert d._use_presidio is False
