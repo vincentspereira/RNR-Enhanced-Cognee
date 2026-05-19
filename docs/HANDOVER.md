@@ -83,29 +83,48 @@ already reflects them (see DR-11 and DR-12 in the Decision Records appendix).
 > with our existing Neo4j paths). Apache AGE is one of the pluggable options,
 > NOT the default. Don't get confused by older drafts that suggested AGE first.
 
-### 3.2 Observability stack — single OpenObserve binary
+### 3.2 Observability stack — SigNoz + Apache Superset (revised 2026-05-19)
 
 Today's Enhanced Cognee monitoring stack (in the optional
-`monitoring/docker-compose-monitoring.yml`) currently bundles Grafana + Loki +
-Tempo + Prometheus + Jaeger. **Replace all of them with OpenObserve**
-(<https://github.com/openobserve/openobserve>):
+`monitoring/docker-compose-monitoring.yml`) bundles **Grafana + Loki + Tempo + Prometheus + Jaeger**.
+Of those, Grafana, Loki, and Tempo are AGPLv3. Replace them with a fully
+permissive stack:
 
-- **License:** AGPL-3.0 (open-source edition) — same risk profile as Grafana
-  and Loki together, so no NET license regression. Commercial Enterprise
-  Edition exists if you ever need closed-source distribution rights.
-- **Why:** 1 Rust binary replaces 5 services; OpenTelemetry-native
-  (we already use `opentelemetry-api/sdk`); ~10x lower compute footprint;
-  object-storage backend (S3/GCS/Azure) for near-free cold storage.
-- **Touchpoints to change:**
-  - `monitoring/docker-compose-monitoring.yml` → single `openobserve` service.
-  - `monitoring/dashboards/*.json` → rebuild in OpenObserve (small effort).
-  - `src/tracing.py` OTLP endpoint → point at OpenObserve instead of Jaeger.
-  - **Keep** `prometheus-client==0.25.0` and `opentelemetry-api/sdk==1.41.1`
-    in `requirements.txt` — OpenObserve consumes both natively.
-  - `docs/MONITORING.md` → rewrite for OpenObserve single-binary install.
-- **Fallback for customers that reject AGPL:** **SigNoz (MIT)** — document this
-  in `docs/COMMERCIALISATION_LICENSE_GUIDE.md` under the FAQ
-  "What if I want to remove all GPL/AGPL components entirely?"
+| Tier                          | New component        | License    | Repo                                       |
+| ----------------------------- | -------------------- | ---------- | ------------------------------------------ |
+| Metrics scraping              | **Prometheus** (kept) | Apache-2.0 | <https://github.com/prometheus/prometheus> |
+| Logs + metrics + traces + APM + alerts + LLM-obs | **SigNoz**         | **MIT**    | <https://github.com/SigNoz/signoz>         |
+| SigNoz storage backend        | **ClickHouse**       | Apache-2.0 | <https://github.com/ClickHouse/ClickHouse> |
+| BI / analytical dashboards    | **Apache Superset**  | Apache-2.0 | <https://github.com/apache/superset>       |
+
+**Jaeger is removed entirely** — SigNoz ingests OTel traces directly via its
+OpenTelemetry Collector. **Earlier OpenObserve recommendation is SUPERSEDED**
+(AGPL-3.0 same as Grafana stack — not a licensing improvement). See
+[`STRATEGY.md` §5.2](./STRATEGY.md#52-observability-stack--signoz-mit--apache-superset-apache-20-replace-grafana--loki--tempo--jaeger)
+for the full rationale.
+
+**Touch-points to change:**
+- `monitoring/docker-compose-monitoring.yml` → swap Grafana + Loki + Tempo +
+  Jaeger for SigNoz stack (signoz-frontend + query-service + otel-collector +
+  clickhouse + zookeeper + alertmanager) + Apache Superset. Prometheus stays.
+- `monitoring/dashboards/*.json` → split. APM-style dashboards (request
+  latency, error rates, RED metrics) migrate to SigNoz natively. Custom
+  analytical dashboards (memory growth over time, agent activity trends)
+  rebuilt in Apache Superset and exported to `monitoring/superset-dashboards/`.
+- `src/tracing.py` OTLP endpoint → point at SigNoz collector (default
+  `http://localhost:4317` for gRPC or `4318` for HTTP).
+- **Keep** `prometheus-client==0.25.0` and `opentelemetry-api/sdk==1.41.1`
+  in `requirements.txt` — SigNoz consumes both natively.
+- `docs/MONITORING.md` → rewrite for the new stack (section per component).
+- `docs/COMMERCIALISATION_LICENSE_GUIDE.md` → update the FAQ "What if I want
+  to remove all GPL/AGPL components entirely?" — the answer is now "the
+  default stack already is".
+
+**Alternative for teams that want a different UX (still MIT):** HyperDX
+(<https://github.com/hyperdxio/hyperdx>) — MIT app, Kibana-style query-driven
+exploration, but ⚠️ bundles MongoDB (SSPL) for its metadata store. Self-host
+use is fine; distributed-product bundling is more restrictive than SigNoz's
+ClickHouse-only path. Use SigNoz as primary; document HyperDX as fallback.
 
 ---
 
@@ -193,18 +212,54 @@ Steps:
 3. **Documentation:** `docs/PROFILES.md` documenting the
    `production` / `apache_only` / `lean` / `byo` presets from STRATEGY.md §4.1.
 
-### Phase 4 — OpenObserve observability swap (target: 1 week)
+### Phase 4 — SigNoz + Apache Superset observability swap (target: 1-2 weeks)
 
-1. Replace `monitoring/docker-compose-monitoring.yml` with a single
-   `openobserve/openobserve:latest` service.
-2. Configure environment for object-storage backend
-   (`ZO_LOCAL_MODE=true` for the default; document `ZO_S3_*` env vars for prod).
-3. Update `src/tracing.py` to send OTLP traces to OpenObserve's OTLP endpoint
-   (`http://localhost:5081`).
-4. Rebuild dashboards in OpenObserve UI; export the JSON to
-   `monitoring/openobserve-dashboards/`.
-5. Update `docs/MONITORING.md`.
-6. Add SigNoz fallback section to `docs/COMMERCIALISATION_LICENSE_GUIDE.md`.
+1. **Rewrite `monitoring/docker-compose-monitoring.yml`** to bring up the new
+   stack (snippet in [`STRATEGY.md` §5.3](./STRATEGY.md#53-what-this-means-for-enhanced-cognees-current-observability-touch-points)):
+
+   ```yaml
+   services:
+     prometheus:                # Apache-2.0 (kept)
+     signoz-otel-collector:     # MIT app + Apache-2.0 collector binary
+     signoz-clickhouse:         # Apache-2.0
+     signoz-zookeeper:          # Apache-2.0 (ClickHouse coordination)
+     signoz-query-service:      # MIT
+     signoz-frontend:           # MIT
+     signoz-alertmanager:       # MIT
+     superset:                  # Apache-2.0 (reuses our Postgres for metadata)
+   ```
+
+   Delete the Grafana, Loki, Tempo, and Jaeger services from the compose file.
+
+2. **Update `src/tracing.py`** OTLP endpoint to SigNoz's collector
+   (`http://localhost:4317` gRPC default, or `4318` HTTP). Keep
+   `opentelemetry-api/sdk` in `requirements.txt` unchanged.
+
+3. **Migrate dashboards** in two places:
+   - **APM-style dashboards** (request rates, error rates, p95 latency,
+     trace flamegraphs) → these are native to SigNoz; just re-create what
+     was in Grafana inside the SigNoz UI. Most are auto-generated from the
+     OTel data — minimal hand-rolling needed.
+   - **Custom analytical dashboards** (memory growth over time, agent
+     activity heatmaps, LLM cost trends) → rebuild in Apache Superset
+     querying ClickHouse directly. Export as JSON to
+     `monitoring/superset-dashboards/`.
+
+4. **Update `docs/MONITORING.md`** with the new setup. One section per
+   component (Prometheus, SigNoz, ClickHouse, Apache Superset). Include the
+   OTLP endpoint URLs the user can paste into their Enhanced Cognee `.env`.
+
+5. **Update `docs/COMMERCIALISATION_LICENSE_GUIDE.md`** — the FAQ "What if I
+   want to remove all GPL/AGPL components entirely?" now answers "the default
+   monitoring stack already is, after Phase 4 ships". Mark the previous
+   Grafana/Loki AGPL paragraph as historical / pre-Phase-4.
+
+6. **(Optional but recommended)** Add a `monitoring/docker-compose-monitoring-hyperdx.yml`
+   file documenting the HyperDX (MIT) alternative deployment for teams that
+   prefer Kibana-style query-driven UX. Flag the MongoDB-SSPL caveat in the
+   file header.
+
+**Acceptance criteria for Phase 4** in §9 below has been updated to match.
 
 ### Phase 5 — Other pluggable adapters (build on demand)
 
@@ -233,7 +288,7 @@ the full table. Highlights:
 - **H1.** ArcadeDB swap (Phase 2 above).
 - **H2.** SBOM (Software Bill of Materials) step in CI (`pip-licenses` or
   `cyclonedx-py`) — 2 hours.
-- **H3.** Finish OpenTelemetry / OpenObserve wiring — 1 week.
+- **H3.** Finish OpenTelemetry / SigNoz wiring — 1-2 weeks.
 - **H4.** Performance tests: run locust against live stack, document p50/p95/p99.
 
 ### MEDIUM
@@ -281,12 +336,23 @@ When Phase 2 (ArcadeDB default) lands, update these files in the same PR:
 - [ ] `.env.example` and `docker-compose-enhanced-cognee.yml` — env var defaults.
 - [ ] `deploy/local/install.ps1` and `deploy/vps/install.sh` — match new defaults.
 
-When Phase 4 (OpenObserve swap) lands:
+When Phase 4 (SigNoz + Apache Superset swap) lands:
 
-- [ ] `monitoring/README.md` — rewrite for OpenObserve.
-- [ ] `docs/MONITORING.md` — rewrite for OpenObserve single-binary install.
-- [ ] `docs/COMMERCIALISATION_LICENSE_GUIDE.md` — replace Grafana/Loki AGPL
-      paragraph with OpenObserve AGPL paragraph + SigNoz fallback note.
+- [ ] `monitoring/README.md` — rewrite for the new stack (Prometheus + SigNoz
+      + Apache Superset; Grafana/Loki/Tempo/Jaeger gone).
+- [ ] `docs/MONITORING.md` — rewrite with one section per component (and
+      include OTLP endpoint URLs for `src/tracing.py` config).
+- [ ] `docs/COMMERCIALISATION_LICENSE_GUIDE.md` — the FAQ "What if I want to
+      remove all GPL/AGPL components entirely?" now answers "the default
+      monitoring stack already is". Mark prior Grafana/Loki AGPL discussion
+      as historical.
+- [ ] `docs/LICENSE_AUDIT.md` — Grafana / Loki / Tempo rows move to "Removed
+      in Phase 4" section; SigNoz, ClickHouse, Apache Superset added with
+      their licences (MIT / Apache-2.0 / Apache-2.0).
+- [ ] `monitoring/superset-dashboards/` directory created with exported
+      analytical dashboards as JSON.
+- [ ] (Optional) `monitoring/docker-compose-monitoring-hyperdx.yml` for the
+      MIT alternative, with MongoDB-SSPL caveat in the header.
 
 ---
 
@@ -347,17 +413,25 @@ The user can declare the migration done when **all** of the following hold:
       all reflect the new default.
 - [ ] Branch protection blocks any PR that fails the 4 required checks.
 
-For "Phase 4 (OpenObserve) complete":
+For "Phase 4 (SigNoz + Apache Superset) complete":
 
-- [ ] `monitoring/docker-compose-monitoring.yml` brings up only OpenObserve.
-- [ ] Traces from `src/tracing.py` land in OpenObserve.
+- [ ] `monitoring/docker-compose-monitoring.yml` brings up Prometheus + SigNoz
+      stack (frontend + query-service + otel-collector + clickhouse +
+      zookeeper + alertmanager) + Apache Superset. Grafana / Loki / Tempo /
+      Jaeger services deleted from the compose file.
+- [ ] OTel traces from `src/tracing.py` land in SigNoz (visible in the
+      Traces tab of the SigNoz UI).
 - [ ] Prometheus metrics from `get_prometheus_metrics` MCP tool are scraped
-      by OpenObserve.
-- [ ] At least one dashboard rebuilt in OpenObserve and exported to
-      `monitoring/openobserve-dashboards/`.
-- [ ] `docs/MONITORING.md` documents the new setup.
-- [ ] SigNoz fallback documented in
-      `docs/COMMERCIALISATION_LICENSE_GUIDE.md`.
+      by Prometheus and consumable by SigNoz.
+- [ ] APM-style dashboard (latency, error rate, p95) visible in SigNoz UI.
+- [ ] At least one custom analytical dashboard rebuilt in Apache Superset
+      and exported as JSON to `monitoring/superset-dashboards/`.
+- [ ] `docs/MONITORING.md` documents the new setup with one section per
+      component.
+- [ ] `docs/COMMERCIALISATION_LICENSE_GUIDE.md` updated — "remove all
+      GPL/AGPL components" FAQ answers "the default already is".
+- [ ] HyperDX (MIT) alternative documented as a fallback option with the
+      MongoDB-SSPL caveat noted.
 
 ---
 
@@ -392,8 +466,11 @@ they weren't called out explicitly:
    Enhanced Cognee functionality.
 
 7. **Hetzner CX22 VPS deployment** target: 4 GB RAM, 2 vCPUs. ArcadeDB on
-   Java 21 will use 1-2 GB; Postgres + Qdrant + Valkey + MCP server + OpenObserve
-   need to fit in the remaining ~2 GB. Watch memory limits in
+   Java 21 will use 1-2 GB; Postgres + Qdrant + Valkey + MCP server need to
+   fit in the remaining ~2 GB. The SigNoz + Apache Superset monitoring stack
+   is heavier (ClickHouse, multiple SigNoz services) — for a 4 GB VPS,
+   consider running observability on a separate small VPS, or use SigNoz's
+   all-in-one Docker image to bundle its sub-services. Watch memory limits in
    `docker-compose-production.yml`.
 
 8. **Test pin for `pytest-asyncio`:** was relaxed to `>=0.24.0,<2.0` (was
