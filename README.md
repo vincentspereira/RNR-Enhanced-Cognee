@@ -624,16 +624,6 @@ Based on testing with enterprise datasets:
 
 > See "Comparison with Original Cognee" above for the side-by-side feature table, or [`docs/COMPARE_TO_ALTERNATIVES.md`](docs/COMPARE_TO_ALTERNATIVES.md) for broader market context.
 
-✅ **122 tools**                               |
-| **Multi-Agent Support**   | None            | ✅ **Real-time sync for 100+ agents**          |
-| **Memory Deduplication**  | None            | ✅ **95%+ storage savings**                    |
-| **Memory Summarization**  | None            | ✅ **10x+ compression**                        |
-| **Performance Analytics** | None            | ✅ **Prometheus export**                       |
-| **Cross-Agent Sharing**   | None            | ✅ **4 access policies**                       |
-| **TTL & Archival**        | None            | ✅ **Automated lifecycle**                     |
-| **IDE Support**           | None            | ✅ **MCP-compatible IDEs**                     |
-| **Test Coverage**         | Basic           | ✅ **4,158 tests passing (100% pass rate)** |
-| **MCP IDE Integration**   | No              | ✅ **Standard Memory MCP**                     |
 ---
 
 ## Original Cognee Features Available via Enhanced Cognee MCP
@@ -748,24 +738,25 @@ flowchart LR
     end
 
     subgraph MCP["MCP Server Layer - 122 Tools"]
-        MCP1[Standard Memory<br/>7 Tools]
-        MCP2[Enhanced Cognee<br/>6 Tools]
-        MCP3[Memory Management<br/>4 Tools]
+        MCP1[Enhanced Cognee Core<br/>5 Tools]
+        MCP2[Standard Memory MCP<br/>7 Tools]
+        MCP3[Memory Lifecycle<br/>TTL / Tiers / Consolidation<br/>9 Tools]
         MCP4[Deduplication<br/>6 Tools]
-        MCP5[Summarization<br/>8 Tools]
-        MCP6[Analytics<br/>3 Tools]
-        MCP7[Sharing<br/>4 Tools]
-        MCP8[Sync<br/>3 Tools]
+        MCP5[Summarization<br/>7 Tools]
+        MCP6[Analytics & LLM Cost<br/>5 Tools]
+        MCP7[Cross-Agent Sharing<br/>4 Tools]
+        MCP8[Real-Time Sync<br/>3 Tools]
         MCP9[Backup & Recovery<br/>5 Tools]
         MCP10[Scheduling<br/>3 Tools]
         MCP11[Multi-Language<br/>6 Tools]
-        MCP12[Advanced AI & Search<br/>6 Tools]
-        MCP13[Session Memory<br/>6 Tools]
-        MCP14[External Loaders<br/>6 Tools]
+        MCP12[Advanced AI & Search<br/>9 Tools]
+        MCP13[Session Memory<br/>9 Tools]
+        MCP14[Knowledge Graph & Loaders<br/>9 Tools]
         MCP15[Audit & Provenance<br/>7 Tools]
         MCP16[GDPR Compliance<br/>6 Tools]
-        MCP17[Plugins & Webhooks<br/>6 Tools]
-        MCP18[Phase 14 Features<br/>14 Tools]
+        MCP17[Plugins / Webhooks / Notifications<br/>9 Tools]
+        MCP18[Encryption / EAV / Importance<br/>10 Tools]
+        MCP19[Undo / Redo<br/>3 Tools]
     end
 
     subgraph Memory["Memory Management Layer"]
@@ -803,13 +794,17 @@ flowchart LR
     MCP8 --> RTS
     MCP9 --> BR
     MCP10 --> SC
-    MCP11 --> SC
-    MCP12 --> ML
-    MCP13 --> AI
-    MCP13 --> AS
+    MCP11 --> ML
+    MCP12 --> AI
+    MCP12 --> AS
+    MCP13 --> MM
     MCP14 --> MM
     MCP14 --> N4
     MCP15 --> MM
+    MCP16 --> MM
+    MCP17 --> MM
+    MCP18 --> MM
+    MCP19 --> MM
 
     MM --> PG
     MM --> RD
@@ -1046,7 +1041,7 @@ Expected output:
 postgres-enhanced   Up   0.0.0.0:25432->5432/tcp
 qdrant-enhanced     Up   0.0.0.0:26333->6333/tcp
 neo4j-enhanced      Up   0.0.0.0:27474->7474/tcp, 0.0.0.0:27687->7687/tcp
-redis-enhanced      Up   0.0.0.0:26379->6379/tcp
+valkey-enhanced     Up   0.0.0.0:26379->6379/tcp
 ```
 
 ### Option 2: Clone and Install (Manual)
@@ -1251,7 +1246,7 @@ Enhanced Cognee provides **122 MCP tools** with comprehensive automation across 
 | `delete_memory`   | Delete memory             | (M) Manual   | Deletes memory → publishes events → logs performance         |
 | `list_agents`     | List all agents           | (A) Auto     | Lists agents → logs performance                              |
 
-### Enhanced Cognee Tools (6)
+### Enhanced Cognee Tools (5)
 
 | Tool            | Purpose                           | Trigger Type | Automation Chain                                                                                  |
 | --------------- | --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
@@ -1260,7 +1255,6 @@ Enhanced Cognee provides **122 MCP tools** with comprehensive automation across 
 | `list_data`     | List all documents                | (A) Auto     | Lists documents → logs performance                                                                |
 | `get_stats`     | Get system statistics             | (A) Auto     | Calls all stats functions → logs performance                                                      |
 | `health`        | Health check all databases        | (A) Auto     | Checks connections → logs performance (if unhealthy)                                              |
-| `create_backup` | Create system backup              | (A) Auto     | Creates backup → verifies backup → gets performance metrics → publishes events → logs performance |
 
 ### Memory Management Tools (4)
 
@@ -1341,13 +1335,14 @@ Enhanced Cognee provides **122 MCP tools** with comprehensive automation across 
 | `list_tasks`    | List scheduled tasks      | (A) Auto     | Lists tasks → logs performance    |
 | `cancel_task`   | Cancel scheduled task     | (M) Manual   | Cancels task → logs performance   |
 
-### Scheduling Automation Tools (3)
+### Scheduling Automation Tools (2)
 
 | Tool                     | Purpose                     | Trigger Type | Automation Chain                           |
 | ------------------------ | --------------------------- | ------------ | ------------------------------------------ |
 | `schedule_deduplication` | Schedule auto-deduplication | (S) System   | Schedules deduplication → logs performance |
 | `schedule_summarization` | Schedule auto-summarization | (S) System   | Schedules summarization → logs performance |
-| `deduplication_report`   | Get deduplication report    | (S) System   | Gets report → logs performance             |
+
+> Note: `deduplication_report` is listed under "Memory Deduplication Tools" above.
 
 ### Multi-Language Tools (6)
 
@@ -1531,6 +1526,17 @@ Source type weights: verified=1.0, agent=0.8, user=0.7, system=0.5, unknown=0.3
 **Re-ranking formula:** `similarity * 0.50 + importance * 0.25 + recency * 0.15 + confidence * 0.10`
 
 All signals default to 0.5 when missing. Results are shallow-copied with a `rerank_score` key added.
+
+### Undo / Redo Tools - Phase 18 (3)
+
+| Tool                | Purpose                                                                      | Trigger Type | Automation Chain                                                                 |
+| ------------------- | ---------------------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------- |
+| `undo_last`         | Reverse the last automated memory operation (24-hour rolling log)            | (M) Manual   | Loads undo log -> reverses operation -> publishes event -> logs to audit         |
+| `get_undo_history`  | List recent reversible operations for the current agent                      | (A) Auto     | Reads undo log -> filters by agent and TTL -> returns descending by timestamp     |
+| `redo_last`         | Re-apply the most recently reversed operation                                | (M) Manual   | Reads last undone entry -> re-applies -> updates log -> publishes event           |
+
+24-hour rolling log; covers `add_memory`, `update_memory`, `delete_memory`, `set_memory_sharing`,
+`forget_memory`, `archive_category`, and `revert_memory`. Multi-step undo is supported.
 
 ---
 
