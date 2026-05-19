@@ -30,10 +30,13 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
-_VALID_RELATIONAL = {"postgres", "postgresql"}
+_VALID_RELATIONAL = {"postgres", "postgresql", "sqlite"}
 _VALID_VECTOR = {"qdrant"}
-_VALID_GRAPH = {"arcadedb", "neo4j", "apache_age"}
-_VALID_CACHE = {"valkey", "redis", "in_memory"}
+_VALID_GRAPH = {
+    "arcadedb", "neo4j", "apache_age",
+    "memgraph", "kuzu", "networkx_inmemory",
+}
+_VALID_CACHE = {"valkey", "redis", "in_memory", "memcached"}
 
 
 def _resolve(canonical_env: str, legacy_env: Optional[str], default: str) -> str:
@@ -51,14 +54,22 @@ async def get_relational_pool(**kwargs: Any):
 
     Default provider: postgres (asyncpg pool). The pool exposes
     ``async with pool.acquire() as conn`` and the rest of asyncpg's API.
+
+    ``sqlite`` returns a file-backed shim suitable for the lean
+    profile / tests; see ``docs/PROFILES.md`` for the compatibility
+    caveats vs asyncpg.
     """
     provider = _resolve(
         "ENHANCED_RELATIONAL_PROVIDER", "RELATIONAL_BACKEND", "postgres"
     )
-    if provider in _VALID_RELATIONAL:
+    if provider in ("postgres", "postgresql"):
         from src.db_adapters import relational_postgres
 
         return await relational_postgres.create_pool(**kwargs)
+    if provider == "sqlite":
+        from src.db_adapters import relational_sqlite
+
+        return await relational_sqlite.create_pool(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_RELATIONAL_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_RELATIONAL)}"
@@ -102,6 +113,18 @@ def get_graph_driver(**kwargs: Any):
         from src.db_adapters import graph_apache_age
 
         return graph_apache_age.create_driver(**kwargs)
+    if provider == "memgraph":
+        from src.db_adapters import graph_memgraph
+
+        return graph_memgraph.create_driver(**kwargs)
+    if provider == "kuzu":
+        from src.db_adapters import graph_kuzu
+
+        return graph_kuzu.create_driver(**kwargs)
+    if provider == "networkx_inmemory":
+        from src.db_adapters import graph_networkx_inmemory
+
+        return graph_networkx_inmemory.create_driver(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_GRAPH_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_GRAPH)}"
@@ -112,8 +135,9 @@ def get_async_graph_driver(**kwargs: Any):
     """Return an async graph DB driver for the configured provider.
 
     Default provider: arcadedb (Bolt via neo4j AsyncDriver).
-    ``apache_age`` does not yet expose an async surface and will raise
-    ``NotImplementedError`` -- see ``docs/PROFILES.md``.
+    Providers without an async surface (``apache_age``, ``kuzu``,
+    ``networkx_inmemory``) raise ``NotImplementedError`` -- see
+    ``docs/PROFILES.md``.
     """
     provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "arcadedb")
     if provider == "arcadedb":
@@ -128,6 +152,18 @@ def get_async_graph_driver(**kwargs: Any):
         from src.db_adapters import graph_apache_age
 
         return graph_apache_age.create_async_driver(**kwargs)
+    if provider == "memgraph":
+        from src.db_adapters import graph_memgraph
+
+        return graph_memgraph.create_async_driver(**kwargs)
+    if provider == "kuzu":
+        from src.db_adapters import graph_kuzu
+
+        return graph_kuzu.create_async_driver(**kwargs)
+    if provider == "networkx_inmemory":
+        from src.db_adapters import graph_networkx_inmemory
+
+        return graph_networkx_inmemory.create_async_driver(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_GRAPH_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_GRAPH)}"
@@ -155,6 +191,10 @@ def get_cache_client(**kwargs: Any):
         from src.db_adapters import cache_in_memory
 
         return cache_in_memory.create_async_client(**kwargs)
+    if provider == "memcached":
+        from src.db_adapters import cache_memcached
+
+        return cache_memcached.create_async_client(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_CACHE_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_CACHE)}"
@@ -176,6 +216,10 @@ def get_sync_cache_client(**kwargs: Any):
         from src.db_adapters import cache_in_memory
 
         return cache_in_memory.create_sync_client(**kwargs)
+    if provider == "memcached":
+        from src.db_adapters import cache_memcached
+
+        return cache_memcached.create_sync_client(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_CACHE_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_CACHE)}"

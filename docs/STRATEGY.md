@@ -288,10 +288,10 @@ Neo4j stays as a **second pluggable option** for organizations with:
 | 1     | Env-var routing plumbing (`src/db_factory.py` + audit hard-coded imports) -- **SHIPPED 2026-05-19**                                                           | 1 week                      |
 | 2     | **ArcadeDB adapter** as new default (Bolt drop-in for current Neo4j paths) + integration tests + container image swap in `docker-compose-enhanced-cognee.yml` -- **SHIPPED 2026-05-19** | 1-2 weeks                   |
 | 3     | Apache AGE pluggable adapter + `lean` profile (one-container Postgres-only setup) -- **SHIPPED 2026-05-19**                                                   | 1 week                      |
-| 4     | Remaining graph adapters as plug-ins (ArangoDB, NebulaGraph, Kuzu, NetworkX in-mem, Memgraph)                                                                 | 1-2 weeks (build on demand) |
+| 4     | Remaining graph adapters as plug-ins (ArangoDB, NebulaGraph, Kuzu, NetworkX in-mem, Memgraph) -- **PARTIALLY SHIPPED 2026-05-20** (Memgraph + Kuzu + NetworkX shipped; ArangoDB + NebulaGraph + Ladybug deferred -- different query languages) | 1-2 weeks (build on demand) |
 | 5     | Vector adapters (pgvector, LanceDB, Weaviate, Milvus, Chroma)                                                                                                 | 2-3 weeks (build on demand) |
-| 6     | Cache adapters (redis, redis_compat, memcached, in_memory)                                                                                                    | 3 days                      |
-| 7     | Relational adapter for sqlite (testing / lean profile only)                                                                                                   | 2 days                      |
+| 6     | Cache adapters (redis, redis_compat, memcached, in_memory) -- **SHIPPED 2026-05-20** (memcached + in_memory both shipped; redis is a `valkey` alias)         | 3 days                      |
+| 7     | Relational adapter for sqlite (testing / lean profile only) -- **SHIPPED 2026-05-20**                                                                         | 2 days                      |
 | 8     | Documentation site (`docs/PROFILES.md` + per-adapter feature matrix)                                                                                          | 1 week                      |
 
 **Total: ~6-8 weeks** spread over 2-3 months alongside other work. Phases 2-3

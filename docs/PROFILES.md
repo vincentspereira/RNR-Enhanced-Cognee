@@ -1,6 +1,9 @@
 # Deployment Profiles
 
 **Status:** Phase 3 (Apache AGE + lean profile) shipped 2026-05-19.
+Phase 5 quick-win adapters (Memgraph / Kuzu / NetworkX-in-memory /
+Memcached / SQLite) shipped 2026-05-20. See "Provider matrix" below
+for the full set and the "Deferred" section for what's still pending.
 
 Enhanced Cognee ships four deployment **profiles** -- presets that pin
 the four `ENHANCED_*_PROVIDER` env vars to a coherent combination. They
@@ -125,6 +128,75 @@ Qdrant Cloud for vectors, etc.
 
 ---
 
+## Phase 5 adapter sub-sections
+
+### Memgraph adapter
+
+The Memgraph adapter is structurally identical to the ArcadeDB / Neo4j
+adapter (it's another Bolt-protocol target). Its default URI is
+`bolt://localhost:7687` (Memgraph's standard port; differs from our
+ArcadeDB host-port 27687). **Note on licence:** Memgraph is BSL 1.1
+with a 4-year delay to Apache-2.0, so it's not OSI-permissive *today*.
+Use only if your distribution model is OK with BSL.
+
+### Kuzu adapter
+
+Embedded -- runs in-process, no Docker container. Filesystem-backed
+via the `KUZU_DB_PATH` env var (default `./kuzu_data`). Cypher
+parameters are first-class. **No async session API** -- wrap
+`session.run()` in `asyncio.to_thread` at the call site if you need
+to interleave with async I/O. The adapter raises a clear
+`NotImplementedError` for `get_async_graph_driver()` on the `kuzu`
+provider.
+
+### NetworkX in-memory adapter -- supported query matrix
+
+Pure-Python BSD library. **Not a Cypher engine.** Only three query
+shapes are parsed; everything else raises `NotImplementedError`:
+
+| Cypher | Supported | Notes |
+| --- | --- | --- |
+| `RETURN <literal>` | ✅ | `RETURN 1` / `RETURN 'ok'` / `RETURN true` / `RETURN null` |
+| `MATCH (n) RETURN COUNT(n) [AS alias]` | ✅ | Returns the NX graph's `number_of_nodes()` |
+| `MATCH (n) DETACH DELETE n` | ✅ | Clears the graph in-place |
+| Parameterised queries (`$param`) | ❌ | Raises `NotImplementedError` |
+| Anything else | ❌ | Raises `NotImplementedError` with a pointer here |
+
+Suitable for: unit tests, the ping path in `bin/preflight.py`, and the
+"`lean` profile on a laptop where graph workload is tiny".
+
+### Memcached adapter -- supported method matrix
+
+The redis-shaped surface is necessarily narrow because memcached has
+no equivalent of pub/sub, sorted sets, or hash tables:
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `ping()` | ✅ | Maps to memcached's `version()` |
+| `get(key)` | ✅ |  |
+| `set(key, value, ex=ttl)` | ✅ |  |
+| `delete(*keys)` | ✅ |  |
+| `exists(*keys)` | ✅ | Implemented via `get()` since memcached has no native EXISTS |
+| `expire(key, seconds)` | ✅ | Maps to memcached's `touch()` |
+| `close()` | ✅ |  |
+| `keys(pattern)` | ❌ | Memcached intentionally has no key enumeration |
+| `flushdb()` | ❌ | Memcached's `flush_all()` wipes the *entire server*; not exposed under the redis name |
+| Pub/sub | ❌ | Memcached has none |
+
+### SQLite relational adapter -- compatibility caveats vs asyncpg
+
+| Concern | Impact |
+| --- | --- |
+| Array / JSONB / pgvector types | Not supported -- schemas relying on these won't run unmodified |
+| Parameter style | `?` placeholders (aiosqlite native), **not** asyncpg's `$1` / `$2`. Adapter does **not** translate query syntax |
+| Connection pool | Single connection per `acquire()` -- no pooling. SQLite's write lock bounds concurrency |
+| `database` kwarg | Used as the SQLite file path (defaults to `SQLITE_DB_PATH` env, then `POSTGRES_DB`, then `enhanced_cognee.db`). Pass `:memory:` for an ephemeral DB |
+
+**Use only for tests / lean profile.** Production workloads must
+pick `postgres`.
+
+---
+
 ## Apache AGE adapter -- supported query matrix
 
 `src/db_adapters/graph_apache_age.py` is a hand-rolled shim that wraps
@@ -206,22 +278,77 @@ just connect.
 
 ---
 
-## Provider × env-var quick reference
+## Provider matrix
 
-| Provider                              | Env vars consulted                                                                              |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `ENHANCED_RELATIONAL_PROVIDER=postgres` | `POSTGRES_HOST` / `POSTGRES_PORT` / `POSTGRES_DB` / `POSTGRES_USER` / `POSTGRES_PASSWORD`        |
-| `ENHANCED_VECTOR_PROVIDER=qdrant`       | `QDRANT_HOST` / `QDRANT_PORT` / `QDRANT_API_KEY`                                                |
-| `ENHANCED_GRAPH_PROVIDER=arcadedb`      | `ARCADEDB_URI` / `ARCADEDB_USER` / `ARCADEDB_PASSWORD` (defaults to root admin)                 |
-| `ENHANCED_GRAPH_PROVIDER=neo4j`         | `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD`                                                   |
-| `ENHANCED_GRAPH_PROVIDER=apache_age`    | `AGE_HOST` / `AGE_PORT` / `AGE_DB` / `AGE_USER` / `AGE_PASSWORD` / `AGE_GRAPH_NAME`             |
-|                                       | Falls through to `POSTGRES_*` for connection details.                                            |
-| `ENHANCED_CACHE_PROVIDER=valkey`        | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD`                                                  |
-| `ENHANCED_CACHE_PROVIDER=redis`         | Same as `valkey` (wire-compatible).                                                              |
-| `ENHANCED_CACHE_PROVIDER=in_memory`     | None -- pure in-process dict.                                                                    |
+Full set of providers wired into `src/db_factory.py` as of 2026-05-20.
+"Status" reflects whether the adapter is feature-complete; see the
+per-tier deep-dives below for query-matrix limitations.
 
-Legacy `*_BACKEND` aliases (`RELATIONAL_BACKEND` etc.) are still honoured
-at lower precedence than the canonical `ENHANCED_*_PROVIDER` names.
+### Relational tier (`ENHANCED_RELATIONAL_PROVIDER`)
+
+| Provider | Status | Optional dep | Env vars consulted |
+| --- | --- | --- | --- |
+| `postgres` (default) | ✅ full | core (`asyncpg`) | `POSTGRES_HOST` / `POSTGRES_PORT` / `POSTGRES_DB` / `POSTGRES_USER` / `POSTGRES_PASSWORD` |
+| `sqlite` | 🟡 partial -- testing / lean only | `[relational-sqlite]` (`aiosqlite`) | `SQLITE_DB_PATH` (falls back to `POSTGRES_DB`) |
+| ~~`mysql` / `oracle`~~ | 📋 not on roadmap |  |  |
+
+### Vector tier (`ENHANCED_VECTOR_PROVIDER`)
+
+| Provider | Status | Optional dep | Env vars consulted |
+| --- | --- | --- | --- |
+| `qdrant` (default) | ✅ full | core (`qdrant-client`) | `QDRANT_HOST` / `QDRANT_PORT` / `QDRANT_API_KEY` |
+| `pgvector` / `lancedb` / `weaviate` / `milvus` / `chroma` | 📋 deferred | -- | -- |
+
+> The vector tier's API surface (Qdrant's `QdrantClient`) is rich
+> (`get_collections` / `create_collection` / `upsert` / `search` / etc.).
+> An alternate provider would need to mimic that surface across all
+> call sites. Per HANDOVER §4 Phase 5: "Build these only when a paying
+> customer asks or you're already in that area."
+
+### Graph tier (`ENHANCED_GRAPH_PROVIDER`)
+
+| Provider | Status | Optional dep | Env vars consulted |
+| --- | --- | --- | --- |
+| `arcadedb` (default) | ✅ full | core (`neo4j`) | `ARCADEDB_URI` / `ARCADEDB_USER` / `ARCADEDB_PASSWORD` |
+| `neo4j` | ✅ full (legacy) | core (`neo4j`) | `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` |
+| `apache_age` | 🟡 narrow Cypher subset | core (`psycopg2`) | `AGE_HOST` / `AGE_PORT` / `AGE_DB` / `AGE_USER` / `AGE_PASSWORD` / `AGE_GRAPH_NAME` (falls through to `POSTGRES_*`) |
+| `memgraph` | ✅ full | `[graph-memgraph]` (reuses `neo4j`) | `MEMGRAPH_URI` / `MEMGRAPH_USER` / `MEMGRAPH_PASSWORD` |
+| `kuzu` | 🟡 sync-only | `[graph-kuzu]` | `KUZU_DB_PATH` |
+| `networkx_inmemory` | 🟡 narrow Cypher subset (testing only) | core (`networkx`) | -- |
+| `arangodb` / `nebulagraph` / `ladybug` | 📋 deferred -- different query languages | -- | -- |
+
+### Cache tier (`ENHANCED_CACHE_PROVIDER`)
+
+| Provider | Status | Optional dep | Env vars consulted |
+| --- | --- | --- | --- |
+| `valkey` (default) | ✅ full | core (`redis`) | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` |
+| `redis` | ✅ full (alias) | core (`redis`) | Same as `valkey` (wire-compatible). |
+| `in_memory` | 🟡 single-process only | none -- pure dict | -- |
+| `memcached` | 🟡 no `keys()` / `flushdb()` | `[cache-memcached]` (`pymemcache`) | `MEMCACHED_HOST` / `MEMCACHED_PORT` |
+
+### Status legend
+
+- ✅ **full** -- complete neo4j-driver / asyncpg / QdrantClient / redis surface, suitable for production
+- 🟡 **partial** -- works for a specific use case; see per-adapter sub-section below for the supported-query / API matrix
+- 📋 **deferred** -- not yet wired; raise an issue if you need it shipped now
+
+Legacy `*_BACKEND` aliases (`RELATIONAL_BACKEND` / `VECTOR_BACKEND` /
+`GRAPH_BACKEND` / `CACHE_BACKEND`) are still honoured at lower
+precedence than the canonical `ENHANCED_*_PROVIDER` names.
+
+### Optional-dep install
+
+To install only the adapters you actually use:
+
+```bash
+pip install "enhanced-cognee[graph-memgraph]"     # adds neo4j driver
+pip install "enhanced-cognee[graph-kuzu]"
+pip install "enhanced-cognee[graph-networkx]"
+pip install "enhanced-cognee[cache-memcached]"
+pip install "enhanced-cognee[relational-sqlite]"
+```
+
+Or all of them at once: `pip install "enhanced-cognee[graph-memgraph,graph-kuzu,graph-networkx,cache-memcached,relational-sqlite]"`.
 
 ---
 

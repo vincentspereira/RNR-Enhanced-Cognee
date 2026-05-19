@@ -120,7 +120,7 @@ class TestRelationalFactory:
 
     @pytest.mark.asyncio
     async def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_RELATIONAL_PROVIDER", "sqlite")
+        monkeypatch.setenv("ENHANCED_RELATIONAL_PROVIDER", "mysql")
         with pytest.raises(ValueError, match="ENHANCED_RELATIONAL_PROVIDER"):
             await db_factory.get_relational_pool()
 
@@ -317,12 +317,12 @@ class TestCacheFactory:
         assert type(client).__name__ == "_InMemoryAsyncClient"
 
     def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "memcached")
+        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "hazelcast")
         with pytest.raises(ValueError, match="ENHANCED_CACHE_PROVIDER"):
             db_factory.get_cache_client()
 
     def test_sync_unknown_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "memcached")
+        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "hazelcast")
         with pytest.raises(ValueError, match="ENHANCED_CACHE_PROVIDER"):
             db_factory.get_sync_cache_client()
 
