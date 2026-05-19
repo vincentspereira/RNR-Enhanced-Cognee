@@ -1,0 +1,82 @@
+# Enhanced Cognee - Alternative observability stack: HyperDX (MIT)
+#
+# This is the *alternative* to the primary SigNoz + Apache Superset stack
+# in docker-compose-monitoring.yml. Pick this one if you prefer
+# HyperDX's Kibana-style query-driven exploration UI over SigNoz's
+# APM-first layout.
+#
+# Both stacks are MIT at the application layer and 100% permissive at
+# the database tier we control (ClickHouse for HyperDX, ClickHouse for
+# SigNoz). The difference -- and the reason this is NOT the primary
+# choice:
+#
+#   ###############################################################
+#   #  HyperDX bundles MongoDB (SSPL) as its metadata store.       #
+#   #                                                              #
+#   #  SSPL is non-permissive. Self-hosting HyperDX is safe        #
+#   #  (you're not SaaS-providing MongoDB itself), but if you      #
+#   #  want strict end-to-end permissive licensing including the   #
+#   #  metadata layer, use the SigNoz stack instead.               #
+#   #                                                              #
+#   #  See STRATEGY.md section 5.2 "Alternative: HyperDX (MIT)"    #
+#   #  for the full rationale.                                     #
+#   ###############################################################
+#
+# Usage:
+#   docker compose -f docker-compose-monitoring-hyperdx.yml up -d
+#
+#   HyperDX UI:         http://localhost:8080
+#   Prometheus:         http://localhost:9090
+#
+# Point Enhanced Cognee at the OTel collector by exporting:
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+#
+# HyperDX exposes a single image (hyperdx/hyperdx-local) that bundles
+# ClickHouse + MongoDB + the HyperDX server in one container -- handy
+# for laptop use; less suitable for production. For a split deployment,
+# see https://github.com/hyperdxio/hyperdx for the multi-container
+# compose example.
+
+services:
+
+  # ---- Metrics scraper (shared with the SigNoz stack) ----------------------
+  prometheus:
+    image: prom/prometheus:latest         # Apache-2.0
+    container_name: cognee-monitoring-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ---- HyperDX all-in-one (MIT app + ClickHouse + MongoDB SSPL) -----------
+  # The all-in-one image is intentionally chosen for ease of evaluation.
+  # For production with split storage, run HyperDX's full compose example
+  # from https://github.com/hyperdxio/hyperdx.
+  hyperdx:
+    image: hyperdx/hyperdx-local:latest   # MIT (app) + ClickHouse Apache-2.0 + MongoDB SSPL
+    container_name: cognee-monitoring-hyperdx
+    restart: unless-stopped
+    ports:
+      - "8080:8080"     # HyperDX UI
+      - "4317:4317"     # OTLP gRPC ingest
+      - "4318:4318"     # OTLP HTTP ingest
+    volumes:
+      - hyperdx_data:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  prometheus_data:
+  hyperdx_data:
+
+networks:
+  default:
+    name: cognee-monitoring

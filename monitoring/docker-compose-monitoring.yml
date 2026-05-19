@@ -1,17 +1,49 @@
-# Optional monitoring stack for Enhanced Cognee.
-# Stand-alone compose file -- start AFTER the main stack is up.
+# Enhanced Cognee - Observability stack (Phase 4: SigNoz + Apache Superset)
 #
-# Brings up: Prometheus (metrics scraper), Grafana (dashboards), Loki (logs).
-# Per Q3 in PRODUCTION_READINESS_PLAN.md: this is a separate optional stack.
+# Replaces the previous Grafana + Loki + Tempo + Jaeger stack with a
+# 100% permissive (MIT + Apache-2.0) observability stack:
+#
+#   Prometheus   (Apache-2.0) - metrics scraping (kept from before)
+#   SigNoz       (MIT)        - logs + metrics + traces + APM + alerts +
+#                               LLM-observability, OTel-native
+#   ClickHouse   (Apache-2.0) - SigNoz's backing store
+#   Apache       (Apache-2.0) - BI / analytical dashboards over the
+#   Superset                    shared ClickHouse + Postgres
+#
+# Why this swap (STRATEGY.md DR-13 / HANDOVER section 4 Phase 4):
+#   * Removes the AGPL-3.0 components (Grafana / Loki / Tempo) from the
+#     default observability stack.
+#   * SigNoz is OTel-native -- our existing prometheus-client +
+#     opentelemetry-api/sdk instrumentation works unchanged.
+#   * Apache Superset adds analytical BI dashboards that Grafana never
+#     handled well.
 #
 # Usage:
 #   docker compose -f docker-compose-monitoring.yml up -d
-#   open http://localhost:3000 (Grafana, default login: admin / cognee_admin)
+#
+#   SigNoz frontend:    http://localhost:3301
+#   Apache Superset UI: http://localhost:8088   (admin / cognee_admin)
+#   Prometheus:         http://localhost:9090
+#
+# Point Enhanced Cognee at the OTel collector by exporting:
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317   (gRPC; default)
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318   (HTTP alternative)
+#
+# Hetzner CX22 sizing note: this stack is heavier than the previous
+# Grafana stack because ClickHouse + 5 SigNoz services replace what was
+# a 3-container Grafana stack. For 4 GB RAM hosts, consider:
+#   * SigNoz also offers an all-in-one Docker image that bundles its
+#     sub-services into one container -- swap signoz-{otel-collector,
+#     query-service,frontend,alertmanager} for the all-in-one image
+#     and the resident set drops to ~1 GB.
+#   * Or run observability on a separate small VPS and point this stack
+#     at the main Enhanced Cognee stack via the host network.
 
 services:
 
+  # ---- Metrics scraper (unchanged from previous stack) ---------------------
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:latest         # Apache-2.0
     container_name: cognee-monitoring-prometheus
     restart: unless-stopped
     ports:
@@ -33,58 +65,109 @@ services:
       timeout: 5s
       retries: 3
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: cognee-monitoring-grafana
+  # ---- SigNoz storage layer ------------------------------------------------
+  signoz-zookeeper:
+    image: bitnami/zookeeper:3.9          # Apache-2.0 (ClickHouse coordination)
+    container_name: cognee-monitoring-signoz-zookeeper
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: cognee_admin
-      GF_INSTALL_PLUGINS: grafana-piechart-panel
-      GF_AUTH_ANONYMOUS_ENABLED: "false"
-      GF_USERS_ALLOW_SIGN_UP: "false"
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_AUTOPURGE_INTERVAL: 1
     volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
-      - ./grafana-dashboard.json:/etc/grafana/provisioning/dashboards/cognee.json:ro
-      - ./grafana-dashboard-provider.yml:/etc/grafana/provisioning/dashboards/provider.yml:ro
+      - signoz_zookeeper_data:/bitnami/zookeeper
+
+  signoz-clickhouse:
+    image: clickhouse/clickhouse-server:25.3    # Apache-2.0
+    container_name: cognee-monitoring-signoz-clickhouse
+    restart: unless-stopped
     depends_on:
-      - prometheus
-      - loki
+      - signoz-zookeeper
+    volumes:
+      - signoz_clickhouse_data:/var/lib/clickhouse
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8123/ping"]
       interval: 30s
       timeout: 5s
       retries: 3
 
-  loki:
-    image: grafana/loki:latest
-    container_name: cognee-monitoring-loki
+  # ---- SigNoz services -----------------------------------------------------
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:latest    # MIT (collector) + Apache-2.0 (binary)
+    container_name: cognee-monitoring-signoz-otel-collector
+    restart: unless-stopped
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+    ports:
+      - "4317:4317"   # OTLP gRPC -- point OTEL_EXPORTER_OTLP_ENDPOINT here
+      - "4318:4318"   # OTLP HTTP
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  signoz-query-service:
+    image: signoz/query-service:latest    # MIT
+    container_name: cognee-monitoring-signoz-query-service
+    restart: unless-stopped
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+    environment:
+      ClickHouseUrl: tcp://signoz-clickhouse:9000
+      STORAGE: clickhouse
+
+  signoz-frontend:
+    image: signoz/frontend:latest         # MIT
+    container_name: cognee-monitoring-signoz-frontend
+    restart: unless-stopped
+    depends_on:
+      - signoz-query-service
+    ports:
+      - "3301:3301"                       # SigNoz UI: http://localhost:3301
+
+  signoz-alertmanager:
+    image: signoz/alertmanager:latest     # MIT (forked from Apache-2.0 Alertmanager)
+    container_name: cognee-monitoring-signoz-alertmanager
+    restart: unless-stopped
+    depends_on:
+      - signoz-query-service
+
+  # ---- BI / analytical dashboards ------------------------------------------
+  # Apache Superset reuses our main-stack Postgres for its metadata. The
+  # main stack must be up first (`docker compose -f
+  # docker/docker-compose-enhanced-cognee.yml up -d`); Superset bootstraps
+  # its own metadata schema inside cognee_db on first run.
+  superset:
+    image: apache/superset:latest         # Apache-2.0
+    container_name: cognee-monitoring-superset
     restart: unless-stopped
     ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
+      - "8088:8088"                       # Superset UI: http://localhost:8088
+    environment:
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:-changeme_use_a_real_secret_in_production}
+      DATABASE_URL: ${SUPERSET_DATABASE_URL:-postgresql+psycopg2://cognee_user:cognee_password@host.docker.internal:25432/cognee_db?options=-csearch_path=superset_metadata}
+      SUPERSET_LOAD_EXAMPLES: "no"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    # Dashboards exported as JSON are mounted read-only from the repo so
+    # they can be re-imported on a fresh Superset by running:
+    #   docker exec cognee-monitoring-superset \
+    #     superset import-dashboards -p /opt/cognee-dashboards/<file>.json
     volumes:
-      - loki_data:/loki
-
-  promtail:
-    image: grafana/promtail:latest
-    container_name: cognee-monitoring-promtail
-    restart: unless-stopped
-    volumes:
-      - ./promtail-config.yml:/etc/promtail/config.yml:ro
-      - /var/log:/var/log:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    command: -config.file=/etc/promtail/config.yml
-    depends_on:
-      - loki
+      - ./superset-dashboards:/opt/cognee-dashboards:ro
 
 volumes:
   prometheus_data:
-  grafana_data:
-  loki_data:
+  signoz_zookeeper_data:
+  signoz_clickhouse_data:
 
 networks:
   default:

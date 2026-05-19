@@ -24,7 +24,8 @@ below. The full component-by-component license list is in
 | Python pip deps (20+) | Apache/MIT/BSD/PSF | OK | OK | OK |
 | **ArcadeDB** (default since 2026-05-19) | Apache-2.0 | OK | OK | OK |
 | Neo4j Community (legacy alternative; `ENHANCED_GRAPH_PROVIDER=neo4j`) | GPLv3 | OK | **CAUTION** | OK |
-| **Grafana / Loki** (optional monitoring) | **AGPLv3** | OK | **CAUTION** | **CAUTION** |
+| **SigNoz + Apache Superset** (optional monitoring; default since 2026-05-19) | MIT + Apache-2.0 | OK | OK | OK |
+| ~~Grafana / Loki / Tempo~~ (removed Phase 4) | AGPLv3 | n/a | n/a | n/a |
 | **psycopg2** | LGPL | OK | OK | OK |
 
 ---
@@ -217,13 +218,33 @@ modifications closed-source.
 
 > **"Can I bundle Enhanced Cognee with my proprietary closed-source agent framework?"**
 
-Yes (see Scenario 5). Just don't bundle Neo4j JARs or Grafana binaries.
+Yes (see Scenario 5). After Phase 4 (2026-05-19) the entire default
+stack is permissive, so there's no GPL/AGPL component to *not* bundle.
+The only opt-in caveat is `ENHANCED_GRAPH_PROVIDER=neo4j` -- if a
+customer chooses it, the Scenario 3c Neo4j-GPLv3 considerations apply
+to *their* deployment.
 
 > **"What if I want to remove all GPL/AGPL components entirely?"**
 
-See `docs/operations/MULTI_TENANT_DESIGN.md` and the Neo4j-alternatives
-table in `LICENSE_AUDIT.md`. Apache AGE on PostgreSQL is the clean swap
-for Neo4j. VictoriaMetrics + VictoriaLogs replace Grafana + Loki.
+**The default already is.** Since Phase 2 (ArcadeDB replaced Neo4j) and
+Phase 4 (SigNoz + Apache Superset replaced Grafana + Loki + Tempo), the
+default `docker compose up` produces a 100% MIT + Apache-2.0
+deployment. Both the main 4-database stack and the optional
+observability stack are permissive end-to-end.
+
+The only way GPL/AGPL re-enters the picture is opt-in:
+
+- Setting `ENHANCED_GRAPH_PROVIDER=neo4j` re-adds Neo4j Community
+  (GPLv3) -- see Scenario 3c above.
+- Pulling the *removed-in-Phase-4* Grafana / Loki / Tempo stack out of
+  git history and running it instead of `monitoring/docker-compose-monitoring.yml`.
+
+Historical note (pre-Phase-4): the recommendation here used to be
+"Apache AGE on PostgreSQL replaces Neo4j; VictoriaMetrics +
+VictoriaLogs replace Grafana + Loki." That recommendation is
+superseded by the actual Phase 2 + Phase 4 ship. AGE remains available
+as a pluggable graph backend via `ENHANCED_GRAPH_PROVIDER=apache_age`
+(Phase 3); SigNoz now plays the role VictoriaMetrics was going to.
 
 > **"Do I need to publish my source code?"**
 
@@ -236,8 +257,12 @@ out of goodwill). Apache-2.0 has no source-disclosure requirement.
 
 - [ ] Decide which commercialisation scenario applies (1-5 above)
 - [ ] Verify NOTICE file is preserved and accurate
-- [ ] Confirm Neo4j is NOT bundled in your installer artefacts
-- [ ] Confirm Grafana / Loki are OPTIONAL and in a separate compose file
+- [ ] Confirm `ENHANCED_GRAPH_PROVIDER` is `arcadedb` (default) or
+      `apache_age` (lean profile) in shipped artefacts; opt-in to
+      `neo4j` only when a specific customer requires it
+- [ ] Confirm the monitoring stack you ship is the
+      `docker-compose-monitoring.yml` (SigNoz + Superset, MIT +
+      Apache-2.0), NOT the pre-Phase-4 Grafana/Loki/Tempo combination
 - [ ] Add your own copyright notice to any new files you add
 - [ ] Run `pip-licenses --format=markdown` to generate a current
       SBOM (Software Bill of Materials) and ship it with your product

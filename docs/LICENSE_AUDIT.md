@@ -4,8 +4,16 @@ Comprehensive review of every third-party component shipped with or runtime
 required by Enhanced Cognee. Goal: zero license risk for self-hosted personal
 or commercial use, including future monetisation.
 
-**Audit date:** 2026-05-18 (revised 2026-05-19 -- Phase 2 ArcadeDB swap)
+**Audit date:** 2026-05-18 (revised 2026-05-19 -- Phase 2 ArcadeDB swap + Phase 4 SigNoz/Superset swap)
 **Enhanced Cognee license:** Apache-2.0 (permissive, commercial-friendly)
+
+> **Status (after Phase 4 ship 2026-05-19):** the entire default
+> Enhanced Cognee deployment -- main 4-DB stack AND the optional
+> monitoring stack -- is 100% MIT + Apache-2.0 / permissive. The
+> previous Grafana / Loki / Tempo (AGPLv3) components have been
+> removed; Neo4j (GPLv3) is retained as an opt-in legacy alternative
+> behind `ENHANCED_GRAPH_PROVIDER=neo4j`. See `docs/PROFILES.md` and
+> `docs/MONITORING.md`.
 
 ## TL;DR
 
@@ -20,7 +28,9 @@ or commercial use, including future monetisation.
 | All Python pip packages | Various permissive (Apache/MIT/BSD/PSF) | YES | Keep (audited below) |
 | Docker | Apache-2.0 | YES | Keep |
 | Caddy | Apache-2.0 | YES | Keep |
-| Prometheus / Grafana / Loki | Apache-2.0 / AGPLv3 / AGPLv3 | Mixed | Document (optional stack; Phase 4 swap planned) |
+| Prometheus | Apache-2.0 | YES | Keep (optional monitoring stack) |
+| SigNoz / ClickHouse / Apache Superset (new in Phase 4) | MIT / Apache-2.0 / Apache-2.0 | YES | Default optional monitoring stack since 2026-05-19 |
+| ~~Grafana / Loki / Tempo / Jaeger~~ (removed Phase 4) | AGPLv3 / AGPLv3 / AGPLv3 / Apache-2.0 | n/a | Removed 2026-05-19 -- see docs/MONITORING.md migration steps |
 
 ## Detailed Database License Analysis
 

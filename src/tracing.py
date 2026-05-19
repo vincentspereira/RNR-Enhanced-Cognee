@@ -15,6 +15,23 @@ all span context managers are no-ops.
 
 ASCII-only: no Unicode in strings or log output.
 
+Endpoint
+--------
+Since Phase 4 (2026-05-19) the recommended OTLP receiver is the SigNoz
+collector that ships in ``monitoring/docker-compose-monitoring.yml``:
+
+  OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317   (gRPC; default)
+  OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318   (HTTP alternative)
+
+Traces land in SigNoz's ``Traces`` tab; metrics flow into Prometheus
+(already scraped) and are visible alongside in SigNoz. The HyperDX
+alternative compose (``docker-compose-monitoring-hyperdx.yml``) also
+listens on 4317/4318, so the same env var setting works for either.
+
+Pre-Phase-4 deployments that still point this at Jaeger (port 4317 on
+``jaeger-collector``) keep working -- OTLP is a wire-protocol contract,
+not a vendor lock-in.
+
 Environment variables
 ---------------------
   OTEL_EXPORTER_OTLP_ENDPOINT - gRPC or HTTP endpoint (enables tracing)
@@ -25,7 +42,7 @@ Usage
 -----
     from src.tracing import init_tracing, trace_tool
 
-    # At server startup
+    # At server startup -- pulls OTEL_EXPORTER_OTLP_ENDPOINT from env
     init_tracing()
 
     # In an MCP tool
