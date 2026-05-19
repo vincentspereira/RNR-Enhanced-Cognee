@@ -4,7 +4,7 @@ Comprehensive review of every third-party component shipped with or runtime
 required by Enhanced Cognee. Goal: zero license risk for self-hosted personal
 or commercial use, including future monetisation.
 
-**Audit date:** 2026-05-18
+**Audit date:** 2026-05-18 (revised 2026-05-19 -- Phase 2 ArcadeDB swap)
 **Enhanced Cognee license:** Apache-2.0 (permissive, commercial-friendly)
 
 ## TL;DR
@@ -13,13 +13,14 @@ or commercial use, including future monetisation.
 |---|---|---|---|
 | PostgreSQL + pgvector | PostgreSQL (BSD-like) | YES | Keep |
 | Qdrant | Apache-2.0 | YES | Keep |
-| Neo4j Community Edition | GPLv3 | **CONDITIONAL** | Document + offer alternatives |
+| **ArcadeDB** (new default 2026-05-19) | **Apache-2.0** | YES | **Replaced Neo4j as default** |
+| Neo4j Community Edition (legacy alternative) | GPLv3 | **CONDITIONAL** | Document; opt-in via `ENHANCED_GRAPH_PROVIDER=neo4j` |
 | **Redis** | **BSL/SSPL since 7.4, AGPLv3 since 8.0** | **NO — restrictive** | **REPLACED with Valkey 8 (Apache-2.0)** |
 | Python runtime | PSF License | YES | Keep |
 | All Python pip packages | Various permissive (Apache/MIT/BSD/PSF) | YES | Keep (audited below) |
 | Docker | Apache-2.0 | YES | Keep |
 | Caddy | Apache-2.0 | YES | Keep |
-| Prometheus / Grafana / Loki | Apache-2.0 / AGPLv3 / AGPLv3 | Mixed | Document (optional stack) |
+| Prometheus / Grafana / Loki | Apache-2.0 / AGPLv3 / AGPLv3 | Mixed | Document (optional stack; Phase 4 swap planned) |
 
 ## Detailed Database License Analysis
 
@@ -36,9 +37,23 @@ or commercial use, including future monetisation.
 - **Verdict:** Perfectly compatible. Same license as Enhanced Cognee. Commercial
   use unrestricted.
 
-### 3. Neo4j Community Edition — CONDITIONAL (low-risk for typical use)
+### 3. ArcadeDB — KEEP (default graph DB since 2026-05-19; Phase 2)
+
+- **License:** Apache-2.0
+- **Verdict:** Perfectly compatible. Commercial use unrestricted, no copyleft.
+  Replaced Neo4j Community as the default graph DB to remove the GPLv3
+  asterisk from the stack. Bolt-protocol-compatible with the existing
+  `neo4j` Python driver, so no code changes were required beyond the
+  Phase 1 factory routing.
+- **Migration guide:** [`docs/ARCADEDB_MIGRATION.md`](./ARCADEDB_MIGRATION.md).
+
+### 3b. Neo4j Community Edition — LEGACY ALTERNATIVE (opt-in)
 
 - **License:** GPLv3 (Community Edition); commercial license for Enterprise
+- **Status (since 2026-05-19):** No longer the default. Available via
+  `ENHANCED_GRAPH_PROVIDER=neo4j`. The compose file ships ArcadeDB; users
+  who opt in to Neo4j add the snippet from
+  [`docs/ARCADEDB_MIGRATION.md` §3.3](./ARCADEDB_MIGRATION.md#33-keep-using-neo4j-instead).
 - **The concern:** GPLv3 is copyleft. If you *distribute* Neo4j as part of your
   application binary or container image, you may need to release your own code
   under GPL-compatible terms.
@@ -55,9 +70,9 @@ or commercial use, including future monetisation.
   - Forking Neo4j source and shipping derivative code under a non-GPL license
   - Reselling Neo4j Community as if it were your own product
 
-**Verdict:** Safe for our deployment model. Documented in the new
-`docs/LICENSE_NEO4J_NOTES.md`. If you ever want to be 100% copyleft-free, see
-the Neo4j alternatives section below.
+**Verdict:** Safe for the network-service deployment model. Phase 2 removed
+this asterisk from the *default* stack -- users who keep Neo4j explicitly
+take on the conditional handling described above.
 
 ### 4. Redis — REPLACED with Valkey
 

@@ -141,7 +141,7 @@ if (-not $SkipDocker) {
 
     Write-Step "Waiting for services to become healthy (up to 60s)"
     $deadline = (Get-Date).AddSeconds(60)
-    $services = @("cognee-mcp-postgres", "cognee-mcp-qdrant", "cognee-mcp-neo4j", "cognee-mcp-valkey")
+    $services = @("postgres-enhanced-cognee", "qdrant-enhanced-cognee", "arcadedb-enhanced-cognee", "cognee-mcp-valkey")
     while ((Get-Date) -lt $deadline) {
         $allHealthy = $true
         foreach ($svc in $services) {
@@ -169,6 +169,9 @@ $mcpEntry = @{
     args = @((Join-Path $RepoRoot "bin\enhanced_cognee_mcp_server.py"))
     env = @{
         ENHANCED_COGNEE_MODE = "true"
+        # Phase 2: ArcadeDB is the default graph provider (Apache-2.0).
+        # Set ENHANCED_GRAPH_PROVIDER=neo4j to opt into legacy Neo4j.
+        ENHANCED_GRAPH_PROVIDER = "arcadedb"
         POSTGRES_HOST = "localhost"
         POSTGRES_PORT = "25432"
         POSTGRES_DB = "cognee_db"
@@ -176,8 +179,14 @@ $mcpEntry = @{
         POSTGRES_PASSWORD = "cognee_password"
         QDRANT_HOST = "localhost"
         QDRANT_PORT = "26333"
+        ARCADEDB_URI = "bolt://localhost:27687"
+        ARCADEDB_USER = "root"
+        ARCADEDB_PASSWORD = "cognee_password"
+        # NEO4J_* retained for backward compat with users still passing
+        # them explicitly. Same host:port as ArcadeDB Bolt so the legacy
+        # vars work unchanged after the swap.
         NEO4J_URI = "bolt://localhost:27687"
-        NEO4J_USER = "neo4j"
+        NEO4J_USER = "root"
         NEO4J_PASSWORD = "cognee_password"
         REDIS_HOST = "localhost"
         REDIS_PORT = "26379"

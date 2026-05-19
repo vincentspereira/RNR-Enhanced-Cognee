@@ -4,12 +4,13 @@ Reads ENHANCED_*_PROVIDER env vars and dispatches to the matching adapter
 under src/db_adapters/. Defaults preserve today's behaviour exactly
 (postgres / qdrant / neo4j / valkey).
 
-Phase 1 scope:
-    - get_relational_pool   ENHANCED_RELATIONAL_PROVIDER=postgres (default)
-    - get_vector_client     ENHANCED_VECTOR_PROVIDER=qdrant       (default)
-    - get_graph_driver      ENHANCED_GRAPH_PROVIDER=neo4j         (default;
-                             flips to arcadedb in Phase 2)
-    - get_cache_client      ENHANCED_CACHE_PROVIDER=valkey        (default)
+Phase 1 + 2 scope:
+    - get_relational_pool   ENHANCED_RELATIONAL_PROVIDER=postgres  (default)
+    - get_vector_client     ENHANCED_VECTOR_PROVIDER=qdrant        (default)
+    - get_graph_driver      ENHANCED_GRAPH_PROVIDER=arcadedb       (default
+                             since Phase 2; neo4j retained as pluggable
+                             alternative for legacy compat -- DR-11)
+    - get_cache_client      ENHANCED_CACHE_PROVIDER=valkey         (default)
 
 Legacy env-var aliases (kept for backwards compatibility, lower precedence
 than the canonical names): RELATIONAL_BACKEND, VECTOR_BACKEND,
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 _VALID_RELATIONAL = {"postgres", "postgresql"}
 _VALID_VECTOR = {"qdrant"}
-_VALID_GRAPH = {"neo4j"}
+_VALID_GRAPH = {"arcadedb", "neo4j"}
 _VALID_CACHE = {"valkey", "redis"}
 
 
@@ -83,10 +84,16 @@ def get_vector_client(**kwargs: Any):
 def get_graph_driver(**kwargs: Any):
     """Return a sync graph DB driver for the configured provider.
 
-    Default provider: neo4j (neo4j.Driver). Will flip to arcadedb in
-    Phase 2. The returned object exposes ``.session()`` and ``.close()``.
+    Default provider: arcadedb (Apache-2.0, Bolt-compatible with the neo4j
+    Python driver -- see ``docs/ARCADEDB_MIGRATION.md``). ``neo4j`` is
+    retained as a pluggable alternative for legacy compat (DR-11).
+    The returned object exposes ``.session()`` and ``.close()``.
     """
-    provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "neo4j")
+    provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "arcadedb")
+    if provider == "arcadedb":
+        from src.db_adapters import graph_arcadedb
+
+        return graph_arcadedb.create_driver(**kwargs)
     if provider == "neo4j":
         from src.db_adapters import graph_neo4j
 
@@ -100,9 +107,13 @@ def get_graph_driver(**kwargs: Any):
 def get_async_graph_driver(**kwargs: Any):
     """Return an async graph DB driver for the configured provider.
 
-    Default provider: neo4j (neo4j.AsyncDriver).
+    Default provider: arcadedb (Bolt via neo4j AsyncDriver).
     """
-    provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "neo4j")
+    provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "arcadedb")
+    if provider == "arcadedb":
+        from src.db_adapters import graph_arcadedb
+
+        return graph_arcadedb.create_async_driver(**kwargs)
     if provider == "neo4j":
         from src.db_adapters import graph_neo4j
 
@@ -159,6 +170,6 @@ def get_provider_summary() -> dict[str, str]:
             "ENHANCED_RELATIONAL_PROVIDER", "RELATIONAL_BACKEND", "postgres"
         ),
         "vector": _resolve("ENHANCED_VECTOR_PROVIDER", "VECTOR_BACKEND", "qdrant"),
-        "graph": _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "neo4j"),
+        "graph": _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "arcadedb"),
         "cache": _resolve("ENHANCED_CACHE_PROVIDER", "CACHE_BACKEND", "valkey"),
     }

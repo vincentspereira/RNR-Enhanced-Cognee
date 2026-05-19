@@ -18,6 +18,7 @@ from src import db_factory
 from src.db_adapters import (
     cache_redis,
     cache_valkey,
+    graph_arcadedb,
     graph_neo4j,
     relational_postgres,
     vector_qdrant,
@@ -66,7 +67,7 @@ class TestResolve:
         assert summary == {
             "relational": "postgres",
             "vector": "qdrant",
-            "graph": "neo4j",
+            "graph": "arcadedb",
             "cache": "valkey",
         }
 
@@ -172,10 +173,44 @@ class TestVectorFactory:
 
 
 class TestGraphFactory:
-    def test_neo4j_default(self, monkeypatch):
+    def test_arcadedb_default(self, monkeypatch):
+        """ArcadeDB is the default graph provider since Phase 2 (DR-11)."""
         monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
         monkeypatch.delenv("GRAPH_BACKEND", raising=False)
-        # Conftest sets NEO4J_* test values; clear so we see the true defaults
+        for var in ("ARCADEDB_URI", "ARCADEDB_USER", "ARCADEDB_PASSWORD"):
+            monkeypatch.delenv(var, raising=False)
+        mock_driver = MagicMock()
+        with patch(
+            "neo4j.GraphDatabase.driver", return_value=mock_driver
+        ) as drv:
+            result = db_factory.get_graph_driver()
+        assert result is mock_driver
+        args, kwargs = drv.call_args
+        assert args[0] == "bolt://localhost:27687"
+        # ArcadeDB defaults to root admin (not neo4j)
+        assert kwargs["auth"] == ("root", "cognee_password")
+
+    def test_arcadedb_explicit_args(self, monkeypatch):
+        monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
+        with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()) as drv:
+            db_factory.get_graph_driver(
+                uri="bolt://arcadedb:7000", user="u", password="p"
+            )
+        args, kwargs = drv.call_args
+        assert args[0] == "bolt://arcadedb:7000"
+        assert kwargs["auth"] == ("u", "p")
+
+    def test_async_arcadedb_default(self, monkeypatch):
+        monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
+        with patch(
+            "neo4j.AsyncGraphDatabase.driver", return_value=MagicMock()
+        ) as drv:
+            db_factory.get_async_graph_driver()
+        assert drv.called
+
+    def test_neo4j_pluggable(self, monkeypatch):
+        """Neo4j retained as a pluggable alternative for legacy compat."""
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "neo4j")
         for var in ("NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD"):
             monkeypatch.delenv(var, raising=False)
         mock_driver = MagicMock()
@@ -186,20 +221,11 @@ class TestGraphFactory:
         assert result is mock_driver
         args, kwargs = drv.call_args
         assert args[0] == "bolt://localhost:27687"
+        # Neo4j legacy adapter defaults to neo4j user
         assert kwargs["auth"] == ("neo4j", "cognee_password")
 
-    def test_neo4j_explicit_args(self, monkeypatch):
-        monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
-        with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()) as drv:
-            db_factory.get_graph_driver(
-                uri="bolt://elsewhere:7000", user="u", password="p"
-            )
-        args, kwargs = drv.call_args
-        assert args[0] == "bolt://elsewhere:7000"
-        assert kwargs["auth"] == ("u", "p")
-
-    def test_async_neo4j_default(self, monkeypatch):
-        monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
+    def test_async_neo4j_pluggable(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "neo4j")
         with patch(
             "neo4j.AsyncGraphDatabase.driver", return_value=MagicMock()
         ) as drv:
@@ -207,18 +233,19 @@ class TestGraphFactory:
         assert drv.called
 
     def test_legacy_env_var(self, monkeypatch):
+        """GRAPH_BACKEND legacy alias honoured at lower precedence."""
         monkeypatch.delenv("ENHANCED_GRAPH_PROVIDER", raising=False)
         monkeypatch.setenv("GRAPH_BACKEND", "neo4j")
         with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()):
             db_factory.get_graph_driver()
 
     def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arcadedb")
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_graph_driver()
 
     def test_unknown_provider_raises_async(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arcadedb")
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_async_graph_driver()
 
@@ -309,6 +336,34 @@ class TestAdapterEnvFallbacks:
             graph_neo4j.create_async_driver()
         args, _ = drv.call_args
         assert args[0] == "bolt://other:9999"
+
+    def test_arcadedb_env_fallback(self, monkeypatch):
+        monkeypatch.setenv("ARCADEDB_URI", "bolt://arc:9999")
+        monkeypatch.setenv("ARCADEDB_USER", "bob")
+        monkeypatch.setenv("ARCADEDB_PASSWORD", "shh")
+        with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()) as drv:
+            graph_arcadedb.create_driver()
+        args, kwargs = drv.call_args
+        assert args[0] == "bolt://arc:9999"
+        assert kwargs["auth"] == ("bob", "shh")
+
+    def test_async_arcadedb_env_fallback(self, monkeypatch):
+        monkeypatch.setenv("ARCADEDB_URI", "bolt://arc:9999")
+        with patch(
+            "neo4j.AsyncGraphDatabase.driver", return_value=MagicMock()
+        ) as drv:
+            graph_arcadedb.create_async_driver()
+        args, _ = drv.call_args
+        assert args[0] == "bolt://arc:9999"
+
+    def test_arcadedb_default_user_is_root(self, monkeypatch):
+        """ArcadeDB's built-in admin is root, not neo4j."""
+        for var in ("ARCADEDB_URI", "ARCADEDB_USER", "ARCADEDB_PASSWORD"):
+            monkeypatch.delenv(var, raising=False)
+        with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()) as drv:
+            graph_arcadedb.create_driver()
+        _, kwargs = drv.call_args
+        assert kwargs["auth"][0] == "root"
 
     def test_valkey_env_fallback(self, monkeypatch):
         monkeypatch.setenv("REDIS_HOST", "rhost")

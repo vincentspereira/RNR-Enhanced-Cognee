@@ -36,20 +36,21 @@ Enhanced Cognee is a fork of upstream `topoteretes/cognee` that adds:
 - Multi-language, GDPR, audit, undo/redo, encryption, importance scoring
 - 4,158 passing tests, 95% coverage, zero failures, zero skipped, zero warnings
 
-**License posture (current):** Apache-2.0 everywhere except Neo4j Community (GPLv3,
-used as a separate network service — no copyleft attaches to Enhanced Cognee code)
-and the *optional* monitoring stack (Grafana / Loki / Tempo are AGPLv3).
+**License posture (current, after Phase 2 ship 2026-05-19):** Apache-2.0 across
+the whole default stack (ArcadeDB replaced Neo4j as the default graph DB; Neo4j
+is retained as an opt-in alternative). The *optional* monitoring stack (Grafana
+/ Loki / Tempo) is still AGPLv3 -- swap planned in Phase 4 (item 4 below).
 
-**License posture (target, after items 2 and 4 below):** 100% permissive — ArcadeDB
-(Apache-2.0) replaces Neo4j; SigNoz (MIT) + Apache Superset (Apache-2.0) +
-Prometheus (Apache-2.0) replace Grafana + Loki + Tempo + Jaeger.
+**License posture (target, after item 4 below):** 100% permissive end-to-end --
+SigNoz (MIT) + Apache Superset (Apache-2.0) + Prometheus (Apache-2.0) replace
+Grafana + Loki + Tempo + Jaeger.
 
 **Recommended next moves (in priority order):**
 
 | #   | Action                                                                    | Effort    | Driver                                                                            |
 | --- | ------------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------- |
-| 1   | Ship Phase 1 pluggable DB plumbing (env var routing)                      | 1 week    | Removes lock-in, enables BYO infra for enterprise prospects                       |
-| 2   | Swap default graph DB Neo4j -> **ArcadeDB**                               | 1-2 weeks | Apache-2.0 multi-model engine, Cypher + Bolt drop-in                              |
+| 1   | Ship Phase 1 pluggable DB plumbing (env var routing) -- **SHIPPED 2026-05-19** | 1 week    | Removes lock-in, enables BYO infra for enterprise prospects                       |
+| 2   | Swap default graph DB Neo4j -> **ArcadeDB** -- **SHIPPED 2026-05-19**       | 1-2 weeks | Apache-2.0 multi-model engine, Cypher + Bolt drop-in                              |
 | 3   | Add **Apache AGE** as a pluggable graph option                            | 1 week    | Apache-2.0 Postgres extension; "one fewer container" path                         |
 | 4   | Replace Grafana + Loki + Tempo + Jaeger with **SigNoz (MIT) + Apache Superset (Apache-2.0)**; keep Prometheus | 1-2 weeks | Eliminates the AGPL-3.0 components in the optional monitoring stack; 100% permissive licensing |
 | 5   | Wire integration tests against live stack in CI                           | 3 hours   | Catches DB-driver regressions before main                                         |
@@ -169,11 +170,15 @@ to ship the validated 4-DB stack:
 ```
 PostgreSQL 18 + pgvector   (port 25432)
 Qdrant 1.12.0              (port 26333)
-ArcadeDB                   (port 27687)
+ArcadeDB latest            (port 27687 Bolt, 22480 Studio HTTP) -- default since Phase 2 ship 2026-05-19
 Valkey 8                   (port 26379)
 ```
 
-This guarantees zero regression for existing users.
+Neo4j Community is retained as an opt-in alternative
+(`ENHANCED_GRAPH_PROVIDER=neo4j`) for legacy users; see
+[`docs/ARCADEDB_MIGRATION.md`](./ARCADEDB_MIGRATION.md) for the swap details.
+This guarantees zero regression for existing users while removing GPLv3 from
+the default stack.
 
 #### Tier 2 — Env-var override
 
@@ -653,7 +658,7 @@ Full long-form list in [`OUTSTANDING_ITEMS.md`](./OUTSTANDING_ITEMS.md).
 | ---- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1    | CI hardening                       | Live integration + e2e tests in CI; branch protection done; SBOM step added.                                                                               |
 | 2    | Phase 1 plumbing                   | `src/db_factory.py` + env-var routing for all 4 DB tiers; no functional change.                                                                            |
-| 3-4  | **ArcadeDB swap (new default)**    | `arcadedb` provider working end-to-end; Bolt drop-in for existing Neo4j paths; docker-compose updated; passing all integration tests; benchmarks vs Neo4j. |
+| 3-4  | **ArcadeDB swap (new default)** -- **SHIPPED 2026-05-19** | `arcadedb` provider working end-to-end; Bolt drop-in for existing Neo4j paths; docker-compose updated; passing all integration tests; benchmarks vs Neo4j. See `docs/ARCADEDB_MIGRATION.md`. |
 | 5    | **SigNoz + Apache Superset observability swap** | SigNoz (MIT) replaces Grafana+Loki+Tempo+Jaeger; Apache Superset (Apache-2.0) added for BI dashboards; Prometheus kept; APM dashboards migrate into SigNoz, custom dashboards into Superset; `init_tracing()` points at SigNoz OTLP endpoint (4317). |
 | 6    | **Apache AGE pluggable adapter**   | `apache_age` provider working; `lean` profile (one-container Postgres-only setup) shipped.                                                                 |
 | 7-8  | MAS integration sprint             | MAS reads/writes Enhanced Cognee memories; auth wiring; agent-ID mapping.                                                                                  |
@@ -681,7 +686,7 @@ alongside other work.
 | DR-08 | Pluggable DB backends via env vars (gradual, Tier 1/2/3)                                                                                                 | 2026-05-19           | Default unchanged; new providers opt-in; minimises regression risk.                                                                                                                   |
 | DR-09 | Apache-2.0 license for all Enhanced Cognee code                                                                                                          | 2025-Q4              | Maximally permissive; aligned with upstream and Python ecosystem norms.                                                                                                               |
 | DR-10 | ASCII-only output rule                                                                                                                                   | 2025-Q4              | Windows cp1252 console support; enforced via pre-commit hook.                                                                                                                         |
-| DR-11 | **ArcadeDB becomes new default graph DB; Apache AGE + Neo4j + ArangoDB + NebulaGraph + Kuzu + NetworkX + Memgraph + Ladybug + TigerGraph are pluggable** | 2026-05-19 (revised) | ArcadeDB's Cypher + Bolt compatibility = near-zero code change from current Neo4j paths; multi-model future-proofs the engine choice. AGE retained for "lean" Postgres-only profiles. |
+| DR-11 | **ArcadeDB becomes new default graph DB; Apache AGE + Neo4j + ArangoDB + NebulaGraph + Kuzu + NetworkX + Memgraph + Ladybug + TigerGraph are pluggable** -- **SHIPPED 2026-05-19** | 2026-05-19 (revised); shipped 2026-05-19 | ArcadeDB's Cypher + Bolt compatibility = near-zero code change from current Neo4j paths; multi-model future-proofs the engine choice. AGE retained for "lean" Postgres-only profiles. Phase 2 implementation in PR #20: `src/db_adapters/graph_arcadedb.py` + factory default flip + docker-compose swap; see `docs/ARCADEDB_MIGRATION.md`. |
 | DR-12 | ~~OpenObserve replaces Grafana + Loki + Tempo + Prometheus + Jaeger~~ **SUPERSEDED by DR-13**                                                            | 2026-05-19           | Original same-day recommendation; superseded because OpenObserve is AGPL-3.0 (same risk profile as Grafana + Loki + Tempo today), so the swap didn't actually improve licence posture. |
 | DR-13 | **SigNoz (MIT) + Apache Superset (Apache-2.0) replace Grafana + Loki + Tempo + Jaeger; Prometheus kept**                                                  | 2026-05-19 (revised) | 100% permissive observability stack (MIT + Apache-2.0); SigNoz handles APM / traces / logs / metrics / alerts / LLM observability natively; Apache Superset adds BI-style analytical dashboards over the shared ClickHouse store; Jaeger removed (SigNoz ingests OTel traces directly). HyperDX (MIT) documented as alternative with MongoDB-SSPL caveat. |
 

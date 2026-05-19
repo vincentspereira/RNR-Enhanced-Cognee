@@ -120,11 +120,12 @@ Enhanced Cognee Memory Stack
 │   ├── High-performance vector database
 │   ├── Semantic search capabilities
 │   └── Memory embeddings storage
-├── Neo4j (Port 27687) - Updated port
-│   ├── Graph database for relationships
+├── ArcadeDB (Port 27687 Bolt, 22480 Studio HTTP) - Apache-2.0
+│   ├── Multi-model graph database (was Neo4j; Phase 2 default)
+│   ├── openCypher + Bolt (drop-in for neo4j Python driver)
 │   ├── Knowledge graph management
-│   └── Entity relationship mapping
-├── Redis (Port 26379)
+│   └── Set ENHANCED_GRAPH_PROVIDER=neo4j to opt back into Neo4j
+├── Valkey (Port 26379) - Apache-2.0 (was Redis)
 │   ├── High-speed caching layer
 │   ├── Real-time memory access
 │   └── Session management

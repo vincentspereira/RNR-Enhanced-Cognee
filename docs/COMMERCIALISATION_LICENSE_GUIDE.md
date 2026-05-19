@@ -22,7 +22,8 @@ below. The full component-by-component license list is in
 | Qdrant | Apache-2.0 | OK | OK | OK |
 | Caddy | Apache-2.0 | OK | OK | OK |
 | Python pip deps (20+) | Apache/MIT/BSD/PSF | OK | OK | OK |
-| **Neo4j Community** | **GPLv3** | OK | **CAUTION** | OK |
+| **ArcadeDB** (default since 2026-05-19) | Apache-2.0 | OK | OK | OK |
+| Neo4j Community (legacy alternative; `ENHANCED_GRAPH_PROVIDER=neo4j`) | GPLv3 | OK | **CAUTION** | OK |
 | **Grafana / Loki** (optional monitoring) | **AGPLv3** | OK | **CAUTION** | **CAUTION** |
 | **psycopg2** | LGPL | OK | OK | OK |
 
@@ -53,53 +54,59 @@ binaries occurs.
 
 ## Scenario 3: You distribute Enhanced Cognee as a packaged product (e.g., a "MAS Enterprise Edition" tarball that customers install on their machines)
 
-**This is where Neo4j GPLv3 gets nuanced.** Three sub-scenarios:
+**Status (since 2026-05-19, Phase 2):** ArcadeDB (Apache-2.0) replaced Neo4j
+as the default graph DB. The default packaged product is now copyleft-free for
+the database tier. The Neo4j-GPLv3 caveat only applies if a customer
+explicitly opts in via `ENHANCED_GRAPH_PROVIDER=neo4j`.
 
-### 3a. You ship Docker Compose only, customers pull their own Neo4j image
+### 3a. Ship the default stack (ArcadeDB-based)
 
-**Safe.** You are not redistributing Neo4j; the customer's Docker pulls it
-from neo4j/neo4j-community on Docker Hub at install time. You're providing
-configuration only, which is your own Apache-2.0 code. This is the same
-model as "we recommend you install Postgres" — no copyleft attaches to your
-config.
+**Safe by default.** ArcadeDB is Apache-2.0, can be bundled or pulled at
+install time, and is the default in
+`docker/docker-compose-enhanced-cognee.yml`. No copyleft attaches to any of
+the four containers (PostgreSQL + Qdrant + ArcadeDB + Valkey).
 
-**Action:** Ship the Docker Compose file unchanged. Document that Neo4j is
-GPLv3 and customers should review.
+**Action:** Ship the default Compose file. Document that switching graph
+providers (e.g. to Neo4j) carries the customer's own licence considerations.
 
-### 3b. You bundle Neo4j JARs in your installer
+### 3b. A customer chooses to switch to Neo4j
 
-**Triggers GPLv3 obligations.** If your tarball contains `neo4j-community.jar`
-or you build a Docker image FROM neo4j:5.x and ship that image, you are now
-distributing GPL software. You must:
-- Offer corresponding source code (or written offer for it).
-- License your own code that DIRECTLY LINKS to Neo4j Java APIs under GPL.
-  (The Bolt protocol wire connection does NOT constitute linking; only
-   loading Neo4j's Java code into your JVM does.)
+**Triggers the legacy Neo4j-GPLv3 considerations** (see Section 3c below).
+This is now a customer-driven choice rather than a default, so the GPL
+exposure only applies when explicitly opted into.
 
-**Mitigation:** Don't bundle Neo4j JARs. Use the Docker Compose pull pattern
-(3a) or switch to a non-copyleft alternative (3c).
+**Action:** Point them at [`docs/ARCADEDB_MIGRATION.md` §3.3](./ARCADEDB_MIGRATION.md#33-keep-using-neo4j-instead)
+for the opt-in compose snippet, and ensure they understand they're now in
+the Scenario 3c territory below.
 
-### 3c. Switch from Neo4j to Apache AGE on PostgreSQL
+### 3c. (Historical / opt-in) Neo4j GPLv3 considerations
 
-**Best long-term answer.** Apache AGE is an extension to PostgreSQL that adds
-Cypher query support. Same query language as Neo4j, runs inside our existing
-PostgreSQL container, **Apache-2.0 license**. Removes one of the four
-containers.
+This subsection applied universally before Phase 2 shipped (when Neo4j was
+the default). It still applies to customers who opt in to
+`ENHANCED_GRAPH_PROVIDER=neo4j`.
 
-**Pros:**
-- 100% Apache-2.0 stack throughout
-- One fewer container to operate
-- One fewer port to expose
-- Cypher queries are largely portable
+**Safe configurations:**
+- **Ship Docker Compose only, customers pull their own Neo4j image.** You're
+  not redistributing Neo4j; the customer's Docker pulls it from
+  neo4j/neo4j-community on Docker Hub at install time. You're providing
+  configuration only.
+- **Connect via the Bolt network protocol** -- no copyleft obligation.
 
-**Cons:**
-- AGE is less battle-tested than Neo4j for very-large graphs (millions of nodes)
-- Some Neo4j-specific Cypher extensions (APOC procedures) don't have AGE equivalents
-- ~ 2-4 weeks of integration work to port `src/agent_memory_integration.py`
+**Triggers GPLv3 obligations:**
+- Bundling `neo4j-community.jar` in your installer or building a Docker image
+  FROM neo4j:5.x and shipping that image. You'd then have to offer
+  corresponding source and license code that loads Neo4j Java APIs under GPL.
 
-**Recommendation:** Build this when (a) you have a paying customer that
-requires pure-Apache compliance, or (b) you're already touching the graph
-layer for another reason. Don't do it speculatively.
+**Mitigation:** Stay on the default ArcadeDB stack, or use the Docker Compose
+pull pattern if you need Neo4j.
+
+### 3d. Apache AGE as a pluggable alternative (Phase 3)
+
+Apache AGE remains a pluggable graph backend for users who want a
+Postgres-only deployment (no separate Java container at all). It is shipping
+as `ENHANCED_GRAPH_PROVIDER=apache_age` in Phase 3 -- not yet wired but
+documented in [`STRATEGY.md` §4.2](./STRATEGY.md#42-recommended-new-default-arcadedb-revised-2026-05-19)
+and [HANDOVER §4 Phase 3](./HANDOVER.md).
 
 ---
 

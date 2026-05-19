@@ -108,7 +108,7 @@ cd Enhanced-Cognee
 Both installers are idempotent and:
 - Detect Python 3.11+
 - Create `.venv` and use `uv` (~20x faster than pip)
-- Bring up the 4-database Docker stack (PostgreSQL + Qdrant + Neo4j + Valkey)
+- Bring up the 4-database Docker stack (PostgreSQL + Qdrant + ArcadeDB + Valkey)
 - Register the MCP server in `~/.claude.json`
 
 Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKSTART.md).
@@ -128,9 +128,9 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 | Feature                         | Original Cognee            | Claude-Mem                                | **Enhanced Cognee**                               |
 | ------------------------------- | -------------------------- | ----------------------------------------- | ------------------------------------------------- |
 | **Primary Use Case**            | AI agent memory platform   | Claude Code session memory                | Enterprise multi-agent memory                     |
-| **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + Neo4j + Valkey**           |
+| **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + ArcadeDB + Valkey**       |
 | **Vector Search**               | Optional (LanceDB, Qdrant) | ChromaDB (optional)                       | **Qdrant (built-in)**                             |
-| **Graph Database**              | Neo4j, Kuzu, Neptune       | None                                      | **Neo4j (primary)**                               |
+| **Graph Database**              | Neo4j, Kuzu, Neptune       | None                                      | **ArcadeDB (default, Apache-2.0); Neo4j pluggable** |
 | **Caching Layer**               | FsCache                    | None                                      | **Valkey 8 (Apache-2.0, Redis-compatible)**                           |
 | **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                          |
 | **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                                |
@@ -146,7 +146,7 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 | **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                          |
 | **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)** |
 | **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                                       |
-| **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | Neo4j Browser separate                            |
+| **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | ArcadeDB Studio at localhost:22480                |
 | **Memory Hierarchy**            | Flat                       | **Structured observations**               | **EAV observations (entity-attribute-value)**     |
 | **Scalability**                 | Single machine             | Single machine                            | **Distributed architecture**                      |
 | **Concurrent Agents**           | Limited                    | Not applicable                            | **100+ agents**                                   |
@@ -776,7 +776,7 @@ flowchart LR
     subgraph DB["Database Layer"]
         PG[(PostgreSQL<br/>Port 25432)]
         QD[(Qdrant<br/>Port 26333)]
-        N4[(Neo4j<br/>Port 27687)]
+        N4[(ArcadeDB<br/>Port 27687)]
         RD[(Valkey 8<br/>Port 26379)]
     end
 
@@ -840,10 +840,11 @@ Enhanced Cognee Memory Stack
 │   ├── HNSW indexing
 │   ├── Duplicate detection
 │   └── Filtered searches
-├── Neo4j (Port 27687)
+├── ArcadeDB (Port 27687, Apache-2.0; was Neo4j)
 │   ├── Knowledge graph
 │   ├── Relationship mapping
-│   └── Cypher query language
+│   ├── openCypher query language (Bolt-compatible)
+│   └── Multi-model: also supports document / vector / time-series
 ├── Valkey (Port 26379, Apache-2.0; was Redis)
 │   ├── Caching layer
 │   ├── Real-time pub/sub (agent coordination)
@@ -1038,11 +1039,13 @@ docker ps | grep enhanced
 Expected output:
 
 ```
-postgres-enhanced   Up   0.0.0.0:25432->5432/tcp
-qdrant-enhanced     Up   0.0.0.0:26333->6333/tcp
-neo4j-enhanced      Up   0.0.0.0:27474->7474/tcp, 0.0.0.0:27687->7687/tcp
-valkey-enhanced     Up   0.0.0.0:26379->6379/tcp
+postgres-enhanced-cognee   Up   0.0.0.0:25432->5432/tcp
+qdrant-enhanced-cognee     Up   0.0.0.0:26333->6333/tcp
+arcadedb-enhanced-cognee   Up   0.0.0.0:22480->2480/tcp, 0.0.0.0:27687->7687/tcp
+cognee-mcp-valkey          Up   0.0.0.0:26379->6379/tcp
 ```
+(Set `ENHANCED_GRAPH_PROVIDER=neo4j` to opt back into Neo4j; see
+[`docs/ARCADEDB_MIGRATION.md`](docs/ARCADEDB_MIGRATION.md).)
 
 ### Option 2: Clone and Install (Manual)
 
@@ -1098,13 +1101,13 @@ You should see:
 ```
 ==================================================================
          Enhanced Cognee MCP Server - Enhanced Stack
-    PostgreSQL+pgVector | Qdrant | Neo4j | Valkey
+    PostgreSQL+pgVector | Qdrant | ArcadeDB | Valkey
 ==================================================================
 
 OK Initializing Enhanced Cognee stack...
 OK PostgreSQL connected
 OK Qdrant connected (5 collections)
-OK Neo4j connected
+OK ArcadeDB connected
 OK Valkey connected
 OK Memory Manager initialized
 OK Memory Deduplicator initialized
@@ -2157,13 +2160,13 @@ Any category name, any prefix.
 
 Enhanced Cognee uses non-standard ports to avoid conflicts:
 
-| Service    | Default Port | Enhanced Port |
-| ---------- | ------------ | ------------- |
-| PostgreSQL | 5432         | **25432**     |
-| Qdrant     | 6333         | **26333**     |
-| Neo4j Bolt | 7687         | **27687**     |
-| Neo4j HTTP | 7474         | **27474**     |
-| Valkey     | 6379         | **26379**     |
+| Service             | Default Port | Enhanced Port |
+| ------------------- | ------------ | ------------- |
+| PostgreSQL          | 5432         | **25432**     |
+| Qdrant              | 6333         | **26333**     |
+| ArcadeDB Bolt       | 7687         | **27687**     |
+| ArcadeDB Studio HTTP| 2480         | **22480**     |
+| Valkey              | 6379         | **26379**     |
 
 ### Environment Variables
 

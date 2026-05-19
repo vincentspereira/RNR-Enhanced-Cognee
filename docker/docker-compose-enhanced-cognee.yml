@@ -2,7 +2,10 @@ version: '3.8'
 
 # Enhanced Cognee Memory Stack - Production Configuration
 # Replaces default Cognee stack with enterprise-grade components
-# Components: PostgreSQL+pgVector, Qdrant, Neo4j, Redis, Enhanced Cognee
+# Components: PostgreSQL+pgVector, Qdrant, ArcadeDB, Valkey, Enhanced Cognee
+#
+# Graph DB default since Phase 2: ArcadeDB (Apache-2.0, openCypher + Bolt
+# drop-in for Neo4j). To run with Neo4j instead, see docs/ARCADEDB_MIGRATION.md.
 
 networks:
   cognee-network:
@@ -22,6 +25,12 @@ volumes:
   postgres_data:
     driver: local
   qdrant_storage:
+    driver: local
+  # ArcadeDB persistent storage (Phase 2 default).
+  # Legacy neo4j_* volumes retained so users who set
+  # ENHANCED_GRAPH_PROVIDER=neo4j can still mount their existing data; the
+  # arcadedb service below uses arcadedb_data only.
+  arcadedb_data:
     driver: local
   neo4j_data:
     driver: local
@@ -107,29 +116,31 @@ services:
       timeout: 10s
       retries: 3
 
-  # Neo4j - Enhanced Graph Database (replaces Kuzu)
-  neo4j:
-    image: neo4j:5.25-community
-    container_name: neo4j-enhanced-cognee
+  # ArcadeDB - Enhanced Graph Database (Phase 2 default; Apache-2.0)
+  # Multi-model (graph + document + KV + vector + time-series) with native
+  # openCypher and Bolt protocol -- drop-in for our existing neo4j Python
+  # driver paths via the ENHANCED_GRAPH_PROVIDER=arcadedb factory route.
+  # See docs/ARCADEDB_MIGRATION.md for the migration story.
+  arcadedb:
+    image: arcadedata/arcadedb:latest
+    container_name: arcadedb-enhanced-cognee
     environment:
-      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-cognee_password}
-      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
-      # NEO4J_dbms_default__database: cognee_graph
-      NEO4J_dbms_server_config_strict_validation_enabled: false
-      NEO4J_dbms_security_procedures_unrestricted: apoc.*
-      NEO4J_dbms_memory_heap_initial_size: 1G
-      NEO4J_dbms_memory_heap_max_size: 2G
-      NEO4J_dbms_memory_pagecache_size: 1G
-      NEO4J_dbms_default_listen_address: 0.0.0.0
-      NEO4J_dbms_connector_bolt_listen_address: 0.0.0.0:7687
-      NEO4J_dbms_connector_http_listen_address: 0.0.0.0:7474
+      # ArcadeDB server tuning + Bolt plugin enablement.
+      # Default admin user is root; password matches NEO4J_PASSWORD for an
+      # easy migration (existing creds keep working when the URI stays at
+      # bolt://localhost:27687).
+      JAVA_OPTS: >-
+        -Darcadedb.server.rootPassword=${NEO4J_PASSWORD:-cognee_password}
+        -Darcadedb.server.defaultDatabases=cognee_graph[root]
+        -Darcadedb.server.plugins=Bolt:com.arcadedb.bolt.BoltPlugin
+        -Darcadedb.bolt.host=0.0.0.0
+        -Darcadedb.bolt.port=7687
+        -Darcadedb.server.httpHost=0.0.0.0
     volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-      - neo4j_import:/var/lib/neo4j/import
+      - arcadedb_data:/home/arcadedb/databases
     ports:
-      - "27474:7474"  # HTTP (changed to avoid conflict)
-      - "27687:7687"  # Bolt (changed to avoid conflict)
+      - "22480:2480"  # Studio HTTP (was 27474 for Neo4j browser)
+      - "27687:7687"  # Bolt (kept on 27687 host port -- drop-in for Neo4j)
     networks:
       - cognee-network
     deploy:
@@ -144,7 +155,7 @@ services:
           memory: 1G
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474/browser/ || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:2480/api/v1/ready || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -200,11 +211,20 @@ services:
       QDRANT_API_KEY: ${QDRANT_API_KEY:-}
       QDRANT_COLLECTION_PREFIX: "cognee_"
 
-      # Neo4j Configuration (replaces Kuzu)
-      NEO4J_URI: bolt://neo4j:7687
-      NEO4J_USER: neo4j
+      # Graph DB Configuration -- ArcadeDB is the default since Phase 2.
+      # Set ENHANCED_GRAPH_PROVIDER=neo4j (and add a neo4j service block) to
+      # opt back into Neo4j; see docs/ARCADEDB_MIGRATION.md.
+      ENHANCED_GRAPH_PROVIDER: arcadedb
+      ARCADEDB_URI: bolt://arcadedb:7687
+      ARCADEDB_USER: root
+      ARCADEDB_PASSWORD: ${NEO4J_PASSWORD:-cognee_password}
+
+      # Legacy Neo4j env vars retained so callers still passing them
+      # explicitly (NEO4J_URI / NEO4J_USER / NEO4J_PASSWORD) keep working.
+      NEO4J_URI: bolt://arcadedb:7687
+      NEO4J_USER: root
       NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cognee_password}
-      NEO4J_DATABASE: neo4j
+      NEO4J_DATABASE: cognee_graph
 
       # Redis Configuration (new cache layer)
       REDIS_HOST: redis
@@ -253,7 +273,7 @@ services:
         condition: service_healthy
       qdrant:
         condition: service_healthy
-      neo4j:
+      arcadedb:
         condition: service_healthy
       redis:
         condition: service_healthy
