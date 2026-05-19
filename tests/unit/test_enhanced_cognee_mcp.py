@@ -940,7 +940,7 @@ class TestDBInitMethods:
         from src.enhanced_cognee_mcp import EnhancedCogneeMCPServer
         srv = EnhancedCogneeMCPServer()
         mock_qc = _make_qdrant_client()
-        with patch("src.enhanced_cognee_mcp.QdrantClient", return_value=mock_qc):
+        with patch("qdrant_client.QdrantClient", return_value=mock_qc):
             await srv._init_qdrant()
         assert srv.qdrant_client is mock_qc
 
@@ -948,7 +948,7 @@ class TestDBInitMethods:
     async def test_init_qdrant_raises_on_error(self):
         from src.enhanced_cognee_mcp import EnhancedCogneeMCPServer
         srv = EnhancedCogneeMCPServer()
-        with patch("src.enhanced_cognee_mcp.QdrantClient", side_effect=RuntimeError("no qdrant")):
+        with patch("qdrant_client.QdrantClient", side_effect=RuntimeError("no qdrant")):
             with pytest.raises(RuntimeError):
                 await srv._init_qdrant()
 
@@ -957,7 +957,7 @@ class TestDBInitMethods:
         from src.enhanced_cognee_mcp import EnhancedCogneeMCPServer
         srv = EnhancedCogneeMCPServer()
         mock_driver = _make_neo4j_driver()
-        with patch("src.enhanced_cognee_mcp.GraphDatabase.driver", return_value=mock_driver):
+        with patch("neo4j.GraphDatabase.driver", return_value=mock_driver):
             await srv._init_neo4j()
         assert srv.neo4j_driver is mock_driver
 
@@ -965,7 +965,7 @@ class TestDBInitMethods:
     async def test_init_neo4j_raises_on_error(self):
         from src.enhanced_cognee_mcp import EnhancedCogneeMCPServer
         srv = EnhancedCogneeMCPServer()
-        with patch("src.enhanced_cognee_mcp.GraphDatabase.driver",
+        with patch("neo4j.GraphDatabase.driver",
                    side_effect=RuntimeError("no neo4j")):
             with pytest.raises(RuntimeError):
                 await srv._init_neo4j()

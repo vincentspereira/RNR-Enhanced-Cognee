@@ -443,11 +443,12 @@ class RecoveryManager:
                         data = json.load(f)
 
                 # Import data using Cypher
-                from neo4j import GraphDatabase
+                from src.db_factory import get_graph_driver
 
-                driver = GraphDatabase.driver(
-                    config["uri"],
-                    auth=(config["user"], config["password"])
+                driver = get_graph_driver(
+                    uri=config["uri"],
+                    user=config["user"],
+                    password=config["password"],
                 )
 
                 with driver.session() as session:
@@ -659,15 +660,15 @@ class RecoveryManager:
     def _validate_qdrant(self) -> Dict[str, Any]:
         """Validate Qdrant data."""
         try:
-            from qdrant_client import QdrantClient
+            from src.db_factory import get_vector_client
 
             config = self.config["qdrant"]
 
             # Connect to Qdrant
-            client = QdrantClient(
+            client = get_vector_client(
                 host=config["host"],
                 port=int(config["port"]),
-                api_key=config.get("api_key") or None
+                api_key=config.get("api_key") or None,
             )
 
             # Get collections
@@ -690,14 +691,15 @@ class RecoveryManager:
     def _validate_neo4j(self) -> Dict[str, Any]:
         """Validate Neo4j data."""
         try:
-            from neo4j import GraphDatabase
+            from src.db_factory import get_graph_driver
 
             config = self.config["neo4j"]
 
             # Connect to Neo4j
-            driver = GraphDatabase.driver(
-                config["uri"],
-                auth=(config["user"], config["password"])
+            driver = get_graph_driver(
+                uri=config["uri"],
+                user=config["user"],
+                password=config["password"],
             )
 
             with driver.session() as session:
@@ -730,16 +732,16 @@ class RecoveryManager:
     def _validate_redis(self) -> Dict[str, Any]:
         """Validate Redis data."""
         try:
-            import redis
+            from src.db_factory import get_sync_cache_client
 
             config = self.config["redis"]
 
             # Connect to Redis
-            r = redis.Redis(
+            r = get_sync_cache_client(
                 host=config["host"],
                 port=int(config["port"]),
                 password=config.get("password") or None,
-                decode_responses=True
+                decode_responses=True,
             )
 
             # Ping Redis

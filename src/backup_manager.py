@@ -381,11 +381,12 @@ class BackupManager:
                 logger.warning(f"Docker backup failed, trying Cypher export: {e}")
 
             # Fallback: Cypher query to export data
-            from neo4j import GraphDatabase
+            from src.db_factory import get_graph_driver
 
-            driver = GraphDatabase.driver(
-                config["uri"],
-                auth=(config["user"], config["password"])
+            driver = get_graph_driver(
+                uri=config["uri"],
+                user=config["user"],
+                password=config["password"],
             )
 
             with driver.session() as session:

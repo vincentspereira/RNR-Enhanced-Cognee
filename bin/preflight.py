@@ -214,8 +214,9 @@ class PreflightChecker:
         print("Checking Qdrant...")
 
         try:
-            from qdrant_client import QdrantClient
             from qdrant_client.http.exceptions import UnexpectedResponse
+
+            from src.db_factory import get_vector_client
 
             # Load connection details from .env
             env = self._load_env()
@@ -223,7 +224,7 @@ class PreflightChecker:
             port = int(env.get("QDRANT_PORT", "26333"))
 
             # Test connection
-            client = QdrantClient(host=host, port=port, timeout=5)
+            client = get_vector_client(host=host, port=port, timeout=5)
             collections = client.get_collections()
 
             print(f"  OK Qdrant connected")
@@ -240,7 +241,7 @@ class PreflightChecker:
         print("Checking Neo4j...")
 
         try:
-            from neo4j import AsyncGraphDatabase
+            from src.db_factory import get_async_graph_driver
 
             # Load connection details from .env
             env = self._load_env()
@@ -249,7 +250,7 @@ class PreflightChecker:
             password = env.get("NEO4J_PASSWORD", "")
 
             # Test connection
-            driver = AsyncGraphDatabase.driver(uri, auth=(user, password))
+            driver = get_async_graph_driver(uri=uri, user=user, password=password)
             async with driver.session() as session:
                 result = await session.run("RETURN 1 AS test")
                 value = await result.single()
@@ -268,7 +269,7 @@ class PreflightChecker:
         print("Checking Redis...")
 
         try:
-            import redis.asyncio as redis
+            from src.db_factory import get_cache_client
 
             # Load connection details from .env
             env = self._load_env()
@@ -277,10 +278,12 @@ class PreflightChecker:
             password = env.get("REDIS_PASSWORD", "")
 
             # Test connection
-            if password:
-                client = redis.Redis(host=host, port=port, password=password, decode_responses=True)
-            else:
-                client = redis.Redis(host=host, port=port, decode_responses=True)
+            client = get_cache_client(
+                host=host,
+                port=port,
+                password=password if password else None,
+                decode_responses=True,
+            )
 
             await client.ping()
             await client.close()

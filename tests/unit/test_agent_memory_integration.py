@@ -314,11 +314,10 @@ class TestInitialize:
         with (
             patch("src.agent_memory_integration.get_config_manager", return_value=cm),
             patch("asyncpg.create_pool", new=AsyncMock(return_value=mock_pool)),
-            patch("src.agent_memory_integration.QdrantClient", return_value=mock_qdrant),
-            patch("src.agent_memory_integration.GraphDatabase") as mock_gdb,
+            patch("qdrant_client.QdrantClient", return_value=mock_qdrant),
+            patch("neo4j.GraphDatabase.driver", return_value=mock_neo4j),
             patch("redis.asyncio.Redis", return_value=mock_redis),
         ):
-            mock_gdb.driver = MagicMock(return_value=mock_neo4j)
             integration = AgentMemoryIntegration(config_manager=cm)
             integration.postgres_pool = None  # reset so initialize runs fully
 

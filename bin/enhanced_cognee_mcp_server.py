@@ -305,48 +305,23 @@ async def init_enhanced_stack():
 
     logger.info("Initializing Enhanced Cognee stack...")
 
-    # Phase 7 - 12.1: Backend selection via environment variables (pluggable backends)
-    _vector_backend = os.getenv("VECTOR_BACKEND", "qdrant").lower()
-    _graph_backend = os.getenv("GRAPH_BACKEND", "neo4j").lower()
-    _relational_backend = os.getenv("RELATIONAL_BACKEND", "postgresql").lower()
-    _cache_backend = os.getenv("CACHE_BACKEND", "redis").lower()
-    logger.info(
-        f"Backend selection: vector={_vector_backend}, graph={_graph_backend}, "
-        f"relational={_relational_backend}, cache={_cache_backend}"
+    from src.db_factory import (
+        get_cache_client,
+        get_graph_driver,
+        get_provider_summary,
+        get_relational_pool,
+        get_vector_client,
     )
-    if _vector_backend not in ("qdrant",):
-        logger.warning(
-            f"VECTOR_BACKEND={_vector_backend!r} is not yet supported; "
-            f"falling back to qdrant"
-        )
-    if _graph_backend not in ("neo4j",):
-        logger.warning(
-            f"GRAPH_BACKEND={_graph_backend!r} is not yet supported; "
-            f"falling back to neo4j"
-        )
-    if _relational_backend not in ("postgresql",):
-        logger.warning(
-            f"RELATIONAL_BACKEND={_relational_backend!r} is not yet supported; "
-            f"falling back to postgresql"
-        )
-    if _cache_backend not in ("redis",):
-        logger.warning(
-            f"CACHE_BACKEND={_cache_backend!r} is not yet supported; "
-            f"falling back to redis"
-        )
+
+    summary = get_provider_summary()
+    logger.info(
+        "Backend selection: vector=%s, graph=%s, relational=%s, cache=%s",
+        summary["vector"], summary["graph"], summary["relational"], summary["cache"],
+    )
 
     # PostgreSQL
     try:
-        import asyncpg
-        postgres_pool = await asyncpg.create_pool(
-            host=os.getenv("POSTGRES_HOST", "localhost"),
-            port=int(os.getenv("POSTGRES_PORT", "25432")),
-            database=os.getenv("POSTGRES_DB", "cognee_db"),
-            user=os.getenv("POSTGRES_USER", "cognee_user"),
-            password=os.getenv("POSTGRES_PASSWORD", "cognee_password"),
-            min_size=2,
-            max_size=10
-        )
+        postgres_pool = await get_relational_pool(min_size=2, max_size=10)
         async with postgres_pool.acquire() as conn:
             await conn.fetchval('SELECT 1')
         logger.info("OK PostgreSQL connected")
@@ -355,15 +330,9 @@ async def init_enhanced_stack():
 
     # Qdrant
     try:
-        from qdrant_client import QdrantClient
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            qdrant_client = QdrantClient(
-                url=f"http://{os.getenv('QDRANT_HOST', 'localhost')}:{os.getenv('QDRANT_PORT', '26333')}",
-                api_key=os.getenv("QDRANT_API_KEY"),
-                check_compatibility=False
-            )
+        qdrant_client = get_vector_client(
+            url=f"http://{os.getenv('QDRANT_HOST', 'localhost')}:{os.getenv('QDRANT_PORT', '26333')}",
+        )
         collections = qdrant_client.get_collections()
         logger.info(f"OK Qdrant connected ({len(collections.collections)} collections)")
     except Exception as e:
@@ -371,29 +340,16 @@ async def init_enhanced_stack():
 
     # Neo4j
     try:
-        from neo4j import GraphDatabase
-        neo4j_driver = GraphDatabase.driver(
-            os.getenv("NEO4J_URI", "bolt://localhost:27687"),
-            auth=(
-                os.getenv("NEO4J_USER", "neo4j"),
-                os.getenv("NEO4J_PASSWORD", "cognee_password")
-            )
-        )
+        neo4j_driver = get_graph_driver()
         with neo4j_driver.session() as session:
             session.run("RETURN 1")
         logger.info("OK Neo4j connected")
     except Exception as e:
         logger.warning(f"Neo4j connection failed: {e}")
 
-    # Redis
+    # Redis / Valkey
     try:
-        import redis.asyncio as aioredis
-        redis_client = await aioredis.Redis(
-            host=os.getenv("REDIS_HOST", "localhost"),
-            port=int(os.getenv("REDIS_PORT", "26379")),
-            password=os.getenv("REDIS_PASSWORD"),
-            decode_responses=True
-        )
+        redis_client = get_cache_client()
         await redis_client.ping()
         logger.info("OK Redis connected")
     except Exception as e:

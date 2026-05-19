@@ -24,6 +24,13 @@ import redis.asyncio as redis
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+from src.db_factory import (
+    get_cache_client,
+    get_graph_driver,
+    get_relational_pool,
+    get_vector_client,
+)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -155,14 +162,14 @@ class EnhancedCogneeMCPServer:
     async def _init_postgresql(self):
         """Initialize PostgreSQL connection (replaces SQLite)"""
         try:
-            self.postgres_pool = await asyncpg.create_pool(
+            self.postgres_pool = await get_relational_pool(
                 host=config.postgres_host,
                 port=config.postgres_port,
                 database=config.postgres_db,
                 user=config.postgres_user,
                 password=config.postgres_password,
                 min_size=5,
-                max_size=20
+                max_size=20,
             )
             logger.info("PostgreSQL connection established")
         except Exception as e:
@@ -172,10 +179,10 @@ class EnhancedCogneeMCPServer:
     async def _init_qdrant(self):
         """Initialize Qdrant client (replaces LanceDB)"""
         try:
-            self.qdrant_client = QdrantClient(
+            self.qdrant_client = get_vector_client(
                 host=config.qdrant_host,
                 port=config.qdrant_port,
-                api_key=config.qdrant_api_key
+                api_key=config.qdrant_api_key,
             )
 
             # Test connection
@@ -188,9 +195,10 @@ class EnhancedCogneeMCPServer:
     async def _init_neo4j(self):
         """Initialize Neo4j driver (replaces Kuzu)"""
         try:
-            self.neo4j_driver = GraphDatabase.driver(
-                config.neo4j_uri,
-                auth=(config.neo4j_user, config.neo4j_password)
+            self.neo4j_driver = get_graph_driver(
+                uri=config.neo4j_uri,
+                user=config.neo4j_user,
+                password=config.neo4j_password,
             )
 
             # Test connection
@@ -206,12 +214,12 @@ class EnhancedCogneeMCPServer:
     async def _init_redis(self):
         """Initialize Redis client (new cache layer)"""
         try:
-            self.redis_client = redis.Redis(
+            self.redis_client = get_cache_client(
                 host=config.redis_host,
                 port=config.redis_port,
                 password=config.redis_password,
                 db=config.redis_db,
-                decode_responses=True
+                decode_responses=True,
             )
 
             # Test connection

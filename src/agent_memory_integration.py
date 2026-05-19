@@ -23,6 +23,13 @@ from neo4j import GraphDatabase, Driver
 import redis.asyncio as redis
 import numpy as np
 
+from src.db_factory import (
+    get_cache_client,
+    get_graph_driver,
+    get_relational_pool,
+    get_vector_client,
+)
+
 # Import dynamic memory configuration system
 from src.memory_config import (
     MemoryConfigManager,
@@ -157,24 +164,24 @@ class AgentMemoryIntegration:
         """Initialize connections to Enhanced stack components"""
         try:
             # Initialize PostgreSQL (Enhanced relational database)
-            self.postgres_pool = await asyncpg.create_pool(
+            self.postgres_pool = await get_relational_pool(
                 host=self.postgres_host,
                 port=self.postgres_port,
                 database=self.postgres_db,
                 user=self.postgres_user,
                 password=self.postgres_password,
                 min_size=5,
-                max_size=20
+                max_size=20,
             )
             logger.info("PostgreSQL connection established")
 
             # Initialize Qdrant (Enhanced vector database)
-            self.qdrant_client = QdrantClient(
+            self.qdrant_client = get_vector_client(
                 host=self.qdrant_host,
                 port=self.qdrant_port,
                 api_key=self.qdrant_api_key,
                 prefer_grpc=False,
-                check_compatibility=False  # Suppress version compatibility warning
+                check_compatibility=False,
             )
 
             # Test Qdrant connection
@@ -182,9 +189,10 @@ class AgentMemoryIntegration:
             logger.info(f"Qdrant connection established. Collections: {len(collections.collections)}")
 
             # Initialize Neo4j (Enhanced graph database)
-            self.neo4j_driver = GraphDatabase.driver(
-                self.neo4j_uri,
-                auth=(self.neo4j_user, self.neo4j_password)
+            self.neo4j_driver = get_graph_driver(
+                uri=self.neo4j_uri,
+                user=self.neo4j_user,
+                password=self.neo4j_password,
             )
 
             # Test Neo4j connection
@@ -194,11 +202,11 @@ class AgentMemoryIntegration:
             logger.info("Neo4j connection established")
 
             # Initialize Redis (Cache layer)
-            self.redis_client = redis.Redis(
+            self.redis_client = get_cache_client(
                 host=self.redis_host,
                 port=self.redis_port,
                 password=self.redis_password,
-                decode_responses=True
+                decode_responses=True,
             )
 
             # Test Redis connection
