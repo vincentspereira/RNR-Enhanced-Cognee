@@ -44,13 +44,14 @@ separate network service — no copyleft attaches to Enhanced Cognee code) and t
 | # | Action                                              | Effort       | Driver                                                     |
 | - | --------------------------------------------------- | ------------ | ---------------------------------------------------------- |
 | 1 | Ship Phase 1 pluggable DB plumbing (env var routing)| 1 week       | Removes lock-in, enables BYO infra for enterprise prospects|
-| 2 | Add **Apache AGE** as a graph-DB option             | 1-2 weeks    | Eliminates the only GPLv3 component in our default stack   |
-| 3 | Wire integration tests against live stack in CI     | 3 hours      | Catches DB-driver regressions before main                  |
-| 4 | MAS integration sprint                              | 1-2 weeks    | Delivers user-facing value                                 |
-| 5 | Consider **ArcadeDB** as the secondary graph option | 1-2 weeks    | Customers wanting a fast dedicated graph DB without GPL    |
-| 6 | Switch monitoring docs to recommend **SigNoz** + **VictoriaLogs** as Apache-2.0 alternative to Grafana + Loki | 1 week | Pure-Apache observability story for compliance-strict orgs |
+| 2 | Swap default graph DB Neo4j -> **ArcadeDB**          | 1-2 weeks    | Apache-2.0 multi-model engine, Cypher + Bolt drop-in       |
+| 3 | Add **Apache AGE** as a pluggable graph option       | 1 week       | Apache-2.0 Postgres extension; "one fewer container" path  |
+| 4 | Replace Grafana + Loki + Tempo + Prometheus + Jaeger with **OpenObserve** | 1 week | Single binary, ~5x simpler ops; AGPL-3.0 (same risk as Grafana, but consolidated) |
+| 5 | Wire integration tests against live stack in CI     | 3 hours      | Catches DB-driver regressions before main                  |
+| 6 | MAS integration sprint                              | 1-2 weeks    | Delivers user-facing value                                 |
+| 7 | Document SigNoz (MIT) as pure-Apache fallback for OpenObserve | 2 hours | For customers needing zero-AGPL distribution               |
 
-Items 1-3 are essentially mandatory before commercial sale. Items 4-6 are
+Items 1-5 are essentially mandatory before commercial sale. Items 6-7 are
 strongly recommended for any customer-facing release.
 
 ---
@@ -179,15 +180,19 @@ ENHANCED_RELATIONAL_PROVIDER=postgres   # default; alternative: sqlite (testing/
 ENHANCED_VECTOR_PROVIDER=qdrant         # default; alternatives: pgvector, lancedb,
                                         # weaviate, milvus, chroma
 
-# Graph - new default proposed below
-ENHANCED_GRAPH_PROVIDER=apache_age      # NEW DEFAULT (Apache-2.0, runs in Postgres)
-                                        # alternatives: arcadedb (Apache-2.0, dedicated),
-                                        # neo4j (GPLv3, for compatibility),
-                                        # memgraph (BSL, drop-in for Neo4j),
-                                        # kuzu (MIT, embedded),
-                                        # networkx_inmemory (testing only),
-                                        # nebulagraph (Apache, large-scale),
-                                        # arangodb (Apache, multi-model)
+# Graph - new default (revised 2026-05-19 per maintainer decision)
+ENHANCED_GRAPH_PROVIDER=arcadedb        # NEW DEFAULT (Apache-2.0, multi-model with
+                                        # Cypher + Bolt = Neo4j drop-in compatibility)
+                                        # alternatives:
+                                        #   neo4j               (GPLv3, kept for legacy compat)
+                                        #   apache_age          (Apache-2.0, Postgres extension)
+                                        #   arangodb            (Apache-2.0, multi-model, AQL)
+                                        #   nebulagraph         (Apache-2.0, distributed at scale)
+                                        #   kuzu                (MIT, embedded)
+                                        #   networkx_inmemory   (BSD, testing / "lean" profile only)
+                                        #   memgraph            (BSL 1.1, drop-in for Neo4j)
+                                        #   tigergraph          (proprietary free tier)
+                                        #   ladybug             (Apache-2.0, upstream Cognee default)
 
 # Cache
 ENHANCED_CACHE_PROVIDER=valkey          # default; alternatives: redis,
@@ -212,55 +217,75 @@ ENHANCED_PROFILE=byo          # all providers read from env vars; no Docker
 Each profile is a YAML file in `deploy/profiles/`. The installer asks which
 profile, sets env vars, optionally brings up matching containers.
 
-### 4.2 Recommended new default: **Apache AGE** over ArcadeDB
+### 4.2 Recommended new default: **ArcadeDB** (revised 2026-05-19)
 
-> The user asked for a recommendation between **ArcadeDB** and **Apache AGE**
-> as the new default graph backend, with the other made available alongside Neo4j.
+> **Revised decision** per maintainer direction (2026-05-19): the new default
+> graph DB is **ArcadeDB**, not Apache AGE. Apache AGE remains a pluggable
+> alternative alongside Neo4j and the others.
 
-**Recommendation: Apache AGE becomes the new default. ArcadeDB and Neo4j are pluggable.**
+**Recommendation: ArcadeDB becomes the new default. Apache AGE, Neo4j, ArangoDB,
+NebulaGraph, Kuzu, NetworkX, Memgraph, TigerGraph, Ladybug are pluggable.**
 
-#### Why Apache AGE wins as default
+#### Why ArcadeDB wins as default
 
-| Criterion                  | Apache AGE                                | ArcadeDB                              |
-| -------------------------- | ----------------------------------------- | ------------------------------------- |
-| License                    | Apache-2.0 (clean)                        | Apache-2.0 (clean)                    |
-| Governance                 | Apache top-level project (since 2023)     | Single vendor (Arcade Data SRL)       |
-| Container footprint        | **0** — runs inside existing Postgres     | 1 dedicated container                 |
-| Operational complexity     | **Lower** — reuse Postgres ops (backup/HA/monitoring) | Separate ops tooling          |
-| Maturity                   | v1.5.0 (2024); proven Postgres engine     | v23+; production but newer ecosystem  |
-| Cypher dialect             | openCypher (full standard subset)         | Full Cypher + Bolt protocol           |
-| Performance (our scale)    | Fine for memory-store workloads           | Faster for traversal-heavy queries    |
-| Community size             | Smaller graph community, huge Postgres community | Smaller dedicated community     |
-| Bolt compatibility         | No (Postgres protocol)                    | Yes (drop-in Neo4j driver)            |
-| Best for                   | Memory store, moderate graph              | Pure graph workload, high scale       |
+| Criterion                  | ArcadeDB                                  | Apache AGE                                |
+| -------------------------- | ----------------------------------------- | ----------------------------------------- |
+| License                    | Apache-2.0 (clean, "Open Source Forever") | Apache-2.0 (clean)                        |
+| Cypher compatibility       | **Full openCypher + native Bolt protocol**| openCypher (subset)                       |
+| Drop-in for Neo4j drivers  | **Yes** (Bolt-compatible)                 | No (Postgres wire only)                   |
+| Multi-model                | **Graph + Document + KV + Time-series + Search + Vector + Geospatial** | Graph only |
+| Multi-protocol             | **HTTP, Bolt, Postgres wire, Redis, MongoDB drivers** | Postgres wire only        |
+| Maturity                   | v26.5.1 (May 2026), 54 releases, 6,316 commits | v1.5.0 (2024); ASF top-level since 2023 |
+| Performance                | Fast across all models; production-grade  | Adequate for memory-store; slower for traversal-heavy |
+| Operational footprint      | 1 dedicated container; Java 21+ runtime   | 0 — runs inside existing Postgres         |
+| Migration cost from Neo4j  | **Minimal — Cypher + Bolt drop-in**        | Some Cypher dialect cleanup; Bolt -> Postgres wire | 
+| Best for                   | Production memory store + future flexibility | Pure-Postgres minimalist deployments    |
 
-**Decision logic:** Enhanced Cognee is a memory store, not a graph analytics
-platform. Our graph queries are small (find related memories, traverse
-provenance chains, knowledge-graph compaction). Apache AGE's slightly slower
-traversal vs ArcadeDB is irrelevant; its operational simplicity
-(one-less-container, leverages Postgres tooling we already operate) and
-Apache governance stability matter more.
+**Decision logic:** ArcadeDB's full Cypher + Bolt compatibility means we can
+swap Neo4j for ArcadeDB with **near-zero code changes** to the existing
+`agent_memory_integration.py` Neo4j paths. We retain operational independence
+(graph workload doesn't compete with Postgres for resources). The multi-model
+support is a strategic plus — future features (time-series memory access
+patterns, vector ops alongside graph, document overlays) can be served by the
+same engine, reducing future container count rather than adding to it.
 
-ArcadeDB earns the **secondary slot** for customers with:
-- Million-edge knowledge graphs where AGE feels slow
-- Existing Neo4j Bolt clients that want drop-in compatibility
-- Preference for a dedicated graph engine
+Apache AGE earns the **first pluggable slot** for customers wanting to
+eliminate a container and run pure-Postgres:
+- "One-container" minimalist deployments
+- Organisations standardising on Postgres-only operations tooling
+- Cases where graph workload is genuinely small (< 100k nodes)
 
-Neo4j stays as a **third option** for organizations with existing Neo4j
-infrastructure or Cypher codebases relying on APOC procedures.
+Neo4j stays as a **second pluggable option** for organizations with:
+- Existing Neo4j infrastructure or Cypher codebases relying on APOC procedures
+- Legacy compatibility requirements
+- Familiarity / training investment in Neo4j ecosystem
 
-### 4.3 Implementation phases (effort estimates)
+#### Acknowledged tradeoffs of ArcadeDB
+
+- **Smaller community than Neo4j**: 885 GitHub stars (May 2026) vs Neo4j's
+  100M+ Docker pulls. Documentation and third-party tutorials are sparser.
+- **Java 21+ runtime**: adds JVM operational overhead vs a Postgres-only stack.
+  Mitigated by using the official Docker image (`arcadedata/arcadedb`).
+- **Newer in production**: less battle-tested at extreme scale than Neo4j.
+  Acceptable for our memory-store workload (10k–10M nodes typical).
+- **Single-vendor governance**: Arcade Data SRL maintains the project.
+  Mitigated by Apache-2.0 licensing — forkable if vendor disappears.
+
+### 4.3 Implementation phases (effort estimates, revised 2026-05-19)
 
 | Phase | Scope                                                                  | Effort       |
 | ----- | ---------------------------------------------------------------------- | ------------ |
 | 1     | Env-var routing plumbing (`src/db_factory.py` + audit hard-coded imports)| 1 week     |
-| 2     | Apache AGE adapter + integration tests + `apache_only` profile         | 1-2 weeks    |
-| 3     | ArcadeDB adapter (drop-in via Bolt, mostly free)                        | 3-5 days     |
-| 4     | `lean` profile (pgvector + networkx_inmemory + in_memory_cache)         | 3 days       |
-| 5     | Remaining vector adapters (LanceDB, Weaviate, Milvus, Chroma)           | 2-3 weeks    |
-| 6     | Documentation site (`docs/PROFILES.md` + per-adapter feature matrix)    | 1 week       |
+| 2     | **ArcadeDB adapter** as new default (Bolt drop-in for current Neo4j paths) + integration tests + container image swap in `docker-compose-enhanced-cognee.yml` | 1-2 weeks |
+| 3     | Apache AGE pluggable adapter + `lean` profile (one-container Postgres-only setup) | 1 week    |
+| 4     | Remaining graph adapters as plug-ins (ArangoDB, NebulaGraph, Kuzu, NetworkX in-mem, Memgraph) | 1-2 weeks (build on demand) |
+| 5     | Vector adapters (pgvector, LanceDB, Weaviate, Milvus, Chroma)           | 2-3 weeks (build on demand) |
+| 6     | Cache adapters (redis, redis_compat, memcached, in_memory)              | 3 days       |
+| 7     | Relational adapter for sqlite (testing / lean profile only)             | 2 days       |
+| 8     | Documentation site (`docs/PROFILES.md` + per-adapter feature matrix)    | 1 week       |
 
-**Total: ~6-8 weeks** spread over 2-3 months alongside other work.
+**Total: ~6-8 weeks** spread over 2-3 months alongside other work. Phases 2-3
+are the critical path; phases 4-8 are demand-driven.
 
 ### 4.4 Backwards compatibility guarantee
 
@@ -282,8 +307,8 @@ Neo4j users keep working without changes; we simply update the installer's
 | Investor / acquirer diligence on architecture flexibility        | Internal use only                            |
 | You're already touching the DB layer for another reason          | Focused on other features                    |
 
-Concretely: **Phase 1 + Phase 2 (Apache AGE) before MAS goes to paying customers**.
-Phases 3-6 on demand.
+Concretely: **Phase 1 + Phase 2 (ArcadeDB default) + Phase 3 (Apache AGE pluggable)
+before MAS goes to paying customers**. Phases 4-8 on demand.
 
 For the full rationale, see [`PLUGGABLE_DB_BACKENDS.md`](./PLUGGABLE_DB_BACKENDS.md).
 
@@ -319,94 +344,108 @@ We need:
 - Adequate performance for 10k-1M node graphs (typical agent-memory scale)
 - Operational maturity (backup, monitoring, version upgrades)
 
-#### Final ranking
+#### Final ranking (revised 2026-05-19)
 
 | Rank | Option        | Recommendation                                                                                  |
 | ---- | ------------- | ----------------------------------------------------------------------------------------------- |
-| 1    | **Apache AGE** | **New default.** Apache-2.0, runs in Postgres, openCypher, fewer containers.                  |
-| 2    | **ArcadeDB**  | **Secondary pluggable.** Apache-2.0, dedicated graph engine, full Cypher + Bolt.                |
-| 3    | Neo4j CE      | **Third pluggable (kept for compatibility).** GPLv3 but field-proven, APOC ecosystem.           |
-| 4    | Kuzu          | Optional pluggable for embedded / single-process deployments.                                   |
-| 5    | NetworkX      | Optional pluggable for tests and "lean" profile (no persistence).                               |
-| 6    | NebulaGraph   | Document but don't ship adapter; nGQL rewrite cost vs. value not justified yet.                 |
-| 7    | ArangoDB      | Document but skip; AQL rewrite is large; multi-model overlap with ArcadeDB.                     |
-| 8    | Ladybug       | Inherit upstream support but don't promote as a primary choice.                                 |
-| 9    | Memgraph      | **Reject.** BSL incompatible with our commercialisation posture.                                |
+| 1    | **ArcadeDB**  | **New default.** Apache-2.0, Cypher + Bolt drop-in for Neo4j, multi-model, multi-protocol.       |
+| 2    | **Apache AGE** | **First pluggable.** Apache-2.0, Postgres extension; one-fewer-container deployments.          |
+| 3    | Neo4j CE      | **Second pluggable (legacy compat).** GPLv3 but field-proven, APOC ecosystem.                   |
+| 4    | ArangoDB      | **Third pluggable.** Apache-2.0, AQL query language; multi-model overlap with ArcadeDB.         |
+| 5    | NebulaGraph   | **Fourth pluggable.** Apache-2.0, distributed, billions of vertices; nGQL rewrite cost.          |
+| 6    | Kuzu          | Optional pluggable for embedded / single-process deployments (MIT).                              |
+| 7    | NetworkX      | Optional pluggable for tests and "lean" profile (no persistence, BSD).                           |
+| 8    | Ladybug       | Inherit upstream support; not promoted as a primary choice (Apache-2.0).                         |
+| 9    | Memgraph      | Pluggable on demand only (BSL — restrictive commercial use until 2028+).                         |
 | 10   | TigerGraph    | **Reject.** Not open source.                                                                    |
 
-### 5.2 Observability / Dashboards (Grafana alternatives)
+### 5.2 Observability stack — **OpenObserve** replaces Grafana + Loki + Tempo + Prometheus + Jaeger
 
-Grafana switched to AGPLv3 in 2021. Self-hosted use is fine, but distributing
-Grafana inside a packaged commercial product triggers obligations. Alternatives:
+**Revised recommendation (2026-05-19):** Adopt **OpenObserve** as the single
+observability backend, replacing the five-service Grafana stack.
 
-| Option                          | License         | Coverage                              | When to choose                                              |
-| ------------------------------- | --------------- | ------------------------------------- | ----------------------------------------------------------- |
-| **SigNoz**                      | **MIT**         | Metrics + Logs + Traces (full APM)    | **Best Grafana replacement.** Datadog-like UX, ClickHouse-backed, OpenTelemetry-native. |
-| **VictoriaMetrics + vmui**      | **Apache-2.0**  | Metrics only                          | When you only need Prometheus-style metrics and ultra-low resource footprint. |
-| OpenSearch Observability Stack  | Apache-2.0      | Logs + Metrics + Traces               | When already invested in Elastic-style stack; heavier than alternatives. |
-| Coroot                          | Apache-2.0      | Metrics + Traces (eBPF auto-instr.)   | Kubernetes-native deployments needing zero-config tracing.   |
-| Apache Superset                 | Apache-2.0      | BI dashboards (not native time-series)| When you need rich SQL-driven dashboards over warehoused data. |
-| Redash                          | BSD-2           | SQL-driven dashboards                 | Lighter Superset alternative; less observability-specific.   |
-| Apache HertzBeat                | Apache-2.0      | Infrastructure monitoring             | Less mature in Western ecosystems; primarily for infra (not app) monitoring. |
-| Datav (XO)                      | Apache-2.0      | Dashboarding                          | Newer; smaller community; evaluate case-by-case.            |
-| **Grafana (status quo)**        | AGPLv3          | Metrics + Logs + Traces               | Keep using if you self-host AND don't distribute.            |
+#### What OpenObserve is
 
-#### Recommendation
+| Attribute               | Value                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Repository              | <https://github.com/openobserve/openobserve>                            |
+| License                 | **AGPL-3.0** (open-source edition); separate commercial Enterprise Edition |
+| Implementation language | Rust                                                                   |
+| Replaces                | Datadog, Splunk, Elasticsearch, **Grafana, Loki, Prometheus, Tempo, Jaeger** |
+| Maturity                | v0.90.0-rc4 (May 2026), 18.9k stars, 5,947 commits                     |
+| Deployment              | Single binary (`<2 minute` install) OR Docker; HA clustering optional   |
+| Storage                 | Object storage (S3 / GCS / Azure Blob) or local disk                    |
+| Features                | Logs + Metrics + Traces + RUM (frontend monitoring) + Alerts + Dashboards + Pipelines |
+| Query languages         | SQL (logs/dashboards), PromQL (metrics)                                 |
+| Resource footprint      | ~140x lower storage than Elasticsearch; ~10x lower compute than Grafana stack (per OpenObserve benchmarks; not independently verified) |
+| Instrumentation         | OpenTelemetry-native (works with our existing `opentelemetry-*` pip deps)|
 
-- **Default recommendation: keep Grafana** for the optional monitoring stack
-  because (a) self-host model + opt-in compose file = AGPLv3 obligations don't
-  attach to Enhanced Cognee, (b) it's vastly better documented than alternatives,
-  (c) most operators already know it.
-- **For commercialised distributions: switch to SigNoz.** MIT-licensed
-  Datadog-like full-stack APM, OpenTelemetry-native, one binary deploys it all.
-- **For pure-metrics minimalist setups: VictoriaMetrics + vmui.** Apache-2.0,
-  10x lower memory than Prometheus + Grafana.
+#### Why OpenObserve as default
 
-Document the swap path in `docs/OBSERVABILITY_SWAP.md` (TBD).
+| Criterion                  | OpenObserve                              | Grafana + Loki + Tempo + Prom + Jaeger          |
+| -------------------------- | ---------------------------------------- | ----------------------------------------------- |
+| Containers to operate      | **1**                                     | 5                                               |
+| License risk profile       | AGPL-3.0 (same as Grafana + Loki today)  | AGPLv3 (Grafana, Loki) + Apache-2.0 (rest)      |
+| Resource footprint         | **Low (Rust)**                            | High (multi-process Go + JVM-class consumers)  |
+| OTel-native                | **Yes**                                   | Partial (each service has its own ingestion)   |
+| Unified UI                 | **Yes (logs + metrics + traces in one)** | No — Grafana federates, but multiple data sources |
+| Storage abstraction        | **Object storage (S3/GCS/Azure) or disk**| Per-service local storage                       |
+| Maturity ranking           | New (4 years), well-funded, active        | Mature, large ecosystem                          |
 
-### 5.3 Log Aggregation (Loki alternatives)
+**Decision logic:** Enhanced Cognee already requires 4 production database
+containers. Adding a 5-container observability stack is operationally
+expensive — especially for solo developers on small VPSes. OpenObserve
+collapses logs + metrics + traces + dashboards + alerts into one Rust binary
+that runs in `<2 minutes`, can store data on S3/GCS for near-free cold
+storage, and uses 1/10th the compute. The AGPL-3.0 license is the same risk
+profile we already accept for Grafana + Loki — but consolidated to a single
+component to audit.
 
-Loki is also AGPLv3 (Grafana Labs). Alternatives:
+#### License acceptance for OpenObserve
 
-| Option                            | License         | Notes                                                                |
-| --------------------------------- | --------------- | -------------------------------------------------------------------- |
-| **VictoriaLogs**                  | **Apache-2.0**  | **Recommended.** Same vendor as VictoriaMetrics, LogsQL query language, 10x compression vs ELK. |
-| OpenSearch (Log Analytics)        | Apache-2.0      | AWS fork of Elasticsearch; heavier but rich search.                  |
-| Quickwit                          | Apache-2.0      | Sub-second search at petabyte scale; new project (2022+).            |
-| ClickHouse (raw)                  | Apache-2.0      | General columnar DB; used internally by SigNoz for logs.             |
-| Log Bull                          | Need to verify  | Newer project; evaluate before committing.                           |
-| **Loki (status quo)**             | AGPLv3          | Keep for self-host; swap for commercial distribution.                |
+**Verdict for Enhanced Cognee's deployment models** (matches the
+[`COMMERCIALISATION_LICENSE_GUIDE.md`](./COMMERCIALISATION_LICENSE_GUIDE.md)
+Scenario 1-5 analysis):
 
-#### Recommendation
+| Scenario                                                    | Verdict   |
+| ----------------------------------------------------------- | --------- |
+| Self-hosted personal use                                    | **OK**    |
+| Self-hosted commercial use (support contracts)              | **OK**    |
+| SaaS commercial (you host, customers query via API/MCP)     | **OK** — network-service model; no distribution |
+| Distribute Enhanced Cognee as a packaged product            | **CAUTION** — keep OpenObserve in a separate optional `monitoring/` compose file, never bundle binary |
+| Closed-source commercial product bundling Enhanced Cognee   | **OK if monitoring is opt-in** — same logic as 5.x in COMMERCIALISATION guide |
 
-- **Default recommendation: keep Loki** for the optional monitoring stack
-  (same logic as Grafana — opt-in separate compose).
-- **For commercialised distributions: VictoriaLogs.** Consistent observability
-  story with VictoriaMetrics, Apache-2.0, low resource footprint.
-- **If already using SigNoz: SigNoz's built-in ClickHouse log store** —
-  one product for metrics + logs + traces.
+#### When to switch to the pure-Apache fallback
 
-### 5.4 Combined Apache-only observability stack
+If a paying customer requires zero AGPL components anywhere in their
+deployment, fall back to one of these Apache-licensed alternatives:
 
-For customers requiring zero AGPL components anywhere:
+| Fallback                                | License        | Coverage                              | Tradeoff vs OpenObserve                                  |
+| --------------------------------------- | -------------- | ------------------------------------- | -------------------------------------------------------- |
+| **SigNoz**                              | **MIT**        | Logs + Metrics + Traces + APM         | Best 1:1 replacement; ClickHouse-backed; 2-container deploy (signoz + clickhouse) |
+| VictoriaMetrics + VictoriaLogs + Jaeger | Apache-2.0     | Logs + Metrics + Traces (split tools) | 3 containers; metrics-first design; harder unified UI    |
+| OpenSearch Observability Stack          | Apache-2.0     | Logs + Metrics + Traces               | Heavier (JVM); Elastic-flavoured                          |
 
-```
-SigNoz (MIT)                    Metrics + Logs + Traces + APM UI
-  └─ ClickHouse (Apache-2.0)    Underlying storage
-  └─ OpenTelemetry Collector    Instrumentation (Apache-2.0)
-```
+**Recommendation:** Document **SigNoz** as the primary Apache-2.0 fallback in
+[`COMMERCIALISATION_LICENSE_GUIDE.md`](./COMMERCIALISATION_LICENSE_GUIDE.md)
+under the "What if I want to remove all GPL/AGPL components entirely?" FAQ.
 
-OR (split):
+### 5.3 What this means for Enhanced Cognee's current observability touch-points
 
-```
-VictoriaMetrics (Apache-2.0)    Metrics storage
-VictoriaLogs (Apache-2.0)       Log storage
-vmui (Apache-2.0)               Built-in dashboards
-Jaeger (Apache-2.0)             Traces
-```
+Enhanced Cognee touches observability in three places today; the OpenObserve
+migration affects them as follows:
 
-Both stacks ship as Docker Compose files in the proposed `monitoring/apache-only/`
-directory (TBD).
+| Touch point                                       | Today                                                  | After OpenObserve migration                          |
+| ------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- |
+| `requirements.txt`: `prometheus-client==0.25.0`   | Used by `get_prometheus_metrics` MCP tool              | **Keep** — OpenObserve scrapes Prometheus exposition format natively |
+| `requirements.txt`: `opentelemetry-api/sdk==1.41.1` | Used by `src/tracing.py` (~70% scaffolded)            | **Keep** — point OTLP exporter at OpenObserve instead of Jaeger      |
+| `monitoring/docker-compose-monitoring.yml`        | Bundles Grafana + Loki + Tempo + Prometheus + Jaeger    | **Replace** — single `openobserve` service           |
+| `monitoring/dashboards/*.json`                    | Grafana JSON dashboards                                 | **Migrate** to OpenObserve dashboard JSON (or rebuild; minor effort) |
+| `docs/MONITORING.md`                              | Grafana + Loki setup steps                              | **Rewrite** for OpenObserve single-binary install    |
+
+**Total migration effort: ~1 week** (one engineer). Most of the time is in
+rebuilding the dashboards; the Python instrumentation (Prometheus + OpenTelemetry)
+is unchanged since OpenObserve speaks both protocols natively.
 
 ---
 
@@ -510,18 +549,18 @@ Full long-form list in [`OUTSTANDING_ITEMS.md`](./OUTSTANDING_ITEMS.md).
 
 ---
 
-## 8. Recommended 12-Week Roadmap
+## 8. Recommended 12-Week Roadmap (revised 2026-05-19)
 
 | Week  | Theme                              | Output                                                                            |
 | ----- | ---------------------------------- | --------------------------------------------------------------------------------- |
 | 1     | CI hardening                       | Live integration + e2e tests in CI; branch protection done; SBOM step added.      |
 | 2     | Phase 1 plumbing                   | `src/db_factory.py` + env-var routing for all 4 DB tiers; no functional change.   |
-| 3-4   | Apache AGE adapter                 | `apache_age` provider working end-to-end; passing all integration tests.          |
-| 5-6   | MAS integration sprint             | MAS reads/writes Enhanced Cognee memories; auth wiring; agent-ID mapping.         |
-| 7     | ArcadeDB adapter                   | `arcadedb` provider working; documentation; benchmark vs AGE.                     |
-| 8     | OpenTelemetry + observability      | `init_tracing()` wired; SigNoz config added; OBSERVABILITY_SWAP.md doc.           |
-| 9     | Lean profile + `examples/`         | One-container `lean` profile; 4-5 Enhanced-specific example scripts.              |
-| 10    | Documentation site                 | mkdocs-material at `vincentspereira.github.io/Enhanced-Cognee/`.                  |
+| 3-4   | **ArcadeDB swap (new default)**    | `arcadedb` provider working end-to-end; Bolt drop-in for existing Neo4j paths; docker-compose updated; passing all integration tests; benchmarks vs Neo4j. |
+| 5     | **OpenObserve observability swap** | Single-binary OpenObserve replaces Grafana+Loki+Tempo+Prom+Jaeger compose; dashboards migrated; `init_tracing()` points at OpenObserve OTLP endpoint. |
+| 6     | **Apache AGE pluggable adapter**   | `apache_age` provider working; `lean` profile (one-container Postgres-only setup) shipped. |
+| 7-8   | MAS integration sprint             | MAS reads/writes Enhanced Cognee memories; auth wiring; agent-ID mapping.         |
+| 9     | Vector + cache pluggable adapters  | `pgvector` + `in_memory` cache + `sqlite` relational shipped (covers "lean" profile completely). |
+| 10    | `examples/` + docs site            | 4-5 Enhanced-specific examples; mkdocs-material at GitHub Pages.                  |
 | 11    | Performance run                    | Locust against live stack; documented p50/p95/p99; perf regression dashboard.     |
 | 12    | Polish + first commercial release  | `CONTRIBUTING.md`, issue templates, release notes, SBOM, "v1.0.0-commercial" tag. |
 
@@ -538,12 +577,14 @@ alongside other work.
 | DR-02 | 4-DB stack (Postgres + Qdrant + Neo4j + Redis-then-Valkey)       | 2025-Q4    | Each DB optimised for its tier; complexity tradeoff acceptable for production use.    |
 | DR-03 | Replace Redis with Valkey 8                                      | 2026-Q1    | Redis 7.4 license shift (BSL/SSPL) incompatible with Apache-2.0 commercialisation.    |
 | DR-04 | Keep Neo4j Community as default graph DB (Phase 1-14)            | 2025-Q4    | GPLv3 in self-host/SaaS model is safe; production-proven; APOC ecosystem.             |
-| DR-05 | **Plan migration to Apache AGE as default graph DB**             | **2026-05-19** | Eliminates only GPLv3 component; one fewer container; reuses Postgres ops tooling. |
-| DR-06 | ArcadeDB as secondary pluggable graph DB                         | 2026-05-19 | Apache-2.0 dedicated graph engine for customers wanting Bolt drop-in or higher scale. |
-| DR-07 | Keep Grafana/Loki as default monitoring; document SigNoz / VictoriaLogs as Apache-2.0 swap | 2026-05-19 | AGPLv3 is fine for self-host; provide swap path for distributed products.          |
+| DR-05 | ~~Plan migration to Apache AGE as default graph DB~~ **SUPERSEDED by DR-11** | 2026-05-19 | Original recommendation; superseded by maintainer decision later same day.   |
+| DR-06 | ~~ArcadeDB as secondary pluggable graph DB~~ **SUPERSEDED by DR-11** | 2026-05-19 | Original recommendation; superseded by maintainer decision later same day.   |
+| DR-07 | ~~Keep Grafana/Loki as default monitoring~~ **SUPERSEDED by DR-12** | 2026-05-19 | Original recommendation; superseded by maintainer decision later same day.   |
 | DR-08 | Pluggable DB backends via env vars (gradual, Tier 1/2/3)         | 2026-05-19 | Default unchanged; new providers opt-in; minimises regression risk.                   |
 | DR-09 | Apache-2.0 license for all Enhanced Cognee code                  | 2025-Q4    | Maximally permissive; aligned with upstream and Python ecosystem norms.               |
 | DR-10 | ASCII-only output rule                                           | 2025-Q4    | Windows cp1252 console support; enforced via pre-commit hook.                         |
+| DR-11 | **ArcadeDB becomes new default graph DB; Apache AGE + Neo4j + ArangoDB + NebulaGraph + Kuzu + NetworkX + Memgraph + Ladybug + TigerGraph are pluggable** | 2026-05-19 (revised) | ArcadeDB's Cypher + Bolt compatibility = near-zero code change from current Neo4j paths; multi-model future-proofs the engine choice. AGE retained for "lean" Postgres-only profiles. |
+| DR-12 | **OpenObserve replaces Grafana + Loki + Tempo + Prometheus + Jaeger as the unified observability stack** | 2026-05-19 | 1 container instead of 5; OpenTelemetry-native; AGPL-3.0 (same risk as Grafana today); SigNoz documented as MIT fallback for pure-Apache deployments. |
 
 ---
 
