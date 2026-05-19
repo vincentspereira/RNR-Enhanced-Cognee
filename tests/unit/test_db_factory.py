@@ -16,8 +16,10 @@ import pytest
 
 from src import db_factory
 from src.db_adapters import (
+    cache_in_memory,
     cache_redis,
     cache_valkey,
+    graph_apache_age,
     graph_arcadedb,
     graph_neo4j,
     relational_postgres,
@@ -239,13 +241,26 @@ class TestGraphFactory:
         with patch("neo4j.GraphDatabase.driver", return_value=MagicMock()):
             db_factory.get_graph_driver()
 
-    def test_unknown_provider_raises(self, monkeypatch):
+    def test_apache_age_pluggable(self, monkeypatch):
+        """Apache AGE is wired in Phase 3 as a pluggable graph provider."""
         monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
+        driver = db_factory.get_graph_driver()
+        # Don't actually connect; just confirm we got the AGE driver shim.
+        assert type(driver).__name__ == "_AGEDriver"
+
+    def test_async_apache_age_raises_not_implemented(self, monkeypatch):
+        """AGE has no async driver yet -- factory must surface a clear error."""
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
+        with pytest.raises(NotImplementedError, match="apache_age"):
+            db_factory.get_async_graph_driver()
+
+    def test_unknown_provider_raises(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arangodb")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_graph_driver()
 
     def test_unknown_provider_raises_async(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arangodb")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_async_graph_driver()
 
@@ -289,6 +304,17 @@ class TestCacheFactory:
         with patch("redis.Redis", return_value=MagicMock()) as R:
             db_factory.get_sync_cache_client()
         assert R.called
+
+    def test_in_memory_cache(self, monkeypatch):
+        """Phase 3: in_memory cache adapter for the lean profile."""
+        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "in_memory")
+        client = db_factory.get_cache_client()
+        assert type(client).__name__ == "_InMemoryAsyncClient"
+
+    def test_sync_in_memory_cache(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "in_memory")
+        client = db_factory.get_sync_cache_client()
+        assert type(client).__name__ == "_InMemoryAsyncClient"
 
     def test_unknown_provider_raises(self, monkeypatch):
         monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "memcached")

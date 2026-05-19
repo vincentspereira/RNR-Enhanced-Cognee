@@ -287,9 +287,9 @@ Neo4j stays as a **second pluggable option** for organizations with:
 
 | Phase | Scope                                                                                                                                                         | Effort                      |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| 1     | Env-var routing plumbing (`src/db_factory.py` + audit hard-coded imports)                                                                                     | 1 week                      |
-| 2     | **ArcadeDB adapter** as new default (Bolt drop-in for current Neo4j paths) + integration tests + container image swap in `docker-compose-enhanced-cognee.yml` | 1-2 weeks                   |
-| 3     | Apache AGE pluggable adapter + `lean` profile (one-container Postgres-only setup)                                                                             | 1 week                      |
+| 1     | Env-var routing plumbing (`src/db_factory.py` + audit hard-coded imports) -- **SHIPPED 2026-05-19**                                                           | 1 week                      |
+| 2     | **ArcadeDB adapter** as new default (Bolt drop-in for current Neo4j paths) + integration tests + container image swap in `docker-compose-enhanced-cognee.yml` -- **SHIPPED 2026-05-19** | 1-2 weeks                   |
+| 3     | Apache AGE pluggable adapter + `lean` profile (one-container Postgres-only setup) -- **SHIPPED 2026-05-19**                                                   | 1 week                      |
 | 4     | Remaining graph adapters as plug-ins (ArangoDB, NebulaGraph, Kuzu, NetworkX in-mem, Memgraph)                                                                 | 1-2 weeks (build on demand) |
 | 5     | Vector adapters (pgvector, LanceDB, Weaviate, Milvus, Chroma)                                                                                                 | 2-3 weeks (build on demand) |
 | 6     | Cache adapters (redis, redis_compat, memcached, in_memory)                                                                                                    | 3 days                      |
@@ -660,7 +660,7 @@ Full long-form list in [`OUTSTANDING_ITEMS.md`](./OUTSTANDING_ITEMS.md).
 | 2    | Phase 1 plumbing                   | `src/db_factory.py` + env-var routing for all 4 DB tiers; no functional change.                                                                            |
 | 3-4  | **ArcadeDB swap (new default)** -- **SHIPPED 2026-05-19** | `arcadedb` provider working end-to-end; Bolt drop-in for existing Neo4j paths; docker-compose updated; passing all integration tests; benchmarks vs Neo4j. See `docs/ARCADEDB_MIGRATION.md`. |
 | 5    | **SigNoz + Apache Superset observability swap** | SigNoz (MIT) replaces Grafana+Loki+Tempo+Jaeger; Apache Superset (Apache-2.0) added for BI dashboards; Prometheus kept; APM dashboards migrate into SigNoz, custom dashboards into Superset; `init_tracing()` points at SigNoz OTLP endpoint (4317). |
-| 6    | **Apache AGE pluggable adapter**   | `apache_age` provider working; `lean` profile (one-container Postgres-only setup) shipped.                                                                 |
+| 6    | **Apache AGE pluggable adapter** -- **SHIPPED 2026-05-19** | `apache_age` provider working; `lean` profile (one-container Postgres-only setup) shipped. See `docs/PROFILES.md`. |
 | 7-8  | MAS integration sprint             | MAS reads/writes Enhanced Cognee memories; auth wiring; agent-ID mapping.                                                                                  |
 | 9    | Vector + cache pluggable adapters  | `pgvector` + `in_memory` cache + `sqlite` relational shipped (covers "lean" profile completely).                                                           |
 | 10   | `examples/` + docs site            | 4-5 Enhanced-specific examples; mkdocs-material at GitHub Pages.                                                                                           |

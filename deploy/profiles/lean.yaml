@@ -1,0 +1,55 @@
+# Enhanced Cognee deployment profile: lean
+#
+# Goal: smallest viable stack. Postgres-only persistence (graph runs as
+# an extension inside Postgres via Apache AGE); cache is in-process.
+# Suited to laptops, the smallest VPS tiers, and offline / air-gapped use.
+#
+# Tradeoffs:
+#   * No graph parameterised Cypher (Phase 3 AGE adapter limitation;
+#     see docs/PROFILES.md "Supported query matrix")
+#   * Cache state is per-process; pub/sub features unavailable
+#   * Vector layer is still Qdrant by default -- pgvector adapter is
+#     scheduled for Phase 5
+#
+# Apply by exporting these env vars before launching the MCP server, or
+# by sourcing this file's ENV section in your install script. The
+# Compose file does not auto-switch to this profile; use `--profile lean`
+# integration once docs/PROFILES.md's compose hooks land.
+#
+# See: docs/PROFILES.md, docs/HANDOVER.md section 4 Phase 3
+# Decision record: docs/STRATEGY.md DR-08 (env-var routing)
+
+profile: lean
+description: |
+  Minimal stack for laptops / small VPS / offline use. One database
+  container (Postgres with the AGE extension), one Python process,
+  no external cache.
+
+env:
+  ENHANCED_RELATIONAL_PROVIDER: postgres
+  ENHANCED_VECTOR_PROVIDER: qdrant       # pgvector pluggable in Phase 5
+  ENHANCED_GRAPH_PROVIDER: apache_age
+  ENHANCED_CACHE_PROVIDER: in_memory
+
+  # Apache AGE inherits POSTGRES_* by default; override if your AGE
+  # database lives in a different Postgres instance.
+  # AGE_HOST: localhost
+  # AGE_PORT: 25432
+  # AGE_DB: cognee_db
+  # AGE_USER: cognee_user
+  # AGE_PASSWORD: cognee_password
+  AGE_GRAPH_NAME: cognee_graph
+
+# Containers this profile expects to find running.
+# (Documentation only -- the installer reads docs/PROFILES.md for the
+#  authoritative wiring.)
+containers:
+  - postgres        # Postgres + pgvector + AGE extension
+  - qdrant          # vector tier (until pgvector adapter ships)
+  # No graph container - AGE runs inside postgres
+  # No cache container - in-process
+
+notes:
+  - "Run `CREATE EXTENSION age` and `LOAD 'age'` inside the Postgres DB on first boot."
+  - "Set AGE_GRAPH_NAME to a fresh graph name and create it via `SELECT * FROM ag_catalog.create_graph('cognee_graph');`."
+  - "The in_memory cache loses all state on process restart by design."
