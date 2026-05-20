@@ -248,11 +248,11 @@ class TestGraphFactory:
         # Don't actually connect; just confirm we got the AGE driver shim.
         assert type(driver).__name__ == "_AGEDriver"
 
-    def test_async_apache_age_raises_not_implemented(self, monkeypatch):
-        """AGE has no async driver yet -- factory must surface a clear error."""
+    def test_async_apache_age_returns_driver(self, monkeypatch):
+        """Phase 5 update: async AGE driver shipped 2026-05-20 via asyncpg."""
         monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "apache_age")
-        with pytest.raises(NotImplementedError, match="apache_age"):
-            db_factory.get_async_graph_driver()
+        driver = db_factory.get_async_graph_driver()
+        assert type(driver).__name__ == "_AsyncAGEDriver"
 
     def test_unknown_provider_raises(self, monkeypatch):
         monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arangodb")

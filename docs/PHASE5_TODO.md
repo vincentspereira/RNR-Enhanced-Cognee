@@ -81,8 +81,8 @@ gaps:
 
 | Gap | Effort | Trigger |
 |---|---|---|
-| Parameterised Cypher (`$param` syntax) | 2-3 days | Currently raises `NotImplementedError`. Needs translation of `$param` into AGE's `cypher('graph', $$ ... $$, %s::agtype)` form via psycopg2 parameter binding. |
-| Async session API | 3-5 days | Currently raises `NotImplementedError`. Would need an asyncpg-based variant; not asyncpg's natural use case. |
+| Parameterised Cypher (`$param` syntax) | ✅ **SHIPPED 2026-05-20** | Now passes through AGE's three-arg `cypher(graph, $$ ... $$, agtype_map)` form via psycopg2 parameter binding. Rejects payloads containing `$$` to prevent dollar-quote breakout. |
+| Async session API | ✅ **SHIPPED 2026-05-20** | `get_async_graph_driver()` returns an asyncpg-backed `_AsyncAGEDriver`. Use `async with driver.session() as s: await s.run(cypher)`. |
 | Returning native graph elements as neo4j `Node` / `Relationship` objects | 2-3 days | Today, callers receive parsed agtype JSON (a dict). A real Node wrapper would close the API gap with the other graph providers. |
 
 ---

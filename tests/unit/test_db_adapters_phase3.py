@@ -109,25 +109,162 @@ class TestAGEDriverShape:
         assert "RETURN 1" in cypher_call
         assert "AS (result agtype)" in cypher_call
 
-    def test_session_run_rejects_parameters(self, monkeypatch):
+    def test_session_run_with_parameters(self, monkeypatch):
+        """Phase 5 update: parameters now route through AGE's 3-arg cypher()."""
+        cur = _FakePsycopgCursor()
+        cur._set_rows([])
+        fake_conn = _FakePsycopgConn(cursor=cur)
+        with patch("psycopg2.connect", return_value=fake_conn):
+            drv = graph_apache_age.create_driver()
+            with drv.session() as session:
+                session.run("MATCH (n {name: $name}) RETURN n", {"name": "alice"})
+        # The dollar-quoted block must include the AS clause and the
+        # third %s::agtype placeholder for the params map.
+        cypher_call = next(
+            (sql for sql, _ in cur.executed if "cypher(" in sql), None
+        )
+        assert cypher_call is not None
+        assert "%s::agtype" in cypher_call
+        # The bind tuple must be (graph_name, params_json_blob)
+        params = next(
+            (params for sql, params in cur.executed if "cypher(" in sql),
+            None,
+        )
+        assert params is not None
+        assert params[0] == "cognee_graph"  # default graph_name
+        # The JSON-serialised params blob must round-trip
+        import json as _json
+        assert _json.loads(params[1]) == {"name": "alice"}
+
+    def test_session_run_with_kwargs(self, monkeypatch):
+        """Keyword-arg parameters merge into the params map."""
+        cur = _FakePsycopgCursor()
+        cur._set_rows([])
+        fake_conn = _FakePsycopgConn(cursor=cur)
+        with patch("psycopg2.connect", return_value=fake_conn):
+            drv = graph_apache_age.create_driver()
+            with drv.session() as session:
+                session.run("RETURN $x", x=42)
+        params = next(
+            (p for sql, p in cur.executed if "cypher(" in sql),
+            None,
+        )
+        import json as _json
+        assert _json.loads(params[1]) == {"x": 42}
+
+    def test_session_run_rejects_dollar_dollar_breakout(self, monkeypatch):
+        """Cypher payloads with `$$` would break out of AGE's dollar-quote."""
         fake_conn = _FakePsycopgConn()
         with patch("psycopg2.connect", return_value=fake_conn):
             drv = graph_apache_age.create_driver()
             with drv.session() as session:
-                with pytest.raises(NotImplementedError, match="parameter"):
-                    session.run("MATCH (n {name: $name}) RETURN n", {"name": "x"})
+                with pytest.raises(ValueError, match=r"\$\$"):
+                    session.run("RETURN 1 $$ ; DROP TABLE users ; SELECT 1 $$ ")
 
-    def test_session_run_rejects_kwargs(self, monkeypatch):
-        fake_conn = _FakePsycopgConn()
-        with patch("psycopg2.connect", return_value=fake_conn):
-            drv = graph_apache_age.create_driver()
-            with drv.session() as session:
-                with pytest.raises(NotImplementedError, match="parameter"):
-                    session.run("RETURN $x", x=1)
+    def test_create_async_driver_returns_driver(self):
+        """Phase 5 update: async path now returns a real asyncpg-backed driver."""
+        drv = graph_apache_age.create_async_driver()
+        assert type(drv).__name__ == "_AsyncAGEDriver"
 
-    def test_create_async_driver_raises(self):
-        with pytest.raises(NotImplementedError, match="async"):
-            graph_apache_age.create_async_driver()
+    @pytest.mark.asyncio
+    async def test_async_session_lifecycle_and_run(self):
+        """End-to-end: async session opens / runs / commits / closes via mocked asyncpg."""
+
+        # Build a fake asyncpg.connect coroutine that returns a fake connection
+        executed: list = []
+        fetched_with: list = []
+
+        class _FakeConn:
+            async def execute(self, sql, *args):
+                executed.append((sql, args))
+
+            async def fetch(self, sql, *args):
+                fetched_with.append((sql, args))
+                # Mimic asyncpg.Record by returning objects with .values()
+                class _Rec:
+                    def values(self_inner):
+                        return ("1",)
+                return [_Rec()]
+
+            async def close(self):
+                executed.append(("CLOSE", ()))
+
+        async def _fake_connect(**kwargs):
+            return _FakeConn()
+
+        import asyncpg
+        with patch.object(asyncpg, "connect", new=_fake_connect):
+            drv = graph_apache_age.create_async_driver()
+            async with drv.session() as session:
+                result = await session.run("RETURN 1")
+            assert result.single()[0] == 1
+            # No params -> two-arg cypher() form (no %s::agtype)
+            cypher_calls = [c for c in fetched_with if "cypher(" in c[0]]
+            assert len(cypher_calls) == 1
+            assert "%s::agtype" not in cypher_calls[0][0]
+            # Connection was closed on context exit
+            assert any(call[0] == "CLOSE" for call in executed)
+
+    @pytest.mark.asyncio
+    async def test_async_session_with_params(self):
+        """Async path threads $param queries through AGE's three-arg form."""
+        fetched_with: list = []
+
+        class _FakeConn:
+            async def execute(self, sql, *args):
+                pass
+
+            async def fetch(self, sql, *args):
+                fetched_with.append((sql, args))
+                return []
+
+            async def close(self):
+                pass
+
+        async def _fake_connect(**kwargs):
+            return _FakeConn()
+
+        import asyncpg
+        with patch.object(asyncpg, "connect", new=_fake_connect):
+            drv = graph_apache_age.create_async_driver()
+            async with drv.session() as session:
+                await session.run("MATCH (n {id: $i}) RETURN n", i=42)
+
+        cypher_call = next(
+            (c for c in fetched_with if "cypher(" in c[0]), None
+        )
+        assert cypher_call is not None
+        sql, args = cypher_call
+        # Async path uses asyncpg's $1/$2 placeholders, not psycopg2's %s.
+        assert "$1" in sql and "$2" in sql
+        assert "::agtype" in sql
+        # First arg is graph name, second is JSON-serialised params map
+        import json as _json
+        assert args[0] == "cognee_graph"
+        assert _json.loads(args[1]) == {"i": 42}
+
+    @pytest.mark.asyncio
+    async def test_async_session_dollar_dollar_rejected(self):
+        """Async path also rejects `$$` payloads."""
+        class _FakeConn:
+            async def execute(self, *a):
+                pass
+
+            async def fetch(self, *a):
+                return []
+
+            async def close(self):
+                pass
+
+        async def _fake_connect(**kwargs):
+            return _FakeConn()
+
+        import asyncpg
+        with patch.object(asyncpg, "connect", new=_fake_connect):
+            drv = graph_apache_age.create_async_driver()
+            async with drv.session() as session:
+                with pytest.raises(ValueError, match=r"\$\$"):
+                    await session.run("RETURN $$ ; SELECT 1 $$ ")
 
     def test_driver_close_is_idempotent(self, monkeypatch):
         with patch("psycopg2.connect", return_value=_FakePsycopgConn()):

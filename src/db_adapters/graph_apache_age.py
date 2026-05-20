@@ -22,10 +22,16 @@ a pointer to ``docs/PROFILES.md``.
 - Simple scalar-projection queries (``MATCH (n) RETURN COUNT(n) AS c``).
 - ``.session()`` context manager, ``.run(cypher)``, ``.single()``,
   iteration over result records, ``record[0]`` / ``record["alias"]``.
+- **Parameterised Cypher** (``$param`` syntax) since 2026-05-20 --
+  parameters are passed to AGE's ``cypher(graph, $$ ... $$, agtype_map)``
+  three-arg form via psycopg2 binding. See ``docs/PROFILES.md`` for
+  the security note on dollar-quote breakout.
+- **Async session API** (``get_async_graph_driver()``) since
+  2026-05-20 -- routes through ``asyncpg`` with the same agtype unwrap
+  path. The async driver exposes ``.session()`` as an
+  ``async with`` context manager.
 
 **Not yet supported (raises NotImplementedError):**
-- Parameterised Cypher (``$param`` syntax).
-- Async driver / session API.
 - Returning whole graph elements as Python neo4j ``Node`` / ``Relationship``
   objects -- callers receive the AGE ``agtype`` value parsed as JSON.
 
@@ -139,22 +145,21 @@ class _AGESession:
             self._conn.close()
 
     def run(self, cypher: str, parameters: Optional[dict] = None, **kwargs: Any) -> _AGEResult:
-        if parameters:
-            raise NotImplementedError(
-                "ENHANCED_GRAPH_PROVIDER=apache_age does not support "
-                "parameterised Cypher queries yet. Inline the values or "
-                "use neo4j / arcadedb. See docs/PROFILES.md."
-            )
-        if kwargs:
-            raise NotImplementedError(
-                "ENHANCED_GRAPH_PROVIDER=apache_age does not support keyword "
-                "Cypher parameters yet. See docs/PROFILES.md."
-            )
+        merged_params = _merge_params(parameters, kwargs)
+        _validate_cypher_payload(cypher)
+
         cur = self._conn.cursor()
         cur.execute("LOAD 'age';")
         cur.execute("SET search_path = ag_catalog, public;")
-        sql = f"SELECT * FROM cypher(%s, $$ {cypher} $$) AS (result agtype);"
-        cur.execute(sql, (self._graph,))
+        if merged_params:
+            sql = (
+                f"SELECT * FROM cypher(%s, $$ {cypher} $$, %s::agtype) "
+                f"AS (result agtype);"
+            )
+            cur.execute(sql, (self._graph, json.dumps(merged_params)))
+        else:
+            sql = f"SELECT * FROM cypher(%s, $$ {cypher} $$) AS (result agtype);"
+            cur.execute(sql, (self._graph,))
         rows = cur.fetchall() if cur.description else []
         return _AGEResult(rows, ["result"])
 
@@ -219,14 +224,150 @@ def create_driver(
     return _AGEDriver(host, port, database, user, password, graph_name)
 
 
-def create_async_driver(*args: Any, **kwargs: Any):
-    """Async path is not implemented for AGE.
+def create_async_driver(
+    uri: Optional[str] = None,
+    user: Optional[str] = None,
+    password: Optional[str] = None,
+    **kwargs: Any,
+) -> "_AsyncAGEDriver":
+    """Return an asyncpg-backed AGE driver.
 
-    Use the sync ``get_graph_driver()`` entry point, or switch to
-    ``arcadedb`` / ``neo4j`` which provide a real ``AsyncDriver``.
+    Connection details come from AGE_* env vars (falling through to
+    POSTGRES_*). ``uri`` is accepted for neo4j-driver shape compat but
+    ignored -- AGE config is env-var-driven.
     """
-    raise NotImplementedError(
-        "ENHANCED_GRAPH_PROVIDER=apache_age does not yet expose an async "
-        "session API. Use the sync get_graph_driver() entry point, or "
-        "switch to arcadedb / neo4j. See docs/PROFILES.md."
+    host = os.getenv("AGE_HOST") or os.getenv("POSTGRES_HOST", "localhost")
+    port = int(os.getenv("AGE_PORT") or os.getenv("POSTGRES_PORT", "25432"))
+    database = os.getenv("AGE_DB") or os.getenv("POSTGRES_DB", "cognee_db")
+    user = user or os.getenv("AGE_USER") or os.getenv("POSTGRES_USER", "cognee_user")
+    password = (
+        password
+        or os.getenv("AGE_PASSWORD")
+        or os.getenv("POSTGRES_PASSWORD", "cognee_password")
     )
+    graph_name = os.getenv("AGE_GRAPH_NAME", "cognee_graph")
+    return _AsyncAGEDriver(host, port, database, user, password, graph_name)
+
+
+# ---------------------------------------------------------------------------
+# Helpers shared by sync + async paths
+# ---------------------------------------------------------------------------
+
+
+def _merge_params(parameters: Optional[dict], kwargs: dict) -> dict:
+    merged: dict = {}
+    if parameters:
+        merged.update(parameters)
+    if kwargs:
+        merged.update(kwargs)
+    return merged
+
+
+def _validate_cypher_payload(cypher: str) -> None:
+    """Reject Cypher payloads that would break out of the dollar-quoted block.
+
+    AGE wraps Cypher in ``$$ ... $$`` to delimit it as a string literal
+    inside SQL. A Cypher payload containing ``$$`` would close the block
+    early and inject arbitrary SQL. Rather than dollar-tagging
+    (``$AGE$ ... $AGE$``) we just reject the case -- no legitimate
+    Cypher query needs a literal ``$$`` sequence.
+    """
+    if "$$" in cypher:
+        raise ValueError(
+            "Cypher payload contains '$$' which would break out of AGE's "
+            "dollar-quoted block. Refactor the query to avoid the literal."
+        )
+
+
+# ---------------------------------------------------------------------------
+# Async driver path (asyncpg-backed)
+# ---------------------------------------------------------------------------
+
+
+class _AsyncAGESession:
+    """``neo4j.AsyncSession``-shaped wrapper executing Cypher via ``cypher()``.
+
+    Opens a fresh asyncpg connection per ``async with`` block. Commits
+    on clean exit, no-ops on exception (asyncpg auto-rolls-back on
+    connection close mid-transaction).
+    """
+
+    def __init__(self, driver: "_AsyncAGEDriver", *, database: Optional[str] = None) -> None:
+        self._driver = driver
+        self._graph = database or driver._graph_name
+        self._conn: Any = None
+
+    async def __aenter__(self) -> "_AsyncAGESession":
+        import asyncpg
+
+        self._conn = await asyncpg.connect(
+            host=self._driver._host,
+            port=self._driver._port,
+            database=self._driver._database,
+            user=self._driver._user,
+            password=self._driver._password,
+        )
+        await self._conn.execute("LOAD 'age'")
+        await self._conn.execute("SET search_path = ag_catalog, public")
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        if self._conn is not None:
+            await self._conn.close()
+            self._conn = None
+
+    async def run(
+        self,
+        cypher: str,
+        parameters: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> _AGEResult:
+        merged_params = _merge_params(parameters, kwargs)
+        _validate_cypher_payload(cypher)
+
+        if merged_params:
+            # asyncpg uses $1, $2 ... placeholders; AGE's three-arg cypher()
+            # form: cypher('graph', $$ ... $$, $1::agtype). The cypher body
+            # itself is string-formatted into the SQL because it's a literal
+            # inside the dollar-quoted block, not a SQL parameter.
+            sql = (
+                f"SELECT * FROM cypher($1, $$ {cypher} $$, $2::agtype) "
+                f"AS (result agtype)"
+            )
+            rows = await self._conn.fetch(sql, self._graph, json.dumps(merged_params))
+        else:
+            sql = f"SELECT * FROM cypher($1, $$ {cypher} $$) AS (result agtype)"
+            rows = await self._conn.fetch(sql, self._graph)
+
+        # asyncpg returns asyncpg.Record objects; convert each to a tuple
+        # of column values so _AGERecord's existing agtype-unwrap path
+        # works unchanged.
+        tuple_rows = [tuple(r.values()) for r in rows]
+        return _AGEResult(tuple_rows, ["result"])
+
+
+class _AsyncAGEDriver:
+    """``neo4j.AsyncDriver``-shape over asyncpg."""
+
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        database: str,
+        user: str,
+        password: str,
+        graph_name: str,
+    ) -> None:
+        self._host = host
+        self._port = port
+        self._database = database
+        self._user = user
+        self._password = password
+        self._graph_name = graph_name
+
+    def session(self, *args: Any, database: Optional[str] = None, **kwargs: Any) -> _AsyncAGESession:
+        return _AsyncAGESession(self, database=database)
+
+    async def close(self) -> None:
+        # Sessions own their connections; nothing persistent to close.
+        return None

@@ -244,8 +244,8 @@ this file.
 | Scalar projections (`MATCH (n) RETURN COUNT(n)`)   | OK              | Returns `_AGERecord` with `[0]` / `["alias"]` access.              |
 | Write queries (`MATCH ... DETACH DELETE`, `CREATE`)| OK              | Must still close with `AS (result agtype)` per AGE 1.5 rules.      |
 | Iterating multiple records                         | OK              | `for record in result: ...` yields `_AGERecord` instances.         |
-| Parameterised Cypher (`$param` syntax)             | not implemented | Raises `NotImplementedError`. Inline literals or use neo4j/arcadedb. |
-| Async session API                                  | not implemented | `get_async_graph_driver()` raises. Use sync path or arcadedb/neo4j. |
+| Parameterised Cypher (`$param` syntax)             | OK (Phase 5)    | Passed via AGE's three-arg `cypher(graph, $$ ... $$, agtype_map)` form. Reject Cypher containing `$$` (would break the dollar-quoted block; raises `ValueError`). |
+| Async session API                                  | OK (Phase 5)    | `get_async_graph_driver()` returns an asyncpg-backed `_AsyncAGEDriver`. Use `async with driver.session() as s:` then `await s.run(cypher)`. |
 | Returning whole graph elements (`MATCH (n) RETURN n`) | partial      | You get the agtype JSON. Parse with `record["n"]` -> dict.         |
 | APOC procedures (`apoc.*`)                         | not supported   | AGE has no APOC equivalent; switch to neo4j if you need APOC.      |
 

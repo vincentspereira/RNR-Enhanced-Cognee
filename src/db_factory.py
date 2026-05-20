@@ -142,9 +142,9 @@ def get_async_graph_driver(**kwargs: Any):
     """Return an async graph DB driver for the configured provider.
 
     Default provider: arcadedb (Bolt via neo4j AsyncDriver).
-    Providers without an async surface (``apache_age``, ``kuzu``,
-    ``networkx_inmemory``) raise ``NotImplementedError`` -- see
-    ``docs/PROFILES.md``.
+    ``apache_age`` returns an asyncpg-backed driver (Phase 5; see
+    ``docs/PROFILES.md``). Providers without an async surface
+    (``kuzu``, ``networkx_inmemory``) raise ``NotImplementedError``.
     """
     provider = _resolve("ENHANCED_GRAPH_PROVIDER", "GRAPH_BACKEND", "arcadedb")
     if provider == "arcadedb":
