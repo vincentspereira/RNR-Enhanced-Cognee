@@ -36,7 +36,7 @@ _VALID_GRAPH = {
     "arcadedb", "neo4j", "apache_age",
     "memgraph", "kuzu", "networkx_inmemory",
 }
-_VALID_CACHE = {"valkey", "redis", "in_memory", "memcached"}
+_VALID_CACHE = {"valkey", "redis", "redis_compat", "in_memory", "memcached"}
 
 
 def _resolve(canonical_env: str, legacy_env: Optional[str], default: str) -> str:
@@ -194,6 +194,10 @@ def get_cache_client(**kwargs: Any):
         from src.db_adapters import cache_redis
 
         return cache_redis.create_async_client(**kwargs)
+    if provider == "redis_compat":
+        from src.db_adapters import cache_redis_compat
+
+        return cache_redis_compat.create_async_client(**kwargs)
     if provider == "in_memory":
         from src.db_adapters import cache_in_memory
 
@@ -219,6 +223,10 @@ def get_sync_cache_client(**kwargs: Any):
         from src.db_adapters import cache_redis
 
         return cache_redis.create_sync_client(**kwargs)
+    if provider == "redis_compat":
+        from src.db_adapters import cache_redis_compat
+
+        return cache_redis_compat.create_sync_client(**kwargs)
     if provider == "in_memory":
         from src.db_adapters import cache_in_memory
 

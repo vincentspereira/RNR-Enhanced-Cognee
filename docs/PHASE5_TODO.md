@@ -47,9 +47,10 @@ is the bottleneck, not the connection layer.
 ### Misc
 
 - `redis_compat` -- wire-compatible alternative Redis fork (e.g. KeyDB
-  / Garnet). Status 📋. Effort: ~2 hours. Currently the `redis`
-  provider routes through the Valkey adapter anyway since they're
-  wire-compatible; this is just labelling.
+  / Garnet / Dragonfly). ✅ **SHIPPED 2026-05-20** as a labelled alias
+  of the valkey adapter. Operational intent in env vars: "this isn't
+  real Redis OR Valkey, it's a third-party fork." See
+  `src/db_adapters/cache_redis_compat.py`.
 
 ---
 
@@ -66,11 +67,11 @@ is the bottleneck, not the connection layer.
 
 ## Performance + benchmarks (H4)
 
-| Item | Effort | Trigger |
-|---|---|---|
-| Locust scenarios against the live stack | 1-2 days | Documented p50/p95/p99 latency under load is a pre-commercial-release ask. |
-| Perf-regression dashboard in SigNoz | 0.5 days | Once Locust is wired, point its OTel output at SigNoz. |
-| Benchmarks comparing graph providers (arcadedb / neo4j / apache_age / kuzu) | 1-2 days | Used to defend the Phase 2 default choice with numbers, not just licence rationale. |
+| Item | Status | Effort | Trigger |
+|---|---|---|---|
+| Locust scenarios against the live stack | ✅ **SHIPPED 2026-05-20** | -- | `tests/load/locustfile.py` now ships 8 `HttpUser` classes -- the original 3 memory-CRUD profiles plus 4 Phase 5 additions (SemanticSearchUser, KnowledgeGraphUser, GDPRWorkflowUser, BackupVerifyUser) + the opt-in HealthCheckUser. See `tests/load/README.md` for run instructions + recommended SLAs. |
+| Perf-regression dashboard in SigNoz | 📋 | 0.5 days | Once Locust is wired (now done), point its OTel output at SigNoz. Needs a running stack. |
+| Benchmarks comparing graph providers (arcadedb / neo4j / apache_age / kuzu) | 📋 | 1-2 days | Used to defend the Phase 2 default choice with numbers, not just licence rationale. Needs a running stack. |
 
 ---
 

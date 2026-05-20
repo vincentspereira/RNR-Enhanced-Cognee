@@ -360,6 +360,7 @@ per-tier deep-dives below for query-matrix limitations.
 | --- | --- | --- | --- |
 | `valkey` (default) | ✅ full | core (`redis`) | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` |
 | `redis` | ✅ full (alias) | core (`redis`) | Same as `valkey` (wire-compatible). |
+| `redis_compat` | ✅ full (alias) | core (`redis`) | For wire-compatible Redis forks (KeyDB / Garnet / Dragonfly). Signals operational intent vs `valkey`/`redis`. Same env vars. |
 | `in_memory` | 🟡 single-process only | none -- pure dict | -- |
 | `memcached` | 🟡 no `keys()` / `flushdb()` | `[cache-memcached]` (`pymemcache`) | `MEMCACHED_HOST` / `MEMCACHED_PORT` |
 

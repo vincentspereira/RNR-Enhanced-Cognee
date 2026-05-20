@@ -336,8 +336,10 @@ class TestProviderMatrix:
         assert db_factory._VALID_GRAPH == expected
 
     def test_valid_cache_set(self):
+        # `redis_compat` added 2026-05-20 as a labelled alias of valkey
+        # for wire-compatible Redis forks (KeyDB / Garnet / Dragonfly).
         assert db_factory._VALID_CACHE == {
-            "valkey", "redis", "in_memory", "memcached",
+            "valkey", "redis", "redis_compat", "in_memory", "memcached",
         }
 
     def test_valid_relational_set(self):
