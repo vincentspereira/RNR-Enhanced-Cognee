@@ -44,6 +44,9 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 |---|---|---|
 | `duckdb` | ✅ **SHIPPED 2026-05-20** (PR 10) | MIT-licensed embedded columnar OLAP database. asyncpg-shaped facade via `asyncio.to_thread` over the sync duckdb driver. Great for analytics workloads + Superset BI dashboards. See `docs/PROFILES.md` for caveats. |
 | `mysql` / `mariadb` | ✅ **SHIPPED 2026-05-20** (PR 10) | MySQL 8+ / MariaDB 10+ via the asyncmy (Apache-2.0) driver. Targets managed offerings: Aurora MySQL, Cloud SQL for MySQL, Azure DB for MySQL, PlanetScale, Vitess. |
+| `mssql` / `sqlserver` | ✅ **SHIPPED 2026-05-20** (PR 11) | SQL Server 2019+ / Azure SQL via aioodbc (Apache-2.0) + Microsoft ODBC Driver 18. Targets enterprise SQL Server shops + Azure SQL PaaS. |
+| `oracle` | ✅ **SHIPPED 2026-05-20** (PR 11) | Oracle 19c/21c/23ai / Autonomous Database via the official oracledb driver (UPL). Native async; thin mode by default + opt-in thick mode for Instant Client features. |
+| `db2` | ✅ **SHIPPED 2026-05-20** (PR 11) | IBM Db2 LUW 11.5+ / Db2 on Cloud via ibm_db (Apache-2.0 binding). Sync wrapped with asyncio.to_thread. Targets IBM Z / Power Systems / IBM Cloud. |
 | CockroachDB | 🟢 **WORKS VIA postgres** | Speaks Postgres wire protocol; existing `postgres` adapter targets it with no code changes. Set `POSTGRES_HOST=cockroach.internal POSTGRES_PORT=26257`. See PROFILES.md for caveats (no pgvector, no AGE). |
 
 ### Misc

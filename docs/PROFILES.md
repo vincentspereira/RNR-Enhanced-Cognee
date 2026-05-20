@@ -226,6 +226,67 @@ When to pick MySQL / MariaDB: you already operate one of these at
 scale, or your hosting provider only offers managed MySQL (Aurora
 MySQL, Cloud SQL for MySQL, Azure DB for MySQL, PlanetScale).
 
+### MS SQL Server relational adapter
+
+`src/db_adapters/relational_mssql.py` (shipped 2026-05-20, PR 11).
+Wraps `aioodbc` (Apache-2.0) against the Microsoft ODBC Driver for
+SQL Server. Targets SQL Server 2019+, Azure SQL Database, Azure SQL
+Managed Instance.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `?` placeholders (DB-API). Not compatible with asyncpg `$1` / `$2` |
+| Limit clause | `TOP n` or `OFFSET / FETCH NEXT` -- not `LIMIT` |
+| Identity column | `IDENTITY(1,1)` -- not `SERIAL` |
+| Quoting | `[brackets]` for reserved identifiers |
+| JSON | `NVARCHAR(MAX)` + `JSON_VALUE()` -- no native JSONB |
+| Env vars | `MSSQL_HOST` / `MSSQL_PORT` / `MSSQL_DB` / `MSSQL_USER` / `MSSQL_PASSWORD` / `MSSQL_DRIVER` |
+| Provider value | Both `mssql` and `sqlserver` route to this adapter |
+| Prerequisite | Microsoft ODBC Driver 18 for SQL Server (~50 MB host install) |
+
+When to pick MS SQL: enterprise license already covers it, your team
+operates SQL Server elsewhere, or you're on Azure SQL.
+
+### Oracle Database relational adapter
+
+`src/db_adapters/relational_oracle.py` (shipped 2026-05-20, PR 11).
+Wraps Oracle's official `oracledb` driver (Universal Permissive
+Licence) which has a native async API. Targets Oracle 19c / 21c /
+23ai, Autonomous Database, Exadata.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `:1` / `:2` / `:param` (Oracle bind variables) |
+| Limit clause | `FETCH FIRST n ROWS ONLY` |
+| Empty string == NULL | Oracle treats `''` as NULL (historic) |
+| Identifiers | Uppercase unless double-quoted |
+| JSON | Native `JSON` type in 21c+; `CLOB` for older versions |
+| Env vars | `ORACLE_DSN` (preferred) OR `ORACLE_HOST` / port / database; `ORACLE_USER` / `ORACLE_PASSWORD`; optional `ORACLE_THICK_MODE` + `ORACLE_LIB_DIR` |
+| Modes | Thin mode (Python-only) by default; thick mode requires Oracle Instant Client |
+
+When to pick Oracle: enterprise license already covers it, you're on
+OCI Autonomous Database, or your team standardises on Oracle.
+
+### IBM Db2 relational adapter
+
+`src/db_adapters/relational_db2.py` (shipped 2026-05-20, PR 11).
+Wraps IBM's `ibm_db` driver (Apache-2.0 binding over IBM's CLI).
+Sync-only, wrapped with `asyncio.to_thread`. Targets Db2 LUW 11.5+,
+Db2 on Cloud, Db2 Warehouse on Cloud.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `?` placeholders |
+| Limit clause | `FETCH FIRST n ROWS ONLY` |
+| Identifiers | Uppercase by default |
+| Auto-increment | `GENERATED ALWAYS AS IDENTITY` |
+| JSON | Native in 11.1+; `BLOB` for older |
+| Env vars | `DB2_HOST` / `DB2_PORT` / `DB2_DB` / `DB2_USER` / `DB2_PASSWORD` / `DB2_PROTOCOL` |
+| Prerequisite | IBM CLI library; bundled with ibm_db on Linux x86_64; manual on other platforms |
+
+When to pick Db2: you operate Db2 on IBM Z / Power Systems, or you're
+on IBM Cloud.
+
 ### CockroachDB (via the postgres adapter)
 
 CockroachDB speaks the Postgres wire protocol, so the existing

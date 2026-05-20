@@ -35,6 +35,9 @@ _VALID_RELATIONAL = {
     "sqlite",
     "duckdb",
     "mysql", "mariadb",
+    "mssql", "sqlserver",
+    "oracle",
+    "db2",
     # CockroachDB speaks the Postgres wire protocol; users select it
     # by setting ENHANCED_RELATIONAL_PROVIDER=postgres and pointing
     # POSTGRES_* at a Cockroach cluster. See docs/PROFILES.md.
@@ -87,6 +90,18 @@ async def get_relational_pool(**kwargs: Any):
         from src.db_adapters import relational_mysql
 
         return await relational_mysql.create_pool(**kwargs)
+    if provider in ("mssql", "sqlserver"):
+        from src.db_adapters import relational_mssql
+
+        return await relational_mssql.create_pool(**kwargs)
+    if provider == "oracle":
+        from src.db_adapters import relational_oracle
+
+        return await relational_oracle.create_pool(**kwargs)
+    if provider == "db2":
+        from src.db_adapters import relational_db2
+
+        return await relational_db2.create_pool(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_RELATIONAL_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_RELATIONAL)}"
