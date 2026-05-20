@@ -202,6 +202,8 @@ graph-nebulagraph = ["nebula3-python>=3.5.0,<4"]
 graph-ladybug = ["ladybug>=0.16.1"]
 cache-memcached = ["pymemcache>=4.0.0,<5"]
 relational-sqlite = ["aiosqlite>=0.20.0,<1"]
+relational-duckdb = ["duckdb>=1.0.0,<2"]
+relational-mysql = ["asyncmy>=0.2.10,<1"]
 
 # pgvector vector adapter (Phase 5; see docs/PROFILES.md):
 #   pip install enhanced-cognee[vector-pgvector]

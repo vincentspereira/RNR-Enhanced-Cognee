@@ -184,6 +184,74 @@ no equivalent of pub/sub, sorted sets, or hash tables:
 | `flushdb()` | ❌ | Memcached's `flush_all()` wipes the *entire server*; not exposed under the redis name |
 | Pub/sub | ❌ | Memcached has none |
 
+### DuckDB relational adapter -- columnar OLAP
+
+`src/db_adapters/relational_duckdb.py` (shipped 2026-05-20) is an
+MIT-licensed embedded **columnar** database. Useful when the workload
+is analytics-heavy (group-by, aggregate, window functions) but you
+don't want a separate Postgres server. Exposes the same
+``asyncpg.Pool``-shape as the other relational adapters; sync DuckDB
+calls are wrapped with ``asyncio.to_thread``.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `?` placeholders (positional). Not compatible with asyncpg `$1` / `$2` |
+| Concurrency | Single writer per file. Use `:memory:` for ephemeral, per-process file path for concurrent writers |
+| pgvector / array | No pgvector; arrays via `LIST` type with a different syntax |
+| `database` kwarg | Used as the DuckDB file path. Falls back to `DUCKDB_DB_PATH`, then `POSTGRES_DB`, then `./enhanced_cognee.duckdb` |
+| `DUCKDB_READ_ONLY=true` | Opens the file read-only -- useful for BI / Superset readers alongside a writer process |
+
+When to pick DuckDB: analytics workloads on a single host where you
+want OLAP power without standing up Postgres. The Superset BI
+dashboards in `monitoring/superset-dashboards/` can target DuckDB
+directly.
+
+### MySQL / MariaDB relational adapter
+
+`src/db_adapters/relational_mysql.py` (shipped 2026-05-20). Targets
+MySQL 8+ / MariaDB 10+ / Percona Server / Vitess via the
+**asyncmy** Apache-2.0 driver. Same asyncpg.Pool-shaped surface as
+the rest of the relational tier.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `%s` placeholders (DB-API style). Not compatible with asyncpg `$1` / `$2` |
+| Array type | None natively -- remodel as `JSON` |
+| Upsert syntax | `INSERT ... ON DUPLICATE KEY UPDATE` (MySQL form), not `ON CONFLICT DO UPDATE` |
+| `vector(N)` columns | MariaDB 11.7+ has a vector type; MySQL 8.x does not |
+| Env vars | `MYSQL_HOST` / `MYSQL_PORT` / `MYSQL_DB` / `MYSQL_USER` / `MYSQL_PASSWORD` |
+| Provider value | Both `mysql` and `mariadb` route to this adapter |
+
+When to pick MySQL / MariaDB: you already operate one of these at
+scale, or your hosting provider only offers managed MySQL (Aurora
+MySQL, Cloud SQL for MySQL, Azure DB for MySQL, PlanetScale).
+
+### CockroachDB (via the postgres adapter)
+
+CockroachDB speaks the Postgres wire protocol, so the existing
+`postgres` adapter works against a Cockroach cluster with **no code
+changes**. Set:
+
+```bash
+ENHANCED_RELATIONAL_PROVIDER=postgres
+POSTGRES_HOST=cockroach.internal
+POSTGRES_PORT=26257
+POSTGRES_DB=defaultdb
+POSTGRES_USER=root
+POSTGRES_PASSWORD=cognee_password
+```
+
+Caveats vs vanilla Postgres:
+
+- Cockroach uses serializable isolation by default (some Postgres
+  applications expect read-committed). Set `default_transaction_isolation` if needed.
+- Cockroach doesn't support all Postgres extensions -- in particular,
+  pgvector is not supported as of 2026-05. Pair the Cockroach
+  relational tier with a separate vector backend (`qdrant`, `chroma`,
+  `weaviate`, `milvus`, etc).
+- AGE (Apache AGE) is also not supported; pair with `arcadedb` /
+  `neo4j` / `memgraph` for the graph tier.
+
 ### SQLite relational adapter -- compatibility caveats vs asyncpg
 
 | Concern | Impact |

@@ -120,7 +120,10 @@ class TestRelationalFactory:
 
     @pytest.mark.asyncio
     async def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_RELATIONAL_PROVIDER", "mysql")
+        # `clickhouse` is not in the relational matrix (it's an OLAP
+        # column store accessed via SQLAlchemy in application code).
+        # `mysql` was the old sentinel; PR 10 made it a valid provider.
+        monkeypatch.setenv("ENHANCED_RELATIONAL_PROVIDER", "clickhouse")
         with pytest.raises(ValueError, match="ENHANCED_RELATIONAL_PROVIDER"):
             await db_factory.get_relational_pool()
 

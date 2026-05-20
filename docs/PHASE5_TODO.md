@@ -38,6 +38,14 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 | `nebulagraph` | nGQL | ✅ **SHIPPED 2026-05-20** | Routes through NebulaGraph 3+ openCypher mode; only the literal-RETURN form gets a `YIELD` rewrite. |
 | `ladybug` | Cognee-native | ✅ **SHIPPED 2026-05-20** | In-process adapter mirroring the `networkx_inmemory` shape; uses ladybug's native graph API for COUNT / DETACH DELETE / RETURN-all. |
 
+### Relational tier alternates (added 2026-05-20)
+
+| Provider | Status | Notes |
+|---|---|---|
+| `duckdb` | ✅ **SHIPPED 2026-05-20** (PR 10) | MIT-licensed embedded columnar OLAP database. asyncpg-shaped facade via `asyncio.to_thread` over the sync duckdb driver. Great for analytics workloads + Superset BI dashboards. See `docs/PROFILES.md` for caveats. |
+| `mysql` / `mariadb` | ✅ **SHIPPED 2026-05-20** (PR 10) | MySQL 8+ / MariaDB 10+ via the asyncmy (Apache-2.0) driver. Targets managed offerings: Aurora MySQL, Cloud SQL for MySQL, Azure DB for MySQL, PlanetScale, Vitess. |
+| CockroachDB | 🟢 **WORKS VIA postgres** | Speaks Postgres wire protocol; existing `postgres` adapter targets it with no code changes. Set `POSTGRES_HOST=cockroach.internal POSTGRES_PORT=26257`. See PROFILES.md for caveats (no pgvector, no AGE). |
+
 ### Misc
 
 - `redis_compat` -- wire-compatible alternative Redis fork (e.g. KeyDB

@@ -30,7 +30,15 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
-_VALID_RELATIONAL = {"postgres", "postgresql", "sqlite"}
+_VALID_RELATIONAL = {
+    "postgres", "postgresql",
+    "sqlite",
+    "duckdb",
+    "mysql", "mariadb",
+    # CockroachDB speaks the Postgres wire protocol; users select it
+    # by setting ENHANCED_RELATIONAL_PROVIDER=postgres and pointing
+    # POSTGRES_* at a Cockroach cluster. See docs/PROFILES.md.
+}
 _VALID_VECTOR = {"qdrant", "pgvector", "lancedb", "chroma", "weaviate", "milvus"}
 _VALID_GRAPH = {
     "arcadedb", "neo4j", "apache_age",
@@ -71,6 +79,14 @@ async def get_relational_pool(**kwargs: Any):
         from src.db_adapters import relational_sqlite
 
         return await relational_sqlite.create_pool(**kwargs)
+    if provider == "duckdb":
+        from src.db_adapters import relational_duckdb
+
+        return await relational_duckdb.create_pool(**kwargs)
+    if provider in ("mysql", "mariadb"):
+        from src.db_adapters import relational_mysql
+
+        return await relational_mysql.create_pool(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_RELATIONAL_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_RELATIONAL)}"
