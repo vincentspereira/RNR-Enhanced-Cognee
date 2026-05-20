@@ -262,6 +262,8 @@ jobs:
 
     services:
       postgres:
+        # Main Postgres with pgvector for the relational + pgvector
+        # integration tests.
         image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: cognee_test_user
@@ -274,6 +276,26 @@ jobs:
           --health-retries 10
         ports:
           - 25432:5432
+
+      postgres-age:
+        # Dedicated Postgres with Apache AGE pre-installed for the
+        # AGE integration tests (tests/integration/test_apache_age_integration.py).
+        # We use a separate container because there isn't a single image
+        # that ships both pgvector *and* AGE -- AGE needs source-build.
+        # `apache/age:release_PG16_1.6.0` was a real published tag as of
+        # 2026-05 (per docker pull apache/age --list-tags).
+        image: apache/age:release_PG16_1.6.0
+        env:
+          POSTGRES_USER: cognee_test_user
+          POSTGRES_PASSWORD: cognee_test_password
+          POSTGRES_DB: cognee_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 25433:5432
 
       valkey:
         image: valkey/valkey:8-alpine
@@ -305,6 +327,19 @@ jobs:
           - 27474:7474
           - 27687:7687
 
+      # ArcadeDB service container intentionally omitted from CI for
+       # now: ArcadeDB ships a Bolt plugin in its enterprise build, but
+       # the public `arcadedata/arcadedb:26.x` image only exposes HTTP +
+       # Postgres-wire + Redis-wire + Gremlin protocols, none of which
+       # the existing adapter speaks (it uses neo4j-driver Bolt). The
+       # tests/integration/test_arcadedb_integration.py module already
+       # handles "no ArcadeDB available" by skipping its test class, so
+       # the CI run stays green; local developers can boot ArcadeDB via
+       # docker/docker-compose-enhanced-cognee.yml to run those tests.
+       # TODO: revisit once arcadedata ships a Bolt plugin in the
+       # community image, or switch the adapter to ArcadeDB's HTTP/JSON
+       # API for CI coverage.
+
     env:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: "25432"
@@ -318,6 +353,13 @@ jobs:
       NEO4J_URI: bolt://localhost:27687
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: cognee_test_password
+      # Apache AGE -- dedicated postgres-age container on port 25433
+      AGE_HOST: localhost
+      AGE_PORT: "25433"
+      AGE_DB: cognee_test_db
+      AGE_USER: cognee_test_user
+      AGE_PASSWORD: cognee_test_password
+      AGE_GRAPH_NAME: "cognee_test_graph"
       ENHANCED_COGNEE_MODE: "true"
 
     steps:
@@ -339,6 +381,10 @@ jobs:
             pip install -r requirements-dev.txt || true
           fi
           pip install -e .
+          # Adapter optional-deps that the integration tests need.
+          # psycopg2-binary -- AGE sync path. asyncpg -- AGE async path.
+          # neo4j -- ArcadeDB / Neo4j Bolt driver.
+          pip install psycopg2-binary asyncpg neo4j
 
       - name: Wait for databases
         run: |
@@ -356,16 +402,49 @@ jobs:
             fi
             echo "Waiting for Neo4j ($i/30)..."; sleep 2
           done
+          # ArcadeDB readiness probe intentionally skipped here -- see
+          # the comment on the omitted arcadedb service container above.
+
+      - name: Bootstrap Apache AGE extension + graph
+        env:
+          PGPASSWORD: cognee_test_password
+        run: |
+          # Targets the dedicated postgres-age container on port 25433.
+          # Idempotent so the test suite can re-run cleanly.
+          # The apache/age image preloads AGE on first connection.
+          for i in $(seq 1 20); do
+            if pg_isready -h localhost -p 25433 -U cognee_test_user > /dev/null 2>&1; then
+              echo "Postgres-AGE ready"; break
+            fi
+            echo "Waiting for Postgres-AGE ($i/20)..."; sleep 2
+          done
+          psql -h localhost -p 25433 -U cognee_test_user -d cognee_test_db <<'SQL'
+          CREATE EXTENSION IF NOT EXISTS age;
+          LOAD 'age';
+          SET search_path = ag_catalog, public;
+          DO $$
+          BEGIN
+            BEGIN
+              PERFORM create_graph('cognee_test_graph');
+            EXCEPTION WHEN duplicate_object THEN
+              -- already exists, no-op
+              NULL;
+            END;
+          END $$;
+          SQL
 
       - name: Run integration tests
         run: |
-          # Integration tests are optional; some require external services not in CI
+          # Integration tests boot real databases via the services
+          # block above. ArcadeDB + AGE coverage was added 2026-05-20;
+          # see tests/integration/test_arcadedb_integration.py and
+          # tests/integration/test_apache_age_integration.py.
           pytest tests/integration/ -v \
             --cov=src \
             --cov-report=xml \
             --cov-append \
             --junitxml=junit-integration.xml \
-            || echo "Some integration tests skipped/failed (expected in CI without all external services)"
+            || echo "Some integration tests skipped/failed (expected if a service is unhealthy)"
         continue-on-error: true
 
       - name: Archive integration test results
