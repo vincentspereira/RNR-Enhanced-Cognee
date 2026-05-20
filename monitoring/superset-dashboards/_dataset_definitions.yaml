@@ -1,0 +1,154 @@
+# Enhanced Cognee Superset dataset definitions.
+#
+# These are the upstream datasets (SQL queries against the live
+# databases) that all 4 dashboards depend on. Import this file FIRST
+# so the dashboard YAMLs find the datasets they reference by name.
+#
+# Format follows Apache Superset 4.x's dataset import schema. Each
+# dataset binds to a `database_name` -- you must first create database
+# connections in Superset matching those names (see README.md for the
+# DSNs Enhanced Cognee ships with).
+
+version: "1.0.0"
+
+datasets:
+
+  # ---------------------------------------------------------------
+  # Postgres datasets
+  # ---------------------------------------------------------------
+
+  - dataset_name: memory_documents
+    database_name: enhanced_cognee_postgres   # postgresql://cognee_user@postgres-enhanced:5432/cognee_db
+    schema: shared_memory
+    table_name: documents
+    description: |
+      Document-store rows from the Enhanced Cognee memory pipeline.
+      Drives `memory_growth.json` -- size + category mix over time.
+
+  - dataset_name: memory_documents_daily
+    database_name: enhanced_cognee_postgres
+    schema: shared_memory
+    sql: |
+      SELECT
+        DATE_TRUNC('day', created_at)         AS day,
+        COALESCE(memory_category, 'unknown')  AS category,
+        COUNT(*)                              AS new_documents,
+        SUM(file_size)                        AS bytes_added,
+        SUM(COUNT(*)) OVER (
+          PARTITION BY COALESCE(memory_category, 'unknown')
+          ORDER BY DATE_TRUNC('day', created_at)
+        ) AS cumulative_documents
+      FROM shared_memory.documents
+      GROUP BY 1, 2
+    description: |
+      Per-day, per-category document counts + cumulative totals.
+      Drives the area-chart in `memory_growth.json`.
+
+  - dataset_name: llm_usage
+    database_name: enhanced_cognee_postgres
+    schema: shared_memory
+    table_name: llm_usage
+    description: |
+      Per-call LLM cost / token telemetry from
+      ``src/llm_cost_tracker.py``. Drives `llm_cost_trends.json`.
+
+  - dataset_name: llm_usage_daily_by_agent
+    database_name: enhanced_cognee_postgres
+    schema: shared_memory
+    sql: |
+      SELECT
+        DATE_TRUNC('day', recorded_at)               AS day,
+        agent_id,
+        model,
+        SUM(input_tokens + output_tokens)            AS total_tokens,
+        SUM(estimated_cost_usd)                      AS cost_usd,
+        COUNT(*)                                     AS calls
+      FROM shared_memory.llm_usage
+      GROUP BY 1, 2, 3
+    description: |
+      Daily LLM cost roll-up by agent + model. Used for the cost-trend
+      stacked-bar chart and the per-agent top-N cost table.
+
+  - dataset_name: memory_dedup_effectiveness
+    database_name: enhanced_cognee_postgres
+    schema: shared_memory
+    sql: |
+      -- Dedup effectiveness derived from the embeddings table:
+      -- per-day, ratio of distinct content hashes to total chunks.
+      -- Lower distinct-ratio -> better dedup.
+      WITH per_day AS (
+        SELECT
+          DATE_TRUNC('day', created_at)                       AS day,
+          COUNT(*)                                             AS chunks,
+          COUNT(DISTINCT md5(content))                         AS distinct_chunks
+        FROM shared_memory.embeddings
+        GROUP BY 1
+      )
+      SELECT
+        day,
+        chunks,
+        distinct_chunks,
+        chunks - distinct_chunks                       AS duplicates_avoided,
+        ROUND(
+          100.0 * (chunks - distinct_chunks) / NULLIF(chunks, 0),
+          2
+        )                                              AS dedup_pct
+      FROM per_day
+    description: |
+      Day-by-day dedup effectiveness. Drives `dedup_effectiveness.json`.
+      Compares distinct content hashes vs total chunks; the gap is
+      "duplicates avoided" (chunks the dedup layer would have rejected
+      if it had been wired upstream of the ingest pipeline).
+
+  # ---------------------------------------------------------------
+  # ClickHouse datasets (SigNoz OTel traces)
+  # ---------------------------------------------------------------
+
+  - dataset_name: signoz_traces_by_agent
+    database_name: signoz_clickhouse        # clickhouse://signoz:9000/signoz_traces
+    schema: signoz_traces
+    sql: |
+      SELECT
+        toDate(timestamp)                                 AS day,
+        toHour(timestamp)                                 AS hour_of_day,
+        any(serviceName)                                  AS service,
+        JSONExtractString(traceModel, 'attributes.agent_id') AS agent_id,
+        JSONExtractString(traceModel, 'name')             AS tool_name,
+        COUNT()                                           AS spans
+      FROM signoz_index_v2
+      WHERE
+        JSONExtractString(traceModel, 'name') LIKE 'mcp.%'
+        OR JSONExtractString(traceModel, 'name') LIKE 'tool.%'
+      GROUP BY day, hour_of_day, service, agent_id, tool_name
+    description: |
+      Per-day, per-hour tool-call counts grouped by agent. Drives the
+      heatmap in `agent_activity.json`. Queries the SigNoz traces
+      table where Enhanced Cognee MCP spans land.
+
+  - dataset_name: signoz_endpoint_latency
+    database_name: signoz_clickhouse
+    schema: signoz_traces
+    sql: |
+      -- Per-minute endpoint latency percentiles + error rate.
+      -- Sourced from SigNoz's enriched trace store. Use this when
+      -- comparing Locust runs against a known baseline (see
+      -- tests/load/locustfile.py).
+      SELECT
+        toStartOfMinute(timestamp)                         AS minute_bucket,
+        JSONExtractString(traceModel, 'name')              AS endpoint,
+        COUNT()                                            AS calls,
+        countIf(statusCode = 'STATUS_CODE_ERROR')          AS errors,
+        100.0 * countIf(statusCode = 'STATUS_CODE_ERROR')
+          / NULLIF(COUNT(), 0)                             AS error_pct,
+        COUNT() / 60.0                                     AS rps,
+        quantile(0.50)(durationNano / 1e6)                 AS p50_latency_ms,
+        quantile(0.95)(durationNano / 1e6)                 AS p95_latency_ms,
+        quantile(0.99)(durationNano / 1e6)                 AS p99_latency_ms
+      FROM signoz_index_v2
+      WHERE
+        JSONExtractString(traceModel, 'name') LIKE 'mcp.%'
+        OR JSONExtractString(traceModel, 'name') LIKE 'tool.%'
+      GROUP BY minute_bucket, endpoint
+    description: |
+      Per-minute endpoint p50/p95/p99 + error % + RPS. Drives
+      `perf_regression.json` for spotting Locust-run regressions.

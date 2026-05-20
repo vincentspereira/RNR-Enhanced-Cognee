@@ -55,7 +55,7 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 | Live integration tests against ArcadeDB | HANDOVER §9 acceptance criterion. Integration tests are `continue-on-error: true` so non-blocking. | Wire CI to bring up the ArcadeDB stack + run `tests/integration/`. |
 | Live integration tests against Apache AGE | Same as above. | Wire CI to install Postgres with AGE extension. |
 | Live verification of SigNoz + Superset stack | Compose YAML validates, but runtime smoke test requires booting the stack and checking traces appear in the UI. | Bring up `monitoring/docker-compose-monitoring.yml`, send a trace via `src/tracing.py`, screenshot/verify. |
-| Exported Superset dashboards | The four dashboard slots in `monitoring/superset-dashboards/README.md` (memory_growth / agent_activity / llm_cost_trends / dedup_effectiveness) are placeholders. | Build them in a live Superset instance with representative data, then `superset export-dashboards -p /opt/cognee-dashboards/<name>.json` to harvest the JSON. |
+| Exported Superset dashboards | ✅ **SHIPPED 2026-05-20** | All 5 dashboards (memory_growth / agent_activity / llm_cost_trends / dedup_effectiveness / perf_regression) ship as importable Superset 4.x JSON in `monitoring/superset-dashboards/` with a shared `_dataset_definitions.yaml`. The queries hit the real schemas (`shared_memory.documents`, `shared_memory.llm_usage`, `shared_memory.embeddings`, `signoz_traces.signoz_index_v2`); the dashboards light up as soon as data flows. |
 
 ---
 
@@ -64,7 +64,7 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 | Item | Status | Effort | Trigger |
 |---|---|---|---|
 | Locust scenarios against the live stack | ✅ **SHIPPED 2026-05-20** | -- | `tests/load/locustfile.py` now ships 8 `HttpUser` classes -- the original 3 memory-CRUD profiles plus 4 Phase 5 additions (SemanticSearchUser, KnowledgeGraphUser, GDPRWorkflowUser, BackupVerifyUser) + the opt-in HealthCheckUser. See `tests/load/README.md` for run instructions + recommended SLAs. |
-| Perf-regression dashboard in SigNoz | 📋 | 0.5 days | Once Locust is wired (now done), point its OTel output at SigNoz. Needs a running stack. |
+| Perf-regression dashboard in SigNoz | ✅ **SHIPPED 2026-05-20** | -- | Ships as `monitoring/superset-dashboards/perf_regression.json` -- p50/p95/p99 latency, error %, RPS, slowest-endpoints, all sourced from SigNoz's ClickHouse trace store. Use to compare Locust runs against a baseline. |
 | Benchmarks comparing graph providers (arcadedb / neo4j / apache_age / kuzu) | 📋 | 1-2 days | Used to defend the Phase 2 default choice with numbers, not just licence rationale. Needs a running stack. |
 
 ---
@@ -78,7 +78,7 @@ gaps:
 |---|---|---|
 | Parameterised Cypher (`$param` syntax) | ✅ **SHIPPED 2026-05-20** | Now passes through AGE's three-arg `cypher(graph, $$ ... $$, agtype_map)` form via psycopg2 parameter binding. Rejects payloads containing `$$` to prevent dollar-quote breakout. |
 | Async session API | ✅ **SHIPPED 2026-05-20** | `get_async_graph_driver()` returns an asyncpg-backed `_AsyncAGEDriver`. Use `async with driver.session() as s: await s.run(cypher)`. |
-| Returning native graph elements as neo4j `Node` / `Relationship` objects | 2-3 days | Today, callers receive parsed agtype JSON (a dict). A real Node wrapper would close the API gap with the other graph providers. |
+| Returning native graph elements as neo4j `Node` / `Relationship` objects | ✅ **SHIPPED 2026-05-20** | `_unwrap_agtype` now converts `::vertex` payloads to `_AGENode` and `::edge` payloads to `_AGERelationship`, both shaped like `neo4j.graph.Node` / `Relationship` (`.id` / `.labels` / `.type` / `.start_node` / `.end_node` / dict protocol). `::path` decodes to `List[_AGENode \| _AGERelationship]`. |
 
 ---
 

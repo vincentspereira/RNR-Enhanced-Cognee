@@ -314,6 +314,163 @@ class TestAGEAgtypeUnwrap:
         assert graph_apache_age._unwrap_agtype([1, 2]) == [1, 2]
 
 
+class TestAGENativeNode:
+    """neo4j.graph.Node-shaped conversion of ::vertex agtype."""
+
+    def test_vertex_returns_age_node(self):
+        agtype = (
+            '{"id": 844424930131969, "label": "Person", '
+            '"properties": {"name": "Alice", "age": 30}}::vertex'
+        )
+        node = graph_apache_age._unwrap_agtype(agtype)
+
+        assert isinstance(node, graph_apache_age._AGENode)
+        assert node.id == 844424930131969
+        assert node.element_id == "844424930131969"
+        assert node.labels == frozenset({"Person"})
+        assert node["name"] == "Alice"
+        assert node["age"] == 30
+
+    def test_node_dict_protocol(self):
+        node = graph_apache_age._AGENode(1, "X", {"k": "v"})
+        assert dict(node.items()) == {"k": "v"}
+        assert node.keys() == ["k"]
+        assert node.values() == ["v"]
+        assert "k" in node
+        assert "missing" not in node
+        assert len(node) == 1
+        assert list(iter(node)) == ["k"]
+        assert node.get("k") == "v"
+        assert node.get("missing", "default") == "default"
+
+    def test_node_with_empty_label_str(self):
+        # Stub endpoints (Relationship.start_node/end_node) construct
+        # _AGENode with no label. The labels set should be empty.
+        node = graph_apache_age._AGENode(42, "")
+        assert node.labels == frozenset()
+
+    def test_node_with_multi_label_list(self):
+        node = graph_apache_age._AGENode(1, ["Person", "Employee"], {})
+        assert node.labels == frozenset({"Person", "Employee"})
+
+    def test_node_equality_and_hash(self):
+        a = graph_apache_age._AGENode(1, "X", {"k": "v"})
+        b = graph_apache_age._AGENode(1, "X", {"k": "different"})
+        c = graph_apache_age._AGENode(2, "X", {"k": "v"})
+
+        assert a == b
+        assert a != c
+        assert hash(a) == hash(b)
+        assert (a == "not a node") is False
+
+    def test_node_repr_round_trip(self):
+        node = graph_apache_age._AGENode(1, "Person", {"name": "Bob"})
+        r = repr(node)
+        assert "Person" in r and "Bob" in r and "id=1" in r
+
+    def test_vertex_without_label_returns_dict_for_safety(self):
+        # Defensive path -- malformed payloads round-trip as dicts
+        # rather than raising, so the caller can inspect them.
+        v = graph_apache_age._unwrap_agtype('{"id": 1}::vertex')
+        assert isinstance(v, dict)
+        assert v == {"id": 1}
+
+
+class TestAGENativeRelationship:
+    """neo4j.graph.Relationship-shaped conversion of ::edge agtype."""
+
+    def test_edge_returns_age_relationship(self):
+        agtype = (
+            '{"id": 1407374883553281, "label": "KNOWS", '
+            '"start_id": 844424930131969, "end_id": 844424930131970, '
+            '"properties": {"since": 2020}}::edge'
+        )
+        rel = graph_apache_age._unwrap_agtype(agtype)
+
+        assert isinstance(rel, graph_apache_age._AGERelationship)
+        assert rel.id == 1407374883553281
+        assert rel.element_id == "1407374883553281"
+        assert rel.type == "KNOWS"
+        assert rel["since"] == 2020
+
+    def test_relationship_start_and_end_node_stubs(self):
+        rel = graph_apache_age._AGERelationship(
+            10, "KNOWS", 100, 200, {"since": 2020}
+        )
+        assert isinstance(rel.start_node, graph_apache_age._AGENode)
+        assert rel.start_node.id == 100
+        assert rel.start_node.labels == frozenset()
+        assert isinstance(rel.end_node, graph_apache_age._AGENode)
+        assert rel.end_node.id == 200
+        # nodes tuple returns (start, end)
+        s, e = rel.nodes
+        assert s.id == 100 and e.id == 200
+
+    def test_relationship_dict_protocol(self):
+        rel = graph_apache_age._AGERelationship(1, "T", 2, 3, {"k": "v"})
+        assert dict(rel.items()) == {"k": "v"}
+        assert rel.keys() == ["k"]
+        assert rel.values() == ["v"]
+        assert "k" in rel
+        assert len(rel) == 1
+        assert list(iter(rel)) == ["k"]
+        assert rel.get("k") == "v"
+        assert rel.get("missing", "default") == "default"
+
+    def test_relationship_equality_and_hash(self):
+        a = graph_apache_age._AGERelationship(1, "T", 2, 3)
+        b = graph_apache_age._AGERelationship(1, "T", 999, 999, {"different": True})
+        c = graph_apache_age._AGERelationship(2, "T", 2, 3)
+
+        assert a == b  # same id + type
+        assert a != c  # different id
+        assert hash(a) == hash(b)
+        assert (a == "not a rel") is False
+
+    def test_relationship_repr_round_trip(self):
+        rel = graph_apache_age._AGERelationship(10, "KNOWS", 100, 200, {"since": 2020})
+        r = repr(rel)
+        assert "KNOWS" in r and "id=10" in r and "start=100" in r and "end=200" in r
+
+    def test_edge_without_required_keys_returns_dict_for_safety(self):
+        v = graph_apache_age._unwrap_agtype('{"id": 2}::edge')
+        assert isinstance(v, dict)
+        assert v == {"id": 2}
+
+
+class TestAGENativePath:
+    """::path agtype decodes to a list of _AGENode / _AGERelationship."""
+
+    def test_empty_path(self):
+        v = graph_apache_age._unwrap_agtype("[]::path")
+        assert v == []
+
+    def test_single_hop_path(self):
+        # AGE path = alternating [vertex, edge, vertex, ...]
+        agtype = (
+            '[{"id": 1, "label": "A", "properties": {}},'
+            ' {"id": 10, "label": "REL", "start_id": 1, "end_id": 2, "properties": {}},'
+            ' {"id": 2, "label": "B", "properties": {}}]::path'
+        )
+        path = graph_apache_age._unwrap_agtype(agtype)
+
+        assert isinstance(path, list)
+        assert len(path) == 3
+        assert isinstance(path[0], graph_apache_age._AGENode)
+        assert path[0].labels == frozenset({"A"})
+        assert isinstance(path[1], graph_apache_age._AGERelationship)
+        assert path[1].type == "REL"
+        assert isinstance(path[2], graph_apache_age._AGENode)
+        assert path[2].labels == frozenset({"B"})
+
+    def test_path_with_malformed_element_passes_through(self):
+        # Defensive: a path element that doesn't match vertex/edge
+        # shape round-trips as the raw dict.
+        agtype = '[{"random": "stuff"}]::path'
+        path = graph_apache_age._unwrap_agtype(agtype)
+        assert path == [{"random": "stuff"}]
+
+
 class TestAGERecordAndResult:
     """Ensure neo4j.Record-style access works on _AGERecord."""
 

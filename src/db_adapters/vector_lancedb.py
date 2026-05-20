@@ -202,11 +202,10 @@ class _LanceDBClient:
     ) -> List[_SearchHit]:
         import json
 
-        if query_filter is not None:
-            raise NotImplementedError(
-                "lancedb adapter: query_filter is not yet supported in "
-                "search(). Filter at the application layer."
-            )
+        from src.db_adapters import _vector_filter
+
+        normalised = _vector_filter.normalise(query_filter)
+        where_clause = _vector_filter.to_lance_where(normalised)
 
         db = self._connect()
         table = db.open_table(collection_name)
@@ -216,6 +215,8 @@ class _LanceDBClient:
         search = table.search(list(query_vector))
         if metric is not None:
             search = search.metric(metric)
+        if where_clause:
+            search = search.where(where_clause)
         df = search.limit(limit).to_pandas()
 
         hits: List[_SearchHit] = []

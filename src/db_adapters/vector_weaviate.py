@@ -40,7 +40,7 @@ from __future__ import annotations
 import json
 import os
 import uuid as _uuid_mod
-from typing import Any, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 
 class _CollectionDescription:
@@ -210,22 +210,26 @@ class _WeaviateClient:
         query_filter: Any = None,
         **kwargs: Any,
     ) -> List[_SearchHit]:
-        if query_filter is not None:
-            raise NotImplementedError(
-                "weaviate adapter: query_filter is not yet wired through "
-                "the qdrant Filter -> weaviate Filter translator. "
-                "Filter at the application layer."
-            )
+        from src.db_adapters import _vector_filter
+
+        # normalise() first so compound filters raise NotImplementedError
+        # before we touch the weaviate import (keeps the rejection path
+        # working in test envs that don't have weaviate installed).
+        normalised = _vector_filter.normalise(query_filter)
+        weaviate_filter = _vector_filter.to_weaviate_filter(normalised)
 
         from weaviate.classes.query import MetadataQuery
 
         client = self._connect()
         col = client.collections.get(collection_name)
-        res = col.query.near_vector(
-            near_vector=list(query_vector),
-            limit=limit,
-            return_metadata=MetadataQuery(distance=True),
-        )
+        near_vector_kwargs: Dict[str, Any] = {
+            "near_vector": list(query_vector),
+            "limit": limit,
+            "return_metadata": MetadataQuery(distance=True),
+        }
+        if weaviate_filter is not None:
+            near_vector_kwargs["filters"] = weaviate_filter
+        res = col.query.near_vector(**near_vector_kwargs)
         hits: List[_SearchHit] = []
         for obj in res.objects:
             dist = float(getattr(obj.metadata, "distance", 0.0) or 0.0)

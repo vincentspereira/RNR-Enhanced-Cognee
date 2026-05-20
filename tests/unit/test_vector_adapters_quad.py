@@ -12,7 +12,10 @@ Each adapter is tested for:
   - search returning ScoredPoint-shape hits with normalised score
   - delete by ID list, by FilterSelector (single must FieldCondition),
     and NotImplementedError on complex filters
-  - query_filter in search raises NotImplementedError
+  - query_filter in search:
+      * single FieldCondition translates to native (where / expr / SQL)
+      * compound filters raise NotImplementedError via the shared
+        ``_vector_filter`` translator
 """
 
 from __future__ import annotations
@@ -83,11 +86,46 @@ class TestLanceDBAdapter:
         with pytest.raises(RuntimeError, match="not found"):
             client.get_collection("missing")
 
-    def test_search_query_filter_raises(self):
+    def test_search_query_filter_compound_raises(self):
+        # Compound filters (multiple must clauses) are rejected at the
+        # filter-translator layer because we only support single-must
+        # equality filters across all 5 vector backends.
         from src.db_adapters import vector_lancedb
         client = vector_lancedb.create_client()
-        with pytest.raises(NotImplementedError, match="query_filter"):
-            client.search("ats", query_vector=[0.1], query_filter=object())
+        cond_a = MagicMock(key="user_id", match=MagicMock(value="u1"))
+        cond_b = MagicMock(key="tag", match=MagicMock(value="t1"))
+        filt = MagicMock(must=[cond_a, cond_b], should=None, must_not=None)
+        with pytest.raises(NotImplementedError, match="single"):
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+    def test_search_query_filter_translated_to_where(self):
+        # Single FieldCondition is now translated into LanceDB SQL WHERE.
+        from src.db_adapters import vector_lancedb
+        client = vector_lancedb.create_client()
+        fake_db = MagicMock()
+        fake_table = MagicMock()
+        fake_search = MagicMock()
+        fake_search.metric.return_value = fake_search
+        fake_search.where.return_value = fake_search
+        fake_search.limit.return_value = fake_search
+
+        class _EmptyDF:
+            def iterrows(self):
+                return iter([])
+
+        fake_search.to_pandas.return_value = _EmptyDF()
+        fake_table.search.return_value = fake_search
+        fake_db.open_table.return_value = fake_table
+        client._db = fake_db
+
+        cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
+        filt = MagicMock(must=[cond], should=None, must_not=None)
+        client.search("ats", query_vector=[0.1], query_filter=filt)
+
+        fake_search.where.assert_called_once()
+        where_arg = fake_search.where.call_args[0][0]
+        assert "user_id" in where_arg
+        assert "u1" in where_arg
 
     def test_delete_by_id_list(self):
         from src.db_adapters import vector_lancedb
@@ -142,11 +180,30 @@ class TestChromaAdapter:
         assert vector_chroma._distance_to_chroma_metric("Distance.EUCLID") == "l2"
         assert vector_chroma._distance_to_chroma_metric("Distance.DOT") == "ip"
 
-    def test_search_query_filter_raises(self):
+    def test_search_query_filter_compound_raises(self):
         from src.db_adapters import vector_chroma
         client = vector_chroma.create_client()
-        with pytest.raises(NotImplementedError, match="query_filter"):
-            client.search("ats", query_vector=[0.1], query_filter=object())
+        cond_a = MagicMock(key="a", match=MagicMock(value="x"))
+        cond_b = MagicMock(key="b", match=MagicMock(value="y"))
+        filt = MagicMock(must=[cond_a, cond_b], should=None, must_not=None)
+        with pytest.raises(NotImplementedError, match="single"):
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+    def test_search_query_filter_translated_to_where(self):
+        from src.db_adapters import vector_chroma
+        client = vector_chroma.create_client()
+        fake_client = MagicMock()
+        fake_col = MagicMock()
+        fake_col.query.return_value = {"ids": [[]], "distances": [[]], "metadatas": [[]]}
+        fake_client.get_collection.return_value = fake_col
+        client._client = fake_client
+
+        cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
+        filt = MagicMock(must=[cond], should=None, must_not=None)
+        client.search("ats", query_vector=[0.1], query_filter=filt)
+
+        kwargs = fake_col.query.call_args.kwargs
+        assert kwargs.get("where") == {"user_id": "u1"}
 
     def test_delete_by_id_list(self):
         from src.db_adapters import vector_chroma
@@ -224,11 +281,55 @@ class TestWeaviateAdapter:
         import uuid as _u
         _u.UUID(a)              # must be a valid UUID format
 
-    def test_search_query_filter_raises(self):
+    def test_search_query_filter_compound_raises(self):
         from src.db_adapters import vector_weaviate
         client = vector_weaviate.create_client()
-        with pytest.raises(NotImplementedError, match="query_filter"):
-            client.search("ats", query_vector=[0.1], query_filter=object())
+        cond_a = MagicMock(key="a", match=MagicMock(value="x"))
+        cond_b = MagicMock(key="b", match=MagicMock(value="y"))
+        filt = MagicMock(must=[cond_a, cond_b], should=None, must_not=None)
+        with pytest.raises(NotImplementedError, match="single"):
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+    def test_search_query_filter_translated_to_weaviate_filter(self):
+        # Single FieldCondition translates to a Filter.by_property('payload')
+        # chain. We don't import weaviate here (the test injects a fake);
+        # we just verify the wiring kicks in.
+        import sys
+        from src.db_adapters import vector_weaviate
+
+        # Stub the weaviate.classes.query.Filter / MetadataQuery so the
+        # adapter doesn't need the real client lib.
+        fake_filter_cls = MagicMock()
+        fake_filter_instance = MagicMock(name="filter_instance")
+        fake_by_prop = MagicMock(name="by_prop")
+        fake_by_prop.like.return_value = fake_filter_instance
+        fake_filter_cls.by_property.return_value = fake_by_prop
+
+        fake_metadata_query = MagicMock(name="MetadataQuery")
+
+        fake_module = MagicMock()
+        fake_module.Filter = fake_filter_cls
+        fake_module.MetadataQuery = fake_metadata_query
+        sys.modules["weaviate.classes.query"] = fake_module
+
+        try:
+            client = vector_weaviate.create_client()
+            fake_client = MagicMock()
+            fake_col = MagicMock()
+            fake_res = MagicMock(objects=[])
+            fake_col.query.near_vector.return_value = fake_res
+            fake_client.collections.get.return_value = fake_col
+            client._client = fake_client
+
+            cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
+            filt = MagicMock(must=[cond], should=None, must_not=None)
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+            fake_filter_cls.by_property.assert_called_with("payload")
+            kwargs = fake_col.query.near_vector.call_args.kwargs
+            assert kwargs.get("filters") is fake_filter_instance
+        finally:
+            sys.modules.pop("weaviate.classes.query", None)
 
     def test_delete_unsupported_selector_raises(self):
         from src.db_adapters import vector_weaviate
@@ -279,11 +380,29 @@ class TestMilvusAdapter:
         assert vector_milvus._distance_to_milvus_metric("Distance.EUCLID") == "L2"
         assert vector_milvus._distance_to_milvus_metric("Distance.DOT") == "IP"
 
-    def test_search_query_filter_raises(self):
+    def test_search_query_filter_compound_raises(self):
         from src.db_adapters import vector_milvus
         client = vector_milvus.create_client()
-        with pytest.raises(NotImplementedError, match="query_filter"):
-            client.search("ats", query_vector=[0.1], query_filter=object())
+        cond_a = MagicMock(key="a", match=MagicMock(value="x"))
+        cond_b = MagicMock(key="b", match=MagicMock(value="y"))
+        filt = MagicMock(must=[cond_a, cond_b], should=None, must_not=None)
+        with pytest.raises(NotImplementedError, match="single"):
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+    def test_search_query_filter_translated_to_expr(self):
+        from src.db_adapters import vector_milvus
+        client = vector_milvus.create_client()
+        fake_client = MagicMock()
+        fake_client.search.return_value = [[]]
+        client._client = fake_client
+
+        cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
+        filt = MagicMock(must=[cond], should=None, must_not=None)
+        client.search("ats", query_vector=[0.1], query_filter=filt)
+
+        kwargs = fake_client.search.call_args.kwargs
+        expr = kwargs.get("filter")
+        assert expr and "user_id" in expr and "u1" in expr
 
     def test_delete_by_id_list(self):
         from src.db_adapters import vector_milvus

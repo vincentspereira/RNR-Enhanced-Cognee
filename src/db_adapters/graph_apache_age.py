@@ -31,9 +31,15 @@ a pointer to ``docs/PROFILES.md``.
   path. The async driver exposes ``.session()`` as an
   ``async with`` context manager.
 
-**Not yet supported (raises NotImplementedError):**
-- Returning whole graph elements as Python neo4j ``Node`` / ``Relationship``
-  objects -- callers receive the AGE ``agtype`` value parsed as JSON.
+**Native graph elements (since 2026-05-20):**
+- ``::vertex`` agtype payloads decode to ``_AGENode`` objects shaped
+  like ``neo4j.graph.Node`` (``node.id`` / ``node.labels`` /
+  ``node["prop"]`` / ``dict(node)``).
+- ``::edge`` agtype payloads decode to ``_AGERelationship`` shaped
+  like ``neo4j.graph.Relationship`` (``rel.type`` / ``rel.start_node``
+  / ``rel.end_node``).
+- ``::path`` payloads decode to a ``List[_AGENode | _AGERelationship]``
+  in vertex-edge-vertex-... order.
 
 Env-var fallbacks (in order): ``AGE_HOST`` / ``AGE_PORT`` / ``AGE_DB`` /
 ``AGE_USER`` / ``AGE_PASSWORD``, then ``POSTGRES_*`` (since AGE runs
@@ -51,7 +57,205 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, List, Optional, Sequence
+from typing import Any, Dict, FrozenSet, Iterator, List, Optional, Sequence, Tuple
+
+
+class _AGENode:
+    """``neo4j.graph.Node``-shaped wrapper around an AGE vertex agtype.
+
+    AGE returns vertices as JSON like
+    ``{"id": 844424930131969, "label": "Person", "properties": {...}}``
+    suffixed with ``::vertex``. This wrapper exposes the same surface
+    the ``neo4j`` Python driver exposes on its ``Node`` objects so call
+    sites that do ``node.labels`` / ``node["name"]`` / ``dict(node)``
+    keep working when ``ENHANCED_GRAPH_PROVIDER=apache_age``.
+
+    Supports both AGE's single-label (``"label": "Person"``) form *and*
+    the multi-label list form some queries return.
+    """
+
+    __slots__ = ("_id", "_labels", "_props")
+
+    def __init__(
+        self,
+        node_id: int,
+        labels: Sequence[str] | str,
+        properties: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        self._id = node_id
+        if isinstance(labels, str):
+            self._labels: FrozenSet[str] = frozenset((labels,)) if labels else frozenset()
+        else:
+            self._labels = frozenset(labels)
+        self._props = dict(properties or {})
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def element_id(self) -> str:
+        return str(self._id)
+
+    @property
+    def labels(self) -> FrozenSet[str]:
+        return self._labels
+
+    def __getitem__(self, key: str) -> Any:
+        return self._props[key]
+
+    def get(self, key: str, default: Any = None) -> Any:
+        return self._props.get(key, default)
+
+    def keys(self) -> List[str]:
+        return list(self._props.keys())
+
+    def values(self) -> List[Any]:
+        return list(self._props.values())
+
+    def items(self) -> List[Tuple[str, Any]]:
+        return list(self._props.items())
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._props)
+
+    def __contains__(self, key: object) -> bool:
+        return key in self._props
+
+    def __len__(self) -> int:
+        return len(self._props)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _AGENode):
+            return NotImplemented
+        return self._id == other._id and self._labels == other._labels
+
+    def __hash__(self) -> int:
+        return hash(("_AGENode", self._id))
+
+    def __repr__(self) -> str:
+        label_str = ":".join(sorted(self._labels)) if self._labels else ""
+        return f"<Node id={self._id} labels={{{label_str}}} properties={self._props!r}>"
+
+
+class _AGERelationship:
+    """``neo4j.graph.Relationship``-shaped wrapper around an AGE edge agtype.
+
+    AGE returns edges as JSON like
+    ``{"id": ..., "label": "KNOWS", "start_id": ..., "end_id": ...,
+       "properties": {...}}`` suffixed with ``::edge``. The ``start_node``
+    / ``end_node`` attributes are lazily-resolved ``_AGENode`` stubs
+    that carry only the vertex id -- AGE's edge representation doesn't
+    inline the endpoint labels/properties, so a caller that needs those
+    must issue a second ``MATCH (n) WHERE id(n) = ...`` query.
+    """
+
+    __slots__ = ("_id", "_type", "_start_id", "_end_id", "_props")
+
+    def __init__(
+        self,
+        rel_id: int,
+        rel_type: str,
+        start_id: int,
+        end_id: int,
+        properties: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        self._id = rel_id
+        self._type = rel_type
+        self._start_id = start_id
+        self._end_id = end_id
+        self._props = dict(properties or {})
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def element_id(self) -> str:
+        return str(self._id)
+
+    @property
+    def type(self) -> str:
+        return self._type
+
+    @property
+    def start_node(self) -> _AGENode:
+        return _AGENode(self._start_id, ())
+
+    @property
+    def end_node(self) -> _AGENode:
+        return _AGENode(self._end_id, ())
+
+    @property
+    def nodes(self) -> Tuple[_AGENode, _AGENode]:
+        return (self.start_node, self.end_node)
+
+    def __getitem__(self, key: str) -> Any:
+        return self._props[key]
+
+    def get(self, key: str, default: Any = None) -> Any:
+        return self._props.get(key, default)
+
+    def keys(self) -> List[str]:
+        return list(self._props.keys())
+
+    def values(self) -> List[Any]:
+        return list(self._props.values())
+
+    def items(self) -> List[Tuple[str, Any]]:
+        return list(self._props.items())
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._props)
+
+    def __contains__(self, key: object) -> bool:
+        return key in self._props
+
+    def __len__(self) -> int:
+        return len(self._props)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _AGERelationship):
+            return NotImplemented
+        return self._id == other._id and self._type == other._type
+
+    def __hash__(self) -> int:
+        return hash(("_AGERelationship", self._id))
+
+    def __repr__(self) -> str:
+        return (
+            f"<Relationship id={self._id} type={self._type!r} "
+            f"start={self._start_id} end={self._end_id} properties={self._props!r}>"
+        )
+
+
+def _agtype_to_element(parsed: Dict[str, Any], kind: str) -> Any:
+    """Convert a parsed agtype dict into the matching graph element.
+
+    Returns the parsed dict unchanged if the expected keys are absent;
+    this keeps the path safe for malformed payloads (a rare-but-real
+    happens-when-AGE-version-skews scenario).
+    """
+    if not isinstance(parsed, dict):
+        return parsed
+    node_id = parsed.get("id")
+    if kind == "vertex" and node_id is not None and "label" in parsed:
+        return _AGENode(node_id, parsed.get("label", ""), parsed.get("properties"))
+    if (
+        kind == "edge"
+        and node_id is not None
+        and "label" in parsed
+        and "start_id" in parsed
+        and "end_id" in parsed
+    ):
+        return _AGERelationship(
+            node_id,
+            parsed["label"],
+            parsed["start_id"],
+            parsed["end_id"],
+            parsed.get("properties"),
+        )
+    return parsed
 
 
 def _unwrap_agtype(value: Any) -> Any:
@@ -59,22 +263,43 @@ def _unwrap_agtype(value: Any) -> Any:
 
     psycopg2 returns ``agtype`` as ``str`` (or bytes). AGE appends
     ``::vertex`` / ``::edge`` / ``::path`` for graph elements; strip
-    those and JSON-decode what remains. If decoding fails the raw
-    string is returned so the caller can inspect it.
+    those, JSON-decode what remains, then convert ``::vertex`` /
+    ``::edge`` payloads into ``_AGENode`` / ``_AGERelationship`` (the
+    ``neo4j.graph.{Node, Relationship}``-shaped wrappers above). Paths
+    decode to ``List[Union[_AGENode, _AGERelationship]]``. If JSON
+    decoding fails, the raw string is returned so the caller can
+    inspect it.
     """
     if value is None:
         return None
     if isinstance(value, (bytes, bytearray)):
         value = value.decode("utf-8")
     if isinstance(value, str):
+        kind: Optional[str] = None
         for suffix in ("::vertex", "::edge", "::path"):
             if value.endswith(suffix):
+                kind = suffix[2:]
                 value = value[: -len(suffix)]
                 break
         try:
-            return json.loads(value)
+            parsed = json.loads(value)
         except (ValueError, TypeError):
             return value
+        if kind in ("vertex", "edge"):
+            return _agtype_to_element(parsed, kind)
+        if kind == "path" and isinstance(parsed, list):
+            # AGE path = alternating [vertex, edge, vertex, edge, ...].
+            # Convert each element by inspecting its shape.
+            out: List[Any] = []
+            for idx, item in enumerate(parsed):
+                if isinstance(item, dict) and "start_id" in item and "end_id" in item:
+                    out.append(_agtype_to_element(item, "edge"))
+                elif isinstance(item, dict) and "label" in item:
+                    out.append(_agtype_to_element(item, "vertex"))
+                else:
+                    out.append(item)
+            return out
+        return parsed
     return value
 
 

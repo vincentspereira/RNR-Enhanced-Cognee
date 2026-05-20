@@ -1,0 +1,70 @@
+{
+  "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
+  "version": "1.0.0",
+  "dashboard_title": "Enhanced Cognee -- Agent Activity",
+  "description": "Heatmap of MCP tool calls per agent over time, plus per-tool drill-down. Driven by SigNoz traces in ClickHouse.",
+  "css": "",
+  "slug": "ec-agent-activity",
+  "published": true,
+  "metadata": {
+    "show_native_filters": true,
+    "color_scheme": "supersetColors",
+    "refresh_frequency": 300,
+    "default_filters": "{\"NATIVE_FILTER-day\":{\"filterState\":{\"value\":\"Last 7 days\"}}}"
+  },
+  "position_json": {
+    "ROOT_ID": {"type": "ROOT", "id": "ROOT_ID", "children": ["GRID_ID"]},
+    "GRID_ID": {"type": "GRID", "id": "GRID_ID", "children": ["ROW-1", "ROW-2"]},
+    "ROW-1": {"type": "ROW", "id": "ROW-1", "children": ["CHART-heatmap"]},
+    "ROW-2": {"type": "ROW", "id": "ROW-2", "children": ["CHART-top-tools", "CHART-top-agents"]},
+    "CHART-heatmap": {
+      "type": "CHART", "id": "CHART-heatmap",
+      "meta": {"width": 12, "height": 60, "sliceName": "Tool-call volume heatmap (agent vs hour-of-day)"}
+    },
+    "CHART-top-tools": {
+      "type": "CHART", "id": "CHART-top-tools",
+      "meta": {"width": 6, "height": 50, "sliceName": "Top 10 tools by call volume"}
+    },
+    "CHART-top-agents": {
+      "type": "CHART", "id": "CHART-top-agents",
+      "meta": {"width": 6, "height": 50, "sliceName": "Top 10 agents by call volume"}
+    }
+  },
+  "charts": [
+    {
+      "slice_name": "Tool-call volume heatmap (agent vs hour-of-day)",
+      "viz_type": "heatmap_v2",
+      "dataset": "signoz_traces_by_agent",
+      "params": {
+        "metric": {"label": "Spans", "expressionType": "SIMPLE", "column": {"column_name": "spans"}, "aggregate": "SUM"},
+        "all_columns_x": "agent_id",
+        "all_columns_y": "hour_of_day",
+        "linear_color_scheme": "blue_white_yellow"
+      }
+    },
+    {
+      "slice_name": "Top 10 tools by call volume",
+      "viz_type": "table",
+      "dataset": "signoz_traces_by_agent",
+      "params": {
+        "metrics": [{"label": "Spans", "expressionType": "SIMPLE", "column": {"column_name": "spans"}, "aggregate": "SUM"}],
+        "groupby": ["tool_name"],
+        "row_limit": 10,
+        "order_desc": true,
+        "show_totals": true
+      }
+    },
+    {
+      "slice_name": "Top 10 agents by call volume",
+      "viz_type": "table",
+      "dataset": "signoz_traces_by_agent",
+      "params": {
+        "metrics": [{"label": "Spans", "expressionType": "SIMPLE", "column": {"column_name": "spans"}, "aggregate": "SUM"}],
+        "groupby": ["agent_id"],
+        "row_limit": 10,
+        "order_desc": true,
+        "show_totals": true
+      }
+    }
+  ]
+}

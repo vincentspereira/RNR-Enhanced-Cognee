@@ -1,0 +1,72 @@
+{
+  "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
+  "version": "1.0.0",
+  "dashboard_title": "Enhanced Cognee -- Memory Growth",
+  "description": "Memory-store size and category mix over time. Driven by the shared_memory.documents Postgres table.",
+  "css": "",
+  "slug": "ec-memory-growth",
+  "published": true,
+  "metadata": {
+    "show_native_filters": true,
+    "color_scheme": "supersetColors",
+    "refresh_frequency": 300,
+    "default_filters": "{\"NATIVE_FILTER-day\":{\"filterState\":{\"value\":\"Last 30 days\"}}}"
+  },
+  "position_json": {
+    "ROOT_ID": {"type": "ROOT", "id": "ROOT_ID", "children": ["GRID_ID"]},
+    "GRID_ID": {"type": "GRID", "id": "GRID_ID", "children": ["ROW-1", "ROW-2"]},
+    "ROW-1": {"type": "ROW", "id": "ROW-1", "children": ["CHART-cumulative-docs"]},
+    "ROW-2": {"type": "ROW", "id": "ROW-2", "children": ["CHART-bytes-by-category", "CHART-daily-additions"]},
+    "CHART-cumulative-docs": {
+      "type": "CHART", "id": "CHART-cumulative-docs",
+      "meta": {"width": 12, "height": 60, "sliceName": "Cumulative documents per category"}
+    },
+    "CHART-bytes-by-category": {
+      "type": "CHART", "id": "CHART-bytes-by-category",
+      "meta": {"width": 6, "height": 50, "sliceName": "Bytes ingested by category"}
+    },
+    "CHART-daily-additions": {
+      "type": "CHART", "id": "CHART-daily-additions",
+      "meta": {"width": 6, "height": 50, "sliceName": "Daily document additions"}
+    }
+  },
+  "charts": [
+    {
+      "slice_name": "Cumulative documents per category",
+      "viz_type": "area",
+      "dataset": "memory_documents_daily",
+      "params": {
+        "metrics": [{"label": "Cumulative documents", "expressionType": "SIMPLE", "column": {"column_name": "cumulative_documents"}, "aggregate": "MAX"}],
+        "groupby": ["category"],
+        "time_grain_sqla": "P1D",
+        "x_axis": "day",
+        "stacked_style": "stream",
+        "show_legend": true
+      }
+    },
+    {
+      "slice_name": "Bytes ingested by category",
+      "viz_type": "pie",
+      "dataset": "memory_documents",
+      "params": {
+        "metric": {"label": "Total bytes", "expressionType": "SIMPLE", "column": {"column_name": "file_size"}, "aggregate": "SUM"},
+        "groupby": ["memory_category"],
+        "show_legend": true,
+        "label_type": "key_percent"
+      }
+    },
+    {
+      "slice_name": "Daily document additions",
+      "viz_type": "bar",
+      "dataset": "memory_documents_daily",
+      "params": {
+        "metrics": [{"label": "New documents", "expressionType": "SIMPLE", "column": {"column_name": "new_documents"}, "aggregate": "SUM"}],
+        "groupby": ["category"],
+        "x_axis": "day",
+        "time_grain_sqla": "P1D",
+        "bar_stacked": true,
+        "show_legend": true
+      }
+    }
+  ]
+}

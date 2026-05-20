@@ -275,10 +275,29 @@ class TestUpsertCountSearch:
         hits = client.search("ats", query_vector=[0.1], limit=5)
         assert [h.id for h in hits] == ["a", "b", "c"]
 
-    def test_search_query_filter_raises(self):
+    def test_search_query_filter_compound_raises(self):
+        # Compound filters are rejected by the shared filter translator.
         client, _ = _make_client_with_cursor(_FakeCursor())
-        with pytest.raises(NotImplementedError, match="query_filter"):
-            client.search("ats", query_vector=[0.1], query_filter=object())
+        cond_a = MagicMock(key="a", match=MagicMock(value="x"))
+        cond_b = MagicMock(key="b", match=MagicMock(value="y"))
+        filt = MagicMock(must=[cond_a, cond_b], should=None, must_not=None)
+        with pytest.raises(NotImplementedError, match="single"):
+            client.search("ats", query_vector=[0.1], query_filter=filt)
+
+    def test_search_query_filter_emits_where_clause(self):
+        cur = _FakeCursor()
+        client, _ = _make_client_with_cursor(cur)
+        cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
+        filt = MagicMock(must=[cond], should=None, must_not=None)
+
+        client.search("ats", query_vector=[0.1], query_filter=filt)
+
+        sql = cur.executed[0][0]
+        params = cur.executed[0][1]
+        assert "WHERE payload ->> %s = %s" in sql
+        # Param order: [vector, key, value, vector, limit]
+        assert "user_id" in params
+        assert "u1" in params
 
 
 # ===========================================================================

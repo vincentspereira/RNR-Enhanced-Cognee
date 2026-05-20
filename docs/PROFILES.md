@@ -210,11 +210,11 @@ prefixed with `PGVECTOR_TABLE_PREFIX` (default `ec_vec_`).
 | `create_collection(name, vectors_config)` | ✅ | Auto-creates `vector` extension + IVFFLAT index. Distance: Cosine / Euclid / Dot |
 | `upsert(name, points)` | ✅ | `ON CONFLICT (id) DO UPDATE` for idempotency |
 | `count(name)` | ✅ |  |
-| `search(name, query_vector, limit, score_threshold)` | ✅ | No `query_filter` yet (raises `NotImplementedError`) |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | Supports single-`must` FieldCondition `query_filter` via the shared translator (see below). |
 | `delete(name, points_selector)` -- ID list | ✅ |  |
 | `delete(name, FilterSelector(filter=Filter(must=[FieldCondition(...)])))` | ✅ | Single `must` FieldCondition only -- enough for `gdpr_manager.delete_user_data` |
 | `delete(...)` with `should` / `must_not` / multi-condition filters | ❌ | Raises `NotImplementedError`; query first and pass IDs |
-| `search()` with `query_filter` | ❌ | Application-layer filter is required for now |
+| `search()` with `query_filter` | ✅ (single must FieldCondition) | Routes through `src/db_adapters/_vector_filter.py` to a `WHERE payload ->> %s = %s` JSONB extract. Compound filters raise `NotImplementedError`. |
 | Named vectors / sparse vectors | ❌ | Not modelled in the schema |
 | Payload field indexes | ❌ | All filters are evaluated against the JSONB column |
 | Quantization / on-disk vectors / snapshots | ❌ | Out of scope for the minimum viable adapter |
@@ -246,7 +246,7 @@ requirement is overkill.
 | `search(name, query_vector, limit, score_threshold)` | ✅ | Returns ScoredPoint-shape hits; score normalised (1 - distance) |
 | `delete()` by ID list | ✅ |  |
 | `delete()` by single must FieldCondition | ✅ | LIKE substring match on JSON-encoded payload (GDPR shape) |
-| `search()` with `query_filter` | ❌ | Application-layer filter required |
+| `search()` with `query_filter` | ✅ (single must FieldCondition) | Routes through the shared `src/db_adapters/_vector_filter.py` translator: emits a LanceDB `WHERE payload LIKE '%"key":"value"%'` clause. Compound filters (`should` / `must_not` / multiple must) raise `NotImplementedError` -- query the points first and pass IDs. |
 | Multi-condition / nested delete filters | ❌ |  |
 
 ### Chroma adapter
@@ -266,7 +266,7 @@ pass-throughs.
 | `search(name, query_vector, limit, score_threshold)` | ✅ | Score = `1 - distance` |
 | `delete()` by ID list | ✅ |  |
 | `delete()` by single must FieldCondition | ✅ | Native `where={key: value}` map |
-| `search()` with `query_filter` | ❌ | qdrant-Filter -> Chroma-where translation not wired |
+| `search()` with `query_filter` | ✅ (single must FieldCondition) | Routes through `_vector_filter.py` to Chroma's native `where={"key": value}` map. Compound filters raise `NotImplementedError`. |
 | Multi-condition / nested delete filters | ❌ |  |
 
 ### Weaviate adapter
@@ -286,7 +286,7 @@ UUID, UUID5 hash otherwise).
 | `search(name, query_vector, limit, score_threshold)` | ✅ | `near_vector(...)` with distance metadata |
 | `delete()` by ID list | ✅ | Iterative `data.delete_by_id(uuid)` |
 | `delete()` by single must FieldCondition | ✅ | LIKE on payload property (GDPR shape) |
-| `search()` with `query_filter` | ❌ | qdrant-Filter -> weaviate-Filter translation not wired |
+| `search()` with `query_filter` | ✅ (single must FieldCondition) | Routes through `_vector_filter.py` to a `Filter.by_property("payload").like('*"key":"value"*')` chain. Compound filters raise `NotImplementedError`. |
 | Multi-condition / nested delete filters | ❌ |  |
 | Hybrid search (BM25 + vector) | ❌ | Not exposed by the qdrant-shaped API |
 
@@ -306,7 +306,7 @@ Milvus collection with `id` (VARCHAR PK) + `vector` + `payload`
 | `search(name, query_vector, limit, score_threshold)` | ✅ | Score normalised based on metric (COSINE / IP raw; L2 = 1-distance) |
 | `delete()` by ID list | ✅ |  |
 | `delete()` by single must FieldCondition | ✅ | Milvus `filter='payload like "..."'` expression |
-| `search()` with `query_filter` | ❌ | qdrant-Filter -> Milvus expr translation not wired |
+| `search()` with `query_filter` | ✅ (single must FieldCondition) | Routes through `_vector_filter.py` to a Milvus `filter='payload like "%\"key\":\"value\"%"'` expression. Compound filters raise `NotImplementedError`. |
 | Multi-condition / nested delete filters | ❌ |  |
 
 ### ArangoDB adapter
@@ -388,7 +388,7 @@ this file.
 | Iterating multiple records                         | OK              | `for record in result: ...` yields `_AGERecord` instances.         |
 | Parameterised Cypher (`$param` syntax)             | OK (Phase 5)    | Passed via AGE's three-arg `cypher(graph, $$ ... $$, agtype_map)` form. Reject Cypher containing `$$` (would break the dollar-quoted block; raises `ValueError`). |
 | Async session API                                  | OK (Phase 5)    | `get_async_graph_driver()` returns an asyncpg-backed `_AsyncAGEDriver`. Use `async with driver.session() as s:` then `await s.run(cypher)`. |
-| Returning whole graph elements (`MATCH (n) RETURN n`) | partial      | You get the agtype JSON. Parse with `record["n"]` -> dict.         |
+| Returning native graph elements (`MATCH (n) RETURN n`) | OK (Phase 5) | `::vertex` decodes to `_AGENode`, `::edge` to `_AGERelationship`, `::path` to `List[_AGENode \| _AGERelationship]`. Same surface as `neo4j.graph.Node` / `Relationship`: `.id` / `.labels` / `.type` / `.start_node` / `.end_node` / `node["prop"]` / `dict(node.items())`. Path endpoints are stub `_AGENode`s with only the id populated -- if you need their labels/properties, issue a follow-up `MATCH (n) WHERE id(n) = ...` (AGE's edge payload doesn't inline endpoint data). |
 | APOC procedures (`apoc.*`)                         | not supported   | AGE has no APOC equivalent; switch to neo4j if you need APOC.      |
 
 If you hit something that doesn't work and isn't on the matrix yet,

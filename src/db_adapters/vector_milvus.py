@@ -33,7 +33,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 
 class _CollectionDescription:
@@ -191,20 +191,21 @@ class _MilvusClient:
         query_filter: Any = None,
         **kwargs: Any,
     ) -> List[_SearchHit]:
-        if query_filter is not None:
-            raise NotImplementedError(
-                "milvus adapter: query_filter is not yet wired through "
-                "the qdrant Filter -> milvus expr translator. Filter "
-                "at the application layer."
-            )
+        from src.db_adapters import _vector_filter
+
+        normalised = _vector_filter.normalise(query_filter)
+        expr = _vector_filter.to_milvus_expr(normalised)
 
         client = self._connect()
-        results = client.search(
-            collection_name=collection_name,
-            data=[list(query_vector)],
-            limit=limit,
-            output_fields=["id", "payload"],
-        )
+        search_kwargs: Dict[str, Any] = {
+            "collection_name": collection_name,
+            "data": [list(query_vector)],
+            "limit": limit,
+            "output_fields": ["id", "payload"],
+        }
+        if expr:
+            search_kwargs["filter"] = expr
+        results = client.search(**search_kwargs)
         # MilvusClient returns list-of-list (one inner list per query
         # vector); we always send 1 query.
         first = results[0] if results else []

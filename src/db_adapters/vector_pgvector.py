@@ -308,16 +308,16 @@ class _PgVectorClient:
         normalised to "higher is better" so that callers can use the same
         comparison as with qdrant.
         """
-        if query_filter is not None:
-            raise NotImplementedError(
-                "pgvector adapter: query_filter is not yet supported in "
-                "search(). Filter at the application layer after the "
-                "vector lookup. See docs/PROFILES.md."
-            )
+        from src.db_adapters import _vector_filter
+
+        normalised = _vector_filter.normalise(query_filter)
+        where_sql, where_params = _vector_filter.to_sql_where(normalised)
 
         table = self._table_for(collection_name)
         distance = self._distance_by_table.get(table)
         operator = _distance_to_operator(distance) if distance else "<=>"
+
+        where_clause = f"WHERE {where_sql} " if where_sql else ""
 
         with self._connect() as conn:
             cur = conn.cursor()
@@ -327,9 +327,15 @@ class _PgVectorClient:
             cur.execute(
                 f'SELECT id, payload, 1 - (vector {operator} %s::vector) AS score '
                 f'FROM "{table}" '
+                f'{where_clause}'
                 f'ORDER BY vector {operator} %s::vector '
                 f'LIMIT %s',
-                (_vector_to_str(query_vector), _vector_to_str(query_vector), limit),
+                (
+                    _vector_to_str(query_vector),
+                    *where_params,
+                    _vector_to_str(query_vector),
+                    limit,
+                ),
             )
             rows = cur.fetchall()
 

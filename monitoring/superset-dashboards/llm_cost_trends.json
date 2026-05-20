@@ -1,0 +1,94 @@
+{
+  "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
+  "version": "1.0.0",
+  "dashboard_title": "Enhanced Cognee -- LLM Cost Trends",
+  "description": "Daily / weekly LLM token spend by agent, model, and provider. Driven by shared_memory.llm_usage written by src/llm_cost_tracker.py.",
+  "css": "",
+  "slug": "ec-llm-cost-trends",
+  "published": true,
+  "metadata": {
+    "show_native_filters": true,
+    "color_scheme": "supersetColors",
+    "refresh_frequency": 300,
+    "default_filters": "{\"NATIVE_FILTER-day\":{\"filterState\":{\"value\":\"Last 30 days\"}}}"
+  },
+  "position_json": {
+    "ROOT_ID": {"type": "ROOT", "id": "ROOT_ID", "children": ["GRID_ID"]},
+    "GRID_ID": {"type": "GRID", "id": "GRID_ID", "children": ["ROW-1", "ROW-2", "ROW-3"]},
+    "ROW-1": {"type": "ROW", "id": "ROW-1", "children": ["CHART-cost-stacked"]},
+    "ROW-2": {"type": "ROW", "id": "ROW-2", "children": ["CHART-tokens-line"]},
+    "ROW-3": {"type": "ROW", "id": "ROW-3", "children": ["CHART-cost-by-agent", "CHART-cost-by-model"]},
+    "CHART-cost-stacked": {
+      "type": "CHART", "id": "CHART-cost-stacked",
+      "meta": {"width": 12, "height": 50, "sliceName": "Daily LLM spend (USD) -- stacked by model"}
+    },
+    "CHART-tokens-line": {
+      "type": "CHART", "id": "CHART-tokens-line",
+      "meta": {"width": 12, "height": 40, "sliceName": "Daily token throughput"}
+    },
+    "CHART-cost-by-agent": {
+      "type": "CHART", "id": "CHART-cost-by-agent",
+      "meta": {"width": 6, "height": 50, "sliceName": "Top spending agents (last 30 days)"}
+    },
+    "CHART-cost-by-model": {
+      "type": "CHART", "id": "CHART-cost-by-model",
+      "meta": {"width": 6, "height": 50, "sliceName": "Top models by spend (last 30 days)"}
+    }
+  },
+  "charts": [
+    {
+      "slice_name": "Daily LLM spend (USD) -- stacked by model",
+      "viz_type": "bar",
+      "dataset": "llm_usage_daily_by_agent",
+      "params": {
+        "metrics": [{"label": "Cost (USD)", "expressionType": "SIMPLE", "column": {"column_name": "cost_usd"}, "aggregate": "SUM"}],
+        "groupby": ["model"],
+        "x_axis": "day",
+        "time_grain_sqla": "P1D",
+        "bar_stacked": true,
+        "show_legend": true,
+        "y_axis_format": "$,.2f"
+      }
+    },
+    {
+      "slice_name": "Daily token throughput",
+      "viz_type": "line",
+      "dataset": "llm_usage_daily_by_agent",
+      "params": {
+        "metrics": [{"label": "Total tokens", "expressionType": "SIMPLE", "column": {"column_name": "total_tokens"}, "aggregate": "SUM"}],
+        "groupby": [],
+        "x_axis": "day",
+        "time_grain_sqla": "P1D",
+        "show_legend": true
+      }
+    },
+    {
+      "slice_name": "Top spending agents (last 30 days)",
+      "viz_type": "table",
+      "dataset": "llm_usage_daily_by_agent",
+      "params": {
+        "metrics": [
+          {"label": "Cost (USD)", "expressionType": "SIMPLE", "column": {"column_name": "cost_usd"}, "aggregate": "SUM"},
+          {"label": "Calls", "expressionType": "SIMPLE", "column": {"column_name": "calls"}, "aggregate": "SUM"}
+        ],
+        "groupby": ["agent_id"],
+        "row_limit": 10,
+        "order_desc": true
+      }
+    },
+    {
+      "slice_name": "Top models by spend (last 30 days)",
+      "viz_type": "table",
+      "dataset": "llm_usage_daily_by_agent",
+      "params": {
+        "metrics": [
+          {"label": "Cost (USD)", "expressionType": "SIMPLE", "column": {"column_name": "cost_usd"}, "aggregate": "SUM"},
+          {"label": "Tokens", "expressionType": "SIMPLE", "column": {"column_name": "total_tokens"}, "aggregate": "SUM"}
+        ],
+        "groupby": ["model"],
+        "row_limit": 10,
+        "order_desc": true
+      }
+    }
+  ]
+}

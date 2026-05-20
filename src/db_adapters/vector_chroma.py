@@ -38,7 +38,7 @@ Env-var fallbacks:
 from __future__ import annotations
 
 import os
-from typing import Any, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 
 class _CollectionDescription:
@@ -176,18 +176,20 @@ class _ChromaClient:
         query_filter: Any = None,
         **kwargs: Any,
     ) -> List[_SearchHit]:
-        if query_filter is not None:
-            raise NotImplementedError(
-                "chroma adapter: query_filter is not yet wired through "
-                "the qdrant Filter -> chroma where-clause translator. "
-                "Filter at the application layer."
-            )
+        from src.db_adapters import _vector_filter
+
+        normalised = _vector_filter.normalise(query_filter)
+        where = _vector_filter.to_chroma_where(normalised)
+
         client = self._connect()
         col = client.get_collection(name=collection_name)
-        results = col.query(
-            query_embeddings=[list(query_vector)],
-            n_results=limit,
-        )
+        query_kwargs: Dict[str, Any] = {
+            "query_embeddings": [list(query_vector)],
+            "n_results": limit,
+        }
+        if where is not None:
+            query_kwargs["where"] = where
+        results = col.query(**query_kwargs)
         # Chroma returns lists keyed by query index; we sent 1 query so
         # we read index 0.
         ids = (results.get("ids") or [[]])[0]

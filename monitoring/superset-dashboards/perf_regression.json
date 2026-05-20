@@ -1,0 +1,87 @@
+{
+  "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
+  "version": "1.0.0",
+  "dashboard_title": "Enhanced Cognee -- Performance Regression Tracking",
+  "description": "Per-endpoint p50/p95/p99 latency + error-rate over time, sourced from SigNoz OTel spans. Use this dashboard to spot regressions across Locust load-test runs (see tests/load/locustfile.py).",
+  "css": "",
+  "slug": "ec-perf-regression",
+  "published": true,
+  "metadata": {
+    "show_native_filters": true,
+    "color_scheme": "supersetColors",
+    "refresh_frequency": 60,
+    "default_filters": "{\"NATIVE_FILTER-day\":{\"filterState\":{\"value\":\"Last 24 hours\"}}}"
+  },
+  "position_json": {
+    "ROOT_ID": {"type": "ROOT", "id": "ROOT_ID", "children": ["GRID_ID"]},
+    "GRID_ID": {"type": "GRID", "id": "GRID_ID", "children": ["ROW-1", "ROW-2", "ROW-3"]},
+    "ROW-1": {"type": "ROW", "id": "ROW-1", "children": ["CHART-p95-by-endpoint"]},
+    "ROW-2": {"type": "ROW", "id": "ROW-2", "children": ["CHART-error-rate", "CHART-throughput"]},
+    "ROW-3": {"type": "ROW", "id": "ROW-3", "children": ["CHART-slowest-endpoints"]},
+    "CHART-p95-by-endpoint": {
+      "type": "CHART", "id": "CHART-p95-by-endpoint",
+      "meta": {"width": 12, "height": 50, "sliceName": "p95 latency (ms) by endpoint"}
+    },
+    "CHART-error-rate": {
+      "type": "CHART", "id": "CHART-error-rate",
+      "meta": {"width": 6, "height": 40, "sliceName": "Error rate %"}
+    },
+    "CHART-throughput": {
+      "type": "CHART", "id": "CHART-throughput",
+      "meta": {"width": 6, "height": 40, "sliceName": "Requests per second"}
+    },
+    "CHART-slowest-endpoints": {
+      "type": "CHART", "id": "CHART-slowest-endpoints",
+      "meta": {"width": 12, "height": 40, "sliceName": "Top 10 slowest endpoints (p95)"}
+    }
+  },
+  "charts": [
+    {
+      "slice_name": "p95 latency (ms) by endpoint",
+      "viz_type": "line",
+      "dataset": "signoz_endpoint_latency",
+      "params": {
+        "metrics": [{"label": "p95 (ms)", "expressionType": "SIMPLE", "column": {"column_name": "p95_latency_ms"}, "aggregate": "AVG"}],
+        "groupby": ["endpoint"],
+        "x_axis": "minute_bucket",
+        "show_legend": true,
+        "y_axis_format": ".0f"
+      }
+    },
+    {
+      "slice_name": "Error rate %",
+      "viz_type": "line",
+      "dataset": "signoz_endpoint_latency",
+      "params": {
+        "metrics": [{"label": "Error %", "expressionType": "SIMPLE", "column": {"column_name": "error_pct"}, "aggregate": "AVG"}],
+        "x_axis": "minute_bucket",
+        "y_axis_format": ".2f"
+      }
+    },
+    {
+      "slice_name": "Requests per second",
+      "viz_type": "line",
+      "dataset": "signoz_endpoint_latency",
+      "params": {
+        "metrics": [{"label": "RPS", "expressionType": "SIMPLE", "column": {"column_name": "rps"}, "aggregate": "AVG"}],
+        "x_axis": "minute_bucket",
+        "y_axis_format": ".0f"
+      }
+    },
+    {
+      "slice_name": "Top 10 slowest endpoints (p95)",
+      "viz_type": "table",
+      "dataset": "signoz_endpoint_latency",
+      "params": {
+        "metrics": [
+          {"label": "p50 (ms)", "expressionType": "SIMPLE", "column": {"column_name": "p50_latency_ms"}, "aggregate": "AVG"},
+          {"label": "p95 (ms)", "expressionType": "SIMPLE", "column": {"column_name": "p95_latency_ms"}, "aggregate": "AVG"},
+          {"label": "p99 (ms)", "expressionType": "SIMPLE", "column": {"column_name": "p99_latency_ms"}, "aggregate": "AVG"}
+        ],
+        "groupby": ["endpoint"],
+        "row_limit": 10,
+        "order_desc": true
+      }
+    }
+  ]
+}

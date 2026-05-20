@@ -1,0 +1,90 @@
+{
+  "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
+  "version": "1.0.0",
+  "dashboard_title": "Enhanced Cognee -- Dedup Effectiveness",
+  "description": "Memory deduplication hit-rate derived from chunk-content-hash distinctness in shared_memory.embeddings. Lower distinct ratio == better dedup.",
+  "css": "",
+  "slug": "ec-dedup-effectiveness",
+  "published": true,
+  "metadata": {
+    "show_native_filters": true,
+    "color_scheme": "supersetColors",
+    "refresh_frequency": 600,
+    "default_filters": "{\"NATIVE_FILTER-day\":{\"filterState\":{\"value\":\"Last 30 days\"}}}"
+  },
+  "position_json": {
+    "ROOT_ID": {"type": "ROOT", "id": "ROOT_ID", "children": ["GRID_ID"]},
+    "GRID_ID": {"type": "GRID", "id": "GRID_ID", "children": ["ROW-1", "ROW-2", "ROW-3"]},
+    "ROW-1": {"type": "ROW", "id": "ROW-1", "children": ["CHART-dedup-pct"]},
+    "ROW-2": {"type": "ROW", "id": "ROW-2", "children": ["CHART-chunks-vs-distinct"]},
+    "ROW-3": {"type": "ROW", "id": "ROW-3", "children": ["CHART-dups-avoided", "CHART-summary-table"]},
+    "CHART-dedup-pct": {
+      "type": "CHART", "id": "CHART-dedup-pct",
+      "meta": {"width": 12, "height": 40, "sliceName": "Daily dedup rate (%)"}
+    },
+    "CHART-chunks-vs-distinct": {
+      "type": "CHART", "id": "CHART-chunks-vs-distinct",
+      "meta": {"width": 12, "height": 50, "sliceName": "Total chunks vs distinct chunks (daily)"}
+    },
+    "CHART-dups-avoided": {
+      "type": "CHART", "id": "CHART-dups-avoided",
+      "meta": {"width": 6, "height": 40, "sliceName": "Cumulative duplicates avoided"}
+    },
+    "CHART-summary-table": {
+      "type": "CHART", "id": "CHART-summary-table",
+      "meta": {"width": 6, "height": 40, "sliceName": "Recent days -- dedup summary"}
+    }
+  },
+  "charts": [
+    {
+      "slice_name": "Daily dedup rate (%)",
+      "viz_type": "line",
+      "dataset": "memory_dedup_effectiveness",
+      "params": {
+        "metrics": [{"label": "Dedup %", "expressionType": "SIMPLE", "column": {"column_name": "dedup_pct"}, "aggregate": "AVG"}],
+        "x_axis": "day",
+        "time_grain_sqla": "P1D",
+        "y_axis_format": ".2f",
+        "show_legend": false
+      }
+    },
+    {
+      "slice_name": "Total chunks vs distinct chunks (daily)",
+      "viz_type": "mixed_timeseries",
+      "dataset": "memory_dedup_effectiveness",
+      "params": {
+        "metrics": [
+          {"label": "Chunks (total)", "expressionType": "SIMPLE", "column": {"column_name": "chunks"}, "aggregate": "SUM"},
+          {"label": "Distinct chunks", "expressionType": "SIMPLE", "column": {"column_name": "distinct_chunks"}, "aggregate": "SUM"}
+        ],
+        "x_axis": "day",
+        "time_grain_sqla": "P1D",
+        "show_legend": true
+      }
+    },
+    {
+      "slice_name": "Cumulative duplicates avoided",
+      "viz_type": "big_number_total",
+      "dataset": "memory_dedup_effectiveness",
+      "params": {
+        "metric": {"label": "Duplicates avoided", "expressionType": "SIMPLE", "column": {"column_name": "duplicates_avoided"}, "aggregate": "SUM"},
+        "y_axis_format": ",d"
+      }
+    },
+    {
+      "slice_name": "Recent days -- dedup summary",
+      "viz_type": "table",
+      "dataset": "memory_dedup_effectiveness",
+      "params": {
+        "metrics": [
+          {"label": "Chunks", "expressionType": "SIMPLE", "column": {"column_name": "chunks"}, "aggregate": "SUM"},
+          {"label": "Distinct", "expressionType": "SIMPLE", "column": {"column_name": "distinct_chunks"}, "aggregate": "SUM"},
+          {"label": "Dedup %", "expressionType": "SIMPLE", "column": {"column_name": "dedup_pct"}, "aggregate": "AVG"}
+        ],
+        "groupby": ["day"],
+        "row_limit": 14,
+        "order_desc": true
+      }
+    }
+  ]
+}
