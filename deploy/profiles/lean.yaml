@@ -5,11 +5,11 @@
 # Suited to laptops, the smallest VPS tiers, and offline / air-gapped use.
 #
 # Tradeoffs:
-#   * No graph parameterised Cypher (Phase 3 AGE adapter limitation;
+#   * No graph parameterised Cypher (AGE adapter limitation;
 #     see docs/PROFILES.md "Supported query matrix")
 #   * Cache state is per-process; pub/sub features unavailable
-#   * Vector layer is still Qdrant by default -- pgvector adapter is
-#     scheduled for Phase 5
+#   * Vector layer uses pgvector (shipped 2026-05-20) -- narrow Qdrant
+#     API surface; rich search filters not supported
 #
 # Apply by exporting these env vars before launching the MCP server, or
 # by sourcing this file's ENV section in your install script. The
@@ -27,7 +27,7 @@ description: |
 
 env:
   ENHANCED_RELATIONAL_PROVIDER: postgres
-  ENHANCED_VECTOR_PROVIDER: qdrant       # pgvector pluggable in Phase 5
+  ENHANCED_VECTOR_PROVIDER: pgvector     # was: qdrant; pgvector shipped 2026-05-20
   ENHANCED_GRAPH_PROVIDER: apache_age
   ENHANCED_CACHE_PROVIDER: in_memory
 
@@ -44,8 +44,8 @@ env:
 # (Documentation only -- the installer reads docs/PROFILES.md for the
 #  authoritative wiring.)
 containers:
-  - postgres        # Postgres + pgvector + AGE extension
-  - qdrant          # vector tier (until pgvector adapter ships)
+  - postgres        # Postgres + pgvector + AGE extension -- the only one
+  # No Qdrant container - pgvector lives inside postgres
   # No graph container - AGE runs inside postgres
   # No cache container - in-process
 

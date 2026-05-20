@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 _VALID_RELATIONAL = {"postgres", "postgresql", "sqlite"}
-_VALID_VECTOR = {"qdrant"}
+_VALID_VECTOR = {"qdrant", "pgvector"}
 _VALID_GRAPH = {
     "arcadedb", "neo4j", "apache_age",
     "memgraph", "kuzu", "networkx_inmemory",
@@ -80,12 +80,19 @@ def get_vector_client(**kwargs: Any):
     """Return a vector DB client for the configured provider.
 
     Default provider: qdrant (qdrant_client.QdrantClient).
+    ``pgvector`` returns a Postgres-backed shim (Phase 5) exposing the
+    narrow QdrantClient surface our call sites use; see
+    ``docs/PROFILES.md`` for the supported-method matrix.
     """
     provider = _resolve("ENHANCED_VECTOR_PROVIDER", "VECTOR_BACKEND", "qdrant")
     if provider == "qdrant":
         from src.db_adapters import vector_qdrant
 
         return vector_qdrant.create_client(**kwargs)
+    if provider == "pgvector":
+        from src.db_adapters import vector_pgvector
+
+        return vector_pgvector.create_client(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_VECTOR_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_VECTOR)}"

@@ -200,6 +200,17 @@ graph-networkx = ["networkx>=3.0,<4"]
 cache-memcached = ["pymemcache>=4.0.0,<5"]
 relational-sqlite = ["aiosqlite>=0.20.0,<1"]
 
+# pgvector vector adapter (Phase 5; see docs/PROFILES.md):
+#   pip install enhanced-cognee[vector-pgvector]
+# psycopg2 is already in the `postgres` group; pgvector helper is
+# optional and only used for the index opclass hint -- the adapter
+# does its own vector literal serialisation via pg's `<=> `/ `<->`
+# operators rather than depending on pgvector's Python bindings.
+vector-pgvector = [
+    "psycopg2>=2.9.10,<3",
+    "pgvector>=0.3.5,<0.5",
+]
+
 # monitoring: Enhanced-specific observability stack
 monitoring = ["sentry-sdk[fastapi]>=2.9.0,<3", "langfuse>=2.32.0,<3"]
 

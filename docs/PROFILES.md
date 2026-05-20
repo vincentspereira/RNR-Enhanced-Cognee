@@ -22,7 +22,7 @@ the choice of env vars you export before launching the MCP server.
 | -------------- | ---------- | -------- | ------------ | ----------- | --------------------------------- | --------------------------------------------- |
 | `production`   | postgres   | qdrant   | arcadedb     | valkey      | postgres + qdrant + arcadedb + valkey | Production; what the default compose ships |
 | `apache_only`  | postgres   | qdrant   | apache_age   | valkey      | postgres (with AGE) + qdrant + valkey  | All-Apache-2.0 stack, no JVM container    |
-| `lean`         | postgres   | qdrant   | apache_age   | in_memory   | postgres (with AGE) + qdrant      | Laptops / small VPS / offline                 |
+| `lean`         | postgres   | pgvector | apache_age   | in_memory   | postgres (with AGE + vector)      | Laptops / small VPS / offline (1 container)   |
 | `byo`          | (env)      | (env)    | (env)        | (env)       | none (all external)               | Managed cloud / multi-tenant SaaS             |
 
 All four resolve through `src/db_factory.py`. The `ENHANCED_*_PROVIDER`
@@ -78,31 +78,32 @@ You'll need to enable AGE inside the Postgres container -- see the
 
 ## lean
 
-Smallest viable stack -- laptop or smallest-tier VPS:
+Smallest viable stack -- one Postgres container plus the MCP server.
+Updated 2026-05-20 to use `pgvector` now that the adapter has shipped:
 
 ```bash
 ENHANCED_RELATIONAL_PROVIDER=postgres
-ENHANCED_VECTOR_PROVIDER=qdrant         # pgvector pluggable in Phase 5
+ENHANCED_VECTOR_PROVIDER=pgvector       # was: qdrant; pgvector shipped 2026-05-20
 ENHANCED_GRAPH_PROVIDER=apache_age
 ENHANCED_CACHE_PROVIDER=in_memory       # process-local dict
 ```
 
-`deploy/profiles/lean.yaml` documents the exact set. Drop the Valkey
-container, drop the ArcadeDB container, run everything against one
-Postgres + Qdrant + the MCP server process.
+`deploy/profiles/lean.yaml` documents the exact set. **One container**:
+Postgres (with the `vector` extension auto-installed by the pgvector
+adapter on first `create_collection`, and the `age` extension created
+manually -- see the `apache_only` setup section below).
 
 Limitations (intentional):
 
-- Cache loses state on process restart
-- No pub/sub -- the realtime sync features degrade gracefully but pub/sub
-  channels noop
+- Cache loses state on process restart (`in_memory`)
+- No pub/sub -- realtime sync degrades gracefully but pub/sub channels noop
 - Single-process only -- a second MCP process won't share cache state
+- pgvector adapter has a narrow Qdrant API surface; see its
+  sub-section below for what's supported
 
 `lean` is not recommended for production; it exists so that "give me
-the smallest possible Enhanced Cognee" works as a single command.
-
-Future cleanup: once the Phase 5 `pgvector` vector adapter ships, lean
-will collapse further to just Postgres + MCP process.
+the smallest possible Enhanced Cognee" works as a single Postgres
+container.
 
 ---
 
@@ -194,6 +195,38 @@ no equivalent of pub/sub, sorted sets, or hash tables:
 
 **Use only for tests / lean profile.** Production workloads must
 pick `postgres`.
+
+### pgvector adapter -- supported method matrix
+
+`src/db_adapters/vector_pgvector.py` (shipped 2026-05-20) is a
+`QdrantClient`-shaped shim over `psycopg2` + the `pgvector` Postgres
+extension. Storage model: one Postgres table per Qdrant "collection",
+prefixed with `PGVECTOR_TABLE_PREFIX` (default `ec_vec_`).
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `get_collections()` | ✅ | Lists tables matching the prefix |
+| `get_collection(name)` | ✅ | Raises if the table doesn't exist (matches Qdrant) |
+| `create_collection(name, vectors_config)` | ✅ | Auto-creates `vector` extension + IVFFLAT index. Distance: Cosine / Euclid / Dot |
+| `upsert(name, points)` | ✅ | `ON CONFLICT (id) DO UPDATE` for idempotency |
+| `count(name)` | ✅ |  |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | No `query_filter` yet (raises `NotImplementedError`) |
+| `delete(name, points_selector)` -- ID list | ✅ |  |
+| `delete(name, FilterSelector(filter=Filter(must=[FieldCondition(...)])))` | ✅ | Single `must` FieldCondition only -- enough for `gdpr_manager.delete_user_data` |
+| `delete(...)` with `should` / `must_not` / multi-condition filters | ❌ | Raises `NotImplementedError`; query first and pass IDs |
+| `search()` with `query_filter` | ❌ | Application-layer filter is required for now |
+| Named vectors / sparse vectors | ❌ | Not modelled in the schema |
+| Payload field indexes | ❌ | All filters are evaluated against the JSONB column |
+| Quantization / on-disk vectors / snapshots | ❌ | Out of scope for the minimum viable adapter |
+
+The adapter sanitises collection names to alphanumeric + underscore
+before formatting them into the table identifier, so the table-prefix
+is **not** a SQL-injection surface.
+
+**When to pick pgvector:** the lean profile, or any deployment where
+"one Postgres" is operationally preferred over "Postgres + Qdrant".
+Stick with `qdrant` for production-scale workloads that need rich
+filters, named vectors, or large-collection performance.
 
 ---
 
@@ -297,13 +330,17 @@ per-tier deep-dives below for query-matrix limitations.
 | Provider | Status | Optional dep | Env vars consulted |
 | --- | --- | --- | --- |
 | `qdrant` (default) | ✅ full | core (`qdrant-client`) | `QDRANT_HOST` / `QDRANT_PORT` / `QDRANT_API_KEY` |
-| `pgvector` / `lancedb` / `weaviate` / `milvus` / `chroma` | 📋 deferred | -- | -- |
+| `pgvector` | 🟡 narrow API (no filter in search) | `[vector-pgvector]` (psycopg2 + pgvector) | `PGVECTOR_HOST` / `PGVECTOR_PORT` / `PGVECTOR_DB` / `PGVECTOR_USER` / `PGVECTOR_PASSWORD` / `PGVECTOR_TABLE_PREFIX` (falls through to `POSTGRES_*`) |
+| `lancedb` / `weaviate` / `milvus` / `chroma` | 📋 deferred | -- | -- |
 
 > The vector tier's API surface (Qdrant's `QdrantClient`) is rich
 > (`get_collections` / `create_collection` / `upsert` / `search` / etc.).
-> An alternate provider would need to mimic that surface across all
-> call sites. Per HANDOVER §4 Phase 5: "Build these only when a paying
-> customer asks or you're already in that area."
+> The `pgvector` adapter shipped 2026-05-20 covers the narrow slice
+> Enhanced Cognee actually uses; everything else (named vectors,
+> sparse vectors, payload indexes, quantization, rich search
+> filters) raises a clear `NotImplementedError`. Per HANDOVER §4
+> Phase 5: "Build the other vector adapters when a paying customer
+> asks or you're already in that area."
 
 ### Graph tier (`ENHANCED_GRAPH_PROVIDER`)
 

@@ -15,20 +15,22 @@ sessions; this file is the single landing page for "what's left."
 
 | Provider | Status | Effort | Trigger |
 |---|---|---|---|
-| `pgvector` | 📋 | 3-5 days | Customer asks for "Postgres-only persistence including vectors" |
+| `pgvector` | ✅ **SHIPPED 2026-05-20** | -- | Closes the lean profile vector hole. Narrow API surface (see docs/PROFILES.md) -- no rich search filters, no named/sparse vectors, no quantization. |
 | `lancedb` | 📋 | 3-5 days | Embedded-DB use case (laptop / offline) |
 | `weaviate` | 📋 | 3-5 days | Customer already running Weaviate |
 | `milvus` | 📋 | 3-5 days | Large-scale vector workload requirement |
 | `chroma` | 📋 | 2-3 days | Light Chroma-shaped workload requirement |
 
-**Why deferred:** the vector tier surface in this codebase is the
-`QdrantClient` API -- `get_collections` / `get_collection` /
-`create_collection` / `upsert` / `search` / etc. Each alternate
-provider has to mirror that across every call site OR sit behind a
-thicker translation layer. The first one shipped will set the
-abstraction; subsequent ones will be faster. Per HANDOVER §4 Phase 5:
-"Build these only when a paying customer asks or you're already in
-that area."
+**Why the rest are still deferred:** the vector tier surface in this
+codebase is the `QdrantClient` API -- `get_collections` /
+`get_collection` / `create_collection` / `upsert` / `search` / etc.
+Each alternate provider has to mirror that across every call site OR
+sit behind a thicker translation layer. pgvector (the first one
+shipped) sets the abstraction pattern via the `_PgVectorClient` shim
+in `src/db_adapters/vector_pgvector.py`; subsequent adapters can
+follow the same `_CollectionDescription` / `_SearchHit` / etc.
+duck-typing pattern. Per HANDOVER §4 Phase 5: "Build these only when
+a paying customer asks or you're already in that area."
 
 ### Graph tier alternates with different query languages (medium effort)
 
