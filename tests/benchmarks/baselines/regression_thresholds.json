@@ -1,0 +1,8 @@
+{
+  "_doc": "Per-metric allowed regression vs the matching baseline run. CI fails the perf job if any metric grows beyond its threshold for the same permutation. Compared via tests/benchmarks/compare_to_baseline.py.",
+  "rps_drop_pct_max": 15.0,
+  "p50_ms_growth_pct_max": 25.0,
+  "p95_ms_growth_pct_max": 30.0,
+  "p99_ms_growth_pct_max": 50.0,
+  "error_pct_absolute_max": 0.5
+}
