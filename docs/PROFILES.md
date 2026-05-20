@@ -228,6 +228,87 @@ is **not** a SQL-injection surface.
 Stick with `qdrant` for production-scale workloads that need rich
 filters, named vectors, or large-collection performance.
 
+### LanceDB adapter
+
+`src/db_adapters/vector_lancedb.py` (shipped 2026-05-20). Embedded
+MIT-licensed columnar vector store via Apache Arrow + Lance file
+format. **Runs in-process** -- no Docker container, no network
+protocol. Each Qdrant "collection" maps to a Lance table at the
+configured `LANCEDB_URI` filesystem path. Suitable for laptop /
+offline / single-process deployments where pgvector's Postgres-stack
+requirement is overkill.
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `get_collections()` / `get_collection(name)` / `count(name)` | ✅ |  |
+| `create_collection(name, vectors_config)` | ✅ | Cosine / Euclid / Dot supported via LanceDB's `metric` parameter |
+| `upsert(name, points)` | ✅ | LanceDB has no native ON-CONFLICT; we delete-then-add atomically per batch |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | Returns ScoredPoint-shape hits; score normalised (1 - distance) |
+| `delete()` by ID list | ✅ |  |
+| `delete()` by single must FieldCondition | ✅ | LIKE substring match on JSON-encoded payload (GDPR shape) |
+| `search()` with `query_filter` | ❌ | Application-layer filter required |
+| Multi-condition / nested delete filters | ❌ |  |
+
+### Chroma adapter
+
+`src/db_adapters/vector_chroma.py` (shipped 2026-05-20). Apache-2.0
+vector store with native Collection semantics. Network mode if
+`CHROMA_HOST` is set, otherwise persistent in-process at
+`CHROMA_PATH`. Chroma's API maps almost 1:1 onto Qdrant's, so the
+adapter is shorter than pgvector / lancedb -- mostly straight
+pass-throughs.
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `get_collections()` / `get_collection(name)` / `count(name)` | ✅ |  |
+| `create_collection(name, vectors_config)` | ✅ | Distance metric via `metadata={"hnsw:space": metric}` |
+| `upsert(name, points)` | ✅ | Native `collection.upsert(ids, embeddings, metadatas)` |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | Score = `1 - distance` |
+| `delete()` by ID list | ✅ |  |
+| `delete()` by single must FieldCondition | ✅ | Native `where={key: value}` map |
+| `search()` with `query_filter` | ❌ | qdrant-Filter -> Chroma-where translation not wired |
+| Multi-condition / nested delete filters | ❌ |  |
+
+### Weaviate adapter
+
+`src/db_adapters/vector_weaviate.py` (shipped 2026-05-20). BSD-3
+vector database with rich GraphQL/REST API. Uses the v4
+`weaviate-client` Python SDK. Each Qdrant collection maps to a
+Weaviate Collection with a single `payload` TEXT property (JSON-
+serialised). IDs are converted to UUIDs (passthrough if already
+UUID, UUID5 hash otherwise).
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `get_collections()` / `get_collection(name)` / `count(name)` | ✅ | Count via Weaviate's `aggregate.over_all(total_count=True)` |
+| `create_collection(name, vectors_config)` | ✅ | Distance: cosine / l2-squared / dot |
+| `upsert(name, points)` | ✅ | Via v4 batch dynamic context manager |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | `near_vector(...)` with distance metadata |
+| `delete()` by ID list | ✅ | Iterative `data.delete_by_id(uuid)` |
+| `delete()` by single must FieldCondition | ✅ | LIKE on payload property (GDPR shape) |
+| `search()` with `query_filter` | ❌ | qdrant-Filter -> weaviate-Filter translation not wired |
+| Multi-condition / nested delete filters | ❌ |  |
+| Hybrid search (BM25 + vector) | ❌ | Not exposed by the qdrant-shaped API |
+
+### Milvus adapter
+
+`src/db_adapters/vector_milvus.py` (shipped 2026-05-20). Apache-2.0
+vector database aimed at billion-scale workloads. Uses the v2
+`pymilvus` `MilvusClient` API. Each Qdrant collection maps to a
+Milvus collection with `id` (VARCHAR PK) + `vector` + `payload`
+(JSON-encoded).
+
+| Method | Supported | Notes |
+| --- | --- | --- |
+| `get_collections()` / `get_collection(name)` / `count(name)` | ✅ |  |
+| `create_collection(name, vectors_config)` | ✅ | Distance: COSINE / L2 / IP via `metric_type` |
+| `upsert(name, points)` | ✅ | Native idempotent `MilvusClient.upsert()` |
+| `search(name, query_vector, limit, score_threshold)` | ✅ | Score normalised based on metric (COSINE / IP raw; L2 = 1-distance) |
+| `delete()` by ID list | ✅ |  |
+| `delete()` by single must FieldCondition | ✅ | Milvus `filter='payload like "..."'` expression |
+| `search()` with `query_filter` | ❌ | qdrant-Filter -> Milvus expr translation not wired |
+| Multi-condition / nested delete filters | ❌ |  |
+
 ---
 
 ## Apache AGE adapter -- supported query matrix
@@ -331,16 +412,21 @@ per-tier deep-dives below for query-matrix limitations.
 | --- | --- | --- | --- |
 | `qdrant` (default) | ✅ full | core (`qdrant-client`) | `QDRANT_HOST` / `QDRANT_PORT` / `QDRANT_API_KEY` |
 | `pgvector` | 🟡 narrow API (no filter in search) | `[vector-pgvector]` (psycopg2 + pgvector) | `PGVECTOR_HOST` / `PGVECTOR_PORT` / `PGVECTOR_DB` / `PGVECTOR_USER` / `PGVECTOR_PASSWORD` / `PGVECTOR_TABLE_PREFIX` (falls through to `POSTGRES_*`) |
-| `lancedb` / `weaviate` / `milvus` / `chroma` | 📋 deferred | -- | -- |
+| `lancedb` | 🟡 narrow API (no filter in search) | `[vector-lancedb]` (`lancedb` + `pyarrow`) | `LANCEDB_URI` (filesystem path; default `./lancedb_data`) |
+| `chroma` | 🟡 narrow API (no filter translation) | `[vector-chroma]` (`chromadb`) | `CHROMA_HOST` / `CHROMA_PORT` (network mode) or `CHROMA_PATH` (persistent in-process) |
+| `weaviate` | 🟡 narrow API (no filter translation) | `[vector-weaviate]` (`weaviate-client>=4`) | `WEAVIATE_HOST` / `WEAVIATE_PORT` / `WEAVIATE_API_KEY` |
+| `milvus` | 🟡 narrow API (no filter translation) | `[vector-milvus]` (`pymilvus>=2.4`) | `MILVUS_HOST` / `MILVUS_PORT` / `MILVUS_TOKEN` (or `MILVUS_USER` + `MILVUS_PASSWORD`) |
 
 > The vector tier's API surface (Qdrant's `QdrantClient`) is rich
 > (`get_collections` / `create_collection` / `upsert` / `search` / etc.).
-> The `pgvector` adapter shipped 2026-05-20 covers the narrow slice
-> Enhanced Cognee actually uses; everything else (named vectors,
-> sparse vectors, payload indexes, quantization, rich search
-> filters) raises a clear `NotImplementedError`. Per HANDOVER §4
-> Phase 5: "Build the other vector adapters when a paying customer
-> asks or you're already in that area."
+> All five non-Qdrant adapters cover the narrow slice Enhanced Cognee
+> actually uses; everything else (named vectors, sparse vectors,
+> payload indexes, quantization, rich search filters, hybrid search)
+> raises a clear `NotImplementedError`. The first adapter shipped
+> (pgvector) set the `_PgVectorClient` duck-typing pattern; the
+> remaining four (lancedb, chroma, weaviate, milvus, shipped
+> 2026-05-20) follow the same `_CollectionDescription` / `_SearchHit`
+> shape so callers don't have to special-case the provider.
 
 ### Graph tier (`ENHANCED_GRAPH_PROVIDER`)
 

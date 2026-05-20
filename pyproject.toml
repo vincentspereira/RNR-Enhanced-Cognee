@@ -211,6 +211,24 @@ vector-pgvector = [
     "pgvector>=0.3.5,<0.5",
 ]
 
+# Phase 5 vector adapter quartet (lancedb / chroma / weaviate / milvus):
+#   pip install enhanced-cognee[vector-lancedb]
+#   pip install enhanced-cognee[vector-chroma]
+#   pip install enhanced-cognee[vector-weaviate]
+#   pip install enhanced-cognee[vector-milvus]
+# Each adapter is a narrow QdrantClient-shaped shim; see
+# docs/PROFILES.md for the supported-method matrix.
+# (lancedb is also in core deps via upstream cognee; this group keeps
+#  documentation parity with the other three.)
+vector-lancedb = ["lancedb>=0.24.0,<1.0.0", "pyarrow>=14.0.0"]
+vector-chroma = [
+    "chromadb>=0.6,<0.7",
+    "pypika==0.48.9 ; python_version < '3.14'",
+    "pypika>=0.50.0 ; python_version >= '3.14'",
+]
+vector-weaviate = ["weaviate-client>=4.7.0,<5"]
+vector-milvus = ["pymilvus>=2.4.0,<3"]
+
 # monitoring: Enhanced-specific observability stack
 monitoring = ["sentry-sdk[fastapi]>=2.9.0,<3", "langfuse>=2.32.0,<3"]
 

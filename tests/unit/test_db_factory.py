@@ -164,7 +164,9 @@ class TestVectorFactory:
         assert QC.call_args.kwargs["timeout"] == 5
 
     def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_VECTOR_PROVIDER", "weaviate")
+        # `weaviate` is a valid provider since Phase 5 (2026-05-20);
+        # use a placeholder name that's still genuinely unsupported.
+        monkeypatch.setenv("ENHANCED_VECTOR_PROVIDER", "elasticsearch")
         with pytest.raises(ValueError, match="ENHANCED_VECTOR_PROVIDER"):
             db_factory.get_vector_client()
 
