@@ -8,22 +8,74 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-1134%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-  [![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-3954%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Coverage](https://img.shields.io/badge/Coverage-95%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-![Tests](https://img.shields.io/badge/tests-4158%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-3954%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Valkey](https://img.shields.io/badge/cache-Valkey%208-orange)
+![ArcadeDB](https://img.shields.io/badge/graph-ArcadeDB%2026.x-orange)
+![Providers](https://img.shields.io/badge/pluggable%20providers-13%20across%204%20tiers-blueviolet)
 ![MCP Tools](https://img.shields.io/badge/MCP%20tools-122-9cf)
 
 **An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, encryption at rest, structured observations, heuristic re-ranking, and production-ready security hardening**
 
 </div>
+
+---
+
+## Latest Updates (2026-05-20)
+
+**Pluggable database stack landed (Phases 1-5).** A 13-PR run since the
+2026-05-18 release built out a fully-pluggable storage tier. Headline:
+
+- **13 providers shipped across 4 tiers.** You can now mix and match
+  graph (`arcadedb` default / `neo4j` / `apache_age` / `memgraph` /
+  `kuzu` / `networkx_inmemory` / `arangodb` / `nebulagraph` /
+  `ladybug`), vector (`qdrant` default / `pgvector` / `lancedb` /
+  `chroma` / `weaviate` / `milvus`), cache (`valkey` default / `redis` /
+  `redis_compat` / `in_memory` / `memcached`), and relational
+  (`postgres` default / `sqlite`) backends via env vars. See
+  [`docs/PROFILES.md`](docs/PROFILES.md) and
+  [`docs/PLUGGABLE_DB_BACKENDS.md`](docs/PLUGGABLE_DB_BACKENDS.md).
+- **ArcadeDB is the new default graph store** (replacing Neo4j as the
+  default; Neo4j remains a first-class provider). 100% Apache-2.0 graph
+  layer. See [`docs/ARCADEDB_MIGRATION.md`](docs/ARCADEDB_MIGRATION.md).
+- **Default stack is now 100% MIT + Apache-2.0.** No AGPL, no SSPL, no
+  BSL in the default profile. License audit refreshed in
+  [`docs/LICENSE_AUDIT.md`](docs/LICENSE_AUDIT.md).
+- **Apache AGE native graph elements.** `MATCH (n) RETURN n` now
+  returns real `Node`/`Relationship`-shaped objects (PR #30); edges
+  return `start_node`/`end_node` stubs and paths decode to ordered
+  vertex+edge lists.
+- **Shared vector filter translator.** All 5 vector adapters now route
+  qdrant-style `Filter(must=[FieldCondition(...)])` through a single
+  normaliser → native dialect (pgvector SQL JSONB / Chroma `where` /
+  Weaviate `Filter.by_property` / Milvus `expr` / LanceDB SQL `WHERE`).
+- **5 importable Superset 4.x dashboards** in
+  `monitoring/superset-dashboards/`: memory growth, agent activity,
+  LLM cost trends, dedup effectiveness, perf regression. With shared
+  `_dataset_definitions.yaml` hitting the real schemas.
+- **Live AGE integration tests in CI.** Dedicated `postgres-age`
+  service container on port 25433 using `apache/age:release_PG16_1.6.0`
+  + idempotent bootstrap step.
+- **Cross-provider benchmark runner.** `tests/benchmarks/run_provider_comparison.py`
+  drives Locust against 5 provider permutations and emits side-by-side
+  RPS / p50 / p95 / p99 / error% tables (JSON + Markdown).
+- **Observability stack swap (Phase 4).** Grafana + Loki + Tempo +
+  Jaeger → **SigNoz + Apache Superset**. APM-style charts live
+  natively in SigNoz; BI dashboards in Superset. Both fully Apache-2.0.
+- **Test suite: 3,954 passing, 100% success, 95% coverage**, +257
+  integration/system tests, +13 PRs (#19-#31).
+
+Outstanding items tracked in [`docs/PHASE5_TODO.md`](docs/PHASE5_TODO.md).
+Backlog is essentially closed pending the optional ArcadeDB-HTTP CI
+pivot and MAS integration (next session).
 
 ---
 
@@ -773,11 +825,27 @@ flowchart LR
         AS[Advanced Search<br/>Re-ranking]
     end
 
-    subgraph DB["Database Layer"]
-        PG[(PostgreSQL<br/>Port 25432)]
-        QD[(Qdrant<br/>Port 26333)]
-        N4[(ArcadeDB<br/>Port 27687)]
-        RD[(Valkey 8<br/>Port 26379)]
+    subgraph DB["Database Layer — Pluggable (4 tiers, 13 providers)"]
+        direction TB
+        subgraph Defaults["Default profile (100% Apache-2.0 + MIT)"]
+            PG[(PostgreSQL + pgvector<br/>Port 25432)]
+            QD[(Qdrant<br/>Port 26333)]
+            N4[(ArcadeDB<br/>Port 27687, Apache-2.0)]
+            RD[(Valkey 8<br/>Port 26379, Apache-2.0)]
+        end
+        subgraph Alternates["Drop-in alternates via ENHANCED_*_PROVIDER"]
+            ALT_G[Graph: neo4j / apache_age /<br/>memgraph / kuzu / arangodb /<br/>nebulagraph / ladybug / networkx_inmemory]
+            ALT_V[Vector: pgvector / lancedb /<br/>chroma / weaviate / milvus]
+            ALT_C[Cache: redis / redis_compat /<br/>in_memory / memcached]
+            ALT_R[Relational: sqlite]
+        end
+    end
+
+    subgraph Obs["Observability (optional, Phase 4)"]
+        direction LR
+        SN[SigNoz<br/>OTel APM + traces]
+        SU[Apache Superset<br/>BI dashboards]
+        PR[Prometheus<br/>Metrics scraping]
     end
 
     AIC --> MCP
@@ -829,23 +897,23 @@ flowchart LR
 ### Enhanced Stack Architecture
 
 ```
-Enhanced Cognee Memory Stack
-├── PostgreSQL + pgVector (Port 25432)
+Enhanced Cognee Memory Stack -- default profile (production)
+├── PostgreSQL + pgvector (Port 25432, PostgreSQL Licence + Apache-2.0)
 │   ├── Relational data storage
-│   ├── Vector similarity search
+│   ├── Vector similarity search (via pgvector extension)
 │   ├── Memory lifecycle management
 │   └── ACID transactions
-├── Qdrant (Port 26333)
+├── Qdrant (Port 26333, Apache-2.0)
 │   ├── High-performance vector search
 │   ├── HNSW indexing
 │   ├── Duplicate detection
 │   └── Filtered searches
-├── ArcadeDB (Port 27687, Apache-2.0; was Neo4j)
-│   ├── Knowledge graph
+├── ArcadeDB (Port 27687, Apache-2.0; default since 2026-05-19)
+│   ├── Knowledge graph (openCypher, Bolt-compatible wire)
 │   ├── Relationship mapping
-│   ├── openCypher query language (Bolt-compatible)
-│   └── Multi-model: also supports document / vector / time-series
-├── Valkey (Port 26379, Apache-2.0; was Redis)
+│   ├── Multi-model: also supports document / vector / time-series
+│   └── Drop-in for existing NEO4J_URI=bolt://localhost:27687 setups
+├── Valkey (Port 26379, Apache-2.0; default since 2026-05-18)
 │   ├── Caching layer
 │   ├── Real-time pub/sub (agent coordination)
 │   ├── Session management
@@ -853,8 +921,70 @@ Enhanced Cognee Memory Stack
 └── Enhanced Cognee MCP Server
     ├── 122 MCP tools
     ├── Multi-IDE support (MCP-compatible IDEs)
-    └── ASCII-only output
+    ├── ASCII-only output (Windows console safe)
+    └── Pluggable storage via ENHANCED_*_PROVIDER env vars
+
+Alternate provider permutations (see `docs/PROFILES.md`):
+  apache_only -- postgres+pgvector + apache_age + valkey       (no JVM, no JS runtime)
+  lean        -- postgres+pgvector + apache_age + in_memory    (laptop / small VPS)
+  embedded    -- sqlite + lancedb + ladybug + in_memory        (offline / single-process)
+  neo4j_stack -- postgres + qdrant + neo4j + redis             (legacy parity)
 ```
+
+### Pluggable Database Backends (13 providers, 4 tiers)
+
+Shipped 2026-05-19..2026-05-20 across PRs #19-#31. The default stack is
+ArcadeDB + Qdrant + Valkey + PostgreSQL (all Apache-2.0 or
+PostgreSQL Licence), but every tier accepts a drop-in alternate via
+the `ENHANCED_*_PROVIDER` env var. The factory at `src/db_factory.py`
+dispatches to the right adapter; call sites use the duck-typed
+`neo4j.Driver` / `QdrantClient` / `redis.Redis` / `psycopg2`-style
+surfaces unchanged.
+
+| Tier        | Default       | Drop-in alternates                                                                                                |
+| ----------- | ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Graph       | `arcadedb`    | `neo4j`, `apache_age`, `memgraph`, `kuzu`, `arangodb`, `nebulagraph`, `ladybug`, `networkx_inmemory` (9 total)    |
+| Vector      | `qdrant`      | `pgvector`, `lancedb`, `chroma`, `weaviate`, `milvus` (6 total)                                                   |
+| Cache       | `valkey`      | `redis`, `redis_compat`, `in_memory`, `memcached` (5 total)                                                       |
+| Relational  | `postgres`    | `sqlite` (2 total)                                                                                                |
+
+**Pre-baked profiles** (see [`docs/PROFILES.md`](docs/PROFILES.md) for
+the full matrix and the per-adapter caveat tables):
+
+- `production` — ArcadeDB + Qdrant + Valkey + PostgreSQL (default; 4 containers)
+- `apache_only` — Apache AGE + Qdrant + Valkey + PostgreSQL (no JVM)
+- `lean` — Apache AGE + pgvector + in_memory + PostgreSQL (1 container)
+- `embedded` — ladybug + LanceDB + in_memory + SQLite (no containers; offline / single-process)
+- `neo4j_stack` — Neo4j + Qdrant + Redis + PostgreSQL (legacy parity)
+
+**Why pluggable matters:**
+
+- **Licensing flexibility.** The default stack is 100% MIT/Apache-2.0.
+  Customers with stricter procurement (no AGPL, no SSPL, no BSL) can
+  switch providers without code changes.
+- **Operational fit.** Laptops want `embedded`; small VPS want `lean`;
+  multi-node clusters want `production`. Same MCP tool surface, same
+  CRUD semantics, different storage engines.
+- **Vendor exit.** If a managed service goes through licence churn
+  (the Redis BSL situation), flipping `ENHANCED_CACHE_PROVIDER` is
+  a one-line config change, not a code migration.
+
+**Vector filter translator.** All 5 vector adapters route qdrant-style
+`Filter(must=[FieldCondition(...)])` through `src/db_adapters/_vector_filter.py`
+which emits the native dialect (Postgres JSONB / Chroma `where` /
+Weaviate `Filter.by_property` / Milvus `expr` / LanceDB SQL). Single-
+`must` FieldConditions are supported across all backends; compound
+filters raise a clear `NotImplementedError` with a pointer.
+
+**Apache AGE native graph elements.** `MATCH (n) RETURN n` against
+Apache AGE now returns `_AGENode` / `_AGERelationship` objects shaped
+exactly like `neo4j.graph.Node` / `Relationship` — same `.labels` /
+`.type` / `.start_node` / `dict(node.items())` API.
+
+See [`docs/PLUGGABLE_DB_BACKENDS.md`](docs/PLUGGABLE_DB_BACKENDS.md)
+for the architectural overview and
+[`docs/PROFILES.md`](docs/PROFILES.md) for the per-adapter capability
+matrix.
 
 ### Enhanced Modules
 
@@ -936,12 +1066,12 @@ stateDiagram-v2
 
     StorageDecision --> PostgreSQL: Relational data
     StorageDecision --> Qdrant: Vector embeddings
-    StorageDecision --> Neo4j: Graph relationships
+    StorageDecision --> ArcadeDB: Graph relationships (default)
     StorageDecision --> Valkey: Cache layer
 
     PostgreSQL --> DeduplicationCheck: Query
     Qdrant --> DeduplicationCheck: Search
-    Neo4j --> DeduplicationCheck: Traverse
+    ArcadeDB --> DeduplicationCheck: Traverse
 
     DeduplicationCheck --> IsDuplicate
 
@@ -990,7 +1120,7 @@ flowchart LR
     end
 
     subgraph DirectQuery["Direct and Auto - 2 types"]
-        D1[CYPHER\ndirect Neo4j query]
+        D1[CYPHER\ndirect Cypher query\nArcadeDB/Neo4j/AGE-compatible]
         D2[FEELING_LUCKY\nauto-select best]
     end
 
@@ -1030,7 +1160,7 @@ git clone https://github.com/vincentspereira/Enhanced-Cognee.git
 cd Enhanced-Cognee
 
 # Start Enhanced databases (one command)
-docker compose -f config/docker/docker-compose-enhanced-cognee.yml up -d
+docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 
 # Verify all services running
 docker ps | grep enhanced
@@ -1083,11 +1213,25 @@ Full server installation via PyPI is planned for a future release.
 cp .env.example .env
 
 # Edit with your settings
-# Minimum required:
+# Minimum required (default `production` profile):
 # - POSTGRES_HOST=localhost
 # - POSTGRES_PORT=25432
 # - QDRANT_HOST=localhost
 # - QDRANT_PORT=26333
+# - NEO4J_URI=bolt://localhost:27687     (ArcadeDB's bolt port; same name kept for compat)
+# - REDIS_HOST=localhost                  (Valkey -- wire-compatible with redis-py)
+# - REDIS_PORT=26379
+
+# Optional: switch providers via env vars
+# (see `docs/PROFILES.md` for the full matrix)
+# - ENHANCED_GRAPH_PROVIDER=arcadedb       # arcadedb / neo4j / apache_age / memgraph
+#                                          # / kuzu / arangodb / nebulagraph / ladybug
+#                                          # / networkx_inmemory
+# - ENHANCED_VECTOR_PROVIDER=qdrant        # qdrant / pgvector / lancedb / chroma
+#                                          # / weaviate / milvus
+# - ENHANCED_CACHE_PROVIDER=valkey         # valkey / redis / redis_compat / in_memory
+#                                          # / memcached
+# - ENHANCED_RELATIONAL_PROVIDER=postgres  # postgres / sqlite
 ```
 
 ### 2. Start MCP Server
@@ -2087,13 +2231,15 @@ open htmlcov/index.html
 
 ### Test Statistics
 
-- **Total Test Files:** 25+
-- **Total Test Cases:** 4,158 tests passing (100% pass rate)
-- **Code Coverage:** 92%+ unit coverage
-- **Success Rate:** 100% (4,158/4,158 tests passing)
-- **Integration tests:** Available separately (require live database connections)
+- **Total Test Files:** 104 test modules (unit + integration + system + e2e + benchmarks + load)
+- **Unit tests:** 3,954 passing (100% pass rate)
+- **Integration tests:** 257 across `tests/integration/` + `tests/system/` (boot real DBs; non-blocking in CI via `continue-on-error: true`). Includes 8 live ArcadeDB + Apache AGE tests shipped 2026-05-20.
+- **Benchmark suite:** `tests/benchmarks/run_provider_comparison.py` -- drives Locust against 5 provider permutations + emits comparison tables.
+- **Load tests:** `tests/load/locustfile.py` -- 8 `HttpUser` classes (read-heavy / write-heavy / mixed / health + 4 Phase-5 scenarios: SemanticSearch / KnowledgeGraph / GDPRWorkflow / BackupVerify).
+- **Code Coverage:** 95%+ unit coverage (pytest.ini gate at 85%)
+- **Success Rate:** 100% (3,954 / 3,954 unit tests passing)
 - **Warnings:** 0
-- **Skipped Tests:** 0
+- **Skipped Tests:** 0 in unit suite; integration tests skip gracefully when a live service isn't reachable.
 
 **Testing Guide:** [Testing Guide](docs/development/TESTING.md)
 
@@ -2109,10 +2255,19 @@ Comprehensive documentation is available:
 | [Cognee vs Enhanced Comparison](COGNEE_VS_ENHANCED_MCP_COMPARISON.md)           | Full 122-tool feature-by-feature comparison             |
 | [GitHub Release v1.0.0](https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0) | Release notes and changelog |
 | [PyPI: enhanced-cognee-client](https://pypi.org/project/enhanced-cognee-client/1.0.0/) | Python SDK on PyPI        |
+| [Profiles + per-adapter caveats](docs/PROFILES.md)                              | The 5 pre-baked profiles + the per-adapter supported-method matrix (PostgreSQL, Qdrant, ArcadeDB, Apache AGE, Neo4j, Memgraph, Kuzu, NetworkX, ArangoDB, NebulaGraph, Ladybug + all vector adapters) |
+| [Pluggable DB Backends](docs/PLUGGABLE_DB_BACKENDS.md)                          | Architectural overview of the 4-tier pluggable factory + how to add a new adapter |
+| [ArcadeDB Migration](docs/ARCADEDB_MIGRATION.md)                                | How to migrate from a Neo4j default to ArcadeDB (or back) |
+| [Phase 5 Outstanding TODO](docs/PHASE5_TODO.md)                                 | Honest accounting of what's shipped vs deferred since 2026-05-20 |
+| [License Audit](docs/LICENSE_AUDIT.md)                                          | Per-component licence analysis for the default stack |
+| [Strategy](docs/STRATEGY.md)                                                    | Long-term roadmap, decision records, alternative stacks |
+| [Compare to Alternatives](docs/COMPARE_TO_ALTERNATIVES.md)                      | Enhanced Cognee vs Mem0 / Letta / LangChain |
 | [Master Implementation Plan](docs/plans/MASTER_IMPLEMENTATION_PLAN.md)          | Comprehensive project roadmap and plans                 |
 | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                             | Multi-IDE setup for MCP-compatible IDEs                 |
 | [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)    | 21 SDLC agents integration guide                        |
 | [Testing Guide](docs/development/TESTING.md)                                    | Complete testing guide           |
+| [Superset Dashboards](monitoring/superset-dashboards/README.md)                 | 5 importable Superset dashboards (memory_growth, agent_activity, llm_cost_trends, dedup_effectiveness, perf_regression) + dataset definitions |
+| [Monitoring (SigNoz + Superset)](docs/MONITORING.md)                            | Phase 4 observability stack overview (replaces Grafana + Loki + Tempo + Jaeger) |
 | [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)               | Task completion summary          |
 | [Contributing Guidelines](docs/development/CONTRIBUTING.md)                     | Contribution guidelines          |
 | [Contributors](docs/policies/CONTRIBUTORS.md)                                   | Contributor history              |
@@ -2422,10 +2577,25 @@ Enhanced Cognee is a derivative work based on the excellent [Cognee](https://git
 Enhanced Cognee integrates with these excellent open-source projects:
 
 - **PostgreSQL**: https://www.postgresql.org/
-- **pgVector**: https://github.com/pgvector/pgvector
+- **pgvector**: https://github.com/pgvector/pgvector
 - **Qdrant**: https://qdrant.tech/
+- **ArcadeDB**: https://arcadedb.com/ (default graph store, Apache-2.0)
+- **Apache AGE**: https://age.apache.org/ (Postgres extension; graph alternate)
+- **Memgraph**: https://memgraph.com/
+- **Kuzu**: https://kuzudb.com/
+- **NebulaGraph**: https://www.nebula-graph.io/
+- **ArangoDB**: https://www.arangodb.com/
+- **NetworkX**: https://networkx.org/
+- **LanceDB**: https://lancedb.com/
+- **Chroma**: https://www.trychroma.com/
+- **Weaviate**: https://weaviate.io/
+- **Milvus**: https://milvus.io/
 - **Neo4j**: https://neo4j.com/
-- **Valkey**: https://valkey.io/
+- **Valkey**: https://valkey.io/ (default cache, Apache-2.0)
+- **Memcached**: https://memcached.org/
+- **SigNoz**: https://signoz.io/ (OTel APM, MIT)
+- **Apache Superset**: https://superset.apache.org/ (BI dashboards)
+- **Locust**: https://locust.io/ (load testing)
 - **FastMCP**: https://github.com/jlowin/fastmcp
 
 ### Special Thanks
@@ -2459,10 +2629,19 @@ Key documents and references:
 | [docs/LICENSE_AUDIT.md](docs/LICENSE_AUDIT.md) | Full license analysis of every component |
 | [docs/PRODUCTION_READINESS_PLAN.md](docs/PRODUCTION_READINESS_PLAN.md) | Six-phase roadmap (all phases complete) |
 | [docs/COMPARE_TO_ALTERNATIVES.md](docs/COMPARE_TO_ALTERNATIVES.md) | Enhanced Cognee vs Mem0 / Letta / LangChain |
+| [docs/PROFILES.md](docs/PROFILES.md) | 5 pre-baked profiles + per-adapter supported-method matrices |
+| [docs/PLUGGABLE_DB_BACKENDS.md](docs/PLUGGABLE_DB_BACKENDS.md) | Architectural overview of the 4-tier pluggable factory |
+| [docs/PHASE5_TODO.md](docs/PHASE5_TODO.md) | Honest Phase 5 backlog accounting |
+| [docs/ARCADEDB_MIGRATION.md](docs/ARCADEDB_MIGRATION.md) | Neo4j -> ArcadeDB migration guide |
+| [docs/MONITORING.md](docs/MONITORING.md) | SigNoz + Superset observability stack (replaced Grafana + Loki + Tempo + Jaeger in Phase 4) |
+| [docs/STRATEGY.md](docs/STRATEGY.md) | Long-term roadmap, decision records, alternative stacks |
 | [docs/operations/RUNBOOK.md](docs/operations/RUNBOOK.md) | 10 incident playbooks |
 | [docs/operations/MULTI_TENANT_DESIGN.md](docs/operations/MULTI_TENANT_DESIGN.md) | Multi-tenant architecture (deferred) |
 | [docs/operations/OPENTELEMETRY_GUIDE.md](docs/operations/OPENTELEMETRY_GUIDE.md) | Distributed tracing setup |
 | [docs/operations/SECRETS_MANAGEMENT.md](docs/operations/SECRETS_MANAGEMENT.md) | Secret-handling approaches |
+| [monitoring/superset-dashboards/README.md](monitoring/superset-dashboards/README.md) | 5 importable Superset dashboards + dataset definitions |
+| [tests/load/README.md](tests/load/README.md) | Locust load-test workload spec (8 user classes) |
+| [tests/benchmarks/run_provider_comparison.py](tests/benchmarks/run_provider_comparison.py) | Cross-provider benchmark runner (5 permutations) |
 | [deploy/local/install.ps1](deploy/local/install.ps1) | Windows installer |
 | [deploy/local/install.sh](deploy/local/install.sh) | Linux/macOS installer |
 | [deploy/vps/README.md](deploy/vps/README.md) | Hetzner CX22 deployment runbook |

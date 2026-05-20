@@ -1,5 +1,34 @@
 # Pluggable Database Backends Design
 
+> **Status (2026-05-20):** ✅ **All 5 phases SHIPPED** across PRs
+> #19-#31. The full pluggable stack is live -- 13 providers across
+> 4 tiers, factory-dispatched via `ENHANCED_*_PROVIDER` env vars.
+> See [`PROFILES.md`](PROFILES.md) for the user-facing matrix and
+> per-adapter caveats. The sections below are preserved as a record
+> of the original design + effort estimate; the implementation
+> matched the plan closely.
+
+## Shipped state (2026-05-20)
+
+| Tier        | Providers                                                                                                |
+| ----------- | -------------------------------------------------------------------------------------------------------- |
+| Graph (9)   | `arcadedb` (default) / `neo4j` / `apache_age` / `memgraph` / `kuzu` / `arangodb` / `nebulagraph` / `ladybug` / `networkx_inmemory` |
+| Vector (6)  | `qdrant` (default) / `pgvector` / `lancedb` / `chroma` / `weaviate` / `milvus`                           |
+| Cache (5)   | `valkey` (default) / `redis` / `redis_compat` / `in_memory` / `memcached`                                |
+| Relational (2) | `postgres` (default) / `sqlite`                                                                       |
+
+**Shared infrastructure:**
+- `src/db_factory.py` -- env-var dispatch for every tier
+- `src/db_adapters/` -- 24 adapter modules (one per provider + shared helpers)
+- `src/db_adapters/_vector_filter.py` -- shared qdrant-Filter -> backend translator wired into all 5 vector adapters
+- `tests/unit/test_db_factory.py` + per-adapter test modules -- 100% factory coverage
+- `tests/integration/test_apache_age_integration.py` -- live AGE round-trips in CI
+- `tests/benchmarks/run_provider_comparison.py` -- cross-provider Locust comparison runner
+
+---
+
+## Original Design Question (preserved for context)
+
 **Question:** Original Cognee lets you pick the database (LanceDB / Qdrant /
 PGVector / Weaviate / Milvus for vectors; Neo4j / Kuzu / Memgraph for graph).
 Should Enhanced Cognee do the same? Especially if it'll be incorporated into
