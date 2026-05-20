@@ -35,6 +35,7 @@ _VALID_VECTOR = {"qdrant", "pgvector", "lancedb", "chroma", "weaviate", "milvus"
 _VALID_GRAPH = {
     "arcadedb", "neo4j", "apache_age",
     "memgraph", "kuzu", "networkx_inmemory",
+    "arangodb", "nebulagraph", "ladybug",
 }
 _VALID_CACHE = {"valkey", "redis", "redis_compat", "in_memory", "memcached"}
 
@@ -148,6 +149,18 @@ def get_graph_driver(**kwargs: Any):
         from src.db_adapters import graph_networkx_inmemory
 
         return graph_networkx_inmemory.create_driver(**kwargs)
+    if provider == "arangodb":
+        from src.db_adapters import graph_arangodb
+
+        return graph_arangodb.create_driver(**kwargs)
+    if provider == "nebulagraph":
+        from src.db_adapters import graph_nebulagraph
+
+        return graph_nebulagraph.create_driver(**kwargs)
+    if provider == "ladybug":
+        from src.db_adapters import graph_ladybug
+
+        return graph_ladybug.create_driver(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_GRAPH_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_GRAPH)}"
@@ -187,6 +200,18 @@ def get_async_graph_driver(**kwargs: Any):
         from src.db_adapters import graph_networkx_inmemory
 
         return graph_networkx_inmemory.create_async_driver(**kwargs)
+    if provider == "arangodb":
+        from src.db_adapters import graph_arangodb
+
+        return graph_arangodb.create_async_driver(**kwargs)
+    if provider == "nebulagraph":
+        from src.db_adapters import graph_nebulagraph
+
+        return graph_nebulagraph.create_async_driver(**kwargs)
+    if provider == "ladybug":
+        from src.db_adapters import graph_ladybug
+
+        return graph_ladybug.create_async_driver(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_GRAPH_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_GRAPH)}"

@@ -309,6 +309,67 @@ Milvus collection with `id` (VARCHAR PK) + `vector` + `payload`
 | `search()` with `query_filter` | ❌ | qdrant-Filter -> Milvus expr translation not wired |
 | Multi-condition / nested delete filters | ❌ |  |
 
+### ArangoDB adapter
+
+`src/db_adapters/graph_arangodb.py` (shipped 2026-05-20). Apache-2.0
+multi-model DB; native AQL query language. The adapter translates
+the narrow Cypher subset Enhanced Cognee uses into AQL via the
+`python-arango` client. All graph nodes live in a single
+ArangoDB document collection (default `cognee_graph_nodes`,
+configurable via `ARANGO_COLLECTION_NAME`).
+
+| Cypher | AQL translation |
+| --- | --- |
+| `RETURN <literal>` | `RETURN <literal>` |
+| `MATCH (n) RETURN COUNT(n) [AS alias]` | `FOR d IN @@col COLLECT WITH COUNT INTO c RETURN c` |
+| `MATCH (n) DETACH DELETE n` | `FOR d IN @@col REMOVE d IN @@col` |
+| `MATCH (n) RETURN n` | `FOR d IN @@col RETURN d` |
+| `CREATE (n:Label {props})` | Parameterised form only (raises if literal props) |
+| Multi-hop / WHERE clauses | ❌ raises `NotImplementedError` -- python-arango doesn't ship a Cypher engine; you'd need a real translator (3-5 days of work) for arbitrary Cypher. Switch to arcadedb / neo4j for full Cypher coverage. |
+
+**Async session API:** ✅ -- `get_async_graph_driver()` returns an
+`_AsyncArangoDriver` that wraps sync `python-arango` calls in
+`asyncio.to_thread`. The threading-boundary overhead is modest for
+typical workloads.
+
+### NebulaGraph adapter
+
+`src/db_adapters/graph_nebulagraph.py` (shipped 2026-05-20).
+Apache-2.0 distributed graph database via `nebula3-python`.
+NebulaGraph 3+ supports openCypher mode natively, so most Cypher
+queries pass through verbatim; the only rewrite is `RETURN <literal>`
+-> `YIELD <literal>` (nGQL's literal-projection form). All graph
+state lives in a single space (default `cognee_space`, configurable
+via `NEBULA_SPACE_NAME`).
+
+| Feature | Status |
+| --- | --- |
+| Connectivity ping (`RETURN 1` -> `YIELD 1`) | ✅ |
+| `MATCH (n) RETURN COUNT(n) AS c` | ✅ (openCypher passthrough) |
+| `MATCH (n) DETACH DELETE n` | ✅ (openCypher passthrough) |
+| Multi-hop / WHERE clauses with property comparisons | ✅ for the queries NebulaGraph's openCypher mode supports natively. NebulaGraph 3+ is strict about tag schemas though -- properties must be declared on the tag first; that's a NebulaGraph constraint, not the adapter's. |
+| Parameterised Cypher | ❌ -- nGQL parameter binding differs from Bolt-style. Inline literals or switch to arcadedb. |
+| Async session API | ✅ -- `get_async_graph_driver()` returns an `_AsyncNebulaDriver` wrapping the sync `nebula3-python` client in `asyncio.to_thread`. |
+
+### Ladybug adapter
+
+`src/db_adapters/graph_ladybug.py` (shipped 2026-05-20). Upstream
+Cognee's experimental in-process graph engine; already a hard core
+dependency. The adapter mirrors the `networkx_inmemory` shape -- a
+narrow Cypher parser (`RETURN <literal>` / `MATCH (n) RETURN
+COUNT(n)` / `MATCH (n) DETACH DELETE n` / `MATCH (n) RETURN n`) on
+top of ladybug's native graph API.
+
+| Feature | Status |
+| --- | --- |
+| Connectivity ping (`RETURN 1`) | ✅ -- doesn't import ladybug; works as a no-op pre-flight |
+| `MATCH (n) RETURN COUNT(n) [AS alias]` | ✅ |
+| `MATCH (n) DETACH DELETE n` | ✅ |
+| `MATCH (n) RETURN n` | ✅ |
+| Parameterised Cypher | ❌ -- Ladybug's API isn't a Cypher engine; inline literals. |
+| Async session API | ✅ -- `get_async_graph_driver()` returns an `_AsyncLadybugDriver` wrapping the in-process sync ladybug graph in `asyncio.to_thread`. |
+| Multi-hop / WHERE | ❌ -- Ladybug's API doesn't expose pattern-matching. Switch to arcadedb / neo4j for those queries. |
+
 ---
 
 ## Apache AGE adapter -- supported query matrix
@@ -434,11 +495,13 @@ per-tier deep-dives below for query-matrix limitations.
 | --- | --- | --- | --- |
 | `arcadedb` (default) | ✅ full | core (`neo4j`) | `ARCADEDB_URI` / `ARCADEDB_USER` / `ARCADEDB_PASSWORD` |
 | `neo4j` | ✅ full (legacy) | core (`neo4j`) | `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` |
-| `apache_age` | 🟡 narrow Cypher subset | core (`psycopg2`) | `AGE_HOST` / `AGE_PORT` / `AGE_DB` / `AGE_USER` / `AGE_PASSWORD` / `AGE_GRAPH_NAME` (falls through to `POSTGRES_*`) |
+| `apache_age` | 🟡 narrow Cypher subset (params + async since 2026-05-20) | core (`psycopg2`) | `AGE_HOST` / `AGE_PORT` / `AGE_DB` / `AGE_USER` / `AGE_PASSWORD` / `AGE_GRAPH_NAME` (falls through to `POSTGRES_*`) |
 | `memgraph` | ✅ full | `[graph-memgraph]` (reuses `neo4j`) | `MEMGRAPH_URI` / `MEMGRAPH_USER` / `MEMGRAPH_PASSWORD` |
 | `kuzu` | 🟡 sync-only | `[graph-kuzu]` | `KUZU_DB_PATH` |
 | `networkx_inmemory` | 🟡 narrow Cypher subset (testing only) | core (`networkx`) | -- |
-| `arangodb` / `nebulagraph` / `ladybug` | 📋 deferred -- different query languages | -- | -- |
+| `arangodb` | 🟡 narrow Cypher subset translated to AQL | `[graph-arangodb]` (`python-arango`) | `ARANGO_HOST` / `ARANGO_PORT` / `ARANGO_DB` / `ARANGO_USER` / `ARANGO_PASSWORD` / `ARANGO_COLLECTION_NAME` |
+| `nebulagraph` | 🟡 narrow Cypher subset via NebulaGraph openCypher mode | `[graph-nebulagraph]` (`nebula3-python`) | `NEBULA_HOST` / `NEBULA_PORT` / `NEBULA_USER` / `NEBULA_PASSWORD` / `NEBULA_SPACE_NAME` |
+| `ladybug` | 🟡 narrow Cypher subset (upstream Cognee default) | `[graph-ladybug]` (ladybug already core) | `LADYBUG_DB_PATH` |
 
 ### Cache tier (`ENHANCED_CACHE_PROVIDER`)
 

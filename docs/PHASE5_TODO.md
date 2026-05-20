@@ -30,17 +30,13 @@ features (rich filters, named vectors, sparse vectors, payload
 indexes, quantization, hybrid search) raises `NotImplementedError`
 with a clear pointer to the per-adapter sub-section in PROFILES.md.
 
-### Graph tier alternates with different query languages (medium effort)
+### Graph tier alternates with different query languages
 
-| Provider | Query language | Status | Effort | Notes |
-|---|---|---|---|---|
-| `arangodb` | AQL | 📋 | 3-5 days | Need Cypher-or-AQL translation layer |
-| `nebulagraph` | nGQL | 📋 | 3-5 days | Distributed scale-out; nGQL ≠ Cypher |
-| `ladybug` | Cognee-native | 📋 | 1-3 days | Upstream Cognee's experimental engine; needs upstream investigation first |
-
-**Why deferred:** these all need a Cypher-to-X translation layer
-because Enhanced Cognee call sites speak Cypher. The translation work
-is the bottleneck, not the connection layer.
+| Provider | Query language | Status | Notes |
+|---|---|---|---|
+| `arangodb` | AQL | ✅ **SHIPPED 2026-05-20** | Cypher-to-AQL translator for the narrow subset our codebase uses. Multi-hop / WHERE clauses raise `NotImplementedError`. |
+| `nebulagraph` | nGQL | ✅ **SHIPPED 2026-05-20** | Routes through NebulaGraph 3+ openCypher mode; only the literal-RETURN form gets a `YIELD` rewrite. |
+| `ladybug` | Cognee-native | ✅ **SHIPPED 2026-05-20** | In-process adapter mirroring the `networkx_inmemory` shape; uses ladybug's native graph API for COUNT / DETACH DELETE / RETURN-all. |
 
 ### Misc
 

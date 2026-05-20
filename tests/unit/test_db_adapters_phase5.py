@@ -329,9 +329,12 @@ class TestSQLiteRelational:
 
 class TestProviderMatrix:
     def test_valid_graph_set(self):
+        # 3 new providers (arangodb / nebulagraph / ladybug) added 2026-05-20
+        # for query-language coverage (AQL / nGQL) and the all-Python fallback.
         expected = {
             "arcadedb", "neo4j", "apache_age",
             "memgraph", "kuzu", "networkx_inmemory",
+            "arangodb", "nebulagraph", "ladybug",
         }
         assert db_factory._VALID_GRAPH == expected
 

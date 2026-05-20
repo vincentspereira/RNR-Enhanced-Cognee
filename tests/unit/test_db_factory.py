@@ -257,12 +257,14 @@ class TestGraphFactory:
         assert type(driver).__name__ == "_AsyncAGEDriver"
 
     def test_unknown_provider_raises(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arangodb")
+        # `arangodb` is a valid provider since Phase 5; use a placeholder
+        # that's genuinely not in _VALID_GRAPH.
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "dgraph")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_graph_driver()
 
     def test_unknown_provider_raises_async(self, monkeypatch):
-        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "arangodb")
+        monkeypatch.setenv("ENHANCED_GRAPH_PROVIDER", "dgraph")
         with pytest.raises(ValueError, match="ENHANCED_GRAPH_PROVIDER"):
             db_factory.get_async_graph_driver()
 
