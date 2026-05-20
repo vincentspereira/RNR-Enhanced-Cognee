@@ -251,18 +251,30 @@ class EnhancedCogneeMCPServer:
             entry.id = entry.id or str(uuid.uuid4())
             entry.created_at = datetime.now(timezone.utc)
 
-            # Store in PostgreSQL (metadata)
+            # Store in PostgreSQL (metadata) -- tenant-scoped when active.
+            from src.multi_tenant import (
+                ensure_tenant_schema,
+                get_tenant,
+                tenant_scoped_collection,
+                tenant_scoped_table,
+            )
+
+            if get_tenant() is not None:
+                await ensure_tenant_schema(self.postgres_pool)
+
+            documents_table = tenant_scoped_table("shared_memory.documents")
             async with self.postgres_pool.acquire() as conn:
-                await conn.execute("""
-                    INSERT INTO shared_memory.documents
+                await conn.execute(f"""
+                    INSERT INTO {documents_table}
                     (id, title, content, agent_id, memory_category, tags, metadata, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 """, entry.id, f"Memory from {entry.agent_id}", entry.content,
                     entry.agent_id, entry.memory_category, entry.tags, entry.metadata, entry.created_at)
 
-            # Store embedding in Qdrant (vector search)
+            # Store embedding in Qdrant (vector search) -- tenant-scoped collection
             if entry.embedding:
                 collection_name = self._get_collection_name(entry.memory_category, entry.agent_id)
+                collection_name = tenant_scoped_collection(collection_name)
 
                 # Create collection if it doesn't exist
                 try:
@@ -392,18 +404,21 @@ class EnhancedCogneeMCPServer:
         return Filter(must=conditions) if conditions else None
 
     async def _get_active_agents(self, memory_category: Optional[str] = None) -> List[str]:
-        """Get list of active agents from PostgreSQL"""
+        """Get list of active agents from PostgreSQL (tenant-scoped when active)."""
+        from src.multi_tenant import tenant_scoped_table
+
+        documents_table = tenant_scoped_table("shared_memory.documents")
         try:
             async with self.postgres_pool.acquire() as conn:
                 if memory_category:
-                    query = """
-                        SELECT DISTINCT agent_id
-                        FROM shared_memory.documents
-                        WHERE memory_category = $1
-                    """
+                    query = (
+                        "SELECT DISTINCT agent_id "
+                        f"FROM {documents_table} "
+                        "WHERE memory_category = $1"
+                    )
                     result = await conn.fetch(query, memory_category)
                 else:
-                    query = "SELECT DISTINCT agent_id FROM shared_memory.documents"
+                    query = f"SELECT DISTINCT agent_id FROM {documents_table}"
                     result = await conn.fetch(query)
 
                 return [row["agent_id"] for row in result]
@@ -450,19 +465,22 @@ class EnhancedCogneeMCPServer:
             raise HTTPException(status_code=500, detail=str(e))
 
     async def get_memory_stats(self) -> Dict[str, Any]:
-        """Get memory statistics from Enhanced stack"""
+        """Get memory statistics from Enhanced stack (tenant-scoped when active)."""
+        from src.multi_tenant import tenant_scoped_table
+
+        documents_table = tenant_scoped_table("shared_memory.documents")
         try:
             stats = {}
 
             # PostgreSQL stats
             async with self.postgres_pool.acquire() as conn:
-                result = await conn.fetch("""
+                result = await conn.fetch(f"""
                     SELECT
                         memory_category,
                         agent_id,
                         COUNT(*) as document_count,
                         MAX(created_at) as last_activity
-                    FROM shared_memory.documents
+                    FROM {documents_table}
                     GROUP BY memory_category, agent_id
                 """)
 

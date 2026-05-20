@@ -25,6 +25,19 @@ import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -77,14 +90,14 @@ class ProgressiveDisclosureSearch:
         async with self.db_pool.acquire() as conn:
             # Build query
             if data_type:
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT
                         id,
                         COALESCE(summary, SUBSTRING(data_text FROM 1 FOR 200) || '...') AS summary,
                         data_type,
                         created_at,
                         ROUND(LENGTH(data_text) / 4.0) AS estimated_tokens
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE agent_id = $1
                       AND data_type = $2
                       AND (
@@ -95,14 +108,14 @@ class ProgressiveDisclosureSearch:
                     LIMIT $4
                 """, agent_id, data_type, query, limit)
             else:
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT
                         id,
                         COALESCE(summary, SUBSTRING(data_text FROM 1 FOR 200) || '...') AS summary,
                         data_type,
                         created_at,
                         ROUND(LENGTH(data_text) / 4.0) AS estimated_tokens
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE agent_id = $1
                       AND (
                           data_text ILIKE '%' || $2 || '%'
@@ -171,7 +184,7 @@ class ProgressiveDisclosureSearch:
         async with self.db_pool.acquire() as conn:
             # Get target memory timestamp
             target_row = await conn.fetchrow(
-                "SELECT created_at FROM shared_memory.documents WHERE id = $1",
+                f"SELECT created_at FROM {_t_docs()} WHERE id = $1",
                 memory_id
             )
 
@@ -200,7 +213,7 @@ class ProgressiveDisclosureSearch:
             # Get memories before (chronological order, most recent first)
             before_rows = await conn.fetch(f"""
                 SELECT {select_fields}
-                FROM shared_memory.documents
+                FROM {_t_docs()}
                 WHERE created_at < $1
                 ORDER BY created_at DESC
                 LIMIT $2
@@ -209,14 +222,14 @@ class ProgressiveDisclosureSearch:
             # Get target memory
             target_row_full = await conn.fetchrow(f"""
                 SELECT {select_fields}
-                FROM shared_memory.documents
+                FROM {_t_docs()}
                 WHERE id = $1
             """, memory_id)
 
             # Get memories after (chronological order)
             after_rows = await conn.fetch(f"""
                 SELECT {select_fields}
-                FROM shared_memory.documents
+                FROM {_t_docs()}
                 WHERE created_at > $1
                 ORDER BY created_at ASC
                 LIMIT $2
@@ -301,7 +314,7 @@ class ProgressiveDisclosureSearch:
         async with self.db_pool.acquire() as conn:
             # Build query based on metadata inclusion
             if include_metadata:
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT
                         id,
                         data_text,
@@ -311,12 +324,12 @@ class ProgressiveDisclosureSearch:
                         updated_at,
                         metadata,
                         agent_id
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE id = ANY($1)
                     ORDER BY created_at
                 """, memory_ids)
             else:
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT
                         id,
                         data_text,
@@ -325,7 +338,7 @@ class ProgressiveDisclosureSearch:
                         created_at,
                         updated_at,
                         agent_id
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE id = ANY($1)
                     ORDER BY created_at
                 """, memory_ids)
@@ -382,7 +395,7 @@ class ProgressiveDisclosureSearch:
         Returns:
             Complete workflow results
         """
-        logger.info(f"Progressive search workflow: query='{query}'")
+        logger.info(f"Progressive search workflow: query='{{query}}'")
 
         # Layer 1: Search index
         index_results = await self.search_index(
@@ -432,7 +445,7 @@ class ProgressiveDisclosureSearch:
             Statistics dict
         """
         async with self.db_pool.acquire() as conn:
-            row = await conn.fetchrow("""
+            row = await conn.fetchrow(f"""
                 SELECT
                     COUNT(*) AS total_memories,
                     COUNT(*) FILTER (WHERE char_count <= 500) AS small_memories,
@@ -444,7 +457,7 @@ class ProgressiveDisclosureSearch:
                         (1.0 - (AVG(CHAR_LENGTH(summary)) / AVG(CHAR_LENGTH(data_text)))) * 100.0,
                         2
                     ) AS token_efficiency_percent
-                FROM shared_memory.documents
+                FROM {_t_docs()}
             """)
 
         return {

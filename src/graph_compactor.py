@@ -28,6 +28,19 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -192,8 +205,8 @@ class GraphCompactor:
             try:
                 async with self.pool.acquire() as conn:
                     rows = await conn.fetch(
-                        """
-                        SELECT id FROM shared_memory.documents
+                        f"""
+                        SELECT id FROM {_t_docs()}
                          WHERE memory_tier = 'archive'
                             OR (expire_at IS NOT NULL AND expire_at < NOW())
                          LIMIT 1000

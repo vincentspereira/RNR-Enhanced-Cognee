@@ -11,6 +11,19 @@ from typing import Dict, List, Optional, Any
 from collections import defaultdict
 from dataclasses import dataclass, asdict
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -106,13 +119,13 @@ class PerformanceAnalytics:
             if self.postgres_pool:
                 async with self.postgres_pool.acquire() as conn:
                     # Memory count
-                    total_memories = await conn.fetchval("SELECT COUNT(*) FROM shared_memory.documents")
+                    total_memories = await conn.fetchval(f"SELECT COUNT(*) FROM {_t_docs()}")
                     metrics["memory_stats"] = {"total_memories": total_memories}
 
                     # Active agents
-                    agents = await conn.fetch("""
+                    agents = await conn.fetch(f"""
                         SELECT agent_id, COUNT(*) as count
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         GROUP BY agent_id
                     """)
                     metrics["memory_stats"]["active_agents"] = len(agents)
@@ -167,7 +180,7 @@ class PerformanceAnalytics:
             # Memory count
             if self.postgres_pool:
                 async with self.postgres_pool.acquire() as conn:
-                    count = await conn.fetchval("SELECT COUNT(*) FROM shared_memory.documents")
+                    count = await conn.fetchval(f"SELECT COUNT(*) FROM {_t_docs()}")
                     metrics_lines.append(f"# HELP enhanced_cognee_total_memories Total number of memories stored")
                     metrics_lines.append(f"# TYPE enhanced_cognee_total_memories gauge")
                     metrics_lines.append(f"enhanced_cognee_total_memories {count} {int(time.time())}")

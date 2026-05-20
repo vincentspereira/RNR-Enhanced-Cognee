@@ -11,6 +11,19 @@ from datetime import datetime, timedelta, UTC
 from dataclasses import dataclass, field
 from enum import Enum
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -107,7 +120,7 @@ class IntelligentMemorySummarizer:
             cutoff_date = datetime.now(UTC) - timedelta(days=days_old)
 
             async with self.postgres_pool.acquire() as conn:
-                memories = await conn.fetch("""
+                memories = await conn.fetch(f"""
                     SELECT
                         id,
                         title,
@@ -117,7 +130,7 @@ class IntelligentMemorySummarizer:
                         created_at,
                         LENGTH(content) as content_length,
                         EXTRACT(EPOCH FROM (NOW() - created_at)) / 86400 as age_days
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE created_at < $1
                     AND LENGTH(content) > $2
                     ORDER BY created_at ASC
@@ -597,10 +610,10 @@ Return JSON format:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Store summary as a separate record or update metadata
-                await conn.execute("""
-                    UPDATE shared_memory.documents
+                await conn.execute(f"""
+                    UPDATE {_t_docs()}
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
+                        COALESCE(metadata, '{{}}'::jsonb),
                         'summary',
                         $1
                     )
@@ -630,16 +643,16 @@ Return JSON format:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Count memories with summaries
-                with_summary = await conn.fetchval("""
+                with_summary = await conn.fetchval(f"""
                     SELECT COUNT(*)
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE metadata->>'summary' IS NOT NULL
                 """)
 
                 # Get average compression ratio
-                avg_compression = await conn.fetchval("""
+                avg_compression = await conn.fetchval(f"""
                     SELECT AVG((metadata->>'compression_ratio')::float)
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE metadata->>'compression_ratio' IS NOT NULL
                 """)
 

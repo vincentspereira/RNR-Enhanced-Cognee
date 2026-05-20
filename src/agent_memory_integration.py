@@ -324,11 +324,26 @@ class AgentMemoryIntegration:
             raise
 
     async def _store_postgresql_memory(self, memory_entry: MemoryEntry):
-        """Store memory entry in PostgreSQL"""
+        """Store memory entry in PostgreSQL (tenant-scoped when active)."""
+        from src.multi_tenant import (
+            ensure_tenant_schema,
+            get_tenant,
+            tenant_scoped_table,
+        )
+
+        # If a tenant context is active, ensure the per-tenant tables
+        # exist (idempotent) before inserting.
+        if get_tenant() is not None:
+            await ensure_tenant_schema(self.postgres_pool)
+
+        documents_table = tenant_scoped_table("shared_memory.documents")
+        embeddings_table = tenant_scoped_table("shared_memory.embeddings")
+
         async with self.postgres_pool.acquire() as conn:
             # Store in main documents table (without expires_at if column doesn't exist)
-            await conn.execute("""
-                INSERT INTO shared_memory.documents
+            await conn.execute(
+                f"""
+                INSERT INTO {documents_table}
                 (id, title, content, agent_id, memory_category, tags, metadata,
                  created_at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
@@ -337,7 +352,7 @@ class AgentMemoryIntegration:
                     tags = EXCLUDED.tags,
                     metadata = EXCLUDED.metadata,
                     updated_at = CURRENT_TIMESTAMP
-            """,
+                """,
                 memory_entry.id,
                 f"{memory_entry.memory_type.value} memory from {memory_entry.agent_id}",
                 memory_entry.content,
@@ -350,14 +365,15 @@ class AgentMemoryIntegration:
 
             # Store embeddings in specialized table
             if memory_entry.embedding:
-                await conn.execute("""
-                    INSERT INTO shared_memory.embeddings
+                await conn.execute(
+                    f"""
+                    INSERT INTO {embeddings_table}
                     (id, document_id, content, embedding, agent_id, memory_category, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
                     ON CONFLICT (id) DO UPDATE SET
                         embedding = EXCLUDED.embedding,
                         updated_at = CURRENT_TIMESTAMP
-                """,
+                    """,
                     memory_entry.id,
                     memory_entry.id,
                     memory_entry.content,
@@ -580,11 +596,14 @@ class AgentMemoryIntegration:
                 params.append(category_name)
                 param_idx += 1
 
+            from src.multi_tenant import tenant_scoped_table
+
+            documents_table = tenant_scoped_table("shared_memory.documents")
             where_clause = " AND ".join(conditions) if conditions else "1=1"
 
             query_sql = f"""
                 SELECT id, content, agent_id, memory_category, metadata, created_at
-                FROM shared_memory.documents
+                FROM {documents_table}
                 WHERE {where_clause}
                 ORDER BY created_at DESC
                 LIMIT ${param_idx}
@@ -687,25 +706,29 @@ class AgentMemoryIntegration:
             }
 
         try:
-            # Get PostgreSQL stats
+            from src.multi_tenant import tenant_scoped_collection, tenant_scoped_table
+
+            # Get PostgreSQL stats (tenant-scoped table when a tenant is active)
+            documents_table = tenant_scoped_table("shared_memory.documents")
             async with self.postgres_pool.acquire() as conn:
-                result = await conn.fetchrow("""
+                result = await conn.fetchrow(f"""
                     SELECT
                         COUNT(*) as total_memories,
                         COUNT(DISTINCT memory_type) as memory_types,
                         MIN(created_at) as first_memory,
                         MAX(created_at) as last_memory
-                    FROM shared_memory.documents
+                    FROM {documents_table}
                     WHERE agent_id = $1
                 """, agent_id)
 
                 stats["memory_stats"]["postgresql"] = dict(result) if result else {}
 
-            # Get Qdrant stats
+            # Get Qdrant stats (tenant-scoped collection when active)
             if category_config:
                 collection_name = f"{self.qdrant_collection_prefix}{category_config.prefix}memory"
             else:
                 collection_name = f"{self.qdrant_collection_prefix}{category_name}_memory"
+            collection_name = tenant_scoped_collection(collection_name)
 
             try:
                 collection_info = self.qdrant_client.get_collection(collection_name)
@@ -719,8 +742,10 @@ class AgentMemoryIntegration:
             except:
                 stats["memory_stats"]["qdrant"] = {"error": "Collection not found"}
 
-            # Get Redis cache stats
-            cache_pattern = f"memory:{agent_id}:*"
+            # Get Redis cache stats (tenant-scoped key prefix when active)
+            from src.multi_tenant import tenant_scoped_key
+
+            cache_pattern = tenant_scoped_key(f"memory:{agent_id}:*")
             cache_keys = await self.redis_client.keys(cache_pattern)
             stats["memory_stats"]["redis"] = {
                 "cached_memories": len(cache_keys)
@@ -737,10 +762,13 @@ class AgentMemoryIntegration:
         cleanup_count = 0
 
         try:
-            # Clean up PostgreSQL expired entries
+            from src.multi_tenant import tenant_scoped_table
+
+            # Clean up PostgreSQL expired entries (tenant-scoped when active)
+            documents_table = tenant_scoped_table("shared_memory.documents")
             async with self.postgres_pool.acquire() as conn:
-                result = await conn.execute("""
-                    DELETE FROM shared_memory.documents
+                result = await conn.execute(f"""
+                    DELETE FROM {documents_table}
                     WHERE expires_at IS NOT NULL AND expires_at < CURRENT_TIMESTAMP
                     RETURNING id
                 """)

@@ -9,6 +9,19 @@ import asyncio
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 class PerformanceOptimizer:
@@ -32,23 +45,23 @@ class PerformanceOptimizer:
         try:
             async with postgres_pool.acquire() as conn:
                 # Create GIN index for metadata JSON queries
-                await conn.execute("""
+                await conn.execute(f"""
                     CREATE INDEX IF NOT EXISTS idx_documents_metadata_language
-                    ON shared_memory.documents
+                    ON {_t_docs()}
                     USING GIN (metadata jsonb_path_ops);
                 """)
 
                 # Create expression index for language extraction
-                await conn.execute("""
+                await conn.execute(f"""
                     CREATE INDEX IF NOT EXISTS idx_documents_language_extract
-                    ON shared_memory.documents
+                    ON {_t_docs()}
                     ((metadata->>'language'));
                 """)
 
                 # Create partial index for non-English memories
-                await conn.execute("""
+                await conn.execute(f"""
                     CREATE INDEX IF NOT EXISTS idx_documents_non_english
-                    ON shared_memory.documents (id, created_at)
+                    ON {_t_docs()} (id, created_at)
                     WHERE (metadata->>'language') IS DISTINCT FROM 'en';
                 """)
 
@@ -86,9 +99,9 @@ class PerformanceOptimizer:
             async with postgres_pool.acquire() as conn:
                 if language:
                     # Language-filtered query with index
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, data_text, metadata, created_at
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE user_id = $1
                         AND (agent_id = $2 OR agent_id = 'shared')
                         AND (metadata->>'language') = $3
@@ -101,9 +114,9 @@ class PerformanceOptimizer:
                     """, user_id, agent_id, language, query)
                 else:
                     # Regular query
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, data_text, metadata, created_at
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE user_id = $1
                         AND (agent_id = $2 OR agent_id = 'shared')
                         AND (
@@ -206,9 +219,9 @@ class PerformanceOptimizer:
             # Test language distribution
             start = datetime.now()
             async with postgres_pool.acquire() as conn:
-                await conn.fetch("""
+                await conn.fetch(f"""
                     SELECT metadata->>'language' as lang, COUNT(*)
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE user_id = $1
                     GROUP BY lang
                 """, user_id)

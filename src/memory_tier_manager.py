@@ -34,6 +34,19 @@ import logging
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -84,15 +97,15 @@ class MemoryTierManager:
             return
         try:
             async with self.pool.acquire() as conn:
-                await conn.execute("""
-                    ALTER TABLE shared_memory.documents
+                await conn.execute(f"""
+                    ALTER TABLE {_t_docs()}
                     ADD COLUMN IF NOT EXISTS memory_tier TEXT
                         DEFAULT 'long_term'
                         CHECK (memory_tier IN ('working', 'long_term', 'archive'))
                 """)
-                await conn.execute("""
+                await conn.execute(f"""
                     CREATE INDEX IF NOT EXISTS idx_documents_memory_tier
-                    ON shared_memory.documents (memory_tier)
+                    ON {_t_docs()} (memory_tier)
                 """)
             self._schema_ensured = True
         except Exception as exc:
@@ -111,7 +124,7 @@ class MemoryTierManager:
         try:
             async with self.pool.acquire() as conn:
                 return await conn.fetchval(
-                    "SELECT memory_tier FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT memory_tier FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
         except Exception as exc:
@@ -136,7 +149,7 @@ class MemoryTierManager:
                     SELECT
                         COALESCE(memory_tier, 'long_term') AS tier,
                         COUNT(*) AS cnt
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE 1=1 {agent_clause}
                      GROUP BY 1
                     """,
@@ -169,8 +182,8 @@ class MemoryTierManager:
         try:
             async with self.pool.acquire() as conn:
                 result = await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET memory_tier = $1, updated_at = NOW()
                      WHERE id = $2
                     """,
@@ -252,8 +265,8 @@ class MemoryTierManager:
             async with self.pool.acquire() as conn:
                 rows = await conn.fetch(
                     f"""
-                    SELECT id FROM shared_memory.documents
-                     WHERE memory_tier = '{TIER_LONG_TERM}'
+                    SELECT id FROM {_t_docs()}
+                     WHERE memory_tier = '{{TIER_LONG_TERM}}'
                        AND updated_at < $1
                        AND expire_at IS NULL
                        AND consolidated_into IS NULL
@@ -285,7 +298,7 @@ class MemoryTierManager:
         try:
             async with self.pool.acquire() as conn:
                 row = await conn.fetchrow(
-                    "SELECT content, agent_id FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT content, agent_id FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
             if row:

@@ -30,6 +30,19 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -101,9 +114,9 @@ class MemoryConsolidator:
             async with self.pool.acquire() as conn:
                 if agent_id:
                     anchors = await conn.fetch(
-                        """
+                        f"""
                         SELECT id, content
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE agent_id = $1
                            AND consolidated_into IS NULL
                            AND expire_at IS NULL
@@ -115,9 +128,9 @@ class MemoryConsolidator:
                     )
                 else:
                     anchors = await conn.fetch(
-                        """
+                        f"""
                         SELECT id, content
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE consolidated_into IS NULL
                            AND expire_at IS NULL
                          ORDER BY created_at DESC
@@ -184,10 +197,10 @@ class MemoryConsolidator:
             async with self.pool.acquire() as conn:
                 if agent_id:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT a.id AS aid, a.content AS acontent,
                                b.id AS bid, b.content AS bcontent
-                          FROM shared_memory.documents a
+                          FROM {_t_docs()} a
                           JOIN shared_memory.documents b
                             ON a.id < b.id
                            AND a.agent_id = b.agent_id
@@ -203,10 +216,10 @@ class MemoryConsolidator:
                     )
                 else:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT a.id AS aid, a.content AS acontent,
                                b.id AS bid, b.content AS bcontent
-                          FROM shared_memory.documents a
+                          FROM {_t_docs()} a
                           JOIN shared_memory.documents b
                             ON a.id < b.id
                            AND a.agent_id = b.agent_id
@@ -265,9 +278,9 @@ class MemoryConsolidator:
         try:
             async with self.pool.acquire() as conn:
                 rows = await conn.fetch(
-                    """
+                    f"""
                     SELECT id, content, agent_id, metadata
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE id = ANY($1::text[])
                        AND consolidated_into IS NULL
                     """,
@@ -298,8 +311,8 @@ class MemoryConsolidator:
             async with self.pool.acquire() as conn:
                 # Insert consolidated document
                 await conn.execute(
-                    """
-                    INSERT INTO shared_memory.documents
+                    f"""
+                    INSERT INTO {_t_docs()}
                            (id, content, agent_id, provenance,
                             confidence, metadata, created_at, updated_at)
                     VALUES ($1, $2, $3, $4::jsonb, 1.0, $5::jsonb, NOW(), NOW())
@@ -313,8 +326,8 @@ class MemoryConsolidator:
 
                 # Mark sources as consolidated
                 await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET consolidated_into = $1,
                            consolidation_score = $2,
                            updated_at = NOW()
@@ -355,7 +368,7 @@ class MemoryConsolidator:
                 total = await conn.fetchval(
                     f"""
                     SELECT COUNT(*)
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE 1=1 {agent_clause}
                     """,
                     *params,
@@ -363,7 +376,7 @@ class MemoryConsolidator:
                 consolidated_out = await conn.fetchval(
                     f"""
                     SELECT COUNT(*)
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE consolidated_into IS NOT NULL {agent_clause}
                     """,
                     *params,
@@ -371,7 +384,7 @@ class MemoryConsolidator:
                 consolidation_targets = await conn.fetchval(
                     f"""
                     SELECT COUNT(DISTINCT consolidated_into)
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE consolidated_into IS NOT NULL {agent_clause}
                     """,
                     *params,

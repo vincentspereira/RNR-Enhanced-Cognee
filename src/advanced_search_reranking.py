@@ -12,6 +12,19 @@ from dataclasses import dataclass
 from enum import Enum
 import re
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -345,7 +358,7 @@ Related queries: """}
                 params = []
 
                 # Base text search
-                search_query = """
+                search_query = f"""
                     SELECT
                         id as memory_id,
                         content,
@@ -353,7 +366,7 @@ Related queries: """}
                         agent_id,
                         created_at,
                         ts_rank(to_tsvector('english', coalesce(content, '')), 1) as rank_score
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE to_tsvector('english', coalesce(content, '')) @@ plainto_tsquery('english', $1)
                 """
                 params.append(query)

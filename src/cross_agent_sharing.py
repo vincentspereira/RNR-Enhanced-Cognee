@@ -10,6 +10,14 @@ from typing import Dict, List, Optional, Any
 from enum import Enum
 import json
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,11 +62,11 @@ class CrossAgentMemorySharing:
                 }
 
                 # Update memory with sharing policy
-                result = await conn.execute("""
-                    UPDATE shared_memory.documents
+                result = await conn.execute(f"""
+                    UPDATE {_t_docs()}
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
-                        '{sharing}',
+                        COALESCE(metadata, '{{}}'::jsonb),
+                        '{{sharing}}',
                         $1::jsonb
                     )
                     WHERE id = $2
@@ -102,13 +110,13 @@ class CrossAgentMemorySharing:
         """
         try:
             async with self.postgres_pool.acquire() as conn:
-                row = await conn.fetchrow("""
+                row = await conn.fetchrow(f"""
                     SELECT
                         id,
                         agent_id as owner_id,
                         metadata->'sharing'->>'policy' as policy,
                         metadata->'sharing'->>'allowed_agents' as allowed_agents
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE id = $1
                 """, memory_id)
 
@@ -141,14 +149,14 @@ class CrossAgentMemorySharing:
 
                 elif policy == "category_shared":
                     # Check if agent shares the same category
-                    category = await conn.fetchval("""
-                        SELECT memory_category FROM shared_memory.documents WHERE id = $1
+                    category = await conn.fetchval(f"""
+                        SELECT memory_category FROM {_t_docs()} WHERE id = $1
                     """, memory_id)
 
                     # Check if agent has memories in this category
-                    has_access = await conn.fetchval("""
+                    has_access = await conn.fetchval(f"""
                         SELECT COUNT(*) > 0
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE agent_id = $1
                         AND memory_category = $2
                     """, agent_id, category)
@@ -187,7 +195,7 @@ class CrossAgentMemorySharing:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Get memories this agent can access
-                memories = await conn.fetch("""
+                memories = await conn.fetch(f"""
                     SELECT
                         id,
                         title,
@@ -195,14 +203,14 @@ class CrossAgentMemorySharing:
                         agent_id as owner_id,
                         memory_category,
                         created_at
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE
                         agent_id = $1
                         OR metadata->'sharing'->>'policy' = 'shared'
                         OR (metadata->'sharing'->>'policy' = 'category_shared'
                             AND memory_category IN (
                                 SELECT memory_category
-                                FROM shared_memory.documents
+                                FROM {_t_docs()}
                                 WHERE agent_id = $1
                             ))
                         OR $1 = ANY(JSONB_ARRAY_ELEMENTS_TEXT(
@@ -222,11 +230,11 @@ class CrossAgentMemorySharing:
         """Get statistics about memory sharing"""
         try:
             async with self.postgres_pool.acquire() as conn:
-                stats = await conn.fetch("""
+                stats = await conn.fetch(f"""
                     SELECT
                         metadata->'sharing'->>'policy' as policy,
                         COUNT(*) as count
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE metadata->'sharing' IS NOT NULL
                     GROUP BY policy
                 """)
@@ -237,9 +245,9 @@ class CrossAgentMemorySharing:
                 total_shared = sum(policy_stats.values())
 
                 # Total private memories
-                total_private = await conn.fetchval("""
+                total_private = await conn.fetchval(f"""
                     SELECT COUNT(*)
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE metadata->'sharing' IS NULL
                     OR metadata->'sharing'->>'policy' = 'private'
                 """)
@@ -277,8 +285,8 @@ class CrossAgentMemorySharing:
             async with self.postgres_pool.acquire() as conn:
                 space_id = f"shared_space_{space_name}"
 
-                await conn.execute("""
-                    INSERT INTO shared_memory.documents
+                await conn.execute(f"""
+                    INSERT INTO {_t_docs()}
                     (id, title, content, agent_id, memory_category, metadata, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6, NOW())
                     ON CONFLICT (id) DO UPDATE SET
@@ -297,7 +305,7 @@ class CrossAgentMemorySharing:
                     })
                 )
 
-                logger.info(f"Created shared space '{space_name}' for {len(member_agents)} agents")
+                logger.info(f"Created shared space '{{space_name}}' for {len(member_agents)} agents")
 
                 return {
                     "status": "success",

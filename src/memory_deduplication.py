@@ -9,6 +9,19 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
 import json
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,9 +100,9 @@ class MemoryDeduplicator:
         """Check for exact text match"""
         try:
             async with self.postgres_pool.acquire() as conn:
-                row = await conn.fetchrow("""
+                row = await conn.fetchrow(f"""
                     SELECT id, content, created_at
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE agent_id = $1
                     AND content = $2
                     ORDER BY created_at DESC
@@ -158,8 +171,8 @@ class MemoryDeduplicator:
             async with self.postgres_pool.acquire() as conn:
                 if merge_strategy == "keep_newest":
                     # Update with new content
-                    await conn.execute("""
-                        UPDATE shared_memory.documents
+                    await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET content = $1,
                             updated_at = NOW()
                         WHERE id = $2
@@ -175,8 +188,8 @@ class MemoryDeduplicator:
 
                 elif merge_strategy == "append":
                     # Append new content to existing
-                    await conn.execute("""
-                        UPDATE shared_memory.documents
+                    await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET content = content || '\n\n---\n\n' || $1,
                             updated_at = NOW()
                         WHERE id = $2
@@ -214,11 +227,11 @@ class MemoryDeduplicator:
             # Count potential duplicates based on content hash
             async with self.postgres_pool.acquire() as conn:
                 # This is a simplified check - in production you'd use content hashes
-                result = await conn.fetch("""
+                result = await conn.fetch(f"""
                     SELECT
                         COUNT(*) as total,
                         COUNT(DISTINCT content) as unique_content
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                 """)
 
                 if result and len(result) > 0:
@@ -256,16 +269,16 @@ class MemoryDeduplicator:
             async with self.postgres_pool.acquire() as conn:
                 # Get all memories (optionally filtered by agent)
                 if agent_id:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, agent_id, memory_category
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE agent_id = $1
                         ORDER BY created_at ASC
                     """, agent_id)
                 else:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, agent_id, memory_category
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         ORDER BY created_at ASC
                     """)
 
@@ -286,8 +299,8 @@ class MemoryDeduplicator:
 
                     if duplicate_check:
                         # Found duplicate - delete it
-                        await conn.execute("""
-                            DELETE FROM shared_memory.documents WHERE id = $1
+                        await conn.execute(f"""
+                            DELETE FROM {_t_docs()} WHERE id = $1
                         """, duplicate_check["id"])
 
                         results["duplicates_found"] += 1

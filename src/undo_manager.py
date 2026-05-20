@@ -755,8 +755,8 @@ class UndoManager:
                 result = await conn.execute("""
                     UPDATE shared_memory.documents
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
-                        '{sharing}',
+                        COALESCE(metadata, '{{}}'::jsonb),
+                        '{{sharing}}',
                         $1::jsonb
                     )
                     WHERE id = $2
@@ -953,8 +953,8 @@ class UndoManager:
                     result = await conn.execute("""
                         UPDATE shared_memory.documents
                         SET metadata = jsonb_set(
-                            COALESCE(metadata, '{}'::jsonb),
-                            '{sharing}',
+                            COALESCE(metadata, '{{}}'::jsonb),
+                            '{{sharing}}',
                             $1::jsonb
                         )
                         WHERE id = $2

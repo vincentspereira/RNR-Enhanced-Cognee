@@ -40,6 +40,19 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.sqlite_manager import SQLiteManager
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -624,7 +637,7 @@ class RecoveryManager:
 
             # Check document count
             count = asyncio.run(conn.fetchval(
-                "SELECT COUNT(*) FROM shared_memory.documents"
+                f"SELECT COUNT(*) FROM {_t_docs()}"
             ))
 
             asyncio.run(conn.close())

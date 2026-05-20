@@ -30,6 +30,19 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -191,7 +204,7 @@ class MemoryVersioner:
 
                 # Snapshot current state before overwriting
                 current_content = await conn.fetchval(
-                    "SELECT content FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT content FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
                 if current_content is None:
@@ -211,8 +224,8 @@ class MemoryVersioner:
             # Apply revert
             async with self.pool.acquire() as conn:
                 result = await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET content = $1, updated_at = NOW()
                      WHERE id = $2
                     """,

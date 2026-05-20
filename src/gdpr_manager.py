@@ -34,6 +34,19 @@ import zipfile
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -116,8 +129,8 @@ class GDPRManager:
                     async with self.pool.acquire() as conn:
                         # Versions cascade via FK; delete documents first
                         deleted = await conn.fetchval(
-                            """
-                            DELETE FROM shared_memory.documents
+                            f"""
+                            DELETE FROM {_t_docs()}
                              WHERE agent_id = $1
                             RETURNING COUNT(*)
                             """,
@@ -148,7 +161,7 @@ class GDPRManager:
                 else:
                     async with self.pool.acquire() as conn:
                         count = await conn.fetchval(
-                            "SELECT COUNT(*) FROM shared_memory.documents WHERE agent_id = $1",
+                            f"SELECT COUNT(*) FROM {_t_docs()} WHERE agent_id = $1",
                             user_id,
                         )
                     summary["postgres_rows_deleted"] = int(count or 0)
@@ -212,7 +225,7 @@ class GDPRManager:
             return []
         async with self.pool.acquire() as conn:
             rows = await conn.fetch(
-                "SELECT id FROM shared_memory.documents WHERE agent_id = $1", user_id
+                f"SELECT id FROM {_t_docs()} WHERE agent_id = $1", user_id
             )
         return [r["id"] for r in rows]
 
@@ -261,11 +274,11 @@ class GDPRManager:
                 async with self.pool.acquire() as conn:
                     # Memories
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id, title, content, agent_id, metadata,
                                provenance, confidence, memory_tier,
                                expire_at, created_at, updated_at
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE agent_id = $1
                          ORDER BY created_at DESC
                         """,
@@ -288,11 +301,11 @@ class GDPRManager:
                     if include_versions:
                         # Version history
                         ver_rows = await conn.fetch(
-                            """
+                            f"""
                             SELECT mv.id, mv.memory_id, mv.version_number,
                                    mv.content, mv.change_reason, mv.created_at
                               FROM shared_memory.memory_versions mv
-                              JOIN shared_memory.documents d ON d.id = mv.memory_id
+                              JOIN {_t_docs()} d ON d.id = mv.memory_id
                              WHERE d.agent_id = $1
                              ORDER BY mv.created_at DESC
                              LIMIT 1000
@@ -490,9 +503,9 @@ class GDPRManager:
             async with self.pool.acquire() as conn:
                 # Sample memories that should belong to this tenant
                 rows = await conn.fetch(
-                    """
+                    f"""
                     SELECT id, agent_id
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE agent_id = $1
                      LIMIT $2
                     """,

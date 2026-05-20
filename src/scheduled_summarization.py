@@ -304,7 +304,7 @@ Summary:"""
                     SET
                         content = $1,
                         metadata = jsonb_set(
-                            COALESCE(metadata, '{}'::jsonb),
+                            COALESCE(metadata, '{{}}'::jsonb),
                             '{summarized}',
                             'true'
                         ) || jsonb_build_object(

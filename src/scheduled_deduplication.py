@@ -28,6 +28,19 @@ from typing import Dict, List, Optional, Any
 import uuid
 from pathlib import Path
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -190,16 +203,16 @@ class ScheduledDeduplication:
             async with self.postgres_pool.acquire() as conn:
                 # Find exact text duplicates
                 if agent_id:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, agent_id, memory_category, created_at
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE agent_id = $1
                         ORDER BY created_at ASC
                     """, agent_id)
                 else:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, agent_id, memory_category, created_at
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         ORDER BY created_at ASC
                     """)
 
@@ -262,8 +275,8 @@ class ScheduledDeduplication:
                     delete_memories = sorted_group[:-1]
 
                     for memory in delete_memories:
-                        await conn.execute("""
-                            DELETE FROM shared_memory.documents WHERE id = $1
+                        await conn.execute(f"""
+                            DELETE FROM {_t_docs()} WHERE id = $1
                         """, memory["id"])
                         merged_count += 1
 

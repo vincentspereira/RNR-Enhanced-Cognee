@@ -16,6 +16,14 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -142,8 +150,8 @@ class EncryptionManager:
     async def _ensure_column(self, conn: Any) -> None:
         """Add is_encrypted column to documents if it does not exist."""
         await conn.execute(
-            """
-            ALTER TABLE shared_memory.documents
+            f"""
+            ALTER TABLE {_t_docs()}
                 ADD COLUMN IF NOT EXISTS is_encrypted BOOLEAN DEFAULT FALSE
             """
         )
@@ -174,7 +182,7 @@ class EncryptionManager:
                 await self._ensure_column(conn)
 
                 row = await conn.fetchrow(
-                    "SELECT content, is_encrypted FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT content, is_encrypted FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
                 if row is None:
@@ -185,8 +193,8 @@ class EncryptionManager:
 
                 encrypted = self.encrypt(row["content"])
                 await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET content = $1, is_encrypted = TRUE, updated_at = NOW()
                      WHERE id = $2
                     """,
@@ -201,8 +209,8 @@ class EncryptionManager:
             return {"memory_id": memory_id, "error": str(exc)}
 
     async def get_encryption_stats(self) -> Dict[str, Any]:
-        """
-        Return aggregate encryption statistics for shared_memory.documents.
+        f"""
+        Return aggregate encryption statistics for {_t_docs()}.
 
         Returns:
             Dict with total_memories, encrypted_memories, encryption_enabled,
@@ -221,11 +229,11 @@ class EncryptionManager:
             async with self.pool.acquire() as conn:
                 await self._ensure_column(conn)
                 row = await conn.fetchrow(
-                    """
+                    f"""
                     SELECT
                         COUNT(*)                                            AS total,
                         COUNT(*) FILTER (WHERE is_encrypted = TRUE)        AS encrypted
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     """
                 )
 
@@ -284,9 +292,9 @@ class EncryptionManager:
                 await self._ensure_column(conn)
 
                 rows = await conn.fetch(
-                    """
+                    f"""
                     SELECT id, content
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE is_encrypted = TRUE
                     """
                 )
@@ -300,8 +308,8 @@ class EncryptionManager:
 
                     async with self.pool.acquire() as conn:
                         await conn.execute(
-                            """
-                            UPDATE shared_memory.documents
+                            f"""
+                            UPDATE {_t_docs()}
                                SET content = $1, updated_at = NOW()
                              WHERE id = $2
                             """,

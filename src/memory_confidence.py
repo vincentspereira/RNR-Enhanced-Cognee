@@ -20,6 +20,19 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, List, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,8 +58,8 @@ def _label(score: float) -> str:
 
 
 class MemoryConfidenceManager:
-    """
-    Read and write confidence scores on shared_memory.documents.
+    f"""
+    Read and write confidence scores on {_t_docs()}.
     All methods degrade gracefully when the pool is unavailable.
     """
 
@@ -74,8 +87,8 @@ class MemoryConfidenceManager:
         try:
             async with self.pool.acquire() as conn:
                 result = await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET confidence = $1, updated_at = NOW()
                      WHERE id = $2
                     """,
@@ -103,7 +116,7 @@ class MemoryConfidenceManager:
         try:
             async with self.pool.acquire() as conn:
                 val = await conn.fetchval(
-                    "SELECT confidence FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT confidence FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
             return float(val) if val is not None else None
@@ -128,9 +141,9 @@ class MemoryConfidenceManager:
             async with self.pool.acquire() as conn:
                 if agent_id:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id, content, agent_id, confidence, created_at
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE confidence < $1
                            AND agent_id = $2
                          ORDER BY confidence ASC
@@ -142,9 +155,9 @@ class MemoryConfidenceManager:
                     )
                 else:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id, content, agent_id, confidence, created_at
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE confidence < $1
                          ORDER BY confidence ASC
                          LIMIT $2
@@ -200,7 +213,7 @@ class MemoryConfidenceManager:
                                                                         AS uncertain_count,
                         COUNT(*) FILTER (WHERE confidence IS NULL)      AS unscored_count,
                         ROUND(AVG(confidence)::numeric, 4)              AS avg_confidence
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE 1=1 {agent_filter}
                     """,
                     *params,

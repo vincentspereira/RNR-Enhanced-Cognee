@@ -27,6 +27,19 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
@@ -175,14 +188,14 @@ class MemoryImportanceScorer:
         try:
             async with self.pool.acquire() as conn:
                 row = await conn.fetchrow(
-                    """
+                    f"""
                     SELECT id,
                            content,
                            access_count,
                            last_accessed_at,
                            confidence_score,
                            metadata
-                      FROM shared_memory.documents
+                      FROM {_t_docs()}
                      WHERE id = $1
                     """,
                     memory_id,
@@ -235,21 +248,21 @@ class MemoryImportanceScorer:
             async with self.pool.acquire() as conn:
                 # Ensure the column exists (idempotent)
                 await conn.execute(
-                    """
-                    ALTER TABLE shared_memory.documents
+                    f"""
+                    ALTER TABLE {_t_docs()}
                         ADD COLUMN IF NOT EXISTS importance_score FLOAT DEFAULT 0.5
                     """
                 )
 
                 if agent_id:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id,
                                access_count,
                                last_accessed_at,
                                confidence_score,
                                metadata
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE agent_id = $1
                          LIMIT $2
                         """,
@@ -258,13 +271,13 @@ class MemoryImportanceScorer:
                     )
                 else:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id,
                                access_count,
                                last_accessed_at,
                                confidence_score,
                                metadata
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          LIMIT $1
                         """,
                         limit,
@@ -277,8 +290,8 @@ class MemoryImportanceScorer:
                     memory = dict(row)
                     score = self._score_memory(memory)
                     await conn.execute(
-                        """
-                        UPDATE shared_memory.documents
+                        f"""
+                        UPDATE {_t_docs()}
                            SET importance_score = $1,
                                updated_at = NOW()
                          WHERE id = $2
@@ -321,7 +334,7 @@ class MemoryImportanceScorer:
             async with self.pool.acquire() as conn:
                 if agent_id:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id,
                                agent_id,
                                content,
@@ -330,7 +343,7 @@ class MemoryImportanceScorer:
                                access_count,
                                last_accessed_at,
                                created_at
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          WHERE agent_id = $1
                          ORDER BY importance_score DESC NULLS LAST
                          LIMIT $2
@@ -340,7 +353,7 @@ class MemoryImportanceScorer:
                     )
                 else:
                     rows = await conn.fetch(
-                        """
+                        f"""
                         SELECT id,
                                agent_id,
                                content,
@@ -349,7 +362,7 @@ class MemoryImportanceScorer:
                                access_count,
                                last_accessed_at,
                                created_at
-                          FROM shared_memory.documents
+                          FROM {_t_docs()}
                          ORDER BY importance_score DESC NULLS LAST
                          LIMIT $1
                         """,

@@ -49,7 +49,7 @@ class MemoryConcept(str, Enum):
     """Memory concept enumeration."""
     HOW_IT_WORKS = "how-it-works"
     GOTCHA = "gotcha"
-    TRADE_OFF = "trade-off"
+    TRADE_OFF = "trade-of"
     PATTERN = "pattern"
     GENERAL = "general"
 

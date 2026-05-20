@@ -32,14 +32,27 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
 
 
 class MemoryProvenanceTracker:
-    """
-    Read and write provenance JSONB on shared_memory.documents.
+    f"""
+    Read and write provenance JSONB on {_t_docs()}.
     All updates are non-destructive merges: existing keys are preserved
     unless explicitly overridden.
     """
@@ -93,8 +106,8 @@ class MemoryProvenanceTracker:
         try:
             async with self.pool.acquire() as conn:
                 result = await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET provenance = $1::jsonb, updated_at = NOW()
                      WHERE id = $2
                     """,
@@ -120,7 +133,7 @@ class MemoryProvenanceTracker:
         try:
             async with self.pool.acquire() as conn:
                 row = await conn.fetchrow(
-                    "SELECT provenance FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT provenance FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
             if row is None:
@@ -163,7 +176,7 @@ class MemoryProvenanceTracker:
                     UPDATE shared_memory.documents
                        SET provenance = jsonb_set(
                                COALESCE(provenance, '{"transformations":[]}'::jsonb),
-                               '{transformations}',
+                               '{{transformations}}',
                                (COALESCE(provenance->'transformations', '[]'::jsonb)
                                 || $1::jsonb)
                            ),
@@ -196,8 +209,8 @@ class MemoryProvenanceTracker:
         try:
             async with self.pool.acquire() as conn:
                 await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET provenance = provenance
                                       || jsonb_build_object(
                                              'verified',     true,
@@ -227,7 +240,7 @@ class MemoryProvenanceTracker:
         try:
             async with self.pool.acquire() as conn:
                 row = await conn.fetchrow(
-                    "SELECT content, provenance FROM shared_memory.documents WHERE id = $1",
+                    f"SELECT content, provenance FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
             if row is None:

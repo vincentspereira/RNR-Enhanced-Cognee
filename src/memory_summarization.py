@@ -9,6 +9,19 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 import json
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -39,9 +52,9 @@ class MemorySummarizer:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Find memories to summarize
-                memories = await conn.fetch("""
+                memories = await conn.fetch(f"""
                     SELECT id, title, content, created_at
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE created_at < NOW() - INTERVAL '$1 days'
                     AND LENGTH(content) > $2
                     AND (metadata->>'summarized') IS NULL OR (metadata->>'summarized') = 'false')
@@ -81,17 +94,17 @@ class MemorySummarizer:
                         })
                     else:
                         # Update memory with summary
-                        await conn.execute("""
-                            UPDATE shared_memory.documents
+                        await conn.execute(f"""
+                            UPDATE {_t_docs()}
                             SET
                                 content = $1,
                                 metadata = jsonb_set(
-                                    COALESCE(metadata, '{}'::jsonb),
-                                    '{summarized}',
+                                    COALESCE(metadata, '{{}}'::jsonb),
+                                    '{{summarized}}',
                                     'true',
-                                    '{original_length}',
+                                    '{{original_length}}',
                                     $2,
-                                    '{summary_date}',
+                                    '{{summary_date}}',
                                     NOW()::text
                                 ),
                                 updated_at = NOW()
@@ -133,14 +146,14 @@ class MemorySummarizer:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Get summary statistics
-                stats = await conn.fetch("""
+                stats = await conn.fetch(f"""
                     SELECT
                         COUNT(*) as total_memories,
                         COUNT(CASE WHEN metadata->>'summarized' = 'true' THEN 1 END) as summarized_memories,
                         COUNT(CASE WHEN metadata->>'summarized' = 'true' OR metadata->>'summarized' IS NULL THEN 1 END) as full_memories,
                         AVG(LENGTH(content)) as avg_length,
                         AVG(CASE WHEN metadata->>'summarized' = 'true' THEN CAST(metadata->>'original_length' AS INTEGER) ELSE LENGTH(content) END) as avg_original_length
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                 """)
 
                 if stats:
@@ -187,9 +200,9 @@ class MemorySummarizer:
         """
         try:
             async with self.postgres_pool.acquire() as conn:
-                memories = await conn.fetch("""
+                memories = await conn.fetch(f"""
                     SELECT id, content
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE memory_category = $1
                     AND created_at < NOW() - INTERVAL '$2 days'
                     AND LENGTH(content) > 500
@@ -207,15 +220,15 @@ class MemorySummarizer:
                     summary = await self._generate_summary(memory["content"])
                     original_length = len(memory["content"])
 
-                    await conn.execute("""
-                        UPDATE shared_memory.documents
+                    await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET
                             content = $1,
                             metadata = jsonb_set(
-                                COALESCE(metadata, '{}'::jsonb),
-                                '{summarized}',
+                                COALESCE(metadata, '{{}}'::jsonb),
+                                '{{summarized}}',
                                 'true',
-                                '{original_length}',
+                                '{{original_length}}',
                                 $2
                             )
                         WHERE id = $3
@@ -224,7 +237,7 @@ class MemorySummarizer:
                     results["memories_summarized"] += 1
                     results["space_saved"] += (original_length - len(summary))
 
-                logger.info(f"Summarized {results['memories_summarized']} memories in category '{memory_category}'")
+                logger.info(f"Summarized {results['memories_summarized']} memories in category '{{memory_category}}'")
 
                 return {
                     "status": "success",

@@ -10,6 +10,19 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -183,9 +196,9 @@ class RealTimeMemorySync:
         try:
             # Get memory details
             async with self.postgres_pool.acquire() as conn:
-                memory = await conn.fetchrow("""
+                memory = await conn.fetchrow(f"""
                     SELECT id, content, agent_id, memory_category
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     WHERE id = $1
                 """, memory_id)
 
@@ -281,18 +294,18 @@ class RealTimeMemorySync:
             # Get memories from source agent
             async with self.postgres_pool.acquire() as conn:
                 if memory_category:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, metadata
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE agent_id = $1
                         AND memory_category = $2
                         ORDER BY created_at DESC
                         LIMIT 100
                     """, source_agent_id, memory_category)
                 else:
-                    memories = await conn.fetch("""
+                    memories = await conn.fetch(f"""
                         SELECT id, content, metadata
-                        FROM shared_memory.documents
+                        FROM {_t_docs()}
                         WHERE agent_id = $1
                         ORDER BY created_at DESC
                         LIMIT 100
@@ -311,8 +324,8 @@ class RealTimeMemorySync:
                     try:
                         new_memory_id = f"{target_agent_id}_{memory['id']}"
 
-                        await conn.execute("""
-                            INSERT INTO shared_memory.documents
+                        await conn.execute(f"""
+                            INSERT INTO {_t_docs()}
                             (id, title, content, agent_id, memory_category, metadata, created_at)
                             SELECT $1, $2 || ' (from ' || $3 || ')', $4, $5, $6, $7
                             FROM shared_memory.documents
@@ -366,14 +379,14 @@ class RealTimeMemorySync:
             async with self.postgres_pool.acquire() as conn:
                 if resolution_strategy == "keep_newest":
                     # Keep the most recently updated version
-                    result = await conn.execute("""
-                        UPDATE shared_memory.documents
+                    result = await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET
                             metadata = jsonb_set(
-                                COALESCE(metadata, '{}'::jsonb),
-                                '{conflict_resolved}',
+                                COALESCE(metadata, '{{}}'::jsonb),
+                                '{{conflict_resolved}}',
                                 'keep_newest',
-                                '{resolved_at}',
+                                '{{resolved_at}}',
                                 NOW()::text
                             )
                         WHERE id = $1
@@ -390,13 +403,13 @@ class RealTimeMemorySync:
                 elif resolution_strategy == "merge":
                     # Merge conflicting data (implementation depends on conflict type)
                     # For now, just mark as resolved
-                    await conn.execute("""
-                        UPDATE shared_memory.documents
+                    await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET metadata = jsonb_set(
-                            COALESCE(metadata, '{}'::jsonb),
-                            '{conflict_resolved}',
+                            COALESCE(metadata, '{{}}'::jsonb),
+                            '{{conflict_resolved}}',
                             'merged',
-                            '{resolved_at}',
+                            '{{resolved_at}}',
                             NOW()::text
                         )
                         WHERE id = $1

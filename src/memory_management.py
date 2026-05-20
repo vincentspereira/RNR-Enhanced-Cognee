@@ -9,6 +9,19 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from enum import Enum
 
+
+# Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
+# table when a TenantContext is active. See src/multi_tenant.py.
+def _t_docs() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.documents")
+
+
+def _t_embeddings() -> str:
+    from src.multi_tenant import tenant_scoped_table
+    return tenant_scoped_table("shared_memory.embeddings")
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,8 +61,8 @@ class MemoryManager:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Count memories to be affected
-                count = await conn.fetchval("""
-                    SELECT COUNT(*) FROM shared_memory.documents
+                count = await conn.fetchval(f"""
+                    SELECT COUNT(*) FROM {_t_docs()}
                     WHERE created_at < NOW() - INTERVAL '$1 days'
                 """, days)
 
@@ -64,8 +77,8 @@ class MemoryManager:
 
                 if policy == RetentionPolicy.DELETE_OLD:
                     # Delete old memories
-                    result = await conn.execute("""
-                        DELETE FROM shared_memory.documents
+                    result = await conn.execute(f"""
+                        DELETE FROM {_t_docs()}
                         WHERE created_at < NOW() - INTERVAL '$1 days'
                         RETURNING id, title
                     """, days)
@@ -82,11 +95,11 @@ class MemoryManager:
                 elif policy == RetentionPolicy.ARCHIVE_OLD:
                     # Archive to separate table (implementation depends on schema)
                     # For now, we'll mark them as archived
-                    result = await conn.execute("""
-                        UPDATE shared_memory.documents
+                    result = await conn.execute(f"""
+                        UPDATE {_t_docs()}
                         SET metadata = jsonb_set(
-                            COALESCE(metadata, '{}'::jsonb),
-                            '{archived}',
+                            COALESCE(metadata, '{{}}'::jsonb),
+                            '{{archived}}',
                             'true'
                         )
                         WHERE created_at < NOW() - INTERVAL '$1 days'
@@ -141,7 +154,7 @@ class MemoryManager:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Memories by age bracket
-                stats = await conn.fetch("""
+                stats = await conn.fetch(f"""
                     SELECT
                         CASE
                             WHEN created_at > NOW() - INTERVAL '7 days' THEN '0-7 days'
@@ -150,7 +163,7 @@ class MemoryManager:
                             ELSE '90+ days'
                         END as age_bracket,
                         COUNT(*) as count
-                    FROM shared_memory.documents
+                    FROM {_t_docs()}
                     GROUP BY age_bracket
                     ORDER BY age_bracket
                 """)
@@ -158,9 +171,9 @@ class MemoryManager:
                 age_distribution = {row["age_bracket"]: row["count"] for row in stats}
 
                 # Total memories and oldest/newest
-                total = await conn.fetchval("SELECT COUNT(*) FROM shared_memory.documents")
-                oldest = await conn.fetchval("SELECT MIN(created_at) FROM shared_memory.documents")
-                newest = await conn.fetchval("SELECT MAX(created_at) FROM shared_memory.documents")
+                total = await conn.fetchval(f"SELECT COUNT(*) FROM {_t_docs()}")
+                oldest = await conn.fetchval(f"SELECT MIN(created_at) FROM {_t_docs()}")
+                newest = await conn.fetchval(f"SELECT MAX(created_at) FROM {_t_docs()}")
 
                 return {
                     "status": "success",
@@ -195,18 +208,18 @@ class MemoryManager:
         try:
             async with self.postgres_pool.acquire() as conn:
                 # Mark memories as archived
-                result = await conn.execute("""
-                    UPDATE shared_memory.documents
+                result = await conn.execute(f"""
+                    UPDATE {_t_docs()}
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
-                        '{archived}',
+                        COALESCE(metadata, '{{}}'::jsonb),
+                        '{{archived}}',
                         'true'
                     )
                     WHERE memory_category = $1
                     AND created_at < NOW() - INTERVAL '$2 days'
                 """, memory_category, days)
 
-                logger.info(f"Archived {result} memories from category '{memory_category}'")
+                logger.info(f"Archived {result} memories from category '{{memory_category}}'")
 
                 return {
                     "status": "success",
@@ -242,11 +255,11 @@ class MemoryManager:
                 # Set expiry date in metadata
                 expiry_date = datetime.now(timezone.utc) + timedelta(days=ttl_days) if ttl_days > 0 else None
 
-                result = await conn.execute("""
-                    UPDATE shared_memory.documents
+                result = await conn.execute(f"""
+                    UPDATE {_t_docs()}
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
-                        '{expiry_date}',
+                        COALESCE(metadata, '{{}}'::jsonb),
+                        '{{expiry_date}}',
                         $1
                     )
                     WHERE id = $2
@@ -293,17 +306,17 @@ class MemoryManager:
             async with self.postgres_pool.acquire() as conn:
                 expiry_date = datetime.now(timezone.utc) + timedelta(days=ttl_days)
 
-                result = await conn.execute("""
-                    UPDATE shared_memory.documents
+                result = await conn.execute(f"""
+                    UPDATE {_t_docs()}
                     SET metadata = jsonb_set(
-                        COALESCE(metadata, '{}'::jsonb),
-                        '{expiry_date}',
+                        COALESCE(metadata, '{{}}'::jsonb),
+                        '{{expiry_date}}',
                         $1
                     )
                     WHERE memory_category = $2
                 """, expiry_date.isoformat(), memory_category)
 
-                logger.info(f"Set TTL of {ttl_days} days for {result} memories in category '{memory_category}'")
+                logger.info(f"Set TTL of {ttl_days} days for {result} memories in category '{{memory_category}}'")
 
                 return {
                     "status": "success",
