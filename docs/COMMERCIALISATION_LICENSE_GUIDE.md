@@ -276,3 +276,14 @@ license; combined with the Apache/MIT/BSD ecosystem of Python deps, the
 GPL Neo4j concern is the only one worth conscious attention, and it's
 mitigated by the "customer pulls their own image" deployment pattern that
 we already use.
+
+## See also
+
+When you're evaluating a specific Enhanced Cognee feature for inclusion in
+MAS (rather than evaluating the project as a whole), use:
+
+- [`FEATURE_LICENSE_MATRIX.md`](FEATURE_LICENSE_MATRIX.md) -- per-feature
+  view that maps every feature -> its OSS dependencies -> their licenses ->
+  a SAFE / SAFE+ATTR / REVIEW / OPT-IN / CONFLICT verdict for MAS. Use
+  this matrix as the first stop when porting code; cross-references
+  [`LICENSE_AUDIT.md`](LICENSE_AUDIT.md) for the per-dependency rationale.

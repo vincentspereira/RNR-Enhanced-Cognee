@@ -279,3 +279,9 @@ future SaaS monetisation, with the following caveats:
 
 The Redis → Valkey swap eliminates the largest license risk that existed prior
 to this audit.
+
+## See also
+
+- [`FEATURE_LICENSE_MATRIX.md`](FEATURE_LICENSE_MATRIX.md) -- per-feature view of the same licensing data, organised by what feature you are about to port into a downstream project (e.g. the user's Multi-Agent System / MAS). Cross-references this file for the per-dependency analysis.
+- [`COMMERCIALISATION_LICENSE_GUIDE.md`](COMMERCIALISATION_LICENSE_GUIDE.md) -- if you ever ship Enhanced Cognee itself as a paid product.
+- [`PROFILES.md`](PROFILES.md) -- per-profile adapter matrix and caveats.

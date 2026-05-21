@@ -2436,6 +2436,7 @@ Comprehensive documentation is available:
 | [ArcadeDB Migration](docs/ARCADEDB_MIGRATION.md)                                | How to migrate from a Neo4j default to ArcadeDB (or back) |
 | [Phase 5 Outstanding TODO](docs/PHASE5_TODO.md)                                 | Honest accounting of what's shipped vs deferred since 2026-05-20 |
 | [License Audit](docs/LICENSE_AUDIT.md)                                          | Per-component licence analysis for the default stack |
+| [Feature -> License Matrix](docs/FEATURE_LICENSE_MATRIX.md)                     | Per-feature OSS dependency + license + MAS-incorporation verdict (use when porting features into closed-source / commercial products) |
 | [Strategy](docs/STRATEGY.md)                                                    | Long-term roadmap, decision records, alternative stacks |
 | [Compare to Alternatives](docs/COMPARE_TO_ALTERNATIVES.md)                      | Enhanced Cognee vs Mem0 / Letta / LangChain |
 | [Master Implementation Plan](docs/plans/MASTER_IMPLEMENTATION_PLAN.md)          | Comprehensive project roadmap and plans                 |
@@ -2803,6 +2804,7 @@ Key documents and references:
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Contributor Covenant v2.1 |
 | [docs/DEPLOYMENT_QUICKSTART.md](docs/DEPLOYMENT_QUICKSTART.md) | Local + VPS deployment runbooks |
 | [docs/LICENSE_AUDIT.md](docs/LICENSE_AUDIT.md) | Full license analysis of every component |
+| [docs/FEATURE_LICENSE_MATRIX.md](docs/FEATURE_LICENSE_MATRIX.md) | Per-feature license + MAS-incorporation verdict |
 | [docs/PRODUCTION_READINESS_PLAN.md](docs/PRODUCTION_READINESS_PLAN.md) | Six-phase roadmap (all phases complete) |
 | [docs/COMPARE_TO_ALTERNATIVES.md](docs/COMPARE_TO_ALTERNATIVES.md) | Enhanced Cognee vs Mem0 / Letta / LangChain |
 | [docs/PROFILES.md](docs/PROFILES.md) | 5 pre-baked profiles + per-adapter supported-method matrices |
