@@ -1,0 +1,21 @@
+[package]
+name = "enhanced-cognee-client"
+version = "1.0.0"
+edition = "2021"
+description = "Official Rust client for the Enhanced Cognee MCP HTTP server"
+license = "Apache-2.0"
+repository = "https://github.com/vincentspereira/Enhanced-Cognee"
+documentation = "https://docs.rs/enhanced-cognee-client"
+keywords = ["enhanced-cognee", "memory", "mcp", "ai", "vector-search"]
+categories = ["api-bindings", "asynchronous"]
+
+[dependencies]
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["macros", "rt"] }
+
+[dev-dependencies]
+tokio = { version = "1.0", features = ["macros", "rt-multi-thread", "test-util"] }
+wiremock = "0.6"
