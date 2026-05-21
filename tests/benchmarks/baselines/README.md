@@ -14,35 +14,54 @@ to detect performance regressions.
 | `2026-05-21_default.md` | Real Locust run | Markdown summary of the same run. |
 | `2026-05-21_neo4j_stack.json` | Real Locust run | Baseline for the `neo4j_stack` permutation (Neo4j 5.25 + Qdrant 1.12 + Valkey 8 + PostgreSQL 18 + pgvector). 60s, 20 users, 5 spawn-rate. |
 | `2026-05-21_neo4j_stack.md` | Real Locust run | Markdown summary of the same run. |
+| `2026-05-21_memgraph_kuzu.json` | Real Locust run | Baseline for the `memgraph_kuzu` permutation (Memgraph latest + Qdrant 1.12 + Valkey 8 + PostgreSQL 18 + pgvector). 60s, 20 users, 5 spawn-rate. ArcadeDB was temporarily stopped to free Bolt port 27687. |
+| `2026-05-21_memgraph_kuzu.md` | Real Locust run | Markdown summary of the same run. |
 
-> **Remaining permutations** (`lean`, `embedded`, `memgraph_kuzu`)
-> require additional Docker stack work before a baseline can be
-> captured cleanly:
+## Baseline summary (3 of 5 permutations captured)
+
+| Permutation | RPS | p50 (ms) | p95 (ms) | p99 (ms) | Error % |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `default` (ArcadeDB HTTP) | 48.86 | 11 | 14 | 17 | 0.00 |
+| `neo4j_stack` (Bolt) | 49.06 | 2 | 7 | 11 | 0.00 |
+| `memgraph_kuzu` (Memgraph Bolt) | 47.67 | 15 | 21 | 25 | 0.00 |
+
+> **Remaining 2 permutations** (`lean`, `embedded`) require deeper
+> infrastructure work before a clean baseline can ship:
 >
-> - **`lean`** (apache_age + pgvector + in_memory + postgres) -- the
->   running PostgreSQL container is the pgvector image; needs swap to
->   `apache/age:PG16_latest` to load the AGE extension. The
->   integration test in `tests/integration/test_apache_age_integration.py`
->   already shows how the postgres-age service container is configured
->   in CI; reuse that compose snippet locally.
-> - **`embedded`** (ladybug + lancedb + in_memory + sqlite) -- works
->   from the application's perspective (the factory dispatches
->   correctly) but the `shared_memory.documents` schema is currently
->   bootstrapped only against PostgreSQL via
->   `docker/init-scripts/01-init-pgvector.sql`. A baseline run produces
->   ~35% errors because sqlite doesn't have the table. A future PR
->   should add a `sqlite_init.sql` equivalent (or have
->   `ensure_tenant_schema` work for sqlite). Until then, the embedded
->   profile is for `cognify`-only / KG-only workloads, not the full
->   memory CRUD surface the Locust scenarios exercise.
-> - **`memgraph_kuzu`** (memgraph + qdrant + valkey + postgres) -- needs a
->   memgraph container running on Bolt port (replacing or in parallel
->   with the ArcadeDB container; port conflict on 27687 means it has
->   to be a stack swap, not a parallel boot).
+> - **`lean`** (apache_age + pgvector + in_memory + postgres) -- needs
+>   a Postgres image with BOTH the AGE extension AND pgvector
+>   preinstalled. The official `apache/age:release_PG16_1.6.0` image
+>   ships AGE only (no pgvector). Workaround paths:
+>   1. Build a custom Dockerfile that adds pgvector on top of the
+>      AGE base image (extension only -- copy /usr/lib/.../vector.so
+>      from the pgvector image into the AGE image). Build + push to
+>      a registry; reference from docker-compose / Helm chart.
+>   2. Use the existing `pgvector/pgvector:pg18` image + install AGE
+>      from source as a runtime extension. AGE supports PG16 / PG17;
+>      installing into PG18 requires building from source.
+>   The integration test in `tests/integration/test_apache_age_integration.py`
+>   uses a CI-only postgres-age service container; reuse that pattern
+>   locally if you only need AGE-no-pgvector for the baseline (the
+>   vector adapter calls will then error, so error_pct will be non-zero).
+> - **`embedded`** (ladybug + lancedb + in_memory + sqlite) -- needs
+>   adapter / schema work to make sqlite handle the dotted
+>   `shared_memory.documents` identifier the application currently
+>   passes through `tenant_scoped_table()`. Two paths:
+>   1. Modify `src/multi_tenant.tenant_scoped_table` to detect sqlite
+>      and emit `shared_memory_documents` (underscore) instead of
+>      `shared_memory.documents` (dot).
+>   2. Use sqlite's `ATTACH DATABASE` feature to create a logical
+>      `shared_memory` schema and write a `sqlite_init.sql` that
+>      bootstraps the documents/embeddings/entities/relationships
+>      tables there.
+>   Either approach is a 1-2 hour PR. Without it, the embedded baseline
+>   produces ~35% errors because every INSERT INTO shared_memory.documents
+>   fails (`no such table` since sqlite parses the dotted name as
+>   `schema.table` which sqlite doesn't support without ATTACH).
 >
 > `compare_to_baseline.py` handles "no baseline" gracefully (treats
 > every permutation as "[NEW] in new run but no baseline -- skipped"),
-> so CI's regression gate is inert for those permutations until
+> so CI's regression gate is inert for these 2 permutations until
 > baselines land.
 
 ## Regenerating a baseline

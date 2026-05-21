@@ -1,0 +1,18 @@
+[
+  {
+    "name": "memgraph_kuzu",
+    "providers": {
+      "ENHANCED_GRAPH_PROVIDER": "memgraph",
+      "ENHANCED_VECTOR_PROVIDER": "qdrant",
+      "ENHANCED_CACHE_PROVIDER": "valkey",
+      "ENHANCED_RELATIONAL_PROVIDER": "postgres"
+    },
+    "rps": 47.67538108989197,
+    "p50_ms": 15.0,
+    "p95_ms": 21.0,
+    "p99_ms": 25.0,
+    "total_requests": 2830,
+    "total_failures": 0,
+    "error_pct": 0.0
+  }
+]
