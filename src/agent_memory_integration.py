@@ -774,8 +774,10 @@ class AgentMemoryIntegration:
                 """)
                 cleanup_count += len(result)
 
-            # Clean up Redis expired keys
-            keys = await self.redis_client.keys("memory:*")
+            # Clean up Redis expired keys (tenant-scoped pattern when active)
+            from src.multi_tenant import tenant_scoped_key
+
+            keys = await self.redis_client.keys(tenant_scoped_key("memory:*"))
             for key in keys:
                 ttl = await self.redis_client.ttl(key)
                 if ttl == -1:  # No expiration set, skip

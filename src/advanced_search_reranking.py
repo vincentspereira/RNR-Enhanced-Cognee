@@ -167,8 +167,10 @@ class AdvancedSearchEngine:
         expanded = [query]
 
         try:
-            # Check cache first
-            cache_key = f"query_expansion:{hash(query)}"
+            from src.multi_tenant import tenant_scoped_key
+
+            # Check cache first (tenant-scoped key when active)
+            cache_key = tenant_scoped_key(f"query_expansion:{hash(query)}")
             if self.redis_client:
                 cached = await self.redis_client.get(cache_key)
                 if cached:

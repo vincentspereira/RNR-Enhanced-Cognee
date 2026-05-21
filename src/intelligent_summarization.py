@@ -162,8 +162,10 @@ class IntelligentMemorySummarizer:
             content = memory.get('content', '')
             memory_id = memory.get('id', '')
 
-            # Check cache first
-            cache_key = f"summary:{memory_id}:{strategy.value}"
+            # Check cache first (tenant-scoped key when active)
+            from src.multi_tenant import tenant_scoped_key
+
+            cache_key = tenant_scoped_key(f"summary:{memory_id}:{strategy.value}")
             if self.redis_client:
                 cached = await self.redis_client.get(cache_key)
                 if cached:

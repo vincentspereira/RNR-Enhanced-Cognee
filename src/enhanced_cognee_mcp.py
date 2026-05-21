@@ -142,7 +142,27 @@ class EnhancedCogneeMCPServer:
         self.neo4j_driver = None
         self.redis_client = None
         self.app = FastAPI(title="Enhanced Cognee MCP Server")
+        self._install_tenant_middleware()
         self.setup_routes()
+
+    def _install_tenant_middleware(self) -> None:
+        """Extract X-Tenant-ID header into the TenantContext for the request.
+
+        FastAPI's middleware runs in the request's context, so any
+        downstream call to a storage helper sees the tenant set here.
+        Returns the response untouched.
+        """
+        from src.multi_tenant import TenantContext
+
+        @self.app.middleware("http")
+        async def _tenant_scope(request, call_next):
+            tenant_id = request.headers.get("x-tenant-id") or request.headers.get(
+                "X-Tenant-ID"
+            )
+            if tenant_id:
+                async with TenantContext(tenant_id):
+                    return await call_next(request)
+            return await call_next(request)
 
     async def initialize(self):
         """Initialize all Enhanced stack connections"""
