@@ -20,14 +20,26 @@ import pytest
 from src.db_adapters import graph_arcadedb
 
 
-_REASON_NO_ARCADEDB = (
-    "ArcadeDB not reachable on bolt://"
-    + os.getenv("ARCADEDB_HOST", "localhost")
-    + ":"
-    + os.getenv("ARCADEDB_PORT", "26687")
-    + "; skipping. Boot the service with "
-    + "`docker compose -f docker/docker-compose-enhanced-cognee.yml up arcadedb`."
-)
+_TRANSPORT = os.getenv("ARCADEDB_TRANSPORT", "bolt")
+
+if _TRANSPORT == "http":
+    _REASON_NO_ARCADEDB = (
+        "ArcadeDB HTTP not reachable at http://"
+        + os.getenv("ARCADEDB_HOST", "localhost")
+        + ":"
+        + os.getenv("ARCADEDB_HTTP_PORT", "2480")
+        + "/api/v1/command/"
+        + os.getenv("ARCADEDB_DATABASE", "cognee_graph")
+        + "; skipping."
+    )
+else:
+    _REASON_NO_ARCADEDB = (
+        "ArcadeDB not reachable on "
+        + os.getenv("ARCADEDB_URI", "bolt://localhost:27687")
+        + "; skipping. Boot the service with "
+        + "`docker compose -f docker/docker-compose-enhanced-cognee.yml up arcadedb`, "
+        + "or set ARCADEDB_TRANSPORT=http to use the stock community image."
+    )
 
 
 def _try_connect():

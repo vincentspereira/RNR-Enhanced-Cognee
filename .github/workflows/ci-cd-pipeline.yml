@@ -327,18 +327,23 @@ jobs:
           - 27474:7474
           - 27687:7687
 
-      # ArcadeDB service container intentionally omitted from CI for
-       # now: ArcadeDB ships a Bolt plugin in its enterprise build, but
-       # the public `arcadedata/arcadedb:26.x` image only exposes HTTP +
-       # Postgres-wire + Redis-wire + Gremlin protocols, none of which
-       # the existing adapter speaks (it uses neo4j-driver Bolt). The
-       # tests/integration/test_arcadedb_integration.py module already
-       # handles "no ArcadeDB available" by skipping its test class, so
-       # the CI run stays green; local developers can boot ArcadeDB via
-       # docker/docker-compose-enhanced-cognee.yml to run those tests.
-       # TODO: revisit once arcadedata ships a Bolt plugin in the
-       # community image, or switch the adapter to ArcadeDB's HTTP/JSON
-       # API for CI coverage.
+      arcadedb:
+        # ArcadeDB Studio + HTTP command API on port 2480. The Bolt
+        # plugin is NOT enabled in the community image, so CI uses
+        # the HTTP transport (ARCADEDB_TRANSPORT=http) -- ships in
+        # PR #9 via src/db_adapters/graph_arcadedb.py.
+        #
+        # No `--health-cmd`: the ArcadeDB image doesn't ship curl /
+        # wget, so any in-container healthcheck would always fail.
+        # GHA without a healthcheck waits for the container to be
+        # "running" (= Docker startup completes), which is enough;
+        # the in-step readiness probe below (run from the runner)
+        # polls the HTTP port until ArcadeDB actually responds.
+        image: arcadedata/arcadedb:26.5.1
+        env:
+          JAVA_OPTS: "-Darcadedb.server.rootPassword=cognee_test_password"
+        ports:
+          - 22480:2480
 
     env:
       POSTGRES_HOST: localhost
@@ -360,6 +365,13 @@ jobs:
       AGE_USER: cognee_test_user
       AGE_PASSWORD: cognee_test_password
       AGE_GRAPH_NAME: "cognee_test_graph"
+      # ArcadeDB -- HTTP transport (no Bolt plugin in community image)
+      ARCADEDB_TRANSPORT: "http"
+      ARCADEDB_HOST: localhost
+      ARCADEDB_HTTP_PORT: "22480"
+      ARCADEDB_DATABASE: "cognee_test_graph"
+      ARCADEDB_USER: root
+      ARCADEDB_PASSWORD: cognee_test_password
       ENHANCED_COGNEE_MODE: "true"
 
     steps:
@@ -402,8 +414,24 @@ jobs:
             fi
             echo "Waiting for Neo4j ($i/30)..."; sleep 2
           done
-          # ArcadeDB readiness probe intentionally skipped here -- see
-          # the comment on the omitted arcadedb service container above.
+          # ArcadeDB Studio HTTP readiness probe + bootstrap of the
+          # cognee_test_graph database. The adapter targets the HTTP
+          # transport in CI (ARCADEDB_TRANSPORT=http).
+          # Probe `/` (Studio root) rather than `/api/v1/ready`
+          # because the latter isn't consistently exposed in 26.x.
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:22480/ > /dev/null 2>&1; then
+              echo "ArcadeDB ready"; break
+            fi
+            echo "Waiting for ArcadeDB ($i/60)..."; sleep 2
+          done
+          # Create the cognee_test_graph database (idempotent: silently
+          # ignores 409 Conflict if the DB already exists).
+          curl -sf -u root:cognee_test_password \
+            -X POST http://localhost:22480/api/v1/server \
+            -H "Content-Type: application/json" \
+            -d '{"command": "create database cognee_test_graph"}' \
+            || echo "ArcadeDB database create returned non-zero (likely already exists)"
 
       - name: Bootstrap Apache AGE extension + graph
         env:

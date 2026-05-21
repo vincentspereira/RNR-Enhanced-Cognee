@@ -131,6 +131,47 @@ Qdrant Cloud for vectors, etc.
 
 ## Phase 5 adapter sub-sections
 
+### ArcadeDB adapter -- dual transport (Bolt + HTTP/JSON)
+
+`src/db_adapters/graph_arcadedb.py` ships two transports selectable
+via `ARCADEDB_TRANSPORT`:
+
+| Transport | Default | When to pick it |
+| --- | --- | --- |
+| `bolt` (default since Phase 2) | Yes | Existing Neo4j deployments where you want the same wire protocol -- requires ArcadeDB's optional Bolt plugin (configured in `docker/docker-compose-enhanced-cognee.yml`). Lowest latency. |
+| `http` (added 2026-05-20) | No | Stock `arcadedata/arcadedb` Docker image without the Bolt plugin, CI runners that can't install JVM extensions, browser-bridge integrations. Higher per-request latency due to HTTP framing, but no extra dependencies. |
+
+**HTTP transport env vars:**
+
+```bash
+ENHANCED_GRAPH_PROVIDER=arcadedb
+ARCADEDB_TRANSPORT=http
+ARCADEDB_HOST=localhost            # default
+ARCADEDB_HTTP_PORT=2480            # ArcadeDB Studio + command API port
+ARCADEDB_DATABASE=cognee_graph     # default
+ARCADEDB_USER=root                 # default
+ARCADEDB_PASSWORD=cognee_password  # default
+```
+
+The HTTP transport wraps `POST /api/v1/command/{db}` and exposes the
+same `neo4j.Driver`-shaped surface as the Bolt path: `.session()` /
+`.run(cypher, parameters)` / iteration / `.single()` / `.data()`.
+Call sites don't need to know which transport is in use.
+
+**Bolt transport env vars (unchanged from Phase 2):**
+
+```bash
+ENHANCED_GRAPH_PROVIDER=arcadedb
+ARCADEDB_TRANSPORT=bolt            # default; can be omitted
+ARCADEDB_URI=bolt://localhost:27687
+ARCADEDB_USER=root
+ARCADEDB_PASSWORD=cognee_password
+```
+
+**When NOT to use the HTTP transport:** if you need bulk writes (the
+HTTP API does one round-trip per `.run()` call; Bolt streams).
+Single-request-per-Cypher latency is ~5-10ms higher.
+
 ### Memgraph adapter
 
 The Memgraph adapter is structurally identical to the ArcadeDB / Neo4j
