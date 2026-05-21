@@ -95,6 +95,31 @@ gaps:
 
 ---
 
+## Multi-tenant data partitioning (PR 15 + 15b + 15c)
+
+| Item | Status | Notes |
+|---|---|---|
+| `TenantContext` + naming helpers (`tenant_scoped_table/collection/key/graph`) | ✅ **SHIPPED 2026-05-20** (PR #39) | ContextVar-based; sync + async context managers; ENHANCED_REQUIRE_TENANT=1 production safety knob |
+| Lazy per-tenant Postgres schema bootstrap (`ensure_tenant_schema`) | ✅ **SHIPPED 2026-05-20** (PR #39) | Idempotent `CREATE TABLE IF NOT EXISTS shared_memory.documents_t_<tenant> (LIKE shared_memory.documents INCLUDING ALL)` |
+| Wiring across MCP memory tools + 24 src/ modules (~100+ call sites) | ✅ **SHIPPED 2026-05-20** (PR #39) | add_memory, search_memories, delete_memory, list_agents in mcp_memory_tools; full storage layer across agent_memory_integration, cross_agent_sharing, encryption_manager, etc. |
+| Cross-tenant isolation end-to-end tests | ✅ **SHIPPED 2026-05-21** (PR #42) | 15 tests verifying tenant A's writes hit documents_t_a only; nested context unwind; per-task ContextVar isolation; ID sanitisation; un-scoped backwards-compat |
+| HTTP `X-Tenant-ID` header → TenantContext middleware | ✅ **SHIPPED 2026-05-21** (PR #43) | FastAPI middleware in `EnhancedCogneeMCPServer.__init__`; every storage call from an HTTP handler sees the per-request tenant automatically. 5 propagation tests |
+
+---
+
+## Cross-language client SDKs (PR 16)
+
+| Language | Status | Notes |
+|---|---|---|
+| Python | ✅ Production (since v1.0.0) | Installed as `enhanced-cognee-client` on PyPI |
+| Node.js / TypeScript | ✅ **SHIPPED 2026-05-21** (PR #41) | `clients/node/` -- 7 unit tests using `node:test` + mocked fetch |
+| Go | ✅ **SHIPPED 2026-05-21** (PR #41) | `clients/go/` -- 9 unit tests using `net/http/httptest`; context.Context first arg per Go idiom |
+| Rust | ✅ **SHIPPED 2026-05-21** (PR #41) | `clients/rust/` -- 7 integration tests using `wiremock`; async via tokio + reqwest (rustls-tls) |
+
+All four clients share the same HTTP contract (5 endpoints) and the same `X-API-Key` + `X-Tenant-ID` headers.
+
+---
+
 ## Triage policy
 
 When considering whether to pull something from this file forward:
