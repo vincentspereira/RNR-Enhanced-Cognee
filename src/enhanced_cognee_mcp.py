@@ -181,8 +181,65 @@ class EnhancedCogneeMCPServer:
         self.neo4j_driver = None
         self.redis_client = None
         self.app = FastAPI(title="Enhanced Cognee MCP Server")
+        self._install_security_middleware()
         self._install_tenant_middleware()
         self.setup_routes()
+
+    def _install_security_middleware(self) -> None:
+        """Enforce API-key auth + payload size cap on the HTTP surface.
+
+        Per-tool rate limiting is applied at the route level (the FastAPI
+        middleware can't know which tool was invoked without parsing the
+        path, so rate-limiting is handled in the individual handlers via
+        ``check_rate_limit("/mcp/<tool>", agent_id)``).
+        """
+        from src.mcp_security import (
+            _expected_api_key,
+            _payload_byte_cap,
+            PayloadTooLarge,
+            require_api_key,
+        )
+        from fastapi.responses import JSONResponse
+
+        @self.app.middleware("http")
+        async def _security_scope(request, call_next):
+            # /health stays unauthenticated so liveness probes work without
+            # the operator having to provision the API key inside the
+            # health-check tooling.
+            path = request.url.path
+            unauthenticated_paths = {"/health"}
+            if path not in unauthenticated_paths:
+                provided = request.headers.get("x-api-key") or request.headers.get(
+                    "X-API-Key"
+                )
+                try:
+                    require_api_key(provided)
+                except PermissionError as e:
+                    return JSONResponse(
+                        status_code=401,
+                        content={"detail": str(e)},
+                    )
+
+            cap = _payload_byte_cap()
+            if cap is not None:
+                content_length = request.headers.get("content-length")
+                if content_length:
+                    try:
+                        size = int(content_length)
+                    except ValueError:
+                        size = 0
+                    if size > cap:
+                        return JSONResponse(
+                            status_code=413,
+                            content={
+                                "detail": (
+                                    f"Payload size {size} bytes exceeds "
+                                    f"ENHANCED_MAX_PAYLOAD_BYTES cap of {cap} bytes."
+                                )
+                            },
+                        )
+
+            return await call_next(request)
 
     def _install_tenant_middleware(self) -> None:
         """Extract X-Tenant-ID header into the TenantContext for the request.
@@ -385,12 +442,86 @@ class EnhancedCogneeMCPServer:
 
     async def search_memory(self, query: SearchQuery) -> List[Dict[str, Any]]:
         """
-        Search memory using Enhanced vector database with DYNAMIC categories
+        Search memory using Enhanced vector database with DYNAMIC categories.
 
-        Supports searching across dynamically configured categories
+        Supports searching across dynamically configured categories.
+
+        When ``query.embedding`` is provided, runs vector search against Qdrant.
+        When it's absent, falls back to Postgres full-text search over
+        ``shared_memory.documents.content`` (tenant-scoped) so HTTP callers
+        without local embedding capability still get useful results.
         """
         try:
             results = []
+
+            if not query.embedding:
+                # Postgres text-search fallback. Use plainto_tsquery for safety
+                # (handles raw user input without parser errors). Returns
+                # results ordered by ts_rank descending. Tenant-scoped via the
+                # multi_tenant naming helper.
+                from src.multi_tenant import tenant_scoped_table
+                documents_table = tenant_scoped_table("shared_memory.documents")
+                try:
+                    async with self.postgres_pool.acquire() as conn:
+                        if query.agent_id:
+                            rows = await conn.fetch(
+                                f"""
+                                SELECT id, content, agent_id, memory_category,
+                                       created_at,
+                                       ts_rank(
+                                           to_tsvector('english',
+                                                       coalesce(content, '')),
+                                           plainto_tsquery('english', $1)
+                                       ) AS rank
+                                FROM {documents_table}
+                                WHERE to_tsvector('english',
+                                                  coalesce(content, ''))
+                                      @@ plainto_tsquery('english', $1)
+                                  AND agent_id = $2
+                                ORDER BY rank DESC, created_at DESC
+                                LIMIT $3
+                                """,
+                                query.query, query.agent_id, query.limit,
+                            )
+                        else:
+                            rows = await conn.fetch(
+                                f"""
+                                SELECT id, content, agent_id, memory_category,
+                                       created_at,
+                                       ts_rank(
+                                           to_tsvector('english',
+                                                       coalesce(content, '')),
+                                           plainto_tsquery('english', $1)
+                                       ) AS rank
+                                FROM {documents_table}
+                                WHERE to_tsvector('english',
+                                                  coalesce(content, ''))
+                                      @@ plainto_tsquery('english', $1)
+                                ORDER BY rank DESC, created_at DESC
+                                LIMIT $2
+                                """,
+                                query.query, query.limit,
+                            )
+                    for r in rows:
+                        results.append({
+                            "id": str(r["id"]),
+                            "content": r["content"],
+                            "agent_id": r["agent_id"],
+                            "memory_category": r["memory_category"],
+                            "similarity_score": float(r["rank"]),
+                            "created_at": (
+                                r["created_at"].isoformat()
+                                if r["created_at"] else None
+                            ),
+                            "source": "postgres_fts",
+                        })
+                    return results
+                except Exception as e:
+                    logger.warning(
+                        f"Postgres FTS fallback failed: {e}; "
+                        f"returning empty result set."
+                    )
+                    return results
 
             if query.embedding:
                 # Search across relevant Qdrant collections
@@ -599,10 +730,20 @@ class EnhancedCogneeMCPServer:
         # /mcp/* endpoints -- standard MCP tool surface mirrored over HTTP.
         # Same semantics as bin/enhanced_cognee_mcp_server.py stdio tools;
         # locustfile + cross-language SDKs target these routes.
+        # Rate limiting is per-(tool, agent_id) via src.mcp_security; gated
+        # behind ENHANCED_RATE_LIMIT_<TOOL>_PER_MIN so dev stays frictionless.
         # -------------------------------------------------------------------
+
+        def _enforce_rate_limit(tool: str, agent_id: Optional[str]) -> None:
+            from src.mcp_security import RateLimitExceeded, check_rate_limit
+            try:
+                check_rate_limit(tool, agent_id or "_default_")
+            except RateLimitExceeded as e:
+                raise HTTPException(status_code=429, detail=str(e))
 
         @self.app.post("/mcp/add_memory")
         async def mcp_add_memory(req: McpAddMemoryRequest):
+            _enforce_rate_limit("add_memory", req.agent_id)
             entry = MemoryEntry(
                 content=req.content,
                 agent_id=req.agent_id,
@@ -614,6 +755,7 @@ class EnhancedCogneeMCPServer:
 
         @self.app.post("/mcp/search_memories")
         async def mcp_search_memories(req: McpSearchMemoriesRequest):
+            _enforce_rate_limit("search_memories", req.agent_id)
             query = SearchQuery(
                 query=req.query,
                 limit=req.limit,
@@ -624,6 +766,7 @@ class EnhancedCogneeMCPServer:
 
         @self.app.post("/mcp/get_memories")
         async def mcp_get_memories(req: McpGetMemoriesRequest):
+            _enforce_rate_limit("get_memories", req.agent_id)
             from src.multi_tenant import tenant_scoped_table
             documents_table = tenant_scoped_table("shared_memory.documents")
             try:
@@ -663,6 +806,7 @@ class EnhancedCogneeMCPServer:
 
         @self.app.post("/mcp/update_memory")
         async def mcp_update_memory(req: McpUpdateMemoryRequest):
+            _enforce_rate_limit("update_memory", None)
             from src.multi_tenant import tenant_scoped_table
             documents_table = tenant_scoped_table("shared_memory.documents")
             try:
@@ -692,6 +836,7 @@ class EnhancedCogneeMCPServer:
 
         @self.app.post("/mcp/delete_memory")
         async def mcp_delete_memory(req: McpDeleteMemoryRequest):
+            _enforce_rate_limit("delete_memory", None)
             from src.multi_tenant import tenant_scoped_table
             documents_table = tenant_scoped_table("shared_memory.documents")
             try:
@@ -718,6 +863,7 @@ class EnhancedCogneeMCPServer:
 
         @self.app.get("/mcp/list_agents")
         async def mcp_list_agents():
+            _enforce_rate_limit("list_agents", None)
             from src.multi_tenant import tenant_scoped_table
             documents_table = tenant_scoped_table("shared_memory.documents")
             try:

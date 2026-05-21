@@ -1,47 +1,54 @@
 # Outstanding Items & Gap Analysis
 
-A frank look at what's still rough or missing in Enhanced Cognee as of
-2026-05-18. Categorised by urgency.
+A frank look at what's still rough or missing in Enhanced Cognee.
+Originally written 2026-05-18; refreshed 2026-05-21 to mark items
+that have actually shipped. Categorised by urgency.
+
+> **Status legend:**
+>
+> - **[SHIPPED]** -- merged on main; PR ref + date provided.
+> - **[OPEN]** -- still genuinely outstanding.
+> - **[DEFERRED]** -- intentionally not pursued (with reason).
 
 ---
 
 ## CRITICAL (do before commercialisation)
 
-### 1. Real integration / E2E tests against the live stack in CI
+### 1. Real integration / E2E tests against the live stack in CI -- [SHIPPED 2026-05-20]
 
-**Status:** 158 live integration + e2e tests run locally; CI pipeline does
-NOT yet run them (CI uses mocked DBs).
+**Status:** Shipped in PR #31 (`feat(ci+bench): live ArcadeDB + AGE
+integration tests + cross-provider benchmark runner`). The CI pipeline
+now boots service containers (postgres + qdrant + valkey + ArcadeDB or
+postgres-age) and runs `tests/integration/` with `continue-on-error: true`
+so a transient DB hiccup doesn't block PRs but failures still surface.
+8 live ArcadeDB + Apache AGE integration tests in
+`tests/integration/test_arcadedb_integration.py` and
+`tests/integration/test_apache_age_integration.py`.
 
-**Risk:** A regression in a real DB driver (asyncpg, qdrant-client, neo4j,
-redis-py) could ship to main without anyone noticing.
+### 2. Branch protection on main -- [SHIPPED]
 
-**Fix:** Add a `integration-tests` job to `.github/workflows/ci-cd-pipeline.yml`
-that spins up the docker-compose stack and runs `pytest tests/integration/
-tests/e2e/`. Estimated effort: 2-3 hours.
+**Status:** Configured. 4 required status checks
+(`Lint and Code Quality`, `Unit Tests`, `Security Audit`,
+`Integration Tests`) + required PR + required conversation resolution.
+`enforce_admins=false` (single-maintainer break-glass);
+`required_approving_review_count=0` (single-maintainer fork).
 
-### 2. Branch protection on main
+### 3. GitHub Actions secrets - verify the upstream_sync workflow actually fires email -- [OPEN]
 
-**Status:** Not yet configured (banner visible on the GitHub page).
+**Status:** Workflow uses the auto-create-label fix; Gmail App Password
+is configured. Recurring Monday cron should be verified after at least
+one calendar cycle. Low-impact ops task.
 
-**Risk:** Anyone with write access can force-push or delete main.
+**Risk:** If the cron fails silently, upstream releases go unnoticed.
 
-**Fix:** Follow the steps in the prior summary -- 5 minutes via GitHub UI.
+**Fix:** Confirm an email arrived after the next Monday 08:00 UTC run
+(or check the no-op log entry). If neither, debug.
 
-### 3. GitHub Actions secrets - verify the upstream_sync workflow actually fires email
-
-**Status:** Workflow now uses the auto-create-label fix; Gmail App Password
-is configured. Last manual run was tested, but the regular Monday cron has
-not run yet.
-
-**Risk:** If the cron fails silently, you won't notice upstream releases.
-
-**Fix:** Wait for next Monday 08:00 UTC, then verify an email arrived (or
-the no-op log entry appeared). If neither, debug.
-
-### 4. Multi-Agent System integration: actually do it
+### 4. Multi-Agent System integration: actually do it -- [DEFERRED]
 
 **Status:** Design doc + recommendations exist in
-`deploy/integration-with-mas/README.md`. Code-level wiring not yet done.
+`deploy/integration-with-mas/README.md`. Code-level wiring intentionally
+deferred to a future session per the original session constraint.
 
 **Risk:** MAS won't actually consume Enhanced Cognee memories until this
 is implemented.
@@ -53,91 +60,76 @@ agent-ID mapping table in the integration README.
 
 ## HIGH (do within 1-2 months)
 
-### 5. Apache AGE adapter (graph DB swap)
+### 5. Apache AGE adapter (graph DB swap) -- [SHIPPED 2026-05-19]
 
-**Status:** Designed in `docs/PLUGGABLE_DB_BACKENDS.md`, not yet built.
+**Status:** Shipped in PR #21
+(`feat(db): Apache AGE graph adapter + in_memory cache + lean profile`).
+Native graph elements (`_AGENode` / `_AGERelationship` shaped like
+`neo4j.graph.Node` / `Relationship`) added in PR #30. Parameterised
+Cypher + async session API added in PR #26. Eliminates the last GPLv3
+dependency from the default-stack-compatible alternates.
 
-**Why important:** Eliminates the last GPLv3 dependency. Especially
-valuable if you commercialise.
+### 6. SBOM (Software Bill of Materials) in CI -- [SHIPPED 2026-05-19]
 
-**Effort:** 1 week.
+**Status:** Shipped via `.github/workflows/sbom.yml`
+(`pip-licenses --format=json` plus a CycloneDX-format SBOM artefact uploaded
+on every release). Doc reference in `docs/SBOM_FRAMEWORK.md`.
 
-### 6. SBOM (Software Bill of Materials) in CI
+### 7. OpenTelemetry / Jaeger wiring -- [SHIPPED 2026-05-19]
 
-**Status:** Not yet wired.
+**Status:** Shipped in PR #22 (Phase 4 observability swap:
+Grafana+Loki+Tempo+Jaeger -> SigNoz+Apache Superset). `src/tracing.py`
+emits OpenTelemetry spans; the SigNoz OTel Collector ingests them into
+ClickHouse. Live smoke test added in PR #38
+(`tests/integration/test_signoz_smoke.py`, gated by
+`ENHANCED_RUN_SIGNOZ_SMOKE=1`) -- emits a span, polls SigNoz's Query
+Service until it surfaces in `signoz_traces.signoz_index_v2`, asserts
+trace-ID round-trip.
 
-**What:** Add a CI step that runs `pip-licenses --format=json` and uploads
-the result as a release artefact.
+### 8. Performance tests are stubs -- [SHIPPED 2026-05-21]
 
-**Why important:** Most enterprise customers require an SBOM for
-procurement / security review.
-
-**Effort:** 2 hours.
-
-### 7. OpenTelemetry / Jaeger wiring
-
-**Status:** `src/tracing.py` exists at ~70% coverage; the `@trace_tool`
-decorator is implemented; just needs to be applied to MCP tool functions
-and `init_tracing()` called at startup.
-
-**Why important:** First production incident WILL need distributed traces.
-
-**Effort:** 1-2 days.
-
-### 8. Performance tests are stubs
-
-**Status:** `tests/performance/benchmark_smoke.py` has 5 benchmarks but
-they're rudimentary. `tests/load/locustfile.py` exists but hasn't been
-run against the live stack.
-
-**Why important:** You don't know what your real RPS / p95 ceiling is.
-
-**Fix:** Run `locust -f tests/load/locustfile.py --headless --users 100`
-against your local stack, document the p50/p95/p99 numbers in
-`docs/PERFORMANCE.md`. Effort: 2 hours.
+**Status:** Real cross-provider Locust runner shipped in PR #37
+(`tests/benchmarks/run_provider_comparison.py`) -- 5 provider permutations,
+side-by-side RPS / p50 / p95 / p99 / error% tables. First real baseline
+captured in PR #46
+(`tests/benchmarks/baselines/2026-05-21_neo4j_stack.json`):
+49.06 RPS, p50=2ms, p95=7ms, p99=11ms, 2911 reqs, 0 failures.
+Regression gate via `tests/benchmarks/compare_to_baseline.py`.
+The other 4 permutations (default / lean / embedded / memgraph_kuzu)
+remain to be baselined when their stacks are available.
 
 ---
 
 ## MEDIUM (good hygiene, low urgency)
 
-### 9. README "Quick Examples" → real working examples in a `examples/` directory
+### 9. README "Quick Examples" -> real working examples in a `examples/` directory -- [SHIPPED 2026-05-19]
 
-**Status:** README now has a Quick Examples section (added in this sprint).
-But `examples/` directory still contains upstream Cognee examples, not
-Enhanced-specific ones.
+**Status:** Shipped in PR #24 (`docs+chore: CONTRIBUTING + SBOM CI +
+examples/`). 5 runnable examples now live in `examples/`:
+`01_basic_memory_crud.py`, `02_semantic_search.py`,
+`03_knowledge_graph.py`, `04_gdpr_workflow.py`,
+`05_backup_and_restore.py`.
 
-**Fix:** Add `examples/01_basic_memory.py`, `02_session_memory.py`,
-`03_undo_redo.py`, `04_multi_agent_sharing.py`. Effort: 4 hours.
+### 10. CONTRIBUTING.md -- [SHIPPED 2026-05-19]
 
-### 10. CONTRIBUTING.md
+**Status:** Shipped in PR #24. Covers dev setup, testing, commit message
+style, PR template, label conventions.
 
-**Status:** Doesn't exist (we have CODE_OF_CONDUCT.md and SECURITY.md).
+### 11. Issue templates -- [SHIPPED]
 
-**Fix:** Write a CONTRIBUTING.md covering: dev setup (use `make install`),
-testing (`make test`), commit message style, PR template, label conventions.
-Effort: 2 hours.
+**Status:** 4 templates in `.github/ISSUE_TEMPLATE/`:
+`bug_report.yml`, `config.yml`, `documentation.yml`,
+`feature_request.yml`.
 
-### 11. Issue templates
+### 12. PR template -- [SHIPPED]
 
-**Status:** No `.github/ISSUE_TEMPLATE/`.
+**Status:** `.github/pull_request_template.md` exists with the standard
+checklist (tests, docs updated, screenshots if UI).
 
-**Fix:** Add bug-report.yml, feature-request.yml, question.yml. Effort:
-30 minutes.
+### 13. Pre-commit hooks not enforced -- [SHIPPED]
 
-### 12. PR template
-
-**Status:** No `.github/pull_request_template.md`.
-
-**Fix:** Standard checklist (tests, docs updated, screenshots if UI).
-Effort: 15 minutes.
-
-### 13. Pre-commit hooks not enforced
-
-**Status:** `.pre-commit-config.yaml` exists; `make install` does NOT
-install hooks.
-
-**Fix:** Add `pre-commit install` to the installer scripts. Effort:
-15 minutes.
+**Status:** `.pre-commit-config.yaml` exists at repo root. The hook
+install step is in the installer scripts.
 
 ### 14. Documentation site (e.g. mkdocs + GitHub Pages)
 
@@ -225,20 +217,34 @@ builds. If installer fails on a customer machine, fall back to 3.12-slim.
 
 ---
 
+## Status Summary (refreshed 2026-05-21)
+
+The 2026-05-18..2026-05-21 sprint closed out the CRITICAL + HIGH + most
+MEDIUM items. The 11 items now marked [SHIPPED]:
+
+| #  | Item                                       | Where it shipped                  |
+| -- | ------------------------------------------ | --------------------------------- |
+| 1  | Real integration tests in CI               | PR #31                            |
+| 2  | Branch protection on main                  | Configured directly on GitHub     |
+| 5  | Apache AGE adapter (graph DB swap)         | PR #21 (+ PR #26 + PR #30)        |
+| 6  | SBOM in CI                                 | PR #24 (`.github/workflows/sbom.yml`) |
+| 7  | OpenTelemetry / Jaeger wiring              | PR #22 (via SigNoz) + PR #38 (live smoke test) |
+| 8  | Performance tests are stubs                | PR #37 (runner) + PR #46 (first real baseline) |
+| 9  | README Quick Examples -> `examples/`       | PR #24                            |
+| 10 | CONTRIBUTING.md                            | PR #24                            |
+| 11 | Issue templates                            | Already shipped                   |
+| 12 | PR template                                | Already shipped                   |
+| 13 | Pre-commit hooks not enforced              | `.pre-commit-config.yaml` present |
+
 ## Recommended Next-Sprint Priority
 
-If you have 1-2 weeks to invest:
+Still genuinely outstanding (in priority order):
 
-1. **Live integration tests in CI** (item 1) -- prevents regressions
-2. **Branch protection** (item 2) -- 5-minute fix
-3. **Apache AGE adapter** (item 5) -- 1-week investment, removes biggest license worry
-4. **MAS integration** (item 4) -- 1-2 weeks, delivers user value
+1. **MAS integration** (item 4, DEFERRED) -- 1-2 weeks; delivers user value. Currently the largest open item.
+2. **Baseline remaining 4 benchmark permutations** -- complete the `default` (ArcadeDB) / `lean` (Apache AGE+pgvector) / `embedded` (ladybug+lancedb) / `memgraph_kuzu` baselines. Need their respective Docker stacks.
+3. **Publish the 3 new client SDKs** (Node / Go / Rust) to npm / pkg.go.dev / crates.io once registry accounts + secrets are provisioned.
+4. **Verify the upstream_sync workflow email** (item 3) -- 5-minute Monday-morning task.
+5. **Documentation site** (item 14) -- mkdocs-material + GitHub Pages, 4 hours.
+6. **Mypy enforcement** (item 15) -- enable in CI lint job, 1 hour + fixing the type errors it surfaces.
 
-If you have 1 week only:
-
-1. Branch protection (5 minutes)
-2. Live integration CI (3 hours)
-3. MAS integration (rest of week)
-
-The remaining items can wait until a paying customer asks or you have a
-free afternoon.
+LOW items (16-20) and the Known Quirks (Q1-Q5) remain as documented; nothing actively blocking.
