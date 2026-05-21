@@ -8,24 +8,46 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-3954%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-4661%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Coverage](https://img.shields.io/badge/Coverage-95%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
 
-![Tests](https://img.shields.io/badge/tests-3954%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-4661%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Valkey](https://img.shields.io/badge/cache-Valkey%208-orange)
 ![ArcadeDB](https://img.shields.io/badge/graph-ArcadeDB%2026.x-orange)
-![Providers](https://img.shields.io/badge/pluggable%20providers-13%20across%204%20tiers-blueviolet)
+![Providers](https://img.shields.io/badge/pluggable%20providers-30%20across%204%20tiers-blueviolet)
 ![MCP Tools](https://img.shields.io/badge/MCP%20tools-122-9cf)
+![SDKs](https://img.shields.io/badge/SDKs-Python%20%7C%20Node%20%7C%20Go%20%7C%20Rust-blueviolet)
+![Multi-tenant](https://img.shields.io/badge/multi--tenant-X--Tenant--ID-success)
 
-**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, encryption at rest, structured observations, heuristic re-ranking, and production-ready security hardening**
+**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, multi-tenant data partitioning, cross-language client SDKs (Python / Node / Go / Rust), encryption at rest, MCP server hardening (API-key + rate limit + payload cap), Redis-backed personalization, and production-ready security hardening**
 
 </div>
+
+---
+
+## Latest Updates (2026-05-21)
+
+**Multi-tenant + cross-language SDKs + real benchmark baseline shipped.** A 16-PR run since the 2026-05-20 update (PRs #32-#46) closed out the remaining Phase 5 work. Headline:
+
+- **Multi-tenant data partitioning (PRs #39 / #42 / #43).** `TenantContext` ContextVar + naming helpers (`tenant_scoped_table` / `tenant_scoped_collection` / `tenant_scoped_key` / `tenant_scoped_graph`); lazy per-tenant Postgres schema bootstrap via `ensure_tenant_schema` using `CREATE TABLE LIKE INCLUDING ALL`; FastAPI `X-Tenant-ID` header middleware that opens the tenant context for the entire request. Wired across 24 storage modules + 100+ call sites. `ENHANCED_REQUIRE_TENANT=1` production safety knob refuses un-tenanted writes. 15 cross-tenant isolation tests verify documents_t_a never bleeds into documents_t_b.
+- **Cross-language client SDKs (PR #41).** Three new SDKs alongside the existing Python client -- `clients/node/` (TypeScript, 7 tests using `node:test` + mocked fetch), `clients/go/` (9 tests via `net/http/httptest`, context.Context first arg per Go idiom), `clients/rust/` (7 tests via `wiremock`, async via tokio + reqwest/rustls). All four share the same HTTP contract (5 endpoints) and the same `X-API-Key` + `X-Tenant-ID` headers.
+- **3 enterprise + 2 cloud DW relational adapters (PRs #40 / #36).** MS SQL Server / Azure SQL (`aioodbc`), Oracle 19c-23ai / Autonomous DB (`oracledb`), IBM Db2 LUW (`ibm_db`), Snowflake (`snowflake-connector-python`), Databricks SQL Warehouse (`databricks-sql-connector`). Brings the relational tier to 10 providers (postgres / sqlite / duckdb / mysql / mariadb / mssql / oracle / db2 / snowflake / databricks; cockroachdb works via the postgres adapter).
+- **3 relational adapters + cloud DW (PR #34).** DuckDB (MIT embedded analytics), MySQL/MariaDB (`asyncmy`), CockroachDB docs-only (it speaks postgres wire so the existing adapter targets it unchanged).
+- **ArcadeDB dual transport (PR #33).** Bolt-plugin transport (default; drop-in for the `neo4j` Python driver) plus a stock HTTP/JSON transport against `/api/v1/command/{db}` for environments where the Bolt plugin isn't available. Selected via `ARCADEDB_TRANSPORT=bolt|http`.
+- **MCP server hardening (PR #37).** Optional `ENHANCED_API_KEY` for `X-API-Key` auth, per-tool token-bucket rate limiter via `ENHANCED_RATE_LIMIT_PER_MINUTE`, payload cap via `ENHANCED_MAX_PAYLOAD_BYTES`. Typed errors (`RateLimitExceeded`, `PayloadTooLarge`).
+- **Real benchmark baseline (PR #46).** First non-synthetic baseline shipped: `tests/benchmarks/baselines/2026-05-21_neo4j_stack.json` (Neo4j 5.25 + Qdrant 1.12 + Valkey 8 + PostgreSQL 18 + pgvector). 60s @ 20 users @ 5 spawn-rate -> **49.06 RPS, p50=2ms, p95=7ms, p99=11ms, 2911 reqs, 0 failures.** Per-permutation regression check via `tests/benchmarks/compare_to_baseline.py`.
+- **`/mcp/*` HTTP routes (PR #46).** Six new FastAPI endpoints (`add_memory` / `search_memories` / `get_memories` / `update_memory` / `delete_memory` / `list_agents`) mirror the standard MCP tool surface over HTTP, so cross-language SDKs + Locust scenarios + any HTTP caller targeting the documented MCP contract gets a working endpoint.
+- **Real Redis-backed personalization (PR #46).** `_personalized_score` in `advanced_search_reranking.py` now combines three signals: same-agent affinity (1.3x), interaction recency boost up to +0.5 (linear decay over a 30-day retained window), and query-affinity boost up to +0.3 (term overlap with the user's recent searches). Public `record_interaction()` API + rolling 20-entry search history capture on every `search()` call. 11 new unit tests.
+- **Coverage auditor + live SigNoz smoke (PR #38).** `tests/coverage_audit.py` reads `coverage.xml`, reports modules below the 85% gate sorted by uncovered count; `tests/integration/test_signoz_smoke.py` emits an OTel span via `src/tracing.py`, polls SigNoz's Query Service until the span surfaces in `signoz_traces.signoz_index_v2`, then asserts the trace ID round-trips.
+- **Docs refresh.** New `AGENTS.md` (Codex equivalent of `CLAUDE.md`; PR #45) -- ArcadeDB default, Valkey naming, 20+ pluggable providers, multi-tenant section, MCP hardening env knobs, body uses only ASCII so it round-trips through Windows cp1252 consoles. `docs/PHASE5_TODO.md` refresh (PR #44) tracks all multi-tenant + SDK sub-PRs.
+- **Postgres init script rewrite (PR #46).** Previous version had three latent bugs: MySQL-style inline `INDEX` clauses (every `CREATE TABLE` failed with a syntax error), hardcoded `('ats', 'oma', 'smc')` `CHECK` constraints (directly violated the dynamic-categories rule -- any custom category hit a constraint violation), and broken `GET DIAGNOSTICS`. Rewritten with separate `CREATE INDEX` statements, plain `VARCHAR(100)` for `memory_category`, per-agent legacy schemas dropped (`shared_memory` is now the single source of truth, per-tenant variants materialised lazily), proper `ON CONFLICT` unique key for the `memory_usage` upsert trigger.
+- **Test suite: 4,661 passing (4,137 unit + 93 system + others), 0 failures, 95% coverage**, +707 tests since the 2026-05-20 update.
 
 ---
 
@@ -126,6 +148,9 @@ Full session summary in
 - [How MCP Tools Work](#how-mcp-tools-work)
 - [Agent Integration](#agent-integration)
 - [v1.0.9 API Parity](#v109-api-parity)
+- [Cross-Language Client SDKs](#cross-language-client-sdks)
+- [Multi-Tenant Data Partitioning](#multi-tenant-data-partitioning)
+- [MCP Server Hardening](#mcp-server-hardening)
 - [Upstream Sync Monitoring](#upstream-sync-monitoring)
 - [Testing](#testing)
 - [Documentation](#documentation)
@@ -316,7 +341,7 @@ python bin/enhanced_cognee_mcp_server.py
 - ✅ **Production deployment** (Docker, monitoring, security hardened)
 - ✅ **CI/CD pipeline** (7 automated stages)
 - ✅ **Security audit** (0 critical vulnerabilities)
-- ✅ **Comprehensive test coverage** (4,158 tests, 100% pass rate)
+- ✅ **Comprehensive test coverage** (4,661 tests, 100% pass rate)
 - ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
 
 ### What is the Original Cognee?
@@ -381,7 +406,7 @@ Enhanced Cognee builds upon the original Cognee framework by replacing the defau
 - Docker deployment with health checks
 - Non-conflicting port mappings
 - Comprehensive error handling
-- 4,158 tests passing (100% pass rate, 0 skipped)
+- 4,661 tests passing (100% pass rate, 0 skipped)
 - Multi-IDE support (MCP-compatible IDEs)
 
 ---
@@ -469,7 +494,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 #### 1: Test Suite & LLM Integration
 
-- Comprehensive test suite with 4,158 tests (100% pass rate)
+- Comprehensive test suite with 4,661 tests (100% pass rate)
 - Multi-LLM integration (multi-provider support)
 - Token counting and rate limiting
 - Test infrastructure (pytest, fixtures, mocks)
@@ -535,7 +560,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 - 28 language support
 - Cross-language search
-- Comprehensive testing (4,158 tests, 100% pass rate)
+- Comprehensive testing (4,661 tests, 100% pass rate)
 - Performance optimization
 - **Files:** 15 files, 4,200+ lines
 
@@ -656,7 +681,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 | **Cross-Agent Sharing**   | None            | [OK] **4 access policies**                       |
 | **TTL & Archival**        | None            | [OK] **Automated lifecycle**                     |
 | **IDE Support**           | None            | [OK] **MCP-compatible IDEs**                     |
-| **Test Coverage**         | Basic           | [OK] **4,158 tests passing (100% pass rate)**    |
+| **Test Coverage**         | Basic           | [OK] **4,661 tests passing (100% pass rate)**    |
 | **MCP IDE Integration**   | No              | [OK] **Standard Memory MCP**                     |
 | **Port Configuration**    | Default ports   | Enhanced range (25000+)                          |
 | **Output Encoding**       | None            | ASCII-only (Windows compatible)                  |
@@ -825,7 +850,7 @@ flowchart LR
         AS[Advanced Search<br/>Re-ranking]
     end
 
-    subgraph DB["Database Layer — Pluggable (4 tiers, 13 providers)"]
+    subgraph DB["Database Layer — Pluggable (4 tiers, 30 providers)"]
         direction TB
         subgraph Defaults["Default profile (100% Apache-2.0 + MIT)"]
             PG[(PostgreSQL + pgvector<br/>Port 25432)]
@@ -931,7 +956,7 @@ Alternate provider permutations (see `docs/PROFILES.md`):
   neo4j_stack -- postgres + qdrant + neo4j + redis             (legacy parity)
 ```
 
-### Pluggable Database Backends (13 providers, 4 tiers)
+### Pluggable Database Backends (30 providers, 4 tiers)
 
 Shipped 2026-05-19..2026-05-20 across PRs #19-#31. The default stack is
 ArcadeDB + Qdrant + Valkey + PostgreSQL (all Apache-2.0 or
@@ -941,12 +966,12 @@ dispatches to the right adapter; call sites use the duck-typed
 `neo4j.Driver` / `QdrantClient` / `redis.Redis` / `psycopg2`-style
 surfaces unchanged.
 
-| Tier        | Default       | Drop-in alternates                                                                                                |
-| ----------- | ------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Graph       | `arcadedb`    | `neo4j`, `apache_age`, `memgraph`, `kuzu`, `arangodb`, `nebulagraph`, `ladybug`, `networkx_inmemory` (9 total)    |
-| Vector      | `qdrant`      | `pgvector`, `lancedb`, `chroma`, `weaviate`, `milvus` (6 total)                                                   |
-| Cache       | `valkey`      | `redis`, `redis_compat`, `in_memory`, `memcached` (5 total)                                                       |
-| Relational  | `postgres`    | `sqlite` (2 total)                                                                                                |
+| Tier        | Default       | Drop-in alternates                                                                                                                                                              |
+| ----------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Graph       | `arcadedb`    | `neo4j`, `apache_age`, `memgraph`, `kuzu`, `arangodb`, `nebulagraph`, `ladybug`, `networkx_inmemory` (9 total)                                                                  |
+| Vector      | `qdrant`      | `pgvector`, `lancedb`, `chroma`, `weaviate`, `milvus` (6 total)                                                                                                                 |
+| Cache       | `valkey`      | `redis`, `redis_compat`, `in_memory`, `memcached` (5 total)                                                                                                                     |
+| Relational  | `postgres`    | `sqlite`, `duckdb`, `mysql`/`mariadb`, `mssql`/`sqlserver`, `oracle`, `db2`, `snowflake`, `databricks`, `cockroachdb` (via postgres wire) (10 total)                            |
 
 **Pre-baked profiles** (see [`docs/PROFILES.md`](docs/PROFILES.md) for
 the full matrix and the per-adapter caveat tables):
@@ -2119,9 +2144,20 @@ Enhanced Cognee supports unlimited custom agent types with:
 
 ---
 
-## Python SDK
+## Cross-Language Client SDKs
 
-Enhanced Cognee ships a typed async Python client published on PyPI:
+Enhanced Cognee ships four official client SDKs that all hit the same HTTP contract -- the `/mcp/*` routes exposed by `src/enhanced_cognee_mcp.py`. Same 5 core endpoints, same `X-API-Key` + `X-Tenant-ID` headers.
+
+| Language | Location | Tests | Status |
+| --- | --- | --- | --- |
+| **Python** | `clients/python/` (PyPI: `enhanced-cognee-client`) | Production-grade integration tests | v1.0.0 on PyPI |
+| **Node.js / TypeScript** | `clients/node/` | 7 unit tests using `node:test` + mocked fetch | npm-ready (PR #41) |
+| **Go** | `clients/go/` | 9 unit tests using `net/http/httptest` (no external deps) | pkg.go.dev-ready (PR #41) |
+| **Rust** | `clients/rust/` | 7 integration tests using `wiremock`, async via tokio + reqwest (rustls-tls) | crates.io-ready (PR #41) |
+
+Each SDK follows its language's idioms (Python async/await, Node Promises, Go `context.Context` as first arg, Rust `Result<T, Error>` with `thiserror`).
+
+### Python SDK
 
 ```bash
 pip install enhanced-cognee-client
@@ -2129,48 +2165,184 @@ pip install enhanced-cognee-client
 
 **PyPI:** https://pypi.org/project/enhanced-cognee-client/1.0.0/
 
-### Quick SDK Usage
-
 ```python
 import asyncio
 from enhanced_cognee_client import EnhancedCogneeClient
 
 async def main():
     async with EnhancedCogneeClient(host="localhost", port=37777) as client:
-        # Add a memory
         result = await client.add_memory(
             content="Enhanced Cognee has 122 MCP tools",
             user_id="default",
             agent_id="my-agent",
         )
-        print(result)
-
-        # Search memories
         hits = await client.search_memories(query="MCP tools", limit=5)
-        print(hits)
-
-        # Health check
         status = await client.health()
-        print(status)
 
 asyncio.run(main())
 ```
 
-### SDK Features
+### Node.js / TypeScript SDK
 
-- Async-first (httpx under the hood)
-- Never raises on network errors - returns error dicts instead
-- Full type annotations; PEP 561 `py.typed` marker
-- 16 public methods: `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`, `health`, `get_stats`, `cognify`, `search`, `gdpr_export_user_data`, `gdpr_delete_user_data`, `gdpr_record_consent`, `remember`, `recall`
-- Compatible with Python 3.10+
+```typescript
+import { EnhancedCogneeClient } from "@enhanced-cognee/client";
+
+const client = new EnhancedCogneeClient({
+  baseUrl: "http://localhost:8080",
+  apiKey: process.env.ENHANCED_API_KEY,
+  tenantId: "acme",
+});
+
+await client.addMemory({ content: "...", agentId: "my-agent" });
+const results = await client.searchMemories({ query: "MCP tools", limit: 5 });
+```
+
+### Go SDK
+
+```go
+import "github.com/vincentspereira/enhanced-cognee/clients/go"
+
+ctx := context.Background()
+client := cognee.New(cognee.Options{
+    BaseURL: "http://localhost:8080",
+    APIKey:  os.Getenv("ENHANCED_API_KEY"),
+    TenantID: "acme",
+})
+
+memID, err := client.AddMemory(ctx, cognee.AddMemoryRequest{
+    Content: "...",
+    AgentID: "my-agent",
+})
+```
+
+### Rust SDK
+
+```rust
+use enhanced_cognee::ClientBuilder;
+
+let client = ClientBuilder::new("http://localhost:8080")
+    .api_key(std::env::var("ENHANCED_API_KEY").ok())
+    .tenant_id("acme")
+    .build()?;
+
+let id = client.add_memory("...", "my-agent", None).await?;
+let hits = client.search_memories("MCP tools", 5, None).await?;
+```
+
+### SDK Features (all four languages)
+
+- Async-first
+- Never raises on network errors -- returns typed error objects
+- Full type annotations / strict typing
+- 5 core endpoints: `add_memory`, `search_memories`, `get_memories`, `update_memory`, `delete_memory`, `list_agents` (plus `health`)
+- Supports `X-Tenant-ID` header for multi-tenant deployments
+- Supports `X-API-Key` header for MCP server hardening
+
+---
+
+## Multi-Tenant Data Partitioning
+
+Enhanced Cognee enforces tenant isolation at the storage layer. Each tenant's data lives in its own Postgres tables (`shared_memory.documents_t_<tenant>`), Qdrant collections (`<name>_t_<tenant>`), Valkey key prefixes (`t_<tenant>:...`), and graph databases (`<name>_t_<tenant>`). No application code has to be aware of tenancy -- it's transparent via Python's `ContextVar`.
+
+### How it works
+
+```python
+from src.multi_tenant import TenantContext
+
+# Sync use
+async with TenantContext("acme"):
+    await add_memory(content="...", agent_id="bot")
+    # -> writes to shared_memory.documents_t_acme
+    # -> Qdrant collection embeddings_t_acme
+    # -> Valkey key t_acme:cache:...
+
+# HTTP callers send X-Tenant-ID header; FastAPI middleware
+# opens the TenantContext for the entire request automatically.
+```
+
+### Features
+
+- **`TenantContext` ContextVar** -- sync + async context managers; nested contexts unwind correctly per asyncio task
+- **Naming helpers** -- `tenant_scoped_table()`, `tenant_scoped_collection()`, `tenant_scoped_key()`, `tenant_scoped_graph()`
+- **Lazy schema bootstrap** -- `ensure_tenant_schema(pool)` creates per-tenant tables on first write via `CREATE TABLE LIKE INCLUDING ALL` (idempotent)
+- **HTTP middleware** -- FastAPI middleware extracts `X-Tenant-ID` request header and opens `TenantContext` for the entire request
+- **Tenant ID sanitisation** -- `_sanitize_tenant_id()` enforces `^[A-Za-z0-9_]{1,64}$` to prevent SQL/Cypher injection via tenant IDs
+- **Production safety knob** -- `ENHANCED_REQUIRE_TENANT=1` makes un-tenanted storage calls raise instead of silently falling back to the global tables
+- **15 isolation tests** -- verify that tenant A's writes never appear in tenant B's reads across Postgres / Qdrant / Valkey / graph
+
+See [`src/multi_tenant.py`](src/multi_tenant.py) for the implementation and [`tests/unit/test_multi_tenant_isolation.py`](tests/unit/test_multi_tenant_isolation.py) for the cross-tenant test matrix.
+
+---
+
+## MCP Server Hardening
+
+The MCP server (stdio + HTTP variants) supports three layered defences for production deployments:
+
+### API-key authentication
+
+```bash
+export ENHANCED_API_KEY="your-secret-token"
+```
+
+Once set, every MCP tool call (stdio) or HTTP request (FastAPI) must include the matching `X-API-Key` header or `api_key=` kwarg. Calls without it raise `AuthenticationError` (stdio) / `HTTPException(401)` (HTTP).
+
+### Per-tool rate limiting
+
+Token-bucket algorithm keyed on `(tool_name, agent_id)`. Default is unlimited (rate limiting off); enable via:
+
+```bash
+export ENHANCED_RATE_LIMIT_PER_MINUTE=120
+```
+
+Hits return `RateLimitExceeded` (stdio) / `HTTPException(429)` (HTTP) with a `Retry-After` hint.
+
+### Payload size cap
+
+```bash
+export ENHANCED_MAX_PAYLOAD_BYTES=1048576    # 1 MiB
+```
+
+Requests larger than this raise `PayloadTooLarge` (stdio) / `HTTPException(413)` (HTTP). Default cap is generous (10 MiB) so caches and document uploads still work.
+
+See [`src/mcp_security.py`](src/mcp_security.py) for the implementation and the typed errors callers can catch.
 
 ---
 
 ## Performance Benchmarks
 
-All 122 MCP tools were benchmarked (N=50 iterations each) using mocked database pools (no live services required). Results measure pure Python dispatch overhead.
+Enhanced Cognee ships **two complementary benchmark suites**:
 
-**Run the benchmark yourself:**
+1. **Synthetic per-tool dispatch benchmark** (`benchmarks/benchmark_all_tools.py`) -- measures the Python dispatch overhead for all 122 MCP tools using mocked database pools. Useful for catching algorithmic regressions in the tool layer.
+2. **Real cross-provider Locust benchmark** (`tests/benchmarks/run_provider_comparison.py`) -- drives Locust against the live MCP HTTP variant for 5 provider permutations (default / lean / neo4j_stack / embedded / memgraph_kuzu) and emits side-by-side RPS / p50 / p95 / p99 / error% tables (JSON + Markdown). Used by the CI regression gate via `compare_to_baseline.py`.
+
+### Real benchmark baseline (2026-05-21)
+
+First non-synthetic baseline shipped 2026-05-21. Captured against a live stack (Neo4j 5.25 + Qdrant 1.12 + Valkey 8 + PostgreSQL 18 + pgvector). 60s duration, 20 concurrent users, 5/sec spawn rate:
+
+| Permutation | Graph | Vector | Cache | Relational | RPS | p50 (ms) | p95 (ms) | p99 (ms) | Error % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **neo4j_stack** | neo4j | qdrant | redis | postgres | **49.06** | **2** | **7** | **11** | **0.00** |
+
+2,911 requests served, **0 failures**. Per-endpoint breakdown in `tests/benchmarks/baselines/2026-05-21_neo4j_stack.md`. The four remaining permutations (default with ArcadeDB / lean with Apache AGE+pgvector / embedded with ladybug+lancedb / memgraph_kuzu) need their respective stacks running before they can be baselined; `compare_to_baseline.py` treats them as "[NEW] -- no baseline, skipped" so the regression gate stays inert for them rather than ringing false alarms.
+
+Re-run the live benchmark yourself:
+
+```bash
+# 1. Boot the stack
+docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
+
+# 2. Boot the MCP HTTP variant
+python -m uvicorn src.enhanced_cognee_mcp:app --host 127.0.0.1 --port 8080 &
+
+# 3. Run the benchmark
+python -m tests.benchmarks.run_provider_comparison \
+    --host http://127.0.0.1:8080 \
+    --users 20 --spawn-rate 5 --duration 60s \
+    --permutations neo4j_stack \
+    --output-dir tests/benchmarks/baselines/output
+```
+
+### Synthetic per-tool dispatch benchmark
 
 ```bash
 python benchmarks/benchmark_all_tools.py
@@ -2178,7 +2350,7 @@ python benchmarks/benchmark_all_tools.py
 
 Results are saved to `benchmarks/results/benchmark_results.json`.
 
-### Benchmark Results (2026-05-14)
+#### Benchmark Results (2026-05-14)
 
 | Category          | Tools | mean_ms | p50_ms | p95_ms |
 |-------------------|-------|---------|--------|--------|
@@ -2231,13 +2403,17 @@ open htmlcov/index.html
 
 ### Test Statistics
 
-- **Total Test Files:** 104 test modules (unit + integration + system + e2e + benchmarks + load)
-- **Unit tests:** 3,954 passing (100% pass rate)
-- **Integration tests:** 257 across `tests/integration/` + `tests/system/` (boot real DBs; non-blocking in CI via `continue-on-error: true`). Includes 8 live ArcadeDB + Apache AGE tests shipped 2026-05-20.
-- **Benchmark suite:** `tests/benchmarks/run_provider_comparison.py` -- drives Locust against 5 provider permutations + emits comparison tables.
+- **Total Test Files:** 129 test modules (96 unit + 3 system + 7 integration + 3 benchmarks + 2 load + 2 e2e + the rest)
+- **Total collected tests:** 4,661 (4,137 unit + 93 system + others)
+- **Unit tests:** 4,137 passing (100% pass rate)
+- **System tests:** 93 (`tests/system/`)
+- **Integration tests:** `tests/integration/` boots real DBs; non-blocking in CI via `continue-on-error: true`. Includes 8 live ArcadeDB + Apache AGE tests and the live SigNoz smoke test (`test_signoz_smoke.py`, gated by `ENHANCED_RUN_SIGNOZ_SMOKE=1`).
+- **Multi-tenant isolation tests:** 15 cross-tenant tests verifying tenant A's writes never bleed into tenant B's storage across Postgres / Qdrant / Valkey / graph.
+- **Benchmark suite:** `tests/benchmarks/run_provider_comparison.py` drives Locust against 5 provider permutations + emits comparison tables. First real baseline shipped 2026-05-21 (`baselines/2026-05-21_neo4j_stack.json` -- 49.06 RPS / p50=2ms / p95=7ms / p99=11ms / 0 failures).
 - **Load tests:** `tests/load/locustfile.py` -- 8 `HttpUser` classes (read-heavy / write-heavy / mixed / health + 4 Phase-5 scenarios: SemanticSearch / KnowledgeGraph / GDPRWorkflow / BackupVerify).
+- **Coverage gap auditor:** `tests/coverage_audit.py` reads `coverage.xml`, reports modules below the 85% gate sorted by uncovered count.
 - **Code Coverage:** 95%+ unit coverage (pytest.ini gate at 85%)
-- **Success Rate:** 100% (3,954 / 3,954 unit tests passing)
+- **Success Rate:** 100% (4,137 / 4,137 unit tests passing)
 - **Warnings:** 0
 - **Skipped Tests:** 0 in unit suite; integration tests skip gracefully when a live service isn't reachable.
 
@@ -2661,17 +2837,21 @@ Contributions welcome! See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the cont
 
 ## Roadmap
 
-Production-ready today. Post-launch enhancements (in priority order):
+Production-ready today. Items shipped during 2026-05-19..2026-05-21 sprint are pulled out of the roadmap; remaining post-launch enhancements (in priority order):
 
 | Status | Item | Notes |
 |---|---|---|
-| Designed | Multi-tenant tools (`create_tenant`, `list_tenants`, etc) | Schema-per-tenant isolation. See `docs/operations/MULTI_TENANT_DESIGN.md`. Build when first paying customer onboards. |
-| Designed | OpenTelemetry / Jaeger wiring | `src/tracing.py` exists; one-pass wiring needed. See `docs/operations/OPENTELEMETRY_GUIDE.md`. |
-| Considered | Pluggable database backends | User-selectable PostgreSQL / Qdrant alternatives (e.g., Apache AGE on PG instead of Neo4j; Weaviate or Milvus instead of Qdrant). |
-| Considered | Apache AGE replacing Neo4j | Removes the GPLv3 service dependency entirely. |
+| ✅ Shipped 2026-05-21 | Multi-tenant data partitioning | TenantContext + naming helpers + per-tenant Postgres schema bootstrap + X-Tenant-ID HTTP middleware (PRs #39, #42, #43). 15 cross-tenant isolation tests. |
+| ✅ Shipped 2026-05-21 | Cross-language SDKs | Node + Go + Rust clients alongside Python (PR #41). |
+| ✅ Shipped 2026-05-20 | Pluggable database backends | 30 providers across 4 tiers shipped via PRs #19-#46. |
+| ✅ Shipped 2026-05-19 | Apache AGE replacing Neo4j | ArcadeDB became the default (PR #20); Apache AGE shipped as alternate (PR #21). |
+| ✅ Shipped 2026-05-19 | OpenTelemetry / Jaeger wiring | OpenTelemetry shipped via SigNoz observability swap (PR #22); live smoke test added in PR #38. |
 | Considered | sops + age encrypted secrets | When multi-developer deploys begin. |
-| Future | Web UI dashboard | Currently terminal/MCP-only. |
+| Considered | Publish 3 new SDKs to public registries | Node to npm, Go to pkg.go.dev, Rust to crates.io. Code is registry-ready; CI release workflow not yet wired. |
+| Considered | Baseline the remaining 4 benchmark permutations | `default` (ArcadeDB stack), `lean` (Apache AGE+pgvector), `embedded` (ladybug+lancedb), `memgraph_kuzu`. Need their respective stacks running. |
+| Future | Web UI dashboard | Currently terminal/MCP-only (Superset dashboards exist but for observability, not Cognee admin). |
 | Future | Distributed deployment (Swarm/K8s) | Single-node only today. |
+| Future | Multi-Agent System integration | Deferred to a future session per the original session constraint. |
 
 See [`docs/PRODUCTION_READINESS_PLAN.md`](docs/PRODUCTION_READINESS_PLAN.md) for the full roadmap with effort estimates.
 
