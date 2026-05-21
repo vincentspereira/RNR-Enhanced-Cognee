@@ -328,6 +328,43 @@ Db2 on Cloud, Db2 Warehouse on Cloud.
 When to pick Db2: you operate Db2 on IBM Z / Power Systems, or you're
 on IBM Cloud.
 
+### Snowflake cloud data warehouse adapter
+
+`src/db_adapters/relational_snowflake.py` (shipped 2026-05-20, PR 12).
+Wraps Snowflake's official `snowflake-connector-python` (Apache-2.0).
+Cloud-native columnar warehouse for analytical workloads.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `%s` (positional) or `%(name)s` (named) -- not asyncpg `$1` |
+| Connection | Account-locator-based (no host/port) -- `SNOWFLAKE_ACCOUNT` required |
+| JSON | `VARIANT` semi-structured type (Snowflake-native) |
+| Vector | No native vector type -- pair with qdrant/chroma/weaviate/milvus |
+| Identifiers | Uppercase unless double-quoted |
+| Env vars | `SNOWFLAKE_ACCOUNT` (required) / `SNOWFLAKE_USER` / `SNOWFLAKE_PASSWORD` / `SNOWFLAKE_WAREHOUSE` / `SNOWFLAKE_DATABASE` / `SNOWFLAKE_SCHEMA` / `SNOWFLAKE_ROLE` (optional) |
+
+When to pick Snowflake: analytics live in Snowflake already, time-
+travel / zero-copy clone / compute-storage separation is valuable.
+
+### Databricks SQL Warehouse adapter
+
+`src/db_adapters/relational_databricks.py` (shipped 2026-05-20, PR 12).
+Wraps `databricks-sql-connector` (Apache-2.0) against a Databricks
+SQL Warehouse endpoint.
+
+| Concern | Impact |
+| --- | --- |
+| Parameter style | `?` positional or `%(name)s` named |
+| SQL dialect | Spark SQL (mostly ANSI; Databricks-specific MERGE / OPTIMIZE) |
+| JSON | `STRING` + `parse_json` / `json_query` helpers |
+| Vector | Managed Vector Search is separate; not via SQL Warehouse |
+| Auth | Bearer token (PAT or OAuth M2M); no username/password |
+| Env vars | `DATABRICKS_SERVER_HOSTNAME` (required) / `DATABRICKS_HTTP_PATH` (required) / `DATABRICKS_ACCESS_TOKEN` (required) / `DATABRICKS_CATALOG` (default `hive_metastore`) / `DATABRICKS_SCHEMA` (default `default`) |
+| Connection | Per-acquire (no native async pool in the connector) |
+
+When to pick Databricks: lakehouse + Unity Catalog + downstream ML
+notebooks already live there.
+
 ### CockroachDB (via the postgres adapter)
 
 CockroachDB speaks the Postgres wire protocol, so the existing

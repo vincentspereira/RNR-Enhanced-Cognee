@@ -348,10 +348,12 @@ class TestProviderMatrix:
     def test_valid_relational_set(self):
         # PR 10 added duckdb + mysql + mariadb.
         # PR 11 added mssql + sqlserver + oracle + db2.
+        # PR 12 added snowflake + databricks.
         assert db_factory._VALID_RELATIONAL == {
             "postgres", "postgresql", "sqlite",
             "duckdb", "mysql", "mariadb",
             "mssql", "sqlserver", "oracle", "db2",
+            "snowflake", "databricks",
         }
 
     def test_default_summary_unchanged(self, monkeypatch):

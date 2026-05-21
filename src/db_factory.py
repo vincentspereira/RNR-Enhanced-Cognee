@@ -38,6 +38,8 @@ _VALID_RELATIONAL = {
     "mssql", "sqlserver",
     "oracle",
     "db2",
+    "snowflake",
+    "databricks",
     # CockroachDB speaks the Postgres wire protocol; users select it
     # by setting ENHANCED_RELATIONAL_PROVIDER=postgres and pointing
     # POSTGRES_* at a Cockroach cluster. See docs/PROFILES.md.
@@ -102,6 +104,14 @@ async def get_relational_pool(**kwargs: Any):
         from src.db_adapters import relational_db2
 
         return await relational_db2.create_pool(**kwargs)
+    if provider == "snowflake":
+        from src.db_adapters import relational_snowflake
+
+        return await relational_snowflake.create_pool(**kwargs)
+    if provider == "databricks":
+        from src.db_adapters import relational_databricks
+
+        return await relational_databricks.create_pool(**kwargs)
     raise ValueError(
         f"Unknown ENHANCED_RELATIONAL_PROVIDER={provider!r}. "
         f"Supported: {sorted(_VALID_RELATIONAL)}"

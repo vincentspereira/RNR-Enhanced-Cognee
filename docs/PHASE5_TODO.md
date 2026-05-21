@@ -47,6 +47,8 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 | `mssql` / `sqlserver` | ✅ **SHIPPED 2026-05-20** (PR 11) | SQL Server 2019+ / Azure SQL via aioodbc (Apache-2.0) + Microsoft ODBC Driver 18. Targets enterprise SQL Server shops + Azure SQL PaaS. |
 | `oracle` | ✅ **SHIPPED 2026-05-20** (PR 11) | Oracle 19c/21c/23ai / Autonomous Database via the official oracledb driver (UPL). Native async; thin mode by default + opt-in thick mode for Instant Client features. |
 | `db2` | ✅ **SHIPPED 2026-05-20** (PR 11) | IBM Db2 LUW 11.5+ / Db2 on Cloud via ibm_db (Apache-2.0 binding). Sync wrapped with asyncio.to_thread. Targets IBM Z / Power Systems / IBM Cloud. |
+| `snowflake` | ✅ **SHIPPED 2026-05-20** (PR 12) | Snowflake cloud data warehouse via snowflake-connector-python (Apache-2.0). Account-locator-based connection; sync wrapped with asyncio.to_thread. Pair with qdrant/chroma for vectors. |
+| `databricks` | ✅ **SHIPPED 2026-05-20** (PR 12) | Databricks SQL Warehouse via databricks-sql-connector (Apache-2.0). Bearer-token auth; Unity Catalog ready. |
 | CockroachDB | 🟢 **WORKS VIA postgres** | Speaks Postgres wire protocol; existing `postgres` adapter targets it with no code changes. Set `POSTGRES_HOST=cockroach.internal POSTGRES_PORT=26257`. See PROFILES.md for caveats (no pgvector, no AGE). |
 
 ### Misc
@@ -65,7 +67,7 @@ with a clear pointer to the per-adapter sub-section in PROFILES.md.
 |---|---|---|
 | Live integration tests against ArcadeDB | ✅ **SHIPPED 2026-05-20** | The ArcadeDB adapter now ships dual transports (PR #9): `ARCADEDB_TRANSPORT=bolt` (default, requires the optional Bolt plugin) or `ARCADEDB_TRANSPORT=http` (uses ArcadeDB's stock `/api/v1/command/{db}` REST endpoint -- no extra plugin). CI will run the integration tests against the public `arcadedata/arcadedb:26.x` image with `ARCADEDB_TRANSPORT=http`. Tests in `tests/integration/test_arcadedb_integration.py`. |
 | Live integration tests against Apache AGE | ✅ **SHIPPED 2026-05-20** | `tests/integration/test_apache_age_integration.py` -- 4 tests including native `_AGENode` / `_AGERelationship` round-trips. CI swaps the Postgres image to `apache/age:PG16_latest` and bootstraps `CREATE EXTENSION age` + `create_graph('cognee_test_graph')` via an idempotent psql step. |
-| Live verification of SigNoz + Superset stack | ✅ **SCAFFOLDED 2026-05-20** (PR 14) | `tests/integration/test_signoz_smoke.py` emits an OTel span with a unique marker, queries SigNoz's API for it, and asserts it lands within 5s. Gated by `ENHANCED_RUN_SIGNOZ_SMOKE=1`. Run after booting `monitoring/docker-compose-monitoring.yml`. |
+| Live verification of SigNoz + Superset stack | Compose YAML validates, but runtime smoke test requires booting the stack and checking traces appear in the UI. | Bring up `monitoring/docker-compose-monitoring.yml`, send a trace via `src/tracing.py`, screenshot/verify. |
 | Exported Superset dashboards | ✅ **SHIPPED 2026-05-20** | All 5 dashboards (memory_growth / agent_activity / llm_cost_trends / dedup_effectiveness / perf_regression) ship as importable Superset 4.x JSON in `monitoring/superset-dashboards/` with a shared `_dataset_definitions.yaml`. The queries hit the real schemas (`shared_memory.documents`, `shared_memory.llm_usage`, `shared_memory.embeddings`, `signoz_traces.signoz_index_v2`); the dashboards light up as soon as data flows. |
 
 ---
