@@ -1,10 +1,16 @@
-version: '3.8'
-
 # Enhanced Cognee Database Stack
-# PostgreSQL 18 + pgVector, Qdrant, Redis, Neo4j
+# PostgreSQL 18 + pgvector, Qdrant, Valkey, ArcadeDB
+#
+# ArcadeDB replaces Neo4j (Phase 2: default graph DB swapped to ArcadeDB
+# in PR #20; Bolt-plugin transport + HTTP/JSON transport added in PR #33).
+# Valkey replaces Redis (Phase 5 license refresh; Valkey is wire-compatible).
+#
+# All four services run on the `enhanced-cognee` user-defined network so
+# they can resolve each other via service-name DNS.
 
 networks:
-  claude-cognee-databases-mcp:
+  enhanced-cognee:
+    name: enhanced-cognee
     driver: bridge
 
 volumes:
@@ -14,21 +20,18 @@ volumes:
   enhanced_cognee_mcp_qdrant_data:
     name: enhanced_cognee_mcp_qdrant_data
     driver: local
-  enhanced_cognee_mcp_redis_data:
-    name: enhanced_cognee_mcp_redis_data
-    driver: local
-  enhanced_cognee_mcp_neo4j_data:
-    name: enhanced_cognee_mcp_neo4j_data
-    driver: local
-  enhanced_cognee_mcp_neo4j_logs:
-    name: enhanced_cognee_mcp_neo4j_logs
-    driver: local
-  enhanced_cognee_mcp_neo4j_import:
-    name: enhanced_cognee_mcp_neo4j_import
+  enhanced_cognee_mcp_valkey_data:
+    # Existing volume from the prior stack (created when Valkey replaced
+    # Redis without renaming the on-disk volume). Reusing it preserves
+    # cached state across the compose swap.
+    name: cognee_mcp_valkey_data
+    external: true
+  enhanced_cognee_mcp_arcadedb_data:
+    name: enhanced_cognee_mcp_arcadedb_data
     driver: local
 
 services:
-  # PostgreSQL 18 + pgVector - Enhanced Cognee Database
+  # PostgreSQL 18 + pgvector - Enhanced Cognee relational + vector extension
   cognee-mcp-postgres:
     image: pgvector/pgvector:pg18
     container_name: cognee-mcp-postgres
@@ -48,11 +51,11 @@ services:
     ports:
       - "25432:5432"  # PostgreSQL (Enhanced Cognee)
     networks:
-      - claude-cognee-databases-mcp
+      - enhanced-cognee
     deploy:
       resources:
         limits:
-          memory: 4G  # Increased for PostgreSQL 18 performance
+          memory: 4G
         reservations:
           memory: 2G
     restart: unless-stopped
@@ -62,7 +65,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # Qdrant - Enhanced Cognee Vector Database
+  # Qdrant - Enhanced Cognee vector database
   cognee-mcp-qdrant:
     image: qdrant/qdrant:v1.12.0
     container_name: cognee-mcp-qdrant
@@ -83,7 +86,7 @@ services:
       - "26333:6333"  # HTTP API (Enhanced Cognee)
       - "26334:6334"  # gRPC API (Enhanced Cognee)
     networks:
-      - claude-cognee-databases-mcp
+      - enhanced-cognee
     deploy:
       resources:
         limits:
@@ -98,21 +101,21 @@ services:
       retries: 3
       start_period: 30s
 
-  # Redis - Enhanced Cognee Cache Layer
-  cognee-mcp-redis:
-    image: redis:7.4-alpine
-    container_name: cognee-mcp-redis
+  # Valkey - Enhanced Cognee cache layer (Apache-2.0, wire-compatible with Redis)
+  cognee-mcp-valkey:
+    image: valkey/valkey:8-alpine
+    container_name: cognee-mcp-valkey
     labels:
       - "com.enhanced-cognee.project=enhanced-cognee"
       - "com.enhanced-cognee.type=cache"
-      - "com.enhanced-cognee.service=redis"
-    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+      - "com.enhanced-cognee.service=valkey"
+    command: valkey-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
     volumes:
-      - enhanced_cognee_mcp_redis_data:/data
+      - enhanced_cognee_mcp_valkey_data:/data
     ports:
-      - "26379:6379"  # Redis (Enhanced Cognee)
+      - "26379:6379"  # Valkey (Enhanced Cognee; speaks Redis protocol)
     networks:
-      - claude-cognee-databases-mcp
+      - enhanced-cognee
     deploy:
       resources:
         limits:
@@ -121,37 +124,53 @@ services:
           memory: 512M
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "valkey-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Neo4j - Enhanced Cognee Graph Database
-  cognee-mcp-neo4j:
-    image: neo4j:5.25-community
-    container_name: cognee-mcp-neo4j
-    hostname: cognee-mcp-neo4j
+  # ArcadeDB - Enhanced Cognee graph database (Apache-2.0; default since Phase 2)
+  #
+  # The Enhanced Cognee adapter at src/db_adapters/graph_arcadedb.py supports
+  # both transports:
+  #   - ARCADEDB_TRANSPORT=http (recommended for this compose) routes through
+  #     the stock /api/v1/command/{db} REST endpoint. Works out of the box
+  #     with the public arcadedata/arcadedb:latest image -- no extra plugin
+  #     required. Use port 22480 on the host (mapped from 2480 in-container).
+  #   - ARCADEDB_TRANSPORT=bolt routes through the neo4j Python driver
+  #     against the Bolt port. Requires the BoltPlugin JAR to be mounted into
+  #     the container's lib/plugins/ directory (the JAVA_OPTS below tries to
+  #     enable it, but the public image doesn't ship the plugin file -- you
+  #     have to drop the JAR into a volume mount yourself, see ArcadeDB docs).
+  #
+  # When using this compose, set ARCADEDB_TRANSPORT=http in the MCP server
+  # environment. The Bolt port mapping is kept so users who add the plugin
+  # JAR get a drop-in Neo4j Python driver replacement on 27687.
+  cognee-mcp-arcadedb:
+    image: arcadedata/arcadedb:latest
+    container_name: cognee-mcp-arcadedb
+    hostname: cognee-mcp-arcadedb
     labels:
       - "com.enhanced-cognee.project=enhanced-cognee"
       - "com.enhanced-cognee.type=graph-db"
-      - "com.enhanced-cognee.service=neo4j"
+      - "com.enhanced-cognee.service=arcadedb"
     environment:
-      NEO4J_AUTH: neo4j/cognee_password
-      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
-      NEO4J_dbms_security_procedures_unrestricted: apoc.*,gds.*
-      # Neo4j 5.x compatible memory settings
-      NEO4J_server_memory_heap_initial__size: 1G
-      NEO4J_server_memory_heap_max__size: 2G
-      NEO4J_server_memory_pagecache_size: 1G
+      # Root password aligns with the legacy NEO4J_PASSWORD env so existing
+      # client configs (NEO4J_URI / NEO4J_USER / NEO4J_PASSWORD) keep working
+      # when ENHANCED_GRAPH_PROVIDER=arcadedb is in effect.
+      JAVA_OPTS: >-
+        -Darcadedb.server.rootPassword=cognee_password
+        -Darcadedb.server.defaultDatabases=cognee_graph[root]
+        -Darcadedb.bolt.host=0.0.0.0
+        -Darcadedb.bolt.port=7687
+        -Darcadedb.server.httpHost=0.0.0.0
     volumes:
-      - enhanced_cognee_mcp_neo4j_data:/data
-      - enhanced_cognee_mcp_neo4j_logs:/logs
-      - enhanced_cognee_mcp_neo4j_import:/var/lib/neo4j/import
+      - enhanced_cognee_mcp_arcadedb_data:/home/arcadedb/databases
     ports:
-      - "27474:7474"  # HTTP (Enhanced Cognee)
-      - "27687:7687"  # Bolt (Enhanced Cognee)
+      - "22480:2480"  # Studio HTTP UI + REST API (was 27474 for Neo4j browser)
+      - "27687:7687"  # Bolt (kept on 27687 host port -- drop-in for Neo4j)
     networks:
-      - claude-cognee-databases-mcp
+      - enhanced-cognee
     deploy:
       resources:
         limits:
@@ -159,9 +178,8 @@ services:
         reservations:
           memory: 1G
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    # Healthcheck intentionally omitted: the public arcadedata/arcadedb image
+    # ships without wget / curl, so any HEALTHCHECK that depends on those
+    # binaries reports "unhealthy" indefinitely. Docker reports running-state
+    # health via container status instead; the Bolt + HTTP probes from the
+    # MCP server initialisation are the authoritative readiness signal.
