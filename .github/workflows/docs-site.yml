@@ -1,0 +1,75 @@
+name: Docs Site
+
+# Builds + deploys the mkdocs-material site to GitHub Pages.
+#
+# Triggers:
+#   - Push to main that touches docs/, mkdocs.yml, or README.md
+#   - Manual workflow_dispatch
+#
+# Setup steps (one-time on the repo):
+#   1. Settings -> Pages -> Source = "GitHub Actions"
+#   2. (Optional) Settings -> Pages -> Custom domain = docs.enhanced-cognee.example
+#
+# After the first deploy, the site lives at:
+#   https://vincentspereira.github.io/Enhanced-Cognee/
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "README.md"
+      - ".github/workflows/docs-site.yml"
+  workflow_dispatch:
+
+# Allow only one concurrent deploy; cancel in-progress runs but let the
+# latest queued run complete (so docs always reflect the latest main).
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # mkdocs git-revision-date plugin needs full history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install mkdocs + theme
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material==9.5.* \
+            pymdown-extensions \
+            mkdocs-git-revision-date-localized-plugin
+      - name: Build docs
+        # NOT --strict because the docs tree has historical files in archive/
+        # and reports/ that contain dead anchors; mkdocs treats those as
+        # warnings but they would fail the build under --strict. The build
+        # itself succeeds and produces a complete site; warnings are
+        # surfaced in the action log for cleanup tracking.
+        run: mkdocs build --site-dir site
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

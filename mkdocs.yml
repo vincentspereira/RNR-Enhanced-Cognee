@@ -1,0 +1,137 @@
+site_name: Enhanced Cognee
+site_description: Enterprise-grade AI memory infrastructure with multi-tenant support, 30 pluggable storage providers, and 122 MCP tools
+site_url: https://vincentspereira.github.io/Enhanced-Cognee/
+site_author: Vincent S. Pereira
+
+repo_url: https://github.com/vincentspereira/Enhanced-Cognee
+repo_name: vincentspereira/Enhanced-Cognee
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2026 Vincent S. Pereira -- Apache-2.0
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - content.action.view
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home:
+      - Overview: index.md
+      - Quick Start: QUICK_START.md
+  - Architecture:
+      - Pluggable DB Backends: PLUGGABLE_DB_BACKENDS.md
+      - Profiles + per-adapter caveats: PROFILES.md
+      - ArcadeDB Migration: ARCADEDB_MIGRATION.md
+      - Strategy + Decision Records: STRATEGY.md
+  - Deployment:
+      - Quickstart: DEPLOYMENT_QUICKSTART.md
+      - Production Readiness Plan: PRODUCTION_READINESS_PLAN.md
+      - Monitoring (SigNoz + Superset): MONITORING.md
+      - Secrets Management: SECRETS_MANAGEMENT.md
+  - SDKs + Clients:
+      - SDK Publishing Guide: SDK_PUBLISHING.md
+  - Licensing:
+      - License Audit: LICENSE_AUDIT.md
+      - Feature -> License Matrix: FEATURE_LICENSE_MATRIX.md
+      - Commercialisation Guide: COMMERCIALISATION_LICENSE_GUIDE.md
+  - Comparison:
+      - vs Mem0 / Letta / LangChain: COMPARE_TO_ALTERNATIVES.md
+  - Project Status:
+      - Outstanding Items: OUTSTANDING_ITEMS.md
+      - Phase 5 TODO: PHASE5_TODO.md
+      - Handover: HANDOVER.md
+  - Operations:
+      - Upstream Sync Runbook: UPSTREAM_SYNC_RUNBOOK.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/vincentspereira/Enhanced-Cognee
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/enhanced-cognee-client/
+  version:
+    provider: mike
+    default: latest
+
+# Workdir for the build (relative to mkdocs.yml).
+docs_dir: docs
+
+# Where the rendered site goes.
+site_dir: site
+
+# Strict mode would block on dead links; keep relaxed because the repo's docs
+# tree is large and partly historical. Re-enable per-page if needed.
+strict: false
