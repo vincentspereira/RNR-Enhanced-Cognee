@@ -6,11 +6,19 @@ Implements semantic search with intelligent re-ranking, query expansion, and mul
 import asyncio
 import json
 import logging
+import time
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime, UTC
 from dataclasses import dataclass
 from enum import Enum
 import re
+
+
+SEARCH_HISTORY_MAX = 20
+INTERACTION_HISTORY_MAX = 50
+HISTORY_TTL_SECONDS = 30 * 24 * 3600  # 30 days
+INTERACTION_BOOST_MAX = 0.5  # Max additive multiplier for recent interaction
+QUERY_AFFINITY_BOOST_MAX = 0.3  # Max additive multiplier for query-term overlap
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -147,6 +155,10 @@ class AdvancedSearchEngine:
                     query,
                     result.content
                 )
+
+            # Step 6: Record search history (fire-and-forget; Redis-backed
+            # personalization picks this up on the next PERSONALIZED rerank)
+            await self._record_search_query(user_id, query)
 
             return results
 
@@ -527,31 +539,184 @@ Related queries: """}
         user_id: str,
         query: str
     ) -> float:
-        """Calculate personalized score based on user behavior"""
-        try:
-            # In a real implementation, this would:
-            # 1. Check user's past interactions with this memory
-            # 2. Boost memories the user has viewed/clicked
-            # 3. Boost memories from the user's preferred agents
-            # 4. Consider time of day and user's search patterns
+        """Calculate personalized score based on user behavior.
 
-            # For now, apply simple personalization
+        Combines three signals:
+        - Agent affinity: same-agent memories get a flat 1.3x boost
+        - Interaction recency: memories the user has interacted with recently
+          get an additive boost up to +INTERACTION_BOOST_MAX, weighted by
+          how recently the interaction happened (linear decay over the
+          retained history window)
+        - Query affinity: memories whose content overlaps with the user's
+          recent search terms get an additive boost up to
+          +QUERY_AFFINITY_BOOST_MAX, weighted by term frequency
+
+        Returns the boosted score. Falls back to the original score on any
+        error (Redis unavailable, malformed history, etc.) so personalization
+        degrades gracefully.
+        """
+        try:
             score = result.score
 
-            # Boost if from same agent
+            # Agent affinity (boost if from same agent the user owns)
             if result.agent_id == user_id:
                 score *= 1.3
 
-            # TODO: Add more sophisticated personalization
-            # - Track user search history in Redis
-            # - Calculate affinity scores
-            # - Apply collaborative filtering
+            # Skip Redis-backed signals when Redis is unavailable
+            if self.redis_client is None:
+                return score
 
-            return score
+            interaction_boost = await self._interaction_affinity(
+                user_id, result.memory_id
+            )
+            query_boost = await self._query_affinity(
+                user_id, result.content
+            )
+
+            return score * (1.0 + interaction_boost + query_boost)
 
         except Exception as e:
             logger.error(f"Personalization error: {e}")
             return result.score
+
+    async def record_interaction(
+        self, user_id: str, memory_id: str
+    ) -> None:
+        """Record that ``user_id`` interacted with ``memory_id``.
+
+        Call sites: the MCP server when a memory is viewed / clicked / acted on.
+        Stored as a Redis sorted set keyed on the user, scored by UNIX
+        timestamp, capped at ``INTERACTION_HISTORY_MAX`` entries with a
+        rolling TTL so cold users naturally fall out.
+        """
+        if self.redis_client is None:
+            return
+        try:
+            key = f"interaction_history:{user_id}"
+            now = time.time()
+            await self._redis_zadd(key, {memory_id: now})
+            await self._redis_zremrangebyrank(
+                key, 0, -(INTERACTION_HISTORY_MAX + 1)
+            )
+            await self._redis_expire(key, HISTORY_TTL_SECONDS)
+        except Exception as e:
+            logger.warning(f"record_interaction failed: {e}")
+
+    async def _record_search_query(
+        self, user_id: str, query: str
+    ) -> None:
+        """Persist a search query into the user's rolling history."""
+        if self.redis_client is None:
+            return
+        try:
+            key = f"search_history:{user_id}"
+            now = time.time()
+            normalized = query.strip().lower()[:200]
+            if not normalized:
+                return
+            # Encode timestamp into the member so duplicate queries do not
+            # collapse on the sorted set (member must be unique per score
+            # bucket for ZREMRANGEBYRANK to keep the rolling window honest).
+            member = f"{now:.6f}|{normalized}"
+            await self._redis_zadd(key, {member: now})
+            await self._redis_zremrangebyrank(
+                key, 0, -(SEARCH_HISTORY_MAX + 1)
+            )
+            await self._redis_expire(key, HISTORY_TTL_SECONDS)
+        except Exception as e:
+            logger.warning(f"_record_search_query failed: {e}")
+
+    async def _interaction_affinity(
+        self, user_id: str, memory_id: str
+    ) -> float:
+        """Return additive boost in [0, INTERACTION_BOOST_MAX] based on how
+        recently ``user_id`` interacted with ``memory_id``."""
+        try:
+            key = f"interaction_history:{user_id}"
+            score = await self._redis_zscore(key, memory_id)
+            if score is None:
+                return 0.0
+            # Linear decay: full boost for "just now", 0 boost at TTL edge
+            age = max(0.0, time.time() - float(score))
+            if age >= HISTORY_TTL_SECONDS:
+                return 0.0
+            recency = 1.0 - (age / HISTORY_TTL_SECONDS)
+            return INTERACTION_BOOST_MAX * recency
+        except Exception as e:
+            logger.warning(f"_interaction_affinity failed: {e}")
+            return 0.0
+
+    async def _query_affinity(
+        self, user_id: str, content: str
+    ) -> float:
+        """Return additive boost in [0, QUERY_AFFINITY_BOOST_MAX] based on
+        overlap between ``content`` and the user's recent search terms."""
+        try:
+            key = f"search_history:{user_id}"
+            members = await self._redis_zrange(key, 0, -1)
+            if not members:
+                return 0.0
+
+            recent_terms: Dict[str, int] = {}
+            for raw in members:
+                if isinstance(raw, bytes):
+                    raw = raw.decode("utf-8", errors="ignore")
+                # Strip the "<ts>|" prefix we encoded in _record_search_query
+                _, _, q = raw.partition("|")
+                for term in re.findall(r"\w{3,}", q.lower()):
+                    recent_terms[term] = recent_terms.get(term, 0) + 1
+
+            if not recent_terms:
+                return 0.0
+
+            content_terms = set(re.findall(r"\w{3,}", content.lower()))
+            if not content_terms:
+                return 0.0
+
+            overlap_weight = sum(
+                count for term, count in recent_terms.items()
+                if term in content_terms
+            )
+            total_weight = sum(recent_terms.values())
+            if total_weight == 0:
+                return 0.0
+
+            ratio = overlap_weight / total_weight
+            return QUERY_AFFINITY_BOOST_MAX * ratio
+        except Exception as e:
+            logger.warning(f"_query_affinity failed: {e}")
+            return 0.0
+
+    # ---- Redis helpers (await both sync redis-py and aioredis clients) ----
+
+    async def _redis_zadd(self, key: str, mapping: Dict[str, float]) -> None:
+        result = self.redis_client.zadd(key, mapping)
+        if asyncio.iscoroutine(result):
+            await result
+
+    async def _redis_zremrangebyrank(
+        self, key: str, start: int, stop: int
+    ) -> None:
+        result = self.redis_client.zremrangebyrank(key, start, stop)
+        if asyncio.iscoroutine(result):
+            await result
+
+    async def _redis_expire(self, key: str, ttl: int) -> None:
+        result = self.redis_client.expire(key, ttl)
+        if asyncio.iscoroutine(result):
+            await result
+
+    async def _redis_zscore(self, key: str, member: str):
+        result = self.redis_client.zscore(key, member)
+        if asyncio.iscoroutine(result):
+            return await result
+        return result
+
+    async def _redis_zrange(self, key: str, start: int, stop: int):
+        result = self.redis_client.zrange(key, start, stop)
+        if asyncio.iscoroutine(result):
+            return await result
+        return result
 
     def _extract_highlights(self, query: str, content: str) -> List[str]:
         """

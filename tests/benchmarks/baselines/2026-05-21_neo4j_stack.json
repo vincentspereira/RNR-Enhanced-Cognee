@@ -1,0 +1,18 @@
+[
+  {
+    "name": "neo4j_stack",
+    "providers": {
+      "ENHANCED_GRAPH_PROVIDER": "neo4j",
+      "ENHANCED_VECTOR_PROVIDER": "qdrant",
+      "ENHANCED_CACHE_PROVIDER": "redis",
+      "ENHANCED_RELATIONAL_PROVIDER": "postgres"
+    },
+    "rps": 49.0564124202386,
+    "p50_ms": 2.0,
+    "p95_ms": 7.0,
+    "p99_ms": 11.0,
+    "total_requests": 2911,
+    "total_failures": 0,
+    "error_pct": 0.0
+  }
+]

@@ -323,6 +323,183 @@ class TestPersonalizedScore:
 
 
 # ===========================================================================
+# Redis-backed personalization (interaction + query affinity)
+# ===========================================================================
+
+
+def _make_redis_sortedset():
+    """Mock Redis client with in-memory sorted-set semantics for the calls
+    AdvancedSearchEngine actually uses."""
+    store: dict = {}
+    expires: dict = {}
+
+    async def zadd(key, mapping):
+        store.setdefault(key, {}).update(mapping)
+
+    async def zremrangebyrank(key, start, stop):
+        if key not in store:
+            return
+        items = sorted(store[key].items(), key=lambda kv: kv[1])
+        n = len(items)
+        if stop < 0:
+            stop = n + stop
+        if start < 0:
+            start = n + start
+        if start >= n or stop < start:
+            return
+        start = max(0, start)
+        stop = min(n - 1, stop)
+        for member, _ in items[start:stop + 1]:
+            store[key].pop(member, None)
+
+    async def expire(key, ttl):
+        expires[key] = ttl
+
+    async def zscore(key, member):
+        return store.get(key, {}).get(member)
+
+    async def zrange(key, start, stop):
+        items = sorted(store.get(key, {}).items(), key=lambda kv: kv[1])
+        if stop == -1:
+            sliced = items[start:]
+        else:
+            sliced = items[start:stop + 1]
+        return [m for m, _ in sliced]
+
+    client = MagicMock()
+    client.zadd = zadd
+    client.zremrangebyrank = zremrangebyrank
+    client.expire = expire
+    client.zscore = zscore
+    client.zrange = zrange
+    client._store = store
+    client._expires = expires
+    return client
+
+
+class TestPersonalizationRedisBacked:
+
+    def _engine_with_redis(self, redis_client):
+        return AdvancedSearchEngine(
+            _make_pool(AsyncMock()),
+            None,
+            redis_client=redis_client,
+        )
+
+    @pytest.mark.asyncio
+    async def test_record_interaction_persists_to_redis(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        await eng.record_interaction("user-1", "mem-abc")
+        key = "interaction_history:user-1"
+        assert "mem-abc" in redis._store[key]
+        assert redis._expires[key] > 0
+
+    @pytest.mark.asyncio
+    async def test_record_interaction_noop_without_redis(self):
+        eng = AdvancedSearchEngine(_make_pool(AsyncMock()), None,
+                                   redis_client=None)
+        # Should not raise
+        await eng.record_interaction("user-1", "mem-abc")
+
+    @pytest.mark.asyncio
+    async def test_interaction_affinity_recent_gives_boost(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        await eng.record_interaction("user-1", "mem-1")
+        boost = await eng._interaction_affinity("user-1", "mem-1")
+        # Just recorded -> near full boost
+        assert 0.49 < boost <= 0.5
+
+    @pytest.mark.asyncio
+    async def test_interaction_affinity_unknown_member_zero(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        boost = await eng._interaction_affinity("user-1", "mem-never-seen")
+        assert boost == 0.0
+
+    @pytest.mark.asyncio
+    async def test_interaction_affinity_old_record_decays(self):
+        import time as _time
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        # Simulate an interaction half the TTL ago
+        from src.advanced_search_reranking import HISTORY_TTL_SECONDS
+        old_ts = _time.time() - HISTORY_TTL_SECONDS / 2
+        redis._store["interaction_history:user-1"] = {"mem-1": old_ts}
+        boost = await eng._interaction_affinity("user-1", "mem-1")
+        # ~half the max boost
+        assert 0.20 < boost < 0.30
+
+    @pytest.mark.asyncio
+    async def test_query_affinity_overlapping_terms_boosts(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        await eng._record_search_query("user-1", "trading strategy momentum")
+        await eng._record_search_query("user-1", "risk management trading")
+        # Memory content overlaps with "trading" + "strategy" + "momentum"
+        boost = await eng._query_affinity(
+            "user-1", "Trading strategy uses momentum"
+        )
+        assert boost > 0.0
+        assert boost <= 0.3
+
+    @pytest.mark.asyncio
+    async def test_query_affinity_no_history_zero(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        boost = await eng._query_affinity("user-1", "anything")
+        assert boost == 0.0
+
+    @pytest.mark.asyncio
+    async def test_query_affinity_no_overlap_zero(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        await eng._record_search_query("user-1", "trading strategy")
+        boost = await eng._query_affinity(
+            "user-1", "cooking recipe for soup"
+        )
+        assert boost == 0.0
+
+    @pytest.mark.asyncio
+    async def test_personalized_score_combines_signals(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        # Build up history
+        await eng.record_interaction("user-1", "mem-1")
+        await eng._record_search_query("user-1", "trading momentum")
+        sr = SearchResult(
+            "mem-1", "Trading momentum strategy notes",
+            {}, 1.0, 0.0, 1, agent_id="user-1"
+        )
+        score = await eng._personalized_score(sr, "user-1", "trading")
+        # 1.0 base * 1.3 same-agent * (1 + ~0.5 interaction + ~0.3 query)
+        # ~1.3 * 1.8 = ~2.34
+        assert score > 1.3
+        assert score < 3.0
+
+    @pytest.mark.asyncio
+    async def test_personalized_score_without_redis_falls_back(self):
+        eng = AdvancedSearchEngine(
+            _make_pool(AsyncMock()), None, redis_client=None
+        )
+        sr = SearchResult("m1", "content", {}, 1.0, 0.0, 1, agent_id="user-x")
+        score = await eng._personalized_score(sr, "user-x", "q")
+        # Only the same-agent boost applies
+        assert score == pytest.approx(1.3)
+
+    @pytest.mark.asyncio
+    async def test_record_interaction_caps_history(self):
+        redis = _make_redis_sortedset()
+        eng = self._engine_with_redis(redis)
+        from src.advanced_search_reranking import INTERACTION_HISTORY_MAX
+        for i in range(INTERACTION_HISTORY_MAX + 10):
+            await eng.record_interaction("user-1", f"mem-{i}")
+        stored = redis._store["interaction_history:user-1"]
+        assert len(stored) == INTERACTION_HISTORY_MAX
+
+
+# ===========================================================================
 # _rerank_results  (async, strategy dispatch)
 # ===========================================================================
 

@@ -38,7 +38,10 @@ logger = logging.getLogger(__name__)
 # Configuration from environment
 class EnhancedConfig:
     def __init__(self):
-        self.enhanced_mode = os.getenv("ENHANCED_COGNEE_MODE", "false").lower() == "true"
+        # Default to enabled. Set ENHANCED_COGNEE_MODE=false only when you
+        # want to import the module without bringing up DB connections
+        # (e.g. for unit tests that mock the storage layer entirely).
+        self.enhanced_mode = os.getenv("ENHANCED_COGNEE_MODE", "true").lower() == "true"
 
         # Enhanced Stack Configuration with Enhanced ports
         self.postgres_host = os.getenv("POSTGRES_HOST", "localhost")
@@ -132,6 +135,42 @@ class KnowledgeRelation(BaseModel):
     relationship_type: str
     properties: Dict[str, Any] = Field(default_factory=dict)
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+
+
+# /mcp/* endpoint models -- looser shapes that match the standard MCP tool
+# surface (mcp_memory_tools.py + bin/enhanced_cognee_mcp_server.py). The
+# locustfile + cross-language SDKs both target this surface, so the FastAPI
+# server has to expose it alongside the existing /memory/* routes.
+
+class McpAddMemoryRequest(BaseModel):
+    content: str
+    user_id: str = "default"
+    agent_id: str = "claude-code"
+    memory_category: str = "general"
+    metadata: Optional[Dict[str, Any]] = None
+    tags: List[str] = Field(default_factory=list)
+
+
+class McpSearchMemoriesRequest(BaseModel):
+    query: str
+    limit: int = Field(default=10, ge=1, le=100)
+    user_id: str = "default"
+    agent_id: Optional[str] = None
+
+
+class McpGetMemoriesRequest(BaseModel):
+    user_id: str = "default"
+    agent_id: Optional[str] = None
+    limit: int = Field(default=50, ge=1, le=500)
+
+
+class McpUpdateMemoryRequest(BaseModel):
+    memory_id: str
+    content: str
+
+
+class McpDeleteMemoryRequest(BaseModel):
+    memory_id: str
 
 class EnhancedCogneeMCPServer:
     """Enhanced Cognee MCP Server with enterprise-grade memory stack integration"""
@@ -283,13 +322,16 @@ class EnhancedCogneeMCPServer:
                 await ensure_tenant_schema(self.postgres_pool)
 
             documents_table = tenant_scoped_table("shared_memory.documents")
+            # asyncpg's default JSONB codec expects str -- serialise here so
+            # callers can keep passing dicts.
+            metadata_json = json.dumps(entry.metadata or {})
             async with self.postgres_pool.acquire() as conn:
                 await conn.execute(f"""
                     INSERT INTO {documents_table}
                     (id, title, content, agent_id, memory_category, tags, metadata, created_at)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
                 """, entry.id, f"Memory from {entry.agent_id}", entry.content,
-                    entry.agent_id, entry.memory_category, entry.tags, entry.metadata, entry.created_at)
+                    entry.agent_id, entry.memory_category, entry.tags, metadata_json, entry.created_at)
 
             # Store embedding in Qdrant (vector search) -- tenant-scoped collection
             if entry.embedding:
@@ -552,6 +594,147 @@ class EnhancedCogneeMCPServer:
         async def add_relation_endpoint(relation: KnowledgeRelation):
             """MCP Tool: Add knowledge graph relation"""
             return {"id": await self.add_knowledge_relation(relation)}
+
+        # -------------------------------------------------------------------
+        # /mcp/* endpoints -- standard MCP tool surface mirrored over HTTP.
+        # Same semantics as bin/enhanced_cognee_mcp_server.py stdio tools;
+        # locustfile + cross-language SDKs target these routes.
+        # -------------------------------------------------------------------
+
+        @self.app.post("/mcp/add_memory")
+        async def mcp_add_memory(req: McpAddMemoryRequest):
+            entry = MemoryEntry(
+                content=req.content,
+                agent_id=req.agent_id,
+                memory_category=req.memory_category,
+                metadata=req.metadata or {},
+                tags=req.tags,
+            )
+            return {"id": await self.add_memory(entry)}
+
+        @self.app.post("/mcp/search_memories")
+        async def mcp_search_memories(req: McpSearchMemoriesRequest):
+            query = SearchQuery(
+                query=req.query,
+                limit=req.limit,
+                agent_id=req.agent_id,
+            )
+            results = await self.search_memory(query)
+            return {"results": results, "count": len(results)}
+
+        @self.app.post("/mcp/get_memories")
+        async def mcp_get_memories(req: McpGetMemoriesRequest):
+            from src.multi_tenant import tenant_scoped_table
+            documents_table = tenant_scoped_table("shared_memory.documents")
+            try:
+                async with self.postgres_pool.acquire() as conn:
+                    if req.agent_id:
+                        rows = await conn.fetch(
+                            f"SELECT id, content, agent_id, memory_category, "
+                            f"created_at, metadata FROM {documents_table} "
+                            f"WHERE agent_id = $1 ORDER BY created_at DESC LIMIT $2",
+                            req.agent_id, req.limit,
+                        )
+                    else:
+                        rows = await conn.fetch(
+                            f"SELECT id, content, agent_id, memory_category, "
+                            f"created_at, metadata FROM {documents_table} "
+                            f"ORDER BY created_at DESC LIMIT $1",
+                            req.limit,
+                        )
+                items = [
+                    {
+                        "memory_id": str(r["id"]),
+                        "content": r["content"],
+                        "agent_id": r["agent_id"],
+                        "memory_category": r["memory_category"],
+                        "created_at": (
+                            r["created_at"].isoformat()
+                            if r["created_at"] else None
+                        ),
+                        "metadata": r["metadata"],
+                    }
+                    for r in rows
+                ]
+                return {"memories": items, "count": len(items)}
+            except Exception as e:
+                logger.error(f"mcp_get_memories failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+
+        @self.app.post("/mcp/update_memory")
+        async def mcp_update_memory(req: McpUpdateMemoryRequest):
+            from src.multi_tenant import tenant_scoped_table
+            documents_table = tenant_scoped_table("shared_memory.documents")
+            try:
+                async with self.postgres_pool.acquire() as conn:
+                    result = await conn.execute(
+                        f"UPDATE {documents_table} SET content = $1 "
+                        f"WHERE id = $2",
+                        req.content, req.memory_id,
+                    )
+                # asyncpg returns "UPDATE 0" / "UPDATE 1"; parse the count
+                affected = 0
+                if isinstance(result, str) and result.startswith("UPDATE "):
+                    try:
+                        affected = int(result.split()[1])
+                    except (ValueError, IndexError):
+                        affected = 0
+                # Best-effort cache invalidation; ignore failures
+                if self.redis_client:
+                    try:
+                        await self.redis_client.delete(f"memory:{req.memory_id}")
+                    except Exception:
+                        pass
+                return {"updated": affected, "memory_id": req.memory_id}
+            except Exception as e:
+                logger.error(f"mcp_update_memory failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+
+        @self.app.post("/mcp/delete_memory")
+        async def mcp_delete_memory(req: McpDeleteMemoryRequest):
+            from src.multi_tenant import tenant_scoped_table
+            documents_table = tenant_scoped_table("shared_memory.documents")
+            try:
+                async with self.postgres_pool.acquire() as conn:
+                    result = await conn.execute(
+                        f"DELETE FROM {documents_table} WHERE id = $1",
+                        req.memory_id,
+                    )
+                affected = 0
+                if isinstance(result, str) and result.startswith("DELETE "):
+                    try:
+                        affected = int(result.split()[1])
+                    except (ValueError, IndexError):
+                        affected = 0
+                if self.redis_client:
+                    try:
+                        await self.redis_client.delete(f"memory:{req.memory_id}")
+                    except Exception:
+                        pass
+                return {"deleted": affected, "memory_id": req.memory_id}
+            except Exception as e:
+                logger.error(f"mcp_delete_memory failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+
+        @self.app.get("/mcp/list_agents")
+        async def mcp_list_agents():
+            from src.multi_tenant import tenant_scoped_table
+            documents_table = tenant_scoped_table("shared_memory.documents")
+            try:
+                async with self.postgres_pool.acquire() as conn:
+                    rows = await conn.fetch(
+                        f"SELECT agent_id, COUNT(*) AS memory_count "
+                        f"FROM {documents_table} GROUP BY agent_id "
+                        f"ORDER BY memory_count DESC"
+                    )
+                agents = [
+                    {"agent_id": r["agent_id"], "memory_count": r["memory_count"]}
+                    for r in rows
+                ]
+                return {"agents": agents, "count": len(agents)}
+            except Exception as e:
+                logger.error(f"mcp_list_agents failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
         @self.app.get("/stats")
         async def get_stats_endpoint():

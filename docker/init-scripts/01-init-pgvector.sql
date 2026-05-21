@@ -1,19 +1,37 @@
 -- Enhanced Cognee PostgreSQL Initialization
--- Initializes pgVector extension and creates core schema for Enhanced Cognee
+-- Initializes pgvector extension and creates core schema for Enhanced Cognee.
+--
+-- Important design decisions baked into this file:
+--
+--   * Categories are DYNAMIC (configured via .enhanced-cognee-config.json),
+--     so memory_category is a plain TEXT column with no CHECK constraint.
+--     Earlier versions of this script hardcoded ('ats', 'oma', 'smc') which
+--     directly violated the project's dynamic-categories rule and made any
+--     custom category (e.g. "trading") fail with a constraint violation.
+--
+--   * Indexes are declared with separate CREATE INDEX statements (PostgreSQL
+--     syntax). Inline INDEX clauses inside CREATE TABLE are MySQL-only and
+--     would error out on Postgres.
+--
+--   * Multi-tenant per-tenant tables are NOT pre-created here -- the
+--     application bootstraps them lazily via src.multi_tenant.ensure_tenant_schema
+--     using CREATE TABLE LIKE INCLUDING ALL once a tenant context is active.
 
--- Enable pgVector extension
 CREATE EXTENSION IF NOT EXISTS vector;
 
--- Enhanced Cognee specific schemas
-CREATE SCHEMA IF NOT EXISTS ats_memory;
-CREATE SCHEMA IF NOT EXISTS oma_memory;
-CREATE SCHEMA IF NOT EXISTS smc_memory;
+-- ---------------------------------------------------------------------------
+-- Shared memory schema -- the single source of truth for documents,
+-- embeddings, entities, relationships, and metrics. Per-tenant variants are
+-- materialised by ensure_tenant_schema at runtime.
+-- ---------------------------------------------------------------------------
+
 CREATE SCHEMA IF NOT EXISTS shared_memory;
 
--- Document metadata table (enhanced from default SQLite)
+-- Documents -----------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS shared_memory.documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(500) NOT NULL,
+    title VARCHAR(500),
     content TEXT,
     file_path VARCHAR(1000),
     file_type VARCHAR(50),
@@ -27,48 +45,56 @@ CREATE TABLE IF NOT EXISTS shared_memory.documents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     processed_at TIMESTAMP WITH TIME ZONE,
     processing_status VARCHAR(20) DEFAULT 'pending',
-    agent_id VARCHAR(50),
-    memory_category VARCHAR(10) CHECK (memory_category IN ('ats', 'oma', 'smc')),
+    agent_id VARCHAR(100),
+    memory_category VARCHAR(100),
     tags TEXT[],
-    metadata JSONB DEFAULT '{}'::jsonb,
-
-    -- Enhanced indexing for performance
-    INDEX idx_documents_agent_id (agent_id),
-    INDEX idx_documents_memory_category (memory_category),
-    INDEX idx_documents_created_at (created_at),
-    INDEX idx_documents_processing_status (processing_status),
-    INDEX idx_documents_tags USING GIN (tags),
-    INDEX idx_documents_metadata USING GIN (metadata)
+    metadata JSONB DEFAULT '{}'::jsonb
 );
 
--- Enhanced embeddings table (replaces LanceDB with pgVector)
+CREATE INDEX IF NOT EXISTS idx_documents_agent_id
+    ON shared_memory.documents (agent_id);
+CREATE INDEX IF NOT EXISTS idx_documents_memory_category
+    ON shared_memory.documents (memory_category);
+CREATE INDEX IF NOT EXISTS idx_documents_created_at
+    ON shared_memory.documents (created_at);
+CREATE INDEX IF NOT EXISTS idx_documents_processing_status
+    ON shared_memory.documents (processing_status);
+CREATE INDEX IF NOT EXISTS idx_documents_tags
+    ON shared_memory.documents USING GIN (tags);
+CREATE INDEX IF NOT EXISTS idx_documents_metadata
+    ON shared_memory.documents USING GIN (metadata);
+
+-- Embeddings ----------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS shared_memory.embeddings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES shared_memory.documents(id) ON DELETE CASCADE,
     chunk_index INTEGER NOT NULL,
     content TEXT NOT NULL,
-    embedding vector(2560) NOT NULL,  -- Using qwen3-embedding:4b-q4_K_M dimensions
+    embedding vector(2560) NOT NULL,
     embedding_model VARCHAR(100) DEFAULT 'qwen3-embedding:4b-q4_K_M',
     token_count INTEGER,
     chunk_metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    agent_id VARCHAR(50),
-    memory_category VARCHAR(10) CHECK (memory_category IN ('ats', 'oma', 'smc')),
-
-    -- Enhanced vector indexing for performance
-    INDEX idx_embeddings_document_id (document_id),
-    INDEX idx_embeddings_agent_id (agent_id),
-    INDEX idx_embeddings_memory_category (memory_category),
-    INDEX idx_embeddings_created_at (created_at),
-
-    -- Vector similarity index
-    CREATE INDEX idx_embeddings_vector_cosine
-        ON shared_memory.embeddings
-        USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 100)
+    agent_id VARCHAR(100),
+    memory_category VARCHAR(100)
 );
 
--- Knowledge graph entities table (enhanced from default)
+CREATE INDEX IF NOT EXISTS idx_embeddings_document_id
+    ON shared_memory.embeddings (document_id);
+CREATE INDEX IF NOT EXISTS idx_embeddings_agent_id
+    ON shared_memory.embeddings (agent_id);
+CREATE INDEX IF NOT EXISTS idx_embeddings_memory_category
+    ON shared_memory.embeddings (memory_category);
+CREATE INDEX IF NOT EXISTS idx_embeddings_created_at
+    ON shared_memory.embeddings (created_at);
+CREATE INDEX IF NOT EXISTS idx_embeddings_vector_cosine
+    ON shared_memory.embeddings
+    USING ivfflat (embedding vector_cosine_ops)
+    WITH (lists = 100);
+
+-- Entities ------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS shared_memory.entities (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(500) NOT NULL UNIQUE,
@@ -79,17 +105,23 @@ CREATE TABLE IF NOT EXISTS shared_memory.entities (
     source_documents UUID[] DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    agent_id VARCHAR(50),
-    memory_category VARCHAR(10) CHECK (memory_category IN ('ats', 'oma', 'smc')),
-
-    INDEX idx_entities_type (entity_type),
-    INDEX idx_entities_agent_id (agent_id),
-    INDEX idx_entities_memory_category (memory_category),
-    INDEX idx_entities_confidence (confidence_score),
-    INDEX idx_entities_properties USING GIN (properties)
+    agent_id VARCHAR(100),
+    memory_category VARCHAR(100)
 );
 
--- Knowledge graph relationships table (enhanced from default)
+CREATE INDEX IF NOT EXISTS idx_entities_type
+    ON shared_memory.entities (entity_type);
+CREATE INDEX IF NOT EXISTS idx_entities_agent_id
+    ON shared_memory.entities (agent_id);
+CREATE INDEX IF NOT EXISTS idx_entities_memory_category
+    ON shared_memory.entities (memory_category);
+CREATE INDEX IF NOT EXISTS idx_entities_confidence
+    ON shared_memory.entities (confidence_score);
+CREATE INDEX IF NOT EXISTS idx_entities_properties
+    ON shared_memory.entities USING GIN (properties);
+
+-- Relationships -------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS shared_memory.relationships (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_entity_id UUID REFERENCES shared_memory.entities(id) ON DELETE CASCADE,
@@ -99,79 +131,26 @@ CREATE TABLE IF NOT EXISTS shared_memory.relationships (
     confidence_score FLOAT DEFAULT 1.0,
     source_documents UUID[] DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    agent_id VARCHAR(50),
-    memory_category VARCHAR(10) CHECK (memory_category IN ('ats', 'oma', 'smc')),
-
-    -- Unique constraint to prevent duplicate relationships
-    UNIQUE(source_entity_id, target_entity_id, relationship_type),
-
-    INDEX idx_relationships_source (source_entity_id),
-    INDEX idx_relationships_target (target_entity_id),
-    INDEX idx_relationships_type (relationship_type),
-    INDEX idx_relationships_agent_id (agent_id),
-    INDEX idx_relationships_memory_category (memory_category),
-    INDEX idx_relationships_confidence (confidence_score)
+    agent_id VARCHAR(100),
+    memory_category VARCHAR(100),
+    UNIQUE (source_entity_id, target_entity_id, relationship_type)
 );
 
--- Agent-specific memory tables
-CREATE TABLE IF NOT EXISTS ats_memory.agent_memory (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agent_id VARCHAR(50) NOT NULL,
-    memory_type VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(2560),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP WITH TIME ZONE,
+CREATE INDEX IF NOT EXISTS idx_relationships_source
+    ON shared_memory.relationships (source_entity_id);
+CREATE INDEX IF NOT EXISTS idx_relationships_target
+    ON shared_memory.relationships (target_entity_id);
+CREATE INDEX IF NOT EXISTS idx_relationships_type
+    ON shared_memory.relationships (relationship_type);
+CREATE INDEX IF NOT EXISTS idx_relationships_agent_id
+    ON shared_memory.relationships (agent_id);
+CREATE INDEX IF NOT EXISTS idx_relationships_memory_category
+    ON shared_memory.relationships (memory_category);
+CREATE INDEX IF NOT EXISTS idx_relationships_confidence
+    ON shared_memory.relationships (confidence_score);
 
-    INDEX idx_ats_memory_agent (agent_id),
-    INDEX idx_ats_memory_type (memory_type),
-    INDEX idx_ats_memory_created (created_at),
-    CREATE INDEX idx_ats_memory_vector
-        ON ats_memory.agent_memory
-        USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 50)
-);
+-- Performance + memory usage telemetry --------------------------------------
 
-CREATE TABLE IF NOT EXISTS oma_memory.agent_memory (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agent_id VARCHAR(50) NOT NULL,
-    memory_type VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(2560),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP WITH TIME ZONE,
-
-    INDEX idx_oma_memory_agent (agent_id),
-    INDEX idx_oma_memory_type (memory_type),
-    INDEX idx_oma_memory_created (created_at),
-    CREATE INDEX idx_oma_memory_vector
-        ON oma_memory.agent_memory
-        USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 50)
-);
-
-CREATE TABLE IF NOT EXISTS smc_memory.agent_memory (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agent_id VARCHAR(50) NOT NULL,
-    memory_type VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    metadata JSONB DEFAULT '{}'::jsonb,
-    embedding vector(2560),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP WITH TIME ZONE,
-
-    INDEX idx_smc_memory_agent (agent_id),
-    INDEX idx_smc_memory_type (memory_type),
-    INDEX idx_smc_memory_created (created_at),
-    CREATE INDEX idx_smc_memory_vector
-        ON smc_memory.agent_memory
-        USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 50)
-);
-
--- Performance monitoring tables
 CREATE TABLE IF NOT EXISTS shared_memory.performance_metrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     metric_name VARCHAR(100) NOT NULL,
@@ -179,45 +158,55 @@ CREATE TABLE IF NOT EXISTS shared_memory.performance_metrics (
     metric_unit VARCHAR(50),
     tags JSONB DEFAULT '{}'::jsonb,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    agent_id VARCHAR(50),
-
-    INDEX idx_performance_metric_name (metric_name),
-    INDEX idx_performance_timestamp (timestamp),
-    INDEX idx_performance_agent (agent_id),
-    INDEX idx_performance_tags USING GIN (tags)
+    agent_id VARCHAR(100)
 );
 
--- Memory usage statistics
+CREATE INDEX IF NOT EXISTS idx_performance_metric_name
+    ON shared_memory.performance_metrics (metric_name);
+CREATE INDEX IF NOT EXISTS idx_performance_timestamp
+    ON shared_memory.performance_metrics (timestamp);
+CREATE INDEX IF NOT EXISTS idx_performance_agent
+    ON shared_memory.performance_metrics (agent_id);
+CREATE INDEX IF NOT EXISTS idx_performance_tags
+    ON shared_memory.performance_metrics USING GIN (tags);
+
 CREATE TABLE IF NOT EXISTS shared_memory.memory_usage (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agent_id VARCHAR(50) NOT NULL,
-    memory_category VARCHAR(10) CHECK (memory_category IN ('ats', 'oma', 'smc')),
+    agent_id VARCHAR(100) NOT NULL,
+    memory_category VARCHAR(100) NOT NULL DEFAULT 'general',
     total_documents INTEGER DEFAULT 0,
     total_embeddings INTEGER DEFAULT 0,
     total_entities INTEGER DEFAULT 0,
     total_relationships INTEGER DEFAULT 0,
     storage_used_bytes BIGINT DEFAULT 0,
     last_activity TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-
-    INDEX idx_memory_usage_agent (agent_id),
-    INDEX idx_memory_usage_category (memory_category),
-    INDEX idx_memory_usage_activity (last_activity)
+    UNIQUE (agent_id, memory_category)
 );
 
--- Enhanced stored procedures for memory operations
+CREATE INDEX IF NOT EXISTS idx_memory_usage_agent
+    ON shared_memory.memory_usage (agent_id);
+CREATE INDEX IF NOT EXISTS idx_memory_usage_category
+    ON shared_memory.memory_usage (memory_category);
+CREATE INDEX IF NOT EXISTS idx_memory_usage_activity
+    ON shared_memory.memory_usage (last_activity);
+
+-- ---------------------------------------------------------------------------
+-- Stored procedures + triggers
+-- ---------------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION shared_memory.semantic_search(
     query_vector vector(2560),
     limit_count INTEGER DEFAULT 10,
     similarity_threshold FLOAT DEFAULT 0.7,
-    memory_filter VARCHAR(10) DEFAULT NULL,
-    agent_filter VARCHAR(50) DEFAULT NULL
+    memory_filter VARCHAR(100) DEFAULT NULL,
+    agent_filter VARCHAR(100) DEFAULT NULL
 )
 RETURNS TABLE (
     document_id UUID,
     content TEXT,
     similarity_score FLOAT,
-    agent_id VARCHAR(50),
-    memory_category VARCHAR(10),
+    agent_id VARCHAR(100),
+    memory_category VARCHAR(100),
     created_at TIMESTAMP WITH TIME ZONE
 ) AS $$
 BEGIN
@@ -225,7 +214,7 @@ BEGIN
     SELECT
         e.document_id,
         e.content,
-        1 - (e.embedding <=> query_vector) as similarity_score,
+        1 - (e.embedding <=> query_vector) AS similarity_score,
         e.agent_id,
         e.memory_category,
         e.created_at
@@ -239,27 +228,26 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Procedure to clean up expired memory
 CREATE OR REPLACE FUNCTION shared_memory.cleanup_expired_memory()
 RETURNS INTEGER AS $$
 DECLARE
-    cleanup_count INTEGER := 0;
+    total_cleaned INTEGER := 0;
+    last_count INTEGER;
 BEGIN
-    -- Clean up expired agent memory
-    DELETE FROM ats_memory.agent_memory WHERE expires_at < CURRENT_TIMESTAMP;
-    GET DIAGNOSTICS cleanup_count = ROW_COUNT;
-
-    DELETE FROM oma_memory.agent_memory WHERE expires_at < CURRENT_TIMESTAMP;
-    GET DIAGNOSTICS cleanup_count = cleanup_count + ROW_COUNT;
-
-    DELETE FROM smc_memory.agent_memory WHERE expires_at < CURRENT_TIMESTAMP;
-    GET DIAGNOSTICS cleanup_count = cleanup_count + ROW_COUNT;
-
-    RETURN cleanup_count;
+    -- The per-agent legacy schemas (ats_memory / oma_memory / smc_memory)
+    -- were dropped along with the hardcoded categories. If you previously
+    -- ran against the old schema, run the manual cleanup once and then
+    -- remove this stub. Kept here so the function signature stays stable
+    -- for any external callers.
+    DELETE FROM shared_memory.documents
+    WHERE metadata ? 'expires_at'
+      AND (metadata->>'expires_at')::timestamptz < CURRENT_TIMESTAMP;
+    GET DIAGNOSTICS last_count = ROW_COUNT;
+    total_cleaned := total_cleaned + last_count;
+    RETURN total_cleaned;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger to update memory usage statistics
 CREATE OR REPLACE FUNCTION shared_memory.update_memory_usage()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -268,34 +256,32 @@ BEGIN
         memory_category,
         total_documents,
         last_activity
-    ) VALUES (
-        NEW.agent_id,
-        NEW.memory_category,
+    )
+    VALUES (
+        COALESCE(NEW.agent_id, 'unknown'),
+        COALESCE(NEW.memory_category, 'general'),
         1,
         CURRENT_TIMESTAMP
     )
     ON CONFLICT (agent_id, memory_category)
     DO UPDATE SET
-        total_documents = memory_usage.total_documents + 1,
+        total_documents = shared_memory.memory_usage.total_documents + 1,
         last_activity = CURRENT_TIMESTAMP;
-
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Apply trigger to documents table
+DROP TRIGGER IF EXISTS update_memory_stats_after_insert ON shared_memory.documents;
 CREATE TRIGGER update_memory_stats_after_insert
     AFTER INSERT ON shared_memory.documents
     FOR EACH ROW
     EXECUTE FUNCTION shared_memory.update_memory_usage();
 
--- Grant permissions
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA shared_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA ats_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA oma_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA smc_memory TO cognee_user;
+-- ---------------------------------------------------------------------------
+-- Permissions
+-- ---------------------------------------------------------------------------
 
+GRANT USAGE ON SCHEMA shared_memory TO cognee_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA shared_memory TO cognee_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA shared_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA ats_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA oma_memory TO cognee_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA smc_memory TO cognee_user;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA shared_memory TO cognee_user;
