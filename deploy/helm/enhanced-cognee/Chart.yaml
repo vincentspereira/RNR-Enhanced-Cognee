@@ -1,0 +1,29 @@
+apiVersion: v2
+name: enhanced-cognee
+description: Enhanced Cognee -- enterprise-grade AI memory infrastructure with multi-tenant support, 30 pluggable storage providers, and 122 MCP tools.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+home: https://github.com/vincentspereira/Enhanced-Cognee
+sources:
+  - https://github.com/vincentspereira/Enhanced-Cognee
+
+maintainers:
+  - name: Vincent S. Pereira
+    email: vincentspereira@outlook.com
+
+keywords:
+  - ai
+  - memory
+  - mcp
+  - knowledge-graph
+  - vector-search
+  - multi-tenant
+
+icon: https://raw.githubusercontent.com/vincentspereira/Enhanced-Cognee/main/.github/assets/logo.png
+
+annotations:
+  # OCI artifact category
+  category: AI/ML
+  licenses: Apache-2.0

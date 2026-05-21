@@ -1,0 +1,77 @@
+{{- if .Values.deployments.arcadedb.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "enhanced-cognee.arcadedb.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: arcadedb
+spec:
+  serviceName: {{ include "enhanced-cognee.arcadedb.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "enhanced-cognee.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: arcadedb
+  template:
+    metadata:
+      labels:
+        {{- include "enhanced-cognee.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: arcadedb
+    spec:
+      containers:
+        - name: arcadedb
+          image: {{ .Values.deployments.arcadedb.image | quote }}
+          env:
+            - name: JAVA_OPTS
+              value: |
+                -Darcadedb.server.rootPassword={{ .Values.storage.graph.password }}
+                -Darcadedb.server.defaultDatabases={{ .Values.storage.graph.database }}[root]
+                -Darcadedb.bolt.host=0.0.0.0
+                -Darcadedb.bolt.port={{ .Values.deployments.arcadedb.boltPort }}
+                -Darcadedb.server.httpHost=0.0.0.0
+          ports:
+            - name: bolt
+              containerPort: {{ .Values.deployments.arcadedb.boltPort }}
+            - name: http
+              containerPort: {{ .Values.deployments.arcadedb.httpPort }}
+          volumeMounts:
+            - name: databases
+              mountPath: /home/arcadedb/databases
+          # Healthcheck deliberately omitted -- the public arcadedata/arcadedb
+          # image lacks wget/curl so HTTP-based probes report unhealthy
+          # forever. Pod readiness comes from the container starting
+          # successfully; the MCP server's _init_neo4j call is the
+          # authoritative readiness signal.
+  volumeClaimTemplates:
+    - metadata:
+        name: databases
+      spec:
+        accessModes: [ReadWriteOnce]
+        {{- if .Values.deployments.arcadedb.storageClassName }}
+        storageClassName: {{ .Values.deployments.arcadedb.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.deployments.arcadedb.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "enhanced-cognee.arcadedb.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: arcadedb
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.deployments.arcadedb.boltPort }}
+      targetPort: {{ .Values.deployments.arcadedb.boltPort }}
+      name: bolt
+    - port: {{ .Values.deployments.arcadedb.httpPort }}
+      targetPort: {{ .Values.deployments.arcadedb.httpPort }}
+      name: http
+  selector:
+    {{- include "enhanced-cognee.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: arcadedb
+{{- end }}

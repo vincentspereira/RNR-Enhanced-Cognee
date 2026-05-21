@@ -1,0 +1,82 @@
+{{- if .Values.deployments.qdrant.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "enhanced-cognee.qdrant.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: qdrant
+spec:
+  serviceName: {{ include "enhanced-cognee.qdrant.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "enhanced-cognee.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: qdrant
+  template:
+    metadata:
+      labels:
+        {{- include "enhanced-cognee.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: qdrant
+    spec:
+      containers:
+        - name: qdrant
+          image: {{ .Values.deployments.qdrant.image | quote }}
+          ports:
+            - name: http
+              containerPort: 6333
+            - name: grpc
+              containerPort: 6334
+          env:
+            - name: QDRANT__SERVICE__HTTP_PORT
+              value: "6333"
+            - name: QDRANT__SERVICE__GRPC_PORT
+              value: "6334"
+            - name: QDRANT__LOG_LEVEL
+              value: "INFO"
+          volumeMounts:
+            - name: storage
+              mountPath: /qdrant/storage
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: http
+            periodSeconds: 30
+            initialDelaySeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ReadWriteOnce]
+        {{- if .Values.deployments.qdrant.storageClassName }}
+        storageClassName: {{ .Values.deployments.qdrant.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.deployments.qdrant.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "enhanced-cognee.qdrant.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: qdrant
+spec:
+  clusterIP: None
+  ports:
+    - port: 6333
+      targetPort: 6333
+      name: http
+    - port: 6334
+      targetPort: 6334
+      name: grpc
+  selector:
+    {{- include "enhanced-cognee.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: qdrant
+{{- end }}

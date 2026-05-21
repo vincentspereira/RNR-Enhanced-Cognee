@@ -1,0 +1,55 @@
+name: Helm Lint
+
+# Lints the deploy/helm/enhanced-cognee chart on every PR that touches it.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "deploy/helm/**"
+      - ".github/workflows/helm-lint.yml"
+  pull_request:
+    paths:
+      - "deploy/helm/**"
+      - ".github/workflows/helm-lint.yml"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.16.2
+      - name: Helm lint
+        run: helm lint deploy/helm/enhanced-cognee
+      - name: Helm template (default values)
+        run: |
+          helm template enhanced-cognee deploy/helm/enhanced-cognee \
+            > /tmp/rendered-default.yaml
+          wc -l /tmp/rendered-default.yaml
+      - name: Helm template (in-chart DBs disabled, external services)
+        run: |
+          helm template enhanced-cognee deploy/helm/enhanced-cognee \
+            --set deployments.postgres.enabled=false \
+            --set deployments.qdrant.enabled=false \
+            --set deployments.valkey.enabled=false \
+            --set deployments.arcadedb.enabled=false \
+            --set storage.relational.host=external-postgres.example.com \
+            --set storage.vector.host=external-qdrant.example.com \
+            --set storage.cache.host=external-valkey.example.com \
+            --set storage.graph.host=external-arcadedb.example.com \
+            > /tmp/rendered-external.yaml
+          wc -l /tmp/rendered-external.yaml
+      - name: Helm template (production-ish overrides)
+        run: |
+          helm template enhanced-cognee deploy/helm/enhanced-cognee \
+            --set multiTenant.required=true \
+            --set security.maxPayloadBytes=2097152 \
+            --set security.rateLimitPerMin.addMemory=120 \
+            --set tls.enabled=true \
+            --set tls.secretName=enhanced-cognee-tls \
+            --set mcpServer.replicaCount=3 \
+            --set mcpServer.ingress.enabled=true \
+            > /tmp/rendered-prod.yaml
+          wc -l /tmp/rendered-prod.yaml

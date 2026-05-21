@@ -1,0 +1,211 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "enhanced-cognee.mcp.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mcp-server
+spec:
+  replicas: {{ .Values.mcpServer.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "enhanced-cognee.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mcp-server
+  template:
+    metadata:
+      labels:
+        {{- include "enhanced-cognee.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mcp-server
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: mcp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.mcpServer.port }}
+              protocol: TCP
+          env:
+            - name: ENHANCED_COGNEE_MODE
+              value: "true"
+
+            # Multi-tenant production safety knob
+            {{- if .Values.multiTenant.required }}
+            - name: ENHANCED_REQUIRE_TENANT
+              value: "1"
+            {{- end }}
+
+            # MCP server hardening
+            {{- if .Values.security.apiKey }}
+            - name: ENHANCED_API_KEY
+              value: {{ .Values.security.apiKey | quote }}
+            {{- else if .Values.security.apiKeySecretRef.name }}
+            - name: ENHANCED_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.security.apiKeySecretRef.name }}
+                  key: {{ .Values.security.apiKeySecretRef.key }}
+            {{- end }}
+            {{- if .Values.security.maxPayloadBytes }}
+            - name: ENHANCED_MAX_PAYLOAD_BYTES
+              value: {{ .Values.security.maxPayloadBytes | quote }}
+            {{- end }}
+            {{- if .Values.security.rateLimitPerMin.addMemory }}
+            - name: ENHANCED_RATE_LIMIT_ADD_MEMORY_PER_MIN
+              value: {{ .Values.security.rateLimitPerMin.addMemory | quote }}
+            {{- end }}
+            {{- if .Values.security.rateLimitPerMin.searchMemories }}
+            - name: ENHANCED_RATE_LIMIT_SEARCH_MEMORIES_PER_MIN
+              value: {{ .Values.security.rateLimitPerMin.searchMemories | quote }}
+            {{- end }}
+            {{- if .Values.security.rateLimitPerMin.deleteMemory }}
+            - name: ENHANCED_RATE_LIMIT_DELETE_MEMORY_PER_MIN
+              value: {{ .Values.security.rateLimitPerMin.deleteMemory | quote }}
+            {{- end }}
+
+            # HTTPS / TLS
+            {{- if .Values.tls.enabled }}
+            - name: ENHANCED_HTTPS_CERT_FILE
+              value: "/etc/enhanced-cognee/tls/{{ .Values.tls.certFile }}"
+            - name: ENHANCED_HTTPS_KEY_FILE
+              value: "/etc/enhanced-cognee/tls/{{ .Values.tls.keyFile }}"
+            {{- if .Values.tls.caCerts }}
+            - name: ENHANCED_HTTPS_CA_CERTS
+              value: "/etc/enhanced-cognee/tls/{{ .Values.tls.caCerts }}"
+            {{- end }}
+            {{- end }}
+
+            # Storage tier -- graph
+            - name: ENHANCED_GRAPH_PROVIDER
+              value: {{ .Values.storage.graph.provider | quote }}
+            {{- if eq .Values.storage.graph.provider "arcadedb" }}
+            - name: ARCADEDB_TRANSPORT
+              value: {{ .Values.storage.graph.transport | quote }}
+            - name: ARCADEDB_HOST
+              value: {{ include "enhanced-cognee.storage.graphHost" . | quote }}
+            - name: ARCADEDB_HTTP_PORT
+              value: {{ .Values.storage.graph.port | quote }}
+            - name: ARCADEDB_DATABASE
+              value: {{ .Values.storage.graph.database | quote }}
+            - name: ARCADEDB_USER
+              value: {{ .Values.storage.graph.user | quote }}
+            {{- if .Values.storage.graph.passwordSecretRef.name }}
+            - name: ARCADEDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.graph.passwordSecretRef.name }}
+                  key: {{ .Values.storage.graph.passwordSecretRef.key }}
+            {{- else }}
+            - name: ARCADEDB_PASSWORD
+              value: {{ .Values.storage.graph.password | quote }}
+            {{- end }}
+            {{- end }}
+
+            # Storage tier -- vector
+            - name: ENHANCED_VECTOR_PROVIDER
+              value: {{ .Values.storage.vector.provider | quote }}
+            - name: QDRANT_HOST
+              value: {{ include "enhanced-cognee.storage.vectorHost" . | quote }}
+            - name: QDRANT_PORT
+              value: {{ .Values.storage.vector.port | quote }}
+
+            # Storage tier -- cache
+            - name: ENHANCED_CACHE_PROVIDER
+              value: {{ .Values.storage.cache.provider | quote }}
+            - name: VALKEY_HOST
+              value: {{ include "enhanced-cognee.storage.cacheHost" . | quote }}
+            - name: VALKEY_PORT
+              value: {{ .Values.storage.cache.port | quote }}
+            - name: REDIS_HOST
+              value: {{ include "enhanced-cognee.storage.cacheHost" . | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.storage.cache.port | quote }}
+
+            # Storage tier -- relational
+            - name: ENHANCED_RELATIONAL_PROVIDER
+              value: {{ .Values.storage.relational.provider | quote }}
+            - name: POSTGRES_HOST
+              value: {{ include "enhanced-cognee.storage.relationalHost" . | quote }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.storage.relational.port | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.storage.relational.database | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.storage.relational.user | quote }}
+            {{- if .Values.storage.relational.passwordSecretRef.name }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.relational.passwordSecretRef.name }}
+                  key: {{ .Values.storage.relational.passwordSecretRef.key }}
+            {{- else }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.storage.relational.password | quote }}
+            {{- end }}
+
+            # Observability
+            {{- if .Values.observability.otlpEndpoint }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.observability.otlpEndpoint | quote }}
+            {{- end }}
+
+            # Dynamic categories
+            {{- if .Values.categories.enabled }}
+            - name: ENHANCED_COGNEE_CONFIG_PATH
+              value: "/etc/enhanced-cognee/categories.json"
+            - name: MEMORY_CATEGORIZATION
+              value: "true"
+            {{- end }}
+
+            {{- with .Values.mcpServer.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          volumeMounts:
+            {{- if .Values.categories.enabled }}
+            - name: categories-config
+              mountPath: /etc/enhanced-cognee
+              readOnly: true
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: /etc/enhanced-cognee/tls
+              readOnly: true
+            {{- end }}
+
+          livenessProbe:
+            {{- toYaml .Values.mcpServer.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.mcpServer.readinessProbe | nindent 12 }}
+
+          resources:
+            {{- toYaml .Values.mcpServer.resources | nindent 12 }}
+
+      volumes:
+        {{- if .Values.categories.enabled }}
+        - name: categories-config
+          configMap:
+            name: {{ include "enhanced-cognee.fullname" . }}-categories
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tls.secretName }}
+        {{- end }}
+
+      {{- with .Values.mcpServer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mcpServer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mcpServer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

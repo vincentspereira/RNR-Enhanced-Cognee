@@ -1,0 +1,95 @@
+{{- if .Values.deployments.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "enhanced-cognee.postgres.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+spec:
+  serviceName: {{ include "enhanced-cognee.postgres.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "enhanced-cognee.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        {{- include "enhanced-cognee.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.deployments.postgres.image | quote }}
+          ports:
+            - name: pg
+              containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.storage.relational.database | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.storage.relational.user | quote }}
+            {{- if .Values.storage.relational.passwordSecretRef.name }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.relational.passwordSecretRef.name }}
+                  key: {{ .Values.storage.relational.passwordSecretRef.key }}
+            {{- else }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.storage.relational.password | quote }}
+            {{- end }}
+            - name: POSTGRES_SHARED_PRELOAD_LIBRARIES
+              value: "vector"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.storage.relational.user }}
+                - -d
+                - {{ .Values.storage.relational.database }}
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.storage.relational.user }}
+                - -d
+                - {{ .Values.storage.relational.database }}
+            periodSeconds: 30
+            initialDelaySeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        {{- if .Values.deployments.postgres.storageClassName }}
+        storageClassName: {{ .Values.deployments.postgres.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.deployments.postgres.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "enhanced-cognee.postgres.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+spec:
+  clusterIP: None
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: pg
+  selector:
+    {{- include "enhanced-cognee.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+{{- end }}

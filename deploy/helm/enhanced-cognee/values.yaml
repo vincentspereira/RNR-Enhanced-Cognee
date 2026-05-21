@@ -1,0 +1,240 @@
+# Default values for Enhanced Cognee.
+# Override with: helm install <release> ./deploy/helm/enhanced-cognee -f my-values.yaml
+
+# -----------------------------------------------------------------------------
+# Image + version
+# -----------------------------------------------------------------------------
+
+image:
+  # The MCP server image. Replace with your own registry path when deploying
+  # a customised build; the default targets a hypothetical public image that
+  # mirrors `pip install enhanced-cognee` + the stdio + HTTP entrypoints.
+  repository: ghcr.io/vincentspereira/enhanced-cognee
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# -----------------------------------------------------------------------------
+# Multi-tenant safety
+# -----------------------------------------------------------------------------
+
+multiTenant:
+  # Set to true in production to reject un-tenanted storage calls.
+  # The application reads ENHANCED_REQUIRE_TENANT.
+  required: false
+
+# -----------------------------------------------------------------------------
+# MCP server hardening
+# -----------------------------------------------------------------------------
+
+security:
+  # API-key auth -- set apiKey to a strong random secret to require X-API-Key
+  # on every /mcp/* call. Sourced from `secretRef` if you'd rather not put
+  # the literal value in values.yaml (recommended).
+  apiKey: ""
+  apiKeySecretRef:
+    # name: enhanced-cognee-secrets
+    # key:  api-key
+    name: ""
+    key: ""
+
+  # Rate limiting -- per-tool token-bucket. Mapped to ENHANCED_RATE_LIMIT_<TOOL>_PER_MIN
+  rateLimitPerMin:
+    addMemory: 0           # 0 = disabled
+    searchMemories: 0
+    deleteMemory: 0
+
+  # Payload cap -- maximum POST body size in bytes
+  maxPayloadBytes: 1048576    # 1 MiB
+
+# -----------------------------------------------------------------------------
+# HTTPS / TLS on the MCP HTTP server
+# -----------------------------------------------------------------------------
+
+tls:
+  enabled: false
+  # When enabled, the MCP server listens on HTTPS using the cert + key files
+  # mounted from a Kubernetes Secret. Recommended pattern: cert-manager issues
+  # a Certificate into `secretName`, which this chart mounts.
+  secretName: ""    # e.g. enhanced-cognee-tls
+  certFile: tls.crt
+  keyFile: tls.key
+  caCerts: ""       # optional client-cert verification CA bundle
+
+# -----------------------------------------------------------------------------
+# Enhanced Cognee MCP Server deployment
+# -----------------------------------------------------------------------------
+
+mcpServer:
+  replicaCount: 1
+
+  # The HTTP server (FastAPI variant) listens on this port inside the container.
+  # The chart exposes it via a ClusterIP Service + optional Ingress.
+  port: 8080
+
+  service:
+    type: ClusterIP
+    port: 8080
+    annotations: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: enhanced-cognee.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 10
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  # Extra env vars (for things not exposed elsewhere)
+  extraEnv: []
+  #  - name: ENHANCED_COGNEE_CONFIG_PATH
+  #    value: /etc/enhanced-cognee/categories.json
+
+# -----------------------------------------------------------------------------
+# Pluggable storage backends
+# -----------------------------------------------------------------------------
+
+# Default profile -- ArcadeDB + Qdrant + Valkey + PostgreSQL.
+# Override providers to switch tiers individually.
+
+storage:
+  graph:
+    provider: arcadedb    # arcadedb | neo4j | apache_age | memgraph | kuzu | networkx_inmemory | arangodb | nebulagraph | ladybug
+    transport: http       # http | bolt   (ArcadeDB only)
+    host: ""              # leave blank to use service DNS for the in-chart container
+    port: 22480
+    database: cognee_graph
+    user: root
+    passwordSecretRef:
+      name: ""
+      key: ""
+    # Inline password (NOT recommended for production); use passwordSecretRef instead.
+    password: cognee_password
+
+  vector:
+    provider: qdrant      # qdrant | pgvector | lancedb | chroma | weaviate | milvus
+    host: ""
+    port: 6333
+
+  cache:
+    provider: valkey      # valkey | redis | redis_compat | in_memory | memcached | sqlite
+    host: ""
+    port: 6379
+
+  relational:
+    provider: postgres    # postgres | sqlite | duckdb | mysql | mariadb | mssql | oracle | db2 | snowflake | databricks
+    host: ""
+    port: 5432
+    database: cognee_db
+    user: cognee_user
+    passwordSecretRef:
+      name: ""
+      key: ""
+    password: cognee_password
+
+# -----------------------------------------------------------------------------
+# In-chart database deployments
+#
+# When true, each tier deploys a single-replica StatefulSet of the relevant
+# image. When false, you point at an external service via `storage.<tier>.host`.
+# Setting all of these to false is the "external services" deployment model;
+# useful for production where the DBs are managed offerings (RDS, Aurora, etc.).
+# -----------------------------------------------------------------------------
+
+deployments:
+  postgres:
+    enabled: true
+    image: pgvector/pgvector:pg18
+    storage: 20Gi
+    storageClassName: ""
+
+  qdrant:
+    enabled: true
+    image: qdrant/qdrant:v1.12.0
+    storage: 20Gi
+    storageClassName: ""
+
+  valkey:
+    enabled: true
+    image: valkey/valkey:8-alpine
+    storage: 5Gi
+    storageClassName: ""
+
+  arcadedb:
+    enabled: true
+    image: arcadedata/arcadedb:latest
+    storage: 10Gi
+    storageClassName: ""
+    # Bolt port -- only used by clients with the BoltPlugin JAR installed.
+    boltPort: 7687
+    httpPort: 2480
+
+# -----------------------------------------------------------------------------
+# Categories (dynamic; loaded from a ConfigMap)
+# -----------------------------------------------------------------------------
+
+categories:
+  enabled: true
+  # Each entry becomes a category in .enhanced-cognee-config.json. No hardcoded
+  # ATS/OMA/SMC -- pick names that match your domain.
+  config:
+    general:
+      prefix: "general_"
+      description: "Default memory category"
+    trading:
+      prefix: "trading_"
+      description: "Trading system memories"
+    development:
+      prefix: "dev_"
+      description: "Development memories"
+    research:
+      prefix: "research_"
+      description: "Research notes + analysis"
+
+# -----------------------------------------------------------------------------
+# Observability (optional)
+# -----------------------------------------------------------------------------
+
+observability:
+  # OpenTelemetry tracing -- set otlpEndpoint to send spans to a collector
+  # (e.g. signoz-otel-collector.signoz.svc:4317).
+  otlpEndpoint: ""
+  prometheus:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}

@@ -1,0 +1,76 @@
+{{- if .Values.deployments.valkey.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "enhanced-cognee.valkey.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: valkey
+spec:
+  serviceName: {{ include "enhanced-cognee.valkey.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "enhanced-cognee.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: valkey
+  template:
+    metadata:
+      labels:
+        {{- include "enhanced-cognee.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: valkey
+    spec:
+      containers:
+        - name: valkey
+          image: {{ .Values.deployments.valkey.image | quote }}
+          args:
+            - valkey-server
+            - --appendonly
+            - "yes"
+            - --maxmemory
+            - "1gb"
+            - --maxmemory-policy
+            - "allkeys-lru"
+          ports:
+            - name: cache
+              containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 30
+            initialDelaySeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        {{- if .Values.deployments.valkey.storageClassName }}
+        storageClassName: {{ .Values.deployments.valkey.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.deployments.valkey.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "enhanced-cognee.valkey.fullname" . }}
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+    app.kubernetes.io/component: valkey
+spec:
+  clusterIP: None
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: cache
+  selector:
+    {{- include "enhanced-cognee.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: valkey
+{{- end }}

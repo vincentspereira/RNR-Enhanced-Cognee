@@ -1,0 +1,22 @@
+{{- if .Values.categories.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "enhanced-cognee.fullname" . }}-categories
+  labels:
+    {{- include "enhanced-cognee.labels" . | nindent 4 }}
+data:
+  categories.json: |
+    {
+      "categories": {
+        {{- $first := true }}
+        {{- range $name, $cfg := .Values.categories.config }}
+        {{- if not $first }},{{- end }}{{- $first = false }}
+        {{ printf "%q" $name }}: {
+          "prefix": {{ default (printf "%s_" $name) $cfg.prefix | quote }},
+          "description": {{ default "" $cfg.description | quote }}
+        }
+        {{- end }}
+      }
+    }
+{{- end }}
