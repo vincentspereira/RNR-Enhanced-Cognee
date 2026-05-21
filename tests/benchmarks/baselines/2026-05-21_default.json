@@ -1,0 +1,18 @@
+[
+  {
+    "name": "default",
+    "providers": {
+      "ENHANCED_GRAPH_PROVIDER": "arcadedb",
+      "ENHANCED_VECTOR_PROVIDER": "qdrant",
+      "ENHANCED_CACHE_PROVIDER": "valkey",
+      "ENHANCED_RELATIONAL_PROVIDER": "postgres"
+    },
+    "rps": 48.85588655014495,
+    "p50_ms": 11.0,
+    "p95_ms": 14.0,
+    "p99_ms": 17.0,
+    "total_requests": 2897,
+    "total_failures": 0,
+    "error_pct": 0.0
+  }
+]

@@ -75,10 +75,41 @@ class TestHTTPConfigResolve:
         assert cfg["user"] == "admin"
         assert cfg["password"] == "s3cret"
 
-    def test_explicit_args_override_env(self, monkeypatch):
+    def test_env_overrides_explicit_args(self, monkeypatch):
+        """ARCADEDB_* env vars take precedence over caller kwargs.
+
+        Rationale: callers like ``EnhancedCogneeMCPServer._init_neo4j`` pass
+        legacy ``neo4j_user`` kwargs for backwards-compat even when the
+        active provider is arcadedb. Letting the env var win means the
+        operator can override credentials via ARCADEDB_* without editing
+        the caller, which is the documented production deploy path.
+        """
         monkeypatch.setenv("ARCADEDB_USER", "env_user")
         cfg = graph_arcadedb._resolve_http_config(user="explicit_user")
-        assert cfg["user"] == "explicit_user"
+        assert cfg["user"] == "env_user"
+
+    def test_kwarg_used_when_env_unset(self, monkeypatch):
+        """When the ARCADEDB_* env var is NOT set, the kwarg is used."""
+        monkeypatch.delenv("ARCADEDB_USER", raising=False)
+        cfg = graph_arcadedb._resolve_http_config(user="kwarg_user")
+        assert cfg["user"] == "kwarg_user"
+
+    def test_hardcoded_default_when_no_env_or_kwarg(self, monkeypatch):
+        """Falls back to the documented hardcoded default."""
+        for k in (
+            "ARCADEDB_HOST",
+            "ARCADEDB_HTTP_PORT",
+            "ARCADEDB_DATABASE",
+            "ARCADEDB_USER",
+            "ARCADEDB_PASSWORD",
+        ):
+            monkeypatch.delenv(k, raising=False)
+        cfg = graph_arcadedb._resolve_http_config()
+        assert cfg["user"] == "root"
+        assert cfg["password"] == "cognee_password"
+        assert cfg["database"] == "cognee_graph"
+        assert cfg["host"] == "localhost"
+        assert cfg["port"] == 2480
 
 
 # ---------------------------------------------------------------------------

@@ -963,4 +963,34 @@ app.include_router(server.app.router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+
+    # HTTPS / TLS support. Set ENHANCED_HTTPS_CERT_FILE + ENHANCED_HTTPS_KEY_FILE
+    # to PEM file paths and the server listens on HTTPS instead of HTTP.
+    # ENHANCED_HTTPS_CA_CERTS (optional) for client-cert verification.
+    # When neither cert nor key is set, falls back to plain HTTP -- the
+    # historical default, suitable for local Claude Code MCP usage behind
+    # localhost or a reverse proxy that terminates TLS.
+    host = os.getenv("ENHANCED_HTTPS_HOST", "0.0.0.0")
+    port = int(os.getenv("ENHANCED_HTTPS_PORT", "8080"))
+    cert_file = os.getenv("ENHANCED_HTTPS_CERT_FILE")
+    key_file = os.getenv("ENHANCED_HTTPS_KEY_FILE")
+    ca_certs = os.getenv("ENHANCED_HTTPS_CA_CERTS")
+
+    kwargs = {"host": host, "port": port}
+    if cert_file and key_file:
+        kwargs["ssl_certfile"] = cert_file
+        kwargs["ssl_keyfile"] = key_file
+        if ca_certs:
+            kwargs["ssl_ca_certs"] = ca_certs
+        logger.info(
+            f"Enhanced Cognee MCP starting on HTTPS https://{host}:{port} "
+            f"(cert={cert_file}, key={key_file}, ca={ca_certs or 'none'})"
+        )
+    else:
+        logger.info(
+            f"Enhanced Cognee MCP starting on HTTP http://{host}:{port} "
+            f"(set ENHANCED_HTTPS_CERT_FILE + ENHANCED_HTTPS_KEY_FILE to "
+            f"enable TLS termination at the application layer)"
+        )
+
+    uvicorn.run(app, **kwargs)

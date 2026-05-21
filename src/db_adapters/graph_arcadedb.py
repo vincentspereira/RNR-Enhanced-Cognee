@@ -77,13 +77,25 @@ def _resolve_http_config(
     host: Optional[str] = None,
     port: Optional[int] = None,
 ) -> Dict[str, Any]:
-    """Resolve HTTP-transport config -- host / port / database / auth."""
+    """Resolve HTTP-transport config -- host / port / database / auth.
+
+    Precedence: ``ARCADEDB_*`` env var (when set) wins over caller kwargs,
+    so the user can override credentials from outside without editing
+    ``_init_neo4j`` in callers that still pass legacy ``neo4j_*`` config.
+    Falls back to the kwarg when the env var is unset, and finally to
+    the documented hardcoded default (root / cognee_password / cognee_graph
+    / localhost / 2480).
+    """
     return {
-        "host": host or os.getenv("ARCADEDB_HOST", "localhost"),
-        "port": int(port or os.getenv("ARCADEDB_HTTP_PORT", "2480")),
-        "database": database or os.getenv("ARCADEDB_DATABASE", "cognee_graph"),
-        "user": user or os.getenv("ARCADEDB_USER", "root"),
-        "password": password or os.getenv("ARCADEDB_PASSWORD", "cognee_password"),
+        "host": os.getenv("ARCADEDB_HOST") or host or "localhost",
+        "port": int(os.getenv("ARCADEDB_HTTP_PORT") or port or 2480),
+        "database": (
+            os.getenv("ARCADEDB_DATABASE") or database or "cognee_graph"
+        ),
+        "user": os.getenv("ARCADEDB_USER") or user or "root",
+        "password": (
+            os.getenv("ARCADEDB_PASSWORD") or password or "cognee_password"
+        ),
     }
 
 
