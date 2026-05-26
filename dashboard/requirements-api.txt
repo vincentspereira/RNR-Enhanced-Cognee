@@ -17,7 +17,7 @@ redis>=5.2.0             # Redis cache
 pyjwt>=2.9.0             # JWT tokens
 passlib[bcrypt]>=1.7.4   # Password hashing
 python-jose[cryptography]>=3.5.0  # JWT utilities
-cryptography>=44.0.0     # Encryption
+cryptography>=48.0.0     # Encryption
 
 # Data Validation
 pydantic>=2.9.0          # Data validation

@@ -23,7 +23,7 @@ asyncpg==0.31.0                    # Async PostgreSQL driver
 python-jose[cryptography]==3.5.0   # JWT handling
 passlib[bcrypt]==1.7.4             # Password hashing
 python-multipart==0.0.29            # Form data parsing
-cryptography==42.0.5                # Cryptographic operations
+cryptography==48.0.0                # Cryptographic operations
 
 # HTTP and Networking
 httpx==0.28.1                      # Async HTTP client
