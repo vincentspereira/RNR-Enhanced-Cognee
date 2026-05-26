@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Mark and Close Stale PRs
-        uses: actions/stale@v6
+        uses: actions/stale@v10
         with:
           # Number of days of inactivity before the pull request is marked stale
           days-before-stale: 60
