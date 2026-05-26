@@ -61,7 +61,7 @@ textstat==0.7.13                    # Text statistics
 transformers==4.40.1               # HuggingFace transformers
 torch==2.12.0                       # PyTorch
 sentence-transformers==2.6.1       # Sentence embeddings
-accelerate==0.28.0                 # PyTorch acceleration
+accelerate==1.13.0                 # PyTorch acceleration
 datasets==2.18.0                   # Dataset handling
 
 # AI Provider SDKs
