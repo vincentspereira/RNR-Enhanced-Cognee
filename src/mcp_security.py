@@ -47,6 +47,7 @@ from __future__ import annotations
 
 import logging
 import os
+import secrets
 import threading
 import time
 from collections import defaultdict
@@ -84,10 +85,45 @@ def require_api_key(provided: Optional[str]) -> None:
     expected = _expected_api_key()
     if not expected:
         return
-    if not provided or provided != expected:
+    # Constant-time comparison to avoid leaking the key via timing.
+    if not provided or not secrets.compare_digest(str(provided), str(expected)):
         raise PermissionError(
             "Enhanced Cognee API: missing or invalid X-API-Key / api_key. "
             "Provide the ENHANCED_API_KEY value to call mutating MCP tools."
+        )
+
+
+def _is_production() -> bool:
+    return os.getenv("ENHANCED_ENV", "").strip().lower() in ("production", "prod")
+
+
+def auth_is_configured() -> bool:
+    """True if any authentication method is configured.
+
+    API key (``ENHANCED_API_KEY``) or an OIDC/JWT setup
+    (``ENHANCED_OIDC_ISSUER`` / ``ENHANCED_JWT_SECRET``, wired by the
+    enterprise auth layer). Used by ``enforce_production_auth``.
+    """
+    if _expected_api_key():
+        return True
+    if os.getenv("ENHANCED_OIDC_ISSUER") or os.getenv("ENHANCED_JWT_SECRET"):
+        return True
+    return False
+
+
+def enforce_production_auth() -> None:
+    """Fail closed: refuse to start in production without auth configured.
+
+    Call once at server startup. Raises ``RuntimeError`` when
+    ``ENHANCED_ENV=production`` but neither an API key nor OIDC/JWT is
+    configured -- preventing an accidental unauthenticated public server.
+    """
+    if _is_production() and not auth_is_configured():
+        raise RuntimeError(
+            "ENHANCED_ENV=production but no authentication is configured. "
+            "Set ENHANCED_API_KEY (or configure OIDC/JWT via ENHANCED_OIDC_ISSUER "
+            "/ ENHANCED_JWT_SECRET) before starting. Refusing to start an "
+            "unauthenticated server in production."
         )
 
 

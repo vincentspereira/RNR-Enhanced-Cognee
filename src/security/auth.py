@@ -10,6 +10,8 @@ Date: 2026-02-06
 """
 
 import asyncio
+import json
+import os
 import secrets
 import jwt
 import hashlib
@@ -93,7 +95,17 @@ class JWTAuthenticator:
             algorithm: JWT algorithm
             token_expiry_hours: Token expiration time
         """
-        self.secret_key = secret_key or secrets.token_urlsafe(32)
+        # Prefer an explicit key, then ENHANCED_JWT_SECRET (persistent across
+        # restarts so issued tokens survive a redeploy). Only as a last resort
+        # generate an ephemeral key, and warn loudly.
+        self.secret_key = secret_key or os.getenv("ENHANCED_JWT_SECRET")
+        if not self.secret_key:
+            self.secret_key = secrets.token_urlsafe(32)
+            logger.warning(
+                "JWTAuthenticator: no ENHANCED_JWT_SECRET set; generated an "
+                "ephemeral signing key. Issued tokens will be invalidated on "
+                "restart. Set ENHANCED_JWT_SECRET in production."
+            )
         self.algorithm = algorithm
         self.token_expiry = timedelta(hours=token_expiry_hours)
 

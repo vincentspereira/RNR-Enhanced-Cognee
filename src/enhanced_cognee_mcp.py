@@ -6,6 +6,7 @@ Provides DYNAMIC and CONFIGURABLE memory architecture (not hardcoded to specific
 """
 
 import os
+import time
 import asyncio
 import json
 import logging
@@ -21,7 +22,9 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 from neo4j import GraphDatabase, Driver
 import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from src.db_factory import (
@@ -30,6 +33,7 @@ from src.db_factory import (
     get_relational_pool,
     get_vector_client,
 )
+from src.secure_config import require_secret
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -48,7 +52,7 @@ class EnhancedConfig:
         self.postgres_port = int(os.getenv("POSTGRES_PORT", "25432"))  # Enhanced port
         self.postgres_db = os.getenv("POSTGRES_DB", "cognee_db")
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
-        self.postgres_password = os.getenv("POSTGRES_PASSWORD", "cognee_password")
+        self.postgres_password = require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
 
         self.qdrant_host = os.getenv("QDRANT_HOST", "localhost")
         self.qdrant_port = int(os.getenv("QDRANT_PORT", "26333"))  # Enhanced port
@@ -57,7 +61,7 @@ class EnhancedConfig:
 
         self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:27687")  # Enhanced port
         self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-        self.neo4j_password = os.getenv("NEO4J_PASSWORD", "cognee_password")
+        self.neo4j_password = require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
         self.neo4j_database = os.getenv("NEO4J_DATABASE", "neo4j")
 
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
@@ -108,6 +112,10 @@ class EnhancedConfig:
         return {}
 
 config = EnhancedConfig()
+
+# In-process HTTP request counter for the /metrics endpoint (dependency-free).
+# Keyed by (method, status_class) e.g. ("POST", 200).
+_HTTP_REQUEST_COUNTS: Dict[Tuple[str, int], int] = {}
 
 # Data Models
 class MemoryEntry(BaseModel):
@@ -172,6 +180,39 @@ class McpUpdateMemoryRequest(BaseModel):
 class McpDeleteMemoryRequest(BaseModel):
     memory_id: str
 
+@asynccontextmanager
+async def lifespan(app: "FastAPI"):
+    """Application lifecycle: enforce prod auth, init tracing, connect stack.
+
+    Startup never hard-crashes on a single dependency outage -- see
+    ``EnhancedCogneeMCPServer.initialize`` for the retry + graceful-degrade
+    behaviour. It DOES refuse to start in production without auth configured.
+    """
+    try:
+        from src.mcp_security import enforce_production_auth, log_security_status
+        enforce_production_auth()  # raises in production when no auth configured
+        log_security_status()
+    except RuntimeError:
+        raise
+    except Exception as e:  # pragma: no cover - defensive
+        logger.warning(f"Security status check skipped: {e}")
+
+    # Best-effort OpenTelemetry tracing (no-op unless OTEL_* env configured).
+    try:
+        from src.tracing import init_tracing
+        if init_tracing(service_name="enhanced-cognee-mcp"):
+            logger.info("OpenTelemetry tracing initialized")
+    except Exception as e:  # pragma: no cover
+        logger.debug(f"Tracing not initialized: {e}")
+
+    srv = getattr(app.state, "server", None) or server
+    await srv.initialize()
+    try:
+        yield
+    finally:
+        await srv.shutdown()
+
+
 class EnhancedCogneeMCPServer:
     """Enhanced Cognee MCP Server with enterprise-grade memory stack integration"""
 
@@ -180,10 +221,38 @@ class EnhancedCogneeMCPServer:
         self.qdrant_client = None
         self.neo4j_driver = None
         self.redis_client = None
-        self.app = FastAPI(title="Enhanced Cognee MCP Server")
+        self.app = FastAPI(title="Enhanced Cognee MCP Server", lifespan=lifespan)
+        self.app.state.server = self
+        self._install_cors_middleware()
         self._install_security_middleware()
         self._install_tenant_middleware()
+        self._install_metrics_middleware()
         self.setup_routes()
+
+    def _install_cors_middleware(self) -> None:
+        """Restrictive CORS driven by ENHANCED_CORS_ORIGINS (comma-separated).
+
+        Default is NO cross-origin access. A literal '*' is downgraded to
+        allow_credentials=False (wildcard origin + credentials is invalid and
+        insecure).
+        """
+        raw = os.getenv("ENHANCED_CORS_ORIGINS", "")
+        origins = [o.strip() for o in raw.split(",") if o.strip()]
+        if origins == ["*"]:
+            logger.warning(
+                "ENHANCED_CORS_ORIGINS='*'; forcing allow_credentials=False "
+                "(wildcard origin with credentials is invalid)."
+            )
+            allow_credentials = False
+        else:
+            allow_credentials = bool(origins)
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_credentials=allow_credentials,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
     def _install_security_middleware(self) -> None:
         """Enforce API-key auth + payload size cap on the HTTP surface.
@@ -207,7 +276,13 @@ class EnhancedCogneeMCPServer:
             # the operator having to provision the API key inside the
             # health-check tooling.
             path = request.url.path
-            unauthenticated_paths = {"/health"}
+            unauthenticated_paths = {"/health", "/health/live", "/health/ready"}
+            # /metrics stays unauthenticated by default for Prometheus scraping;
+            # set ENHANCED_METRICS_PUBLIC=0 to require the API key on it too.
+            if os.getenv("ENHANCED_METRICS_PUBLIC", "1").strip().lower() in (
+                "1", "true", "yes", "on",
+            ):
+                unauthenticated_paths.add("/metrics")
             if path not in unauthenticated_paths:
                 provided = request.headers.get("x-api-key") or request.headers.get(
                     "X-API-Key"
@@ -252,28 +327,130 @@ class EnhancedCogneeMCPServer:
 
         @self.app.middleware("http")
         async def _tenant_scope(request, call_next):
+            path = request.url.path
+            exempt = {"/health", "/health/live", "/health/ready", "/metrics"}
             tenant_id = request.headers.get("x-tenant-id") or request.headers.get(
                 "X-Tenant-ID"
             )
+            require_tenant = os.getenv(
+                "ENHANCED_REQUIRE_TENANT", "0"
+            ).strip().lower() in ("1", "true", "yes", "on")
+            if not tenant_id and require_tenant and path not in exempt:
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "detail": (
+                            "X-Tenant-ID header is required "
+                            "(ENHANCED_REQUIRE_TENANT=1)."
+                        )
+                    },
+                )
             if tenant_id:
                 async with TenantContext(tenant_id):
                     return await call_next(request)
             return await call_next(request)
 
+    def _install_metrics_middleware(self) -> None:
+        """Count HTTP requests by (method, status class) for the /metrics endpoint."""
+
+        @self.app.middleware("http")
+        async def _count_requests(request, call_next):
+            response = await call_next(request)
+            try:
+                key = (request.method, (response.status_code // 100) * 100)
+                _HTTP_REQUEST_COUNTS[key] = _HTTP_REQUEST_COUNTS.get(key, 0) + 1
+            except Exception:
+                pass
+            return response
+
     async def initialize(self):
-        """Initialize all Enhanced stack connections"""
+        """Initialize all Enhanced stack connections with retry + graceful degrade.
+
+        No single dependency failure crashes the server. Each connector is
+        retried with backoff; on final failure the client is left as None and
+        the server starts DEGRADED (the readiness probe reports 503 until the
+        dependency recovers, and routes needing it return 503).
+        """
         if not config.enhanced_mode:
             logger.warning("Enhanced Cognee mode is not enabled")
             return
 
         logger.info("Initializing Enhanced Cognee MCP Server...")
 
-        await self._init_postgresql()
-        await self._init_qdrant()
-        await self._init_neo4j()
-        await self._init_redis()
+        await self._connect_with_retry(self._init_postgresql, "PostgreSQL")
+        await self._connect_with_retry(self._init_qdrant, "Qdrant")
+        await self._connect_with_retry(self._init_neo4j, "Neo4j/graph")
+        await self._connect_with_retry(self._init_redis, "Redis/cache")
 
-        logger.info("Enhanced Cognee MCP Server initialized successfully")
+        connected = [
+            name for name, ok in (
+                ("postgresql", self.postgres_pool is not None),
+                ("qdrant", self.qdrant_client is not None),
+                ("neo4j", self.neo4j_driver is not None),
+                ("redis", self.redis_client is not None),
+            ) if ok
+        ]
+        if self.postgres_pool is None:
+            logger.error(
+                "Enhanced Cognee started DEGRADED: PostgreSQL unavailable. "
+                "Readiness will report 503 until it recovers."
+            )
+        else:
+            logger.info(
+                f"Enhanced Cognee MCP Server initialized "
+                f"(connected: {', '.join(connected) or 'none'})"
+            )
+
+    async def _connect_with_retry(self, init_coro, name: str) -> None:
+        """Call an _init_* coroutine with bounded retries; never raise.
+
+        Retries ENHANCED_DB_CONNECT_ATTEMPTS times (default 3) with linear
+        backoff (ENHANCED_DB_CONNECT_BACKOFF_SECONDS, default 2). On
+        exhaustion logs an error and returns -- the _init_* method leaves its
+        client as None so degraded state is detected accurately.
+        """
+        attempts = max(1, int(os.getenv("ENHANCED_DB_CONNECT_ATTEMPTS", "3")))
+        backoff = float(os.getenv("ENHANCED_DB_CONNECT_BACKOFF_SECONDS", "2"))
+        for attempt in range(1, attempts + 1):
+            try:
+                await init_coro()
+                return
+            except Exception as e:
+                if attempt >= attempts:
+                    logger.error(
+                        f"{name}: connection failed after {attempt} attempt(s): "
+                        f"{e}. Continuing in degraded mode."
+                    )
+                    return
+                logger.warning(
+                    f"{name}: connection attempt {attempt}/{attempts} failed: "
+                    f"{e}. Retrying in {backoff * attempt:.1f}s."
+                )
+                await asyncio.sleep(backoff * attempt)
+
+    async def shutdown(self) -> None:
+        """Best-effort cleanup of all stack connections."""
+        try:
+            if self.postgres_pool is not None:
+                await self.postgres_pool.close()
+        except Exception as e:  # pragma: no cover - defensive
+            logger.debug(f"Postgres pool close failed: {e}")
+        try:
+            if self.redis_client is not None:
+                close = getattr(self.redis_client, "aclose", None) or getattr(
+                    self.redis_client, "close", None
+                )
+                if close is not None:
+                    res = close()
+                    if asyncio.iscoroutine(res):
+                        await res
+        except Exception as e:  # pragma: no cover - defensive
+            logger.debug(f"Redis close failed: {e}")
+        try:
+            if self.neo4j_driver is not None:
+                self.neo4j_driver.close()
+        except Exception as e:  # pragma: no cover - defensive
+            logger.debug(f"Neo4j driver close failed: {e}")
 
     async def _init_postgresql(self):
         """Initialize PostgreSQL connection (replaces SQLite)"""
@@ -289,6 +466,7 @@ class EnhancedCogneeMCPServer:
             )
             logger.info("PostgreSQL connection established")
         except Exception as e:
+            self.postgres_pool = None
             logger.error(f"Failed to connect to PostgreSQL: {e}")
             raise
 
@@ -305,6 +483,7 @@ class EnhancedCogneeMCPServer:
             collections = self.qdrant_client.get_collections()
             logger.info(f"Qdrant connection established. Collections: {len(collections.collections)}")
         except Exception as e:
+            self.qdrant_client = None
             logger.error(f"Failed to connect to Qdrant: {e}")
             raise
 
@@ -324,6 +503,7 @@ class EnhancedCogneeMCPServer:
 
             logger.info("Neo4j connection established")
         except Exception as e:
+            self.neo4j_driver = None
             logger.error(f"Failed to connect to Neo4j: {e}")
             raise
 
@@ -342,6 +522,7 @@ class EnhancedCogneeMCPServer:
             await self.redis_client.ping()
             logger.info("Redis connection established")
         except Exception as e:
+            self.redis_client = None
             logger.error(f"Failed to connect to Redis: {e}")
             raise
 
@@ -707,6 +888,120 @@ class EnhancedCogneeMCPServer:
             logger.error(f"Failed to get memory stats: {e}")
             raise HTTPException(status_code=500, detail=str(e))
 
+    async def _dependency_health(self) -> Dict[str, Any]:
+        """Probe each dependency; return per-dep status + overall readiness.
+
+        PostgreSQL is the only HARD dependency for readiness; the vector /
+        graph / cache tiers degrade gracefully. A single (fast) reconnect is
+        attempted for PostgreSQL when it is currently disconnected, so the
+        server self-heals once the database recovers -- without a restart.
+        """
+        deps: Dict[str, str] = {}
+
+        # PostgreSQL (critical) -- one-shot reconnect attempt if down.
+        if self.postgres_pool is None:
+            try:
+                await self._init_postgresql()
+            except Exception:
+                self.postgres_pool = None
+        try:
+            if self.postgres_pool is not None:
+                async with self.postgres_pool.acquire() as conn:
+                    await conn.fetchval("SELECT 1")
+                deps["postgresql"] = "connected"
+            else:
+                deps["postgresql"] = "disconnected"
+        except Exception as e:
+            deps["postgresql"] = f"error: {e}"
+
+        # Qdrant (degrade gracefully)
+        try:
+            if self.qdrant_client is not None:
+                cols = self.qdrant_client.get_collections()
+                deps["qdrant"] = f"connected ({len(cols.collections)} collections)"
+            else:
+                deps["qdrant"] = "disconnected"
+        except Exception as e:
+            deps["qdrant"] = f"error: {e}"
+
+        # Neo4j / graph (degrade gracefully)
+        try:
+            if self.neo4j_driver is not None:
+                with self.neo4j_driver.session() as session:
+                    session.run("RETURN 1").consume()
+                deps["neo4j"] = "connected"
+            else:
+                deps["neo4j"] = "disconnected"
+        except Exception as e:
+            deps["neo4j"] = f"error: {e}"
+
+        # Redis / cache (degrade gracefully)
+        try:
+            if self.redis_client is not None:
+                await self.redis_client.ping()
+                deps["redis"] = "connected"
+            else:
+                deps["redis"] = "disconnected"
+        except Exception as e:
+            deps["redis"] = f"error: {e}"
+
+        critical_ok = deps.get("postgresql") == "connected"
+        degraded = any(
+            not str(v).startswith("connected") for v in deps.values()
+        )
+        if not critical_ok:
+            overall = "unhealthy"
+        elif degraded:
+            overall = "degraded"
+        else:
+            overall = "healthy"
+        return {"overall": overall, "ready": critical_ok, "dependencies": deps}
+
+    async def _render_prometheus_metrics(self) -> str:
+        """Render Prometheus text-format metrics (no external dependency)."""
+        lines = [
+            "# HELP enhanced_cognee_up Server process up indicator",
+            "# TYPE enhanced_cognee_up gauge",
+            "enhanced_cognee_up 1",
+        ]
+        h = await self._dependency_health()
+        lines.append(
+            "# HELP enhanced_cognee_dependency_up Dependency state (1=up,0=down)"
+        )
+        lines.append("# TYPE enhanced_cognee_dependency_up gauge")
+        for dep, status in h["dependencies"].items():
+            up = 1 if str(status).startswith("connected") else 0
+            lines.append(
+                f'enhanced_cognee_dependency_up{{dependency="{dep}"}} {up}'
+            )
+        lines.append("# HELP enhanced_cognee_ready Readiness (1=ready,0=not)")
+        lines.append("# TYPE enhanced_cognee_ready gauge")
+        lines.append(f"enhanced_cognee_ready {1 if h['ready'] else 0}")
+        lines.append(
+            "# HELP enhanced_cognee_http_requests_total HTTP requests by "
+            "method and status class"
+        )
+        lines.append("# TYPE enhanced_cognee_http_requests_total counter")
+        for (method, status_class), count in sorted(_HTTP_REQUEST_COUNTS.items()):
+            lines.append(
+                f'enhanced_cognee_http_requests_total'
+                f'{{method="{method}",status="{status_class}"}} {count}'
+            )
+        try:
+            if self.postgres_pool is not None:
+                from src.multi_tenant import tenant_scoped_table
+                table = tenant_scoped_table("shared_memory.documents")
+                async with self.postgres_pool.acquire() as conn:
+                    total = await conn.fetchval(f"SELECT COUNT(*) FROM {table}")
+                lines.append(
+                    "# HELP enhanced_cognee_total_memories Total stored memories"
+                )
+                lines.append("# TYPE enhanced_cognee_total_memories gauge")
+                lines.append(f"enhanced_cognee_total_memories {int(total)}")
+        except Exception:
+            pass
+        return "\n".join(lines) + "\n"
+
     def setup_routes(self):
         """Setup FastAPI routes for MCP interface"""
 
@@ -887,6 +1182,37 @@ class EnhancedCogneeMCPServer:
             """MCP Tool: Get memory statistics"""
             return await self.get_memory_stats()
 
+        @self.app.get("/health/live")
+        async def health_live():
+            """Liveness probe: the process is up. Always 200 while serving."""
+            return {
+                "status": "alive",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+
+        @self.app.get("/health/ready")
+        async def health_ready():
+            """Readiness probe: 200 when critical deps are up, else 503."""
+            h = await self._dependency_health()
+            body = {
+                "status": h["overall"],
+                "ready": h["ready"],
+                "enhanced_mode": config.enhanced_mode,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "dependencies": h["dependencies"],
+            }
+            return JSONResponse(
+                status_code=200 if h["ready"] else 503, content=body
+            )
+
+        @self.app.get("/metrics")
+        async def metrics_endpoint():
+            """Prometheus text-format metrics (dependency-free exposition)."""
+            text = await self._render_prometheus_metrics()
+            return PlainTextResponse(
+                content=text, media_type="text/plain; version=0.0.4"
+            )
+
         @self.app.get("/health")
         async def health_check():
             """Health check endpoint with Enhanced stack status"""
@@ -948,18 +1274,12 @@ class EnhancedCogneeMCPServer:
 
             return health
 
-# Global server instance
+# Global server instance. The lifespan (defined above the class) drives
+# startup/shutdown; `app` IS the server's own app so the security, tenant,
+# CORS and metrics middleware actually apply to served requests (the previous
+# include_router wrapper silently dropped all middleware).
 server = EnhancedCogneeMCPServer()
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Manage application lifecycle"""
-    await server.initialize()
-    yield
-    # Cleanup (if needed)
-
-app = FastAPI(title="Enhanced Cognee MCP Server", lifespan=lifespan)
-app.include_router(server.app.router)
+app = server.app
 
 if __name__ == "__main__":
     import uvicorn

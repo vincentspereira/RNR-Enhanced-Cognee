@@ -8,11 +8,13 @@ Provides RESTful endpoints for external systems to interact with coordination la
 import asyncio
 import json
 import logging
+import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from .sub_agent_coordinator import (
     SubAgentCoordinator, AgentTask, TaskPriority, AgentStatus,
@@ -71,14 +73,57 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
+# CORS middleware (hardened)
+# Allowed origins come from the ENHANCED_CORS_ORIGINS env var (comma-separated).
+# If unset, default to an EMPTY list so there is NO cross-origin access by
+# default. The invalid+insecure combination of allow_origins=["*"] together
+# with allow_credentials=True is never produced: if the operator explicitly
+# sets origins to "*", credentials are forced off (with a logged warning);
+# otherwise credentials are allowed only for the explicit origin allow-list.
+_cors_origins_raw = os.getenv("ENHANCED_CORS_ORIGINS", "")
+_cors_origins = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()]
+
+if _cors_origins == ["*"]:
+    logger.warning(
+        "ENHANCED_CORS_ORIGINS is '*'; forcing allow_credentials=False "
+        "(wildcard origin with credentials is invalid and insecure)."
+    )
+    _cors_allow_credentials = False
+else:
+    _cors_allow_credentials = bool(_cors_origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=_cors_origins,
+    allow_credentials=_cors_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Authentication middleware (consistent with the main MCP server).
+# Every route EXCEPT the health/liveness endpoint requires a valid X-API-Key
+# header. require_api_key is a no-op when ENHANCED_API_KEY is unset (dev mode),
+# so local development and tests are unaffected; when the operator configures
+# the key, unauthenticated requests are rejected with HTTP 401.
+_UNAUTHENTICATED_PATHS = {"/health"}
+
+
+@app.middleware("http")
+async def _require_api_key_middleware(request: Request, call_next):
+    """Enforce X-API-Key auth on all routes except the health endpoint."""
+    from src.mcp_security import require_api_key
+
+    if request.url.path not in _UNAUTHENTICATED_PATHS:
+        provided = request.headers.get("x-api-key") or request.headers.get(
+            "X-API-Key"
+        )
+        try:
+            require_api_key(provided)
+        except PermissionError as e:
+            return JSONResponse(status_code=401, content={"detail": str(e)})
+
+    return await call_next(request)
 
 # Pydantic models for API
 class TaskRequest(BaseModel):
@@ -695,4 +740,10 @@ async def general_exception_handler(request, exc):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    # SECURITY: binding to 0.0.0.0 exposes this API on all interfaces. For
+    # production, prefer binding to 127.0.0.1 and placing this service behind a
+    # reverse proxy (e.g. nginx/traefik) that terminates TLS and forwards
+    # traffic. The bind host is read from COORDINATION_API_HOST; the default
+    # preserves the existing 0.0.0.0 behavior.
+    host = os.getenv("COORDINATION_API_HOST", "0.0.0.0")
+    uvicorn.run(app, host=host, port=8001)

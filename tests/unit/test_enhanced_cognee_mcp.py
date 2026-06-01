@@ -174,7 +174,13 @@ def client():
     test_app = FastAPI(title="Enhanced Cognee MCP Server Test")
     test_app.include_router(mod.server.app.router)
 
-    with TestClient(test_app, raise_server_exceptions=False) as tc:
+    # enhanced_mode=False makes any lifespan startup a no-op, so the mocked DB
+    # clients set above survive (a real connect would overwrite them and leave
+    # neo4j_driver=None). This restores the fixture's documented "no real DB
+    # connections" intent now that `app` is `server.app` (which carries the
+    # lifespan so middleware applies in production).
+    with patch.object(mod.config, "enhanced_mode", False), \
+            TestClient(test_app, raise_server_exceptions=False) as tc:
         tc._pool = pool
         tc._qdrant = qdrant
         tc._neo4j = neo4j
@@ -204,6 +210,10 @@ class TestEnhancedConfig:
                         if not k.startswith(("POSTGRES", "QDRANT", "NEO4J", "REDIS",
                                              "ENHANCED", "MEMORY", "EMBEDDING",
                                              "SIMILARITY", "PERFORMANCE", "AUTO"))}
+            # Passwords are now fail-closed via require_secret(); allow the
+            # built-in dev defaults so this test can validate the non-secret
+            # defaults (host/port/db/etc.) without ENHANCED_ENV=production.
+            env_copy["ENHANCED_ALLOW_INSECURE_DEFAULTS"] = "1"
             with patch.dict(os.environ, env_copy, clear=True):
                 cfg = EnhancedConfig()
         assert cfg.postgres_host == "localhost"

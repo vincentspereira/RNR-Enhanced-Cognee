@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -55,6 +56,16 @@ class TestRedisCompatDispatch:
 class TestLocustfileImports:
     """Confirm the load-test workload spec is structurally sound."""
 
+    @pytest.mark.skipif(
+        not os.getenv("ENHANCED_RUN_LOCUST_IMPORT"),
+        reason=(
+            "Executing the locustfile in-process triggers locust/gevent "
+            "monkey-patching that can deadlock under pytest-asyncio (this "
+            "hung the whole CI unit run). Syntax is validated by "
+            "test_locustfile_parses_without_locust; set "
+            "ENHANCED_RUN_LOCUST_IMPORT=1 to run the full import check."
+        ),
+    )
     def test_locustfile_imports(self):
         # Locust is a heavy dependency to require for the unit-test
         # suite; only run this check if it happens to be installed.
