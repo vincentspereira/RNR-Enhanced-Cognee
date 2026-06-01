@@ -37,7 +37,7 @@ env:
   # AGE_PORT: 25432
   # AGE_DB: cognee_db
   # AGE_USER: cognee_user
-  # AGE_PASSWORD: cognee_password
+  # AGE_PASSWORD: your-db-password   # comes from POSTGRES_PASSWORD / .env
   AGE_GRAPH_NAME: cognee_graph
 
 # Containers this profile expects to find running.

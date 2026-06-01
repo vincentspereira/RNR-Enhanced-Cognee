@@ -28,7 +28,7 @@ Superset:
 
 1. **`enhanced_cognee_postgres`** -- the main Postgres instance:
    ```
-   postgresql+psycopg2://cognee_user:cognee_password@postgres-enhanced:5432/cognee_db
+   postgresql+psycopg2://cognee_user:your-db-password@postgres-enhanced:5432/cognee_db
    ```
 2. **`signoz_clickhouse`** -- SigNoz's ClickHouse trace store:
    ```

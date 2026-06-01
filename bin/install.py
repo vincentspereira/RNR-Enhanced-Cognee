@@ -366,11 +366,15 @@ cd "{self.install_dir}"
 import psycopg2, redis, qdrant_client, neo4j
 import os
 
-# Test PostgreSQL
+# Test PostgreSQL (credentials come from the environment/.env -- never hardcoded)
 try:
-    conn = psycopg2.connect(host="localhost", port=25432, database="cognee_db", user="cognee_user", password="cognee_password")
-    conn.close()
-    print("[OK] PostgreSQL connection successful")
+    pg_password = os.environ.get("POSTGRES_PASSWORD")
+    if not pg_password:
+        print("[WARNING] POSTGRES_PASSWORD not set; skipping PostgreSQL connection test")
+    else:
+        conn = psycopg2.connect(host="localhost", port=25432, database="cognee_db", user="cognee_user", password=pg_password)
+        conn.close()
+        print("[OK] PostgreSQL connection successful")
 except Exception as e:
     print(f"[ERROR] PostgreSQL failed: {e}")
 
@@ -390,13 +394,17 @@ try:
 except Exception as e:
     print(f"[ERROR] Qdrant failed: {e}")
 
-# Test Neo4j
+# Test Neo4j (credentials come from the environment/.env -- never hardcoded)
 try:
-    driver = neo4j.GraphDatabase.driver("bolt://localhost:27687", auth=("neo4j", "cognee_password"))
-    with driver.session() as session:
-        session.run("RETURN 1")
-    driver.close()
-    print("[OK] Neo4j connection successful")
+    neo4j_password = os.environ.get("NEO4J_PASSWORD")
+    if not neo4j_password:
+        print("[WARNING] NEO4J_PASSWORD not set; skipping Neo4j connection test")
+    else:
+        driver = neo4j.GraphDatabase.driver("bolt://localhost:27687", auth=("neo4j", neo4j_password))
+        with driver.session() as session:
+            session.run("RETURN 1")
+        driver.close()
+        print("[OK] Neo4j connection successful")
 except Exception as e:
     print(f"[ERROR] Neo4j failed: {e}")
 '''

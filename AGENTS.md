@@ -420,7 +420,7 @@ Codex MCP config (`~/.codex/mcp_servers.json` or equivalent):
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "ENHANCED_GRAPH_PROVIDER": "arcadedb",
@@ -429,7 +429,7 @@ Codex MCP config (`~/.codex/mcp_servers.json` or equivalent):
         "ARCADEDB_HTTP_PORT": "22480",
         "ARCADEDB_DATABASE": "cognee",
         "ARCADEDB_USER": "root",
-        "ARCADEDB_PASSWORD": "cognee_password",
+        "ARCADEDB_PASSWORD": "your-db-password",
         "ARCADEDB_TRANSPORT": "bolt",
         "ENHANCED_CACHE_PROVIDER": "valkey",
         "VALKEY_HOST": "localhost",
@@ -646,7 +646,7 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=25432
 POSTGRES_DB=cognee_db
 POSTGRES_USER=cognee_user
-POSTGRES_PASSWORD=cognee_password
+POSTGRES_PASSWORD=your-db-password
 
 # Qdrant
 QDRANT_HOST=localhost
@@ -659,7 +659,7 @@ ARCADEDB_BOLT_PORT=27687
 ARCADEDB_HTTP_PORT=22480
 ARCADEDB_DATABASE=cognee
 ARCADEDB_USER=root
-ARCADEDB_PASSWORD=cognee_password
+ARCADEDB_PASSWORD=your-db-password
 ARCADEDB_TRANSPORT=bolt
 
 # Valkey (cache, replaces Redis)
@@ -843,7 +843,7 @@ docker exec -it postgres-enhanced psql -U cognee_user -d cognee_db -c "SELECT 1;
 curl http://localhost:26333/collections
 
 # Test ArcadeDB
-curl -u root:cognee_password http://localhost:22480/api/v1/server
+curl -u root:your-db-password http://localhost:22480/api/v1/server
 
 # Test Valkey
 docker exec -it valkey-enhanced valkey-cli PING

@@ -874,12 +874,12 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }

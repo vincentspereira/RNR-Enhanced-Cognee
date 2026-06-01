@@ -87,7 +87,7 @@ Use these commands to verify connectivity independently of the Enhanced Cognee C
 **Neo4j (requires cypher-shell inside the container):**
 
     docker exec -it neo4j-enhanced cypher-shell \
-      -u neo4j -p cognee_password \
+      -u neo4j -p your-db-password \
       "MATCH (n) RETURN count(n) AS node_count;"
 
 ---

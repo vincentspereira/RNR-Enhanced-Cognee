@@ -537,7 +537,7 @@ services:
     image: apache/superset:6.1.0
     ports: ["8088:8088"]
     environment:
-      DATABASE_URL: postgresql://cognee_user:cognee_password@postgres-enhanced:5432/superset_metadata
+      DATABASE_URL: postgresql://cognee_user:your-db-password@postgres-enhanced:5432/superset_metadata
     # Reuses our existing Postgres for metadata storage
 
 volumes:

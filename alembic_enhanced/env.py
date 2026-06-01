@@ -31,7 +31,12 @@ def _get_dsn() -> str:
     port = os.getenv("POSTGRES_PORT", "25432")
     db = os.getenv("POSTGRES_DB", "cognee_db")
     user = os.getenv("POSTGRES_USER", "cognee_user")
-    password = os.getenv("POSTGRES_PASSWORD", "cognee_password")
+    password = os.getenv("POSTGRES_PASSWORD")
+    if not password:
+        raise RuntimeError(
+            "POSTGRES_PASSWORD must be set (no insecure default). "
+            "Export it or load it from the stack .env before running migrations."
+        )
     return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}"
 
 

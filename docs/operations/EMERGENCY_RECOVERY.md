@@ -149,7 +149,7 @@ async def check():
         port=25432,
         database='cognee_db',
         user='cognee_user',
-        password='cognee_password'
+        password='your-db-password'
     )
     async with pool.acquire() as conn:
         count = await conn.fetchval('SELECT COUNT(*) FROM shared_memory.documents')

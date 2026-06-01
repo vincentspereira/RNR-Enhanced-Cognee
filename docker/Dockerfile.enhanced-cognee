@@ -2,7 +2,7 @@
 # Integrates Enhanced Cognee with enterprise-grade memory stack
 # Replaces default databases: SQLite->PostgreSQL, LanceDB->Qdrant, Kuzu->Neo4j, adds Redis
 
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -73,19 +73,27 @@ COPY config/ /app/config/
 COPY docker/scripts/ /app/scripts/
 
 # Set environment variables for Enhanced Stack
-ENV PYTHONPATH=/app/src
+# PYTHONPATH=/app so the `src` package resolves (module is src.enhanced_cognee_mcp:app).
+ENV PYTHONPATH=/app
 ENV ENHANCED_COGNEE_MODE=true
 ENV LOG_LEVEL=INFO
+ENV PYTHONUNBUFFERED=1
 
-# Create directories for Enhanced Cognee data
-RUN mkdir -p /app/data /app/logs /app/tmp
+# Create a non-root user and make the runtime data/log dirs writable by it.
+RUN groupadd --system appuser \
+    && useradd --system --gid appuser --create-home --home-dir /home/appuser appuser \
+    && mkdir -p /app/data /app/logs /app/tmp \
+    && chown -R appuser:appuser /app
+
+# Drop privileges -- the app runs as the unprivileged appuser.
+USER appuser
 
 # Expose port
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
+# Health check -- liveness endpoint (200 while the process is up).
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health/live || exit 1
 
-# Start Enhanced Cognee with configuration
-CMD ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+# Start the Enhanced Cognee FastAPI app. NO --reload in production.
+CMD ["python", "-m", "uvicorn", "src.enhanced_cognee_mcp:app", "--host", "0.0.0.0", "--port", "8080"]

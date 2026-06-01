@@ -1,0 +1,88 @@
+# Enhanced Cognee - Production Dockerfile
+# Production-tuned build of the FastAPI HTTP app (src.enhanced_cognee_mcp:app).
+# Referenced by docker/docker-compose-production.yml (build context = repo root).
+#
+# Differences vs docker/Dockerfile.enhanced-cognee:
+#   - Multiple uvicorn workers (UVICORN_WORKERS, default 2)
+#   - No build tooling left in the final layer beyond what pip needs
+#   - Non-root user, no --reload
+
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    wget \
+    git \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Enhanced Cognee runtime dependencies (mirrors the enhanced-cognee image)
+RUN pip install --no-cache-dir \
+    psycopg2-binary==2.9.9 \
+    qdrant-client==1.10.0 \
+    neo4j==5.25.0 \
+    redis==5.1.1 \
+    pgvector==0.3.2 \
+    fastapi==0.110.0 \
+    uvicorn==0.27.1 \
+    pydantic==2.6.1 \
+    sqlalchemy==2.0.25 \
+    alembic==1.13.1 \
+    python-dotenv==1.0.1 \
+    httpx==0.26.0 \
+    aiofiles==23.2.1 \
+    python-multipart==0.0.9 \
+    python-jose[cryptography]==3.3.0 \
+    passlib[bcrypt]==1.7.4 \
+    structlog==24.1.0 \
+    pyyaml==6.0.1 \
+    tiktoken==0.6.0 \
+    openai==1.12.0 \
+    prometheus-client==0.20.0
+
+# Copy Enhanced Cognee application code
+COPY src/ /app/src/
+COPY alembic/ /app/alembic/
+COPY alembic.ini /app/
+COPY alembic-enhanced.ini /app/
+COPY config/ /app/config/
+
+# Environment for the Enhanced Stack.
+# PYTHONPATH=/app so the `src` package resolves (module is src.enhanced_cognee_mcp:app).
+ENV PYTHONPATH=/app
+ENV ENHANCED_COGNEE_MODE=true
+ENV LOG_LEVEL=INFO
+ENV PYTHONUNBUFFERED=1
+# Number of uvicorn workers (override at runtime).
+ENV UVICORN_WORKERS=2
+# Listen port (override at runtime).
+ENV PORT=8080
+
+# Create a non-root user and make runtime dirs writable.
+RUN groupadd --system appuser \
+    && useradd --system --gid appuser --create-home --home-dir /home/appuser appuser \
+    && mkdir -p /app/data /app/logs /app/tmp \
+    && chown -R appuser:appuser /app
+
+# Drop privileges.
+USER appuser
+
+# Expose the app port.
+EXPOSE 8080
+
+# Health check -- liveness endpoint (200 while the process is up).
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f "http://localhost:${PORT}/health/live" || exit 1
+
+# Production start: multiple workers, NO --reload. Shell form so ${VAR} expands.
+CMD ["sh", "-c", "exec uvicorn src.enhanced_cognee_mcp:app --host 0.0.0.0 --port ${PORT} --workers ${UVICORN_WORKERS}"]

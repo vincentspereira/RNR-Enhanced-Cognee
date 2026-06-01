@@ -210,7 +210,7 @@ Minimum rotation cadence for each secret class:
 
 ## Project-specific notes
 
-- The default `cognee_password` in our docker-compose files is intentionally not secret-grade -- it's a placeholder for local dev. **Change it before any non-localhost deploy.** A 32-byte random string from `python -c "import secrets; print(secrets.token_urlsafe(32))"` works.
+- The docker-compose files are fail-closed: `POSTGRES_PASSWORD`, `ARCADEDB_PASSWORD`, and `NEO4J_PASSWORD` are required (`${VAR:?...}`) with **no baked-in default**, so the stack will not start without them. The local installers (`deploy/local/install.sh` / `install.ps1`) generate a strong random password per service at install time and write it to the stack `.env`. To rotate or set one manually, a 32-byte random string from `python -c "import secrets; print(secrets.token_urlsafe(32))"` works. **Never reuse a known/shared password for any non-localhost deploy.**
 - Multi-tenant deployments should also set `ENHANCED_REQUIRE_TENANT=1` (production safety knob) so un-tenanted storage calls raise rather than silently fall back to the global tables. Not a secret, but related to the same trust model.
 - `~/.claude.json` is the canonical secrets store for personal Claude Code MCP usage. Keep its mode at `0600` (owner-only read).
 - Never commit `.env` files. The repo `.gitignore` already excludes them; if you find one in git history, scrub it (`git filter-repo` or BFG) and rotate every key it contained.

@@ -29,7 +29,9 @@ def main():
     os.environ["POSTGRES_PORT"] = "25432"  # Mapped port from Docker
     os.environ["POSTGRES_DB"] = "cognee_db"
     os.environ["POSTGRES_USER"] = "cognee_user"
-    os.environ["POSTGRES_PASSWORD"] = "cognee_password"
+    # Secret must come from environment/.env -- never hardcode a default.
+    if not os.environ.get("POSTGRES_PASSWORD"):
+        raise RuntimeError("POSTGRES_PASSWORD must be set in the environment/.env")
     os.environ["DB_PROVIDER"] = "postgres"
     os.environ["DB_NAME"] = "cognee_db"
 
@@ -47,7 +49,9 @@ def main():
     # Neo4j Graph Database (replaces Kuzu)
     os.environ["NEO4J_URI"] = "bolt://localhost:27687"  # Mapped port from Docker
     os.environ["NEO4J_USER"] = "neo4j"
-    os.environ["NEO4J_PASSWORD"] = "cognee_password"
+    # Secret must come from environment/.env -- never hardcode a default.
+    if not os.environ.get("NEO4J_PASSWORD"):
+        raise RuntimeError("NEO4J_PASSWORD must be set in the environment/.env")
     os.environ["NEO4J_DATABASE"] = "neo4j"
     os.environ["GRAPH_DATABASE_PROVIDER"] = "neo4j"
 

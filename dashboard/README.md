@@ -73,7 +73,7 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=25432
 POSTGRES_DB=cognee_db
 POSTGRES_USER=cognee_user
-POSTGRES_PASSWORD=cognee_password
+POSTGRES_PASSWORD=your-db-password
 
 # API
 CORS_ORIGINS=http://localhost:3000

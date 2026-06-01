@@ -94,22 +94,44 @@ sudo chown -R cognee:cognee /opt/enhanced-cognee
 cd /opt/enhanced-cognee
 ```
 
-### 5. Bring up the Docker stack
+### 5. Create the .env secrets file
+
+The compose stack now FAILS CLOSED if required secrets are missing -- there are
+no insecure defaults. Create `/opt/enhanced-cognee/.env` with at least:
 
 ```bash
-docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
+cat > /opt/enhanced-cognee/.env <<'EOF'
+# Required -- the stack refuses to start without these.
+POSTGRES_PASSWORD=change-me-strong-pg
+NEO4J_PASSWORD=change-me-strong-graph   # ArcadeDB root password (or set ARCADEDB_PASSWORD)
+LLM_API_KEY=your-llm-api-key
+ENHANCED_API_KEY=change-me-strong-api-key
+ENHANCED_ENV=production
+
+# Optional
+REDIS_PASSWORD=
+QDRANT_API_KEY=
+LLM_MODEL=glm-4.6
+LLM_PROVIDER=zai
+LLM_ENDPOINT=https://api.z.ai/v1
+EOF
+
+chmod 600 /opt/enhanced-cognee/.env
+```
+
+### 6. Bring up the Docker stack (databases + app)
+
+```bash
+docker compose -f docker/docker-compose-enhanced-cognee.yml up -d --build
 docker ps
-# All 4 containers should report 'healthy' within ~30s
+# 4 DB containers + the enhanced-cognee app should report 'healthy' within ~30-60s.
+# The app is built from docker/Dockerfile.enhanced-cognee and listens on
+# host port 28080 (container 8080). DB ports are bound to 127.0.0.1 only.
 ```
 
-### 6. Install Python deps
-
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -e .
-```
+This single command now runs everything, including the FastAPI app -- you do
+NOT also need the systemd unit in step 9 (that is an alternative host-based
+runner for operators who prefer running the app outside Docker).
 
 ### 7. Configure Caddy reverse proxy
 
@@ -124,10 +146,28 @@ sudo systemctl reload caddy
 ```
 
 Caddy will automatically obtain a Let's Encrypt certificate on first request.
+Point its reverse_proxy upstream at the app:
+- Compose-run app (step 6, default): `127.0.0.1:28080`
+- Host systemd app (step 8, alternative): `127.0.0.1:8000`
 
-### 8. Run the FastAPI MCP variant as a systemd service
+### 8. (Alternative) Run the FastAPI app on the host via systemd
+
+SKIP this if you used the compose stack in step 6 -- it already runs the app in
+a container. This unit is for operators who prefer running the app directly on
+the host (listens on 127.0.0.1:8000). It reads secrets from
+`/etc/enhanced-cognee/secrets.env` (600 perms; same required keys as the .env in
+step 5) and waits for the `postgres-enhanced-cognee` container to be healthy.
 
 ```bash
+# Host venv is only needed for this alternative path:
+sudo apt install -y python3.12 python3.12-venv python3-pip
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip && pip install -e .
+
+sudo mkdir -p /etc/enhanced-cognee
+sudo cp /opt/enhanced-cognee/.env /etc/enhanced-cognee/secrets.env
+sudo chmod 600 /etc/enhanced-cognee/secrets.env
+
 sudo cp /opt/enhanced-cognee/deploy/vps/enhanced-cognee.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now enhanced-cognee
@@ -149,9 +189,16 @@ echo '30 2 * * * /usr/local/bin/cognee-backup >> /var/log/cognee-backup.log 2>&1
 ### 10. Smoke test
 
 ```bash
-curl -sf https://<YOUR-DOMAIN>/health
-# Expected: {"status":"ok","services":{"postgres":"ok","qdrant":"ok","neo4j":"ok","redis":"ok"}}
+# Readiness: 200 when all critical dependencies are up; 503 if any dep is down.
+curl -sf https://<YOUR-DOMAIN>/health/ready && echo "READY (200)"
+# Liveness: 200 whenever the process is running (does not check dependencies).
+curl -sf https://<YOUR-DOMAIN>/health/live && echo "LIVE (200)"
 ```
+
+`/health/ready` returns HTTP 503 (so `curl -sf` exits non-zero) when a critical
+dependency such as PostgreSQL or the graph DB is unavailable -- use it as the
+real "is the service usable" check. ENHANCED_API_KEY and ENHANCED_ENV=production
+must be set (step 5) or the app will refuse to start.
 
 ## Day-2 Operations
 

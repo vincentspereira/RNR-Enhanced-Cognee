@@ -57,12 +57,12 @@ The **Model Context Protocol (MCP)** is an open standard that allows AI assistan
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -110,12 +110,12 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
           "POSTGRES_PORT": "25432",
           "POSTGRES_DB": "cognee_db",
           "POSTGRES_USER": "cognee_user",
-          "POSTGRES_PASSWORD": "cognee_password",
+          "POSTGRES_PASSWORD": "your-db-password",
           "QDRANT_HOST": "localhost",
           "QDRANT_PORT": "26333",
           "NEO4J_URI": "bolt://localhost:27687",
           "NEO4J_USER": "neo4j",
-          "NEO4J_PASSWORD": "cognee_password",
+          "NEO4J_PASSWORD": "your-db-password",
           "REDIS_HOST": "localhost",
           "REDIS_PORT": "26379"
         }
@@ -152,12 +152,12 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -192,12 +192,12 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
           "POSTGRES_PORT": "25432",
           "POSTGRES_DB": "cognee_db",
           "POSTGRES_USER": "cognee_user",
-          "POSTGRES_PASSWORD": "cognee_password",
+          "POSTGRES_PASSWORD": "your-db-password",
           "QDRANT_HOST": "localhost",
           "QDRANT_PORT": "26333",
           "NEO4J_URI": "bolt://localhost:27687",
           "NEO4J_USER": "neo4j",
-          "NEO4J_PASSWORD": "cognee_password",
+          "NEO4J_PASSWORD": "your-db-password",
           "REDIS_HOST": "localhost",
           "REDIS_PORT": "26379"
         }
@@ -227,12 +227,12 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -261,12 +261,12 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -314,12 +314,12 @@ Create/edit VS Code settings (`settings.json`):
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -346,12 +346,12 @@ Create `.vscode/settings.json` in your project:
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -417,12 +417,12 @@ Create/edit VS Code settings (`settings.json`):
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -449,12 +449,12 @@ Create `.vscode/settings.json` in your project:
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
         "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "cognee_password",
+        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }

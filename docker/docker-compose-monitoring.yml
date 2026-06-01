@@ -238,7 +238,7 @@ services:
     image: prometheuscommunity/postgres-exporter:v0.12.0
     container_name: postgres-exporter-enhanced-cognee
     environment:
-      DATA_SOURCE_NAME: postgresql://cognee_user:${POSTGRES_PASSWORD:-cognee_password}@postgres:5432/cognee_db?sslmode=disable
+      DATA_SOURCE_NAME: postgresql://cognee_user:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}@postgres:5432/cognee_db?sslmode=disable
       PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres_exporter/queries.yaml
     volumes:
       - ./monitoring/postgres-exporter/queries.yaml:/etc/postgres_exporter/queries.yaml:ro

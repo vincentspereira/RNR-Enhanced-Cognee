@@ -80,7 +80,7 @@ Create `.env` file:
 
 ```bash
 # Database Configuration
-POSTGRES_PASSWORD=cognee_password
+POSTGRES_PASSWORD=your-db-password
 QDRANT_API_KEY=your_qdrant_api_key
 NEO4J_PASSWORD=neo4j_password
 REDIS_PASSWORD=redis_password
@@ -135,7 +135,7 @@ async def setup_postgres():
         port=25432,
         database="cognee_db",
         user="cognee_user",
-        password="cognee_password"
+        password="your-db-password"
     )
 
     await register_vector(conn)
@@ -486,7 +486,7 @@ async def test_database_connections():
     try:
         # Test PostgreSQL
         conn = await asyncpg.connect(
-            "postgresql://cognee_user:cognee_password@localhost:25432/cognee_db"
+            "postgresql://cognee_user:your-db-password@localhost:25432/cognee_db"
         )
         print("✅ PostgreSQL connection successful")
         await conn.close()

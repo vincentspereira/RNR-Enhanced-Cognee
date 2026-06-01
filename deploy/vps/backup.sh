@@ -70,7 +70,7 @@ fi
 
 log "Backing up Neo4j"
 if docker exec cognee-mcp-neo4j cypher-shell \
-    -u neo4j -p cognee_password \
+    -u neo4j -p "${NEO4J_PASSWORD:?NEO4J_PASSWORD must be set}" \
     "CALL apoc.export.cypher.all('/var/lib/neo4j/import/backup-${DATE}.cypher', {format:'cypher-shell'})" \
     > /dev/null 2>&1; then
     docker cp "cognee-mcp-neo4j:/var/lib/neo4j/import/backup-${DATE}.cypher" "$TARGET/neo4j-backup.cypher" 2>/dev/null \

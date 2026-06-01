@@ -22,7 +22,7 @@ export REDIS_HOST      ?= localhost
 export REDIS_PORT      ?= 26379
 export NEO4J_URI       ?= bolt://localhost:27687
 export NEO4J_USER      ?= neo4j
-export NEO4J_PASSWORD  ?= cognee_password
+export NEO4J_PASSWORD  ?= cognee_test_password
 
 PY ?= python
 PIP ?= pip

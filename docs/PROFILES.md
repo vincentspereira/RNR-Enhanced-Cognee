@@ -150,7 +150,7 @@ ARCADEDB_HOST=localhost            # default
 ARCADEDB_HTTP_PORT=2480            # ArcadeDB Studio + command API port
 ARCADEDB_DATABASE=cognee_graph     # default
 ARCADEDB_USER=root                 # default
-ARCADEDB_PASSWORD=cognee_password  # default
+ARCADEDB_PASSWORD=your-db-password  # default
 ```
 
 The HTTP transport wraps `POST /api/v1/command/{db}` and exposes the
@@ -165,7 +165,7 @@ ENHANCED_GRAPH_PROVIDER=arcadedb
 ARCADEDB_TRANSPORT=bolt            # default; can be omitted
 ARCADEDB_URI=bolt://localhost:27687
 ARCADEDB_USER=root
-ARCADEDB_PASSWORD=cognee_password
+ARCADEDB_PASSWORD=your-db-password
 ```
 
 **When NOT to use the HTTP transport:** if you need bulk writes (the
@@ -377,7 +377,7 @@ POSTGRES_HOST=cockroach.internal
 POSTGRES_PORT=26257
 POSTGRES_DB=defaultdb
 POSTGRES_USER=root
-POSTGRES_PASSWORD=cognee_password
+POSTGRES_PASSWORD=your-db-password
 ```
 
 Caveats vs vanilla Postgres:

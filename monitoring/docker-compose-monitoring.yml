@@ -148,7 +148,7 @@ services:
       - "8088:8088"                       # Superset UI: http://localhost:8088
     environment:
       SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:-changeme_use_a_real_secret_in_production}
-      DATABASE_URL: ${SUPERSET_DATABASE_URL:-postgresql+psycopg2://cognee_user:cognee_password@host.docker.internal:25432/cognee_db?options=-csearch_path=superset_metadata}
+      DATABASE_URL: ${SUPERSET_DATABASE_URL:-postgresql+psycopg2://cognee_user:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@host.docker.internal:25432/cognee_db?options=-csearch_path=superset_metadata}
       SUPERSET_LOAD_EXAMPLES: "no"
     extra_hosts:
       - "host.docker.internal:host-gateway"

@@ -26,7 +26,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
     ports:
-      - "${POSTGRES_PORT:-25432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-25432}:5432"  # localhost only
     networks:
       - cognee-network
     healthcheck:
@@ -59,12 +59,13 @@ services:
     volumes:
       - qdrant_data:/qdrant/storage
     ports:
-      - "${QDRANT_PORT:-26333}:6333"
-      - "${QDRANT_GRPC_PORT:-26334}:6334"
+      - "127.0.0.1:${QDRANT_PORT:-26333}:6333"  # localhost only
+      - "127.0.0.1:${QDRANT_GRPC_PORT:-26334}:6334"  # localhost only
     networks:
       - cognee-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      # Qdrant has no /health route; use the readiness endpoint.
+      test: ["CMD", "curl", "-f", "http://localhost:6333/readyz"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -99,8 +100,8 @@ services:
       - neo4j_data:/data
       - neo4j_logs:/logs
     ports:
-      - "${NEO4J_BOLT_PORT:-27687}:7687"
-      - "${NEO4J_HTTP_PORT:-27474}:7474"
+      - "127.0.0.1:${NEO4J_BOLT_PORT:-27687}:7687"  # localhost only
+      - "127.0.0.1:${NEO4J_HTTP_PORT:-27474}:7474"  # localhost only
     networks:
       - cognee-network
     healthcheck:
@@ -124,11 +125,11 @@ services:
     image: valkey/valkey:8-alpine
     container_name: cognee-mcp-valkey
     restart: unless-stopped
-    command: valkey-server --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
+    command: valkey-server --requirepass ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env} --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
     volumes:
       - redis_data:/data
     ports:
-      - "${REDIS_PORT:-26379}:6379"
+      - "127.0.0.1:${REDIS_PORT:-26379}:6379"  # localhost only
     networks:
       - cognee-network
     healthcheck:
@@ -152,26 +153,41 @@ services:
       dockerfile: docker/Dockerfile.production
     container_name: cognee-server-prod
     restart: unless-stopped
+    # The app listens on 8080 (src.enhanced_cognee_mcp:app). PORT is honoured by
+    # Dockerfile.production. NO --reload; workers via UVICORN_WORKERS.
     environment:
+      PORT: 8080
+      UVICORN_WORKERS: ${UVICORN_WORKERS:-2}
+
+      # This production profile uses Neo4j (not the ArcadeDB default). The app
+      # is told to use the neo4j graph provider explicitly.
+      ENHANCED_GRAPH_PROVIDER: neo4j
+
       # Database Configuration
       POSTGRES_HOST: postgres-enhanced
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-cognee_db}
       POSTGRES_USER: ${POSTGRES_USER:-cognee_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
 
       QDRANT_HOST: qdrant-enhanced
       QDRANT_PORT: 6333
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
 
       NEO4J_URI: bolt://neo4j-enhanced:7687
       NEO4J_USER: neo4j
-      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
 
       REDIS_HOST: redis-enhanced
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
 
-      # Production Settings
+      # LLM configuration -- API key is REQUIRED (no embedded default).
+      LLM_API_KEY: ${LLM_API_KEY:?LLM_API_KEY must be set in .env}
+
+      # Production Settings -- the app reads ENHANCED_ENV and FAILS CLOSED if
+      # required secrets are missing in production.
+      ENHANCED_ENV: ${ENHANCED_ENV:-production}
       ENVIRONMENT: production
       LOG_LEVEL: INFO
       DEBUG: "false"
@@ -181,19 +197,19 @@ services:
       CONNECTION_TIMEOUT: 30
       QUERY_TIMEOUT: 60
 
-      # Security
-      API_KEY: ${COGNEE_API_KEY}
+      # Security -- API-key auth. ENHANCED_API_KEY is what the app reads.
+      ENHANCED_API_KEY: ${ENHANCED_API_KEY:?set ENHANCED_API_KEY in .env}
       ENABLE_AUTH: "true"
 
-      # Monitoring
+      # Monitoring -- /metrics is served by the app on the app port (8080).
       ENABLE_METRICS: "true"
-      METRICS_PORT: 9090
     volumes:
       - ../logs:/app/logs
       - ./config:/app/config:ro
     ports:
-      - "${MCP_SERVER_PORT:-8000}:8000"
-      - "9090:9090"  # Metrics endpoint
+      # App HTTP + /metrics on the same port (8080). Bound to localhost because
+      # nginx-proxy terminates TLS and proxies to this service over the network.
+      - "127.0.0.1:${MCP_SERVER_PORT:-8080}:8080"
     networks:
       - cognee-network
     depends_on:
@@ -206,10 +222,12 @@ services:
       redis-enhanced:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      # Liveness endpoint (200 while the process is up).
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:

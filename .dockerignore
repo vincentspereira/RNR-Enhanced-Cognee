@@ -1,16 +1,72 @@
-bin
+# .dockerignore -- keep the build context small (was sending 380MB+).
+# Keep: src/, cognee/, distributed/, config/, requirements*.txt, pyproject.toml,
+#       uv.lock, poetry.lock, README.md, entrypoint.sh, alembic/, alembic*.ini.
+
+# --- Version control / CI ---
+.git
+.github
+.gitattributes
+
+# --- Python caches / build artifacts ---
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class
+*.so
+.Python
+build
 dist
+*.egg-info
+.eggs
+
+# --- Virtual environments ---
+.venv
+venv
+env
+
+# --- Test / coverage / type-check caches ---
+tests/
+.pytest_cache
+.hypothesis
+htmlcov/
+.coverage
+.coverage.*
+.mypy_cache
+.ruff_cache
+.tox
+
+# --- Logs ---
+*.log
+security_events.log
+test_security_events.log
+
+# --- Local databases / data dirs (huge, never needed in image) ---
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backups/
+lancedb_data/
+graphify-out/
+
+# --- Docs / notebooks / frontend / non-runtime assets ---
 docs
-evals
-tests
-tools
-assets
 notebooks
 cognee-frontend
+evals
+tools
+assets
 
-.dlt
-.venv
-.github
-
+# --- Editor / OS cruft ---
 .idea
 .vscode
+.dlt
+*.swp
+*.swo
+.DS_Store
+
+# --- Old/scratch files ---
+README - Old *.md
+_tmp_build.py

@@ -66,7 +66,7 @@ Add this block to `~/.claude.json` (Claude Code) or your IDE's MCP config:
         "POSTGRES_PORT": "25432",
         "POSTGRES_DB": "cognee_db",
         "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "cognee_password",
+        "POSTGRES_PASSWORD": "your-db-password",
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "ENHANCED_GRAPH_PROVIDER": "arcadedb",
@@ -75,7 +75,7 @@ Add this block to `~/.claude.json` (Claude Code) or your IDE's MCP config:
         "ARCADEDB_HTTP_PORT": "22480",
         "ARCADEDB_DATABASE": "cognee_graph",
         "ARCADEDB_USER": "root",
-        "ARCADEDB_PASSWORD": "cognee_password",
+        "ARCADEDB_PASSWORD": "your-db-password",
         "ENHANCED_CACHE_PROVIDER": "valkey",
         "VALKEY_HOST": "localhost",
         "VALKEY_PORT": "26379"

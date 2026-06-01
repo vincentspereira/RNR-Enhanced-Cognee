@@ -10,8 +10,9 @@ User=cognee
 Group=cognee
 WorkingDirectory=/opt/enhanced-cognee
 
-# Wait for Docker stack to be healthy before starting
-ExecStartPre=/bin/bash -c 'for i in {1..30}; do docker compose -f /opt/enhanced-cognee/docker/docker-compose-enhanced-cognee.yml ps --filter "health=healthy" --format json | grep -q cognee-mcp-postgres && exit 0 || sleep 2; done; exit 1'
+# Wait for Docker stack to be healthy before starting.
+# Container name must match the compose (postgres-enhanced-cognee).
+ExecStartPre=/bin/bash -c 'for i in {1..30}; do docker compose -f /opt/enhanced-cognee/docker/docker-compose-enhanced-cognee.yml ps --filter "health=healthy" --format json | grep -q postgres-enhanced-cognee && exit 0 || sleep 2; done; exit 1'
 
 # Run the FastAPI MCP variant on port 8000 (Caddy reverse-proxies HTTPS)
 ExecStart=/opt/enhanced-cognee/.venv/bin/uvicorn src.enhanced_cognee_mcp:app \
@@ -44,25 +45,37 @@ RestrictNamespaces=true
 RestrictRealtime=true
 LockPersonality=true
 
-# Environment
+# Environment -- non-secret connection settings only.
+# The default Docker stack is ArcadeDB (Apache-2.0): admin user is `root` and
+# the Bolt endpoint is bolt://localhost:27687. The graph env vars below are set
+# to match that stack. To run against real Neo4j instead, set
+# ENHANCED_GRAPH_PROVIDER=neo4j and NEO4J_USER=neo4j in the secrets file.
 Environment="ENHANCED_COGNEE_MODE=true"
+Environment="ENHANCED_ENV=production"
+Environment="ENHANCED_GRAPH_PROVIDER=arcadedb"
 Environment="POSTGRES_HOST=localhost"
 Environment="POSTGRES_PORT=25432"
 Environment="POSTGRES_DB=cognee_db"
 Environment="POSTGRES_USER=cognee_user"
-Environment="POSTGRES_PASSWORD=cognee_password"
 Environment="QDRANT_HOST=localhost"
 Environment="QDRANT_PORT=26333"
+Environment="ARCADEDB_URI=bolt://localhost:27687"
+Environment="ARCADEDB_USER=root"
 Environment="NEO4J_URI=bolt://localhost:27687"
-Environment="NEO4J_USER=neo4j"
-Environment="NEO4J_PASSWORD=cognee_password"
+Environment="NEO4J_USER=root"
+Environment="NEO4J_DATABASE=cognee_graph"
 Environment="REDIS_HOST=localhost"
 Environment="REDIS_PORT=26379"
 Environment="LOG_LEVEL=INFO"
 
-# For production, override DB passwords via EnvironmentFile= pointing at
-# a 600-perm file in /etc/enhanced-cognee/, not from the unit file.
-# EnvironmentFile=-/etc/enhanced-cognee/secrets.env
+# Secrets MUST come from a 600-perm EnvironmentFile, never the unit file.
+# This file is REQUIRED in production -- the app fails closed without it.
+# It must define at least:
+#   POSTGRES_PASSWORD, NEO4J_PASSWORD (or ARCADEDB_PASSWORD), LLM_API_KEY,
+#   ENHANCED_API_KEY  (and optionally REDIS_PASSWORD, QDRANT_API_KEY).
+# The leading '-' makes startup tolerant if the path is missing, but the app
+# itself will refuse to start in production without the required secrets.
+EnvironmentFile=-/etc/enhanced-cognee/secrets.env
 
 # Logging
 StandardOutput=journal

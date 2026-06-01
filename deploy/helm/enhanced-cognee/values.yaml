@@ -6,9 +6,11 @@
 # -----------------------------------------------------------------------------
 
 image:
-  # The MCP server image. Replace with your own registry path when deploying
-  # a customised build; the default targets a hypothetical public image that
-  # mirrors `pip install enhanced-cognee` + the stdio + HTTP entrypoints.
+  # The MCP server image. This reference is a placeholder -- NO image is
+  # published at this path yet. You MUST build the app image (from
+  # docker/Dockerfile.enhanced-cognee or docker/Dockerfile.production) and push
+  # it to a registry you control, then set repository/tag accordingly. A CI
+  # workflow to build + push this image will be added separately.
   repository: ghcr.io/vincentspereira/enhanced-cognee
   tag: "1.0.0"
   pullPolicy: IfNotPresent
@@ -97,18 +99,21 @@ mcpServer:
       cpu: 1000m
       memory: 1Gi
 
+  # Liveness: /health/live returns 200 while the process is up (no dep checks).
   livenessProbe:
     httpGet:
-      path: /health
+      path: /health/live
       port: 8080
     initialDelaySeconds: 30
     periodSeconds: 30
     timeoutSeconds: 10
     failureThreshold: 3
 
+  # Readiness: /health/ready returns 503 when a critical dependency is down,
+  # so the pod is removed from Service endpoints until it recovers.
   readinessProbe:
     httpGet:
-      path: /health
+      path: /health/ready
       port: 8080
     initialDelaySeconds: 10
     periodSeconds: 10
@@ -142,8 +147,10 @@ storage:
     passwordSecretRef:
       name: ""
       key: ""
-    # Inline password (NOT recommended for production); use passwordSecretRef instead.
-    password: cognee_password
+    # Inline password -- intentionally EMPTY. Do NOT ship a real password here.
+    # Production MUST use passwordSecretRef (a Kubernetes Secret). Set this only
+    # for throwaway local testing.
+    password: ""
 
   vector:
     provider: qdrant      # qdrant | pgvector | lancedb | chroma | weaviate | milvus
@@ -164,7 +171,9 @@ storage:
     passwordSecretRef:
       name: ""
       key: ""
-    password: cognee_password
+    # Inline password -- intentionally EMPTY. Do NOT ship a real password here.
+    # Production MUST use passwordSecretRef (a Kubernetes Secret).
+    password: ""
 
 # -----------------------------------------------------------------------------
 # In-chart database deployments

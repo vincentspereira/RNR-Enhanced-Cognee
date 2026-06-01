@@ -42,8 +42,7 @@ services:
     environment:
       POSTGRES_DB: cognee_db
       POSTGRES_USER: cognee_user
-      POSTGRES_PASSWORD: cognee_password
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
       POSTGRES_SHARED_PRELOAD_LIBRARIES: "vector"
     volumes:
@@ -159,7 +158,7 @@ services:
       # client configs (NEO4J_URI / NEO4J_USER / NEO4J_PASSWORD) keep working
       # when ENHANCED_GRAPH_PROVIDER=arcadedb is in effect.
       JAVA_OPTS: >-
-        -Darcadedb.server.rootPassword=cognee_password
+        -Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:?ARCADEDB_PASSWORD must be set in .env}
         -Darcadedb.server.defaultDatabases=cognee_graph[root]
         -Darcadedb.bolt.host=0.0.0.0
         -Darcadedb.bolt.port=7687

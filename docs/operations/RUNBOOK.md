@@ -275,7 +275,7 @@ from src.undo_manager import UndoManager
 async def main():
     pool = await asyncpg.create_pool(
         host='localhost', port=25432,
-        database='cognee_db', user='cognee_user', password='cognee_password'
+        database='cognee_db', user='cognee_user', password='your-db-password'
     )
     mgr = UndoManager(db_pool=pool)
     await mgr._ensure_schema()

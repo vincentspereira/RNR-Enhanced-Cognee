@@ -1,24 +1,34 @@
-version: '3.8'
-
-# Enhanced Cognee Memory Stack - Production Configuration
-# Replaces default Cognee stack with enterprise-grade components
-# Components: PostgreSQL+pgVector, Qdrant, ArcadeDB, Valkey, Enhanced Cognee
+# Enhanced Cognee Memory Stack - Single-host Docker Compose configuration
+# Replaces default Cognee stack with enterprise-grade components.
+# Components: PostgreSQL+pgVector, Qdrant, ArcadeDB, Valkey, Enhanced Cognee app.
 #
 # Graph DB default since Phase 2: ArcadeDB (Apache-2.0, openCypher + Bolt
 # drop-in for Neo4j). To run with Neo4j instead, see docs/ARCADEDB_MIGRATION.md.
+#
+# DEPLOY MODEL: This file targets a single-host `docker compose up -d` deploy.
+#   - Networks use the `bridge` driver (overlay requires Swarm).
+#   - Memory caps use top-level `mem_limit:` so they apply under plain compose.
+#     The `deploy.*` blocks (replicas/placement/resources) ONLY take effect
+#     under `docker stack deploy` (Swarm); they are intentionally omitted here.
+#   - Published DB ports are bound to 127.0.0.1 so the databases are never
+#     exposed on 0.0.0.0. Only the app port (8080) is publishable to the host.
+#
+# SECRETS: All credentials are REQUIRED via .env (no insecure defaults). The
+# `${VAR:?message}` form makes `docker compose up` fail fast if a secret is
+# unset. See .env / deploy/vps/README.md for the required variables.
 
 networks:
   cognee-network:
-    driver: overlay
+    driver: bridge
     attachable: true
   ats_network:
-    driver: overlay
+    driver: bridge
     attachable: true
   oma_network:
-    driver: overlay
+    driver: bridge
     attachable: true
   smc_network:
-    driver: overlay
+    driver: bridge
     attachable: true
 
 volumes:
@@ -51,8 +61,9 @@ services:
     environment:
       POSTGRES_DB: cognee_db
       POSTGRES_USER: cognee_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cognee_password}
-      POSTGRES_HOST_AUTH_METHOD: trust
+      # Password is REQUIRED -- no insecure default. The pg image uses this
+      # with scram-sha-256 auth (POSTGRES_HOST_AUTH_METHOD=trust removed).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       # PostgreSQL 18 specific optimizations
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
       POSTGRES_SHARED_PRELOAD_LIBRARIES: "vector"
@@ -61,9 +72,13 @@ services:
       - ./init-scripts:/docker-entrypoint-initdb.d
       - ./postgresql18.conf:/etc/postgresql/postgresql.conf:ro  # PostgreSQL 18 config
     ports:
-      - "25432:5432"  # PostgreSQL (changed to avoid conflict)
+      - "127.0.0.1:25432:5432"  # PostgreSQL -- bound to localhost only
     networks:
       - cognee-network
+    # mem_limit applies under standalone compose; deploy.resources (below) is
+    # honoured only under Swarm (`docker stack deploy`).
+    mem_limit: 4g
+    mem_reservation: 2g
     deploy:
       replicas: 1
       placement:
@@ -92,13 +107,17 @@ services:
       QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: 32
       QDRANT__STORAGE__PERFORMANCE__MAX_SEARCH_THREADS: 4
       QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 1
+      # Optional API key -- when set in .env, Qdrant requires it on every request.
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
     volumes:
       - qdrant_storage:/qdrant/storage
     ports:
-      - "26333:6333"  # HTTP API (changed to avoid conflict)
-      - "26334:6334"  # gRPC API (changed to avoid conflict)
+      - "127.0.0.1:26333:6333"  # HTTP API -- bound to localhost only
+      - "127.0.0.1:26334:6334"  # gRPC API -- bound to localhost only
     networks:
       - cognee-network
+    mem_limit: 4g
+    mem_reservation: 2g
     deploy:
       replicas: 1
       placement:
@@ -122,15 +141,16 @@ services:
   # driver paths via the ENHANCED_GRAPH_PROVIDER=arcadedb factory route.
   # See docs/ARCADEDB_MIGRATION.md for the migration story.
   arcadedb:
-    image: arcadedata/arcadedb:latest
+    # Pinned to a confirmed-recent stable tag (was :latest). Bump deliberately.
+    image: arcadedata/arcadedb:26.5.1
     container_name: arcadedb-enhanced-cognee
     environment:
       # ArcadeDB server tuning + Bolt plugin enablement.
-      # Default admin user is root; password matches NEO4J_PASSWORD for an
-      # easy migration (existing creds keep working when the URI stays at
-      # bolt://localhost:27687).
+      # Default admin user is root; password matches NEO4J_PASSWORD/
+      # ARCADEDB_PASSWORD for an easy migration (existing creds keep working
+      # when the URI stays at bolt://localhost:27687). REQUIRED -- no default.
       JAVA_OPTS: >-
-        -Darcadedb.server.rootPassword=${NEO4J_PASSWORD:-cognee_password}
+        -Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:-${NEO4J_PASSWORD:?set NEO4J_PASSWORD or ARCADEDB_PASSWORD in .env}}
         -Darcadedb.server.defaultDatabases=cognee_graph[root]
         -Darcadedb.server.plugins=Bolt:com.arcadedb.bolt.BoltPlugin
         -Darcadedb.bolt.host=0.0.0.0
@@ -139,10 +159,12 @@ services:
     volumes:
       - arcadedb_data:/home/arcadedb/databases
     ports:
-      - "22480:2480"  # Studio HTTP (was 27474 for Neo4j browser)
-      - "27687:7687"  # Bolt (kept on 27687 host port -- drop-in for Neo4j)
+      - "127.0.0.1:22480:2480"  # Studio HTTP -- bound to localhost only
+      - "127.0.0.1:27687:7687"  # Bolt -- bound to localhost only (drop-in for Neo4j)
     networks:
       - cognee-network
+    mem_limit: 3g
+    mem_reservation: 1g
     deploy:
       replicas: 1
       placement:
@@ -168,14 +190,21 @@ services:
   # strings (REDIS_HOST: redis) keep working without env-var rewrites.
   # The container_name is the user-visible name (cognee-mcp-valkey) to match
   # the cognee-mcp-* pattern of the other services.
+  #
+  # REDIS_PASSWORD is optional. When set in .env, --requirepass is enabled via
+  # the shell-form command below; when unset, Valkey runs without auth on the
+  # localhost-only published port. The `$$` escapes compose interpolation so
+  # REDIS_PASSWORD is read from the container env at runtime, not baked in.
   redis:
     image: valkey/valkey:8-alpine
     container_name: cognee-mcp-valkey
-    command: valkey-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    command: ["sh", "-c", "exec valkey-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru ${REDIS_PASSWORD:+--requirepass \"$$REDIS_PASSWORD\"}"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     volumes:
       - redis_data:/data
     ports:
-      - "26379:6379"  # Valkey (Redis-compatible port; kept REDIS_* env vars for backwards compat)
+      - "127.0.0.1:26379:6379"  # Valkey (Redis-compatible) -- bound to localhost only
     networks:
       - cognee-network
     # Note: `deploy.placement.constraints` and `deploy.replicas` removed --
@@ -190,10 +219,17 @@ services:
       timeout: 10s
       retries: 3
 
-  # Enhanced Cognee MCP Server - Main Memory Provider
+  # Enhanced Cognee MCP Server - Main Memory Provider (FastAPI HTTP app)
   enhanced-cognee:
-    image: python:3.11-slim
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.enhanced-cognee
     container_name: enhanced-cognee-server
+    # Explicit command (the Dockerfile CMD does the same). NO --reload in prod.
+    command: ["python", "-m", "uvicorn", "src.enhanced_cognee_mcp:app", "--host", "0.0.0.0", "--port", "8080"]
+    # Pull all runtime config (secrets + tunables) from the project .env file.
+    env_file:
+      - ../.env
     environment:
       # Enhanced Stack Configuration
       ENHANCED_COGNEE_MODE: "true"
@@ -203,7 +239,7 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: cognee_db
       POSTGRES_USER: cognee_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cognee_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
 
       # Qdrant Configuration (replaces LanceDB)
       QDRANT_HOST: qdrant
@@ -217,24 +253,24 @@ services:
       ENHANCED_GRAPH_PROVIDER: arcadedb
       ARCADEDB_URI: bolt://arcadedb:7687
       ARCADEDB_USER: root
-      ARCADEDB_PASSWORD: ${NEO4J_PASSWORD:-cognee_password}
+      ARCADEDB_PASSWORD: ${ARCADEDB_PASSWORD:-${NEO4J_PASSWORD:?set NEO4J_PASSWORD or ARCADEDB_PASSWORD in .env}}
 
       # Legacy Neo4j env vars retained so callers still passing them
       # explicitly (NEO4J_URI / NEO4J_USER / NEO4J_PASSWORD) keep working.
       NEO4J_URI: bolt://arcadedb:7687
       NEO4J_USER: root
-      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cognee_password}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-${ARCADEDB_PASSWORD:?set NEO4J_PASSWORD or ARCADEDB_PASSWORD in .env}}
       NEO4J_DATABASE: cognee_graph
 
-      # Redis Configuration (new cache layer)
+      # Redis Configuration (Valkey cache layer)
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       REDIS_DB: 0
       REDIS_CACHE_TTL: 3600
 
-      # LLM Configuration (existing)
-      LLM_API_KEY: ${LLM_API_KEY:-***REMOVED***}
+      # LLM Configuration -- API key is REQUIRED (no embedded default key).
+      LLM_API_KEY: ${LLM_API_KEY:?LLM_API_KEY must be set in .env}
       LLM_MODEL: ${LLM_MODEL:-glm-4.6}
       LLM_PROVIDER: ${LLM_PROVIDER:-zai}
       LLM_ENDPOINT: ${LLM_ENDPOINT:-https://api.z.ai/v1}
@@ -245,6 +281,11 @@ services:
       EMBEDDING_ENDPOINT: ${EMBEDDING_ENDPOINT:-http://localhost:11434/api/embed}
       EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-2560}
 
+      # API auth + environment -- the app FAILS CLOSED if these are missing
+      # in production. Set ENHANCED_ENV=production and a strong ENHANCED_API_KEY.
+      ENHANCED_API_KEY: ${ENHANCED_API_KEY:?set ENHANCED_API_KEY in .env}
+      ENHANCED_ENV: ${ENHANCED_ENV:-production}
+
       # Enhanced Features
       MEMORY_CATEGORIZATION: "true"
       ATS_MEMORY_PREFIX: "ats_"
@@ -253,8 +294,7 @@ services:
       PERFORMANCE_MONITORING: "true"
       AUTO_OPTIMIZATION: "true"
 
-      # Security Configuration
-      ENV: "local"
+      # Runtime safety toggles
       ACCEPT_LOCAL_FILE_PATH: "True"
       ALLOW_HTTP_REQUESTS: "True"
       ALLOW_CYPHER_QUERY: "True"
@@ -262,7 +302,10 @@ services:
     volumes:
       - enhanced_cognee_data:/app/data
     ports:
-      - "28080:8080"  # HTTP API (changed to avoid conflict)
+      # App HTTP port. Publishable to the host for direct access. When running
+      # behind a reverse proxy (Caddy/Nginx), bind to localhost instead:
+      #   - "127.0.0.1:28080:8080"
+      - "28080:8080"  # HTTP API (host 28080 -> container 8080)
     networks:
       - cognee-network
       - ats_network
@@ -277,6 +320,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    mem_limit: 4g
+    mem_reservation: 2g
     deploy:
       replicas: 1
       placement:
@@ -293,9 +338,9 @@ services:
         max_attempts: 3
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      # Liveness probe -- /health/live returns 200 while the process is up.
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/live || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-
-  
+      start_period: 30s

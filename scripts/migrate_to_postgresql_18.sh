@@ -74,7 +74,7 @@ docker run -d \
     --restart unless-stopped \
     -e POSTGRES_DB=cognee_db \
     -e POSTGRES_USER=cognee_user \
-    -e POSTGRES_PASSWORD=cognee_password \
+    -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set (export it or source the stack .env)}" \
     -p 25432:5432 \
     -v postgres_data:/var/lib/postgresql/data \
     pgvector/pgvector:pg18

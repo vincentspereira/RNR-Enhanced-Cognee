@@ -48,8 +48,9 @@ and [`STRATEGY.md` DR-11](./STRATEGY.md#9-appendix-decision-records).
   `JAVA_OPTS=-Darcadedb.server.plugins=Bolt:com.arcadedb.bolt.BoltPlugin`.
 - `deploy/local/install.ps1` and `deploy/local/install.sh`: the MCP
   server registration adds `ENHANCED_GRAPH_PROVIDER=arcadedb`,
-  `ARCADEDB_URI=bolt://localhost:27687`, `ARCADEDB_USER=root`,
-  `ARCADEDB_PASSWORD=cognee_password`. The legacy `NEO4J_*` env vars
+  `ARCADEDB_URI=bolt://localhost:27687`, `ARCADEDB_USER=root`, and a
+  strong random `ARCADEDB_PASSWORD` generated at install time (written to
+  the stack `.env`; no baked-in default). The legacy `NEO4J_*` env vars
   are retained pointed at the same host:port for back-compat with any
   callers still passing them explicitly.
 - `.env.example`: `ENHANCED_GRAPH_PROVIDER=arcadedb` section added.
@@ -60,7 +61,7 @@ and [`STRATEGY.md` DR-11](./STRATEGY.md#9-appendix-decision-records).
 | `ENHANCED_GRAPH_PROVIDER` | `arcadedb`                       | `neo4j` opts into legacy provider                          |
 | `ARCADEDB_URI`            | `bolt://localhost:27687`         | host port matches the old Neo4j Bolt port                   |
 | `ARCADEDB_USER`           | `root`                           | ArcadeDB's built-in admin                                  |
-| `ARCADEDB_PASSWORD`       | `cognee_password`                | matches the old `NEO4J_PASSWORD` default                   |
+| `ARCADEDB_PASSWORD`       | (required, no default)           | set in `.env`; installer generates a strong random value   |
 | `NEO4J_URI` / `_USER` /   | (unchanged)                      | still read when `ENHANCED_GRAPH_PROVIDER=neo4j`            |
 | `_PASSWORD`               |                                  |                                                            |
 | `GRAPH_BACKEND`           | unset                            | legacy alias for `ENHANCED_GRAPH_PROVIDER`; lower precedence |
@@ -101,7 +102,7 @@ container behind `bolt://localhost:27687` differs.
     image: neo4j:5.25-community
     container_name: neo4j-enhanced-cognee
     environment:
-      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-cognee_password}
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-your-db-password}
       NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
       NEO4J_dbms_security_procedures_unrestricted: apoc.*
       NEO4J_dbms_memory_heap_initial_size: 1G
@@ -157,7 +158,7 @@ add it to the table.
 - **Memory:** ArcadeDB runs on Java 21+. Default JVM heap is ~1 GB
   inside the container; tune via `JAVA_OPTS=-Xmx2g` if needed.
 - **Studio UI:** http://localhost:22480 (login: `root` /
-  `cognee_password`). Equivalent to Neo4j Browser.
+  `your-db-password`). Equivalent to Neo4j Browser.
 - **Health check:** ArcadeDB exposes `GET /api/v1/ready` on the HTTP
   port; the compose health-check uses that endpoint.
 - **Hetzner CX22 (4 GB RAM):** stack fits, but if you also run the
