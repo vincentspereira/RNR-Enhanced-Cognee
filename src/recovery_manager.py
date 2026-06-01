@@ -39,6 +39,7 @@ import asyncio
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.sqlite_manager import SQLiteManager
+from src.secure_config import require_secret
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -102,7 +103,7 @@ class RecoveryManager:
                 "port": os.getenv("POSTGRES_PORT", "25432"),
                 "database": os.getenv("POSTGRES_DB", "cognee_db"),
                 "user": os.getenv("POSTGRES_USER", "cognee_user"),
-                "password": os.getenv("POSTGRES_PASSWORD", "cognee_password")
+                "password": require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
             },
             "qdrant": {
                 "host": os.getenv("QDRANT_HOST", "localhost"),
@@ -112,7 +113,7 @@ class RecoveryManager:
             "neo4j": {
                 "uri": os.getenv("NEO4J_URI", "bolt://localhost:27687"),
                 "user": os.getenv("NEO4J_USER", "neo4j"),
-                "password": os.getenv("NEO4J_PASSWORD", "cognee_password")
+                "password": require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
             },
             "redis": {
                 "host": os.getenv("REDIS_HOST", "localhost"),

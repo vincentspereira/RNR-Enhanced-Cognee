@@ -14,6 +14,8 @@ from __future__ import annotations
 import os
 from typing import Any, Optional, Tuple
 
+from src.secure_config import require_secret
+
 
 def _resolve_auth(
     uri: Optional[str],
@@ -22,7 +24,7 @@ def _resolve_auth(
 ) -> Tuple[str, Tuple[str, str]]:
     uri = uri or os.getenv("NEO4J_URI", "bolt://localhost:27687")
     user = user or os.getenv("NEO4J_USER", "neo4j")
-    password = password or os.getenv("NEO4J_PASSWORD", "cognee_password")
+    password = password or require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
     return uri, (user, password)
 
 

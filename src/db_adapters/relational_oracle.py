@@ -56,6 +56,8 @@ from __future__ import annotations
 import os
 from typing import Any, List, Optional, Tuple
 
+from src.secure_config import require_secret
+
 
 class _OracleConnection:
     """``asyncpg.Connection``-shaped wrapper around an oracledb async connection."""
@@ -171,7 +173,7 @@ async def create_pool(
         or (f"{host or 'localhost'}:{port or 1521}/{database or 'free'}")
     )
     user = user or os.getenv("ORACLE_USER", "cognee_user")
-    password = password or os.getenv("ORACLE_PASSWORD", "cognee_password")
+    password = password or require_secret("ORACLE_PASSWORD", dev_default="cognee_password")
 
     raw_pool = oracledb.create_pool_async(
         user=user,

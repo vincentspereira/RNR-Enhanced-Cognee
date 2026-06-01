@@ -10,6 +10,8 @@ from __future__ import annotations
 import os
 from typing import Any, Optional
 
+from src.secure_config import require_secret
+
 
 async def create_pool(
     host: Optional[str] = None,
@@ -28,7 +30,7 @@ async def create_pool(
     port = port or int(os.getenv("POSTGRES_PORT", "25432"))
     database = database or os.getenv("POSTGRES_DB", "cognee_db")
     user = user or os.getenv("POSTGRES_USER", "cognee_user")
-    password = password or os.getenv("POSTGRES_PASSWORD", "cognee_password")
+    password = password or require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
     return await asyncpg.create_pool(
         host=host,
         port=port,

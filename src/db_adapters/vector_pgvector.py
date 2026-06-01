@@ -60,6 +60,8 @@ import os
 import re
 from typing import Any, List, Optional, Sequence
 
+from src.secure_config import require_secret
+
 
 _SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9_]")
 
@@ -481,8 +483,8 @@ def create_client(
     user = user or os.getenv("PGVECTOR_USER") or os.getenv(
         "POSTGRES_USER", "cognee_user"
     )
-    password = password or os.getenv("PGVECTOR_PASSWORD") or os.getenv(
-        "POSTGRES_PASSWORD", "cognee_password"
+    password = password or os.getenv("PGVECTOR_PASSWORD") or require_secret(
+        "POSTGRES_PASSWORD", dev_default="cognee_password"
     )
     table_prefix = os.getenv("PGVECTOR_TABLE_PREFIX", "ec_vec_")
 

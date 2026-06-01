@@ -51,6 +51,8 @@ import asyncio
 import os
 from typing import Any, List, Optional, Tuple
 
+from src.secure_config import require_secret
+
 
 def _build_dsn(
     host: str, port: int, database: str, user: str, password: str, protocol: str
@@ -190,7 +192,7 @@ async def create_pool(
     port = port or int(os.getenv("DB2_PORT", "50000"))
     database = database or os.getenv("DB2_DB", "ENHANCED")
     user = user or os.getenv("DB2_USER", "cognee_user")
-    password = password or os.getenv("DB2_PASSWORD", "cognee_password")
+    password = password or require_secret("DB2_PASSWORD", dev_default="cognee_password")
     protocol = os.getenv("DB2_PROTOCOL", "TCPIP")
 
     dsn = _build_dsn(host, port, database, user, password, protocol)

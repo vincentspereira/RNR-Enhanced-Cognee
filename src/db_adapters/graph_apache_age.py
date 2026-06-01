@@ -59,6 +59,8 @@ import json
 import os
 from typing import Any, Dict, FrozenSet, Iterator, List, Optional, Sequence, Tuple
 
+from src.secure_config import require_secret
+
 
 class _AGENode:
     """``neo4j.graph.Node``-shaped wrapper around an AGE vertex agtype.
@@ -443,7 +445,7 @@ def create_driver(
     password = (
         password
         or os.getenv("AGE_PASSWORD")
-        or os.getenv("POSTGRES_PASSWORD", "cognee_password")
+        or require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
     )
     graph_name = os.getenv("AGE_GRAPH_NAME", "cognee_graph")
     return _AGEDriver(host, port, database, user, password, graph_name)
@@ -468,7 +470,7 @@ def create_async_driver(
     password = (
         password
         or os.getenv("AGE_PASSWORD")
-        or os.getenv("POSTGRES_PASSWORD", "cognee_password")
+        or require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
     )
     graph_name = os.getenv("AGE_GRAPH_NAME", "cognee_graph")
     return _AsyncAGEDriver(host, port, database, user, password, graph_name)

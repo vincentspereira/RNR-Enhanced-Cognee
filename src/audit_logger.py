@@ -17,6 +17,7 @@ Date: 2026-02-06
 import asyncio
 import json
 import logging
+import logging.handlers
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional
 from pathlib import Path
@@ -167,9 +168,26 @@ class AuditLogger:
                 pass
         self.file_logger.handlers.clear()
 
-        # File handler
-        log_file = self.log_dir / "automation_audit.log"
-        handler = logging.FileHandler(log_file, encoding='utf-8')
+        # File handler with rotation (bounded logging).
+        # Caps are configurable via env with production defaults
+        # (~300MB total: 50MB x (1 active + 5 backups)).
+        max_bytes = int(os.getenv("ENHANCED_LOG_MAX_BYTES", str(50 * 1024 * 1024)))
+        backup_count = int(os.getenv("ENHANCED_LOG_BACKUP_COUNT", "5"))
+
+        # Resolve the audit log to an absolute path under a configurable
+        # log dir. ENHANCED_LOG_DIR overrides the configured log_dir; if
+        # unset, the existing log_dir behavior is preserved. Never write
+        # to the process CWD root by default.
+        env_log_dir = os.getenv("ENHANCED_LOG_DIR")
+        log_dir = env_log_dir if env_log_dir else str(self.log_dir)
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.abspath(os.path.join(log_dir, "automation_audit.log"))
+        handler = logging.handlers.RotatingFileHandler(
+            log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8"
+        )
         handler.setLevel(logging.DEBUG)
 
         # JSON formatter

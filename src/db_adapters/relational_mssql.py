@@ -57,6 +57,8 @@ from __future__ import annotations
 import os
 from typing import Any, List, Optional, Tuple
 
+from src.secure_config import require_secret
+
 
 def _build_dsn(
     host: str, port: int, database: str, user: str, password: str, driver: str
@@ -156,7 +158,7 @@ async def create_pool(
     port = port or int(os.getenv("MSSQL_PORT", "1433"))
     database = database or os.getenv("MSSQL_DB", "enhanced_cognee")
     user = user or os.getenv("MSSQL_USER", "sa")
-    password = password or os.getenv("MSSQL_PASSWORD", "cognee_password")
+    password = password or require_secret("MSSQL_PASSWORD", dev_default="cognee_password")
     driver = os.getenv("MSSQL_DRIVER", "ODBC Driver 18 for SQL Server")
 
     dsn = _build_dsn(host, port, database, user, password, driver)

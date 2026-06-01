@@ -53,6 +53,8 @@ from __future__ import annotations
 import os
 from typing import Any, List, Optional, Tuple
 
+from src.secure_config import require_secret
+
 
 class _MySQLConnection:
     """``asyncpg.Connection``-shaped wrapper around an asyncmy connection."""
@@ -148,7 +150,7 @@ async def create_pool(
     port = port or int(os.getenv("MYSQL_PORT", "3306"))
     database = database or os.getenv("MYSQL_DB", "enhanced_cognee")
     user = user or os.getenv("MYSQL_USER", "cognee_user")
-    password = password or os.getenv("MYSQL_PASSWORD", "cognee_password")
+    password = password or require_secret("MYSQL_PASSWORD", dev_default="cognee_password")
 
     raw_pool = await asyncmy.create_pool(
         host=host,

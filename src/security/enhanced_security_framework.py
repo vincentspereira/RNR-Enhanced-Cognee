@@ -18,6 +18,7 @@ import math
 import hashlib
 import secrets
 import logging
+import logging.handlers
 import json
 import time
 import traceback
@@ -133,8 +134,28 @@ class SecurityLogger:
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
 
-        # File handler with rotation
-        file_handler = logging.FileHandler(self.log_file)
+        # File handler with rotation (bounded logging).
+        # Caps are configurable via env with production defaults
+        # (~300MB total: 50MB x (1 active + 5 backups)).
+        max_bytes = int(os.getenv("ENHANCED_LOG_MAX_BYTES", str(50 * 1024 * 1024)))
+        backup_count = int(os.getenv("ENHANCED_LOG_BACKUP_COUNT", "5"))
+
+        # Resolve the security log to an absolute path under a configurable
+        # log dir. Keep the default filename but route it under the log dir
+        # instead of the process CWD root. An absolute log_file is honored.
+        log_dir = os.getenv("ENHANCED_LOG_DIR", "./logs")
+        os.makedirs(log_dir, exist_ok=True)
+        if os.path.isabs(self.log_file):
+            resolved_log_file = self.log_file
+        else:
+            resolved_log_file = os.path.join(log_dir, os.path.basename(self.log_file))
+
+        file_handler = logging.handlers.RotatingFileHandler(
+            resolved_log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8"
+        )
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
 

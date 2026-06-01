@@ -23,82 +23,82 @@ class EnhancedCogneeInstaller:
     def print_banner(self):
         """Print installation banner"""
         print("=" * 70)
-        print("🧠 Enhanced Cognee MCP Server - Automated Installer")
+        print("[MEM] Enhanced Cognee MCP Server - Automated Installer")
         print("=" * 70)
         print("This installer will set up Enhanced Cognee with:")
-        print("  ✅ PostgreSQL+pgVector database")
-        print("  ✅ Qdrant vector database")
-        print("  ✅ Neo4j graph database")
-        print("  ✅ Redis cache layer")
-        print("  ✅ Project-aware memory categorization")
-        print("  ✅ Cross-IDE compatibility")
+        print("  [OK] PostgreSQL+pgVector database")
+        print("  [OK] Qdrant vector database")
+        print("  [OK] Neo4j graph database")
+        print("  [OK] Redis cache layer")
+        print("  [OK] Project-aware memory categorization")
+        print("  [OK] Cross-IDE compatibility")
         print("=" * 70)
 
     def check_prerequisites(self):
         """Check if required software is installed"""
-        print("\n🔍 Checking prerequisites...")
+        print("\n[INFO] Checking prerequisites...")
 
         # Check Python
         try:
             python_version = sys.version_info
             if python_version.major < 3 or (python_version.major == 3 and python_version.minor < 8):
-                print("❌ Python 3.8+ is required")
+                print("[ERROR] Python 3.8+ is required")
                 return False
-            print(f"✅ Python {python_version.major}.{python_version.minor}.{python_version.micro}")
+            print(f"[OK] Python {python_version.major}.{python_version.minor}.{python_version.micro}")
         except:
-            print("❌ Python not found")
+            print("[ERROR] Python not found")
             return False
 
         # Check Node.js
         try:
             result = subprocess.run(['node', '--version'], capture_output=True, text=True)
             if result.returncode == 0:
-                print(f"✅ Node.js {result.stdout.strip()}")
+                print(f"[OK] Node.js {result.stdout.strip()}")
             else:
-                print("❌ Node.js not found")
+                print("[ERROR] Node.js not found")
                 return False
         except:
-            print("❌ Node.js not found")
+            print("[ERROR] Node.js not found")
             return False
 
         # Check Docker
         try:
             result = subprocess.run(['docker', '--version'], capture_output=True, text=True)
             if result.returncode == 0:
-                print(f"✅ Docker {result.stdout.strip()}")
+                print(f"[OK] Docker {result.stdout.strip()}")
             else:
-                print("❌ Docker not found")
+                print("[ERROR] Docker not found")
                 return False
         except:
-            print("❌ Docker not found")
+            print("[ERROR] Docker not found")
             return False
 
         # Check Docker Compose
         try:
             result = subprocess.run(['docker-compose', '--version'], capture_output=True, text=True)
             if result.returncode == 0:
-                print(f"✅ Docker Compose {result.stdout.strip()}")
+                print(f"[OK] Docker Compose {result.stdout.strip()}")
             else:
-                print("❌ Docker Compose not found")
+                print("[ERROR] Docker Compose not found")
                 return False
         except:
             try:
                 # Try docker compose (without hyphen)
                 result = subprocess.run(['docker', 'compose', 'version'], capture_output=True, text=True)
                 if result.returncode == 0:
-                    print(f"✅ Docker Compose {result.stdout.strip()}")
+                    print(f"[OK] Docker Compose {result.stdout.strip()}")
                 else:
-                    print("❌ Docker Compose not found")
+                    print("[ERROR] Docker Compose not found")
                     return False
             except:
-                print("❌ Docker Compose not found")
+                print("[ERROR] Docker Compose not found")
                 return False
 
         return True
 
     def install_enhanced_cognee(self):
         """Install Enhanced Cognee package"""
-        print("\n📦 Installing Enhanced Cognee...")
+        print("\n[INFO] Installing Enhanced Cognee...")
 
         # Create installation directory
         self.install_dir.mkdir(exist_ok=True)
@@ -127,9 +127,9 @@ class EnhancedCogneeInstaller:
                     shutil.copytree(src, dst)
                 else:
                     shutil.copy2(src, dst)
-                print(f"✅ Copied {item}")
+                print(f"[OK] Copied {item}")
             else:
-                print(f"⚠️  {item} not found, skipping")
+                print(f"[WARNING] {item} not found, skipping")
 
         # Create virtual environment
         print("\n[INFO] Creating Python virtual environment...")
@@ -176,7 +176,7 @@ class EnhancedCogneeInstaller:
 
     def setup_docker_network(self):
         """Set up Docker network and containers"""
-        print("\n🐳 Setting up Docker network and containers...")
+        print("\n[INFO] Setting up Docker network and containers...")
 
         # Change to installation directory
         os.chdir(self.install_dir)
@@ -221,19 +221,19 @@ class EnhancedCogneeInstaller:
                 result = subprocess.run(['docker', 'ps', '--filter', 'name=cognee'],
                                       capture_output=True, text=True)
                 if 'cognee' in result.stdout:
-                    print("✅ All containers are running")
+                    print("[OK] All containers are running")
                 else:
-                    print("⚠️  Some containers may not be ready yet")
+                    print("[WARNING] Some containers may not be ready yet")
 
             except subprocess.CalledProcessError as e:
-                print(f"❌ Failed to start containers: {e}")
+                print(f"[ERROR] Failed to start containers: {e}")
                 return False
 
         return True
 
     def create_configuration_files(self, python_exe):
         """Create configuration files for IDEs"""
-        print("\n⚙️  Creating configuration files...")
+        print("\n[INFO] Creating configuration files...")
 
         config_dir = self.install_dir / "config"
         config_dir.mkdir(exist_ok=True)
@@ -255,19 +255,19 @@ class EnhancedCogneeInstaller:
         claude_config_path = config_dir / "claude_desktop_config.json"
         with open(claude_config_path, 'w') as f:
             json.dump(mcp_config, f, indent=2)
-        print(f"✅ Created Claude config: {claude_config_path}")
+        print(f"[OK] Created Claude config: {claude_config_path}")
 
         # VS Code Continue config
         continue_config_path = config_dir / "continue_config.json"
         with open(continue_config_path, 'w') as f:
             json.dump(mcp_config, f, indent=2)
-        print(f"✅ Created Continue config: {continue_config_path}")
+        print(f"[OK] Created Continue config: {continue_config_path}")
 
         # Cursor config
         cursor_config_path = config_dir / "cursor_config.json"
         with open(cursor_config_path, 'w') as f:
             json.dump(mcp_config, f, indent=2)
-        print(f"✅ Created Cursor config: {cursor_config_path}")
+        print(f"[OK] Created Cursor config: {cursor_config_path}")
 
         # Environment template
         env_template_path = config_dir / ".env.template"
@@ -285,15 +285,15 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=25432
 POSTGRES_DB=cognee_db
 POSTGRES_USER=cognee_user
-POSTGRES_PASSWORD=cognee_password
+POSTGRES_PASSWORD=change-me-strong-password
 
 QDRANT_HOST=localhost
 QDRANT_PORT=26333
-QDRANT_API_KEY=***REMOVED***
+QDRANT_API_KEY=your-qdrant-api-key-here
 
 NEO4J_URI=bolt://localhost:27687
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=cognee_password
+NEO4J_PASSWORD=change-me-strong-password
 NEO4J_DATABASE=neo4j
 
 REDIS_HOST=localhost
@@ -309,13 +309,13 @@ EMBEDDING_DIMENSIONS=2560
 
         with open(env_template_path, 'w') as f:
             f.write(env_template)
-        print(f"✅ Created environment template: {env_template_path}")
+        print(f"[OK] Created environment template: {env_template_path}")
 
         return config_dir
 
     def create_desktop_shortcuts(self, python_exe):
         """Create desktop shortcuts for easy access"""
-        print("\n🖥️  Creating desktop shortcuts...")
+        print("\n[INFO] Creating desktop shortcuts...")
 
         desktop_dir = self.home_dir / "Desktop"
         if not desktop_dir.exists():
@@ -331,7 +331,7 @@ cd /d "{self.install_dir}"
 "{python_exe}" cognee_mcp_universal.py
 pause
 ''')
-            print(f"✅ Created Windows shortcut: {start_script}")
+            print(f"[OK] Created Windows shortcut: {start_script}")
 
         else:
             # Unix shell script
@@ -343,22 +343,22 @@ cd "{self.install_dir}"
 "{python_exe}" cognee_mcp_universal.py
 ''')
             os.chmod(start_script, 0o755)
-            print(f"✅ Created Unix shortcut: {start_script}")
+            print(f"[OK] Created Unix shortcut: {start_script}")
 
     def test_installation(self, python_exe):
         """Test the installation"""
-        print("\n🧪 Testing installation...")
+        print("\n[INFO] Testing installation...")
 
         # Test Enhanced Cognee import
         try:
             result = subprocess.run([python_exe, '-c', 'import sys; sys.path.append("' + str(self.install_dir) + '"); import cognee_mcp_universal'],
                                   capture_output=True, text=True)
             if result.returncode == 0:
-                print("✅ Enhanced Cognee import successful")
+                print("[OK] Enhanced Cognee import successful")
             else:
-                print(f"⚠️  Import test failed: {result.stderr}")
+                print(f"[WARNING] Import test failed: {result.stderr}")
         except Exception as e:
-            print(f"⚠️  Import test failed: {e}")
+            print(f"[WARNING] Import test failed: {e}")
 
         # Test database connections
         try:
@@ -370,25 +370,25 @@ import os
 try:
     conn = psycopg2.connect(host="localhost", port=25432, database="cognee_db", user="cognee_user", password="cognee_password")
     conn.close()
-    print("✅ PostgreSQL connection successful")
+    print("[OK] PostgreSQL connection successful")
 except Exception as e:
-    print(f"❌ PostgreSQL failed: {e}")
+    print(f"[ERROR] PostgreSQL failed: {e}")
 
 # Test Redis
 try:
     r = redis.Redis(host="localhost", port=26379)
     r.ping()
-    print("✅ Redis connection successful")
+    print("[OK] Redis connection successful")
 except Exception as e:
-    print(f"❌ Redis failed: {e}")
+    print(f"[ERROR] Redis failed: {e}")
 
 # Test Qdrant
 try:
     client = qdrant_client.QdrantClient(host="localhost", port=26333)
     client.get_collections()
-    print("✅ Qdrant connection successful")
+    print("[OK] Qdrant connection successful")
 except Exception as e:
-    print(f"❌ Qdrant failed: {e}")
+    print(f"[ERROR] Qdrant failed: {e}")
 
 # Test Neo4j
 try:
@@ -396,9 +396,9 @@ try:
     with driver.session() as session:
         session.run("RETURN 1")
     driver.close()
-    print("✅ Neo4j connection successful")
+    print("[OK] Neo4j connection successful")
 except Exception as e:
-    print(f"❌ Neo4j failed: {e}")
+    print(f"[ERROR] Neo4j failed: {e}")
 '''
 
             result = subprocess.run([python_exe, '-c', test_script],
@@ -409,47 +409,47 @@ except Exception as e:
                 print(result.stderr)
 
         except Exception as e:
-            print(f"⚠️  Database test failed: {e}")
+            print(f"[WARNING] Database test failed: {e}")
 
     def print_next_steps(self, config_dir):
         """Print next steps for the user"""
         print("\n" + "=" * 70)
-        print("🎉 Installation Complete!")
+        print("[OK] Installation Complete!")
         print("=" * 70)
-        print("\n📁 Installation Directory:")
+        print("\n[INFO] Installation Directory:")
         print(f"   {self.install_dir}")
 
-        print("\n⚙️  Configuration Files:")
+        print("\n[INFO] Configuration Files:")
         print(f"   Claude Desktop: {config_dir / 'claude_desktop_config.json'}")
         print(f"   VS Code Continue: {config_dir / 'continue_config.json'}")
         print(f"   Cursor: {config_dir / 'cursor_config.json'}")
         print(f"   Environment: {config_dir / '.env.template'}")
 
-        print("\n🚀 Next Steps:")
+        print("\n[INFO] Next Steps:")
         print("1. Copy .env.template to .env and add your API keys")
         print("2. Import the appropriate config file into your IDE")
         print("3. Start using Enhanced Cognee in any supported IDE!")
 
-        print("\n💡 IDE Configuration:")
-        print("• Claude Desktop: Copy config to AppData/Roaming/Claude/")
-        print("• VS Code: Import continue_config.json to Continue extension")
-        print("• Cursor: Import cursor_config.json in MCP settings")
-        print("• Others: Use the provided configuration as template")
+        print("\n[INFO] IDE Configuration:")
+        print("- Claude Desktop: Copy config to AppData/Roaming/Claude/")
+        print("- VS Code: Import continue_config.json to Continue extension")
+        print("- Cursor: Import cursor_config.json in MCP settings")
+        print("- Others: Use the provided configuration as template")
 
-        print("\n📚 Documentation:")
-        print("• User Guide: docs/USER_GUIDE.md")
-        print("• Cross-IDE Setup: docs/CROSS_IDE_INSTALLATION.md")
-        print("• Troubleshooting: docs/TROUBLEUBLESHOOTING.md")
+        print("\n[INFO] Documentation:")
+        print("- User Guide: docs/USER_GUIDE.md")
+        print("- Cross-IDE Setup: docs/CROSS_IDE_INSTALLATION.md")
+        print("- Troubleshooting: docs/TROUBLEUBLESHOOTING.md")
 
-        print("\n🐳 Docker Status:")
-        print("• Check containers: docker ps | grep cognee")
-        print("• View logs: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml logs")
-        print("• Restart: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml restart")
+        print("\n[INFO] Docker Status:")
+        print("- Check containers: docker ps | grep cognee")
+        print("- View logs: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml logs")
+        print("- Restart: docker-compose -f config/docker/docker-compose-enhanced-cognee.yml restart")
 
-        print("\n❓ Need Help?")
-        print("• GitHub Issues: https://github.com/your-username/enhanced-cognee/issues")
-        print("• Discord Community: https://discord.gg/enhanced-cognee")
-        print("• Documentation: https://docs.enhanced-cognee.io")
+        print("\n[INFO] Need Help?")
+        print("- GitHub Issues: https://github.com/your-username/enhanced-cognee/issues")
+        print("- Discord Community: https://discord.gg/enhanced-cognee")
+        print("- Documentation: https://docs.enhanced-cognee.io")
 
     def run(self):
         """Run the complete installation"""
@@ -458,7 +458,7 @@ except Exception as e:
 
             # Check prerequisites
             if not self.check_prerequisites():
-                print("\n❌ Prerequisites not met. Please install required software.")
+                print("\n[ERROR] Prerequisites not met. Please install required software.")
                 return False
 
             # Install Enhanced Cognee
@@ -466,7 +466,7 @@ except Exception as e:
 
             # Set up Docker
             if not self.setup_docker_network():
-                print("\n❌ Docker setup failed")
+                print("\n[ERROR] Docker setup failed")
                 return False
 
             # Create configuration files
@@ -484,10 +484,10 @@ except Exception as e:
             return True
 
         except KeyboardInterrupt:
-            print("\n\n❌ Installation cancelled by user")
+            print("\n\n[ERROR] Installation cancelled by user")
             return False
         except Exception as e:
-            print(f"\n❌ Installation failed: {e}")
+            print(f"\n[ERROR] Installation failed: {e}")
             return False
 
 def main():

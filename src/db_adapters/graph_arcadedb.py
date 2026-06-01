@@ -48,6 +48,8 @@ import json
 import os
 from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple
 
+from src.secure_config import require_secret
+
 
 # ---------------------------------------------------------------------------
 # Transport selection
@@ -66,7 +68,7 @@ def _resolve_auth(
     """Resolve Bolt-flavoured (uri, (user, password)) tuple."""
     uri = uri or os.getenv("ARCADEDB_URI", "bolt://localhost:27687")
     user = user or os.getenv("ARCADEDB_USER", "root")
-    password = password or os.getenv("ARCADEDB_PASSWORD", "cognee_password")
+    password = password or require_secret("ARCADEDB_PASSWORD", dev_default="cognee_password")
     return uri, (user, password)
 
 
@@ -94,7 +96,9 @@ def _resolve_http_config(
         ),
         "user": os.getenv("ARCADEDB_USER") or user or "root",
         "password": (
-            os.getenv("ARCADEDB_PASSWORD") or password or "cognee_password"
+            os.getenv("ARCADEDB_PASSWORD")
+            or password
+            or require_secret("ARCADEDB_PASSWORD", dev_default="cognee_password")
         ),
     }
 

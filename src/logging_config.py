@@ -16,6 +16,8 @@ CRITICAL - Critical messages for severe failures
 """
 
 import logging
+import logging.handlers
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -144,7 +146,29 @@ def setup_logging(
 
     # Add file handler if specified
     if log_file:
-        file_handler = logging.FileHandler(log_file)
+        # Bounded logging: rotate files instead of growing without limit.
+        # Caps are configurable via env with production defaults
+        # (~300MB total per logger: 50MB x (1 active + 5 backups)).
+        max_bytes = int(os.getenv("ENHANCED_LOG_MAX_BYTES", str(50 * 1024 * 1024)))
+        backup_count = int(os.getenv("ENHANCED_LOG_BACKUP_COUNT", "5"))
+
+        # Resolve the log file to an absolute path under a configurable
+        # log dir. Do NOT write to the process CWD root by default.
+        # If the caller passed a relative filename, place it under the
+        # log dir; an absolute path is honored as-is.
+        log_dir = os.getenv("ENHANCED_LOG_DIR", "./logs")
+        os.makedirs(log_dir, exist_ok=True)
+        if os.path.isabs(log_file):
+            resolved_log_file = log_file
+        else:
+            resolved_log_file = os.path.join(log_dir, os.path.basename(log_file))
+
+        file_handler = logging.handlers.RotatingFileHandler(
+            resolved_log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8"
+        )
         file_handler.setLevel(level)
 
         if format_json:

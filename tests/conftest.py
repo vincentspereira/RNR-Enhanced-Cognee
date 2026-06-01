@@ -13,6 +13,11 @@ from pathlib import Path
 from unittest.mock import Mock, AsyncMock, MagicMock
 import json
 
+# Allow built-in dev defaults during the unit-test run so adapters that call
+# src.secure_config.require_secret() still resolve their dev passwords. Must be
+# set before any application module is imported. Never set in production.
+os.environ.setdefault("ENHANCED_ALLOW_INSECURE_DEFAULTS", "1")
+
 # Add project to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))

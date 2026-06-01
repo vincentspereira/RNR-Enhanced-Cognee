@@ -136,7 +136,11 @@ def setup_project_environment(project_info):
     # Qdrant Vector Database
     os.environ["QDRANT_HOST"] = "localhost"
     os.environ["QDRANT_PORT"] = "26333"
-    os.environ["QDRANT_API_KEY"] = "***REMOVED***"
+    # Secret must be provided via environment/.env -- never hardcode.
+    # Only propagate QDRANT_API_KEY if it is already set; leave unset otherwise.
+    _qdrant_api_key = os.environ.get("QDRANT_API_KEY")
+    if _qdrant_api_key:
+        os.environ["QDRANT_API_KEY"] = _qdrant_api_key
     os.environ["QDRANT_COLLECTION_PREFIX"] = f"{project_info['name']}_"
     os.environ["VECTOR_DB_PROVIDER"] = "qdrant"
 

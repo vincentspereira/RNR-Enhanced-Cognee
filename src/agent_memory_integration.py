@@ -38,6 +38,9 @@ from src.memory_config import (
     get_config_manager,
 )
 
+# Fail-closed secret resolution (no hardcoded prod passwords)
+from src.secure_config import require_secret
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -123,7 +126,7 @@ class AgentMemoryIntegration:
 
         self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:27687")
         self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-        self.neo4j_password = os.getenv("NEO4J_PASSWORD", "cognee_password")
+        self.neo4j_password = require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
 
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
         self.redis_port = int(os.getenv("REDIS_PORT", "26379"))
@@ -133,7 +136,7 @@ class AgentMemoryIntegration:
         self.postgres_port = int(os.getenv("POSTGRES_PORT", "25432"))
         self.postgres_db = os.getenv("POSTGRES_DB", "cognee_db")
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
-        self.postgres_password = os.getenv("POSTGRES_PASSWORD", "cognee_password")
+        self.postgres_password = require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
 
         # Performance optimization
         self.cache_ttl = int(os.getenv("REDIS_CACHE_TTL", "3600"))
