@@ -9,6 +9,7 @@ import asyncio
 import json
 import logging
 import os
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any
@@ -22,7 +23,7 @@ from .sub_agent_coordinator import (
 )
 from .task_orchestration import (
     TaskOrchestrationEngine, WorkflowDefinition, WorkflowStatus,
-    TaskDependency
+    TaskDependency, TaskStatus
 )
 from .distributed_decision import (
     DistributedDecisionMaker, DecisionProposal, DecisionType,

@@ -374,7 +374,7 @@ class AlertManager:
             return
 
         try:
-            msg = MimeMultipart()
+            msg = MIMEMultipart()
             msg['From'] = username
             msg['To'] = ', '.join(recipients)
             msg['Subject'] = alert_message['title']
@@ -399,7 +399,7 @@ Required Actions:
 Cognee Security System
             """
 
-            msg.attach(MimeText(body, 'plain'))
+            msg.attach(MIMEText(body, 'plain'))
 
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()

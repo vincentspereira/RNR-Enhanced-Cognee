@@ -52,8 +52,11 @@ jobs:
       # SECURITY_MODULES is the hardened, security-critical surface that we
       # hold to a higher bar (critical lint + bandit + types must pass).
       # ----------------------------------------------------------------
-      - name: Critical syntax errors (E9, blocking, whole repo)
-        run: ruff check src/ tests/ bin/ --select E9 --output-format=github
+      - name: Critical syntax + undefined-name errors (E9,F821, blocking, whole repo)
+        # E9 = syntax errors; F821 = undefined names (latent NameError-at-runtime
+        # bugs). Both are real crashes, never style; gated repo-wide so they can
+        # never be reintroduced.
+        run: ruff check src/ tests/ bin/ --select E9,F821 --output-format=github
 
       - name: Critical lint on security-critical modules (blocking)
         run: |
