@@ -58,7 +58,7 @@ spacy>=3.8.13,<3.9                 # NLP pipeline (3.8.14 doesn't exist on PyPI;
 textstat==0.7.13                    # Text statistics
 
 # Machine Learning and AI
-transformers==4.40.1               # HuggingFace transformers
+transformers==4.53.0               # HuggingFace transformers (>=4.53.0 fixes RCE/ReDoS CVEs)
 torch==2.12.0                       # PyTorch
 sentence-transformers==2.6.1       # Sentence embeddings
 accelerate==1.13.0                 # PyTorch acceleration
@@ -109,13 +109,13 @@ click==8.4.0                       # Command line interface
 
 # File Processing
 python-magic==0.4.27               # File type detection
-pillow==10.2.0                     # Image processing
+pillow==12.2.0                     # Image processing (>=12.2.0 fixes buffer-overflow + PDF DoS CVEs)
 python-docx==1.2.0                 # Word document processing
 openpyxl==3.1.5                    # Excel file processing
 pdfplumber==0.11.9                 # PDF processing
 
 # Data Validation and Serialization
-marshmallow==3.21.2                # Object serialization
+marshmallow==3.26.2                # Object serialization (>=3.26.2 fixes Schema.load(many) DoS)
 cerberus==1.3.8                    # Data validation
 
 # Graph Processing (Neo4j integration)
@@ -140,7 +140,7 @@ pytest-mock>=3.14,<4.0             # Mocking in tests
 pytest-cov>=5.0,<8.0               # Coverage reporting (5+ supports pytest 8)
 
 # Development Tools
-black==24.3.0                      # Code formatting
+black==26.3.1                      # Code formatting (>=26.3.1 fixes cache-path traversal; dev-only)
 flake8==7.0.0                      # Linting
 mypy==1.9.0                        # Type checking
 pre-commit==3.6.0                  # Git hooks
@@ -156,7 +156,7 @@ schedule==1.2.2                    # Task scheduling
 watchdog==3.0.0                    # File system watching
 
 # Error Handling and Monitoring
-sentry-sdk==1.43.0                 # Error monitoring
+sentry-sdk==2.8.0                  # Error monitoring (>=2.8.0 fixes env-var leak to subprocess)
 rollbar==1.3.0                     # Error tracking
 # notifier removed: phantom dependency -- never imported, and the pinned
 # version 1.3.3 does not exist on PyPI (max published is 1.0.3). This was

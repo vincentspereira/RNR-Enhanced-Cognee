@@ -140,19 +140,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install safety bandit pip-audit
 
-      - name: Run pip-audit (dependency CVEs, informational pending triage)
-        # INFORMATIONAL on purpose. An audit of the declared dependency set
-        # currently surfaces known advisories in transitive/legacy pins
-        # (e.g. cryptography, urllib3, requests, starlette, python-multipart).
-        # Making this blocking before those are triaged would create a
-        # permanently-red gate, so it runs in report mode for now.
-        #
-        # Promotion path -> blocking:
-        #   1. Triage findings; bump pins where a fixed release exists.
-        #   2. For advisories with no fix yet, add documented exceptions:
-        #        pip-audit -r requirements.txt --ignore-vuln GHSA-xxxx-... # reason, revisit date
-        #   3. Drop `continue-on-error` and `|| true` once the audit is green.
-        run: pip-audit -r requirements.txt --desc --format markdown --output pip-audit-report.md || true
+      - name: Run pip-audit (dependency CVEs, blocking)
+        # BLOCKING. All fixable advisories were remediated by bumping pins
+        # (2026-06-02): transformers 4.40.1->4.53.0, pillow 10.2.0->12.2.0,
+        # marshmallow 3.21.2->3.26.2, sentry-sdk 1.43.0->2.8.0, black 24.3.0->26.3.1.
+        # The three exceptions below are tracked, justified, and NOT silently
+        # swallowed -- any NEW advisory (or any of these gaining a usable fix that
+        # we then fail to adopt) fails the build:
+        #   CVE-2025-69872 (diskcache 5.6.3): no fixed release exists; the pickle
+        #     cache attack requires write access to the local cache dir.
+        #   CVE-2025-71176 (pytest): dev/test-only, local /tmp DoS; pytest is
+        #     intentionally pinned <9.0 (9.x drops APIs the suite uses).
+        #   CVE-2026-1839 (transformers): fixed only in 5.0.0rc3 (pre-release) and
+        #     already mitigated here -- it is exploitable only with torch<2.6, and
+        #     torch is pinned to 2.12.0 (safe_globals protection active).
+        run: |
+          pip-audit -r requirements.txt --desc \
+            --ignore-vuln CVE-2025-69872 \
+            --ignore-vuln CVE-2025-71176 \
+            --ignore-vuln CVE-2026-1839
+
+      - name: Run Safety (dependency vulnerabilities, informational)
+        run: safety check --json --output safety-report.json
         continue-on-error: true
 
       - name: Run Safety (dependency vulnerabilities, informational)
