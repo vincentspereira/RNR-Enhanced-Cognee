@@ -76,6 +76,12 @@ services:
       QDRANT__SERVICE__HTTP_PORT: 6333
       QDRANT__SERVICE__GRPC_PORT: 6334
       QDRANT__LOG_LEVEL: INFO
+      # API-key authentication. Qdrant enforces this key on every request once
+      # set (read at startup -> requires a container recreate). Provide the
+      # value via QDRANT_API_KEY (shell env, --env-file, or config/docker/.env);
+      # the SAME key must be in the Enhanced Cognee app / MCP server environment
+      # or all vector operations will fail with 401/403.
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:?QDRANT_API_KEY must be set to enable Qdrant auth}
       QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: 32
       QDRANT__STORAGE__PERFORMANCE__MAX_SEARCH_THREADS: 4
       QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 1

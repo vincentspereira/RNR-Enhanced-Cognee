@@ -192,6 +192,8 @@ async def lifespan(app: "FastAPI"):
         from src.mcp_security import enforce_production_auth, log_security_status
         enforce_production_auth()  # raises in production when no auth configured
         log_security_status()
+        from src.security.enterprise_auth import log_enterprise_auth_status
+        log_enterprise_auth_status()
     except RuntimeError:
         raise
     except Exception as e:  # pragma: no cover - defensive
@@ -227,6 +229,9 @@ class EnhancedCogneeMCPServer:
         self._install_security_middleware()
         self._install_tenant_middleware()
         self._install_metrics_middleware()
+        # Registered last -> outermost middleware, so it observes the final
+        # status code (including 401/403 from the auth layer).
+        self._install_audit_middleware()
         self.setup_routes()
 
     def _install_cors_middleware(self) -> None:
@@ -255,44 +260,50 @@ class EnhancedCogneeMCPServer:
         )
 
     def _install_security_middleware(self) -> None:
-        """Enforce API-key auth + payload size cap on the HTTP surface.
+        """Authenticate + authorize every request, and cap payload size.
 
-        Per-tool rate limiting is applied at the route level (the FastAPI
-        middleware can't know which tool was invoked without parsing the
-        path, so rate-limiting is handled in the individual handlers via
-        ``check_rate_limit("/mcp/<tool>", agent_id)``).
+        Authentication resolves a Principal from the request (Bearer OIDC/JWT or
+        ``X-API-Key``); authorization enforces the per-route permission defined
+        in ``src.security.enterprise_auth``. The resolved Principal is stored on
+        ``request.state.principal`` for downstream handlers and the audit log.
+
+        Fail-open in dev (no auth configured -> implicit local admin), fail-closed
+        in production. ``/health*`` (and ``/metrics`` unless
+        ``ENHANCED_METRICS_PUBLIC=0``) stay public so probes / scrapers work
+        without credentials. Per-tool rate limiting is applied at the route level
+        (the middleware can't know which tool was invoked from the path alone).
         """
-        from src.mcp_security import (
-            _expected_api_key,
-            _payload_byte_cap,
-            PayloadTooLarge,
-            require_api_key,
+        from src.mcp_security import _payload_byte_cap
+        from src.security.enterprise_auth import (
+            AuthError,
+            authenticate_request,
+            authorize,
+            route_required_permission,
         )
-        from fastapi.responses import JSONResponse
 
         @self.app.middleware("http")
         async def _security_scope(request, call_next):
-            # /health stays unauthenticated so liveness probes work without
-            # the operator having to provision the API key inside the
-            # health-check tooling.
             path = request.url.path
-            unauthenticated_paths = {"/health", "/health/live", "/health/ready"}
-            # /metrics stays unauthenticated by default for Prometheus scraping;
-            # set ENHANCED_METRICS_PUBLIC=0 to require the API key on it too.
+            public_paths = {"/health", "/health/live", "/health/ready"}
+            # /metrics stays public by default for Prometheus scraping; set
+            # ENHANCED_METRICS_PUBLIC=0 to require authentication on it too.
             if os.getenv("ENHANCED_METRICS_PUBLIC", "1").strip().lower() in (
                 "1", "true", "yes", "on",
             ):
-                unauthenticated_paths.add("/metrics")
-            if path not in unauthenticated_paths:
-                provided = request.headers.get("x-api-key") or request.headers.get(
-                    "X-API-Key"
-                )
+                public_paths.add("/metrics")
+
+            if path not in public_paths:
                 try:
-                    require_api_key(provided)
-                except PermissionError as e:
+                    principal = authenticate_request(request.headers)
+                    request.state.principal = principal
+                    authorize(
+                        principal,
+                        route_required_permission(request.method, path),
+                    )
+                except AuthError as e:
                     return JSONResponse(
-                        status_code=401,
-                        content={"detail": str(e)},
+                        status_code=e.status_code,
+                        content={"detail": e.detail},
                     )
 
             cap = _payload_byte_cap()
@@ -323,7 +334,7 @@ class EnhancedCogneeMCPServer:
         downstream call to a storage helper sees the tenant set here.
         Returns the response untouched.
         """
-        from src.multi_tenant import TenantContext
+        from src.multi_tenant import TenantContext, tenant_required
 
         @self.app.middleware("http")
         async def _tenant_scope(request, call_next):
@@ -332,9 +343,9 @@ class EnhancedCogneeMCPServer:
             tenant_id = request.headers.get("x-tenant-id") or request.headers.get(
                 "X-Tenant-ID"
             )
-            require_tenant = os.getenv(
-                "ENHANCED_REQUIRE_TENANT", "0"
-            ).strip().lower() in ("1", "true", "yes", "on")
+            # Enforced by default in production (see multi_tenant.tenant_required);
+            # explicit ENHANCED_REQUIRE_TENANT always wins.
+            require_tenant = tenant_required()
             if not tenant_id and require_tenant and path not in exempt:
                 return JSONResponse(
                     status_code=400,
@@ -363,6 +374,72 @@ class EnhancedCogneeMCPServer:
                 pass
             return response
 
+    def _install_audit_middleware(self) -> None:
+        """Record an audit-log entry for mutations and authorization failures.
+
+        Registered last so it is the OUTERMOST middleware and therefore observes
+        the final status code -- including 401/403 produced by the auth layer.
+        Reads the resolved Principal from ``request.state.principal`` (set by the
+        security middleware) and the tenant from the ``X-Tenant-ID`` header.
+
+        Best-effort: an audit-logging failure never affects the response, and
+        the call is skipped silently when the audit logger is not initialized.
+        Reads (GET) of non-sensitive routes are not logged to avoid log spam;
+        the security-relevant trail is mutations + denied requests.
+        """
+        from src.audit_logger import AuditOperationType, get_audit_logger
+
+        op_by_path = {
+            "/memory/add": AuditOperationType.MEMORY_ADD,
+            "/mcp/add_memory": AuditOperationType.MEMORY_ADD,
+            "/mcp/update_memory": AuditOperationType.MEMORY_UPDATE,
+            "/mcp/delete_memory": AuditOperationType.MEMORY_DELETE,
+            "/knowledge/add_relation": AuditOperationType.MEMORY_ADD,
+            "/memory/search": AuditOperationType.MEMORY_SEARCH,
+            "/mcp/search_memories": AuditOperationType.MEMORY_SEARCH,
+        }
+        exempt = {"/health", "/health/live", "/health/ready", "/metrics"}
+
+        @self.app.middleware("http")
+        async def _audit_scope(request, call_next):
+            start = time.monotonic()
+            response = await call_next(request)
+            try:
+                path = request.url.path
+                method = request.method
+                is_mutation = method in ("POST", "PUT", "PATCH", "DELETE")
+                is_auth_failure = response.status_code in (401, 403)
+                if (is_mutation or is_auth_failure) and path not in exempt:
+                    al = get_audit_logger()
+                    if al is not None:
+                        principal = getattr(request.state, "principal", None)
+                        agent_id = getattr(principal, "subject", None) or "anonymous"
+                        tenant = request.headers.get("x-tenant-id")
+                        if is_auth_failure:
+                            op = AuditOperationType.AUTH_DENIED
+                        else:
+                            op = op_by_path.get(path, AuditOperationType.API_REQUEST)
+                        status = "success" if response.status_code < 400 else "failure"
+                        await al.log(
+                            operation_type=op,
+                            agent_id=str(agent_id),
+                            status=status,
+                            details={
+                                "method": method,
+                                "path": path,
+                                "status_code": response.status_code,
+                                "auth_method": getattr(principal, "auth_method", "none"),
+                                "role": getattr(
+                                    getattr(principal, "role", None), "value", None
+                                ),
+                            },
+                            execution_time_ms=(time.monotonic() - start) * 1000.0,
+                            additional_context={"tenant": tenant} if tenant else None,
+                        )
+            except Exception:
+                pass
+            return response
+
     async def initialize(self):
         """Initialize all Enhanced stack connections with retry + graceful degrade.
 
@@ -381,6 +458,16 @@ class EnhancedCogneeMCPServer:
         await self._connect_with_retry(self._init_qdrant, "Qdrant")
         await self._connect_with_retry(self._init_neo4j, "Neo4j/graph")
         await self._connect_with_retry(self._init_redis, "Redis/cache")
+
+        # Audit logger (file + optional DB) so the audit middleware has a sink.
+        # Best-effort: a failure here must not block server startup.
+        try:
+            from src.audit_logger import get_audit_logger, init_audit_logger
+            if get_audit_logger() is None:
+                init_audit_logger(db_pool=self.postgres_pool)
+                logger.info("Audit logger initialized")
+        except Exception as e:  # pragma: no cover - defensive
+            logger.warning(f"Audit logger init skipped: {e}")
 
         connected = [
             name for name, ok in (

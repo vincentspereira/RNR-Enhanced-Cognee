@@ -78,6 +78,11 @@ class AuditOperationType(Enum):
     SYSTEM_SHUTDOWN = "system_shutdown"
     CONFIG_CHANGE = "config_change"
 
+    # Generic API / tool surface + security events (live-path audit wiring)
+    API_REQUEST = "api_request"
+    TOOL_CALL = "tool_call"
+    AUTH_DENIED = "auth_denied"
+
 
 class AuditLogger:
     """
@@ -301,6 +306,47 @@ class AuditLogger:
         self._update_metrics(log_entry)
 
         return log_id
+
+    def log_sync(
+        self,
+        operation_type: AuditOperationType,
+        agent_id: str,
+        status: str,
+        details: Optional[Dict[str, Any]] = None,
+        execution_time_ms: Optional[float] = None,
+        error_message: Optional[str] = None,
+        memory_id: Optional[str] = None,
+        additional_context: Optional[Dict[str, Any]] = None,
+    ) -> Optional[str]:
+        """Synchronous audit log (file + buffer + metrics, no DB write).
+
+        Companion to :meth:`log` for synchronous call sites (e.g. the stdio MCP
+        server's synchronous tools) that cannot ``await``. Database persistence
+        is async-only and therefore skipped here; the file channel + in-memory
+        buffer still capture the event.
+        """
+        if not self._should_log(operation_type.value):
+            return None
+
+        log_entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "operation_type": operation_type.value,
+            "agent_id": agent_id,
+            "status": status,
+            "memory_id": memory_id,
+            "details": self._anonymize_sensitive_data(details or {}),
+            "execution_time_ms": execution_time_ms,
+            "error_message": error_message,
+            "additional_context": additional_context or {},
+        }
+        log_entry["log_id"] = hashlib.sha256(
+            f"{log_entry['timestamp']}_{operation_type.value}_{agent_id}".encode()
+        ).hexdigest()[:32]
+
+        self._write_to_file(log_entry)
+        self._add_to_recent_logs(log_entry)
+        self._update_metrics(log_entry)
+        return log_entry["log_id"]
 
     def _write_to_file(self, log_entry: Dict[str, Any]):
         """Write log entry to file."""

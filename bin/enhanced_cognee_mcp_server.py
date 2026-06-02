@@ -64,6 +64,126 @@ import mcp.types as types
 # Create MCP server
 mcp = FastMCP("Enhanced Cognee")
 
+# ---------------------------------------------------------------------------
+# Enterprise per-tool guard
+#
+# Wrap mcp.tool() ONCE so every registered tool gets centralized RBAC + audit
+# logging, instead of editing 122 individual tool functions. The wrapper
+# preserves the wrapped function's signature via functools.wraps -- FastMCP
+# derives each tool's JSON input schema from inspect.signature() (which follows
+# __wrapped__), so wrapping is schema-transparent (verified byte-identical).
+#
+#   * RBAC: enforced only when the deployment is locked down
+#     (ENHANCED_MCP_ROLE != admin, or ENHANCED_MCP_ENFORCE_RBAC=1). Default
+#     local/admin use is unaffected -- no behavioural change for Claude Code.
+#   * Audit: every tool call is recorded to the audit logger (file + in-memory
+#     buffer queryable via the query_audit_log tool). Best-effort: an audit
+#     failure never breaks the tool call.
+# ---------------------------------------------------------------------------
+import functools as _functools
+import inspect as _inspect
+import time as _time
+
+_original_mcp_tool = mcp.tool
+
+# Tool name -> AuditOperationType member NAME (string avoids import-order issues;
+# resolved against the enum at call time). Unlisted tools log as TOOL_CALL.
+_TOOL_AUDIT_OP_NAMES = {
+    "add_memory": "MEMORY_ADD",
+    "update_memory": "MEMORY_UPDATE",
+    "delete_memory": "MEMORY_DELETE",
+    "forget_memory": "MEMORY_DELETE",
+    "search_memories": "MEMORY_SEARCH",
+    "search": "MEMORY_SEARCH",
+    "cognify": "COGNIFY_PROCESS",
+    "deduplicate": "DEDUPLICATE_RUN",
+    "auto_deduplicate": "DEDUPLICATE_RUN",
+    "create_backup": "TOOL_CALL",
+    "restore_backup": "TOOL_CALL",
+}
+
+
+def _guarded_tool(*dargs, **dkwargs):
+    """Drop-in replacement for ``mcp.tool`` that adds RBAC + audit."""
+    decorator = _original_mcp_tool(*dargs, **dkwargs)
+
+    def wrap(fn):
+        tool_name = getattr(fn, "__name__", "tool")
+
+        def _authorize():
+            try:
+                from src.security.enterprise_auth import (
+                    AuthError,
+                    authorize,
+                    local_principal,
+                    stdio_rbac_enforced,
+                    tool_required_permission,
+                )
+            except Exception:
+                return  # enterprise auth unavailable -> do not block tools
+            if not stdio_rbac_enforced():
+                return
+            try:
+                authorize(local_principal(), tool_required_permission(tool_name))
+            except AuthError as exc:
+                # Surface as the project's standard authorization error type.
+                raise AuthorizationError(f"ERR {exc.detail}")
+
+        def _audit(status, started, agent_id, err=None):
+            try:
+                from src.audit_logger import AuditOperationType, get_audit_logger
+                al = get_audit_logger()
+                if al is None:
+                    return
+                op_name = _TOOL_AUDIT_OP_NAMES.get(tool_name, "TOOL_CALL")
+                op = getattr(AuditOperationType, op_name, AuditOperationType.TOOL_CALL)
+                al.log_sync(
+                    operation_type=op,
+                    agent_id=str(agent_id or "claude-code"),
+                    status=status,
+                    details={"tool": tool_name},
+                    execution_time_ms=(_time.monotonic() - started) * 1000.0,
+                    error_message=err,
+                )
+            except Exception:
+                pass
+
+        if _inspect.iscoroutinefunction(fn):
+            @_functools.wraps(fn)
+            async def awrapper(*args, **kwargs):
+                started = _time.monotonic()
+                agent_id = kwargs.get("agent_id") or "claude-code"
+                _authorize()
+                try:
+                    result = await fn(*args, **kwargs)
+                except Exception as exc:
+                    _audit("failure", started, agent_id, str(exc))
+                    raise
+                _audit("success", started, agent_id)
+                return result
+
+            return decorator(awrapper)
+
+        @_functools.wraps(fn)
+        def swrapper(*args, **kwargs):
+            started = _time.monotonic()
+            agent_id = kwargs.get("agent_id") or "claude-code"
+            _authorize()
+            try:
+                result = fn(*args, **kwargs)
+            except Exception as exc:
+                _audit("failure", started, agent_id, str(exc))
+                raise
+            _audit("success", started, agent_id)
+            return result
+
+        return decorator(swrapper)
+
+    return wrap
+
+
+mcp.tool = _guarded_tool
+
 # Import enhanced modules
 from src.memory_management import MemoryManager, RetentionPolicy
 from src.memory_deduplication import MemoryDeduplicator
@@ -5941,7 +6061,7 @@ async def query_audit_log(
         if not al:
             return "ERR Audit Logger not initialized"
 
-        from datetime import timedelta as _td
+        from datetime import datetime, timedelta as _td, UTC
         start_time = datetime.now(UTC) - _td(hours=hours_back)
 
         logs = await al.query_logs(

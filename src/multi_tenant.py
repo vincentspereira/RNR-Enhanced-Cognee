@@ -182,12 +182,33 @@ class TenantContext:
 # ---------------------------------------------------------------------------
 
 
+def tenant_required() -> bool:
+    """Whether a tenant context is mandatory for storage-tier calls.
+
+    Resolution order:
+      1. Explicit ``ENHANCED_REQUIRE_TENANT`` (1/true/yes/on -> required;
+         anything else -> not required) always wins.
+      2. Otherwise, required by default in production (``ENHANCED_ENV`` in
+         {production, prod}) and optional elsewhere.
+
+    This gives "multi-tenant enforced by default" semantics for production
+    SaaS deployments while keeping local / single-tenant dev frictionless.
+    Operators running a genuinely single-tenant production install can opt
+    out with ``ENHANCED_REQUIRE_TENANT=0``.
+    """
+    raw = os.getenv("ENHANCED_REQUIRE_TENANT")
+    if raw is not None:
+        return raw.strip().lower() in ("1", "true", "yes", "on")
+    return os.getenv("ENHANCED_ENV", "").strip().lower() in ("production", "prod")
+
+
 def _maybe_require_tenant() -> Optional[str]:
     t = _TENANT_CTX.get()
-    if t is None and os.getenv("ENHANCED_REQUIRE_TENANT") == "1":
+    if t is None and tenant_required():
         raise MissingTenantError(
-            "ENHANCED_REQUIRE_TENANT=1 is set but no tenant context active. "
-            "Wrap every storage call in `with TenantContext(...):`."
+            "A tenant context is required (ENHANCED_REQUIRE_TENANT or "
+            "production default) but none is active. Wrap every storage call "
+            "in `with TenantContext(...):` or send an X-Tenant-ID header."
         )
     return t
 
