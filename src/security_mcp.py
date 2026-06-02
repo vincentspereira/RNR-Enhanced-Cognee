@@ -9,7 +9,7 @@ This module is ASCII-only output compatible for Windows console.
 
 import re
 import uuid
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
 import logging
 

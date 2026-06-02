@@ -10,23 +10,16 @@ import json
 import os
 import secrets
 import smtplib
-import requests
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
 from enum import Enum
 import asyncio
-from pathlib import Path
 import yaml
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import ssl
-import certifi
 import aiohttp
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
-import schedule
-import time
-import threading
 
 from .enhanced_security_framework import EnhancedSecurityFramework, SecurityEvent
 
@@ -785,7 +778,6 @@ def create_default_alert_rules():
 async def main():
     """Main entry point for security monitoring service"""
     import argparse
-    import secrets
 
     parser = argparse.ArgumentParser(description="Cognee Security Monitoring Service")
     parser.add_argument("--config", default="config/security_config.yaml", help="Configuration file")

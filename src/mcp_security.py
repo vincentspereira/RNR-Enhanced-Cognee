@@ -50,7 +50,6 @@ import os
 import secrets
 import threading
 import time
-from collections import defaultdict
 from typing import Dict, Optional, Tuple
 
 logger = logging.getLogger(__name__)

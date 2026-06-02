@@ -9,9 +9,7 @@ import sys
 import subprocess
 import platform
 import json
-import requests
 from pathlib import Path
-from urllib.parse import urlparse
 import shutil
 
 class EnhancedCogneeInstaller:
@@ -271,7 +269,7 @@ class EnhancedCogneeInstaller:
 
         # Environment template
         env_template_path = config_dir / ".env.template"
-        env_template = f"""# Enhanced Cognee MCP Server Configuration
+        env_template = """# Enhanced Cognee MCP Server Configuration
 # Copy this file to .env and fill in your API keys
 
 # LLM Configuration

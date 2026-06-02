@@ -3,10 +3,9 @@ Memory Management Module for Enhanced Cognee
 Provides memory expiry, archival, and cleanup policies
 """
 
-import asyncio
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Any
+from typing import Dict, Any
 from enum import Enum
 
 

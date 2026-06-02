@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 import socket
-import time
 
 # ---------------------------------------------------------------------------
 # Locate project root (one level above this bin/ directory)

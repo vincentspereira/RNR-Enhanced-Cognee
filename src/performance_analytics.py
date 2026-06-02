@@ -3,13 +3,12 @@ Performance Analytics Module for Enhanced Cognee
 Collects and exposes performance metrics for monitoring
 """
 
-import asyncio
 import logging
 import time
-from datetime import datetime, timezone, timedelta
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timezone
+from typing import Dict, List, Any
 from collections import defaultdict
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -161,28 +160,28 @@ class PerformanceAnalytics:
                 durations = [q["duration_ms"] for q in self.query_times]
                 avg_time = sum(durations) / len(durations)
 
-                metrics_lines.append(f"# HELP enhanced_cognee_query_time_seconds Query execution time in seconds")
-                metrics_lines.append(f"# TYPE enhanced_cognee_query_time_seconds gauge")
+                metrics_lines.append("# HELP enhanced_cognee_query_time_seconds Query execution time in seconds")
+                metrics_lines.append("# TYPE enhanced_cognee_query_time_seconds gauge")
                 metrics_lines.append(f"enhanced_cognee_query_time_seconds {avg_time/1000:.4f} {int(time.time())}")
 
             # Cache stats
             cache_hits = sum(v for k, v in self.counters.items() if "cache_hit" in k)
             cache_misses = sum(v for k, v in self.counters.items() if "cache_miss" in k)
 
-            metrics_lines.append(f"# HELP enhanced_cognee_cache_hits Total cache hits")
-            metrics_lines.append(f"# TYPE enhanced_cognee_cache_hits counter")
+            metrics_lines.append("# HELP enhanced_cognee_cache_hits Total cache hits")
+            metrics_lines.append("# TYPE enhanced_cognee_cache_hits counter")
             metrics_lines.append(f"enhanced_cognee_cache_hits {cache_hits}")
 
-            metrics_lines.append(f"# HELP enhanced_cognee_cache_misses Total cache misses")
-            metrics_lines.append(f"# TYPE enhanced_cognee_cache_misses counter")
+            metrics_lines.append("# HELP enhanced_cognee_cache_misses Total cache misses")
+            metrics_lines.append("# TYPE enhanced_cognee_cache_misses counter")
             metrics_lines.append(f"enhanced_cognee_cache_misses {cache_misses}")
 
             # Memory count
             if self.postgres_pool:
                 async with self.postgres_pool.acquire() as conn:
                     count = await conn.fetchval(f"SELECT COUNT(*) FROM {_t_docs()}")
-                    metrics_lines.append(f"# HELP enhanced_cognee_total_memories Total number of memories stored")
-                    metrics_lines.append(f"# TYPE enhanced_cognee_total_memories gauge")
+                    metrics_lines.append("# HELP enhanced_cognee_total_memories Total number of memories stored")
+                    metrics_lines.append("# TYPE enhanced_cognee_total_memories gauge")
                     metrics_lines.append(f"enhanced_cognee_total_memories {count} {int(time.time())}")
 
             return "\n".join(metrics_lines)

@@ -5,7 +5,7 @@ Provides faceted search, autocomplete suggestions, and fuzzy search.
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Set
+from typing import Dict, List, Any
 from collections import Counter
 import re
 

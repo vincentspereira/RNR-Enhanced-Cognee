@@ -8,13 +8,12 @@ Integrates with Sub-Agent Coordinator for distributed execution
 import asyncio
 import logging
 import uuid
-from datetime import datetime, timedelta, UTC
-from typing import Dict, List, Optional, Any, Set, Tuple
+from datetime import datetime, UTC
+from typing import Dict, List, Optional, Any
 from enum import Enum
 from dataclasses import dataclass, field
 from .sub_agent_coordinator import (
-    SubAgentCoordinator, AgentTask, TaskPriority, AgentStatus,
-    MessageType, AgentMessage
+    SubAgentCoordinator, AgentTask, TaskPriority, MessageType, AgentMessage
 )
 
 logger = logging.getLogger(__name__)

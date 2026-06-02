@@ -19,7 +19,6 @@ import logging
 import logging.handlers
 import os
 import sys
-from pathlib import Path
 from typing import Optional
 
 
@@ -172,7 +171,6 @@ def setup_logging(
         file_handler.setLevel(level)
 
         if format_json:
-            import json
             formatter = logging.Formatter(
                 '{"timestamp": "%(asctime)s", "level": "%(levelname)s", '
                 '"logger": "%(name)s", "message": "%(message)s"}'

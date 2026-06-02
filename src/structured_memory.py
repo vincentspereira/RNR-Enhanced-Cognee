@@ -28,8 +28,7 @@ import asyncio
 import json
 import logging
 import re
-from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime, timezone
+from typing import Dict, List, Any, Optional
 from enum import Enum
 
 logger = logging.getLogger(__name__)
@@ -472,7 +471,6 @@ class StructuredMemoryModel:
 
 async def main():
     """Test structured memory model."""
-    import asyncpg
 
     # Mock connection pool (for testing)
     print("Structured memory model requires database connection")

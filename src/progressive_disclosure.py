@@ -23,7 +23,6 @@ import asyncio
 import json
 import logging
 from typing import Dict, List, Any, Optional
-from datetime import datetime, timezone
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -395,7 +394,7 @@ class ProgressiveDisclosureSearch:
         Returns:
             Complete workflow results
         """
-        logger.info(f"Progressive search workflow: query='{{query}}'")
+        logger.info("Progressive search workflow: query='{query}'")
 
         # Layer 1: Search index
         index_results = await self.search_index(

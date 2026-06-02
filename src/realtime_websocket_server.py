@@ -9,7 +9,7 @@ import json
 import logging
 from typing import Dict, Set, Optional, Any, List
 from datetime import datetime, UTC
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from enum import Enum
 
 logger = logging.getLogger(__name__)

@@ -19,7 +19,6 @@ Version: 1.1.0 (Phase 7 enhancement - 2026-05-13)
 """
 
 import json
-import os
 import secrets
 import socket
 import subprocess

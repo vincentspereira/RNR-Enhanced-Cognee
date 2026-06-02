@@ -5,19 +5,15 @@ FastAPI middleware implementations for all security features
 """
 
 import time
-import logging
 import secrets
 from datetime import datetime
-from typing import Dict, Any, Optional
-from fastapi import Request, Response, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Dict, Any
+from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
-import asyncio
 from .enhanced_security_framework import (
-    EnhancedSecurityFramework, SecurityLogger, SecurityEvent,
-    SecurityConfig, EnhancedInputValidator, EnhancedPasswordPolicy,
-    EnhancedRateLimiter
+    EnhancedSecurityFramework, SecurityEvent,
+    SecurityConfig
 )
 
 

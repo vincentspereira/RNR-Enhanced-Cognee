@@ -16,7 +16,6 @@ Tools included:
 This module is ASCII-only output compatible for Windows console.
 """
 
-import asyncio
 import json
 import logging
 from typing import Optional, Dict, Any
@@ -402,7 +401,6 @@ async def delete_memory(
         ConfirmationRequiredError,
         validate_uuid,
         validate_agent_id,
-        authorizer,
         confirmation_manager,
         require_agent_authorization
     )

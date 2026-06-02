@@ -5,29 +5,25 @@ Unified API interface for all coordination functionalities
 Provides RESTful endpoints for external systems to interact with coordination layer
 """
 
-import asyncio
-import json
 import logging
 import os
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from .sub_agent_coordinator import (
-    SubAgentCoordinator, AgentTask, TaskPriority, AgentStatus,
-    MessageType, AgentMessage, AgentCapability
+    SubAgentCoordinator, AgentTask, TaskPriority, MessageType, AgentMessage, AgentCapability
 )
 from .task_orchestration import (
-    TaskOrchestrationEngine, WorkflowDefinition, WorkflowStatus,
-    TaskDependency, TaskStatus
+    TaskOrchestrationEngine, WorkflowDefinition, TaskDependency, TaskStatus
 )
 from .distributed_decision import (
     DistributedDecisionMaker, DecisionProposal, DecisionType,
-    DecisionStatus, VoteType, DecisionOption
+    VoteType, DecisionOption
 )
 
 logger = logging.getLogger(__name__)

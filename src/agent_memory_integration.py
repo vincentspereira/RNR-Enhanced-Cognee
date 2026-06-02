@@ -11,17 +11,11 @@ import asyncio
 import json
 import logging
 import uuid
-import hashlib
-from datetime import datetime, timezone, timedelta
-from typing import Dict, List, Optional, Any, Union, Tuple
-from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
 from enum import Enum
-import asyncpg
-import qdrant_client
-from qdrant_client import QdrantClient, models
-from neo4j import GraphDatabase, Driver
-import redis.asyncio as redis
-import numpy as np
+from qdrant_client import models
 
 from src.db_factory import (
     get_cache_client,
@@ -33,8 +27,6 @@ from src.db_factory import (
 # Import dynamic memory configuration system
 from src.memory_config import (
     MemoryConfigManager,
-    MemoryCategoryConfig,
-    AgentConfig,
     get_config_manager,
 )
 
@@ -861,7 +853,7 @@ async def main():
 
         # Get all agents info (now dynamically loaded)
         agents_info = await integration.get_all_agents_info()
-        print(f"\n=== Enhanced Cognee Memory Integration ===")
+        print("\n=== Enhanced Cognee Memory Integration ===")
         print(f"Project: {agents_info['project_info']['total_categories']} categories, "
               f"{agents_info['project_info']['total_agents']} agents")
 

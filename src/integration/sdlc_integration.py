@@ -5,10 +5,9 @@ Seamless integration of Enhanced Cognee with existing Multi-Agent System SDLC
 """
 
 import asyncio
-import json
 import logging
-from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta, UTC
+from typing import Dict, List, Any
+from datetime import datetime, UTC
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)

@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Set, Optional, Dict, Any, List
 from datetime import datetime, timezone
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileCreatedEvent
+from watchdog.events import FileSystemEventHandler
 
 logger = logging.getLogger(__name__)
 

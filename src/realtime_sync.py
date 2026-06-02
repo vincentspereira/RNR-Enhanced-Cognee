@@ -3,7 +3,6 @@ Real-Time Memory Synchronization Module for Enhanced Cognee
 Enables real-time memory updates across multiple agents using Redis pub/sub
 """
 
-import asyncio
 import logging
 import json
 from datetime import datetime, timezone

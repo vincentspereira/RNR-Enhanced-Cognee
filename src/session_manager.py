@@ -14,7 +14,6 @@ import json
 import logging
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional, List
-from pathlib import Path
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -484,7 +483,7 @@ class ContextInjector:
 
         # Build context string
         context_parts = [
-            f"<context>",
+            "<context>",
             f"<session_id>{session_id}</session_id>",
             f"<session_start>{context['session']['start_time']}</session_start>"
         ]
@@ -551,7 +550,7 @@ class ContextInjector:
                 context_parts.append(f"<session id='{session_id}'>")
                 for memory in session_context["memories"][:5]:
                     context_parts.append(f"<memory>{memory['content'][:200]}...</memory>")
-                context_parts.append(f"</session>")
+                context_parts.append("</session>")
 
         context_parts.append("</recent_sessions>")
 
@@ -560,7 +559,6 @@ class ContextInjector:
 
 async def main():
     """Test session manager."""
-    import asyncpg
 
     # Mock database pool (for testing)
     # In real usage, this would be a real connection pool

@@ -16,13 +16,8 @@ from typing import Dict, List, Optional, Any, Tuple
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-import asyncpg
-import qdrant_client
-from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
-from neo4j import GraphDatabase, Driver
-import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field

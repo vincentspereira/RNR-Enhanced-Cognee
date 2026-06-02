@@ -3,11 +3,8 @@ Memory Summarization Module for Enhanced Cognee
 Automatically summarizes old or large memories to save space
 """
 
-import asyncio
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-import json
+from typing import Dict, Any
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant

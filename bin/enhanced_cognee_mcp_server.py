@@ -37,7 +37,7 @@ import asyncio
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Optional
 
 # Add project to path
 project_root = Path(__file__).parent
@@ -59,7 +59,6 @@ logger = logging.getLogger(__name__)
 
 # Import MCP framework
 from mcp.server import FastMCP
-import mcp.types as types
 
 # Create MCP server
 mcp = FastMCP("Enhanced Cognee")
@@ -214,45 +213,27 @@ from src.security_mcp import (
     sanitize_string,
     authorizer,
     confirmation_manager,
-    require_agent_authorization,
-    validate_dry_run_safe,
-    handle_database_exception,
-    handle_backup_exception
+    require_agent_authorization
 )
 
 # Code Quality: Response Formatting and Transaction Support
 from src.logging_config import get_logger
-from src.mcp_response_formatter import (
-    success_response,
-    error_response,
-    format_response
-)
 from src.transaction_manager import (
-    TransactionManager,
-    execute_in_transaction,
-    execute_operation_with_transaction
+    TransactionManager
 )
 from src.llm_cost_tracker import (
     LLMCostTracker,
     init_cost_tracker,
-    get_cost_tracker,
-    set_llm_context,
 )
 from src.session_manager import SessionManager
 from src.audit_logger import (
     AuditLogger,
-    AuditOperationType,
     init_audit_logger,
     get_audit_logger,
 )
-from src.rate_limiter import RateLimiter, init_rate_limiter, get_rate_limiter
-from src.pii_detector import PIIDetector, init_pii_detector, get_pii_detector
-from src.circuit_breaker import (
-    CircuitBreaker,
-    get_circuit_breaker,
-    get_all_circuit_stats,
-)
-from src.tracing import init_tracing, trace_tool, is_tracing_enabled
+from src.rate_limiter import RateLimiter, init_rate_limiter
+from src.pii_detector import PIIDetector, init_pii_detector
+from src.tracing import init_tracing
 
 # Phase 10 - Memory Lifecycle
 from src.memory_versioner import (
@@ -296,7 +277,6 @@ from src.gdpr_manager import (
 # Phase 12 - Plugin Ecosystem and Integrations
 from src.plugin_loader import (
     PluginRegistry,
-    EnhancedCogneeLoader,
     init_plugin_registry,
     get_plugin_registry,
 )
@@ -342,7 +322,7 @@ from src.memory_reranker import (
 )
 
 # Undo Manager
-from src.undo_manager import UndoManager, init_undo_manager, get_undo_manager
+from src.undo_manager import UndoManager, init_undo_manager
 
 # Enhanced module instances
 memory_manager = None
@@ -1019,7 +999,7 @@ async def health() -> str:
         except Exception as e:
             logger.warning(f"Failed to log health check performance: {e}")
 
-    return f"Enhanced Cognee Health:\n" + "\n".join(checks)
+    return "Enhanced Cognee Health:\n" + "\n".join(checks)
 
 
 @mcp.tool()
@@ -1862,7 +1842,7 @@ async def get_memory_age_stats() -> str:
             return f"ERR {stats.get('error', 'Unknown error')}"
 
         output = [
-            f"[STATS] Memory Age Distribution:",
+            "[STATS] Memory Age Distribution:",
             f"  Total memories: {stats['total_memories']}",
             f"  Oldest memory: {stats['oldest_memory']}",
             f"  Newest memory: {stats['newest_memory']}",
@@ -2083,7 +2063,7 @@ async def check_duplicate(content: str, agent_id: str = "default") -> str:
                    f"  Reason: {reason}\n"
                    f"  Action: {action}")
         else:
-            return f"OK No duplicate found - safe to add"
+            return "OK No duplicate found - safe to add"
 
     except Exception as e:
         logger.error(f"check_duplicate failed: {e}")
@@ -4642,7 +4622,7 @@ async def advanced_search(
             output.append(f"   Content: {result.content[:150]}...")
 
             if result.highlights:
-                output.append(f"   Highlights:")
+                output.append("   Highlights:")
                 for highlight in result.highlights[:3]:
                     output.append(f"     - {highlight}")
 
@@ -4810,7 +4790,6 @@ async def remember(
     - Status string with task ID if background mode, else completion status
     """
     try:
-        import cognee
         from cognee.api.v1.remember.remember import remember as cognee_remember
 
         if run_in_background:
@@ -5304,7 +5283,7 @@ async def translate_text(
         )
 
         lines = [
-            f"OK Translation complete:",
+            "OK Translation complete:",
             f"  Source language: {result.source_language}",
             f"  Target language: {result.target_language}",
             f"  Provider: {result.provider}",
@@ -5721,7 +5700,7 @@ async def get_memory_detail(memory_id: str) -> str:
             f"  Created   : {row['created_at']}",
             f"  Updated   : {row['updated_at']}",
             f"  Expires   : {row['expire_at'] or 'never'}",
-            f"  Content   :",
+            "  Content   :",
             f"  {row['content']}",
         ]
         if meta:
@@ -6450,7 +6429,7 @@ async def find_consolidation_candidates(
         groups = await cons.find_candidates(agent_id=agent_id, limit=limit)
         if not groups:
             return (
-                f"OK No consolidation candidates found"
+                "OK No consolidation candidates found"
                 + (f" for agent={agent_id}" if agent_id else "")
                 + ". All memories appear sufficiently distinct."
             )
@@ -6688,7 +6667,7 @@ async def compact_knowledge_graph() -> str:
         summary = await gc.run_compaction()
         errors = summary.get("errors", [])
         lines = [
-            f"OK Knowledge graph compaction complete:",
+            "OK Knowledge graph compaction complete:",
             f"  stale relations pruned : {summary.get('stale_relations_pruned', 0)}",
             f"  orphan nodes removed   : {summary.get('orphans_removed', 0)}",
             f"  similar edges compacted: {summary.get('similar_edges_compacted', 0)}",
@@ -8117,7 +8096,7 @@ async def main():
     print("      - undo_last: Undo the most recent automated memory operation")
     print("      - get_undo_history: List recent undoable operations")
     print("      - redo_last: Re-apply the most recently undone operation")
-    print(f"  Total tools: 122")
+    print("  Total tools: 122")
     print()
 
     try:

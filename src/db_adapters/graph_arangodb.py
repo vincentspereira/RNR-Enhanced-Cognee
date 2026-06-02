@@ -47,7 +47,6 @@ Lazy-imports ``arango`` so installs without it don't pay the cost.
 
 from __future__ import annotations
 
-import json
 import os
 import re
 from typing import Any, List, Optional, Sequence

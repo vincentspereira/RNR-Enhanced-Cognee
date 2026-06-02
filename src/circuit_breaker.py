@@ -22,7 +22,6 @@ Author: Enhanced Cognee Team
 Version: 1.0.0 (Phase 9)
 """
 
-import asyncio
 import logging
 import time
 from typing import Any, Callable, Coroutine, Dict, Optional

@@ -3,7 +3,6 @@ Cross-Agent Memory Sharing Module for Enhanced Cognee
 Enables controlled memory sharing between agents
 """
 
-import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any

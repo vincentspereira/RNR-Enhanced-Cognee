@@ -29,7 +29,7 @@ import gzip
 import shutil
 import logging
 import subprocess
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 from pathlib import Path
 import uuid
@@ -626,7 +626,6 @@ class RecoveryManager:
     def _validate_postgres(self) -> Dict[str, Any]:
         """Validate PostgreSQL data."""
         try:
-            import asyncpg
 
             config = self.config["postgresql"]
 

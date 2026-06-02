@@ -31,8 +31,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Ensure asyncpg stub is present so module-level import doesn't blow up
-if "asyncpg" not in sys.modules:
+# asyncpg is a real dependency; import it so the module-level import of
+# audit_logger resolves. Import the REAL module (rather than unconditionally
+# installing a bare stub) so we never leave a partial asyncpg in sys.modules
+# that would break sibling tests patching asyncpg.create_pool / asyncpg.connect.
+# Fall back to a stub only if asyncpg is genuinely not installed.
+try:
+    import asyncpg  # noqa: F401,E402
+except ImportError:
     asyncpg_stub = types.ModuleType("asyncpg")
     asyncpg_stub.Pool = object
     sys.modules["asyncpg"] = asyncpg_stub

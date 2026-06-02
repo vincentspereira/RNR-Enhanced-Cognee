@@ -6,7 +6,6 @@ This version automatically detects the current project and applies appropriate m
 
 import os
 import sys
-import json
 from pathlib import Path
 
 # Add cognee-mcp to path

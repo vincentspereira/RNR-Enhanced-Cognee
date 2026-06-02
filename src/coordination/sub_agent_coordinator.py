@@ -6,14 +6,13 @@ Uses Enhanced Cognee memory stack as coordination backbone
 """
 
 import asyncio
-import json
 import logging
 import uuid
 from datetime import datetime, timedelta, UTC
-from typing import Dict, List, Optional, Any, Tuple, Set
+from typing import Dict, List, Optional, Any
 from enum import Enum
 from dataclasses import dataclass, field
-from ..agent_memory_integration import AgentMemoryIntegration, MemoryType
+from ..agent_memory_integration import AgentMemoryIntegration
 
 # Legacy wrappers (trading/development/coordination agents archived in Phase 4) - stub fallbacks
 class _TradingMemoryWrapperStub:

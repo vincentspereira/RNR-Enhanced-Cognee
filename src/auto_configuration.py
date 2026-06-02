@@ -12,7 +12,7 @@ import asyncio
 import json
 import os
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -134,7 +134,6 @@ class AutoConfiguration:
 
     async def _detect_available_ports(self) -> Dict[str, int]:
         """Detect available ports for Enhanced stack."""
-        import socket
 
         ports = {
             "postgres": 25432,
@@ -285,7 +284,7 @@ class AutoConfiguration:
             f'POSTGRES_PASSWORD={passwords["postgres"]}',
             "",
             "# Qdrant Configuration",
-            f"QDRANT_HOST=localhost",
+            "QDRANT_HOST=localhost",
             f'QDRANT_PORT={ports["qdrant"]}',
             "",
             "# Neo4j Configuration",
@@ -294,7 +293,7 @@ class AutoConfiguration:
             f'NEO4J_PASSWORD={passwords["neo4j"]}',
             "",
             "# Redis Configuration",
-            f"REDIS_HOST=localhost",
+            "REDIS_HOST=localhost",
             f'REDIS_PORT={ports["redis"]}',
             f'REDIS_PASSWORD={passwords["redis"]}',
             "",

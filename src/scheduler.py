@@ -13,8 +13,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime, timezone
-from typing import Dict, Any, Optional, Callable
-from pathlib import Path
+from typing import Dict, Any, Callable
 
 # APScheduler for background tasks
 try:

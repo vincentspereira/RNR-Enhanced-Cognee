@@ -3,7 +3,6 @@ Intelligent Memory Summarization for Enhanced Cognee
 Uses LLMs to automatically summarize and cluster memories for efficient storage and retrieval
 """
 
-import asyncio
 import json
 import logging
 from typing import Dict, List, Optional, Any

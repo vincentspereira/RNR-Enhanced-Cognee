@@ -9,7 +9,7 @@ Date: 2026-02-06
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from enum import Enum
 import logging
 
@@ -134,7 +134,6 @@ class BaseLLMClient(ABC):
             Summary dict with summary, key_points, entities, etc.
         """
         from pathlib import Path
-        import json
 
         # Load summarization prompt template
         template_path = Path(__file__).parent.parent / "prompts" / "summarization.txt"

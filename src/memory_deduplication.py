@@ -3,11 +3,8 @@ Memory Deduplication Module for Enhanced Cognee
 Prevents duplicate memories using vector similarity and text matching
 """
 
-import asyncio
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-import json
+from typing import Dict, List, Optional, Any
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant

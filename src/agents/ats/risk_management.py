@@ -7,7 +7,7 @@ All async methods are designed to be independently mockable for testing.
 
 import logging
 from datetime import datetime, UTC
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

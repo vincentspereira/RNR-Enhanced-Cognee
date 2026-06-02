@@ -9,10 +9,9 @@ Date: 2026-02-06
 """
 
 import asyncio
-import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict
 import logging
 
 # Add src to path
@@ -197,7 +196,7 @@ class PreflightChecker:
             version = await conn.fetchval("SELECT version()")
             await conn.close()
 
-            print(f"  OK PostgreSQL connected")
+            print("  OK PostgreSQL connected")
             print(f"    Version: {version.split()[1]}")
 
             return True
@@ -214,7 +213,6 @@ class PreflightChecker:
         print("Checking Qdrant...")
 
         try:
-            from qdrant_client.http.exceptions import UnexpectedResponse
 
             from src.db_factory import get_vector_client
 
@@ -227,7 +225,7 @@ class PreflightChecker:
             client = get_vector_client(host=host, port=port, timeout=5)
             collections = client.get_collections()
 
-            print(f"  OK Qdrant connected")
+            print("  OK Qdrant connected")
             print(f"    Collections: {len(collections.collections)}")
 
             return True
@@ -256,7 +254,7 @@ class PreflightChecker:
                 value = await result.single()
                 await driver.close()
 
-            print(f"  OK Neo4j connected")
+            print("  OK Neo4j connected")
 
             return True
 
@@ -288,7 +286,7 @@ class PreflightChecker:
             await client.ping()
             await client.close()
 
-            print(f"  OK Redis connected")
+            print("  OK Redis connected")
 
             return True
 

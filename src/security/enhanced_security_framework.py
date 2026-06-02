@@ -22,37 +22,22 @@ import logging.handlers
 import json
 import time
 import traceback
-import boto3
 import magic
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Union, Tuple
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Tuple
 from pathlib import Path
 from dataclasses import dataclass
-from enum import Enum
-import asyncio
 from functools import wraps
 import hashlib
 import bcrypt
-import passlib.hash
-from passlib.hash import bcrypt as passlib_bcrypt, argon2
-from passlib.context import CryptContext
-from fastapi import HTTPException, Request, Response, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from passlib.hash import argon2
+from fastapi import Request
 from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 import requests
 from packaging import version
 import subprocess
-import jwt
-from pydantic import BaseModel, validator, constr
 import filetype
 import bleach
-from urllib.parse import urlparse
-import ssl
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 # Security configuration
@@ -329,7 +314,7 @@ class EnhancedInputValidator:
         try:
             kind = filetype.guess(file_content)
             if kind and kind.mime not in SecurityConfig.ALLOWED_FILE_TYPES:
-                return False, f"File type mismatch detected"
+                return False, "File type mismatch detected"
         except Exception:
             pass
 

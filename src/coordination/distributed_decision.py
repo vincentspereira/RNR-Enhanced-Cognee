@@ -6,16 +6,14 @@ Uses consensus mechanisms and voting algorithms for complex decisions
 """
 
 import asyncio
-import json
 import logging
 import uuid
 from datetime import datetime, timedelta, UTC
-from typing import Dict, List, Optional, Any, Tuple, Set
+from typing import Dict, List, Optional, Any
 from enum import Enum
 from dataclasses import dataclass, field
 from .sub_agent_coordinator import (
-    SubAgentCoordinator, AgentTask, TaskPriority, AgentStatus,
-    MessageType, AgentMessage
+    SubAgentCoordinator, TaskPriority, MessageType, AgentMessage
 )
 
 logger = logging.getLogger(__name__)
