@@ -59,7 +59,7 @@ jobs:
         run: |
           cyclonedx-py environment \
             --output-format json \
-            --outfile sbom.cdx.json
+            --output-file sbom.cdx.json
           echo "SBOM size: $(wc -c < sbom.cdx.json) bytes"
           echo "Package count: $(jq '.components | length' sbom.cdx.json)"
 

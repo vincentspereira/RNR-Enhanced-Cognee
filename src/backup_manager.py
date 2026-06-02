@@ -398,7 +398,7 @@ class BackupManager:
                 for record in result:
                     node = record["n"]
                     data.append({
-                        "id": element_id(node),
+                        "id": node.element_id,
                         "labels": list(node.labels),
                         "properties": dict(node)
                     })
