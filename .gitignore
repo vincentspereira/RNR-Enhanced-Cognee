@@ -301,10 +301,13 @@ README.old*.md
 _tmp_*.py
 *.tmp.py
 
-# Graphify generated outputs (regenerable, large)
-graphify-out/converted/
-graphify-out/graph.json
-graphify-out/.graphify_chunk_*.json
+# Graphify generated outputs (regenerable via `graphify update .`, large + churny).
+# The entire graphify-out/ tree is build output and must never be committed --
+# graph.html/GRAPH_REPORT.md/manifest.json change on every code edit and bloated
+# git history by ~30MB. Local copies remain on disk for navigation; they are
+# recreated by graphify, not stored in git. (Supersedes the specific entries above.)
+graphify-out/
+*/graphify-out/
 
 # Legacy planning docs (already migrated to docs/plans/ or archived)
 docs/PHASE-0-REPORT.md

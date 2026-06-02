@@ -42,7 +42,55 @@ jobs:
             pip install -r requirements-dev.txt || true
           fi
 
-      - name: Run Ruff (fast linter, must pass)
+      # ----------------------------------------------------------------
+      # Blocking gates. These have been verified clean locally and MUST
+      # stay green. The broad style/type checks further down remain
+      # informational (continue-on-error) as a documented ratchet -- they
+      # surface debt without failing the build until the whole repo is
+      # aligned. See docs/operations/ENTERPRISE_SECURITY.md.
+      #
+      # SECURITY_MODULES is the hardened, security-critical surface that we
+      # hold to a higher bar (critical lint + bandit + types must pass).
+      # ----------------------------------------------------------------
+      - name: Critical syntax errors (E9, blocking, whole repo)
+        run: ruff check src/ tests/ bin/ --select E9 --output-format=github
+
+      - name: Critical lint on security-critical modules (blocking)
+        run: |
+          ruff check \
+            src/security/enterprise_auth.py \
+            src/mcp_security.py \
+            src/multi_tenant.py \
+            src/secure_config.py \
+            src/audit_logger.py \
+            src/circuit_breaker.py \
+            src/enhanced_cognee_mcp.py \
+            bin/enhanced_cognee_mcp_server.py \
+            --select E9,F63,F7,F82 --output-format=github
+
+      - name: Bandit on security-critical modules (high/medium, blocking)
+        # Skips are justified: B101 (asserts), B404/B603/B607 (vetted
+        # subprocess use), B608 (parameterized SQL w/ sanitized identifiers --
+        # false positive), B104 (intentional 0.0.0.0 bind for containers).
+        run: |
+          bandit \
+            src/security/enterprise_auth.py \
+            src/mcp_security.py \
+            src/multi_tenant.py \
+            src/secure_config.py \
+            src/audit_logger.py \
+            src/circuit_breaker.py \
+            src/enhanced_cognee_mcp.py \
+            bin/enhanced_cognee_mcp_server.py \
+            -ll -ii --skip B101,B404,B603,B607,B608,B104
+
+      - name: Type-check enterprise auth module (mypy, blocking)
+        # Scoped to the module authored under the production-hardening
+        # program; the full-repo mypy below stays informational until the
+        # whole tree is annotated.
+        run: mypy src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional
+
+      - name: Run Ruff (fast linter, informational)
         run: ruff check src/ tests/ --output-format=github
         continue-on-error: true   # ruff config not yet aligned across repo
 
@@ -85,9 +133,24 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install safety bandit
+          pip install safety bandit pip-audit
 
-      - name: Run Safety (dependency vulnerabilities)
+      - name: Run pip-audit (dependency CVEs, informational pending triage)
+        # INFORMATIONAL on purpose. An audit of the declared dependency set
+        # currently surfaces known advisories in transitive/legacy pins
+        # (e.g. cryptography, urllib3, requests, starlette, python-multipart).
+        # Making this blocking before those are triaged would create a
+        # permanently-red gate, so it runs in report mode for now.
+        #
+        # Promotion path -> blocking:
+        #   1. Triage findings; bump pins where a fixed release exists.
+        #   2. For advisories with no fix yet, add documented exceptions:
+        #        pip-audit -r requirements.txt --ignore-vuln GHSA-xxxx-... # reason, revisit date
+        #   3. Drop `continue-on-error` and `|| true` once the audit is green.
+        run: pip-audit -r requirements.txt --desc --format markdown --output pip-audit-report.md || true
+        continue-on-error: true
+
+      - name: Run Safety (dependency vulnerabilities, informational)
         run: safety check --json --output safety-report.json
         continue-on-error: true
 
@@ -104,6 +167,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload security reports
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: security-reports
@@ -111,6 +175,8 @@ jobs:
             safety-report.json
             bandit-report.json
             trivy-results.sarif
+            pip-audit-report.md
+          if-no-files-found: ignore
 
   # ========================================
   # Unit Tests
@@ -228,11 +294,15 @@ jobs:
           done
 
       - name: Run unit tests with coverage
+        # Blocking coverage floor of 80%. Local unit+system coverage sits at
+        # ~89% (2026-06), so 80% is a conservative ratchet with headroom; raise
+        # it as coverage improves. Tests themselves MUST pass.
         run: |
           pytest tests/unit/ tests/system/ -v \
             --cov=src \
             --cov-report=xml \
             --cov-report=term-missing \
+            --cov-fail-under=80 \
             --junitxml=junit.xml
         continue-on-error: false   # this MUST pass
 
