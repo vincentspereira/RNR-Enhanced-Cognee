@@ -144,21 +144,35 @@ jobs:
         # BLOCKING. All fixable advisories were remediated by bumping pins
         # (2026-06-02): transformers 4.40.1->4.53.0, pillow 10.2.0->12.2.0,
         # marshmallow 3.21.2->3.26.2, sentry-sdk 1.43.0->2.8.0, black 24.3.0->26.3.1.
-        # The three exceptions below are tracked, justified, and NOT silently
-        # swallowed -- any NEW advisory (or any of these gaining a usable fix that
-        # we then fail to adopt) fails the build:
+        # The exceptions below are tracked, justified, and NOT silently swallowed
+        # -- any NEW advisory (or any of these gaining a usable fix we then fail to
+        # adopt) fails the build:
         #   CVE-2025-69872 (diskcache 5.6.3): no fixed release exists; the pickle
         #     cache attack requires write access to the local cache dir.
         #   CVE-2025-71176 (pytest): dev/test-only, local /tmp DoS; pytest is
         #     intentionally pinned <9.0 (9.x drops APIs the suite uses).
         #   CVE-2026-1839 (transformers): fixed only in 5.0.0rc3 (pre-release) and
-        #     already mitigated here -- it is exploitable only with torch<2.6, and
-        #     torch is pinned to 2.12.0 (safe_globals protection active).
+        #     already mitigated here -- exploitable only with torch<2.6, and torch
+        #     is pinned to 2.12.0 (safe_globals protection active).
+        #   PYSEC-2025-211..218 (transformers, 8 advisories): NO fixed release
+        #     exists (present in 4.53.0, the latest stable). All require loading an
+        #     attacker-controlled checkpoint/model file (deserialization /
+        #     convert_config code-injection RCE). Enhanced Cognee loads only
+        #     trusted, pinned embedding models -- never untrusted checkpoints --
+        #     so these are out of its threat model. Revisit when a stable fix ships.
         run: |
           pip-audit -r requirements.txt --desc \
             --ignore-vuln CVE-2025-69872 \
             --ignore-vuln CVE-2025-71176 \
-            --ignore-vuln CVE-2026-1839
+            --ignore-vuln CVE-2026-1839 \
+            --ignore-vuln PYSEC-2025-211 \
+            --ignore-vuln PYSEC-2025-212 \
+            --ignore-vuln PYSEC-2025-213 \
+            --ignore-vuln PYSEC-2025-214 \
+            --ignore-vuln PYSEC-2025-215 \
+            --ignore-vuln PYSEC-2025-216 \
+            --ignore-vuln PYSEC-2025-217 \
+            --ignore-vuln PYSEC-2025-218
 
       - name: Run Safety (dependency vulnerabilities, informational)
         run: safety check --json --output safety-report.json
