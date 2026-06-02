@@ -87,8 +87,10 @@ jobs:
       - name: Type-check enterprise auth module (mypy, blocking)
         # Scoped to the module authored under the production-hardening
         # program; the full-repo mypy below stays informational until the
-        # whole tree is annotated.
-        run: mypy src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional
+        # whole tree is annotated. --follow-imports=silent type-checks imported
+        # modules (e.g. src/security/auth.py) without reporting their
+        # pre-existing annotation debt as errors in this scoped gate.
+        run: mypy src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional --follow-imports=silent
 
       - name: Run Ruff (fast linter, informational)
         run: ruff check src/ tests/ --output-format=github

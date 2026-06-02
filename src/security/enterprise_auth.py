@@ -237,7 +237,10 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
         algorithms = _env_list("ENHANCED_OIDC_ALGORITHMS", "RS256")
         try:
             signing_key = _jwks_client(jwks_uri).get_signing_key_from_jwt(token)
-            return cast(Dict[str, Any], jwt.decode(
+            # Annotate (not cast): robust across PyJWT-stub versions that type
+            # jwt.decode as either Any (older) or dict[str, Any] (newer) -- avoids
+            # both warn_return_any and warn_redundant_casts.
+            oidc_claims: Dict[str, Any] = jwt.decode(
                 token,
                 signing_key.key,
                 algorithms=algorithms,
@@ -247,7 +250,8 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
                     "verify_aud": bool(audience),
                     "verify_iss": bool(issuer),
                 },
-            ))
+            )
+            return oidc_claims
         except AuthError:
             raise
         except Exception as exc:
@@ -258,13 +262,14 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
         audience = os.getenv("ENHANCED_OIDC_AUDIENCE")
         algorithms = _env_list("ENHANCED_JWT_ALGORITHMS", "HS256")
         try:
-            return cast(Dict[str, Any], jwt.decode(
+            hs_claims: Dict[str, Any] = jwt.decode(
                 token,
                 secret,
                 algorithms=algorithms,
                 audience=audience or None,
                 options={"verify_aud": bool(audience)},
-            ))
+            )
+            return hs_claims
         except Exception as exc:
             raise AuthError(401, f"JWT verification failed: {exc}")
 
