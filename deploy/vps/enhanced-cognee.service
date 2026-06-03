@@ -14,10 +14,10 @@ WorkingDirectory=/opt/enhanced-cognee
 # Container name must match the compose (postgres-enhanced-cognee).
 ExecStartPre=/bin/bash -c 'for i in {1..30}; do docker compose -f /opt/enhanced-cognee/docker/docker-compose-enhanced-cognee.yml ps --filter "health=healthy" --format json | grep -q postgres-enhanced-cognee && exit 0 || sleep 2; done; exit 1'
 
-# Run the FastAPI MCP variant on port 8000 (Caddy reverse-proxies HTTPS)
+# Run the FastAPI MCP variant on port 8080 (Caddy reverse-proxies HTTPS)
 ExecStart=/opt/enhanced-cognee/.venv/bin/uvicorn src.enhanced_cognee_mcp:app \
     --host 127.0.0.1 \
-    --port 8000 \
+    --port 8080 \
     --workers 2 \
     --log-level info \
     --access-log

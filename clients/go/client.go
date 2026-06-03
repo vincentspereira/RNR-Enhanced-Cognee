@@ -5,7 +5,7 @@
 // Example:
 //
 //	cli, err := enhancedcognee.NewClient(enhancedcognee.Options{
-//	    BaseURL:  "http://localhost:8000",
+//	    BaseURL:  "http://localhost:8080",
 //	    APIKey:   os.Getenv("ENHANCED_API_KEY"),  // optional
 //	    TenantID: "acme",                          // optional
 //	})
@@ -33,7 +33,7 @@ import (
 
 // Options configures a Client.
 type Options struct {
-	BaseURL    string        // defaults to ENHANCED_COGNEE_URL env or http://localhost:8000
+	BaseURL    string        // defaults to ENHANCED_COGNEE_URL env or http://localhost:8080
 	APIKey     string        // optional; defaults to ENHANCED_API_KEY env
 	TenantID   string        // optional; defaults to ENHANCED_TENANT_ID env
 	HTTPClient *http.Client  // optional; defaults to net/http default with 30s timeout
@@ -56,7 +56,7 @@ func NewClient(opts Options) (*Client, error) {
 		base = os.Getenv("ENHANCED_COGNEE_URL")
 	}
 	if base == "" {
-		base = "http://localhost:8000"
+		base = "http://localhost:8080"
 	}
 	base = strings.TrimRight(base, "/")
 

@@ -22,7 +22,7 @@
 
 ### 2. Network Security
 - [ ] **Firewall Configuration**
-  - [ ] Only necessary ports are exposed (80, 443, maybe 8000)
+  - [ ] Only necessary ports are exposed (80, 443, maybe 8080)
   - [ ] Database ports NOT exposed publicly
   - [ ] Internal services on private network
   - [ ] VPN required for admin access

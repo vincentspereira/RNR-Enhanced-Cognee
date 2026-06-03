@@ -431,7 +431,7 @@ The CX22's 4GB is enough for typical workloads. If you hit OOM:
 
 ### "Caddy returns 502 Bad Gateway"
 
-The MCP server (port 8000) isn't responding:
+The MCP server (port 8080) isn't responding:
 
 ```bash
 sudo systemctl status enhanced-cognee

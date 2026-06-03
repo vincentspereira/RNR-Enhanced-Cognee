@@ -17,7 +17,7 @@
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     let cli = Client::builder()
-//!         .base_url("http://localhost:8000")
+//!         .base_url("http://localhost:8080")
 //!         .api_key(std::env::var("ENHANCED_API_KEY").ok())
 //!         .tenant_id(Some("acme".to_string()))
 //!         .build()?;
@@ -134,7 +134,7 @@ impl Default for ClientBuilder {
     fn default() -> Self {
         Self {
             base_url: std::env::var("ENHANCED_COGNEE_URL")
-                .unwrap_or_else(|_| "http://localhost:8000".to_string()),
+                .unwrap_or_else(|_| "http://localhost:8080".to_string()),
             api_key: std::env::var("ENHANCED_API_KEY").ok(),
             tenant_id: std::env::var("ENHANCED_TENANT_ID").ok(),
             timeout: Duration::from_secs(30),

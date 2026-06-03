@@ -18,7 +18,7 @@ cognee.example.com {
 
     # Health probe (unauthenticated, used by uptime monitors)
     handle /health {
-        reverse_proxy localhost:8000
+        reverse_proxy localhost:8080
     }
 
     # Prometheus metrics endpoint (restrict to monitoring IPs in production)
@@ -26,7 +26,7 @@ cognee.example.com {
         # Uncomment + edit to restrict:
         # @allowed remote_ip 10.0.0.0/8 192.168.0.0/16
         # not @allowed respond 403
-        reverse_proxy localhost:8000
+        reverse_proxy localhost:8080
     }
 
     # MCP tool endpoints (authenticated via app-level middleware)
@@ -39,7 +39,7 @@ cognee.example.com {
                 window 1m
             }
         }
-        reverse_proxy localhost:8000 {
+        reverse_proxy localhost:8080 {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}

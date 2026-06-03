@@ -15,7 +15,7 @@
  *   import { EnhancedCogneeClient } from "@enhanced-cognee/client";
  *
  *   const cli = new EnhancedCogneeClient({
- *     baseUrl: "http://localhost:8000",
+ *     baseUrl: "http://localhost:8080",
  *     apiKey: process.env.ENHANCED_API_KEY,    // optional
  *     tenantId: "acme",                         // optional
  *   });
@@ -96,7 +96,7 @@ export class EnhancedCogneeClient {
     this.baseUrl = (
       opts.baseUrl
       ?? process.env.ENHANCED_COGNEE_URL
-      ?? "http://localhost:8000"
+      ?? "http://localhost:8080"
     ).replace(/\/$/, "");
     this.apiKey = opts.apiKey ?? process.env.ENHANCED_API_KEY;
     this.tenantId = opts.tenantId ?? process.env.ENHANCED_TENANT_ID;

@@ -14,7 +14,7 @@ npm install @enhanced-cognee/client
 import { EnhancedCogneeClient } from "@enhanced-cognee/client";
 
 const cli = new EnhancedCogneeClient({
-  baseUrl: "http://localhost:8000",  // optional, defaults to ENHANCED_COGNEE_URL
+  baseUrl: "http://localhost:8080",  // optional, defaults to ENHANCED_COGNEE_URL
   apiKey: process.env.ENHANCED_API_KEY,  // optional, only if server has auth enabled
   tenantId: "acme",  // optional, for multi-tenant deployments
 });

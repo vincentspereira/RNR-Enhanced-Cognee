@@ -148,13 +148,13 @@ sudo systemctl reload caddy
 Caddy will automatically obtain a Let's Encrypt certificate on first request.
 Point its reverse_proxy upstream at the app:
 - Compose-run app (step 6, default): `127.0.0.1:28080`
-- Host systemd app (step 8, alternative): `127.0.0.1:8000`
+- Host systemd app (step 8, alternative): `127.0.0.1:8080`
 
 ### 8. (Alternative) Run the FastAPI app on the host via systemd
 
 SKIP this if you used the compose stack in step 6 -- it already runs the app in
 a container. This unit is for operators who prefer running the app directly on
-the host (listens on 127.0.0.1:8000). It reads secrets from
+the host (listens on 127.0.0.1:8080). It reads secrets from
 `/etc/enhanced-cognee/secrets.env` (600 perms; same required keys as the .env in
 step 5) and waits for the `postgres-enhanced-cognee` container to be healthy.
 

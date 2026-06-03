@@ -23,7 +23,7 @@ import (
 
 func main() {
     cli, err := enhancedcognee.NewClient(enhancedcognee.Options{
-        BaseURL:  "http://localhost:8000",
+        BaseURL:  "http://localhost:8080",
         APIKey:   os.Getenv("ENHANCED_API_KEY"),  // optional
         TenantID: "acme",                          // optional
     })

@@ -106,7 +106,7 @@ http {
 
     # Upstream servers
     upstream cognee_backend {
-        server enhanced-cognee-server:8000;
+        server enhanced-cognee-server:8080;
     }
 
     # HTTP to HTTPS redirect
@@ -200,7 +200,7 @@ docker-compose -f docker/docker-compose-production.yml up -d
 docker-compose -f docker/docker-compose-production.yml logs -f enhanced-cognee-server
 
 # Verify health
-curl http://localhost:8000/health
+curl http://localhost:8080/health
 ```
 
 #### Step 8: Verify Deployment

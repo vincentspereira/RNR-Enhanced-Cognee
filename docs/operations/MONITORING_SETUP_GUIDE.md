@@ -744,8 +744,8 @@ After deployment, access monitoring at:
 - **Grafana Dashboard**: http://your-server:3000
 - **Prometheus**: http://your-server:9091
 - **AlertManager**: http://your-server:9093
-- **Service Metrics**: http://your-server:8000/metrics
-- **Health Check**: http://your-server:8000/health
+- **Service Metrics**: http://your-server:8080/metrics
+- **Health Check**: http://your-server:8080/health
 
 ## 10. Key Metrics to Monitor
 

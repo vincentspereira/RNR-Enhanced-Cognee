@@ -18,7 +18,7 @@ use enhanced_cognee_client::{Client, MemoryEntry, SearchQuery};
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Client::builder()
-        .base_url("http://localhost:8000")
+        .base_url("http://localhost:8080")
         .api_key(std::env::var("ENHANCED_API_KEY").ok())  // optional
         .tenant_id(Some("acme".into()))                    // optional
         .build()?;

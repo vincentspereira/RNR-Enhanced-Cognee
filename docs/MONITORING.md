@@ -78,7 +78,7 @@ a few seconds.
 
 Unchanged from the previous Grafana stack. Scrapes `/metrics` from:
 
-- the MCP server (`host.docker.internal:8000` -- exposed by the
+- the MCP server (`host.docker.internal:8080` -- exposed by the
   `prometheus-client` instrumentation in
   `src/llm_cost_tracker.py` and `src/performance_analytics.py`),
 - Qdrant (`host.docker.internal:26333/metrics`),

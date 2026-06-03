@@ -111,7 +111,7 @@ services:
       - NEO4J_HOST=neo4j
       - REDIS_HOST=redis
     ports:
-      - "28080:8000"
+      - "28080:8080"
     depends_on:
       - postgres
       - qdrant
