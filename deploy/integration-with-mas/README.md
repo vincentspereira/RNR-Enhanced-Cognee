@@ -8,6 +8,28 @@ memory system with MAS's existing memory layer. They coexist; Enhanced Cognee
 becomes the primary store for new memories, while the existing layer remains
 for legacy data.
 
+## Two integration surfaces (read this first)
+
+Enhanced Cognee exposes the SAME 122 tools over two transports. Pick the one
+that matches how the calling code runs:
+
+| Surface | Entry point | Tools | Transport | Use when |
+| ------- | ----------- | ----- | --------- | -------- |
+| **A. stdio MCP** (primary) | `bin/enhanced_cognee_mcp_server.py` via `.claude.json` | all 122 | stdio (MCP protocol) | The caller is a Claude Code agent. This is how MAS agents consume memory. Works today; nothing to build. |
+| **B. HTTP REST** | `src/enhanced_cognee_mcp.py` (FastAPI), port `8080` | all 122 via `POST /tools/{tool_name}` | HTTP/HTTPS | The caller is plain Python / another language / a service that is not an MCP client. Backed by the `enhanced_cognee_client` Python SDK. |
+
+- **Surface A is the recommended path for MAS** because MAS agents run on
+  Claude Code, which speaks MCP natively. Register the server (Step 1) and the
+  full tool set is available immediately -- no HTTP, no ports, no auth tokens.
+- **Surface B** is for non-MCP callers. The HTTP server listens on the port set
+  by `ENHANCED_HTTPS_PORT` (default `8080`), authenticates every request
+  (Bearer JWT/OIDC or `X-API-Key`) and enforces per-tool RBAC. See
+  "Surface B: calling over HTTP" below.
+
+> Whichever surface you use, `agent_id` segregation, dynamic categories and the
+> audit log behave identically -- they are properties of the storage layer, not
+> the transport.
+
 ## Architecture
 
 ```
@@ -36,13 +58,20 @@ for legacy data.
                 |  (122 tools)      |
                 +-------------------+
                          |
-              +----------+----------+
-              |          |          |
-              v          v          v          v
-        +--------+  +-------+  +-----+  +---------+
-        |Postgres|  |Qdrant |  |Neo4j|  |  Redis  |
-        +--------+  +-------+  +-----+  +---------+
+           +-------------+-------------+-------------+
+           |             |             |             |
+           v             v             v             v
+     +----------+  +--------+  +----------+  +---------+
+     | Postgres |  | Qdrant |  | ArcadeDB |  | Valkey  |
+     +----------+  +--------+  +----------+  +---------+
 ```
+
+> **DB providers (Phase 2 default):** the graph store is **ArcadeDB**
+> (openCypher + Bolt, Apache-2.0) and the cache is **Valkey** (Apache-2.0),
+> replacing Neo4j and Redis respectively. The connection env-var NAMES are kept
+> for drop-in compatibility -- `NEO4J_URI`/`NEO4J_USER`/`NEO4J_PASSWORD` point
+> at ArcadeDB's Bolt endpoint, and `REDIS_HOST`/`REDIS_PORT` point at Valkey.
+> Set `ENHANCED_GRAPH_PROVIDER=neo4j` to opt back into Neo4j.
 
 ## Step 1: Register Enhanced Cognee in MAS's `~/.claude.json`
 
@@ -181,15 +210,34 @@ class MemoryRouter:
 
 ## Step 5: Verify the integration
 
-Inside MAS, start a Python session and try calling a Cognee tool through the
-MCP client:
+### Surface A (stdio MCP) -- the path MAS uses
+
+After editing `.claude.json` (Step 1) and restarting Claude Code, the 122 tools
+are available to the agent directly. Confirm by asking the agent to call
+`health` and then `add_memory` / `search_memories`. There is no port or token
+to manage -- the MCP transport is the stdio pipe Claude Code already owns.
+
+### Surface B (HTTP) -- for non-MCP callers
+
+> **Status:** the generic `POST /tools/{tool_name}` dispatch and the matching
+> `enhanced_cognee_client` default port land in the companion commit in this
+> series. Until then the HTTP server exposes the named `/mcp/*` routes
+> (`/mcp/add_memory`, `/mcp/search_memories`, `/mcp/get_memories`,
+> `/mcp/update_memory`, `/mcp/delete_memory`, `/mcp/list_agents`) plus
+> `/health*`, `/metrics`, `/stats` -- all on port `8080` with the same auth.
+
+Start the HTTP server and hit it over plain HTTP. It listens on
+`ENHANCED_HTTPS_PORT` (default `8080`) and authenticates every request, so pass
+a bearer token (or `X-API-Key`):
 
 ```python
 import asyncio
-from enhanced_cognee_client import EnhancedCogneeClient  # pip install enhanced-cognee-client
+from enhanced_cognee_client import EnhancedCogneeClient
 
 async def main():
-    async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+    # port defaults to 8080 (the HTTP server's ENHANCED_HTTPS_PORT)
+    async with EnhancedCogneeClient(host="localhost", port=8080,
+                                    api_key="<bearer-token>") as client:
         result = await client.add_memory(
             content="MAS integration test memory",
             user_id="default",
@@ -201,6 +249,20 @@ async def main():
 
 asyncio.run(main())
 ```
+
+The SDK wraps `POST /tools/{tool_name}` (the generic dispatch that exposes all
+122 tools over HTTP). If you prefer raw HTTP, the same call is:
+
+```bash
+curl -X POST http://localhost:8080/tools/add_memory \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"arguments": {"content": "MAS integration test memory", "agent_id": "trading-bot"}}'
+```
+
+> In a no-auth dev deployment (`ENHANCED_ALLOW_INSECURE_DEFAULTS=1` with no
+> production flags), the server fails open to a local admin principal, so the
+> token can be omitted. Production refuses to start without auth configured.
 
 ## Step 6: Decide on a migration cutover date
 
