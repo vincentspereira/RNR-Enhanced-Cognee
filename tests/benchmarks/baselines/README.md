@@ -25,44 +25,71 @@ to detect performance regressions.
 | `neo4j_stack` (Bolt) | 49.06 | 2 | 7 | 11 | 0.00 |
 | `memgraph_kuzu` (Memgraph Bolt) | 47.67 | 15 | 21 | 25 | 0.00 |
 
-> **Remaining 2 permutations** (`lean`, `embedded`) require deeper
-> infrastructure work before a clean baseline can ship:
->
-> - **`lean`** (apache_age + pgvector + in_memory + postgres) -- needs
->   a Postgres image with BOTH the AGE extension AND pgvector
->   preinstalled. The official `apache/age:release_PG16_1.6.0` image
->   ships AGE only (no pgvector). Workaround paths:
->   1. Build a custom Dockerfile that adds pgvector on top of the
->      AGE base image (extension only -- copy /usr/lib/.../vector.so
->      from the pgvector image into the AGE image). Build + push to
->      a registry; reference from docker-compose / Helm chart.
->   2. Use the existing `pgvector/pgvector:pg18` image + install AGE
->      from source as a runtime extension. AGE supports PG16 / PG17;
->      installing into PG18 requires building from source.
->   The integration test in `tests/integration/test_apache_age_integration.py`
->   uses a CI-only postgres-age service container; reuse that pattern
->   locally if you only need AGE-no-pgvector for the baseline (the
->   vector adapter calls will then error, so error_pct will be non-zero).
-> - **`embedded`** (ladybug + lancedb + in_memory + sqlite) -- needs
->   adapter / schema work to make sqlite handle the dotted
->   `shared_memory.documents` identifier the application currently
->   passes through `tenant_scoped_table()`. Two paths:
->   1. Modify `src/multi_tenant.tenant_scoped_table` to detect sqlite
->      and emit `shared_memory_documents` (underscore) instead of
->      `shared_memory.documents` (dot).
->   2. Use sqlite's `ATTACH DATABASE` feature to create a logical
->      `shared_memory` schema and write a `sqlite_init.sql` that
->      bootstraps the documents/embeddings/entities/relationships
->      tables there.
->   Either approach is a 1-2 hour PR. Without it, the embedded baseline
->   produces ~35% errors because every INSERT INTO shared_memory.documents
->   fails (`no such table` since sqlite parses the dotted name as
->   `schema.table` which sqlite doesn't support without ATTACH).
->
-> `compare_to_baseline.py` handles "no baseline" gracefully (treats
-> every permutation as "[NEW] in new run but no baseline -- skipped"),
-> so CI's regression gate is inert for these 2 permutations until
-> baselines land.
+### What this harness actually measures (read before chasing `lean`/`embedded`)
+
+The three captured baselines cluster at 47-49 RPS **not by coincidence** --
+they share the SAME relational+vector stack (`postgres` + `pgvector`/`qdrant`)
+and only vary the *graph* provider. A code-path audit (2026-06-03) of
+`src/enhanced_cognee_mcp.py` shows why the graph provider barely moves the
+number: the entire `tests/load/locustfile.py` workload runs through
+`self.postgres_pool` and nothing else.
+
+| locustfile op | server route | backend actually hit |
+| --- | --- | --- |
+| `search_memories` (no embedding) | `/mcp/search_memories` -> `search_memory()` | **Postgres full-text** (`to_tsvector`/`plainto_tsquery`); the no-embedding branch never calls the vector provider |
+| `add_memory` / `update_memory` / `delete_memory` / `get_memories` | `/mcp/*` | **Postgres** (`postgres_pool.acquire()`, raw SQL) |
+| `list_agents` | `/mcp/list_agents` | **Postgres** |
+
+The vector provider is only exercised when the caller supplies a precomputed
+`embedding` (the locustfile never does), and the graph provider is loaded at
+startup but **not on any request path the load test drives**. So the
+"provider comparison" numbers above are really a *graph-driver init/idle*
+comparison layered on an identical Postgres request path.
+
+Consequences for the two un-captured permutations:
+
+- **`lean`** (apache_age + pgvector + in_memory + postgres): relational is
+  `postgres` -- *identical to `default`*. Because the load test never touches
+  the vector (pgvector) or graph (AGE) providers, a `lean` locust baseline
+  would simply **reproduce the `default` number** (~48 RPS) and assert nothing
+  about AGE or pgvector. The infra cost (a Postgres image carrying BOTH AGE
+  and pgvector -- the official `apache/age:release_PG16_1.6.0` ships AGE only)
+  buys zero additional signal *for this harness*.
+- **`embedded`** (ladybug + lancedb + in_memory + sqlite): relational is
+  `sqlite`, but every `/mcp/*` route emits Postgres-dialect SQL the sqlite
+  shim cannot run -- schema-qualified `shared_memory.documents`, `$1`
+  placeholders, `::jsonb` casts, `NOW()`, and `to_tsvector`/`plainto_tsquery`
+  full-text. The dotted-identifier problem (below) is just the first of
+  several; fixing only that still leaves placeholders + jsonb + FTS failing.
+  This harness **cannot** characterise the embedded stack.
+
+**Correct way to benchmark `lean`/`embedded` providers:** target the
+*adapters* directly with an in-process micro-benchmark (db_factory ->
+graph/vector/relational provider; time add/search/get ops; report op latency
+and ops/sec), not the Postgres-bound HTTP locust harness. That is a distinct
+workstream (a new `tests/benchmarks/bench_adapters_inprocess.py`), tracked as
+a follow-up; it is intentionally NOT a missing locust baseline.
+
+`compare_to_baseline.py` handles "no baseline" gracefully (treats every
+permutation as "[NEW] in new run but no baseline -- skipped"), so CI's
+regression gate stays inert for `lean`/`embedded` -- which is correct, since
+a locust run of either tells us nothing those baselines could regress against.
+
+<details><summary>Earlier-noted infra blockers (still accurate, but secondary
+to the harness-coverage point above)</summary>
+
+- **`lean`** needs a Postgres image with BOTH the AGE extension AND pgvector.
+  The official `apache/age:release_PG16_1.6.0` ships AGE only. Either build a
+  custom image layering pgvector onto the AGE base, or install AGE from source
+  onto `pgvector/pgvector:pg18` (AGE supports PG16/PG17; PG18 needs a source
+  build).
+- **`embedded`** needs sqlite to handle the dotted `shared_memory.documents`
+  identifier (and the other Postgres-isms listed above). Detect sqlite in
+  `tenant_scoped_table()` and emit an underscore name, or `ATTACH DATABASE` a
+  logical `shared_memory` schema -- but note this only removes ONE of several
+  dialect incompatibilities.
+
+</details>
 
 ## Regenerating a baseline
 

@@ -104,9 +104,24 @@ and `memgraph_kuzu`. Re-validated the `default` permutation on 2026-06-03
 against current code: throughput + error-rate held (47.0 RPS, 0 failures);
 latency was elevated only because the run shared the dev box with other
 containers (not a code regression -- the locustfile hits `/mcp/*`, untouched
-by recent work), so the cleaner 2026-05-21 baseline was kept. Only the `lean`
-(Apache AGE+pgvector) and `embedded` (ladybug+lancedb) permutations remain to
-be baselined, and they need their respective stacks running.
+by recent work), so the cleaner 2026-05-21 baseline was kept.
+
+**The remaining two permutations (`lean`, `embedded`) will NOT get a locust
+baseline -- and that is the correct outcome, not a gap.** A 2026-06-03
+code-path audit established that the entire load harness runs through
+`postgres_pool` only: every `/mcp/*` CRUD route uses raw Postgres SQL, and
+`search_memories` (no embedding, as the locustfile sends) falls back to
+Postgres full-text -- the vector and graph providers are never on the measured
+request path. Therefore (a) `lean` (relational=postgres, like `default`) would
+merely duplicate the `default` number while telling us nothing about AGE or
+pgvector, and (b) `embedded` (relational=sqlite) cannot run the harness's
+Postgres-dialect SQL at all. The right tool to characterise these providers is
+an in-process adapter micro-benchmark (db_factory -> provider; time
+add/search/get), tracked as a separate follow-up. See
+`tests/benchmarks/baselines/README.md` ("What this harness actually measures")
+for the full accounting. The three captured baselines (`default`,
+`neo4j_stack`, `memgraph_kuzu`) remain valid for Postgres-path regression
+detection.
 
 ---
 
@@ -259,9 +274,13 @@ MEDIUM items. The 11 items now marked [SHIPPED]:
 
 ## Recommended Next-Sprint Priority
 
-Refreshed 2026-06-03. Items 3, 8 (`lean`+`embedded` baselines), 14 and 15
-were closed out (14 fully; 3 verified end-to-end; 8 baselined locally; 15 on
-a ratcheting allowlist). What genuinely remains:
+Refreshed 2026-06-03. Items 3, 8, 14 and 15 were closed out: 14 fully
+(docs site live); 3 verified end-to-end (upstream email fired on 2026-06-01);
+8 resolved by audit -- the `lean`/`embedded` locust baselines were shown to be
+either redundant (`lean` == `default` Postgres path) or impossible (`embedded`
+sqlite can't run the harness's Postgres SQL), so they are intentionally not
+captured and the three real baselines stand; 15 on a ratcheting mypy
+allowlist (now 5 modules). What genuinely remains:
 
 1. **MAS integration** (item 4, DEFERRED) -- code-level wiring is owned by the
    MAS team; Enhanced Cognee only needs to be *ready*, which it now is (both
