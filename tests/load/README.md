@@ -9,19 +9,19 @@ are not unit tests and are not exercised by CI.
 ```bash
 # 1. Bring up the stack
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
-python src/enhanced_cognee_mcp.py &     # FastAPI MCP variant on :8000
+python src/enhanced_cognee_mcp.py &     # FastAPI MCP variant on :8080
 
 # 2. Install Locust
 pip install locust
 
 # 3. Headless run, default mixed-workload (60s)
 locust -f tests/load/locustfile.py \
-       --host http://localhost:8000 \
+       --host http://localhost:8080 \
        --headless --users 100 --spawn-rate 10 --run-time 60s \
        --html tests/load/report.html
 
 # 4. Or interactive (Locust web UI at http://localhost:8089)
-locust -f tests/load/locustfile.py --host http://localhost:8000
+locust -f tests/load/locustfile.py --host http://localhost:8080
 ```
 
 ## Scenario classes
@@ -58,12 +58,12 @@ Examples:
 # Knowledge-graph scenario, 20 users for 2 minutes
 locust -f tests/load/locustfile.py KnowledgeGraphUser \
        --headless --users 20 --spawn-rate 2 --run-time 2m \
-       --host http://localhost:8000
+       --host http://localhost:8080
 
 # Backup stress test -- low users, long run, expect one-at-a-time ops
 locust -f tests/load/locustfile.py BackupVerifyUser \
        --headless --users 1 --spawn-rate 1 --run-time 10m \
-       --host http://localhost:8000
+       --host http://localhost:8080
 ```
 
 ## Recommended SLAs (per HANDOVER section 5 H4)

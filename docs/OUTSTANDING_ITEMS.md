@@ -95,8 +95,15 @@ captured in PR #46
 (`tests/benchmarks/baselines/2026-05-21_neo4j_stack.json`):
 49.06 RPS, p50=2ms, p95=7ms, p99=11ms, 2911 reqs, 0 failures.
 Regression gate via `tests/benchmarks/compare_to_baseline.py`.
-The other 4 permutations (default / lean / embedded / memgraph_kuzu)
-remain to be baselined when their stacks are available.
+Three baselines now exist: `neo4j_stack`, `default` (ArcadeDB:
+arcadedb/qdrant/valkey/postgres -- 48.9 RPS, p50=11ms, p95=14ms, 0 failures)
+and `memgraph_kuzu`. Re-validated the `default` permutation on 2026-06-03
+against current code: throughput + error-rate held (47.0 RPS, 0 failures);
+latency was elevated only because the run shared the dev box with other
+containers (not a code regression -- the locustfile hits `/mcp/*`, untouched
+by recent work), so the cleaner 2026-05-21 baseline was kept. Only the `lean`
+(Apache AGE+pgvector) and `embedded` (ladybug+lancedb) permutations remain to
+be baselined, and they need their respective stacks running.
 
 ---
 
@@ -241,7 +248,7 @@ MEDIUM items. The 11 items now marked [SHIPPED]:
 Still genuinely outstanding (in priority order):
 
 1. **MAS integration** (item 4, DEFERRED) -- 1-2 weeks; delivers user value. Currently the largest open item.
-2. **Baseline remaining 4 benchmark permutations** -- complete the `default` (ArcadeDB) / `lean` (Apache AGE+pgvector) / `embedded` (ladybug+lancedb) / `memgraph_kuzu` baselines. Need their respective Docker stacks.
+2. **Baseline the 2 remaining benchmark permutations** -- `lean` (Apache AGE+pgvector) and `embedded` (ladybug+lancedb). Need their respective Docker stacks. (`neo4j_stack`, `default`/ArcadeDB, and `memgraph_kuzu` are already baselined.)
 3. **Publish the 3 new client SDKs** (Node / Go / Rust) to npm / pkg.go.dev / crates.io once registry accounts + secrets are provisioned.
 4. **Verify the upstream_sync workflow email** (item 3) -- 5-minute Monday-morning task.
 5. **Documentation site** (item 14) -- mkdocs-material + GitHub Pages, 4 hours.

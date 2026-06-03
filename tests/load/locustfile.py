@@ -2,7 +2,7 @@
 Enhanced Cognee Load Test Profile
 =================================
 Three workload classes against the FastAPI MCP HTTP variant
-(src/enhanced_cognee_mcp.py served on http://localhost:8000):
+(src/enhanced_cognee_mcp.py served on http://localhost:8080):
 
   - ReadHeavy:  90% search_memories, 10% get_memories
   - WriteHeavy: 70% add_memory, 30% update_memory
@@ -16,7 +16,7 @@ Target SLA (single-tenant, dev VPS):
 Run:
   locust -f tests/load/locustfile.py --headless \
          --users 100 --spawn-rate 10 --run-time 60s \
-         --host http://localhost:8000
+         --host http://localhost:8080
 """
 
 import random
@@ -170,7 +170,7 @@ class HealthCheckUser(HttpUser):
 # class selection:
 #   locust -f tests/load/locustfile.py SemanticSearchUser \
 #          --headless --users 10 --spawn-rate 1 --run-time 1m \
-#          --host http://localhost:8000
+#          --host http://localhost:8080
 # ---------------------------------------------------------------------------
 
 

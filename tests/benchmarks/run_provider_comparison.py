@@ -12,7 +12,7 @@ For each provider permutation listed in ``PROVIDER_PERMUTATIONS``,
 the runner:
 
 1. Spawns the Locust process in headless mode against the MCP HTTP
-   variant (``src.enhanced_cognee_mcp`` on http://localhost:8000) with
+   variant (``src.enhanced_cognee_mcp`` on http://localhost:8080) with
    the environment configured via ``ENHANCED_GRAPH_PROVIDER`` /
    ``ENHANCED_VECTOR_PROVIDER`` / ``ENHANCED_CACHE_PROVIDER`` /
    ``ENHANCED_RELATIONAL_PROVIDER``.
@@ -335,7 +335,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     parser.add_argument(
         "--host",
-        default="http://localhost:8000",
+        default="http://localhost:8080",
         help="MCP HTTP host the locustfile targets",
     )
     parser.add_argument("--users", type=int, default=20)
