@@ -151,7 +151,7 @@ class JWTAuthenticator:
             Decoded payload or None if invalid
         """
         try:
-            payload = jwt.decode(
+            payload: Dict[str, Any] = jwt.decode(
                 token,
                 self.secret_key,
                 algorithms=[self.algorithm]
@@ -207,7 +207,7 @@ class APIKeyManager:
     Provides API key generation, validation, and rotation.
     """
 
-    def __init__(self, db_pool):
+    def __init__(self, db_pool: Any) -> None:
         """
         Initialize API key manager.
 
@@ -310,7 +310,7 @@ class APIKeyManager:
                 WHERE key_id = $1 AND user_id = $2
             """, key_id, user_id)
 
-        return result == "UPDATE 1"
+        return bool(result == "UPDATE 1")
 
     async def list_user_keys(self, user_id: str) -> List[Dict[str, Any]]:
         """
@@ -340,7 +340,7 @@ class RBACManager:
     Enforces permissions based on user roles.
     """
 
-    def __init__(self, db_pool):
+    def __init__(self, db_pool: Any) -> None:
         """
         Initialize RBAC manager.
 
@@ -489,10 +489,10 @@ class RBACManager:
             """, user_id, permission)
 
         logger.info(f"Revoked {permission} from {user_id} by {revoked_by}")
-        return result == "DELETE 1"
+        return bool(result == "DELETE 1")
 
 
-async def main():
+async def main() -> None:
     """Test authentication system."""
     print("Authentication system requires database connection")
     print("Use with PostgreSQL connection pool")

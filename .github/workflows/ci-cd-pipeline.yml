@@ -87,13 +87,16 @@ jobs:
             bin/enhanced_cognee_mcp_server.py \
             -ll -ii --skip B101,B404,B603,B607,B608,B104
 
-      - name: Type-check enterprise auth module (mypy, blocking)
-        # Scoped to the module authored under the production-hardening
-        # program; the full-repo mypy below stays informational until the
-        # whole tree is annotated. --follow-imports=silent type-checks imported
-        # modules (e.g. src/security/auth.py) without reporting their
-        # pre-existing annotation debt as errors in this scoped gate.
-        run: mypy src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional --follow-imports=silent
+      - name: Type-check the authn/authz core (mypy, blocking)
+        # Ratcheting allowlist: modules proven mypy-clean under the strict
+        # mypy.ini are enforced blocking, so a future change that breaks their
+        # types fails CI. Started at enterprise_auth.py; auth.py (the Role /
+        # Permission / JWTAuthenticator / RBAC foundation enterprise_auth builds
+        # on) was annotated and added. Add more modules here as they are made
+        # clean. The full-repo mypy below stays informational meanwhile.
+        # --follow-imports=silent checks these files without surfacing imported
+        # modules' pre-existing annotation debt in this scoped gate.
+        run: mypy src/security/auth.py src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional --follow-imports=silent --explicit-package-bases
 
       - name: Run Ruff (fast linter, informational)
         run: ruff check src/ tests/ --output-format=github
@@ -108,7 +111,10 @@ jobs:
         continue-on-error: true
 
       - name: Run MyPy (type checking, informational)
-        run: mypy src/ --ignore-missing-imports --no-strict-optional
+        # --explicit-package-bases avoids the "source file found twice" fatal
+        # error on the namespace-package src/ tree, so this informational sweep
+        # actually reports the tree's annotation debt instead of aborting.
+        run: mypy src/ --ignore-missing-imports --no-strict-optional --explicit-package-bases
         continue-on-error: true
 
       - name: Run Pylint (informational)
