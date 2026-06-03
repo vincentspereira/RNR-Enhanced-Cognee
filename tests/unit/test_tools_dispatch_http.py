@@ -105,13 +105,19 @@ def fake_backend(monkeypatch):
 
 
 @pytest.fixture
-def client(monkeypatch, fake_backend):
-    """TestClient over a fresh server instance with enhanced_mode disabled."""
+def server_app(monkeypatch, fake_backend):
+    """A fresh FastAPI app instance with enhanced_mode disabled (no DB)."""
     import src.enhanced_cognee_mcp as mod
 
     monkeypatch.setattr(mod.config, "enhanced_mode", False)
     srv = mod.EnhancedCogneeMCPServer()
-    return TestClient(srv.app, raise_server_exceptions=False)
+    return srv.app
+
+
+@pytest.fixture
+def client(server_app):
+    """TestClient over the fresh server instance."""
+    return TestClient(server_app, raise_server_exceptions=False)
 
 
 def _bearer(secret: str, **claims) -> dict:
@@ -211,3 +217,78 @@ class TestToolsDispatch:
         resp = client.post("/tools/health", json={"arguments": {}})
         assert resp.status_code == 200
         assert resp.json() == {"result": "ok:health"}
+
+
+# ---------------------------------------------------------------------------
+# The real SDK class against the real route (in-process via ASGITransport)
+#
+# This is the MAS-facing artifact: enhanced_cognee_client.EnhancedCogneeClient
+# talking to POST /tools/{tool_name}. Driving it through httpx's ASGITransport
+# exercises the SDK's _call() -> route -> response.json() round-trip
+# deterministically (no socket, CI-runnable) -- the seam the SDK's own
+# transport-mocked unit tests cannot cover.
+# ---------------------------------------------------------------------------
+
+
+async def _sdk_over_asgi(server_app, token):
+    """Build an EnhancedCogneeClient whose transport targets the ASGI app."""
+    import httpx
+    from enhanced_cognee_client import EnhancedCogneeClient
+
+    sdk = EnhancedCogneeClient(host="testserver", port=80, api_key=token)
+    await sdk._client.aclose()  # discard the auto-created socket client
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    sdk._client = httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=server_app),
+        base_url=sdk._base_url,
+        headers=headers,
+    )
+    return sdk
+
+
+class TestSdkAgainstRoute:
+    async def test_sdk_add_memory_dispatches(self, server_app, monkeypatch, fake_backend):
+        monkeypatch.setenv("ENHANCED_JWT_SECRET", "s")
+        token = REAL_JWT.encode({"sub": "sdk", "roles": ["admin"]}, "s", algorithm="HS256")
+        sdk = await _sdk_over_asgi(server_app, token)
+        try:
+            res = await sdk.add_memory(content="x", agent_id="a")
+            assert res == {"result": "ok:add_memory"}
+            assert fake_backend.last_name == "add_memory"
+            assert fake_backend.last_args == {
+                "content": "x", "user_id": "default", "agent_id": "a", "metadata": None,
+            }
+        finally:
+            await sdk.close()
+
+    async def test_sdk_search_memories_wraps_result(self, server_app, monkeypatch, fake_backend):
+        monkeypatch.setenv("ENHANCED_JWT_SECRET", "s")
+        token = REAL_JWT.encode({"sub": "sdk", "roles": ["admin"]}, "s", algorithm="HS256")
+        sdk = await _sdk_over_asgi(server_app, token)
+        try:
+            # The route returns a dict; the SDK wraps a non-list result in a list.
+            res = await sdk.search_memories(query="q", agent_id="a")
+            assert res == [{"result": "ok:search_memories"}]
+        finally:
+            await sdk.close()
+
+    async def test_sdk_health_dev_open(self, server_app, fake_backend):
+        # No auth configured -> dev-open admin; the SDK (no api_key) still works.
+        sdk = await _sdk_over_asgi(server_app, token=None)
+        try:
+            res = await sdk.health()
+            assert res == {"result": "ok:health"}
+        finally:
+            await sdk.close()
+
+    async def test_sdk_auth_error_returns_error_dict(self, server_app, monkeypatch, fake_backend):
+        # JWT configured but the SDK sends no token -> 401 -> SDK maps to an error dict.
+        monkeypatch.setenv("ENHANCED_JWT_SECRET", "s")
+        sdk = await _sdk_over_asgi(server_app, token=None)
+        try:
+            res = await sdk.add_memory(content="x", agent_id="a")
+            assert "error" in res and "401" in res["error"]
+        finally:
+            await sdk.close()
