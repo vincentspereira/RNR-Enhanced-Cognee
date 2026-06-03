@@ -6,6 +6,7 @@ Provides DYNAMIC and CONFIGURABLE memory architecture (not hardcoded to specific
 """
 
 import os
+import sys
 import time
 import asyncio
 import json
@@ -17,7 +18,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -174,6 +175,116 @@ class McpUpdateMemoryRequest(BaseModel):
 
 class McpDeleteMemoryRequest(BaseModel):
     memory_id: str
+
+
+# ---------------------------------------------------------------------------
+# Generic MCP tool dispatch backend (POST /tools/{tool_name})
+#
+# The 122 MCP tools live in bin/enhanced_cognee_mcp_server.py, registered on a
+# FastMCP instance that normally runs over stdio. To expose the SAME tools over
+# HTTP (the surface the enhanced_cognee_client SDK and examples/ target) we
+# import that FastMCP registry and dispatch via mcp.call_tool(). The tool
+# bodies use module-level DB clients populated by the bin module's
+# init_enhanced_stack(), so we lazily initialise that stack on the first /tools
+# call -- the server still boots (and serves /health + /metrics) without a DB.
+#
+# Importing the bin module is side-effect-light: it registers the tools but
+# opens no DB connections (verified: postgres_pool is None at import time).
+# ---------------------------------------------------------------------------
+
+_bin_mcp = None
+_bin_init_fn = None
+_bin_import_error: Optional[Exception] = None
+_bin_tool_names: set = set()
+_bin_stack_ready = False
+_bin_stack_lock = asyncio.Lock()
+
+
+def _load_bin_mcp():
+    """Import the stdio MCP server module; return (mcp_instance, init_fn).
+
+    Cached after the first call. Returns (None, None) and records the error on
+    import failure so callers can surface a clean 503 rather than crashing.
+    """
+    global _bin_mcp, _bin_init_fn, _bin_import_error
+    if _bin_mcp is not None:
+        return _bin_mcp, _bin_init_fn
+    if _bin_import_error is not None:
+        return None, None
+    try:
+        bin_dir = str(Path(__file__).resolve().parent.parent / "bin")
+        if bin_dir not in sys.path:
+            sys.path.insert(0, bin_dir)
+        import enhanced_cognee_mcp_server as binmod  # type: ignore
+        _bin_mcp = binmod.mcp
+        _bin_init_fn = binmod.init_enhanced_stack
+        return _bin_mcp, _bin_init_fn
+    except Exception as e:  # pragma: no cover - defensive
+        _bin_import_error = e
+        logger.error(f"Failed to import stdio MCP tool registry: {e}")
+        return None, None
+
+
+async def _ensure_bin_stack() -> None:
+    """Lazily import the tool registry and initialise its DB-backed stack.
+
+    Idempotent and concurrency-safe. Tool-name discovery (list_tools) works
+    without a DB; init_enhanced_stack() may fail when no DB is reachable -- we
+    log and continue degraded so individual tool calls return their own error
+    rather than every /tools call hard-failing. Raises only when the registry
+    itself cannot be imported.
+    """
+    global _bin_stack_ready, _bin_tool_names
+    if _bin_stack_ready:
+        return
+    async with _bin_stack_lock:
+        if _bin_stack_ready:
+            return
+        mcp_inst, init_fn = _load_bin_mcp()
+        if mcp_inst is None:
+            raise RuntimeError(
+                f"MCP tool registry unavailable: {_bin_import_error}"
+            )
+        try:
+            tools = await mcp_inst.list_tools()
+            _bin_tool_names = {t.name for t in tools}
+        except Exception as e:  # pragma: no cover - defensive
+            logger.warning(f"Could not enumerate MCP tools: {e}")
+            _bin_tool_names = set()
+        try:
+            await init_fn()
+        except Exception as e:
+            logger.warning(
+                f"/tools backend stack init degraded (DB unreachable?): {e}"
+            )
+        _bin_stack_ready = True
+
+
+def _serialize_tool_result(raw: Any) -> Dict[str, Any]:
+    """Normalise FastMCP call_tool output to a JSON-serialisable dict.
+
+    FastMCP returns a (content_blocks, structured_dict) tuple. Prefer the
+    structured dict (e.g. {"result": <value>}); otherwise concatenate the text
+    of the content blocks into {"result": "<text>"}.
+    """
+    structured = None
+    content: Any = raw
+    if isinstance(raw, tuple):
+        if len(raw) >= 2:
+            content, structured = raw[0], raw[1]
+        elif len(raw) == 1:
+            content = raw[0]
+    if isinstance(structured, dict):
+        return structured
+    texts = []
+    if isinstance(content, (list, tuple)):
+        for block in content:
+            text = getattr(block, "text", None)
+            texts.append(text if text is not None else str(block))
+    elif content is not None:
+        texts.append(str(content))
+    return {"result": "\n".join(texts) if texts else ""}
+
 
 @asynccontextmanager
 async def lifespan(app: "FastAPI"):
@@ -1258,6 +1369,78 @@ class EnhancedCogneeMCPServer:
             except Exception as e:
                 logger.error(f"mcp_list_agents failed: {e}")
                 raise HTTPException(status_code=500, detail=str(e))
+
+        # -------------------------------------------------------------------
+        # Generic MCP tool dispatch -- exposes ALL 122 tools over HTTP.
+        #
+        # The enhanced_cognee_client SDK and examples/ target this route.
+        # Auth + per-tool RBAC are enforced upstream by the security
+        # middleware via route_required_permission("POST", "/tools/<name>"),
+        # which maps to the shared TOOL_PERMISSIONS table -- so destructive
+        # tools require write/admin permissions and are never reachable
+        # unauthenticated. The handler runs only after that check passes.
+        #
+        # Accepts both payload shapes:
+        #   {"arguments": {...}}   (the SDK)
+        #   {...}                  (bare args, the examples/)
+        # -------------------------------------------------------------------
+        @self.app.post("/tools/{tool_name}")
+        async def call_mcp_tool(tool_name: str, request: Request):
+            try:
+                body = await request.json()
+            except Exception:
+                body = {}
+            if (
+                isinstance(body, dict)
+                and set(body.keys()) == {"arguments"}
+                and isinstance(body["arguments"], dict)
+            ):
+                arguments = body["arguments"]
+            elif isinstance(body, dict):
+                arguments = body
+            else:
+                raise HTTPException(
+                    status_code=422,
+                    detail="ERR request body must be a JSON object",
+                )
+
+            _enforce_rate_limit(tool_name, arguments.get("agent_id"))
+
+            try:
+                await _ensure_bin_stack()
+            except Exception as e:
+                logger.error(f"/tools stack unavailable: {e}")
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"ERR tool backend unavailable: {e}",
+                )
+
+            if _bin_tool_names and tool_name not in _bin_tool_names:
+                raise HTTPException(
+                    status_code=404, detail=f"ERR unknown tool: {tool_name}"
+                )
+
+            try:
+                raw = await _bin_mcp.call_tool(tool_name, arguments)
+            except HTTPException:
+                raise
+            except Exception as e:
+                msg = str(e)
+                low = msg.lower()
+                if "unknown tool" in low or "not found" in low:
+                    raise HTTPException(
+                        status_code=404,
+                        detail=f"ERR unknown tool: {tool_name}",
+                    )
+                if "validation" in low or "required" in low or "argument" in low:
+                    raise HTTPException(status_code=422, detail=f"ERR {msg}")
+                logger.error(f"/tools/{tool_name} failed: {e}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"ERR tool '{tool_name}' failed: {msg}",
+                )
+
+            return _serialize_tool_result(raw)
 
         @self.app.get("/stats")
         async def get_stats_endpoint():

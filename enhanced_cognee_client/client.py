@@ -22,7 +22,7 @@ class EnhancedCogneeClient:
 
     Usage as a context manager (recommended)::
 
-        async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+        async with EnhancedCogneeClient(host="localhost", port=8080) as client:
             result = await client.add_memory("Remember this fact")
 
     Usage without a context manager::
@@ -35,7 +35,7 @@ class EnhancedCogneeClient:
     def __init__(
         self,
         host: str = "localhost",
-        port: int = 37777,
+        port: int = 8080,
         timeout: float = 30.0,
         api_key: Optional[str] = None,
     ) -> None:

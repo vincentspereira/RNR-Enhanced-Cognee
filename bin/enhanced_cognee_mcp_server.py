@@ -1119,14 +1119,17 @@ async def add_memory(
         memory_id = str(uuid.uuid4())
         created_at = datetime.now(UTC).replace(tzinfo=None)
 
-        # Store in PostgreSQL
+        # Store in PostgreSQL. metadata is a jsonb column: asyncpg requires a
+        # JSON *string* cast to jsonb ($7::jsonb), not a raw Python dict (which
+        # raises "expected str, got dict"). This mirrors the working inserts in
+        # src/enhanced_cognee_mcp.py and src/agent_memory_integration.py.
         async with postgres_pool.acquire() as conn:
             await conn.execute("""
                 INSERT INTO shared_memory.documents
                 (id, title, content, agent_id, memory_category, tags, metadata, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
             """, memory_id, f"Memory from {agent_id}", content,
-                agent_id, "general", [], metadata_dict, created_at)
+                agent_id, "general", [], json.dumps(metadata_dict), created_at)
 
         logger.info(f"OK Added memory: {memory_id} for user: {user_id}, agent: {agent_id}")
 

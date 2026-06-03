@@ -8,7 +8,7 @@ Quickstart::
 
     from enhanced_cognee_client import EnhancedCogneeClient
 
-    async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+    async with EnhancedCogneeClient(host="localhost", port=8080) as client:
         await client.add_memory("Remember this fact", agent_id="my-agent")
         results = await client.search_memories("fact", agent_id="my-agent")
 

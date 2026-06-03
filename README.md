@@ -1377,7 +1377,7 @@ Claude reads the intent and calls the right MCP tool automatically:
 ```python
 from enhanced_cognee_client import EnhancedCogneeClient
 
-async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+async with EnhancedCogneeClient(host="localhost", port=8080) as client:
     # Store a memory
     result = await client.add_memory(
         content="Production deployed Enhanced Cognee on Hetzner CX22",
@@ -2170,7 +2170,7 @@ import asyncio
 from enhanced_cognee_client import EnhancedCogneeClient
 
 async def main():
-    async with EnhancedCogneeClient(host="localhost", port=37777) as client:
+    async with EnhancedCogneeClient(host="localhost", port=8080) as client:
         result = await client.add_memory(
             content="Enhanced Cognee has 122 MCP tools",
             user_id="default",

@@ -219,12 +219,13 @@ to manage -- the MCP transport is the stdio pipe Claude Code already owns.
 
 ### Surface B (HTTP) -- for non-MCP callers
 
-> **Status:** the generic `POST /tools/{tool_name}` dispatch and the matching
-> `enhanced_cognee_client` default port land in the companion commit in this
-> series. Until then the HTTP server exposes the named `/mcp/*` routes
-> (`/mcp/add_memory`, `/mcp/search_memories`, `/mcp/get_memories`,
-> `/mcp/update_memory`, `/mcp/delete_memory`, `/mcp/list_agents`) plus
-> `/health*`, `/metrics`, `/stats` -- all on port `8080` with the same auth.
+The HTTP server exposes all 122 tools via the generic dispatch route
+`POST /tools/{tool_name}` (what the SDK wraps), plus the named `/mcp/*`
+convenience routes (`/mcp/add_memory`, `/mcp/search_memories`,
+`/mcp/get_memories`, `/mcp/update_memory`, `/mcp/delete_memory`,
+`/mcp/list_agents`) and the public `/health*`, `/metrics`, `/stats` -- all on
+port `8080`. Every `/tools/*` and `/mcp/*` call is authenticated and
+authorized per-tool (destructive tools require write/admin permissions).
 
 Start the HTTP server and hit it over plain HTTP. It listens on
 `ENHANCED_HTTPS_PORT` (default `8080`) and authenticates every request, so pass

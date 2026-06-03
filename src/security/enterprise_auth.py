@@ -465,6 +465,18 @@ def route_required_permission(method: str, path: str) -> Optional[Permission]:
     exact = _ROUTE_PERMISSIONS.get((method.upper(), path))
     if exact is not None:
         return exact
+    # Generic MCP tool dispatch: POST /tools/{tool_name}. Reuse the SAME
+    # per-tool permission table the stdio surface uses (TOOL_PERMISSIONS) so a
+    # destructive tool (delete/forget/backup/restore/rotate/gdpr_delete) is NOT
+    # reachable with read-only credentials over HTTP. Tools absent from the
+    # table are read/introspection-tier and require authentication only -- this
+    # is the same contract enforced on the stdio surface (single source of
+    # truth). Without this branch the heuristic below would leave
+    # create_backup / rotate_encryption_key / restore_backup requiring only
+    # authentication, a privilege gap.
+    if method.upper() == "POST" and path.startswith("/tools/"):
+        tool_name = path[len("/tools/"):].strip("/")
+        return tool_required_permission(tool_name)
     lowered = path.lower()
     if method.upper() == "DELETE" or "delete" in lowered:
         return Permission.MEMORY_DELETE

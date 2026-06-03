@@ -39,13 +39,13 @@ class TestClientInitDefaults:
     def test_defaults(self) -> None:
         client = EnhancedCogneeClient()
         assert client.host == "localhost"
-        assert client.port == 37777
+        assert client.port == 8080
         assert client.timeout == 30.0
         assert client.api_key is None
 
     def test_base_url_uses_defaults(self) -> None:
         client = EnhancedCogneeClient()
-        assert client._base_url == "http://localhost:37777"
+        assert client._base_url == "http://localhost:8080"
 
 
 # ---------------------------------------------------------------------------
