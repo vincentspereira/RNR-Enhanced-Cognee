@@ -92,11 +92,14 @@ jobs:
         # mypy.ini are enforced blocking, so a future change that breaks their
         # types fails CI. Started at enterprise_auth.py; auth.py (the Role /
         # Permission / JWTAuthenticator / RBAC foundation enterprise_auth builds
-        # on) was annotated and added. Add more modules here as they are made
-        # clean. The full-repo mypy below stays informational meanwhile.
+        # on) was annotated and added. 2026-06-03: added the request-path
+        # security trio -- mcp_security.py (production-auth enforcement),
+        # multi_tenant.py (tenant isolation), rate_limiter.py (per-tool limits).
+        # Add more modules here as they are made clean. The full-repo mypy below
+        # stays informational meanwhile.
         # --follow-imports=silent checks these files without surfacing imported
         # modules' pre-existing annotation debt in this scoped gate.
-        run: mypy src/security/auth.py src/security/enterprise_auth.py --ignore-missing-imports --no-strict-optional --follow-imports=silent --explicit-package-bases
+        run: mypy src/security/auth.py src/security/enterprise_auth.py src/mcp_security.py src/multi_tenant.py src/rate_limiter.py --ignore-missing-imports --no-strict-optional --follow-imports=silent --explicit-package-bases
 
       - name: Run Ruff (fast linter, informational)
         run: ruff check src/ tests/ --output-format=github

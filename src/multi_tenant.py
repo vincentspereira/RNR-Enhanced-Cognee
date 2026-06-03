@@ -107,7 +107,7 @@ def sanitise_tenant_id(tenant_id: str) -> str:
     return safe
 
 
-def set_tenant(tenant_id: Optional[str]) -> contextvars.Token:
+def set_tenant(tenant_id: Optional[str]) -> contextvars.Token[Optional[str]]:
     """Set the active tenant for the current context.
 
     Returns a Token that can be passed back to ``set_tenant`` to
@@ -123,7 +123,7 @@ def get_tenant() -> Optional[str]:
     return _TENANT_CTX.get()
 
 
-def reset_tenant(token: contextvars.Token) -> None:
+def reset_tenant(token: contextvars.Token[Optional[str]]) -> None:
     """Restore the tenant context to its prior value (companion to set_tenant)."""
     _TENANT_CTX.reset(token)
 
@@ -156,13 +156,18 @@ class TenantContext:
         if not tenant_id:
             raise ValueError("TenantContext requires a non-empty tenant_id")
         self._tenant = tenant_id
-        self._token: Optional[contextvars.Token] = None
+        self._token: Optional[contextvars.Token[Optional[str]]] = None
 
     def __enter__(self) -> "TenantContext":
         self._token = set_tenant(self._tenant)
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[type],
+        exc: Optional[BaseException],
+        tb: Optional[Any],
+    ) -> None:
         if self._token is not None:
             reset_tenant(self._token)
             self._token = None
@@ -171,7 +176,12 @@ class TenantContext:
         self._token = set_tenant(self._tenant)
         return self
 
-    async def __aexit__(self, exc_type, exc, tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Optional[type],
+        exc: Optional[BaseException],
+        tb: Optional[Any],
+    ) -> None:
         if self._token is not None:
             reset_tenant(self._token)
             self._token = None

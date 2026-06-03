@@ -27,7 +27,7 @@ Usage
 
 import logging
 import time
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 # Defaults
 # ---------------------------------------------------------------------------
 
-_DEFAULT_RULES: Dict[str, Dict] = {
+_DEFAULT_RULES: Dict[str, Dict[str, int]] = {
     # tool_name or "*" (wildcard) -> {requests, window_seconds}
     "*": {"requests": 60, "window_seconds": 60},         # 60 req/min global
     "add_memory": {"requests": 30, "window_seconds": 60},
@@ -48,7 +48,7 @@ _DEFAULT_RULES: Dict[str, Dict] = {
 }
 
 # In-memory fallback (agent_id+tool -> list of timestamps)
-_memory_store: Dict[str, list] = {}
+_memory_store: Dict[str, List[float]] = {}
 
 # Singleton
 _rate_limiter: Optional["RateLimiter"] = None
@@ -69,14 +69,14 @@ class RateLimiter:
 
     def __init__(
         self,
-        redis_client=None,
-        rules: Optional[Dict[str, Dict]] = None,
-    ):
+        redis_client: Optional[Any] = None,
+        rules: Optional[Dict[str, Dict[str, int]]] = None,
+    ) -> None:
         self.redis = redis_client
-        self.rules: Dict[str, Dict] = {**_DEFAULT_RULES, **(rules or {})}
+        self.rules: Dict[str, Dict[str, int]] = {**_DEFAULT_RULES, **(rules or {})}
         self._redis_ok: bool = redis_client is not None
 
-    def _get_rule(self, tool_name: str) -> Dict:
+    def _get_rule(self, tool_name: str) -> Dict[str, int]:
         """Return the most specific rule for a tool, falling back to '*'."""
         return self.rules.get(tool_name, self.rules.get("*", {"requests": 60, "window_seconds": 60}))
 
@@ -107,7 +107,13 @@ class RateLimiter:
             return self._check_memory(agent_id, tool_name, max_requests, window, now, cutoff)
 
     async def _check_redis(
-        self, agent_id, tool_name, max_requests, window, now, cutoff
+        self,
+        agent_id: str,
+        tool_name: str,
+        max_requests: int,
+        window: int,
+        now: float,
+        cutoff: float,
     ) -> Tuple[bool, float]:
         """Redis sliding-window implementation."""
         try:
@@ -138,7 +144,13 @@ class RateLimiter:
             return True, 0.0
 
     def _check_memory(
-        self, agent_id, tool_name, max_requests, window, now, cutoff
+        self,
+        agent_id: str,
+        tool_name: str,
+        max_requests: int,
+        window: int,
+        now: float,
+        cutoff: float,
     ) -> Tuple[bool, float]:
         """In-memory sliding-window fallback."""
         key = f"{agent_id}:{tool_name}"
@@ -159,11 +171,11 @@ class RateLimiter:
         self.rules[tool_name] = {"requests": requests, "window_seconds": window_seconds}
         logger.info(f"Rate limit rule set: {tool_name} -> {requests} req/{window_seconds}s")
 
-    def get_rules(self) -> Dict[str, Dict]:
+    def get_rules(self) -> Dict[str, Dict[str, int]]:
         """Return all configured rate limit rules."""
         return dict(self.rules)
 
-    async def get_usage(self, agent_id: str, tool_name: str = "*") -> Dict:
+    async def get_usage(self, agent_id: str, tool_name: str = "*") -> Dict[str, Any]:
         """Return current usage stats for an agent/tool pair."""
         rule = self._get_rule(tool_name)
         max_requests = rule["requests"]
@@ -205,8 +217,8 @@ class RateLimiter:
 # ---------------------------------------------------------------------------
 
 def init_rate_limiter(
-    redis_client=None,
-    rules: Optional[Dict[str, Dict]] = None,
+    redis_client: Optional[Any] = None,
+    rules: Optional[Dict[str, Dict[str, int]]] = None,
 ) -> "RateLimiter":
     """Initialize the global rate limiter singleton."""
     global _rate_limiter

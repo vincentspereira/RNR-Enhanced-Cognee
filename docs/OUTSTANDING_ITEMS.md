@@ -33,16 +33,19 @@ so a transient DB hiccup doesn't block PRs but failures still surface.
 `enforce_admins=false` (single-maintainer break-glass);
 `required_approving_review_count=0` (single-maintainer fork).
 
-### 3. GitHub Actions secrets - verify the upstream_sync workflow actually fires email -- [OPEN]
+### 3. GitHub Actions secrets - verify the upstream_sync workflow actually fires email -- [SHIPPED 2026-06-03]
 
-**Status:** Workflow uses the auto-create-label fix; Gmail App Password
-is configured. Recurring Monday cron should be verified after at least
-one calendar cycle. Low-impact ops task.
+**Status:** VERIFIED end-to-end. The Monday cron has fired green for three
+consecutive weeks (2026-05-18, 2026-05-25, 2026-06-01). The 2026-06-01 run
+(`26757899155`) actually detected a new upstream release (v1.1.2), so the
+conditional `notify-email` job ran and the `Send email notification` step
+reported `success` -- proving the full path (detect -> diff -> email +
+tracking issue), not just the cron. `MAIL_USERNAME` and `MAIL_PASSWORD`
+secrets are present on the fork. A tracking issue (#67 "Upstream sync: port
+v1.1.2 changes") was opened automatically as designed.
 
-**Risk:** If the cron fails silently, upstream releases go unnoticed.
-
-**Fix:** Confirm an email arrived after the next Monday 08:00 UTC run
-(or check the no-op log entry). If neither, debug.
+**Residual:** Porting the detected upstream v1.1.2 changes is a separate
+content task tracked by issue #67 -- the monitoring mechanism itself is done.
 
 ### 4. Multi-Agent System integration: actually do it -- [DEFERRED]
 
@@ -138,19 +141,30 @@ checklist (tests, docs updated, screenshots if UI).
 **Status:** `.pre-commit-config.yaml` exists at repo root. The hook
 install step is in the installer scripts.
 
-### 14. Documentation site (e.g. mkdocs + GitHub Pages)
+### 14. Documentation site (e.g. mkdocs + GitHub Pages) -- [SHIPPED 2026-06-03]
 
-**Status:** Docs are spread across multiple .md files; no rendered site.
+**Status:** Live. `mkdocs-material` config + the `Docs Site` workflow
+(`docs-site.yml`) build and deploy on every push to main. GitHub Pages was
+enabled via `gh api -X POST repos/vincentspereira/Enhanced-Cognee/pages
+-f build_type=workflow`; the workflow is green and the site is live at
+https://vincentspereira.github.io/Enhanced-Cognee/ . (The mkdocs build
+always succeeded; the deploy step had 404'd until Pages was enabled.)
 
-**Fix:** Set up `mkdocs-material` config, deploy to GitHub Pages on
-release. Effort: 4 hours.
+### 15. Type checking with mypy is opt-in -- [PARTIAL -- ratcheting allowlist active]
 
-### 15. Type checking with mypy is opt-in
+**Status:** Enforced on a ratcheting allowlist, not yet repo-wide. The CI
+lint job runs a BLOCKING `mypy` over a curated set of fully-annotated core
+modules; type breakage in those modules now fails CI. A second,
+informational `mypy src/` sweep reports the remaining debt without blocking.
 
-**Status:** mypy installed (in dev deps) but not enforced.
+**Why not repo-wide yet:** `mypy.ini` is strict (`disallow_untyped_defs`,
+`disallow_any_generics`, `warn_return_any`), so whole-repo enforcement needs
+the annotation backlog cleared first. Modules are added to the blocking step
+as they are annotated. (`src/` mypy needs `--explicit-package-bases` or it
+aborts with "source file found twice" -- no `src/__init__.py`, namespace pkg.)
 
-**Fix:** Add `mypy src/` to the lint job in CI. Effort: 1 hour (plus
-fixing the type errors it surfaces).
+**Fix (remaining):** Continue annotating modules and migrating them from the
+informational sweep into the blocking allowlist.
 
 ---
 
@@ -245,13 +259,24 @@ MEDIUM items. The 11 items now marked [SHIPPED]:
 
 ## Recommended Next-Sprint Priority
 
-Still genuinely outstanding (in priority order):
+Refreshed 2026-06-03. Items 3, 8 (`lean`+`embedded` baselines), 14 and 15
+were closed out (14 fully; 3 verified end-to-end; 8 baselined locally; 15 on
+a ratcheting allowlist). What genuinely remains:
 
-1. **MAS integration** (item 4, DEFERRED) -- 1-2 weeks; delivers user value. Currently the largest open item.
-2. **Baseline the 2 remaining benchmark permutations** -- `lean` (Apache AGE+pgvector) and `embedded` (ladybug+lancedb). Need their respective Docker stacks. (`neo4j_stack`, `default`/ArcadeDB, and `memgraph_kuzu` are already baselined.)
-3. **Publish the 3 new client SDKs** (Node / Go / Rust) to npm / pkg.go.dev / crates.io once registry accounts + secrets are provisioned.
-4. **Verify the upstream_sync workflow email** (item 3) -- 5-minute Monday-morning task.
-5. **Documentation site** (item 14) -- mkdocs-material + GitHub Pages, 4 hours.
-6. **Mypy enforcement** (item 15) -- enable in CI lint job, 1 hour + fixing the type errors it surfaces.
+1. **MAS integration** (item 4, DEFERRED) -- code-level wiring is owned by the
+   MAS team; Enhanced Cognee only needs to be *ready*, which it now is (both
+   stdio MCP and HTTP `/tools` surfaces verified). Largest remaining item but
+   not on EC's plate.
+2. **Port upstream v1.1.2 changes** -- the upstream-sync monitor flagged a new
+   release (tracking issue #67). Content task, not a mechanism gap.
+3. **Publish the 3 client SDKs** (Node / Go / Rust) -- code is publish-ready
+   and the `publish-clients.yml` workflow is in place. BLOCKED only on
+   external provisioning: npm + crates.io registry accounts and the
+   `NPM_TOKEN` / `CARGO_REGISTRY_TOKEN` repo secrets (neither secret exists
+   yet). Go is tag-only (no secret) but publishing to a public registry is an
+   owner decision. A `workflow_dispatch` dry-run path exists for rehearsal.
+4. **Broaden mypy** (item 15) -- continue migrating annotated modules into the
+   blocking allowlist.
 
-LOW items (16-20) and the Known Quirks (Q1-Q5) remain as documented; nothing actively blocking.
+LOW items (16-20) and the Known Quirks (Q1-Q5) remain as documented; nothing
+actively blocking.
