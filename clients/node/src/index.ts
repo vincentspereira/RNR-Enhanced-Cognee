@@ -185,7 +185,7 @@ export class EnhancedCogneeClient {
     }
   }
 
-  private _snakeCase(obj: Record<string, unknown>): Record<string, unknown> {
+  private _snakeCase(obj: object): Record<string, unknown> {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(obj)) {
       if (v === undefined) continue;
