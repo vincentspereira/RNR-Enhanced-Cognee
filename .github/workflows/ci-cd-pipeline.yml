@@ -158,6 +158,9 @@ jobs:
         # BLOCKING. All fixable advisories were remediated by bumping pins
         # (2026-06-02): transformers 4.40.1->4.53.0, pillow 10.2.0->12.2.0,
         # marshmallow 3.21.2->3.26.2, sentry-sdk 1.43.0->2.8.0, black 24.3.0->26.3.1.
+        # (2026-06-04): aiohttp 3.13.5->3.14.0 -- fixes CVE-2026-34993
+        # (CookieJar.load() RCE) + CVE-2026-47265 (cookie leak on cross-origin
+        # redirect); the blocking gate caught both the day they were published.
         # The exceptions below are tracked, justified, and NOT silently swallowed
         # -- any NEW advisory (or any of these gaining a usable fix we then fail to
         # adopt) fails the build:
