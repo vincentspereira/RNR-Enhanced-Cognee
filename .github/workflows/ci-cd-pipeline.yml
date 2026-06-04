@@ -95,11 +95,16 @@ jobs:
         # on) was annotated and added. 2026-06-03: added the request-path
         # security trio -- mcp_security.py (production-auth enforcement),
         # multi_tenant.py (tenant isolation), rate_limiter.py (per-tool limits).
-        # Add more modules here as they are made clean. The full-repo mypy below
-        # stays informational meanwhile.
+        # 2026-06-04: added secure_config.py (fail-closed secret loading),
+        # circuit_breaker.py (resilience), mcp_response_formatter.py,
+        # encryption_manager.py (Fernet/AES envelope) and gdpr_manager.py
+        # (consent/erasure) -- 10 modules now blocking, covering the security +
+        # data-governance core. Add more here as they are made clean; full-repo
+        # mypy debt is ~900 errors / 92 files (a separate annotation workstream),
+        # so the full-tree mypy below stays informational meanwhile.
         # --follow-imports=silent checks these files without surfacing imported
         # modules' pre-existing annotation debt in this scoped gate.
-        run: mypy src/security/auth.py src/security/enterprise_auth.py src/mcp_security.py src/multi_tenant.py src/rate_limiter.py --ignore-missing-imports --no-strict-optional --follow-imports=silent --explicit-package-bases
+        run: mypy src/security/auth.py src/security/enterprise_auth.py src/mcp_security.py src/multi_tenant.py src/rate_limiter.py src/secure_config.py src/circuit_breaker.py src/mcp_response_formatter.py src/encryption_manager.py src/gdpr_manager.py --ignore-missing-imports --no-strict-optional --follow-imports=silent --explicit-package-bases
 
       - name: Run Ruff (fast linter, informational)
         run: ruff check src/ tests/ --output-format=github

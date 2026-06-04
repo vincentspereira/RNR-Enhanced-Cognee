@@ -439,7 +439,7 @@ class GDPRManager:
                     user_id,
                     category,
                 )
-            return row["granted"] if row else None
+            return bool(row["granted"]) if row else None
         except Exception as exc:
             logger.error("check_consent failed: %s", exc)
             return None

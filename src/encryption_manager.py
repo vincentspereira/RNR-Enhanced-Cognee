@@ -96,7 +96,7 @@ class EncryptionManager:
                 "INFO EncryptionManager: no master_key provided - generated a new Fernet key"
             )
 
-        self._raw_key: Optional[bytes] = key_bytes
+        self._raw_key = key_bytes
         self._fernet = Fernet(key_bytes)
         logger.debug("EncryptionManager initialized with Fernet/AES-128-CBC")
 

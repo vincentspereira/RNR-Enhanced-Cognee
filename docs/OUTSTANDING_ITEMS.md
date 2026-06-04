@@ -169,8 +169,14 @@ always succeeded; the deploy step had 404'd until Pages was enabled.)
 
 **Status:** Enforced on a ratcheting allowlist, not yet repo-wide. The CI
 lint job runs a BLOCKING `mypy` over a curated set of fully-annotated core
-modules; type breakage in those modules now fails CI. A second,
-informational `mypy src/` sweep reports the remaining debt without blocking.
+modules (10 as of 2026-06-04: auth.py, enterprise_auth.py, mcp_security.py,
+multi_tenant.py, rate_limiter.py, secure_config.py, circuit_breaker.py,
+mcp_response_formatter.py, encryption_manager.py, gdpr_manager.py -- i.e. the
+authn/authz + secret-loading + tenant + encryption + GDPR core); type breakage
+in any of them now fails CI. A second, informational `mypy src/` sweep reports
+the remaining debt without blocking. That debt is **~900 errors across 92
+files** under the strict config -- a multi-day annotation workstream, hence the
+ratchet rather than a big-bang flip.
 
 **Why not repo-wide yet:** `mypy.ini` is strict (`disallow_untyped_defs`,
 `disallow_any_generics`, `warn_return_any`), so whole-repo enforcement needs
