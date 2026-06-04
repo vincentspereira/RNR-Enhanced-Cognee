@@ -63,6 +63,14 @@ CREATE INDEX IF NOT EXISTS idx_documents_tags
     ON shared_memory.documents USING GIN (tags);
 CREATE INDEX IF NOT EXISTS idx_documents_metadata
     ON shared_memory.documents USING GIN (metadata);
+-- Full-text search index. MUST match the query expression in
+-- src/enhanced_cognee_mcp.py search_memory() exactly --
+-- to_tsvector('english', coalesce(content, '')) -- or the planner won't use
+-- it and every search recomputes the tsvector for all rows (seq scan). This
+-- is the index that keeps search_memories' p95 under the 200ms SLA at load.
+CREATE INDEX IF NOT EXISTS idx_documents_content_fts
+    ON shared_memory.documents
+    USING GIN (to_tsvector('english', coalesce(content, '')));
 
 -- Embeddings ----------------------------------------------------------------
 

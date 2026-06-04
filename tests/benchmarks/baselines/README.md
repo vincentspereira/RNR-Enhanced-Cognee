@@ -65,10 +65,21 @@ Consequences for the two un-captured permutations:
 
 **Correct way to benchmark `lean`/`embedded` providers:** target the
 *adapters* directly with an in-process micro-benchmark (db_factory ->
-graph/vector/relational provider; time add/search/get ops; report op latency
-and ops/sec), not the Postgres-bound HTTP locust harness. That is a distinct
-workstream (a new `tests/benchmarks/bench_adapters_inprocess.py`), tracked as
-a follow-up; it is intentionally NOT a missing locust baseline.
+vector provider; time upsert/search ops; report op latency and ops/sec), not
+the Postgres-bound HTTP locust harness. **This shipped 2026-06-04 as
+`tests/benchmarks/bench_adapters_inprocess.py`** -- it characterises the vector
+tier across `qdrant` (default), `lancedb` (embedded) and `pgvector` (lean).
+Sample run (dim=384, 1000 points, 200 queries, single process):
+
+| Provider | Profile | Upsert pts/s | Search p50 | Search p95 | Search q/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `qdrant` | default | 2669 | 6.4ms | 28.9ms | 89.3 |
+| `lancedb` | embedded | 18470 | 7.7ms | 9.0ms | 127.3 |
+| `pgvector` | lean | 943 | 13.2ms | 32.4ms | 58.6 |
+
+(In-process per-op cost, NOT server capacity -- lancedb's no-network upsert
+leads; pgvector pays a full Postgres round-trip per op.) These are the
+provider-level numbers the locust harness structurally cannot produce.
 
 `compare_to_baseline.py` handles "no baseline" gracefully (treats every
 permutation as "[NEW] in new run but no baseline -- skipped"), so CI's
