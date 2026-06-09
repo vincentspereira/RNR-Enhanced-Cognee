@@ -116,7 +116,7 @@ class MemoryVersioner:
                 logger.debug(
                     "Snapshotted memory %s as version %d", memory_id, next_ver
                 )
-                return next_ver
+                return int(next_ver)
 
         except Exception as exc:
             logger.error("snapshot failed for memory %s: %s", memory_id, exc)

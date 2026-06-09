@@ -28,7 +28,7 @@ import json
 import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -140,7 +140,7 @@ class MemoryConsolidator:
                     )
 
             groups: List[Dict[str, Any]] = []
-            seen: set = set()
+            seen: Set[str] = set()
 
             for anchor in anchors:
                 anchor_id = anchor["id"]
@@ -232,7 +232,7 @@ class MemoryConsolidator:
                         limit,
                     )
 
-            groups: Dict[str, Dict] = {}
+            groups: Dict[str, Dict[str, Any]] = {}
             for row in rows:
                 aid, bid = row["aid"], row["bid"]
                 if aid not in groups:
@@ -361,7 +361,7 @@ class MemoryConsolidator:
             return {"error": "pool unavailable"}
 
         agent_clause = "AND agent_id = $1" if agent_id else ""
-        params: Tuple = (agent_id,) if agent_id else ()
+        params: Tuple[Any, ...] = (agent_id,) if agent_id else ()
 
         try:
             async with self.pool.acquire() as conn:

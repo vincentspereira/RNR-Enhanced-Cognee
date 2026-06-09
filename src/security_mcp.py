@@ -346,7 +346,7 @@ class Authorizer:
     Verifies that agents/users have permission to perform operations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize authorizer with default permissions."""
         self.admin_agents = {
             "system",
@@ -464,7 +464,7 @@ class ConfirmationManager:
     Tracks operations requiring confirmation and validates confirmation tokens.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize confirmation manager."""
         self.pending_confirmations: Dict[str, Dict[str, Any]] = {}
         self.confirmation_ttl = timedelta(minutes=5)

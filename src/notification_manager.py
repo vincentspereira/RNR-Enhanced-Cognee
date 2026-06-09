@@ -298,7 +298,7 @@ class NotificationManager:
             req = urllib.request.Request(url, data=body, headers=headers, method="POST")
             try:
                 with urllib.request.urlopen(req, timeout=10) as resp:
-                    return resp.status
+                    return int(resp.status)
             except urllib.error.HTTPError as http_err:
                 return http_err.code
             except Exception:

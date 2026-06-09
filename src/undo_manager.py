@@ -168,7 +168,8 @@ class UndoManager:
         """Load automation configuration."""
         try:
             with open(config_path, 'r') as f:
-                return _json.load(f)
+                loaded = _json.load(f)
+                return loaded if isinstance(loaded, dict) else self._get_default_config()
         except FileNotFoundError:
             print(f"WARN: Config file not found: {config_path}")
             return self._get_default_config()

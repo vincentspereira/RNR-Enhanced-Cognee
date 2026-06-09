@@ -142,7 +142,8 @@ class MemoryProvenanceTracker:
             if prov_raw is None:
                 return {"source": "unknown", "verified": False}
             if isinstance(prov_raw, str):
-                return json.loads(prov_raw)
+                parsed = json.loads(prov_raw)
+                return parsed if isinstance(parsed, dict) else None
             return dict(prov_raw)
         except Exception as exc:
             logger.error("get_provenance failed for %s: %s", memory_id, exc)

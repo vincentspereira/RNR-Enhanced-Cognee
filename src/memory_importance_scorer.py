@@ -80,7 +80,7 @@ def _component_recency(last_accessed_at: Optional[Any]) -> float:
         if last_accessed_at.tzinfo is None:
             last_accessed_at = last_accessed_at.replace(tzinfo=UTC)
         delta_days = (now - last_accessed_at).total_seconds() / 86400.0
-        return max(0.0, 1.0 - delta_days / _MAX_AGE_DAYS)
+        return float(max(0.0, 1.0 - delta_days / _MAX_AGE_DAYS))
     except Exception:
         return 0.0
 

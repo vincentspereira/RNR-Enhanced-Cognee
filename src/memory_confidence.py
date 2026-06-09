@@ -18,7 +18,7 @@ migration 0002_memory_versioning.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -193,7 +193,7 @@ class MemoryConfidenceManager:
             return {"error": "pool unavailable"}
 
         agent_filter = "AND agent_id = $1" if agent_id else ""
-        params: tuple = (agent_id,) if agent_id else ()
+        params: Tuple[Any, ...] = (agent_id,) if agent_id else ()
 
         try:
             async with self.pool.acquire() as conn:

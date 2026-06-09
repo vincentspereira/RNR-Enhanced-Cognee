@@ -60,7 +60,7 @@ class AutoCategorizer:
     Analyzes content to detect memory type and concept.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize auto-categorizer."""
         # Type detection patterns
         self.type_patterns = {
@@ -253,7 +253,7 @@ class StructuredMemoryModel:
     Handles hierarchical observations with types, concepts, and rich metadata.
     """
 
-    def __init__(self, db_pool):
+    def __init__(self, db_pool: Any) -> None:
         """
         Initialize structured memory model.
 
@@ -469,7 +469,7 @@ class StructuredMemoryModel:
         return int(result)
 
 
-async def main():
+async def main() -> None:
     """Test structured memory model."""
 
     # Mock connection pool (for testing)

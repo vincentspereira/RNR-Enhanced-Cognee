@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 # Multi-tenant helper -- routes Postgres reads/writes to the per-tenant
@@ -68,7 +68,7 @@ class GraphCompactor:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _run(self, cypher: str, params: Optional[Dict] = None) -> Any:
+    def _run(self, cypher: str, params: Optional[Dict[str, Any]] = None) -> Any:
         """Execute a Cypher query synchronously (Neo4j sync driver)."""
         with self.driver.session() as session:
             return session.run(cypher, **(params or {}))
@@ -101,7 +101,7 @@ class GraphCompactor:
             logger.error("remove_orphan_nodes failed: %s", exc)
             return 0
 
-    def prune_stale_relations(self, archived_doc_ids: list) -> int:
+    def prune_stale_relations(self, archived_doc_ids: List[str]) -> int:
         """
         Delete RELATED_TO/SIMILAR_TO edges whose source doc_id is in archived_doc_ids.
         Returns count of deleted relationships.
@@ -200,7 +200,7 @@ class GraphCompactor:
         }
 
         # Step 1: Get archived doc IDs from PostgreSQL
-        archived_ids: list = []
+        archived_ids: List[str] = []
         if self.pool:
             try:
                 async with self.pool.acquire() as conn:

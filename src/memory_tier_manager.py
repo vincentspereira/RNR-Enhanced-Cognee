@@ -123,10 +123,11 @@ class MemoryTierManager:
         await self._ensure_schema()
         try:
             async with self.pool.acquire() as conn:
-                return await conn.fetchval(
+                tier = await conn.fetchval(
                     f"SELECT memory_tier FROM {_t_docs()} WHERE id = $1",
                     memory_id,
                 )
+                return str(tier) if tier is not None else None
         except Exception as exc:
             logger.error("get_tier failed for %s: %s", memory_id, exc)
             return None

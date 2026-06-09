@@ -152,7 +152,7 @@ class HtmlLoader(EnhancedCogneeLoader):
         try:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(raw, "html.parser")
-            return soup.get_text(separator="\n")
+            return str(soup.get_text(separator="\n"))
         except ImportError:
             # Fallback: crude tag stripping
             import re

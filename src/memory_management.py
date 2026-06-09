@@ -35,7 +35,7 @@ class RetentionPolicy(Enum):
 class MemoryManager:
     """Manages memory lifecycle including expiry, archival, and cleanup"""
 
-    def __init__(self, postgres_pool, redis_client, qdrant_client):
+    def __init__(self, postgres_pool: Any, redis_client: Any, qdrant_client: Any) -> None:
         self.postgres_pool = postgres_pool
         self.redis_client = redis_client
         self.qdrant_client = qdrant_client

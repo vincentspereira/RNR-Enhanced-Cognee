@@ -209,7 +209,7 @@ class WebhookManager:
                 response = await loop.run_in_executor(
                     None, lambda: urllib.request.urlopen(req, timeout=10)
                 )
-                return 200 <= response.status <= 299
+                return 200 <= int(response.status) <= 299
             except Exception as exc:
                 logger.debug("_deliver_once urllib failed: %s", exc)
                 return False

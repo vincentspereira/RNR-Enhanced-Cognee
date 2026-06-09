@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class MemoryDeduplicator:
     """Detects and handles duplicate memories"""
 
-    def __init__(self, postgres_pool, qdrant_client, similarity_threshold: float = 0.95):
+    def __init__(self, postgres_pool: Any, qdrant_client: Any, similarity_threshold: float = 0.95) -> None:
         self.postgres_pool = postgres_pool
         self.qdrant_client = qdrant_client
         self.similarity_threshold = similarity_threshold
@@ -93,7 +93,7 @@ class MemoryDeduplicator:
                 "error": str(e)
             }
 
-    async def _check_exact_match(self, content: str, agent_id: str) -> Optional[Dict]:
+    async def _check_exact_match(self, content: str, agent_id: str) -> Optional[Dict[str, Any]]:
         """Check for exact text match"""
         try:
             async with self.postgres_pool.acquire() as conn:
@@ -120,7 +120,7 @@ class MemoryDeduplicator:
         embedding: List[float],
         agent_id: str,
         memory_category: str
-    ) -> Optional[Dict]:
+    ) -> Optional[Dict[str, Any]]:
         """Check for similar memories using vector search"""
         try:
             collection_name = f"cognee_{memory_category}_memory"

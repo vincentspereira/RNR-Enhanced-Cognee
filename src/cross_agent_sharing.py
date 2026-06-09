@@ -31,7 +31,7 @@ class SharePolicy(Enum):
 class CrossAgentMemorySharing:
     """Manages memory sharing between agents"""
 
-    def __init__(self, postgres_pool):
+    def __init__(self, postgres_pool: Any) -> None:
         self.postgres_pool = postgres_pool
 
     async def set_memory_sharing(
@@ -189,7 +189,7 @@ class CrossAgentMemorySharing:
         self,
         agent_id: str,
         limit: int = 50
-    ) -> List[Dict]:
+    ) -> List[Dict[str, Any]]:
         """Get all memories shared with this agent"""
         try:
             async with self.postgres_pool.acquire() as conn:
