@@ -318,3 +318,13 @@ docs/TASKS-PHASE-*.md
 
 # Transient benchmark run output (baselines are committed under tests/benchmarks/baselines/)
 tests/benchmarks/output/
+
+# Terraform (deploy/terraform/) -- state can contain secrets; tfvars holds tokens
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+.terraform.lock.hcl

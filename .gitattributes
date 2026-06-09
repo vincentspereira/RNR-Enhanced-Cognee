@@ -3,3 +3,9 @@ notebooks/** linguist-vendored
 
 # Use bd merge for beads JSONL files
 .beads/issues.jsonl merge=beads
+
+# Shell scripts + cloud-init run on Linux hosts -- force LF so a CRLF shebang
+# never breaks them (e.g. "bad interpreter: /usr/bin/env bash^M").
+*.sh        text eol=lf
+*.bash      text eol=lf
+*.tftpl     text eol=lf

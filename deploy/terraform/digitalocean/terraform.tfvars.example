@@ -1,0 +1,21 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+# DigitalOcean API token (API -> Tokens -> Generate New Token, write scope).
+do_token = "your-do-token-here"
+
+# Your SSH public key contents. Either paste the key, or use:
+#   ssh_public_key = file("~/.ssh/id_ed25519.pub")
+ssh_public_key = "ssh-ed25519 AAAA... you@host"
+
+# Recommended CPU-Optimized (dedicated-vCPU) droplet for reproducible numbers.
+droplet_size = "c-4"     # 4 dedicated vCPU / 8 GB
+region       = "fra1"    # Frankfurt, DE (EU). Use "nyc3"/"sfo3" for US.
+
+# Lock SSH to your IP for a throwaway test host (find it: curl ifconfig.me):
+# ssh_allowed_cidrs = ["203.0.113.7/32"]
+
+# To run the load generator OFF-box (gold-standard), expose 8080 to your IP:
+# app_port_allowed_cidrs = ["203.0.113.7/32"]
+
+# Deploy a specific branch/tag instead of main:
+# repo_ref = "main"
