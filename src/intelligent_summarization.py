@@ -527,7 +527,7 @@ Return JSON format:
             if isinstance(metadata, str):
                 try:
                     metadata = json.loads(metadata)
-                except:
+                except Exception:
                     metadata = {}
 
             category = metadata.get('memory_category', 'general')

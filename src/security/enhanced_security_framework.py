@@ -28,7 +28,6 @@ from typing import Dict, List, Any, Optional, Tuple
 from pathlib import Path
 from dataclasses import dataclass
 from functools import wraps
-import hashlib
 import bcrypt
 from passlib.hash import argon2
 from fastapi import Request
@@ -394,7 +393,7 @@ class FileScanner:
             cd = pyclamd.ClamdUnixSocket()
             cd.ping()
             return True
-        except:
+        except Exception:
             return False
 
     def scan_file(self, file_content: bytes) -> Tuple[bool, str]:
@@ -439,7 +438,7 @@ class FileScanner:
                 scan_result = cd.scan_stream(file_content)
                 if scan_result:
                     return False, f"Malware detected by ClamAV: {scan_result}"
-            except Exception as e:
+            except Exception:
                 pass  # Continue with other checks if ClamAV fails
 
         # Use VirusTotal API if key is available

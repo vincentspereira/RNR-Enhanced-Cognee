@@ -10,7 +10,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  type TooltipProps,
 } from "recharts";
 import { exportChartAsPNG, exportChartAsPDF, exportChartAsSVG } from "@/lib/utils/chart-export";
 import { Download } from "lucide-react";
@@ -37,14 +36,14 @@ export interface LineChartProps {
 /**
  * Custom Tooltip component with better styling
  */
-const CustomTooltip = ({ active, payload, label }: TooltipProps<string, string>) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name?: string; value?: unknown; color?: string }>; label?: string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 shadow-lg">
         <p className="text-slate-200 text-sm font-medium mb-2">{label}</p>
         {payload.map((entry, index) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
-            {entry.name}: {entry.value}
+            {entry.name}: {String(entry.value ?? "")}
           </p>
         ))}
       </div>

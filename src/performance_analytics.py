@@ -69,7 +69,7 @@ class PerformanceAnalytics:
         try:
             metric_key = f"metrics:query_time:{operation}"
             await self.redis_client.incrbyfloat(metric_key, duration_ms)
-        except:
+        except Exception:
             pass
 
     async def record_cache_hit(self, cache_type: str = "default"):

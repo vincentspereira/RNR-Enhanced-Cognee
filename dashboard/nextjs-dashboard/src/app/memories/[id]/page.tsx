@@ -314,7 +314,7 @@ export default function MemoryDetailPage() {
                   {memory.before_state}
                 </p>
               </div>
-            }
+            )}
 
             {memory.after_state && (
               <div>

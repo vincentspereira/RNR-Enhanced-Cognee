@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemories } from "@/lib/hooks";
 import { Button, Input, Card, CardContent } from "@/components/atoms";
 import { MemoryCard } from "@/components/molecules";
-import { MemoryListSkeleton } from "@/components/organisms";
+import { MemoryListSkeleton, AddMemoryModal } from "@/components/organisms";
 import { useFilterStore, useUIStore } from "@/lib/stores";
-import { formatRelativeTime } from "@/lib/utils";
+import type { MemoryFilters } from "@/lib/stores/filterStore";
+import { deleteMemory } from "@/lib/api/memories";
+import { queryKeys } from "@/lib/query/queryKeys";
+import { toast } from "sonner";
 import {
   Search,
   RefreshCw,
@@ -16,31 +18,45 @@ import {
   List,
   Filter,
   X,
-  ChevronDown,
   Download,
   Trash2,
   CheckSquare,
-  Square
+  Square,
+  Plus
 } from "lucide-react";
 
 export default function MemoriesListPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const { filters, setFilters, clearFilters } = useFilterStore();
   const {
+    filters,
+    setFilters,
+    clearFilters,
     selectedMemories,
     toggleMemorySelection,
     selectAllMemories,
     deselectAllMemories,
     isMemorySelected,
     getSelectedCount,
-    viewMode,
-    setViewMode,
+  } = useFilterStore();
+  const {
+    memoriesViewMode: viewMode,
+    setMemoriesViewMode: setViewMode,
   } = useUIStore();
 
   const [localSearch, setLocalSearch] = useState(filters.search);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Pre-apply agent_id filter from query param (e.g. when navigating from /agents)
+  useEffect(() => {
+    const agentId = searchParams.get("agent_id");
+    if (agentId) {
+      setFilters({ agent_id: [agentId] });
+    }
+  }, [searchParams, setFilters]);
 
   // Debounced search
   useEffect(() => {
@@ -63,23 +79,48 @@ export default function MemoriesListPage() {
   } = useInfiniteQuery({
     queryKey: ["memories", filters],
     queryFn: async ({ pageParam = 0 }) => {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const response = await fetch(
-        `/api/memories?limit=50&offset=${pageParam}&${buildQueryString(filters)}`
+        `${apiBase}/api/memories?limit=50&offset=${pageParam}&${buildQueryString(filters)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch memories");
       }
-      return response.json();
+      const json = await response.json();
+      // Normalize memory_id -> id for MemoryCard compatibility
+      const rawMemories: Record<string, unknown>[] = json.memories || json || [];
+      return {
+        ...json,
+        memories: rawMemories.map((m) => ({
+          ...m,
+          id: (m.id as string) || (m.memory_id as string),
+        })),
+      };
     },
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.memories.length < 50) return undefined;
+      const mems = (lastPage as { memories: unknown[] }).memories || [];
+      if (mems.length < 50) return undefined;
       return allPages.length * 50;
     },
     initialPageParam: 0,
   });
 
   // Flatten all pages
-  const memories = data?.pages.flatMap((page) => page.memories) || [];
+  type MemoryItem = {
+    id: string;
+    content: string;
+    summary?: string;
+    memory_type?: string;
+    memory_concept?: string;
+    data_type?: string;
+    created_at: string;
+    updated_at?: string;
+    char_count?: number;
+    estimated_tokens?: number;
+    metadata?: Record<string, unknown>;
+    [key: string]: unknown;
+  };
+  const memories = (data?.pages.flatMap((page) => (page as { memories: MemoryItem[] }).memories) || []) as MemoryItem[];
   const allMemoryIds = memories.map((m) => m.id);
 
   // Pull to refresh
@@ -99,11 +140,22 @@ export default function MemoriesListPage() {
     router.push(`/memories/${id}/edit`);
   };
 
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteMemory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.memories.all });
+      toast.success("Memory deleted");
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to delete memory", { description: error.message });
+    },
+  });
+
   // Handle delete memory
   const handleDeleteMemory = (id: string) => {
     if (confirm("Are you sure you want to delete this memory?")) {
-      // TODO: Implement delete mutation
-      console.log("Delete memory:", id);
+      deleteMutation.mutate(id);
     }
   };
 
@@ -117,17 +169,26 @@ export default function MemoriesListPage() {
   };
 
   // Handle batch delete
-  const handleBatchDelete = () => {
-    const count = getSelectedCount();
+  const handleBatchDelete = async () => {
+    const ids = Array.from(selectedMemories);
+    const count = ids.length;
     if (confirm(`Are you sure you want to delete ${count} memories?`)) {
-      // TODO: Implement batch delete
-      console.log("Batch delete:", Array.from(selectedMemories));
-      deselectAllMemories();
+      try {
+        await Promise.all(ids.map((id) => deleteMemory(id)));
+        queryClient.invalidateQueries({ queryKey: queryKeys.memories.all });
+        toast.success(`Deleted ${count} memories`);
+      } catch (error) {
+        toast.error("Some deletions failed", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+      } finally {
+        deselectAllMemories();
+      }
     }
   };
 
   // Build query string from filters
-  function buildQueryString(filters: typeof useFilterStore.getState().filters) {
+  function buildQueryString(filters: MemoryFilters) {
     const params = new URLSearchParams();
     if (filters.search) params.set("search", filters.search);
     if (filters.memory_type.length > 0)
@@ -190,7 +251,10 @@ export default function MemoriesListPage() {
               <span className="ml-2 h-2 w-2 rounded-full bg-primary" />
             )}
           </Button>
-          <Button>Add Memory</Button>
+          <Button onClick={() => setIsAddModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Memory
+          </Button>
         </div>
       </div>
 
@@ -400,6 +464,12 @@ export default function MemoriesListPage() {
           {hasNextPage && " (scroll to load more)"}
         </div>
       )}
+
+      {/* Add Memory Modal */}
+      <AddMemoryModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
     </div>
   );
 }

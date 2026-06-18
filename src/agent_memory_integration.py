@@ -226,7 +226,7 @@ class AgentMemoryIntegration:
                 # Check if collection exists
                 self.qdrant_client.get_collection(collection_name)
                 logger.info(f"Qdrant collection {collection_name} already exists")
-            except:
+            except Exception:
                 # Create collection
                 self.qdrant_client.create_collection(
                     collection_name=collection_name,
@@ -734,7 +734,7 @@ class AgentMemoryIntegration:
                     "points_count": points_count,
                     "vector_count": collection_info.config.params.vectors.size
                 }
-            except:
+            except Exception:
                 stats["memory_stats"]["qdrant"] = {"error": "Collection not found"}
 
             # Get Redis cache stats (tenant-scoped key prefix when active)

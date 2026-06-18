@@ -161,7 +161,6 @@ def _translate_cypher(cypher: str, collection: str) -> tuple:
         # CREATE (n:Label {props}) -- we parse the labels + property
         # block and convert to an INSERT. property block must be
         # already valid JSON-ish (best-effort).
-        labels = [s for s in (m.group(1) or "").split(":") if s]
         # The "props" block uses Cypher syntax (key: value, ...). We
         # attempt to JSON-load it; callers should use parameterised
         # CREATE if they have non-trivial values.

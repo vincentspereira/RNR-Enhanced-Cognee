@@ -236,7 +236,7 @@ class PluginRegistry:
 
     def list_loaders(self) -> List[Dict[str, Any]]:
         """Return metadata for all registered loaders."""
-        return [l.metadata() for l in self._loaders]
+        return [loader_item.metadata() for loader_item in self._loaders]
 
     def register(self, loader: EnhancedCogneeLoader) -> None:
         """Manually register a loader instance (for testing/extensions)."""

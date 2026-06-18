@@ -772,7 +772,7 @@ class EnhancedCogneeMCPServer:
                 # Create collection if it doesn't exist
                 try:
                     self.qdrant_client.get_collection(collection_name)
-                except:
+                except Exception:
                     self.qdrant_client.create_collection(
                         collection_name=collection_name,
                         vectors_config=VectorParams(size=config.vector_dimensions, distance=Distance.COSINE)
@@ -914,7 +914,7 @@ class EnhancedCogneeMCPServer:
                                 try:
                                     self.qdrant_client.get_collection(collection_name)
                                     collection_names.append(collection_name)
-                                except:
+                                except Exception:
                                     logger.debug(f"Collection {collection_name} does not exist, skipping")
                     else:
                         # No categorization - search default collection
@@ -1004,7 +1004,7 @@ class EnhancedCogneeMCPServer:
                 """, source_name=relation.source_entity, target_name=relation.target_entity)
 
                 # Create relationship
-                result = session.run("""
+                session.run("""
                     MATCH (source:Entity {name: $source_name})
                     MATCH (target:Entity {name: $target_name})
                     CREATE (source)-[r:RELATES_TO {

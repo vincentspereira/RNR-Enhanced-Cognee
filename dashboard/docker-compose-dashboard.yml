@@ -35,7 +35,8 @@ services:
       POSTGRES_SHARED_PRELOAD_LIBRARIES: "vector"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../../migrations:/docker-entrypoint-initdb.d
+      # Schema bootstrap (documents/sessions/entities/relationships + pgvector)
+      - ../docker/init-scripts/01-init-pgvector.sql:/docker-entrypoint-initdb.d/01-init-pgvector.sql:ro
     ports:
       - "25432:5432"
     networks:
@@ -59,7 +60,8 @@ services:
     networks:
       - cognee-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      # Qdrant images ship without curl/wget; use a bash TCP probe instead
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/6333 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -87,7 +89,8 @@ services:
     networks:
       - cognee-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      # Neo4j images include wget but not curl
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -168,8 +171,10 @@ services:
       dockerfile: Dockerfile
     container_name: enhanced-cognee-dashboard
     environment:
-      # API URL (internal Docker network)
-      NEXT_PUBLIC_API_URL: http://backend-api:8000
+      # API URL -- must be browser-reachable, NOT the Docker-internal
+      # hostname: NEXT_PUBLIC_* vars are baked into client-side JS and the
+      # user's browser cannot resolve http://backend-api:8000.
+      NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:8000}
       NEXT_PUBLIC_APP_URL: ${APP_URL:-http://localhost:9050}
       # Feature flags
       NEXT_PUBLIC_ENABLE_GRAPH: "true"
@@ -185,7 +190,8 @@ services:
     depends_on:
       - backend-api
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9050"]
+      # node:alpine images include wget but not curl
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9050 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5

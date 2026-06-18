@@ -2,12 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Input } from "@/components/atoms";
-import { Button } from "@/components/atoms";
-import { Card, CardContent } from "@/components/atoms";
-import { Badge } from "@/components/atoms";
+import { Input, Badge } from "@/components/atoms";
 import { MemoryCard } from "@/components/molecules";
-import { MemoryListSkeleton } from "@/components/organisms";
+import { MemoryListSkeleton } from "@/components/organisms/MemoryListSkeleton";
 import { Search, X, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -46,7 +43,8 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
     queryKey: ["search", debouncedQuery],
     queryFn: async () => {
       if (!debouncedQuery.trim()) return { results: [], total: 0 };
-      const response = await fetch(`/api/search?query=${encodeURIComponent(debouncedQuery)}&limit=20`);
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiBase}/api/search?query=${encodeURIComponent(debouncedQuery)}&limit=20`);
       if (!response.ok) {
         throw new Error("Search failed");
       }
@@ -58,7 +56,7 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
   // Notify parent of results count
   useEffect(() => {
     if (data && onResultsFound) {
-      onResultsFound(data.total || data.results?.length || 0);
+      onResultsFound(data.result_count || data.results?.length || 0);
     }
   }, [data, onResultsFound]);
 
@@ -77,8 +75,13 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
     router.push(`/memories/${id}`);
   };
 
-  const results = data?.results || [];
-  const resultCount = data?.total || results.length;
+  // Normalize results: backend returns memory_id, MemoryCard expects id
+  const rawResults = data?.results || [];
+  const results = rawResults.map((m: Record<string, unknown>) => ({
+    ...m,
+    id: (m.id as string) || (m.memory_id as string),
+  }));
+  const resultCount = data?.result_count ?? results.length;
 
   return (
     <div className="space-y-6">
@@ -142,15 +145,15 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
           ) : results.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                No results found for "{query}"
+                No results found for &quot;{query}&quot;
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="text-sm text-muted-foreground">
-                Found {resultCount} result{resultCount !== 1 ? "s" : ""} for "{query}"
+                Found {resultCount} result{resultCount !== 1 ? "s" : ""} for &quot;{query}&quot;
               </div>
-              {results.map((memory: any) => (
+              {results.map((memory) => (
                 <MemoryCard
                   key={memory.id}
                   memory={memory}

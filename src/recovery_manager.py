@@ -529,7 +529,6 @@ class RecoveryManager:
             raise ValueError("Redis backup file not found")
 
         redis_file = redis_files[0]
-        config = self.config["redis"]
 
         logger.info(f"Restoring Redis from: {redis_file}")
 
@@ -626,9 +625,6 @@ class RecoveryManager:
     def _validate_postgres(self) -> Dict[str, Any]:
         """Validate PostgreSQL data."""
         try:
-
-            config = self.config["postgresql"]
-
             # Connect to PostgreSQL
             conn = asyncio.run(self._connect_postgres())
 

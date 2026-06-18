@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TimelineView, TimelineDetail } from "@/components/organisms/TimelineView";
+import { TimelineView } from "@/components/organisms/TimelineView";
+import { TimelineDetail } from "@/components/organisms/TimelineDetail";
 import { getMemories } from "@/lib/api/memories";
 import { useMemoryFilters } from "@/lib/stores/memoryFilters";
 import type { MemoryResponse } from "@/lib/api/types";
@@ -17,7 +18,9 @@ export default function TimelinePage() {
     queryFn: () =>
       getMemories({
         limit: 1000, // Get more memories for timeline
-        ...filters,
+        agent_id: filters.agent_id?.[0] || undefined,
+        memory_type: filters.memory_type?.[0] || undefined,
+        memory_concept: filters.memory_concept?.[0] || undefined,
       }),
   });
 

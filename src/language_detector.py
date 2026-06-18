@@ -7,7 +7,6 @@ Supports 28 languages with automatic detection using langdetect library.
 import logging
 from typing import Tuple, Optional
 from langdetect import detect, DetectorFactory, LangDetectException
-from langdetect.lang_detect_exception import LangDetectException
 
 # Set seed for consistent results
 DetectorFactory.seed = 0

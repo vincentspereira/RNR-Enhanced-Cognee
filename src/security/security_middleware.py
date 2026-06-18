@@ -32,7 +32,6 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 
         start_time = time.time()
         source_ip = self._get_client_ip(request)
-        user_agent = request.headers.get("user-agent", "")
 
         # Rate limiting check
         rate_limit_result = await self._check_rate_limit(request, source_ip)
@@ -407,7 +406,7 @@ class InputSanitizationMiddleware(BaseHTTPMiddleware):
 
         try:
             body = await request.json()
-            sanitized_body = self._sanitize_dict(body)
+            self._sanitize_dict(body)
 
             # Replace request body with sanitized version
             # This is framework-specific implementation

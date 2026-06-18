@@ -208,7 +208,7 @@ class AdvancedSearch:
             try:
                 import json
                 metadata = json.loads(metadata)
-            except:
+            except Exception:
                 metadata = {}
         return metadata.get('language', 'en')
 
@@ -219,7 +219,7 @@ class AdvancedSearch:
             try:
                 import json
                 metadata = json.loads(metadata)
-            except:
+            except Exception:
                 metadata = {}
         return metadata.get('memory_type', 'general')
 
@@ -230,7 +230,7 @@ class AdvancedSearch:
             try:
                 import json
                 metadata = json.loads(metadata)
-            except:
+            except Exception:
                 metadata = {}
         return metadata.get('category', 'uncategorized')
 

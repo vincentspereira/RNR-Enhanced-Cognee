@@ -18,7 +18,9 @@ const memorySchema = z.object({
     .string()
     .min(1, "Content is required")
     .max(10000, "Content must be less than 10,000 characters"),
-  agent_id: z.string().min(1, "Agent ID is required").default("default"),
+  // Default comes from useForm defaultValues; zod .default() here would make
+  // the schema's input/output types diverge and break the resolver typing.
+  agent_id: z.string().min(1, "Agent ID is required"),
   memory_type: z.string().optional(),
   memory_concept: z.string().optional(),
   before_state: z.string().optional(),

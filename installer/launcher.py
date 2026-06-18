@@ -1,0 +1,387 @@
+"""
+Enhanced Cognee Desktop Launcher
+
+A small cross-platform (Windows / macOS / Linux) GUI that lets non-technical
+users run Enhanced Cognee with a double-click:
+
+  1. Checks that Docker Desktop (or Docker Engine) is installed and running.
+  2. On first run, writes the runtime files (docker compose stack, database
+     bootstrap SQL, .env with randomly generated passwords) to a per-user
+     application data directory.
+  3. Starts the full stack (PostgreSQL, Qdrant, ArcadeDB, Valkey, API,
+     Dashboard) with "docker compose up -d".
+  4. Waits for the services to become healthy and opens the dashboard
+     (http://localhost:9050) in the default browser.
+
+The launcher is packaged with PyInstaller (see installer/build/) into a
+single executable, then wrapped in platform installers (Inno Setup on
+Windows, a .dmg on macOS, a .desktop + AppImage/tarball on Linux).
+
+ASCII-only output (Windows cp1252 compatible).
+"""
+
+import os
+import queue
+import secrets
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import urllib.request
+import webbrowser
+from pathlib import Path
+
+import tkinter as tk
+from tkinter import messagebox, scrolledtext
+
+APP_NAME = "Enhanced Cognee"
+COMPOSE_PROJECT = "enhanced-cognee"
+DASHBOARD_URL = "http://localhost:9050"
+API_HEALTH_URL = "http://localhost:8000/health"
+DOCKER_DOWNLOAD_URL = "https://www.docker.com/products/docker-desktop/"
+STARTUP_TIMEOUT_SECONDS = 480  # first run pulls images; allow plenty of time
+
+# Resources bundled next to this script (PyInstaller: sys._MEIPASS)
+RESOURCE_FILES = [
+    "docker-compose.launcher.yml",
+    "01-init-pgvector.sql",
+]
+
+
+def resource_dir() -> Path:
+    """Directory holding bundled resources (PyInstaller-aware)."""
+    if getattr(sys, "_MEIPASS", None):
+        return Path(sys._MEIPASS) / "resources"
+    return Path(__file__).parent / "resources"
+
+
+def app_data_dir() -> Path:
+    """Per-user writable directory for runtime files and data."""
+    if sys.platform == "win32":
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
+        return base / "EnhancedCognee"
+    if sys.platform == "darwin":
+        return Path.home() / "Library/Application Support/EnhancedCognee"
+    base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+    return base / "enhanced-cognee"
+
+
+def subprocess_flags() -> dict:
+    """Keyword args that hide console windows on Windows."""
+    if sys.platform == "win32":
+        return {"creationflags": 0x08000000}  # CREATE_NO_WINDOW
+    return {}
+
+
+def run_command(args, timeout=None):
+    """Run a command, return (exit_code, combined_output)."""
+    try:
+        proc = subprocess.run(
+            args,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            **subprocess_flags(),
+        )
+        output = (proc.stdout or "") + (proc.stderr or "")
+        return proc.returncode, output.strip()
+    except FileNotFoundError:
+        return 127, f"command not found: {args[0]}"
+    except subprocess.TimeoutExpired:
+        return 124, "command timed out"
+
+
+def docker_state() -> str:
+    """Return one of: 'missing', 'stopped', 'running'."""
+    if shutil.which("docker") is None:
+        return "missing"
+    code, _ = run_command(["docker", "info"], timeout=20)
+    return "running" if code == 0 else "stopped"
+
+
+def try_start_docker_desktop() -> bool:
+    """Best-effort attempt to launch Docker Desktop (Windows / macOS)."""
+    try:
+        if sys.platform == "win32":
+            for candidate in (
+                Path(os.environ.get("ProgramFiles", r"C:\Program Files"))
+                / "Docker/Docker/Docker Desktop.exe",
+            ):
+                if candidate.exists():
+                    subprocess.Popen([str(candidate)], **subprocess_flags())
+                    return True
+        elif sys.platform == "darwin":
+            code, _ = run_command(["open", "-a", "Docker"], timeout=20)
+            return code == 0
+    except Exception:
+        pass
+    return False
+
+
+def ensure_runtime_files(data_dir: Path) -> Path:
+    """Copy bundled resources and create .env on first run. Returns compose path."""
+    data_dir.mkdir(parents=True, exist_ok=True)
+    src = resource_dir()
+    # Dev fallback: when running from a source checkout, the SQL lives in
+    # docker/init-scripts/ (build scripts copy it into resources/ for dist).
+    repo_sql = Path(__file__).parent.parent / "docker/init-scripts/01-init-pgvector.sql"
+    for name in RESOURCE_FILES:
+        target = data_dir / name
+        bundled = src / name
+        if not bundled.exists() and name == "01-init-pgvector.sql" and repo_sql.exists():
+            bundled = repo_sql
+        # Refresh resources on upgrade, but never overwrite the .env below.
+        if bundled.exists():
+            shutil.copyfile(bundled, target)
+
+    env_path = data_dir / ".env"
+    if not env_path.exists():
+        env_path.write_text(
+            "# Auto-generated by the Enhanced Cognee launcher. Safe to keep.\n"
+            f"POSTGRES_PASSWORD={secrets.token_urlsafe(24)}\n"
+            f"ARCADEDB_PASSWORD={secrets.token_urlsafe(24)}\n"
+            f"JWT_SECRET={secrets.token_urlsafe(32)}\n"
+            "IMAGE_REGISTRY=ghcr.io/vincentspereira\n"
+            "IMAGE_TAG=latest\n",
+            encoding="ascii",
+        )
+    return data_dir / "docker-compose.launcher.yml"
+
+
+def http_ok(url: str, timeout: float = 4.0) -> bool:
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            return 200 <= resp.status < 400
+    except Exception:
+        return False
+
+
+class LauncherApp:
+    def __init__(self) -> None:
+        self.root = tk.Tk()
+        self.root.title(f"{APP_NAME} Launcher")
+        self.root.geometry("640x480")
+        self.root.minsize(560, 420)
+
+        self.log_queue: "queue.Queue[str]" = queue.Queue()
+        self.busy = False
+        self.data_dir = app_data_dir()
+        self.compose_file = None
+
+        self._build_ui()
+        self.root.after(150, self._drain_log_queue)
+        self.root.after(300, self._initial_check)
+
+    # ------------------------------------------------------------------ UI
+
+    def _build_ui(self) -> None:
+        header = tk.Frame(self.root, pady=8)
+        header.pack(fill="x")
+        tk.Label(header, text=APP_NAME, font=("Segoe UI", 18, "bold")).pack()
+        tk.Label(
+            header,
+            text="Your personal AI memory system",
+            font=("Segoe UI", 10),
+            fg="#555555",
+        ).pack()
+
+        self.status_var = tk.StringVar(value="Checking Docker...")
+        self.status_label = tk.Label(
+            self.root, textvariable=self.status_var, font=("Segoe UI", 11)
+        )
+        self.status_label.pack(pady=4)
+
+        buttons = tk.Frame(self.root, pady=6)
+        buttons.pack()
+        self.start_btn = tk.Button(
+            buttons, text="Start Enhanced Cognee", width=22,
+            command=self.on_start, state="disabled",
+        )
+        self.start_btn.grid(row=0, column=0, padx=5, pady=3)
+        self.open_btn = tk.Button(
+            buttons, text="Open Dashboard", width=22,
+            command=lambda: webbrowser.open(DASHBOARD_URL), state="disabled",
+        )
+        self.open_btn.grid(row=0, column=1, padx=5, pady=3)
+        self.stop_btn = tk.Button(
+            buttons, text="Stop Enhanced Cognee", width=22,
+            command=self.on_stop, state="disabled",
+        )
+        self.stop_btn.grid(row=1, column=0, padx=5, pady=3)
+        self.docker_btn = tk.Button(
+            buttons, text="Get Docker Desktop", width=22,
+            command=lambda: webbrowser.open(DOCKER_DOWNLOAD_URL),
+        )
+        self.docker_btn.grid(row=1, column=1, padx=5, pady=3)
+
+        tk.Label(self.root, text="Activity log:", anchor="w").pack(
+            fill="x", padx=10
+        )
+        self.log_box = scrolledtext.ScrolledText(
+            self.root, height=12, state="disabled", font=("Consolas", 9)
+        )
+        self.log_box.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+    def log(self, message: str) -> None:
+        self.log_queue.put(message)
+
+    def _drain_log_queue(self) -> None:
+        try:
+            while True:
+                line = self.log_queue.get_nowait()
+                self.log_box.configure(state="normal")
+                self.log_box.insert("end", line + "\n")
+                self.log_box.see("end")
+                self.log_box.configure(state="disabled")
+        except queue.Empty:
+            pass
+        self.root.after(150, self._drain_log_queue)
+
+    def set_status(self, text: str) -> None:
+        self.status_var.set(text)
+
+    def _set_buttons(self, start=None, stop=None, open_=None) -> None:
+        if start is not None:
+            self.start_btn.configure(state="normal" if start else "disabled")
+        if stop is not None:
+            self.stop_btn.configure(state="normal" if stop else "disabled")
+        if open_ is not None:
+            self.open_btn.configure(state="normal" if open_ else "disabled")
+
+    # ----------------------------------------------------------- workflows
+
+    def _initial_check(self) -> None:
+        threading.Thread(target=self._initial_check_worker, daemon=True).start()
+
+    def _initial_check_worker(self) -> None:
+        state = docker_state()
+        if state == "missing":
+            self.set_status("Docker is not installed")
+            self.log("[ERROR] Docker is not installed.")
+            self.log("Click 'Get Docker Desktop', install it, then reopen "
+                     "this launcher.")
+            return
+        if state == "stopped":
+            self.set_status("Docker is installed but not running")
+            self.log("[WARNING] Docker is not running. Trying to start it...")
+            if try_start_docker_desktop():
+                for _ in range(60):
+                    time.sleep(5)
+                    if docker_state() == "running":
+                        break
+            if docker_state() != "running":
+                self.set_status("Please start Docker Desktop, then reopen")
+                self.log("[ERROR] Could not start Docker automatically. "
+                         "Start Docker Desktop manually and reopen this app.")
+                return
+            self.log("[OK] Docker started.")
+
+        self.compose_file = ensure_runtime_files(self.data_dir)
+        self.log(f"[OK] Docker is running. Runtime files: {self.data_dir}")
+
+        if http_ok(API_HEALTH_URL, 2) and http_ok(DASHBOARD_URL, 2):
+            self.set_status("Enhanced Cognee is running")
+            self._set_buttons(start=False, stop=True, open_=True)
+            self.log("[OK] Enhanced Cognee is already running.")
+        else:
+            self.set_status("Ready to start")
+            self._set_buttons(start=True, stop=False, open_=False)
+
+    def _compose(self, *args: str):
+        cmd = [
+            "docker", "compose",
+            "-p", COMPOSE_PROJECT,
+            "-f", str(self.compose_file),
+            "--env-file", str(self.data_dir / ".env"),
+            *args,
+        ]
+        return run_command(cmd, timeout=1800)
+
+    def on_start(self) -> None:
+        if self.busy:
+            return
+        self.busy = True
+        self._set_buttons(start=False, stop=False, open_=False)
+        threading.Thread(target=self._start_worker, daemon=True).start()
+
+    def _start_worker(self) -> None:
+        try:
+            self.set_status("Starting (first run downloads ~2 GB)...")
+            self.log("[INFO] Starting services. The first run downloads the "
+                     "database and app images and can take several minutes.")
+            code, output = self._compose("up", "-d", "--pull", "missing")
+            if code != 0:
+                self.set_status("Failed to start - see log")
+                self.log("[ERROR] docker compose up failed:")
+                self.log(output[-3000:])
+                self._set_buttons(start=True, stop=True, open_=False)
+                return
+
+            self.log("[OK] Containers started. Waiting for services...")
+            self.set_status("Waiting for services to be ready...")
+            deadline = time.time() + STARTUP_TIMEOUT_SECONDS
+            api_ready = dash_ready = False
+            while time.time() < deadline and not (api_ready and dash_ready):
+                api_ready = api_ready or http_ok(API_HEALTH_URL, 3)
+                dash_ready = dash_ready or http_ok(DASHBOARD_URL, 3)
+                if not (api_ready and dash_ready):
+                    time.sleep(4)
+
+            if api_ready and dash_ready:
+                self.set_status("Enhanced Cognee is running")
+                self.log("[OK] All services ready. Opening the dashboard...")
+                webbrowser.open(DASHBOARD_URL)
+                self._set_buttons(start=False, stop=True, open_=True)
+            else:
+                self.set_status("Services are slow to start - see log")
+                self.log("[WARNING] Services did not become ready in time. "
+                         "They may still be starting; try 'Open Dashboard' "
+                         "in a minute, or check the log below.")
+                code, output = self._compose("ps")
+                self.log(output[-2000:])
+                self._set_buttons(start=True, stop=True, open_=True)
+        finally:
+            self.busy = False
+
+    def on_stop(self) -> None:
+        if self.busy:
+            return
+        if not messagebox.askyesno(
+            APP_NAME,
+            "Stop Enhanced Cognee?\n\nYour memories are kept safely and "
+            "will be there when you start again.",
+        ):
+            return
+        self.busy = True
+        self._set_buttons(start=False, stop=False, open_=False)
+        threading.Thread(target=self._stop_worker, daemon=True).start()
+
+    def _stop_worker(self) -> None:
+        try:
+            self.set_status("Stopping...")
+            self.log("[INFO] Stopping services (your data is preserved)...")
+            code, output = self._compose("down")
+            if code == 0:
+                self.set_status("Stopped")
+                self.log("[OK] Enhanced Cognee stopped.")
+                self._set_buttons(start=True, stop=False, open_=False)
+            else:
+                self.set_status("Failed to stop - see log")
+                self.log("[ERROR] docker compose down failed:")
+                self.log(output[-2000:])
+                self._set_buttons(start=True, stop=True, open_=False)
+        finally:
+            self.busy = False
+
+    def run(self) -> None:
+        self.root.mainloop()
+
+
+def main() -> None:
+    app = LauncherApp()
+    app.run()
+
+
+if __name__ == "__main__":
+    main()

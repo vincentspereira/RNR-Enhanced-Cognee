@@ -1,0 +1,133 @@
+# Build desktop installers (Windows / macOS / Linux) and publish the Docker
+# images the launcher stack pulls (ghcr.io/<owner>/enhanced-cognee-api and
+# enhanced-cognee-dashboard).
+#
+# Trigger: version tags (v*) or manual dispatch. Artifacts are uploaded per
+# platform; on tag builds everything is attached to a GitHub Release.
+
+name: Build Installers
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version string (e.g. 1.2.0)"
+        required: false
+        default: "0.0.0-dev"
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  EC_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || (inputs.version || '0.0.0-dev') }}
+
+jobs:
+  docker-images:
+    name: Publish app Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: dashboard
+          file: dashboard/Dockerfile.api
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-api:latest
+            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-api:${{ env.EC_VERSION }}
+      - name: Build and push dashboard image
+        uses: docker/build-push-action@v6
+        with:
+          context: dashboard/nextjs-dashboard
+          file: dashboard/nextjs-dashboard/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-dashboard:latest
+            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-dashboard:${{ env.EC_VERSION }}
+
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+      - name: Build
+        run: powershell -ExecutionPolicy Bypass -File installer\build\build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-cognee-windows
+          path: |
+            installer/dist/EnhancedCognee-Setup-*.exe
+            installer/dist/EnhancedCogneeLauncher.exe
+
+  macos:
+    name: macOS installer
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller
+      - name: Build
+        run: bash installer/build/build_macos.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-cognee-macos
+          path: installer/dist/EnhancedCognee-*.dmg
+
+  linux:
+    name: Linux installer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk libfuse2
+          pip install pyinstaller
+      - name: Install appimagetool
+        run: |
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage \
+            -O /usr/local/bin/appimagetool || true
+          chmod +x /usr/local/bin/appimagetool || true
+      - name: Build
+        run: bash installer/build/build_linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-cognee-linux
+          path: |
+            installer/dist/enhanced-cognee-*-linux-x86_64.tar.gz
+            installer/dist/EnhancedCognee-*-x86_64.AppImage
+
+  release:
+    name: Attach to GitHub Release
+    if: github.ref_type == 'tag'
+    needs: [docker-images, windows, macos, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**
+          generate_release_notes: true

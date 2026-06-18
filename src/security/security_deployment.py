@@ -14,7 +14,6 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
 from enum import Enum
-import asyncio
 import yaml
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -237,7 +236,6 @@ class AlertManager:
                 return False
 
         if "severity:" in condition:
-            expected_severity = condition.split("severity:")[1].strip().strip('"\'')
             severity_levels = {"low": 1, "medium": 2, "high": 3, "critical": 4}
             event_level = severity_levels.get(event.severity, 0)
             rule_level = severity_levels.get(rule.severity_threshold.value, 0)
@@ -262,7 +260,6 @@ class AlertManager:
         systems = []
 
         event_type = event.event_type.lower()
-        details = event.details
 
         if "auth" in event_type or "password" in event_type:
             systems.append("authentication")

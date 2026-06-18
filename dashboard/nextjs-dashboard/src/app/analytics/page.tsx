@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useSystemStats, useStructuredStats } from "@/lib/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms";
 import { Skeleton } from "@/components/atoms";
@@ -127,38 +127,39 @@ export default function AnalyticsPage() {
             )}
           </CardContent>
         </Card>
-      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Token Efficiency</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {systemLoading ? (
-            <Skeleton className="h-20 w-full" />
-          ) : systemStats ? (
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Compression Efficiency</span>
-                  <span className="text-sm font-semibold">{systemStats.token_efficiency_percent.toFixed(1)}%</span>
+        <Card>
+          <CardHeader>
+            <CardTitle>Token Efficiency</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {systemLoading ? (
+              <Skeleton className="h-20 w-full" />
+            ) : systemStats ? (
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm text-muted-foreground">Compression Efficiency</span>
+                    <span className="text-sm font-semibold">{systemStats.token_efficiency_percent.toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-secondary rounded-full h-2">
+                    <div
+                      className="bg-primary h-2 rounded-full transition-all"
+                      style={{ width: `${systemStats.token_efficiency_percent}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-secondary rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all"
-                    style={{ width: `${systemStats.token_efficiency_percent}%` }}
-                  />
-                </div>
+                <p className="text-xs text-muted-foreground">
+                  This metric represents the percentage of token savings achieved through memory compression and summarization.
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                This metric represents the percentage of token savings achieved through memory compression and summarization.
-              </p>
-            </div>
-          ) : (
-            <p className="text-muted-foreground">No data available</p>
-          )}
-        </CardContent>
-      </Card>
+            ) : (
+              <p className="text-muted-foreground">No data available</p>
+            )}
+          </CardContent>
+        </Card>
+        </div>
+      </div>
     </div>
   );
 }

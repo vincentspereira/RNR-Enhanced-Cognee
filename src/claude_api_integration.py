@@ -262,7 +262,7 @@ class ClaudeAPIClient:
             # Parse metadata
             try:
                 metadata = json.loads(metadata_json)
-            except:
+            except Exception:
                 metadata = {}
 
             # Add memory

@@ -123,7 +123,7 @@ class GDPRManager:
         # ------ PostgreSQL ------
         if self.pool:
             try:
-                doc_ids = await self._get_user_doc_ids(user_id)
+                await self._get_user_doc_ids(user_id)
 
                 if not dry_run:
                     async with self.pool.acquire() as conn:

@@ -89,8 +89,9 @@ SELECT
     s.start_time,
     s.end_time,
     COUNT(d.id) AS memory_count,
-    COUNT(d.id) FILTER (WHERE d.data_type = 'document') AS document_count,
-    COUNT(d.id) FILTER (WHERE d.data_type = 'observation') AS observation_count
+    -- data_type is not a documents column; it lives in the metadata JSONB
+    COUNT(d.id) FILTER (WHERE d.metadata->>'data_type' = 'document') AS document_count,
+    COUNT(d.id) FILTER (WHERE d.metadata->>'data_type' = 'observation') AS observation_count
 FROM shared_memory.sessions s
 LEFT JOIN shared_memory.documents d ON d.session_id = s.id
 GROUP BY s.id, s.user_id, s.agent_id, s.start_time, s.end_time;

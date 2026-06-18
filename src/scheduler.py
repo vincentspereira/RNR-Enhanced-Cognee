@@ -181,7 +181,6 @@ class TaskScheduler:
         Implements dry-run mode and approval workflow.
         """
         logger.info("Running scheduled deduplication...")
-        start_time = datetime.now(timezone.utc)
 
         try:
             dedup_config = self.config.get("auto_deduplication", {})
@@ -238,7 +237,6 @@ class TaskScheduler:
     async def _run_summarization(self):
         """Run scheduled summarization."""
         logger.info("Running scheduled summarization...")
-        start_time = datetime.now(timezone.utc)
 
         try:
             summary_config = self.config.get("auto_summarization", {})
@@ -279,12 +277,10 @@ class TaskScheduler:
 
         try:
             # Get memory statistics
-            stats_result = await self.mcp_client.call_tool(
+            await self.mcp_client.call_tool(
                 "get_stats",
                 {}
             )
-
-            stats_data = json.loads(stats_result) if isinstance(stats_result, str) else stats_result
 
             # Check each category size
             # This would require getting category-specific memory counts
@@ -463,9 +459,6 @@ class DryRunManager:
         if operation_name not in self.pending_approvals:
             logger.error(f"Pending operation not found: {operation_name}")
             return False
-
-        pending = self.pending_approvals[operation_name]
-        kwargs = pending.get("kwargs", {})
 
         # Execute with dry_run=False
         # This would call the actual operation

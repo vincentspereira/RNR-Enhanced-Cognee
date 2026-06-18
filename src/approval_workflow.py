@@ -361,7 +361,7 @@ async def main():
         }
     )
 
-    request2 = manager.create_request(
+    manager.create_request(
         "summarize_old_memories",
         {
             "memories_to_summarize": 20,

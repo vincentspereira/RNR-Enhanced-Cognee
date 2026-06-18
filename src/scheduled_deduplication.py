@@ -258,7 +258,6 @@ class ScheduledDeduplication:
             Number of memories merged
         """
         merged_count = 0
-        merge_strategy = self.config.get("merge_strategy", "keep_newest")
 
         try:
             async with self.postgres_pool.acquire() as conn:

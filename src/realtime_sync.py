@@ -158,7 +158,6 @@ class RealTimeMemorySync:
             event_type = event["event_type"]
             memory_id = event["memory_id"]
             agent_id = event["agent_id"]
-            data = event.get("data", {})
 
             # Notify all subscribed agents
             for subscribed_agent_id, callback in self.subscriptions.items():
@@ -378,7 +377,7 @@ class RealTimeMemorySync:
             async with self.postgres_pool.acquire() as conn:
                 if resolution_strategy == "keep_newest":
                     # Keep the most recently updated version
-                    result = await conn.execute(f"""
+                    await conn.execute(f"""
                         UPDATE {_t_docs()}
                         SET
                             metadata = jsonb_set(

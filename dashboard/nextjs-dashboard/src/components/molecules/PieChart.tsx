@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   Tooltip,
   Legend,
-  type TooltipProps,
 } from "recharts";
 import { exportChartAsPNG, exportChartAsPDF } from "@/lib/utils/chart-export";
 import { Download } from "lucide-react";
@@ -45,14 +44,14 @@ const DEFAULT_COLORS = [
 /**
  * Custom Tooltip component
  */
-const CustomTooltip = ({ active, payload }: TooltipProps<string, string>) => {
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name?: string; value?: unknown; color?: string; payload?: Record<string, unknown> }> }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 shadow-lg">
         <p className="text-slate-200 text-sm font-medium">{data.name}</p>
-        <p className="text-sm" style={{ color: data.payload.color }}>
-          {data.value} ({data.payload.percent.toFixed(1)}%)
+        <p className="text-sm" style={{ color: data.payload?.color as string }}>
+          {String(data.value)} ({((data.payload?.percent as number) || 0).toFixed(1)}%)
         </p>
       </div>
     );
@@ -63,21 +62,22 @@ const CustomTooltip = ({ active, payload }: TooltipProps<string, string>) => {
 /**
  * Custom Label component
  */
-const CustomLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-}: {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  percent: number;
+const CustomLabel = (props: {
+  cx?: number | string;
+  cy?: number | string;
+  midAngle?: number;
+  innerRadius?: number | string;
+  outerRadius?: number | string;
+  percent?: number;
 }) => {
+  // Recharts passes these as optional (number | string); coerce defensively
+  const cx = Number(props.cx ?? 0);
+  const cy = Number(props.cy ?? 0);
+  const midAngle = props.midAngle ?? 0;
+  const innerRadius = Number(props.innerRadius ?? 0);
+  const outerRadius = Number(props.outerRadius ?? 0);
+  const percent = props.percent ?? 0;
+
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);

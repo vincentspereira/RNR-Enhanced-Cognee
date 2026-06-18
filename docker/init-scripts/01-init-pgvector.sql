@@ -157,6 +157,38 @@ CREATE INDEX IF NOT EXISTS idx_relationships_memory_category
 CREATE INDEX IF NOT EXISTS idx_relationships_confidence
     ON shared_memory.relationships (confidence_score);
 
+-- Sessions (Claude Code / dashboard session tracking) ------------------------
+-- Mirrors migrations/create_sessions_table.sql so fresh installs do not
+-- depend on running migrations manually.
+
+CREATE TABLE IF NOT EXISTS shared_memory.sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR(255) NOT NULL DEFAULT 'default',
+    agent_id VARCHAR(255) NOT NULL DEFAULT 'claude-code',
+    start_time TIMESTAMP NOT NULL DEFAULT NOW(),
+    end_time TIMESTAMP,
+    summary TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id
+    ON shared_memory.sessions (user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_agent_id
+    ON shared_memory.sessions (agent_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_start_time
+    ON shared_memory.sessions (start_time DESC);
+CREATE INDEX IF NOT EXISTS idx_sessions_active
+    ON shared_memory.sessions (user_id, agent_id) WHERE end_time IS NULL;
+
+ALTER TABLE shared_memory.documents
+    ADD COLUMN IF NOT EXISTS session_id UUID
+        REFERENCES shared_memory.sessions(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_documents_session_id
+    ON shared_memory.documents (session_id) WHERE session_id IS NOT NULL;
+
 -- Performance + memory usage telemetry --------------------------------------
 
 CREATE TABLE IF NOT EXISTS shared_memory.performance_metrics (

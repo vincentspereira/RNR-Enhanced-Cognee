@@ -79,7 +79,7 @@ class MultiLanguageSearch:
                 import json
                 try:
                     metadata = json.loads(metadata)
-                except:
+                except Exception:
                     metadata = {}
 
             memory_lang = metadata.get('language', self.default_language)
@@ -111,7 +111,7 @@ class MultiLanguageSearch:
                 import json
                 try:
                     metadata = json.loads(metadata)
-                except:
+                except Exception:
                     metadata = {}
 
             lang = metadata.get('language', self.default_language)
@@ -151,7 +151,7 @@ class MultiLanguageSearch:
                 import json
                 try:
                     metadata = json.loads(metadata)
-                except:
+                except Exception:
                     metadata = {}
 
             memory_lang = metadata.get('language', self.default_language)
@@ -201,7 +201,7 @@ class MultiLanguageSearch:
                 import json
                 try:
                     metadata = json.loads(metadata)
-                except:
+                except Exception:
                     metadata = {}
 
             # Language facet

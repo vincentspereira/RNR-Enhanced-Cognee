@@ -1,3 +1,7 @@
+"use client";
+
+import { SearchInterface } from "@/components/organisms/SearchInterface";
+
 export default function SearchPage() {
   return (
     <div className="space-y-6">
@@ -7,9 +11,7 @@ export default function SearchPage() {
           Search your memories using semantic and keyword search
         </p>
       </div>
-      <div className="text-center py-12 text-muted-foreground">
-        Search interface coming soon...
-      </div>
+      <SearchInterface />
     </div>
   );
 }

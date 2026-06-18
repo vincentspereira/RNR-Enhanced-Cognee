@@ -98,7 +98,7 @@ class TransactionManager:
                 # Remove from active transactions
                 if transaction_id in self.active_transactions:
                     del self.active_transactions[transaction_id]
-            except:
+            except Exception:
                 pass
 
 

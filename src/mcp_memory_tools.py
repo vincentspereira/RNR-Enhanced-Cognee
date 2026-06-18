@@ -109,7 +109,7 @@ async def add_memory(
         if metadata:
             try:
                 metadata_dict = json.loads(metadata)
-            except:
+            except Exception:
                 metadata_dict = {"raw_metadata": metadata}
 
         # Generate memory ID
@@ -165,7 +165,7 @@ async def add_memory(
         if cross_agent_sharing and realtime_sync:
             try:
                 # Check if this memory is shared
-                access_check = await cross_agent_sharing.can_agent_access_memory(
+                await cross_agent_sharing.can_agent_access_memory(
                     memory_id=memory_id,
                     agent_id=agent_id
                 )
@@ -296,8 +296,7 @@ async def search_memories(
         else:
             rows = await _do_search()
 
-        # Backwards-compat: existing code below this block expects `conn`
-        # to be in scope but only reads from `rows`. We open a no-op
+        # Backwards-compat: existing code below this block expects a no-op
         # async context to preserve the original shape without
         # actually opening a connection.
         from contextlib import asynccontextmanager
@@ -306,7 +305,7 @@ async def search_memories(
         async def _noop_conn():
             yield None
 
-        async with _noop_conn() as conn:
+        async with _noop_conn() as _:
 
             # Calculate search duration
             duration_ms = (time.time() - start_time) * 1000
@@ -466,7 +465,7 @@ async def delete_memory(
         async def _noop_conn():
             yield None
 
-        async with _noop_conn() as conn:
+        async with _noop_conn() as _:
             if not existing:
                 result["error"] = f"Memory not found: {memory_id}"
                 return result
@@ -578,7 +577,7 @@ async def list_agents(
         async def _noop_conn():
             yield None
 
-        async with _noop_conn() as conn:
+        async with _noop_conn() as _:
 
             # AUTO-TRIGGER: Log performance metrics
             if performance_analytics:

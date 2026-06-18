@@ -17,7 +17,9 @@ export default function ActivityPage() {
     queryFn: () =>
       getMemories({
         limit: 10000, // Get all memories for the heatmap
-        ...filters,
+        agent_id: filters.agent_id?.[0] || undefined,
+        memory_type: filters.memory_type?.[0] || undefined,
+        memory_concept: filters.memory_concept?.[0] || undefined,
       }),
   });
 

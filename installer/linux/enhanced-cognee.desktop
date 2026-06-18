@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Enhanced Cognee
+Comment=Your personal AI memory system
+Exec=EnhancedCogneeLauncher
+Icon=enhanced-cognee
+Terminal=false
+Categories=Utility;Development;
+Keywords=AI;memory;knowledge;cognee;

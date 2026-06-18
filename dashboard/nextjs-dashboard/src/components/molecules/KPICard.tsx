@@ -31,7 +31,7 @@ export function KPICard({
   sparkline,
   className = "",
 }: KPICardProps) {
-  const trendIcon = trend && trend.value > 0 ? TrendingUp : trend && trend.value < 0 ? TrendingDown : Minus;
+  const TrendIcon = trend && trend.value > 0 ? TrendingUp : trend && trend.value < 0 ? TrendingDown : Minus;
   const trendColor = trend && trend.value > 0 ? "text-emerald-400" : trend && trend.value < 0 ? "text-red-400" : "text-slate-400";
 
   return (
@@ -53,7 +53,7 @@ export function KPICard({
       {/* Trend */}
       {trend && (
         <div className="flex items-center gap-1 text-sm">
-          {trendIcon && <trendIcon className={`w-4 h-4 ${trendColor}`} />}
+          <TrendIcon className={`w-4 h-4 ${trendColor}`} />
           <span className={trendColor}>
             {trend.value > 0 ? "+" : ""}
             {trend.value}%

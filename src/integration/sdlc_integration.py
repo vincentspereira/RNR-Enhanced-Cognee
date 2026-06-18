@@ -148,8 +148,6 @@ class SDLCIntegrationManager:
                 logger.error(f"No enhanced agent mapping found for {agent_id}")
                 return None
 
-            category = enhanced_agent_id.split("_")[0].lower()
-
             # Category-based wrapper lookup - categories are dynamic
             # Legacy ATS/OMA/SMC wrappers are archived; return None (no wrapper available)
             return None
@@ -402,7 +400,7 @@ async def example_sdlc_integration():
     })
 
     # Store memory for integrated agent
-    memory_id = await sdlc_integration.store_agent_memory(
+    await sdlc_integration.store_agent_memory(
         agent_id="frontend-developer",
         content="Implemented responsive design for trading dashboard",
         memory_type="episodic",
@@ -410,13 +408,13 @@ async def example_sdlc_integration():
     )
 
     # Search agent memory
-    results = await sdlc_integration.search_agent_memory(
+    await sdlc_integration.search_agent_memory(
         agent_id="frontend-developer",
         query="responsive design"
     )
 
     # Coordinate task across agents
-    task_result = await sdlc_integration.coordinate_task({
+    await sdlc_integration.coordinate_task({
         "title": "Implement new trading feature",
         "description": "Add real-time price updates to dashboard",
         "priority": "high"

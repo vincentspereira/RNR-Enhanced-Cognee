@@ -28,11 +28,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Enhanced Cognee Team" }],
   creator: "Enhanced Cognee",
   publisher: "Enhanced Cognee",
-  metadataBase: new URL("http://localhost:9050"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9050"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "http://localhost:9050",
+    url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9050",
     title: "Enhanced Cognee Dashboard",
     description:
       "Enterprise-grade AI memory management system with real-time updates, advanced search, and powerful analytics.",

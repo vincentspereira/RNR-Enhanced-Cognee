@@ -281,7 +281,6 @@ class TokenCounter:
         # Count tokens for each message
         for message in messages:
             content = message.get("content", "")
-            role = message.get("role", "")
 
             # Count content tokens
             if provider == LLMProvider.ANTHROPIC:
