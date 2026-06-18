@@ -41,6 +41,9 @@ class TestTelemetry(unittest.TestCase):
         if "TELEMETRY_DISABLED" in os.environ:
             del os.environ["TELEMETRY_DISABLED"]
 
+        # Telemetry is OPT-IN in Enhanced Cognee; opt in for this test only.
+        os.environ["COGNEE_TELEMETRY_ENABLED"] = "1"
+
         # Make sure ENV is not test or dev
         original_env = os.environ.get("ENV")
         os.environ["ENV"] = "prod"  # Set to dev to ensure telemetry is sent
@@ -83,6 +86,9 @@ class TestTelemetry(unittest.TestCase):
             os.environ["ENV"] = original_env
         else:
             del os.environ["ENV"]
+
+        # Remove the opt-in so it cannot leak into later telemetry tests
+        os.environ.pop("COGNEE_TELEMETRY_ENABLED", None)
 
     @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.post")

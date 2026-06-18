@@ -52,6 +52,7 @@ def test_send_telemetry_includes_api_key_tracking_id(monkeypatch):
 
     monkeypatch.setenv("ENV", "prod")
     monkeypatch.delenv("TELEMETRY_DISABLED", raising=False)
+    monkeypatch.setenv("COGNEE_TELEMETRY_ENABLED", "1")  # telemetry is OPT-IN
     monkeypatch.setenv("LLM_API_KEY", "provider-prefix-secret-12345")
     monkeypatch.setattr(utils, "get_anonymous_id", lambda: "anonymous-test-id")
     monkeypatch.setattr(utils, "get_persistent_id", lambda: "persistent-test-id")

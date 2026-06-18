@@ -240,8 +240,14 @@ Use the full rebase strategy (as used in Phase 1 for v0.5.1 -> v1.0.9):
 
 1. Fetch upstream tag: `git fetch upstream vX.0.0`
 2. Identify Enhanced-specific files via `.upstream-sync/enhanced-patches/`
+   (see `enhanced-patches/README.md` for the manifest, including the
+   privacy-first telemetry opt-in in `cognee/shared/utils.py`).
 3. Check out cognee/ from upstream: `git checkout upstream/vX.0.0 -- cognee/`
 4. Re-apply Enhanced patches from the patches directory
+   - CRITICAL: re-apply the telemetry opt-in
+     (`enhanced-patches/telemetry_opt_in.diff`) so product telemetry stays
+     OPT-IN / air-gapped. Without it, upstream `send_telemetry` phones home to
+     https://test.prometh.ai by default on every add/cognify/search.
 5. Resolve conflicts manually
 6. Run full test suite
 7. Update `.upstream-sync/sync-metadata.json` with `"rebase_strategy": "Option A - full rebase onto vX.0.0"`

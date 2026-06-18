@@ -176,6 +176,11 @@ def _get_api_key_fingerprint() -> str:
 def send_telemetry(event_name: str, user_id: str | UUID, additional_properties: dict | None = None):
     """Send a product telemetry event.
 
+    Privacy-first default: product telemetry is OPT-IN. This function is a
+    no-op unless COGNEE_TELEMETRY_ENABLED is set to a truthy value, so
+    Enhanced Cognee never phones home by default (air-gapped /
+    privacy-compliant operation, e.g. the Legal & Social Work Assistant).
+
     Three identity layers are sent with every event:
 
     - **anonymous_id**: Original project-root ID (.anon_id). May change
@@ -191,6 +196,16 @@ def send_telemetry(event_name: str, user_id: str | UUID, additional_properties: 
     """
     if additional_properties is None:
         additional_properties = {}
+
+    # Enhanced Cognee privacy-first default: product telemetry is OPT-IN.
+    # No event ever leaves the machine unless COGNEE_TELEMETRY_ENABLED is set
+    # to a truthy value. This guarantees air-gapped / privacy-compliant
+    # operation (e.g. the Legal & Social Work Assistant integration) even when
+    # TELEMETRY_DISABLED or ENV are absent or misconfigured. The upstream
+    # TELEMETRY_DISABLED and ENV {test, dev} gates below are retained as
+    # defence-in-depth and for upstream compatibility.
+    if not os.getenv("COGNEE_TELEMETRY_ENABLED"):
+        return
     if os.getenv("TELEMETRY_DISABLED"):
         return
 
