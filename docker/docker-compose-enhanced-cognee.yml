@@ -273,7 +273,7 @@ services:
       LLM_API_KEY: ${LLM_API_KEY:?LLM_API_KEY must be set in .env}
       LLM_MODEL: ${LLM_MODEL:-glm-4.6}
       LLM_PROVIDER: ${LLM_PROVIDER:-zai}
-      LLM_ENDPOINT: ${LLM_ENDPOINT:-https://api.z.ai/v1}
+      LLM_ENDPOINT: ${LLM_ENDPOINT:-https://api.z.ai/api/coding/paas/v4}
 
       # Embedding Configuration (existing)
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-ollama}

@@ -44,9 +44,9 @@ if upstream reverts them.
   `search_api.py`, `search_methods.py`, `setup.py` - Enhanced provider/adapter
   customizations.
 
-## Known upstream-config bug (not yet fixed)
-`bin/install.py` and `docker/docker-compose-*.yml` ship
-`LLM_ENDPOINT=https://api.z.ai/v1` for the `zai` provider, which 404s. The
-correct Z.ai OpenAI-compatible base is `https://api.z.ai/api/paas/v4` (verified:
-valid key + model, returns real API responses). The live `.env` uses the correct
-endpoint.
+## Z.ai endpoint note (fixed 2026-06-18)
+The `zai` templates/installers (`bin/install.py`, `docker/docker-compose-*.yml`,
+`deploy/vps/README.md`) default to the Z.ai **Coding Plan** endpoint
+`https://api.z.ai/api/coding/paas/v4` (owner is on the coding plan; verified
+HTTP 200). Standard-plan users should switch to `https://api.z.ai/api/paas/v4`.
+The previous default `https://api.z.ai/v1` 404s and must not be used.

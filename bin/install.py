@@ -276,7 +276,8 @@ class EnhancedCogneeInstaller:
 LLM_API_KEY=your_zai_api_key_here
 LLM_MODEL=glm-4.6
 LLM_PROVIDER=zai
-LLM_ENDPOINT=https://api.z.ai/v1
+# Z.ai endpoint (coding plan). Standard plan: /api/paas/v4. Do NOT use /v1 (404s).
+LLM_ENDPOINT=https://api.z.ai/api/coding/paas/v4
 
 # Database Configuration (Auto-configured)
 POSTGRES_HOST=localhost

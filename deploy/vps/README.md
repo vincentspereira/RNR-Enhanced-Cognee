@@ -113,7 +113,7 @@ REDIS_PASSWORD=
 QDRANT_API_KEY=
 LLM_MODEL=glm-4.6
 LLM_PROVIDER=zai
-LLM_ENDPOINT=https://api.z.ai/v1
+LLM_ENDPOINT=https://api.z.ai/api/coding/paas/v4
 EOF
 
 chmod 600 /opt/enhanced-cognee/.env
