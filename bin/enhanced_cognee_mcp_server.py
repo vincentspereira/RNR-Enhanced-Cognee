@@ -7345,7 +7345,8 @@ async def disable_webhook(
 @mcp.tool()
 async def encrypt_memory(memory_id: str) -> str:
     """
-    Encrypt a memory's content using Fernet (AES-128-CBC + HMAC-SHA256).
+    Encrypt a memory's content using AES-256-GCM (authenticated encryption;
+    legacy Fernet/AES-128-CBC rows still decrypt transparently).
 
     TRIGGER TYPE: (M) Manual - Encryption is applied selectively by the user.
 
@@ -7407,14 +7408,16 @@ async def rotate_encryption_key(new_key: Optional[str] = None) -> str:
 
     TRIGGER TYPE: (M) Manual - Key rotation is a deliberate security operation.
 
-    Generates a new Fernet key (or uses the supplied one), decrypts each
-    currently-encrypted row with the old key, re-encrypts with the new key,
-    and updates the row.  The new key is printed in the response (first 8
-    chars only); persist it immediately.
+    Generates a new key (or uses the supplied one), decrypts each
+    currently-encrypted row with the old key (legacy Fernet or AES-256-GCM),
+    re-encrypts every row as AES-256-GCM under the new key, and updates the
+    row.  The new key is printed in the response (first 8 chars only);
+    persist it immediately.
 
     Parameters:
     -----------
-    - new_key : Optional base64-urlsafe 32-byte Fernet key.
+    - new_key : Optional base64-urlsafe 32-byte key (used as HKDF input for
+                AES-256-GCM and as the legacy Fernet key).
                 If omitted a new key is generated automatically.
 
     Returns:

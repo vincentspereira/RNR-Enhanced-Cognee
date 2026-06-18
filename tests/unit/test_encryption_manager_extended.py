@@ -207,7 +207,7 @@ class TestEncryptionManagerWithPool:
         if not em._enabled:
             pytest.skip("cryptography not installed")
         encrypted = em.encrypt("secret")
-        assert encrypted.startswith("enc:")
+        assert encrypted.startswith("enc2:")  # AES-256-GCM prefix (was "enc:" Fernet)
         decrypted = em.decrypt(encrypted)
         assert decrypted == "secret"
 
@@ -242,9 +242,9 @@ class TestEncryptionManagerWithPool:
         em = EncryptionManager()
         if not em._enabled:
             pytest.skip("cryptography not installed")
-        # Force _fernet.encrypt to raise
-        em._fernet = MagicMock()
-        em._fernet.encrypt.side_effect = RuntimeError("fernet boom")
+        # Force the AES-256-GCM cipher to raise (encrypt() now uses _aesgcm)
+        em._aesgcm = MagicMock()
+        em._aesgcm.encrypt.side_effect = RuntimeError("aesgcm boom")
         result = em.encrypt("something")
         assert result == "something"
 
@@ -259,6 +259,103 @@ class TestEncryptionManagerWithPool:
         ciphertext = "enc:invaliddatahere"
         result = em.decrypt(ciphertext)
         assert result == ciphertext
+
+    # ------------------------------------------------------------------
+    # AES-256-GCM (current default) + legacy Fernet backward compatibility
+    # ------------------------------------------------------------------
+
+    def test_aes256gcm_roundtrip(self):
+        from src.encryption_manager import EncryptionManager, _GCM_PREFIX
+        em = EncryptionManager()
+        if not em._enabled:
+            pytest.skip("cryptography not installed")
+        encrypted = em.encrypt("top secret content")
+        assert encrypted.startswith(_GCM_PREFIX)
+        assert em.decrypt(encrypted) == "top secret content"
+
+    def test_encrypt_produces_distinct_ciphertext(self):
+        """Fresh nonce per call -> same plaintext, different ciphertext."""
+        from src.encryption_manager import EncryptionManager
+        em = EncryptionManager()
+        if not em._enabled:
+            pytest.skip("cryptography not installed")
+        a = em.encrypt("same value")
+        b = em.encrypt("same value")
+        assert a != b
+        assert em.decrypt(a) == "same value"
+        assert em.decrypt(b) == "same value"
+
+    def test_decrypt_legacy_fernet_backward_compat(self):
+        """enc: rows written by the old Fernet code remain readable."""
+        from src.encryption_manager import EncryptionManager, _ENC_PREFIX
+        from cryptography.fernet import Fernet
+        key = Fernet.generate_key().decode()
+        em = EncryptionManager(master_key=key)
+        if not em._enabled:
+            pytest.skip("cryptography not installed")
+        legacy = _ENC_PREFIX + Fernet(key.encode()).encrypt(b"legacy data").decode("ascii")
+        assert em.decrypt(legacy) == "legacy data"
+
+    def test_decrypt_tampered_gcm_returns_ciphertext(self):
+        """AES-GCM authentication: a flipped byte fails and returns input."""
+        import base64 as _b64
+        from src.encryption_manager import EncryptionManager, _GCM_PREFIX
+        em = EncryptionManager()
+        if not em._enabled:
+            pytest.skip("cryptography not installed")
+        encrypted = em.encrypt("integrity check")
+        raw = bytearray(_b64.urlsafe_b64decode(encrypted[len(_GCM_PREFIX):]))
+        raw[-1] ^= 0xFF  # flip a byte in the ciphertext/tag
+        tampered = _GCM_PREFIX + _b64.urlsafe_b64encode(bytes(raw)).decode("ascii")
+        assert em.decrypt(tampered) == tampered
+
+    def test_aes_key_derivation_is_32_bytes_and_deterministic(self):
+        """HKDF derives a dedicated 256-bit key, stable for a given master key."""
+        from src.encryption_manager import _derive_aes_key
+        from cryptography.fernet import Fernet
+        k = Fernet.generate_key()
+        a = _derive_aes_key(k)
+        b = _derive_aes_key(k)
+        assert len(a) == 32
+        assert a == b
+        assert a != _derive_aes_key(Fernet.generate_key())
+
+    @pytest.mark.asyncio
+    async def test_rotate_converts_legacy_fernet_to_gcm(self):
+        """Rotation re-encrypts legacy enc: rows as enc2: (AES-256-GCM)."""
+        from src.encryption_manager import (
+            EncryptionManager,
+            _ENC_PREFIX,
+            _GCM_PREFIX,
+        )
+        from cryptography.fernet import Fernet
+
+        old_key = Fernet.generate_key()
+        legacy = _ENC_PREFIX + Fernet(old_key).encrypt(b"legacy row").decode("ascii")
+        row = {"id": "r-1", "content": legacy}
+
+        conn = AsyncMock()
+        conn.fetch = AsyncMock(return_value=[row])
+
+        written = {}
+
+        async def _capture_update(sql, *args):
+            if args:
+                written["content"] = args[0]
+            return None
+
+        conn.execute = AsyncMock(side_effect=_capture_update)
+
+        pool = _make_pool(conn)
+        em = EncryptionManager(postgres_pool=pool, master_key=old_key.decode())
+        if not em._enabled:
+            pytest.skip("cryptography not installed")
+
+        result = await em.rotate_encryption_key(new_key=Fernet.generate_key().decode())
+        assert result.get("rotated") == 1
+        assert written["content"].startswith(_GCM_PREFIX)
+        # And it round-trips back to the original plaintext under the new key.
+        assert em.decrypt(written["content"]) == "legacy row"
 
     @pytest.mark.asyncio
     async def test_encrypt_memory_no_pool(self):

@@ -1,9 +1,20 @@
 """
 Encryption Manager - Phase 14.3
 =================================
-Provides transparent Fernet encryption/decryption for memory content stored
+Provides transparent at-rest encryption/decryption for memory content stored
 in PostgreSQL.  Each memory can be independently encrypted with a per-tenant
 or global key.  Key rotation is supported by re-encrypting all rows.
+
+CRYPTOGRAPHY (Enhanced Cognee):
+  - New data is encrypted with **AES-256-GCM** (authenticated encryption,
+    256-bit key, fresh 96-bit nonce per message).  Ciphertext is stored with
+    the "enc2:" prefix.
+  - Legacy data encrypted with Fernet (AES-128-CBC + HMAC-SHA256, "enc:"
+    prefix) is still DECRYPTED transparently for backward compatibility, so
+    existing rows remain readable after the upgrade with no migration step.
+  - Key rotation re-encrypts every row to AES-256-GCM under the new key.
+  - The AES-256 key is derived from the supplied master key via HKDF-SHA256,
+    so the existing master-key configuration is reused unchanged.
 
 Dependencies: cryptography (pip install cryptography)
 Falls back gracefully if cryptography is not installed (plain-text mode).
@@ -13,7 +24,9 @@ ASCII-only output. No Unicode symbols.
 
 from __future__ import annotations
 
+import base64
 import logging
+import os
 from typing import Any, Dict, Optional
 
 
@@ -32,6 +45,9 @@ logger = logging.getLogger(__name__)
 
 try:
     from cryptography.fernet import Fernet
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
     _CRYPTO_AVAILABLE = True
 except ImportError:
@@ -42,13 +58,41 @@ except ImportError:
         "Install with: pip install cryptography"
     )
 
-# Prefix used to mark ciphertext so we can detect encrypted vs plain-text rows.
-_ENC_PREFIX = "enc:"
+# Prefixes used to mark ciphertext so we can detect encrypted vs plain-text
+# rows AND route decryption to the correct algorithm.
+_ENC_PREFIX = "enc:"   # legacy Fernet (AES-128-CBC + HMAC-SHA256)
+_GCM_PREFIX = "enc2:"  # AES-256-GCM (current default)
+
+_GCM_NONCE_LEN = 12  # 96-bit nonce, the AEAD standard for GCM
+_HKDF_INFO = b"enhanced-cognee.encryption.v2.aes-256-gcm"
+
+# Algorithm label reported by get_encryption_stats() and tooling.
+_ALGORITHM = "AES-256-GCM"
+
+
+def _derive_aes_key(master_key_bytes: bytes) -> bytes:
+    """Derive a 32-byte AES-256 key from the master key via HKDF-SHA256.
+
+    The master key (e.g. a 32-byte Fernet-format key) is used as input keying
+    material.  HKDF yields a dedicated, independent 256-bit AES key so the same
+    master key can also continue to drive legacy Fernet decryption without key
+    reuse across algorithms.
+    """
+    return HKDF(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=None,
+        info=_HKDF_INFO,
+    ).derive(master_key_bytes)
 
 
 class EncryptionManager:
     """
-    Transparent Fernet encryption/decryption for shared_memory.documents.
+    Transparent at-rest encryption/decryption for shared_memory.documents.
+
+    New content is encrypted with AES-256-GCM ("enc2:" prefix). Legacy Fernet
+    content ("enc:" prefix) is decrypted transparently for backward
+    compatibility, so no data migration is required to read existing rows.
 
     When cryptography is not installed the class operates in pass-through
     mode: encrypt() returns the plaintext unchanged and decrypt() returns
@@ -58,7 +102,7 @@ class EncryptionManager:
     Usage::
 
         mgr = EncryptionManager(postgres_pool=pool)
-        ciphertext = mgr.encrypt("secret data")
+        ciphertext = mgr.encrypt("secret data")     # -> "enc2:..."
         plaintext  = mgr.decrypt(ciphertext)
         await mgr.encrypt_memory("some-uuid")
         stats = await mgr.get_encryption_stats()
@@ -76,15 +120,18 @@ class EncryptionManager:
         Args:
             postgres_pool: An asyncpg connection pool.  May be None; async
                            methods will return error dicts in that case.
-            master_key:    Base64-urlsafe 32-byte Fernet key (as a str).
-                           When omitted a fresh key is generated automatically
-                           (if cryptography is installed).
+            master_key:    Base64-urlsafe 32-byte key (as a str). Reused as
+                           HKDF input keying material for AES-256-GCM and as
+                           the Fernet key for legacy decryption.  When omitted
+                           a fresh key is generated automatically (if
+                           cryptography is installed).
         """
         self.pool = postgres_pool
         self._enabled: bool = _CRYPTO_AVAILABLE
 
         if not self._enabled:
             self._fernet: Any = None
+            self._aesgcm: Any = None
             self._raw_key: Optional[bytes] = None
             return
 
@@ -93,12 +140,15 @@ class EncryptionManager:
         else:
             key_bytes = Fernet.generate_key()
             logger.info(
-                "INFO EncryptionManager: no master_key provided - generated a new Fernet key"
+                "INFO EncryptionManager: no master_key provided - generated a new key"
             )
 
         self._raw_key = key_bytes
+        # Fernet is retained solely to DECRYPT legacy "enc:" rows.
         self._fernet = Fernet(key_bytes)
-        logger.debug("EncryptionManager initialized with Fernet/AES-128-CBC")
+        # AES-256-GCM is the default for all NEW encryption.
+        self._aesgcm = AESGCM(_derive_aes_key(key_bytes))
+        logger.debug("EncryptionManager initialized with AES-256-GCM")
 
     # ------------------------------------------------------------------
     # Synchronous encrypt / decrypt
@@ -106,42 +156,60 @@ class EncryptionManager:
 
     def encrypt(self, plaintext: str) -> str:
         """
-        Encrypt a plaintext string.
+        Encrypt a plaintext string with AES-256-GCM.
 
         Returns the original string unchanged when encryption is disabled.
-        Encrypted output is prefixed with "enc:" so it can be detected later.
+        Encrypted output is prefixed with "enc2:" so it can be detected and
+        routed later.  A fresh 96-bit nonce is generated for every call, so
+        encrypting the same value twice yields different ciphertext.
         """
         if not self._enabled or not plaintext:
             return plaintext
 
         try:
-            token: bytes = self._fernet.encrypt(plaintext.encode("utf-8"))
-            return _ENC_PREFIX + token.decode("ascii")
+            nonce = os.urandom(_GCM_NONCE_LEN)
+            ciphertext = self._aesgcm.encrypt(nonce, plaintext.encode("utf-8"), None)
+            token = base64.urlsafe_b64encode(nonce + ciphertext).decode("ascii")
+            return _GCM_PREFIX + token
         except Exception as exc:
             logger.error("encrypt failed: %s", exc)
             return plaintext
 
     def decrypt(self, ciphertext: str) -> str:
         """
-        Decrypt a Fernet-encrypted string.
+        Decrypt an encrypted string, auto-routing by prefix.
 
-        Returns the original value unchanged when:
-        - encryption is disabled, or
-        - the value does not start with the "enc:" prefix (already plaintext).
+        - "enc2:" -> AES-256-GCM (current default).
+        - "enc:"  -> legacy Fernet (backward compatibility).
+        - anything else -> returned unchanged (already plaintext).
+
+        Returns the original value unchanged when encryption is disabled.
         """
         if not self._enabled or not ciphertext:
             return ciphertext
 
-        if not ciphertext.startswith(_ENC_PREFIX):
-            return ciphertext
+        if ciphertext.startswith(_GCM_PREFIX):
+            try:
+                raw = base64.urlsafe_b64decode(
+                    ciphertext[len(_GCM_PREFIX):].encode("ascii")
+                )
+                nonce, body = raw[:_GCM_NONCE_LEN], raw[_GCM_NONCE_LEN:]
+                plaintext = self._aesgcm.decrypt(nonce, body, None)
+                return plaintext.decode("utf-8")
+            except Exception as exc:
+                logger.error("decrypt failed: %s", exc)
+                return ciphertext
 
-        try:
-            token_str = ciphertext[len(_ENC_PREFIX):]
-            plaintext: bytes = self._fernet.decrypt(token_str.encode("ascii"))
-            return plaintext.decode("utf-8")
-        except Exception as exc:
-            logger.error("decrypt failed: %s", exc)
-            return ciphertext
+        if ciphertext.startswith(_ENC_PREFIX):
+            try:
+                token_str = ciphertext[len(_ENC_PREFIX):]
+                plaintext = self._fernet.decrypt(token_str.encode("ascii"))
+                return plaintext.decode("utf-8")
+            except Exception as exc:
+                logger.error("decrypt failed: %s", exc)
+                return ciphertext
+
+        return ciphertext
 
     # ------------------------------------------------------------------
     # Schema helpers
@@ -221,7 +289,7 @@ class EncryptionManager:
                 "total_memories": 0,
                 "encrypted_memories": 0,
                 "encryption_enabled": self._enabled,
-                "algorithm": "Fernet/AES-128-CBC",
+                "algorithm": _ALGORITHM,
                 "error": "No database pool",
             }
 
@@ -241,7 +309,7 @@ class EncryptionManager:
                 "total_memories": int(row["total"]) if row else 0,
                 "encrypted_memories": int(row["encrypted"]) if row else 0,
                 "encryption_enabled": self._enabled,
-                "algorithm": "Fernet/AES-128-CBC",
+                "algorithm": _ALGORITHM,
             }
         except Exception as exc:
             logger.error("get_encryption_stats failed: %s", exc)
@@ -249,7 +317,7 @@ class EncryptionManager:
                 "total_memories": 0,
                 "encrypted_memories": 0,
                 "encryption_enabled": self._enabled,
-                "algorithm": "Fernet/AES-128-CBC",
+                "algorithm": _ALGORITHM,
                 "error": str(exc),
             }
 
@@ -259,13 +327,16 @@ class EncryptionManager:
         """
         Rotate the master encryption key.
 
-        Fetches all encrypted rows, decrypts them with the current key,
-        re-encrypts with the new key, and persists.  Atomicity is row-level
-        (not a single transaction) to avoid long locks on large tables.
+        Fetches all encrypted rows, decrypts them with the current key
+        (auto-routing enc:/enc2:), re-encrypts with the new key as
+        AES-256-GCM (enc2:), and persists.  Atomicity is row-level (not a
+        single transaction) to avoid long locks on large tables.  After a
+        successful rotation every row is AES-256-GCM.
 
         Args:
-            new_key: Base64-urlsafe 32-byte Fernet key string.  When omitted
-                     a fresh key is generated automatically.
+            new_key: Base64-urlsafe 32-byte key string (reused as HKDF input
+                     for AES-256-GCM and as the Fernet key for any legacy
+                     rows).  When omitted a fresh key is generated.
 
         Returns:
             Dict with "rotated" count and "new_key_preview" (first 8 chars
@@ -277,13 +348,14 @@ class EncryptionManager:
         if not self.pool:
             return {"error": "No database pool"}
 
-        # Prepare new Fernet instance
+        # Prepare the new key material + derived AES-256-GCM cipher.
         if new_key:
             new_key_bytes = new_key.encode() if isinstance(new_key, str) else new_key
         else:
             new_key_bytes = Fernet.generate_key()
 
-        new_fernet = Fernet(new_key_bytes)
+        new_fernet = Fernet(new_key_bytes)                    # for legacy decrypt
+        new_aesgcm = AESGCM(_derive_aes_key(new_key_bytes))   # new default
         new_key_preview = new_key_bytes.decode("ascii")[:8] + "..."
 
         rotated = 0
@@ -301,10 +373,17 @@ class EncryptionManager:
 
             for row in rows:
                 try:
+                    # Decrypt with the CURRENT key (auto-routes enc:/enc2:).
                     plaintext = self.decrypt(row["content"])
-                    # Re-encrypt with the new key
-                    new_token = new_fernet.encrypt(plaintext.encode("utf-8"))
-                    new_ciphertext = _ENC_PREFIX + new_token.decode("ascii")
+                    # Re-encrypt with the NEW key as AES-256-GCM (enc2:).
+                    nonce = os.urandom(_GCM_NONCE_LEN)
+                    ciphertext = new_aesgcm.encrypt(
+                        nonce, plaintext.encode("utf-8"), None
+                    )
+                    new_ciphertext = (
+                        _GCM_PREFIX
+                        + base64.urlsafe_b64encode(nonce + ciphertext).decode("ascii")
+                    )
 
                     async with self.pool.acquire() as conn:
                         await conn.execute(
@@ -324,9 +403,10 @@ class EncryptionManager:
                         row_exc,
                     )
 
-            # Switch to the new key after all rows are updated
+            # Switch to the new key after all rows are updated.
             self._raw_key = new_key_bytes
             self._fernet = new_fernet
+            self._aesgcm = new_aesgcm
             logger.info(
                 "INFO rotate_encryption_key: rotated %d memories to new key (%s)",
                 rotated,
@@ -354,7 +434,8 @@ def init_encryption_manager(
 
     Args:
         postgres_pool: asyncpg connection pool.
-        master_key:    Optional base64-urlsafe 32-byte Fernet key string.
+        master_key:    Optional base64-urlsafe 32-byte key string (reused as
+                       HKDF input for AES-256-GCM and as the legacy Fernet key).
 
     Returns:
         The newly created EncryptionManager instance.

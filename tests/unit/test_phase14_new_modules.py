@@ -41,7 +41,7 @@ class TestEncryptionManager:
             pytest.skip("cryptography not installed")
         plaintext = "Hello, Enhanced Cognee!"
         encrypted = em.encrypt(plaintext)
-        assert encrypted.startswith("enc:"), f"Expected enc: prefix, got {encrypted[:10]!r}"
+        assert encrypted.startswith("enc2:"), f"Expected enc2: prefix, got {encrypted[:10]!r}"
         decrypted = em.decrypt(encrypted)
         assert decrypted == plaintext
 
