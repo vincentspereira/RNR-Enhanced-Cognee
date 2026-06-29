@@ -1,4 +1,4 @@
-# Enhanced Cognee Database Stack
+# RNR Enhanced Cognee Database Stack
 # PostgreSQL 18 + pgvector, Qdrant, Valkey, ArcadeDB
 #
 # ArcadeDB replaces Neo4j (Phase 2: default graph DB swapped to ArcadeDB
@@ -31,7 +31,7 @@ volumes:
     driver: local
 
 services:
-  # PostgreSQL 18 + pgvector - Enhanced Cognee relational + vector extension
+  # PostgreSQL 18 + pgvector - RNR Enhanced Cognee relational + vector extension
   cognee-mcp-postgres:
     image: pgvector/pgvector:pg18
     container_name: cognee-mcp-postgres
@@ -48,7 +48,7 @@ services:
     volumes:
       - enhanced_cognee_mcp_postgres_data:/var/lib/postgresql
     ports:
-      - "25432:5432"  # PostgreSQL (Enhanced Cognee)
+      - "25432:5432"  # PostgreSQL (RNR Enhanced Cognee)
     networks:
       - enhanced-cognee
     deploy:
@@ -64,7 +64,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # Qdrant - Enhanced Cognee vector database
+  # Qdrant - RNR Enhanced Cognee vector database
   cognee-mcp-qdrant:
     image: qdrant/qdrant:v1.12.0
     container_name: cognee-mcp-qdrant
@@ -79,7 +79,7 @@ services:
       # API-key authentication. Qdrant enforces this key on every request once
       # set (read at startup -> requires a container recreate). Provide the
       # value via QDRANT_API_KEY (shell env, --env-file, or config/docker/.env);
-      # the SAME key must be in the Enhanced Cognee app / MCP server environment
+      # the SAME key must be in the RNR Enhanced Cognee app / MCP server environment
       # or all vector operations will fail with 401/403.
       QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:?QDRANT_API_KEY must be set to enable Qdrant auth}
       QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: 32
@@ -88,8 +88,8 @@ services:
     volumes:
       - enhanced_cognee_mcp_qdrant_data:/qdrant/storage
     ports:
-      - "26333:6333"  # HTTP API (Enhanced Cognee)
-      - "26334:6334"  # gRPC API (Enhanced Cognee)
+      - "26333:6333"  # HTTP API (RNR Enhanced Cognee)
+      - "26334:6334"  # gRPC API (RNR Enhanced Cognee)
     networks:
       - enhanced-cognee
     deploy:
@@ -106,7 +106,7 @@ services:
       retries: 3
       start_period: 30s
 
-  # Valkey - Enhanced Cognee cache layer (Apache-2.0, wire-compatible with Redis)
+  # Valkey - RNR Enhanced Cognee cache layer (Apache-2.0, wire-compatible with Redis)
   cognee-mcp-valkey:
     image: valkey/valkey:8-alpine
     container_name: cognee-mcp-valkey
@@ -118,7 +118,7 @@ services:
     volumes:
       - enhanced_cognee_mcp_valkey_data:/data
     ports:
-      - "26379:6379"  # Valkey (Enhanced Cognee; speaks Redis protocol)
+      - "26379:6379"  # Valkey (RNR Enhanced Cognee; speaks Redis protocol)
     networks:
       - enhanced-cognee
     deploy:
@@ -134,9 +134,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # ArcadeDB - Enhanced Cognee graph database (Apache-2.0; default since Phase 2)
+  # ArcadeDB - RNR Enhanced Cognee graph database (Apache-2.0; default since Phase 2)
   #
-  # The Enhanced Cognee adapter at src/db_adapters/graph_arcadedb.py supports
+  # The RNR Enhanced Cognee adapter at src/db_adapters/graph_arcadedb.py supports
   # both transports:
   #   - ARCADEDB_TRANSPORT=http (recommended for this compose) routes through
   #     the stock /api/v1/command/{db} REST endpoint. Works out of the box

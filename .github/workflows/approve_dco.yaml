@@ -1,6 +1,6 @@
 name: community | DCO Check (manual only)
 
-# NOTE (Enhanced Cognee): The upstream DCO check hard-codes
+# NOTE (RNR Enhanced Cognee): The upstream DCO check hard-codes
 # `YOUR_ORGANIZATION_NAME` and requires Topoteretes' DCO text. Not applicable
 # to this single-maintainer fork. Converted to manual-only.
 on:

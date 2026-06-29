@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Session Manager
+RNR Enhanced Cognee - Session Manager
 
 Manages Claude Code sessions for multi-prompt context continuity.
 Provides session lifecycle management and context injection.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

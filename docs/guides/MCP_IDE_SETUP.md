@@ -1,12 +1,12 @@
-# Enhanced Cognee MCP - Multi-IDE Setup Guide
+# RNR Enhanced Cognee MCP - Multi-IDE Setup Guide
 
-Enhanced Cognee MCP server works with any **MCP-compatible** AI IDE or editor. This guide shows you how to set it up with popular AI IDEs.
+RNR Enhanced Cognee MCP server works with any **MCP-compatible** AI IDE or editor. This guide shows you how to set it up with popular AI IDEs.
 
 ---
 
 ## 🎯 What is MCP?
 
-The **Model Context Protocol (MCP)** is an open standard that allows AI assistants to communicate with external tools and data sources. Enhanced Cognee provides a full MCP server implementation.
+The **Model Context Protocol (MCP)** is an open standard that allows AI assistants to communicate with external tools and data sources. RNR Enhanced Cognee provides a full MCP server implementation.
 
 ---
 
@@ -30,7 +30,7 @@ The **Model Context Protocol (MCP)** is an open standard that allows AI assistan
 
 ## 📋 Prerequisites
 
-1. **Enhanced Cognee MCP Server** installed
+1. **RNR Enhanced Cognee MCP Server** installed
 2. **Enhanced databases running** (PostgreSQL, Qdrant, Neo4j, Redis)
 3. **Python 3.10+** with required packages
 4. **API keys** configured (if using LLM features)
@@ -46,7 +46,7 @@ The **Model Context Protocol (MCP)** is an open standard that allows AI assistan
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
         "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
@@ -77,7 +77,7 @@ The **Model Context Protocol (MCP)** is an open standard that allows AI assistan
 claude mcp list
 
 # Should show:
-# enhanced-cognee: python .../enhanced_cognee_mcp_server.py - ✅ Connected
+# RNR-Enhanced-Cognee: python .../enhanced_cognee_mcp_server.py - ✅ Connected
 ```
 
 ---
@@ -99,10 +99,10 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
   "experimental": {
     "model": "claude-3.5-sonnet",
     "mcpServers": {
-      "enhanced-cognee": {
+      "RNR-Enhanced-Cognee": {
         "command": "python",
         "args": [
-          "C:\\Users\\YourUsername\\Projects\\AI Agents\\enhanced-cognee\\enhanced_cognee_mcp_server.py"
+          "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
         ],
         "env": {
           "ENHANCED_COGNEE_MODE": "true",
@@ -130,7 +130,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 **Step 4: Verify**
 - Open Continue sidebar in VS Code
 - Type `/` to see available tools
-- You should see Enhanced Cognee tools listed
+- You should see RNR Enhanced Cognee tools listed
 
 ---
 
@@ -141,7 +141,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
         "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
@@ -169,7 +169,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 **Verify:**
 - Open Cursor settings
 - Go to MCP Servers section
-- Enhanced Cognee should appear as connected
+- RNR Enhanced Cognee should appear as connected
 
 ---
 
@@ -181,7 +181,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 {
   "mcp": {
     "servers": {
-      "enhanced-cognee": {
+      "RNR-Enhanced-Cognee": {
         "command": "python",
         "args": [
           "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
@@ -216,7 +216,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
         "/absolute/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
@@ -250,7 +250,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
         "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
@@ -303,10 +303,10 @@ Create/edit VS Code settings (`settings.json`):
 ```json
 {
   "kiloCode.mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "C:\\Users\\YourUsername\\Projects\\AI Agents\\enhanced-cognee\\enhanced_cognee_mcp_server.py"
+        "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -335,10 +335,10 @@ Create `.vscode/settings.json` in your project:
 ```json
 {
   "kiloCode.mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "${workspaceFolder}/../enhanced-cognee/enhanced_cognee_mcp_server.py"
+        "${workspaceFolder}/../RNR Enhanced Cognee/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -367,7 +367,7 @@ Create `.vscode/settings.json` in your project:
 **Step 4: Verify**
 - Open Kilo Code panel in VS Code
 - Look for MCP connection indicator
-- Should show "Enhanced Cognee" as connected
+- Should show "RNR Enhanced Cognee" as connected
 
 **Usage with Kilo Code:**
 ```
@@ -406,10 +406,10 @@ Create/edit VS Code settings (`settings.json`):
 ```json
 {
   "github.copilot.mcp.servers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "C:\\Users\\YourUsername\\Projects\\AI Agents\\enhanced-cognee\\enhanced_cognee_mcp_server.py"
+        "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -438,10 +438,10 @@ Create `.vscode/settings.json` in your project:
 ```json
 {
   "github.copilot.mcp.servers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "${workspaceFolder}/../enhanced-cognee/enhanced_cognee_mcp_server.py"
+        "${workspaceFolder}/../RNR Enhanced Cognee/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -469,33 +469,33 @@ Create `.vscode/settings.json` in your project:
 
 **Step 4: Verify**
 - Open GitHub Copilot Chat (Ctrl+I / Cmd+I)
-- Type `@enhanced-cognee` to see available tools
-- Should list all Enhanced Cognee MCP tools
+- Type `@RNR-Enhanced-Cognee` to see available tools
+- Should list all RNR Enhanced Cognee MCP tools
 
 **Usage with GitHub Copilot:**
 ```
 # In Copilot Chat interface
-User: @enhanced-cognee Add memory about my coding preferences
+User: @RNR-Enhanced-Cognee Add memory about my coding preferences
 Copilot: [Uses add_memory tool] Memory added!
 
-User: @enhanced-cognee Search for memories about testing
+User: @RNR-Enhanced-Cognee Search for memories about testing
 Copilot: [Uses search_memories tool] Found 2 memories about testing
 
-User: @enhanced-cognee Get performance metrics
+User: @RNR-Enhanced-Cognee Get performance metrics
 Copilot: [Uses get_performance_metrics tool]
 ```
 
 **Advanced GitHub Copilot Features:**
 
-**Combine Copilot with Enhanced Cognee:**
+**Combine Copilot with RNR Enhanced Cognee:**
 ```
-# Copilot can use Enhanced Cognee for context
-User: @enhanced-cognee Remember my API endpoint structure
-Copilot: [Stores in Enhanced Cognee]
+# Copilot can use RNR Enhanced Cognee for context
+User: @RNR-Enhanced-Cognee Remember my API endpoint structure
+Copilot: [Stores in RNR Enhanced Cognee]
 
 # Later in coding session
-User: @enhanced-cognee What do you know about my API structure?
-Copilot: [Retrieves from Enhanced Cognee]
+User: @RNR-Enhanced-Cognee What do you know about my API structure?
+Copilot: [Retrieves from RNR Enhanced Cognee]
 Based on your memories:
 - API base URL: https://api.example.com/v2
 - Authentication: Bearer token
@@ -521,7 +521,7 @@ Copilot: [Generates code matching your remembered structure]
 claude mcp list
 
 # Check specific server status
-claude mcp test enhanced-cognee
+claude mcp test RNR-Enhanced-Cognee
 ```
 
 ### Method 2: Manual Test
@@ -531,15 +531,15 @@ python enhanced_cognee_mcp_server.py
 
 # Should see:
 # =================================================================
-#          Enhanced Cognee MCP Server - Enhanced Stack
+#          RNR Enhanced Cognee MCP Server - Enhanced Stack
 # =================================================================
-# OK Initializing Enhanced Cognee stack...
+# OK Initializing RNR Enhanced Cognee stack...
 # OK PostgreSQL connected
 # OK Qdrant connected (X collections)
 # OK Neo4j connected
 # OK Redis connected
 #
-# OK Enhanced Cognee MCP Server starting...
+# OK RNR Enhanced Cognee MCP Server starting...
 #   Available tools:
 #     Standard Memory MCP Tools:
 #       - add_memory
@@ -611,7 +611,7 @@ UnicodeEncodeError: 'charmap' codec can't encode character
 ```
 
 **Solution:**
-The Enhanced Cognee MCP server uses ASCII-only output by design. If you still see errors:
+The RNR Enhanced Cognee MCP server uses ASCII-only output by design. If you still see errors:
 
 ```python
 # Set environment variable in IDE config:
@@ -622,7 +622,7 @@ The Enhanced Cognee MCP server uses ASCII-only output by design. If you still se
 
 ## 📊 Available MCP Tools
 
-Once connected, Enhanced Cognee provides **30+ tools** across multiple categories:
+Once connected, RNR Enhanced Cognee provides **30+ tools** across multiple categories:
 
 ### Standard Memory Tools
 - `add_memory` - Add memory entries
@@ -633,7 +633,7 @@ Once connected, Enhanced Cognee provides **30+ tools** across multiple categorie
 - `delete_memory` - Delete memory
 - `list_agents` - List all agents
 
-### Enhanced Cognee Tools
+### RNR Enhanced Cognee Tools
 - `cognify` - Transform data to knowledge graph
 - `search` - Search knowledge graph
 - `list_data` - List all documents
@@ -706,7 +706,7 @@ AI: [Uses add_memory tool] Got it! I'll remember your preference.
 You: What do you know about my preferences?
 AI: [Uses search_memories tool] Based on your memories:
     - You prefer TypeScript
-    - You use Enhanced Cognee for memory
+    - You use RNR Enhanced Cognee for memory
     - You like ASCII-only output
 ```
 
@@ -727,10 +727,10 @@ Kilo Code: [Uses search_memories tool] Based on your memories:
 ### GitHub Copilot
 ```
 # In Copilot Chat (Ctrl+I / Cmd+I)
-User: @enhanced-cognee Add memory about my API design
+User: @RNR-Enhanced-Cognee Add memory about my API design
 Copilot: [Uses add_memory tool] Added to memory!
 
-User: @enhanced-cognee Search for API-related memories
+User: @RNR-Enhanced-Cognee Search for API-related memories
 Copilot: [Uses search_memories tool] Found 5 memories:
     - RESTful API design principles
     - JWT authentication
@@ -749,13 +749,13 @@ Copilot: [Uses search_memories tool] Found 5 memories:
    docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
    ```
 3. **Test MCP connection** in your IDE
-4. **Start using Enhanced Cognee tools** through the AI assistant
+4. **Start using RNR Enhanced Cognee tools** through the AI assistant
 
 ---
 
 ## 📚 Additional Resources
 
-- **Enhanced Cognee README:** https://github.com/vincentspereira/Enhanced-Cognee
+- **RNR Enhanced Cognee README:** https://github.com/vincentspereira/RNR-Enhanced-Cognee
 - **MCP Specification:** https://modelcontextprotocol.io/
 - **Claude Code Docs:** https://docs.anthropic.com/
 - **Continue.dev Docs:** https://docs.continue.dev/
@@ -780,9 +780,9 @@ If you encounter issues:
 1. Check this guide's troubleshooting section
 2. Verify Enhanced databases are running
 3. Review IDE-specific MCP documentation
-4. Check GitHub Issues: https://github.com/vincentspereira/Enhanced-Cognee/issues
+4. Check GitHub Issues: https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues
 5. Open a new issue with details about your IDE and error
 
 ---
 
-**Happy coding with Enhanced Cognee across all your favorite AI IDEs! 🚀**
+**Happy coding with RNR Enhanced Cognee across all your favorite AI IDEs! 🚀**

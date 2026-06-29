@@ -2,7 +2,7 @@
 
 **Status:** SigNoz + Apache Superset stack since Phase 4 (2026-05-19).
 
-Enhanced Cognee ships an **optional** observability stack as a separate
+RNR Enhanced Cognee ships an **optional** observability stack as a separate
 compose file: `monitoring/docker-compose-monitoring.yml`. The main
 `docker/docker-compose-enhanced-cognee.yml` runs without it; bring
 monitoring up only when you want it.
@@ -36,7 +36,7 @@ storage. SigNoz wins on that axis.
 ## Quick start
 
 ```bash
-# 1. Bring up the main Enhanced Cognee stack first.
+# 1. Bring up the main RNR Enhanced Cognee stack first.
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 
 # 2. Bring up the observability stack.
@@ -162,7 +162,7 @@ private network.
 
 ## License posture
 
-After Phase 4 the entire default Enhanced Cognee deployment -- both
+After Phase 4 the entire default RNR Enhanced Cognee deployment -- both
 the main 4-DB stack AND the optional observability stack -- is 100%
 permissive (MIT + Apache-2.0). The previous Grafana / Loki / Tempo
 components were AGPLv3 and have been removed.

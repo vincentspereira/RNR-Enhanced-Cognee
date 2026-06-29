@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Auto-Configuration System
+RNR Enhanced Cognee - Auto-Configuration System
 
-Automatically configures Enhanced Cognee based on environment detection.
+Automatically configures RNR Enhanced Cognee based on environment detection.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class AutoConfiguration:
     """
-    Automatic configuration system for Enhanced Cognee.
+    Automatic configuration system for RNR Enhanced Cognee.
 
     Detects system capabilities and configures settings automatically.
     """
@@ -251,7 +251,7 @@ class AutoConfiguration:
     def _generate_env_content(self, config: Dict[str, Any]) -> str:
         """Generate .env file content."""
         lines = [
-            "# Enhanced Cognee Auto-Generated Configuration",
+            "# RNR Enhanced Cognee Auto-Generated Configuration",
             f"# Generated: {self._get_timestamp()}",
             "",
             "# Enhanced Mode",

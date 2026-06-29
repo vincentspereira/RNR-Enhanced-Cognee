@@ -58,7 +58,7 @@ UTC = timezone.utc
 
 class GDPRManager:
     """
-    Manage GDPR/CCPA data subject rights for Enhanced Cognee.
+    Manage GDPR/CCPA data subject rights for RNR Enhanced Cognee.
 
     Constructor parameters:
         postgres_pool   - asyncpg pool (primary data store)

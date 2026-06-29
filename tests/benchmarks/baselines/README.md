@@ -2,7 +2,7 @@
 
 This directory holds reference benchmark runs of
 `tests/benchmarks/run_provider_comparison.py` against the full
-Enhanced Cognee stack. CI compares new runs against these baselines
+RNR Enhanced Cognee stack. CI compares new runs against these baselines
 to detect performance regressions.
 
 ## What's here

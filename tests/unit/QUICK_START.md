@@ -122,7 +122,7 @@ def temp_resource(tmp_path):
 ### Import Errors
 ```
 Solution: Ensure you're running from the project root
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 ```
 
 ### Database Lock Errors

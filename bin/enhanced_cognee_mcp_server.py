@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee MCP Server
+RNR Enhanced Cognee MCP Server
 ===========================
 Version:  1.0.9-enhanced (Phase 4 hardened)
 Tools:    70 MCP tools across 9 functional areas
@@ -61,7 +61,7 @@ logger = logging.getLogger(__name__)
 from mcp.server import FastMCP
 
 # Create MCP server
-mcp = FastMCP("Enhanced Cognee")
+mcp = FastMCP("RNR Enhanced Cognee")
 
 # ---------------------------------------------------------------------------
 # Enterprise per-tool guard
@@ -403,7 +403,7 @@ async def init_enhanced_stack():
     """Initialize Enhanced database connections"""
     global postgres_pool, qdrant_client, neo4j_driver, redis_client, memory_manager
 
-    logger.info("Initializing Enhanced Cognee stack...")
+    logger.info("Initializing RNR Enhanced Cognee stack...")
 
     from src.db_factory import (
         get_cache_client,
@@ -748,7 +748,7 @@ async def cleanup_enhanced_stack():
 @mcp.tool()
 async def cognify(data: str) -> str:
     """
-    Transform data into knowledge graph using Enhanced Cognee
+    Transform data into knowledge graph using RNR Enhanced Cognee
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when processing data
 
@@ -772,7 +772,7 @@ async def cognify(data: str) -> str:
                     INSERT INTO shared_memory.documents (id, title, content, created_at)
                     VALUES ($1, $2, $3, $4)
                     ON CONFLICT (id) DO NOTHING
-                """, doc_id, "Enhanced Cognee Memory", data, datetime.now(UTC).replace(tzinfo=None))
+                """, doc_id, "RNR Enhanced Cognee Memory", data, datetime.now(UTC).replace(tzinfo=None))
 
                 logger.info(f"OK Added document: {doc_id}")
 
@@ -798,7 +798,7 @@ async def cognify(data: str) -> str:
                             memory_id=doc_id,
                             agent_id="system",
                             data=json.dumps({
-                                "title": "Enhanced Cognee Memory",
+                                "title": "RNR Enhanced Cognee Memory",
                                 "data_length": len(data)
                             })
                         )
@@ -817,7 +817,7 @@ async def cognify(data: str) -> str:
 @mcp.tool()
 async def search(query: str, limit: int = 10, search_type: Optional[str] = None) -> str:
     """
-    Search Enhanced Cognee knowledge.
+    Search RNR Enhanced Cognee knowledge.
 
     When search_type is omitted: searches the Enhanced PostgreSQL memory store (fast text search).
     When search_type is provided: routes to the cognee knowledge graph using that strategy.
@@ -886,7 +886,7 @@ async def search(query: str, limit: int = 10, search_type: Optional[str] = None)
 @mcp.tool()
 async def get_stats() -> str:
     """
-    Get Enhanced Cognee statistics
+    Get RNR Enhanced Cognee statistics
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs when checking system status
 
@@ -895,7 +895,7 @@ async def get_stats() -> str:
     - System status and statistics
     """
     try:
-        stats = {"status": "Enhanced Cognee MCP Server", "databases": {}, "statistics": {}}
+        stats = {"status": "RNR Enhanced Cognee MCP Server", "databases": {}, "statistics": {}}
 
         # PostgreSQL stats
         if postgres_pool:
@@ -947,7 +947,7 @@ async def get_stats() -> str:
 @mcp.tool()
 async def health() -> str:
     """
-    Health check for Enhanced Cognee server
+    Health check for RNR Enhanced Cognee server
 
     TRIGGER TYPE: (A) Auto - Automatically triggered by AI IDEs on startup to verify system status
 
@@ -999,7 +999,7 @@ async def health() -> str:
         except Exception as e:
             logger.warning(f"Failed to log health check performance: {e}")
 
-    return "Enhanced Cognee Health:\n" + "\n".join(checks)
+    return "RNR Enhanced Cognee Health:\n" + "\n".join(checks)
 
 
 @mcp.tool()
@@ -1815,7 +1815,7 @@ async def get_memory_age_stats() -> str:
     """
     Get statistics about memory age distribution (Memory Management Tool)
 
-    TRIGGER TYPE: (S) System - Automatically triggered by Enhanced Cognee for memory operations
+    TRIGGER TYPE: (S) System - Automatically triggered by RNR Enhanced Cognee for memory operations
 
     Returns:
     --------
@@ -3246,7 +3246,7 @@ async def create_backup(
     auto_verify: bool = True
 ) -> str:
     """
-    Create a backup of Enhanced Cognee databases (Backup Tool)
+    Create a backup of RNR Enhanced Cognee databases (Backup Tool)
 
     TRIGGER TYPE: (A) Auto - Can be automatically triggered by AI IDEs
 
@@ -5084,7 +5084,7 @@ async def cognify_status(dataset_name: Optional[str] = None) -> str:
     """
     Check the status of background cognify / remember / improve tasks.
 
-    TRIGGER TYPE: (S) System - Polled by Enhanced Cognee to monitor background task progress.
+    TRIGGER TYPE: (S) System - Polled by RNR Enhanced Cognee to monitor background task progress.
     No user action required; also callable by AI IDE when user asks about background jobs.
 
     Parameters:
@@ -5429,7 +5429,7 @@ async def extract_graph_v2(
 @mcp.tool()
 async def list_loaders() -> str:
     """
-    List all available file format loaders supported by the Enhanced Cognee stack.
+    List all available file format loaders supported by the RNR Enhanced Cognee stack.
 
     Shows which loaders are currently installed and active. Optional loaders
     (unstructured, docling, beautifulsoup, advanced PDF) are only shown if their
@@ -6298,7 +6298,7 @@ async def verify_memory(
         else:
             return (
                 f"WARN Memory {memory_id} checksum MISMATCH. "
-                f"Content may have been modified outside of Enhanced Cognee. "
+                f"Content may have been modified outside of RNR Enhanced Cognee. "
                 f"Expected: {result.get('stored_checksum', '?')[:16]}... "
                 f"Got: {result.get('actual_checksum', '?')[:16]}..."
             )
@@ -6647,7 +6647,7 @@ async def get_tier_stats(
 @mcp.tool()
 async def compact_knowledge_graph() -> str:
     """
-    Run a full compaction pass on the Enhanced Cognee Neo4j knowledge graph.
+    Run a full compaction pass on the RNR Enhanced Cognee Neo4j knowledge graph.
 
     TRIGGER TYPE: (M) Manual - Graph compaction modifies the knowledge graph
     by deleting orphan nodes and stale relationships; must be explicitly
@@ -6689,7 +6689,7 @@ async def compact_knowledge_graph() -> str:
 @mcp.tool()
 async def get_graph_stats() -> str:
     """
-    Return basic statistics about the Enhanced Cognee Neo4j knowledge graph.
+    Return basic statistics about the RNR Enhanced Cognee Neo4j knowledge graph.
 
     TRIGGER TYPE: (A) Auto - Read-only query; safe for periodic monitoring.
 
@@ -6740,7 +6740,7 @@ async def gdpr_delete_user_data(
 ) -> str:
     """
     Permanently erase all data associated with a user_id from all four
-    Enhanced Cognee databases (right to erasure / right to be forgotten).
+    RNR Enhanced Cognee databases (right to erasure / right to be forgotten).
 
     TRIGGER TYPE: (M) Manual - Irreversible destructive operation.  Always
     defaults to dry_run=True; must be explicitly set to False to delete.
@@ -7059,7 +7059,7 @@ async def gdpr_verify_tenant_isolation(
 @mcp.tool()
 async def list_loader_plugins() -> str:
     """
-    List all registered Enhanced Cognee loader plugins, including built-in
+    List all registered RNR Enhanced Cognee loader plugins, including built-in
     loaders and any installed third-party plugins.
 
     TRIGGER TYPE: (A) Auto - Read-only discovery query; safe to call at any time.
@@ -7600,7 +7600,7 @@ async def configure_slack_notifications(
     events: Optional[str] = None,
 ) -> str:
     """
-    Register a Slack incoming webhook to receive Enhanced Cognee event notifications.
+    Register a Slack incoming webhook to receive RNR Enhanced Cognee event notifications.
 
     TRIGGER TYPE: (A) Auto - AI IDE configures when user provides a Slack webhook URL
 
@@ -7646,7 +7646,7 @@ async def configure_discord_notifications(
     events: Optional[str] = None,
 ) -> str:
     """
-    Register a Discord webhook to receive Enhanced Cognee event notifications.
+    Register a Discord webhook to receive RNR Enhanced Cognee event notifications.
 
     TRIGGER TYPE: (A) Auto - AI IDE configures when user provides a Discord webhook URL
 
@@ -7972,7 +7972,7 @@ async def main():
     """Main entry point"""
     print("""
 ==================================================================
-         Enhanced Cognee MCP Server - Enhanced Stack
+         RNR Enhanced Cognee MCP Server - Enhanced Stack
     PostgreSQL+pgVector | Qdrant | Neo4j | Redis
 ==================================================================
     """)
@@ -7983,7 +7983,7 @@ async def main():
     # Initialize Sprint 8 modules
     await init_sprint8_modules()
 
-    print("\nOK Enhanced Cognee MCP Server starting...")
+    print("\nOK RNR Enhanced Cognee MCP Server starting...")
     print("  Available tools:")
     print("    Standard Memory MCP Tools (for MCP-compatible IDE integration):")
     print("      - add_memory: Add memory entry")
@@ -7993,7 +7993,7 @@ async def main():
     print("      - update_memory: Update existing memory")
     print("      - delete_memory: Delete memory")
     print("      - list_agents: List all agents")
-    print("    Enhanced Cognee Tools:")
+    print("    RNR Enhanced Cognee Tools:")
     print("      - cognify: Add data to knowledge graph")
     print("      - search: Search knowledge graph")
     print("      - list_data: List all documents")
@@ -8115,7 +8115,7 @@ async def main():
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Enhanced Cognee MCP Server")
+    parser = argparse.ArgumentParser(description="RNR Enhanced Cognee MCP Server")
     parser.add_argument(
         "--serve-url",
         default=os.environ.get("COGNEE_SERVICE_URL", ""),
@@ -8145,7 +8145,7 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nOK Enhanced Cognee MCP Server stopped")
+        print("\nOK RNR Enhanced Cognee MCP Server stopped")
     except Exception as e:
         logger.error(f"Server error: {e}")
         sys.exit(1)

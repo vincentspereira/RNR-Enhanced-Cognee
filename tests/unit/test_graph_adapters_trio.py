@@ -1,6 +1,6 @@
 """Tests for the Phase 5 graph adapter trio: ArangoDB / NebulaGraph / Ladybug.
 
-Each adapter translates the narrow Cypher subset Enhanced Cognee's
+Each adapter translates the narrow Cypher subset RNR Enhanced Cognee's
 call sites use into native AQL / nGQL / Ladybug calls. The underlying
 SDKs are mocked so no live service is needed.
 

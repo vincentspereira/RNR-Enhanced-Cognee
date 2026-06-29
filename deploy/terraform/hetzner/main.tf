@@ -1,8 +1,8 @@
 # ===========================================================================
-# Enhanced Cognee -- Hetzner Cloud production-class host (Terraform)
+# RNR Enhanced Cognee -- Hetzner Cloud production-class host (Terraform)
 # ===========================================================================
 # Provisions a single dedicated-vCPU box on Hetzner Cloud, bootstrapped by
-# cloud-init (../cloud-init.yaml.tftpl) into a running Enhanced Cognee stack,
+# cloud-init (../cloud-init.yaml.tftpl) into a running RNR Enhanced Cognee stack,
 # so the production-hardware SLA re-confirmation is `terraform apply` away.
 #
 # Why dedicated vCPU (ccx*) and not shared (cx*): SLA numbers must be

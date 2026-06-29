@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
   "version": "1.0.0",
-  "dashboard_title": "Enhanced Cognee -- Dedup Effectiveness",
+  "dashboard_title": "RNR Enhanced Cognee -- Dedup Effectiveness",
   "description": "Memory deduplication hit-rate derived from chunk-content-hash distinctness in shared_memory.embeddings. Lower distinct ratio == better dedup.",
   "css": "",
   "slug": "ec-dedup-effectiveness",

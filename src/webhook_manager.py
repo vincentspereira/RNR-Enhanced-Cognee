@@ -2,7 +2,7 @@
 Webhook Manager - Phase 12 (17.2)
 ====================================
 Delivers HMAC-signed HTTP POST notifications to registered endpoints when
-Enhanced Cognee events occur (memory added, backup complete, consolidation
+RNR Enhanced Cognee events occur (memory added, backup complete, consolidation
 finished, GDPR request processed, etc.).
 
 Features:

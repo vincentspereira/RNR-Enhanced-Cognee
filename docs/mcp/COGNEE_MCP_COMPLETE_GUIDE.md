@@ -7,12 +7,12 @@ Cognee is now successfully configured as your **primary memory MCP server** with
 ## 📁 File Locations
 
 ### Core Configuration Files
-- **Wrapper Script**: `C:\Users\Vincent_Pereira\cognee\cognee_mcp_wrapper.py`
-- **Environment File**: `C:\Users\Vincent_Pereira\cognee\.env`
-- **Cognee Library**: `C:\Users\Vincent_Pereira\cognee\cognee-mcp\src\server.py`
+- **Wrapper Script**: `C:\Users\vince\cognee\cognee_mcp_wrapper.py`
+- **Environment File**: `C:\Users\vince\cognee\.env`
+- **Cognee Library**: `C:\Users\vince\cognee\cognee-mcp\src\server.py`
 
 ### MCP Configuration
-- **Global MCP Config**: `C:\Users\Vincent_Pereira\.claude.json` (lines 273-280)
+- **Global MCP Config**: `C:\Users\vince\.claude.json` (lines 273-280)
 
 ## 🔧 Current Configuration
 
@@ -71,12 +71,12 @@ EMBEDDING_DIMENSIONS=2560
 ## 🔑 API Key Management
 
 ### Update Z.ai API Key
-1. Edit `C:\Users\Vincent_Pereira\cognee\.env` line 5
-2. Edit `C:\Users\Vincent_Pereira\cognee\cognee_mcp_wrapper.py` line 18
+1. Edit `C:\Users\vince\cognee\.env` line 5
+2. Edit `C:\Users\vince\cognee\cognee_mcp_wrapper.py` line 18
 3. Restart MCP server:
    ```bash
    claude mcp remove cognee-primary
-   claude mcp add cognee-primary python "C:/Users/Vincent_Pereira/cognee/cognee_mcp_wrapper.py"
+   claude mcp add cognee-primary python "C:/Users/vince/cognee/cognee_mcp_wrapper.py"
    ```
 
 ## 🎯 How Cognee Works
@@ -103,7 +103,7 @@ claude mcp list
 
 # Restart server
 claude mcp remove cognee-primary
-claude mcp add cognee-primary python "C:/Users/Vincent_Pereira/cognee/cognee_mcp_wrapper.py"
+claude mcp add cognee-primary python "C:/Users/vince/cognee/cognee_mcp_wrapper.py"
 ```
 
 ### API Key Issues

@@ -1,13 +1,13 @@
 # Runbook RB-010: Database Migration Failure
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Operators, developers
 
 ---
 
 ## Overview
 
-Enhanced Cognee uses Alembic to manage the PostgreSQL schema. Each new release
+RNR Enhanced Cognee uses Alembic to manage the PostgreSQL schema. Each new release
 may include Alembic migrations that add tables, columns, or indexes. If a migration
 fails (partially applied, never applied, or schema mismatch), the MCP server cannot
 start. This runbook guides the operator through identifying the migration state and
@@ -24,10 +24,10 @@ restoring a healthy database schema.
       [ERR] alembic.util.exc.CommandError: Can't locate revision identified by 'abc123'
       [ERR] psycopg2.errors.UndefinedTable: relation does not exist
 
-- Running enhanced-cognee health fails before reaching the database connection step.
+- Running RNR-Enhanced-Cognee health fails before reaching the database connection step.
 - A call to any MCP tool returns:
 
-      [ERR] Database schema is not up to date. Run: enhanced-cognee migrate upgrade head
+      [ERR] Database schema is not up to date. Run: RNR-Enhanced-Cognee migrate upgrade head
 
 ---
 
@@ -61,7 +61,7 @@ If this fails, the PostgreSQL container itself is the problem. Follow RB-002
 
 ### Step 2: Check the current Alembic revision
 
-    enhanced-cognee migrate current
+    RNR-Enhanced-Cognee migrate current
 
 This command queries the alembic_version table in PostgreSQL and prints the current
 revision hash and description.
@@ -92,7 +92,7 @@ initialized. Fix Step 2 applies.
 
 ### Step 3: View the full migration history
 
-    enhanced-cognee migrate history
+    RNR-Enhanced-Cognee migrate history
 
 This prints all known revisions in order:
 
@@ -130,7 +130,7 @@ ran partially.
 
 This is the standard fix for a database that is behind by one or more revisions.
 
-    enhanced-cognee migrate upgrade head
+    RNR-Enhanced-Cognee migrate upgrade head
 
 Alembic applies all pending migrations in order. Each migration is wrapped in a
 transaction; if any individual migration script fails, that migration is rolled
@@ -138,13 +138,13 @@ back and Alembic stops.
 
 After the command completes:
 
-    enhanced-cognee migrate current
+    RNR-Enhanced-Cognee migrate current
 
 Confirm the output shows "(head)".
 
 Then start the MCP server:
 
-    enhanced-cognee start
+    RNR-Enhanced-Cognee start
 
 ---
 
@@ -158,15 +158,15 @@ or after confirming that all existing data has been backed up.
 
 1. Create a backup first (even for an empty database, as a precaution):
 
-       enhanced-cognee backup create
+       RNR-Enhanced-Cognee backup create
 
 2. Run the full upgrade:
 
-       enhanced-cognee migrate upgrade head
+       RNR-Enhanced-Cognee migrate upgrade head
 
 3. Verify:
 
-       enhanced-cognee migrate current
+       RNR-Enhanced-Cognee migrate current
        Expected: "<latest_revision> (head)"
 
 ---
@@ -199,11 +199,11 @@ match any migration script. This can happen after:
 
 4. Run upgrade head:
 
-       enhanced-cognee migrate upgrade head
+       RNR-Enhanced-Cognee migrate upgrade head
 
 5. Verify:
 
-       enhanced-cognee migrate current
+       RNR-Enhanced-Cognee migrate current
        Expected: "<latest_revision> (head)"
 
 ---
@@ -218,18 +218,18 @@ will be lost. Take a backup first.
 
 1. Back up the database:
 
-       enhanced-cognee backup create
+       RNR-Enhanced-Cognee backup create
 
    Record the backup ID from the output.
 
 2. Downgrade to the revision before the failing one. For example, if revision 0012
    failed, downgrade to 0011:
 
-       enhanced-cognee migrate downgrade 0011_add_audit_log_indexes
+       RNR-Enhanced-Cognee migrate downgrade 0011_add_audit_log_indexes
 
 3. Confirm the downgrade:
 
-       enhanced-cognee migrate current
+       RNR-Enhanced-Cognee migrate current
        Expected: "0011_add_audit_log_indexes"
 
 4. Investigate and fix the migration script if it contained a bug. The migration
@@ -239,11 +239,11 @@ will be lost. Take a backup first.
 
 5. Re-run the upgrade:
 
-       enhanced-cognee migrate upgrade head
+       RNR-Enhanced-Cognee migrate upgrade head
 
 6. Verify:
 
-       enhanced-cognee migrate current
+       RNR-Enhanced-Cognee migrate current
        Expected: "<latest_revision> (head)"
 
 ---
@@ -254,7 +254,7 @@ After any fix, confirm the MCP server starts and the schema is complete:
 
 1. Start the server:
 
-       enhanced-cognee start
+       RNR-Enhanced-Cognee start
 
 2. Run a health check:
 

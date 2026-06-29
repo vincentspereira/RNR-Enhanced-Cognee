@@ -47,9 +47,9 @@ variable "app_port_allowed_cidrs" {
 }
 
 variable "repo_url" {
-  description = "Git URL to clone Enhanced Cognee from."
+  description = "Git URL to clone RNR Enhanced Cognee from."
   type        = string
-  default     = "https://github.com/vincentspereira/Enhanced-Cognee.git"
+  default     = "https://github.com/vincentspereira/RNR-Enhanced-Cognee.git"
 }
 
 variable "repo_ref" {

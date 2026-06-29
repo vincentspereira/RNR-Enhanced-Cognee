@@ -7,7 +7,7 @@
 
 ## FINAL MCP TOOL CLASSIFICATION
 
-Based on user requirements, the 32 Enhanced Cognee MCP tools are classified as follows:
+Based on user requirements, the 32 RNR Enhanced Cognee MCP tools are classified as follows:
 
 ### Already Automatic (20 tools) - 62.5%
 
@@ -19,7 +19,7 @@ These tools are already triggered automatically by the AI IDE or system:
 - `get_memory` - AI IDE triggers when referencing memory IDs
 - `list_agents` - AI IDE triggers on initialization
 
-**Enhanced Cognee (4):**
+**RNR Enhanced Cognee (4):**
 - `search` - Knowledge graph search (auto-triggered)
 - `list_data` - Data listing (auto-triggered)
 - `get_stats` - System statistics (auto-triggered)
@@ -59,7 +59,7 @@ These tools currently require manual triggering but can be safely automated with
 - `add_memory` - Auto-capture observations via Claude Code plugin
 - `update_memory` - Smart updates with intent detection
 
-**Enhanced Cognee (1):**
+**RNR Enhanced Cognee (1):**
 - `cognify` - Auto-process documents (.md, .txt, .pdf)
 
 **Deduplication (1):**
@@ -310,7 +310,7 @@ All automation enhancements have been integrated into **ENHANCEMENT_ROADMAP.md**
 
 **Added to "Already Automatic" (11 tools):**
 - All analytics/query tools (get_memory_age_stats, get_deduplication_stats, get_summary_stats, get_performance_metrics, get_slow_queries, get_prometheus_metrics)
-- `search`, `list_data` (Enhanced Cognee query tools)
+- `search`, `list_data` (RNR Enhanced Cognee query tools)
 - `publish_memory_event`, `get_sync_status`, `sync_agent_state` (Real-time sync tools)
 
 **Moved to "Manual/Scheduled" (4 tools):**

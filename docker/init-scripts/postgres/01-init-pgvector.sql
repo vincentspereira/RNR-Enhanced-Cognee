@@ -1,4 +1,4 @@
--- Enhanced Cognee PostgreSQL Initialization
+-- RNR Enhanced Cognee PostgreSQL Initialization
 -- Initialize pgVector extension and create necessary schemas
 
 -- Enable pgVector extension
@@ -25,7 +25,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA oma_memory GRANT ALL ON TABLES TO cognee_user
 ALTER DEFAULT PRIVILEGES IN SCHEMA smc_memory GRANT ALL ON TABLES TO cognee_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA shared_memory GRANT ALL ON TABLES TO cognee_user;
 
--- Create initial configuration table for Enhanced Cognee
+-- Create initial configuration table for RNR Enhanced Cognee
 CREATE TABLE IF NOT EXISTS shared_memory.cognee_config (
     id SERIAL PRIMARY KEY,
     key VARCHAR(255) UNIQUE NOT NULL,
@@ -48,7 +48,7 @@ ON CONFLICT (key) DO NOTHING;
 -- Log initialization completion
 DO $$
 BEGIN
-    RAISE NOTICE 'Enhanced Cognee PostgreSQL initialization completed successfully';
+    RAISE NOTICE 'RNR Enhanced Cognee PostgreSQL initialization completed successfully';
     RAISE NOTICE 'pgVector extension enabled';
     RAISE NOTICE 'Memory schemas created: ats_memory, oma_memory, smc_memory, shared_memory';
 END $$;

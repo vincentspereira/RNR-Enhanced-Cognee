@@ -1,6 +1,6 @@
 # Runbook RB-006: MCP Server Performance Degradation
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Operators, developers on-call
 
 ---
@@ -32,7 +32,7 @@ applying a fix.
 
 Expected output when healthy:
 
-    Enhanced Cognee Health Check
+    RNR Enhanced Cognee Health Check
     [OK] PostgreSQL  localhost:25432
     [OK] Qdrant      localhost:26333
     [OK] Neo4j       localhost:27687
@@ -158,14 +158,14 @@ If Step 4 identified pool exhaustion:
 
 2. Restart the MCP server:
 
-       enhanced-cognee stop
-       enhanced-cognee start
+       RNR-Enhanced-Cognee stop
+       RNR-Enhanced-Cognee start
 
 3. Re-run the pg_stat_activity query from Step 4 and confirm idle connections
    are now available.
 
 [WARN] Do not set POSTGRES_POOL_MAX above 100 without also adjusting PostgreSQL's
-max_connections (default 100). If Enhanced Cognee's pool size exceeds
+max_connections (default 100). If RNR Enhanced Cognee's pool size exceeds
 max_connections, new connections will be rejected.
 
 ---
@@ -189,8 +189,8 @@ If Step 2 showed high call counts on a single tool with moderate latency:
 
    If "enabled" is false or the key is missing, set it to true and restart:
 
-       enhanced-cognee stop
-       enhanced-cognee start
+       RNR-Enhanced-Cognee stop
+       RNR-Enhanced-Cognee start
 
 3. After the server restarts, re-run the slow tool twice. The second call should
    return from cache and complete in under 50 ms.
@@ -210,11 +210,11 @@ plateauing and no other fix resolves the latency:
 
 2. Stop the server:
 
-       enhanced-cognee stop
+       RNR-Enhanced-Cognee stop
 
 3. Start the server:
 
-       enhanced-cognee start
+       RNR-Enhanced-Cognee start
 
 4. Monitor memory over the next 30 minutes:
 
@@ -232,7 +232,7 @@ Step 2 are very high (thousands per minute):
 
 1. Identify which agent is making the calls. Check MCP server logs:
 
-       enhanced-cognee logs --tail 200
+       RNR-Enhanced-Cognee logs --tail 200
 
    Look for lines with the pattern:
 

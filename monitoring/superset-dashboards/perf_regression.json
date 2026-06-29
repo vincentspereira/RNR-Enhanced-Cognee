@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
   "version": "1.0.0",
-  "dashboard_title": "Enhanced Cognee -- Performance Regression Tracking",
+  "dashboard_title": "RNR Enhanced Cognee -- Performance Regression Tracking",
   "description": "Per-endpoint p50/p95/p99 latency + error-rate over time, sourced from SigNoz OTel spans. Use this dashboard to spot regressions across Locust load-test runs (see tests/load/locustfile.py).",
   "css": "",
   "slug": "ec-perf-regression",

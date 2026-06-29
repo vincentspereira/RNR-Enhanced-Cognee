@@ -1,5 +1,5 @@
 """
-Intelligent Memory Summarization for Enhanced Cognee
+Intelligent Memory Summarization for RNR Enhanced Cognee
 Uses LLMs to automatically summarize and cluster memories for efficient storage and retrieval
 """
 

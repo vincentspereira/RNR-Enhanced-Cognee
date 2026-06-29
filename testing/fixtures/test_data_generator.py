@@ -1,5 +1,5 @@
 """
-Test Data Generator for Enhanced Cognee Testing
+Test Data Generator for RNR Enhanced Cognee Testing
 
 Provides comprehensive test data generation for various testing scenarios
 including performance testing, load testing, security testing, and edge cases.
@@ -30,7 +30,7 @@ class DataCategory(Enum):
     COORDINATION = "coordination"
 
 class MemoryType(Enum):
-    """Memory types for Enhanced Cognee"""
+    """Memory types for RNR Enhanced Cognee"""
     EPISODIC = "episodic"
     SEMANTIC = "semantic"
     PROCEDURAL = "procedural"
@@ -74,7 +74,7 @@ class TestUserData:
     profile: Dict[str, Any]
 
 class TestDataGenerator:
-    """Comprehensive test data generator for Enhanced Cognee"""
+    """Comprehensive test data generator for RNR Enhanced Cognee"""
 
     def __init__(self, seed: Optional[int] = None):
         """Initialize test data generator with optional seed"""

@@ -1,19 +1,19 @@
-# Claude-Mem vs Enhanced Cognee - Feature Gap Analysis
+# Claude-Mem vs RNR Enhanced Cognee - Feature Gap Analysis
 
 **Date:** 2026-02-05
-**Purpose:** Identify Claude-Mem features to add to Enhanced Cognee
+**Purpose:** Identify Claude-Mem features to add to RNR Enhanced Cognee
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-Claude-Mem has **8 major unique features** that Enhanced Cognee does not currently have. This document provides detailed analysis of each feature, implementation approach, and recommendations for adding them to Enhanced Cognee.
+Claude-Mem has **8 major unique features** that RNR Enhanced Cognee does not currently have. This document provides detailed analysis of each feature, implementation approach, and recommendations for adding them to RNR Enhanced Cognee.
 
 ---
 
 ## FEATURE COMPARISON TABLE
 
-| # | Feature | Claude-Mem | Enhanced Cognee | Priority | Complexity |
+| # | Feature | Claude-Mem | RNR Enhanced Cognee | Priority | Complexity |
 |---|---------|-----------|-----------------|----------|------------|
 | 1 | **Token Efficiency (Progressive Disclosure)** | 3-layer search (10x savings) | Single-layer full fetch | HIGH | Medium |
 | 2 | **Auto Configuration** | Zero-config setup (1 command) | Manual Docker setup (30+ min) | HIGH | Low |
@@ -39,7 +39,7 @@ Claude-Mem has **8 major unique features** that Enhanced Cognee does not current
 - 67.5% token savings on average queries
 - Compact index first, full details on-demand
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - Single-layer search (returns full content immediately)
 - No token optimization
 - Example: 10 results = 10,000 tokens upfront
@@ -66,7 +66,7 @@ Layer 3: get_observations() - Full Details
 
 **Token Savings Example:**
 ```
-Traditional Approach (Enhanced Cognee current):
+Traditional Approach (RNR Enhanced Cognee current):
 - search_memories("authentication bug", limit=10)
 - Returns: 10 × 1000 tokens = 10,000 tokens upfront
 
@@ -78,7 +78,7 @@ Claude-Mem Progressive Disclosure:
 - Savings: 72.5% (7,250 tokens saved)
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **New MCP Tools to Add:**
 ```python
@@ -154,7 +154,7 @@ SET summary = SUBSTRING(data_text FROM 1 FOR 200) || '...';
 - Creates default configuration automatically
 - Starts worker service automatically
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - Manual Docker setup required (30+ minutes)
 - Manual environment variable configuration (.env file)
 - Manual database startup (docker compose up -d)
@@ -197,12 +197,12 @@ SET summary = SUBSTRING(data_text FROM 1 FOR 200) || '...';
 }
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **Option 1: Interactive Installation Script**
 ```bash
-# enhanced-cognee install
-Enhanced Cognee Installer
+# RNR-Enhanced-Cognee install
+RNR Enhanced Cognee Installer
 ========================
 
 [ ] Auto-Configuration Mode (Recommended)
@@ -242,7 +242,7 @@ curl -sSL https://install.enhanced-cognee.dev | sh
 **Option 3: Lite Mode (Zero Docker)**
 ```bash
 # Install without Docker
-pip install enhanced-cognee[lite]
+pip install RNR-Enhanced-Cognee[lite]
 
 # Auto-configuration:
 # - Creates ~/.enhanced-cognee/
@@ -255,7 +255,7 @@ pip install enhanced-cognee[lite]
 **Auto-Detection Logic:**
 ```python
 def auto_configure():
-    """Auto-detect environment and configure Enhanced Cognee."""
+    """Auto-detect environment and configure RNR Enhanced Cognee."""
     config = {}
 
     # Detect Docker availability
@@ -303,7 +303,7 @@ def auto_configure():
 - Context injected automatically before Claude responds
 - No user intervention required
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - No automatic context injection
 - Requires explicit user request or manual MCP calls
 - Claude must manually call search_memories() each time
@@ -354,15 +354,15 @@ User: "Fix the authentication bug"
 Claude: "I see we've had authentication issues before. Based on the previous JWT fix..."
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
-**Challenge:** Enhanced Cognee is an MCP server, not a Claude Code plugin. MCP servers cannot define hooks directly.
+**Challenge:** RNR Enhanced Cognee is an MCP server, not a Claude Code plugin. MCP servers cannot define hooks directly.
 
 **Solution 1: Claude Code Plugin Wrapper**
 ```python
 # File: enhanced-cognee-plugin/main.py
 """
-Enhanced Cognee Claude Code Plugin
+RNR Enhanced Cognee Claude Code Plugin
 Provides hooks for automatic context injection
 """
 
@@ -372,7 +372,7 @@ import json
 class EnhancedCogneePlugin:
     def __init__(self):
         self.mcp_client = MCPServerClient(
-            server_name="enhanced-cognee",
+            server_name="RNR-Enhanced-Cognee",
             server_path="~/.claude/servers/enhanced-cognee/"
         )
 
@@ -386,7 +386,7 @@ class EnhancedCogneePlugin:
 
         # Format for Claude
         return f"""
-[Enhanced Cognee] Recent Context
+[RNR Enhanced Cognee] Recent Context
 Loaded {len(recent)} memories from previous sessions.
 """
 
@@ -400,7 +400,7 @@ Loaded {len(recent)} memories from previous sessions.
 
         # Format for Claude
         return f"""
-[Enhanced Cognee] Relevant Memories
+[RNR Enhanced Cognee] Relevant Memories
 {format_memories(relevant)}
 """
 
@@ -481,7 +481,7 @@ async def get_context_for_prompt(
     context = format_context(relevant, recent, max_tokens)
 
     return f"""
-[Enhanced Cognee] Context for Session
+[RNR Enhanced Cognee] Context for Session
 {context}
 """
 ```
@@ -502,7 +502,7 @@ async def get_context_for_prompt(
 - Captures before/after context automatically
 - Session continuity across days
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - No concept of "session" as a unit
 - Each memory stored independently
 - No automatic grouping by session
@@ -549,7 +549,7 @@ Dedicated Observer AI Process:
 └─ Injects: Session context into future sessions
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **Database Schema Changes:**
 ```sql
@@ -666,7 +666,7 @@ async def add_memory(
 - Auto-categorization based on content analysis
 - Rich metadata (before/after state, files, facts)
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - Flat memory structure (content + metadata JSON)
 - No built-in hierarchical categorization
 - No automatic type detection
@@ -751,7 +751,7 @@ Filter by Concept:
 [PATTERN] 39 observations
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **Database Schema Changes:**
 ```sql
@@ -884,7 +884,7 @@ async def auto_categorize(content: str) -> tuple[str, str]:
 - search() → timeline() → get_observations()
 - 67.5% token savings via layered approach
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - Only 1 search tool (search_memories)
 - Returns full content immediately
 - No progressive disclosure
@@ -912,7 +912,7 @@ async def auto_categorize(content: str) -> tuple[str, str]:
 - Web viewer UI auto-localizes
 - Observations stored with detected language
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - No built-in internationalization
 - All content stored as-is
 - No language detection
@@ -956,7 +956,7 @@ Japanese User: "バグ修正"
 → Returns relevant bugfixes in Japanese
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **Database Schema Changes:**
 ```sql
@@ -1079,7 +1079,7 @@ LANGUAGE_CODES = {
 - Configuration UI
 - Export features
 
-**Enhanced Cognee:**
+**RNR Enhanced Cognee:**
 - No web viewer available
 - Only MCP tools for access
 - No visual interface
@@ -1142,7 +1142,7 @@ WebSocket.on("observation_created", (obs) => {
    └─ Performance metrics
 ```
 
-### Implementation Recommendation for Enhanced Cognee
+### Implementation Recommendation for RNR Enhanced Cognee
 
 **Option 1: FastAPI Web Dashboard (Recommended)**
 
@@ -1159,7 +1159,7 @@ from fastapi import FastAPI, SSEEvents
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI(title="Enhanced Cognee Dashboard")
+app = FastAPI(title="RNR Enhanced Cognee Dashboard")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -1311,7 +1311,7 @@ services:
 - Token savings: 67.5% on average queries
 
 **Deliverable:**
-- Enhanced Cognee becomes easier to install and more efficient to use
+- RNR Enhanced Cognee becomes easier to install and more efficient to use
 
 ### Phase 2: Core Features (Months 3-4) - HIGH Priority
 
@@ -1328,7 +1328,7 @@ services:
 - Capture observations automatically
 
 **Deliverable:**
-- Enhanced Cognee matches Claude-Mem's automatic memory capabilities
+- RNR Enhanced Cognee matches Claude-Mem's automatic memory capabilities
 
 ### Phase 3: Enhanced Organization (Months 5-6) - MEDIUM Priority
 
@@ -1345,7 +1345,7 @@ services:
 - Real-time updates (SSE)
 
 **Deliverable:**
-- Enhanced Cognee has organized memory structure and visual interface
+- RNR Enhanced Cognee has organized memory structure and visual interface
 
 ### Phase 4: Polish & Advanced Features (Months 7-8) - LOW Priority
 
@@ -1361,13 +1361,13 @@ services:
 - Advanced filters and export
 
 **Deliverable:**
-- Enhanced Cognee has feature parity with Claude-Mem + enterprise advantages
+- RNR Enhanced Cognee has feature parity with Claude-Mem + enterprise advantages
 
 ---
 
 ## COMPARISON SUMMARY
 
-### Claude-Mem Advantages (Not in Enhanced Cognee)
+### Claude-Mem Advantages (Not in RNR Enhanced Cognee)
 
 | Feature | Benefit | Implementation Effort |
 |---------|---------|----------------------|
@@ -1380,7 +1380,7 @@ services:
 | **Multi-Language Support** | 28 languages with auto-detection | 1-2 weeks |
 | **Web Viewer** | Visual interface for memories | 7-10 weeks |
 
-### Enhanced Cognee Advantages (Not in Claude-Mem)
+### RNR Enhanced Cognee Advantages (Not in Claude-Mem)
 
 | Feature | Benefit |
 |---------|---------|
@@ -1422,19 +1422,19 @@ services:
 **Expected Outcome:**
 - Feature parity with Claude-Mem
 - Maintained enterprise advantages
-- Best of both worlds: Claude-Mem's usability + Enhanced Cognee's scalability
+- Best of both worlds: Claude-Mem's usability + RNR Enhanced Cognee's scalability
 
 ---
 
 ## CONCLUSION
 
-Enhanced Cognee can gain all of Claude-Mem's advantages while maintaining its enterprise-grade infrastructure. The 8 features identified above are well-defined and implementable within 8 months.
+RNR Enhanced Cognee can gain all of Claude-Mem's advantages while maintaining its enterprise-grade infrastructure. The 8 features identified above are well-defined and implementable within 8 months.
 
-**Key Insight:** Claude-Mem and Enhanced Cognee serve different primary use cases:
+**Key Insight:** Claude-Mem and RNR Enhanced Cognee serve different primary use cases:
 - **Claude-Mem:** Optimized for Claude Code sessions (individual developers)
-- **Enhanced Cognee:** Optimized for multi-agent systems (enterprise teams)
+- **RNR Enhanced Cognee:** Optimized for multi-agent systems (enterprise teams)
 
-By adding Claude-Mem's features, Enhanced Cognee can serve BOTH use cases effectively.
+By adding Claude-Mem's features, RNR Enhanced Cognee can serve BOTH use cases effectively.
 
 ---
 

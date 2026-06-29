@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-01-15
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-The Enhanced Cognee MCP server must support four distinct memory operations:
+The RNR Enhanced Cognee MCP server must support four distinct memory operations:
 
 - Persistent, relational storage of memory documents with full SQL query capability
 - Vector similarity search for semantic recall across large memory sets

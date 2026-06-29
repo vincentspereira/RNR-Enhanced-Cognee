@@ -1,4 +1,4 @@
-# Enhanced Cognee - Production Docker Compose Configuration
+# RNR Enhanced Cognee - Production Docker Compose Configuration
 # This file is designed for production deployment with security and performance best practices
 
 version: '3.8'
@@ -146,7 +146,7 @@ services:
           cpus: '0.1'
           memory: 128M
 
-  # Enhanced Cognee MCP Server - Production
+  # RNR Enhanced Cognee MCP Server - Production
   enhanced-cognee-server:
     build:
       context: ..

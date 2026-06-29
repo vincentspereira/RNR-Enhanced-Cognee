@@ -324,7 +324,7 @@ def register(mcp: "FastMCP") -> None:
     @mcp.tool()
     async def list_loaders() -> str:
         """
-        List all available file format loaders supported by the Enhanced Cognee stack.
+        List all available file format loaders supported by the RNR Enhanced Cognee stack.
 
         Shows which loaders are currently installed and active. Optional loaders
         (unstructured, docling, beautifulsoup, advanced PDF) are only shown if their

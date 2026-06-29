@@ -1,10 +1,10 @@
-# Enhanced Cognee - Summarization Guide
+# RNR Enhanced Cognee - Summarization Guide
 
-Complete guide to summarizing memories in Enhanced Cognee.
+Complete guide to summarizing memories in RNR Enhanced Cognee.
 
 ## Overview
 
-Enhanced Cognee includes comprehensive summarization capabilities:
+RNR Enhanced Cognee includes comprehensive summarization capabilities:
 - Automatic old memory summarization
 - Content preservation (originals always kept)
 - LLM-powered summaries
@@ -328,4 +328,4 @@ WHERE metadata->>'summarized' = 'true';
 
 ---
 
-**Summarization** - Reduce memory size while preserving information with Enhanced Cognee.
+**Summarization** - Reduce memory size while preserving information with RNR Enhanced Cognee.

@@ -1,4 +1,4 @@
-# Enhanced Cognee Memory Dashboard - UX/UI Specification
+# RNR Enhanced Cognee Memory Dashboard - UX/UI Specification
 
 **Version:** 1.0.0
 **Last Updated:** 2025-02-06
@@ -28,7 +28,7 @@
 
 ### Project Overview
 
-The Enhanced Cognee Memory Dashboard is a sophisticated web application for visualizing, managing, and analyzing an enterprise-grade AI memory system. It provides real-time insights into memory operations, knowledge graph relationships, agent coordination, and system performance.
+The RNR Enhanced Cognee Memory Dashboard is a sophisticated web application for visualizing, managing, and analyzing an enterprise-grade AI memory system. It provides real-time insights into memory operations, knowledge graph relationships, agent coordination, and system performance.
 
 ### Key Design Goals
 
@@ -118,7 +118,7 @@ Memory List View:
 ### Site Structure
 
 ```
-Enhanced Cognee Dashboard
+RNR Enhanced Cognee Dashboard
 ├── Dashboard (Home)
 │   ├── Overview (stats, health, recent activity)
 │   ├── Quick Actions (add memory, run search)
@@ -194,7 +194,7 @@ Enhanced Cognee Dashboard
 ```
 +------------------------------------------------------------------+
 |  HEADER (64px height)                                             |
-|  +----------------+  Enhanced Cognee    [Search]  [User] [Gear] |
+|  +----------------+  RNR Enhanced Cognee    [Search]  [User] [Gear] |
 |  | Logo           |                                                 |
 |  +----------------+                                                 |
 +------------------------------------------------------------------+
@@ -1842,7 +1842,7 @@ import Image from 'next/image';
 
 <Image
   src="/logo.png"
-  alt="Enhanced Cognee"
+  alt="RNR Enhanced Cognee"
   width={200}
   height={50}
   priority // For above-the-fold images
@@ -2186,7 +2186,7 @@ test('add and view memory', async ({ page }) => {
 
 **Document Version:** 1.0.0
 **Last Updated:** 2025-02-06
-**Authors:** UX/UI Design Specification for Enhanced Cognee Memory Dashboard
+**Authors:** UX/UI Design Specification for RNR Enhanced Cognee Memory Dashboard
 **Status:** Ready for Implementation
 
 ---
@@ -2199,4 +2199,4 @@ test('add and view memory', async ({ page }) => {
 4. **Begin Phase 1** of implementation roadmap
 5. **Iterate** based on feedback and testing results
 
-For questions or clarifications about this specification, please refer to the Enhanced Cognee project documentation or create an issue in the project repository.
+For questions or clarifications about this specification, please refer to the RNR Enhanced Cognee project documentation or create an issue in the project repository.

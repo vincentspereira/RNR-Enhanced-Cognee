@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-05-14
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee exposes 105 tools through the MCP server. External Python
+RNR Enhanced Cognee exposes 105 tools through the MCP server. External Python
 applications that want to call these tools have two options today:
 
 1. Run the MCP protocol handshake directly, negotiating capabilities and issuing

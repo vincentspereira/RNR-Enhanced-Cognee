@@ -1,4 +1,4 @@
-# Enhanced Cognee VPS Deployment Guide
+# RNR Enhanced Cognee VPS Deployment Guide
 
 Self-hosted single-VPS deployment, optimised for cost (target < $10/month).
 No Kubernetes, no managed databases. Just Docker Compose + Caddy + systemd
@@ -84,12 +84,12 @@ sudo ufw allow 443/tcp
 sudo ufw --force enable
 ```
 
-### 4. Clone Enhanced Cognee
+### 4. Clone RNR Enhanced Cognee
 
 ```bash
 sudo apt install -y git python3.12 python3.12-venv python3-pip
 cd /opt
-sudo git clone https://github.com/vincentspereira/Enhanced-Cognee.git enhanced-cognee
+sudo git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git RNR-Enhanced-Cognee
 sudo chown -R cognee:cognee /opt/enhanced-cognee
 cd /opt/enhanced-cognee
 ```
@@ -124,7 +124,7 @@ chmod 600 /opt/enhanced-cognee/.env
 ```bash
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d --build
 docker ps
-# 4 DB containers + the enhanced-cognee app should report 'healthy' within ~30-60s.
+# 4 DB containers + the RNR-Enhanced-Cognee app should report 'healthy' within ~30-60s.
 # The app is built from docker/Dockerfile.enhanced-cognee and listens on
 # host port 28080 (container 8080). DB ports are bound to 127.0.0.1 only.
 ```
@@ -170,8 +170,8 @@ sudo chmod 600 /etc/enhanced-cognee/secrets.env
 
 sudo cp /opt/enhanced-cognee/deploy/vps/enhanced-cognee.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now enhanced-cognee
-sudo systemctl status enhanced-cognee
+sudo systemctl enable --now RNR-Enhanced-Cognee
+sudo systemctl status RNR-Enhanced-Cognee
 ```
 
 ### 9. Configure nightly backups
@@ -204,11 +204,11 @@ must be set (step 5) or the app will refuse to start.
 
 | Task | Command |
 | ---- | ------- |
-| View MCP server logs | `journalctl -u enhanced-cognee -f` |
+| View MCP server logs | `journalctl -u RNR-Enhanced-Cognee -f` |
 | View Docker logs | `cd /opt/enhanced-cognee && docker compose logs -f` |
-| Restart MCP server | `sudo systemctl restart enhanced-cognee` |
+| Restart MCP server | `sudo systemctl restart RNR-Enhanced-Cognee` |
 | Restart Docker stack | `cd /opt/enhanced-cognee && docker compose restart` |
-| Update from git | `cd /opt/enhanced-cognee && git pull && sudo systemctl restart enhanced-cognee` |
+| Update from git | `cd /opt/enhanced-cognee && git pull && sudo systemctl restart RNR-Enhanced-Cognee` |
 | List backups | `ls -lh /var/backups/enhanced-cognee/` |
 | Manual backup | `sudo /usr/local/bin/cognee-backup` |
 
@@ -238,7 +238,7 @@ For higher traffic, upgrade to CX32 (4 vCPU / 8 GB) at EUR 7.55/month.
 
 ## Troubleshooting
 
-- **502 Bad Gateway**: MCP server is down. `sudo systemctl status enhanced-cognee`
+- **502 Bad Gateway**: MCP server is down. `sudo systemctl status RNR-Enhanced-Cognee`
 - **Healthcheck returns 503**: One of the 4 databases is unhealthy. `docker ps`.
 - **Caddy can't get cert**: DNS A record is wrong or port 80 is blocked.
 - **Out of disk**: Old backups accumulating. The backup script rotates after 30 days.

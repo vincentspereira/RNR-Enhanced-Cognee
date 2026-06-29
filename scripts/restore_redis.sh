@@ -1,10 +1,10 @@
 #!/bin/bash
-# Enhanced Cognee - Restore Redis
+# RNR Enhanced Cognee - Restore Redis
 #
 # Restores Redis cache from the specified backup.
 # Usage: ./scripts/restore_redis.sh <backup_id>
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 
 set -e

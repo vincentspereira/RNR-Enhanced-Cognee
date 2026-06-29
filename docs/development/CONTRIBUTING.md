@@ -1,8 +1,8 @@
-# Contributing to Enhanced Cognee
+# Contributing to RNR Enhanced Cognee
 
-> **Note:** Enhanced Cognee is a derivative work of [Cognee](https://github.com/topoteretes/cognee). Please ensure your contributions align with both the Enhanced Cognee goals and the original Cognee license (Apache 2.0).
+> **Note:** RNR Enhanced Cognee is a derivative work of [Cognee](https://github.com/topoteretes/cognee). Please ensure your contributions align with both the RNR Enhanced Cognee goals and the original Cognee license (Apache 2.0).
 
-Thank you for your interest in contributing to Enhanced Cognee! We welcome contributions from the community and appreciate your help in making this project better.
+Thank you for your interest in contributing to RNR Enhanced Cognee! We welcome contributions from the community and appreciate your help in making this project better.
 
 ## Table of Contents
 
@@ -26,11 +26,11 @@ We are committed to fostering an inclusive and respectful community. Please read
 
 ## Ways to Contribute
 
-You can contribute to Enhanced Cognee in many ways:
+You can contribute to RNR Enhanced Cognee in many ways:
 
 ### 🐛 Reporting Bugs
 
-- Check existing [GitHub Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) first
+- Check existing [GitHub Issues](https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues) first
 - Use the bug report template for new issues
 - Include steps to reproduce, expected behavior, and environment details
 
@@ -38,7 +38,7 @@ You can contribute to Enhanced Cognee in many ways:
 
 - Check existing feature requests first
 - Clearly describe the use case and benefits
-- Consider if it fits the Enhanced Cognee vision (enterprise-grade, production-ready)
+- Consider if it fits the RNR Enhanced Cognee vision (enterprise-grade, production-ready)
 
 ### 📝 Improving Documentation
 
@@ -57,7 +57,7 @@ You can contribute to Enhanced Cognee in many ways:
 
 ### 🌍 Helping Others
 
-- Answer questions in [GitHub Discussions](https://github.com/vincentspereira/Enhanced-Cognee/discussions)
+- Answer questions in [GitHub Discussions](https://github.com/vincentspereira/RNR-Enhanced-Cognee/discussions)
 - Help review pull requests
 - Share your usage examples
 
@@ -74,18 +74,18 @@ You can contribute to Enhanced Cognee in many ways:
 
 ### Fork and Clone
 
-1. Fork the [Enhanced Cognee repository](https://github.com/vincentspereira/Enhanced-Cognee)
+1. Fork the [RNR Enhanced Cognee repository](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 2. Clone your fork locally:
 
 ```bash
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd enhanced-cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 ```
 
 3. Add the original repository as upstream (to keep your fork in sync):
 
 ```bash
-git remote add upstream https://github.com/vincentspereira/Enhanced-Cognee.git
+git remote add upstream https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
 ```
 
 ---
@@ -280,7 +280,7 @@ git push origin feature/your-feature-name
 
 ### 4. Create Pull Request
 
-1. Go to the [Enhanced Cognee repository](https://github.com/vincentspereira/Enhanced-Cognee)
+1. Go to the [RNR Enhanced Cognee repository](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 2. Click "Compare & Pull Request"
 3. Fill in the PR template:
    - Describe your changes
@@ -323,8 +323,8 @@ In your PR, include:
 ### Resources
 
 - **Documentation**: Check the `docs/` directory and README.md
-- **Issues**: Search existing [GitHub Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues)
-- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/vincentspereira/Enhanced-Cognee/discussions)
+- **Issues**: Search existing [GitHub Issues](https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/vincentspereira/RNR-Enhanced-Cognee/discussions)
 
 ### Asking Questions
 
@@ -346,7 +346,7 @@ We use these labels to help triage issues:
 - `help wanted` - Extra help needed
 - `question` - Further information requested
 
-Looking for somewhere to start? Check [good first issues](https://github.com/vincentspereira/Enhanced-Cognee/labels/good%20first%20issue)!
+Looking for somewhere to start? Check [good first issues](https://github.com/vincentspereira/RNR-Enhanced-Cognee/labels/good%20first%20issue)!
 
 ---
 
@@ -358,7 +358,7 @@ Contributors will be:
 - Mentioned in release notes for significant contributions
 - Credited in related documentation
 
-Thank you for contributing to Enhanced Cognee! 🚀
+Thank you for contributing to RNR Enhanced Cognee! 🚀
 
 ---
 

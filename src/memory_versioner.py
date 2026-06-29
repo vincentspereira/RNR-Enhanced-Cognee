@@ -53,7 +53,7 @@ UTC = timezone.utc
 
 class MemoryVersioner:
     """
-    Write-once version ledger for Enhanced Cognee memory entries.
+    Write-once version ledger for RNR Enhanced Cognee memory entries.
 
     Every time a memory's content changes the caller must invoke
     snapshot() BEFORE applying the update so the old content is

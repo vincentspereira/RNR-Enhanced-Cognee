@@ -1,8 +1,8 @@
 """
-enhanced_cognee_client - Async Python client for the Enhanced Cognee MCP server.
+enhanced_cognee_client - Async Python client for the RNR Enhanced Cognee MCP server.
 
 Provides a thin HTTP wrapper around the MCP tool endpoints so non-MCP
-applications can interact with Enhanced Cognee using plain async/await.
+applications can interact with RNR Enhanced Cognee using plain async/await.
 
 Quickstart::
 

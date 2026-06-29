@@ -1,4 +1,4 @@
-# Enhanced Cognee Deployment Quickstart
+# RNR Enhanced Cognee Deployment Quickstart
 
 Two paths, depending on where you're deploying.
 
@@ -8,7 +8,7 @@ Two paths, depending on where you're deploying.
 | **B. VPS (Hetzner CX22)** | Production, shared with team, internet-reachable | 45 min |
 
 Both paths assume you already have:
-- The repo cloned at `C:\Users\vince\Projects\AI Agents\enhanced-cognee\` (or equivalent)
+- The repo cloned at `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\` (or equivalent)
 - Docker Desktop installed
 - Python 3.11+ installed
 - Claude Code installed
@@ -38,7 +38,7 @@ You should see 4 containers, all `(healthy)`:
 If any are missing or unhealthy:
 
 ```powershell
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 # Wait 30 seconds, then check again
 docker ps
@@ -47,7 +47,7 @@ docker ps
 ### A2. Run the smoke test
 
 ```powershell
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 
 # Postgres
 docker exec cognee-mcp-postgres pg_isready -U cognee_user
@@ -77,14 +77,14 @@ out of the box.
 
 ```powershell
 # Run the installer (idempotent - safe to re-run)
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
 ```
 
 The installer:
 1. Confirms Python 3.11+ is installed
 2. Creates `.venv` if missing
-3. Installs Enhanced Cognee in editable mode
+3. Installs RNR Enhanced Cognee in editable mode
 4. Verifies Docker stack is healthy
 5. Registers the MCP server in `%USERPROFILE%\.claude.json`
 
@@ -114,7 +114,7 @@ You should see `cognee` listed with green status. If it shows red/failed:
    paths to the venv Python and the MCP server script
 2. Open a PowerShell, run the MCP server directly and look for errors:
    ```powershell
-   cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+   cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
    .venv\Scripts\python.exe bin\enhanced_cognee_mcp_server.py
    ```
 3. Most common cause: Docker stack not running. Run `docker ps` and confirm.
@@ -124,7 +124,7 @@ You should see `cognee` listed with green status. If it shows red/failed:
 In Claude Code, try:
 
 ```
-Hey Claude, please use the Enhanced Cognee MCP to store this memory:
+Hey Claude, please use the RNR Enhanced Cognee MCP to store this memory:
 "Production deployment quickstart was followed successfully on <date>"
 ```
 
@@ -140,7 +140,7 @@ the memory you just stored.
 ### A7. (Optional) Integrate with the Multi-Agent System
 
 If you want the MAS agents at `C:\Users\vince\Projects\AI Agents\Multi-Agent System`
-to use Enhanced Cognee as their memory layer, follow
+to use RNR Enhanced Cognee as their memory layer, follow
 [`deploy/integration-with-mas/README.md`](../deploy/integration-with-mas/README.md).
 
 ---
@@ -155,7 +155,7 @@ For when you want public access (e.g. for a team) or to free up your laptop.
 
 1. Open https://www.hetzner.com/cloud
 2. Sign up (no credit card needed for the trial month if you're new)
-3. Create a new project ("Enhanced Cognee")
+3. Create a new project ("RNR Enhanced Cognee")
 4. Click **Add Server**:
    - Location: pick closest to you (Falkenstein DE / Helsinki FI / Ashburn US)
    - Image: **Ubuntu 24.04**
@@ -245,11 +245,11 @@ sudo ufw --force enable
 sudo apt install -y git python3.12 python3.12-venv python3-pip
 ```
 
-### B5. Clone Enhanced Cognee + bring up Docker stack
+### B5. Clone RNR Enhanced Cognee + bring up Docker stack
 
 ```bash
 cd /opt
-sudo git clone https://github.com/vincentspereira/Enhanced-Cognee.git enhanced-cognee
+sudo git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git RNR-Enhanced-Cognee
 sudo chown -R cognee:cognee /opt/enhanced-cognee
 cd /opt/enhanced-cognee
 
@@ -298,8 +298,8 @@ sudo journalctl -u caddy -f
 ```bash
 sudo cp /opt/enhanced-cognee/deploy/vps/enhanced-cognee.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now enhanced-cognee
-sudo systemctl status enhanced-cognee
+sudo systemctl enable --now RNR-Enhanced-Cognee
+sudo systemctl status RNR-Enhanced-Cognee
 # Should show "active (running)"
 ```
 
@@ -329,7 +329,7 @@ curl -sf https://cognee.example.com/health
 ```
 
 If you get TLS errors, wait 1-2 minutes (Let's Encrypt may still be issuing).
-If you get connection refused, check `sudo ufw status` and `sudo systemctl status enhanced-cognee`.
+If you get connection refused, check `sudo ufw status` and `sudo systemctl status RNR-Enhanced-Cognee`.
 
 ### B11. Hook your Claude Code into the remote MCP server
 
@@ -364,11 +364,11 @@ to your VPS.
 
 | Task | Command |
 |---|---|
-| Watch MCP server logs | `sudo journalctl -u enhanced-cognee -f` |
+| Watch MCP server logs | `sudo journalctl -u RNR-Enhanced-Cognee -f` |
 | Watch DB logs | `cd /opt/enhanced-cognee && docker compose logs -f` |
-| Restart MCP server | `sudo systemctl restart enhanced-cognee` |
+| Restart MCP server | `sudo systemctl restart RNR-Enhanced-Cognee` |
 | Restart Docker stack | `cd /opt/enhanced-cognee && docker compose restart` |
-| Update from GitHub | `cd /opt/enhanced-cognee && git pull && sudo systemctl restart enhanced-cognee` |
+| Update from GitHub | `cd /opt/enhanced-cognee && git pull && sudo systemctl restart RNR-Enhanced-Cognee` |
 | Manual backup | `sudo -u cognee /usr/local/bin/cognee-backup` |
 | List backups | `ls -lh /var/backups/enhanced-cognee/` |
 | Disk usage | `df -h && du -sh /var/lib/docker /var/backups/enhanced-cognee` |
@@ -385,7 +385,7 @@ For more detailed troubleshooting see [`docs/operations/RUNBOOK.md`](operations/
 2. `tail -20 ~/.claude/logs/mcp.log` -- look for the actual error
 3. Try running the server directly to see stderr:
    ```powershell
-   cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+   cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
    .venv\Scripts\python.exe bin\enhanced_cognee_mcp_server.py
    ```
 
@@ -434,8 +434,8 @@ The CX22's 4GB is enough for typical workloads. If you hit OOM:
 The MCP server (port 8080) isn't responding:
 
 ```bash
-sudo systemctl status enhanced-cognee
-sudo journalctl -u enhanced-cognee --since "5 minutes ago"
+sudo systemctl status RNR-Enhanced-Cognee
+sudo journalctl -u RNR-Enhanced-Cognee --since "5 minutes ago"
 ```
 
 Most common cause: a database is unhealthy. `docker ps` to verify.

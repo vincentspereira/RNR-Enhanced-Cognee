@@ -2,13 +2,13 @@
 
 **Audience:** Intermediate users
 **Time required:** 25 minutes
-**Prerequisites:** Enhanced Cognee running; PostgreSQL connected
+**Prerequisites:** RNR Enhanced Cognee running; PostgreSQL connected
 
 ---
 
 ## Overview
 
-Every time a memory's content changes, Enhanced Cognee records the previous content
+Every time a memory's content changes, RNR Enhanced Cognee records the previous content
 as a version row in the memory_versions table. This means you can:
 
 - See the full history of edits to a memory

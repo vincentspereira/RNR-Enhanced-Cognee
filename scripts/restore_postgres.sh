@@ -1,10 +1,10 @@
 #!/bin/bash
-# Enhanced Cognee - Restore PostgreSQL
+# RNR Enhanced Cognee - Restore PostgreSQL
 #
 # Restores PostgreSQL database from the specified backup.
 # Usage: ./scripts/restore_postgres.sh <backup_id>
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 
 set -e

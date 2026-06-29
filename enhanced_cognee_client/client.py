@@ -1,5 +1,5 @@
 """
-client.py - Async HTTP client for the Enhanced Cognee MCP server.
+client.py - Async HTTP client for the RNR Enhanced Cognee MCP server.
 
 Wraps every MCP tool exposed at POST /tools/{tool_name} so that
 non-MCP applications can call them with plain Python async/await.
@@ -18,7 +18,7 @@ from .exceptions import AuthError, ConnectionError, EnhancedCogneeError, ToolErr
 
 
 class EnhancedCogneeClient:
-    """Async HTTP client for the Enhanced Cognee MCP server.
+    """Async HTTP client for the RNR Enhanced Cognee MCP server.
 
     Usage as a context manager (recommended)::
 
@@ -42,7 +42,7 @@ class EnhancedCogneeClient:
         """Initialise the client.
 
         Args:
-            host:    Hostname or IP of the Enhanced Cognee MCP server.
+            host:    Hostname or IP of the RNR Enhanced Cognee MCP server.
             port:    Port number the server is listening on.
             timeout: Request timeout in seconds for all HTTP calls.
             api_key: Optional Bearer token sent in the Authorization header.
@@ -144,7 +144,7 @@ class EnhancedCogneeClient:
         agent_id: str = "claude-code",
         metadata: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Store a new memory entry in the Enhanced Cognee server.
+        """Store a new memory entry in the RNR Enhanced Cognee server.
 
         Args:
             content:  The text content to store as a memory.

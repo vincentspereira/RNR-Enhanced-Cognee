@@ -1,7 +1,7 @@
 """Cross-provider benchmark runner.
 
 Drives the existing Locust workload (`tests/load/locustfile.py`)
-against multiple Enhanced Cognee provider configurations and emits a
+against multiple RNR Enhanced Cognee provider configurations and emits a
 comparison report (Markdown + JSON). The point is to defend
 provider-choice decisions with numbers, not just licence rationale.
 
@@ -331,7 +331,7 @@ def write_reports(results: List[RunResult], output_dir: Path) -> None:
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Locust against multiple Enhanced Cognee provider permutations."
+        description="Run Locust against multiple RNR Enhanced Cognee provider permutations."
     )
     parser.add_argument(
         "--host",

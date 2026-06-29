@@ -1,7 +1,7 @@
 """
-Enhanced Cognee Performance Testing with Locust
+RNR Enhanced Cognee Performance Testing with Locust
 
-Load testing scenarios for Enhanced Cognee API endpoints.
+Load testing scenarios for RNR Enhanced Cognee API endpoints.
 Tests memory operations, agent coordination, and system performance under load.
 """
 
@@ -62,7 +62,7 @@ class TestDataGenerator:
 
 
 class EnhancedCogneeUser(HttpUser):
-    """Enhanced Cognee API user for load testing"""
+    """RNR Enhanced Cognee API user for load testing"""
 
     wait_time = between(1, 3)
     weight = 1
@@ -83,7 +83,7 @@ class EnhancedCogneeUser(HttpUser):
         self.initialize_session()
 
     def authenticate(self):
-        """Authenticate with Enhanced Cognee API"""
+        """Authenticate with RNR Enhanced Cognee API"""
         auth_data = {
             "username": f"test_user_{self.agent_id}",
             "password": "test_password"
@@ -414,7 +414,7 @@ class TradingSystemUser(EnhancedCogneeUser):
 # Event handlers for performance monitoring
 def on_locust_init(environment, web_ui):
     """Called when Locust starts"""
-    print("Enhanced Cognee Performance Test Started")
+    print("RNR Enhanced Cognee Performance Test Started")
     print(f"Target Host: {environment.host}")
     print(f"User Classes: {[user_class.__name__ for user_class in environment.user_classes]}")
 

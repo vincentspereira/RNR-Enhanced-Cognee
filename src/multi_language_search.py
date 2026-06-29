@@ -1,5 +1,5 @@
 """
-Multi-Language Search Module for Enhanced Cognee
+Multi-Language Search Module for RNR Enhanced Cognee
 
 Provides language-aware search capabilities with support for 28 languages.
 """

@@ -1,4 +1,4 @@
-# Enhanced Cognee - Production Deployment Guide
+# RNR Enhanced Cognee - Production Deployment Guide
 
 ## Quick Start - Deploy to Production
 
@@ -20,7 +20,7 @@ Before deploying to production, ensure you have:
 ```bash
 # Clone repository
 git clone https://github.com/your-org/enhanced-cognee.git
-cd enhanced-cognee
+cd RNR-Enhanced-Cognee
 
 # Create production environment file
 cp .env.production.template .env.production
@@ -255,7 +255,7 @@ Create `scripts/backup.sh`:
 
 ```bash
 #!/bin/bash
-# Enhanced Cognee Production Backup Script
+# RNR Enhanced Cognee Production Backup Script
 
 BACKUP_DIR="/backups/cognee"
 DATE=$(date +%Y%m%d_%H%M%S)

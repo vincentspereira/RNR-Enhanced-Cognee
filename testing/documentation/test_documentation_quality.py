@@ -1,7 +1,7 @@
 """
-Enhanced Cognee Documentation Testing Framework
+RNR Enhanced Cognee Documentation Testing Framework
 
-This module provides comprehensive documentation testing capabilities for the Enhanced Cognee
+This module provides comprehensive documentation testing capabilities for the RNR Enhanced Cognee
 Multi-Agent System, including API documentation accuracy, code documentation validation,
 user guide testing, installation documentation validation, and knowledge base quality testing.
 

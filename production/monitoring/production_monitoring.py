@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Production Monitoring and Alerting System
+RNR Enhanced Cognee Production Monitoring and Alerting System
 
 This module provides comprehensive production monitoring and alerting capabilities for the Enhanced
 Cognee Multi-Agent System, including metrics collection, alerting, dashboards, and
@@ -662,7 +662,7 @@ class SlackAlertHandler:
                             "short": True
                         }
                     ],
-                    "footer": "Enhanced Cognee Monitoring",
+                    "footer": "RNR Enhanced Cognee Monitoring",
                     "ts": int(alert.timestamp.timestamp())
                 }]
             }

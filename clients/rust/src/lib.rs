@@ -1,6 +1,6 @@
-//! Enhanced Cognee Rust client.
+//! RNR Enhanced Cognee Rust client.
 //!
-//! Talks to the FastAPI HTTP variant of the Enhanced Cognee MCP server
+//! Talks to the FastAPI HTTP variant of the RNR Enhanced Cognee MCP server
 //! (src/enhanced_cognee_mcp.py) over HTTP/JSON. Endpoints covered:
 //!
 //! - `POST /memory/add`             → [`Client::add_memory`]
@@ -181,7 +181,7 @@ impl ClientBuilder {
     }
 }
 
-/// Enhanced Cognee HTTP client.
+/// RNR Enhanced Cognee HTTP client.
 pub struct Client {
     base_url: String,
     api_key: Option<String>,

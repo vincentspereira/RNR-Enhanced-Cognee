@@ -2,13 +2,13 @@
 
 **Audience:** Compliance officers and developers responsible for data subject rights
 **Time required:** 30 minutes
-**Prerequisites:** Enhanced Cognee running; GDPRManager connected to PostgreSQL
+**Prerequisites:** RNR Enhanced Cognee running; GDPRManager connected to PostgreSQL
 
 ---
 
 ## Overview
 
-Enhanced Cognee implements four GDPR/CCPA rights via the GDPRManager module:
+RNR Enhanced Cognee implements four GDPR/CCPA rights via the GDPRManager module:
 
 - Right of access and data portability (Article 15 / Article 20)
 - Right to erasure (Article 17)
@@ -28,7 +28,7 @@ This is the same user_id parameter used in add_memory calls.
 **Consent record:** A structured entry stating that a specific user has (or has not)
 consented to a specific data category being processed.
 
-**Tenant isolation:** Enhanced Cognee can serve multiple organisational tenants from
+**Tenant isolation:** RNR Enhanced Cognee can serve multiple organisational tenants from
 a single deployment. Tenant boundaries are enforced at the application layer so
 that queries for tenant A never return data belonging to tenant B.
 

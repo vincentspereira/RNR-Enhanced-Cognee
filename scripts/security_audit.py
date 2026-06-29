@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive Security Audit Script for Enhanced Cognee
+Comprehensive Security Audit Script for RNR Enhanced Cognee
 Performs security checks, vulnerability scanning, and best practices validation
 """
 
@@ -30,7 +30,7 @@ class SecurityFinding:
 
 class SecurityAuditor:
     """
-    Comprehensive Security Auditor for Enhanced Cognee
+    Comprehensive Security Auditor for RNR Enhanced Cognee
 
     Checks:
     - Hardcoded secrets (API keys, passwords, tokens)
@@ -567,7 +567,7 @@ async def main():
     else:
         project_root = os.getcwd()
 
-    print(f"[SECURITY] Enhanced Cognee Security Audit")
+    print(f"[SECURITY] RNR Enhanced Cognee Security Audit")
     print(f"[SECURITY] Project root: {project_root}\n")
 
     auditor = SecurityAuditor(project_root)

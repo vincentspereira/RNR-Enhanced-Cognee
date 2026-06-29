@@ -1,6 +1,6 @@
-# Enhanced Cognee Helm Chart
+# RNR Enhanced Cognee Helm Chart
 
-Production-grade Kubernetes deployment for Enhanced Cognee with all 4 storage tiers (PostgreSQL + Qdrant + Valkey + ArcadeDB) + the MCP HTTP server.
+Production-grade Kubernetes deployment for RNR Enhanced Cognee with all 4 storage tiers (PostgreSQL + Qdrant + Valkey + ArcadeDB) + the MCP HTTP server.
 
 ## What ships
 
@@ -15,22 +15,22 @@ All four DB tiers are toggleable via `deployments.<tier>.enabled` so you can run
 ## Quick start
 
 ```bash
-helm install enhanced-cognee ./deploy/helm/enhanced-cognee \
-  --namespace enhanced-cognee --create-namespace
+helm install RNR-Enhanced-Cognee ./deploy/helm/enhanced-cognee \
+  --namespace RNR-Enhanced-Cognee --create-namespace
 
 # Wait for all 5 workloads ready
-kubectl -n enhanced-cognee rollout status statefulset/enhanced-cognee-postgres
-kubectl -n enhanced-cognee rollout status statefulset/enhanced-cognee-qdrant
-kubectl -n enhanced-cognee rollout status statefulset/enhanced-cognee-valkey
-kubectl -n enhanced-cognee rollout status statefulset/enhanced-cognee-arcadedb
-kubectl -n enhanced-cognee rollout status deployment/enhanced-cognee-mcp
+kubectl -n RNR-Enhanced-Cognee rollout status statefulset/enhanced-cognee-postgres
+kubectl -n RNR-Enhanced-Cognee rollout status statefulset/enhanced-cognee-qdrant
+kubectl -n RNR-Enhanced-Cognee rollout status statefulset/enhanced-cognee-valkey
+kubectl -n RNR-Enhanced-Cognee rollout status statefulset/enhanced-cognee-arcadedb
+kubectl -n RNR-Enhanced-Cognee rollout status deployment/enhanced-cognee-mcp
 
 # Bootstrap the shared_memory schema (one-time)
-kubectl -n enhanced-cognee exec -i statefulset/enhanced-cognee-postgres -- \
+kubectl -n RNR-Enhanced-Cognee exec -i statefulset/enhanced-cognee-postgres -- \
   psql -U cognee_user -d cognee_db < ../../docker/init-scripts/01-init-pgvector.sql
 
 # Port-forward + test
-kubectl -n enhanced-cognee port-forward svc/enhanced-cognee-mcp 8080:8080
+kubectl -n RNR-Enhanced-Cognee port-forward svc/enhanced-cognee-mcp 8080:8080
 curl http://localhost:8080/health
 ```
 
@@ -98,15 +98,15 @@ observability:
 Install:
 
 ```bash
-helm install enhanced-cognee ./deploy/helm/enhanced-cognee \
-  --namespace enhanced-cognee --create-namespace \
+helm install RNR-Enhanced-Cognee ./deploy/helm/enhanced-cognee \
+  --namespace RNR-Enhanced-Cognee --create-namespace \
   -f production-values.yaml
 ```
 
 ## Secrets setup
 
 ```bash
-kubectl -n enhanced-cognee create secret generic enhanced-cognee-secrets \
+kubectl -n RNR-Enhanced-Cognee create secret generic enhanced-cognee-secrets \
   --from-literal=api-key="$(openssl rand -base64 32)" \
   --from-literal=postgres-password="$(openssl rand -base64 32)" \
   --from-literal=arcadedb-password="$(openssl rand -base64 32)"
@@ -141,12 +141,12 @@ The 30 providers in [`docs/PROFILES.md`](../../docs/PROFILES.md) all work the sa
 ## Uninstall
 
 ```bash
-helm uninstall enhanced-cognee --namespace enhanced-cognee
+helm uninstall RNR-Enhanced-Cognee --namespace RNR-Enhanced-Cognee
 
 # PersistentVolumeClaims are NOT automatically deleted -- preserve or remove
 # manually:
-kubectl -n enhanced-cognee get pvc
-kubectl -n enhanced-cognee delete pvc --all
+kubectl -n RNR-Enhanced-Cognee get pvc
+kubectl -n RNR-Enhanced-Cognee delete pvc --all
 ```
 
 ## See also

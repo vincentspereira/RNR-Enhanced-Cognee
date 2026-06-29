@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Enhanced Cognee Testing Infrastructure
+# RNR Enhanced Cognee Testing Infrastructure
 # Dedicated Docker Swarm setup for comprehensive testing
 # Includes databases, monitoring, load generators, and testing tools
 
@@ -354,7 +354,7 @@ services:
         delay: 5s
         max_attempts: 3
 
-  # Enhanced Cognee API Test Instance
+  # RNR Enhanced Cognee API Test Instance
   enhanced-cognee-api:
     build:
       context: ..

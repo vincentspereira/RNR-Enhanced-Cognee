@@ -1,4 +1,4 @@
-"""Pluggable database adapters for Enhanced Cognee.
+"""Pluggable database adapters for RNR Enhanced Cognee.
 
 Each tier (relational / vector / graph / cache) has one adapter module per
 provider. Adapters are thin factory functions that return the underlying

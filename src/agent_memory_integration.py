@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Agent Memory Integration Layer
+RNR Enhanced Cognee Agent Memory Integration Layer
 Provides DYNAMIC and CONFIGURABLE memory integration for agents
 Projects can define their own categories and agent registries
 Integrates with Enhanced stack: PostgreSQL+pgVector, Qdrant, Neo4j, Redis
@@ -83,7 +83,7 @@ class MemorySearchResult:
 
 class AgentMemoryIntegration:
     """
-    Enhanced Cognee Memory Integration Layer with DYNAMIC configuration
+    RNR Enhanced Cognee Memory Integration Layer with DYNAMIC configuration
 
     Projects can define their own categories and agents through:
     1. JSON config file (.enhanced-cognee-config.json)
@@ -853,7 +853,7 @@ async def main():
 
         # Get all agents info (now dynamically loaded)
         agents_info = await integration.get_all_agents_info()
-        print("\n=== Enhanced Cognee Memory Integration ===")
+        print("\n=== RNR Enhanced Cognee Memory Integration ===")
         print(f"Project: {agents_info['project_info']['total_categories']} categories, "
               f"{agents_info['project_info']['total_agents']} agents")
 
@@ -914,7 +914,7 @@ async def main():
 if __name__ == "__main__":
     print("""
 ╔════════════════════════════════════════════════════════════════════╗
-║   Enhanced Cognee Agent Memory Integration - DYNAMIC CONFIGURATION   ║
+║   RNR Enhanced Cognee Agent Memory Integration - DYNAMIC CONFIGURATION   ║
 ╠════════════════════════════════════════════════════════════════════╣
 ║   Categories are now DYNAMIC and CONFIGURABLE per project!          ║
 ║   No more hardcoded ATS/OMA/SMC categories.                         ║

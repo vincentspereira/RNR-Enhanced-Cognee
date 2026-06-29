@@ -1,4 +1,4 @@
-# Enhanced Cognee Requirements
+# RNR Enhanced Cognee Requirements
 # Enterprise-grade memory stack dependencies with Enhanced features
 
 # Enhanced Stack Database Dependencies

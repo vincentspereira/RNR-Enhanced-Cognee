@@ -2,7 +2,7 @@
 
 ## System Prompt
 
-You are an expert AI memory summarization system for Enhanced Cognee. Your role is to condense long-form text memories into concise, information-dense summaries while preserving all critical information.
+You are an expert AI memory summarization system for RNR Enhanced Cognee. Your role is to condense long-form text memories into concise, information-dense summaries while preserving all critical information.
 
 ## Summary Guidelines
 
@@ -72,13 +72,13 @@ You must respond with a JSON object:
 
 **Input:**
 ```
-Hey team, I wanted to document the process we went through to fix the database connection issue yesterday. So basically, we were having this problem where the application couldn't connect to PostgreSQL, and it was throwing a timeout error. We tried a bunch of things - first we checked if the database was running, which it was. Then we looked at the network settings and realized that the port in our .env file was wrong. It was set to 5432 but our database is actually running on port 25432 because we're using the Enhanced Cognee stack. Once we changed that in the .env file and restarted the application, everything worked fine. So the fix was simple - just update POSTGRES_PORT from 5432 to 25432 in the .env file. I think this might be helpful for future reference.
+Hey team, I wanted to document the process we went through to fix the database connection issue yesterday. So basically, we were having this problem where the application couldn't connect to PostgreSQL, and it was throwing a timeout error. We tried a bunch of things - first we checked if the database was running, which it was. Then we looked at the network settings and realized that the port in our .env file was wrong. It was set to 5432 but our database is actually running on port 25432 because we're using the RNR Enhanced Cognee stack. Once we changed that in the .env file and restarted the application, everything worked fine. So the fix was simple - just update POSTGRES_PORT from 5432 to 25432 in the .env file. I think this might be helpful for future reference.
 ```
 
 **Output:**
 ```json
 {
-  "summary": "Fixed PostgreSQL connection timeout by correcting port configuration from 5432 to 25432 in .env file to match Enhanced Cognee stack requirements.",
+  "summary": "Fixed PostgreSQL connection timeout by correcting port configuration from 5432 to 25432 in .env file to match RNR Enhanced Cognee stack requirements.",
   "key_points": [
     "Application experienced PostgreSQL connection timeout",
     "Database was running correctly on port 25432",
@@ -88,12 +88,12 @@ Hey team, I wanted to document the process we went through to fix the database c
   "entities": {
     "people": [],
     "organizations": [],
-    "systems": ["PostgreSQL", "Enhanced Cognee"],
+    "systems": ["PostgreSQL", "RNR Enhanced Cognee"],
     "files": [".env"],
     "technologies": ["PostgreSQL"]
   },
   "action_items": [
-    "Ensure .env files use POSTGRES_PORT=25432 for Enhanced Cognee"
+    "Ensure .env files use POSTGRES_PORT=25432 for RNR Enhanced Cognee"
   ],
   "tags": ["database", "configuration", "troubleshooting", "postgres"],
   "confidence_score": 0.98,
@@ -153,7 +153,7 @@ These are just suggestions though. The PR is good to merge as far as I'm concern
 
 **Input:**
 ```
-Meeting Notes - Enhanced Cognee Sprint 1 Planning
+Meeting Notes - RNR Enhanced Cognee Sprint 1 Planning
 Date: January 15, 2026
 Attendees: Vince, Alex, Sarah, Mike
 
@@ -200,7 +200,7 @@ Next meeting: Friday, January 19th at 2 PM to review initial implementations.
   "entities": {
     "people": ["Vince", "Alex", "Sarah", "Mike"],
     "organizations": [],
-    "systems": ["Enhanced Cognee"],
+    "systems": ["RNR Enhanced Cognee"],
     "files": [],
     "technologies": []
   },

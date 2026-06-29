@@ -2,16 +2,16 @@
 
 **Audience:** Plugin developers
 **Time required:** 30 minutes
-**Prerequisites:** Python packaging knowledge; Enhanced Cognee installed in a
+**Prerequisites:** Python packaging knowledge; RNR Enhanced Cognee installed in a
   virtual environment; see RB-005 for the operational steps
 
 ---
 
 ## Overview
 
-Enhanced Cognee discovers document loaders via Python's entry_points mechanism.
+RNR Enhanced Cognee discovers document loaders via Python's entry_points mechanism.
 You write a class, register it in your package's pyproject.toml, and Enhanced
-Cognee picks it up automatically at startup -- no changes to the Enhanced Cognee
+Cognee picks it up automatically at startup -- no changes to the RNR Enhanced Cognee
 source are needed.
 
 This tutorial builds a YAML loader step by step.
@@ -47,7 +47,7 @@ a string. That string is passed directly to cognify() for knowledge graph ingest
 Create a file my_cognee_plugins/loaders/yaml_loader.py:
 
     """
-    YAML Loader for Enhanced Cognee.
+    YAML Loader for RNR Enhanced Cognee.
     Converts YAML documents to readable key=value text for cognify ingestion.
     """
 
@@ -143,16 +143,16 @@ path to the class.
 ## Step 4: Install and Verify
 
     pip install -e .
-    enhanced-cognee start
+    RNR-Enhanced-Cognee start
 
     Tool: list_loader_plugins
 
 Expected:
 
     [OK] 4 loader(s) registered
-    - PlainTextLoader  (.txt, .md, .rst, .text)  [enhanced-cognee built-in]
-    - JsonLoader       (.json, .jsonl, .ndjson)   [enhanced-cognee built-in]
-    - HtmlLoader       (.html, .htm)              [enhanced-cognee built-in]
+    - PlainTextLoader  (.txt, .md, .rst, .text)  [RNR-Enhanced-Cognee built-in]
+    - JsonLoader       (.json, .jsonl, .ndjson)   [RNR-Enhanced-Cognee built-in]
+    - HtmlLoader       (.html, .htm)              [RNR-Enhanced-Cognee built-in]
     - YamlLoader       (.yaml, .yml)              [my-cognee-plugins]
 
 ---

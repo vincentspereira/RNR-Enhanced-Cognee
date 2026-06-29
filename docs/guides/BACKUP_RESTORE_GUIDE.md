@@ -1,10 +1,10 @@
-# Enhanced Cognee - Backup & Restore Guide
+# RNR Enhanced Cognee - Backup & Restore Guide
 
-Complete guide to backing up and restoring Enhanced Cognee memory stack.
+Complete guide to backing up and restoring RNR Enhanced Cognee memory stack.
 
 ## Overview
 
-Enhanced Cognee includes comprehensive backup and restore capabilities:
+RNR Enhanced Cognee includes comprehensive backup and restore capabilities:
 - Automated scheduled backups
 - On-demand manual backups
 - Full or partial database backups
@@ -14,7 +14,7 @@ Enhanced Cognee includes comprehensive backup and restore capabilities:
 
 ## Backup Architecture
 
-Enhanced Cognee backs up four databases:
+RNR Enhanced Cognee backs up four databases:
 
 1. **PostgreSQL** - Relational memory storage (via pg_dump)
 2. **Qdrant** - Vector embeddings (via snapshot API)
@@ -307,7 +307,7 @@ manager.restore_qdrant('backup_id')
 ```ini
 # /etc/systemd/system/enhanced-cognee-backup.timer
 [Unit]
-Description=Enhanced Cognee Backup Timer
+Description=RNR Enhanced Cognee Backup Timer
 Requires=enhanced-cognee-backup.service
 
 [Timer]
@@ -339,4 +339,4 @@ WantedBy=timers.target
 
 ---
 
-**Backup & Restore** - Comprehensive data protection for Enhanced Cognee deployments.
+**Backup & Restore** - Comprehensive data protection for RNR Enhanced Cognee deployments.

@@ -1,10 +1,10 @@
-"""Enhanced Cognee shared_memory schema baseline
+"""RNR Enhanced Cognee shared_memory schema baseline
 
 Revision ID: 0001_enhanced_cognee_baseline
 Revises: (none - initial migration)
 Create Date: 2026-05-13 00:00:00.000000
 
-Creates the shared_memory PostgreSQL schema used by all Enhanced Cognee
+Creates the shared_memory PostgreSQL schema used by all RNR Enhanced Cognee
 database operations.  This migration is idempotent (uses IF NOT EXISTS).
 """
 
@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Create shared_memory schema and all Enhanced Cognee tables."""
+    """Create shared_memory schema and all RNR Enhanced Cognee tables."""
     conn = op.get_bind()
 
     # Create schema
@@ -133,7 +133,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop all Enhanced Cognee tables (DESTRUCTIVE - use with caution)."""
+    """Drop all RNR Enhanced Cognee tables (DESTRUCTIVE - use with caution)."""
     conn = op.get_bind()
     conn.execute(sa.text("DROP TABLE IF EXISTS shared_memory.audit_log CASCADE"))
     conn.execute(sa.text("DROP TABLE IF EXISTS shared_memory.llm_budgets CASCADE"))

@@ -1,5 +1,5 @@
 """
-Advanced Search Module for Enhanced Cognee
+Advanced Search Module for RNR Enhanced Cognee
 
 Provides faceted search, autocomplete suggestions, and fuzzy search.
 """

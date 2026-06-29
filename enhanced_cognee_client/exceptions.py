@@ -1,12 +1,12 @@
 """
-exceptions.py - Enhanced Cognee client exception hierarchy.
+exceptions.py - RNR Enhanced Cognee client exception hierarchy.
 
 All exceptions are ASCII-only (no Unicode symbols).
 """
 
 
 class EnhancedCogneeError(Exception):
-    """Base exception for all Enhanced Cognee client errors."""
+    """Base exception for all RNR Enhanced Cognee client errors."""
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
@@ -17,7 +17,7 @@ class EnhancedCogneeError(Exception):
 
 
 class ConnectionError(EnhancedCogneeError):
-    """Raised when the Enhanced Cognee MCP server is unreachable.
+    """Raised when the RNR Enhanced Cognee MCP server is unreachable.
 
     This wraps network-level failures such as refused connections,
     timeouts, and DNS resolution errors.

@@ -21,7 +21,7 @@ echo "Creating backup directory: $BACKUP_DIR"
 # Check if container is running
 if ! docker ps | grep -q $CONTAINER_NAME; then
     echo "❌ PostgreSQL container is not running!"
-    echo "Please start your Enhanced Cognee stack first:"
+    echo "Please start your RNR Enhanced Cognee stack first:"
     exit 1
 fi
 

@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-05-14
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee stores memories indefinitely unless explicitly deleted or expired.
+RNR Enhanced Cognee stores memories indefinitely unless explicitly deleted or expired.
 As the number of stored memories grows, retrieval quality degrades: low-signal
 memories (transient observations, intermediate computation results, redundant
 notes) compete with high-signal memories (validated facts, frequently accessed
@@ -26,7 +26,7 @@ Two mechanisms need an importance score to function correctly:
 
 A reliable importance score is therefore a prerequisite for both tools to behave
 predictably. The score must be computed without human feedback labels, because
-Enhanced Cognee is deployed as a single-user or small-team system with no
+RNR Enhanced Cognee is deployed as a single-user or small-team system with no
 mechanism for users to rate memories explicitly.
 
 ---
@@ -123,7 +123,7 @@ heuristic and would give operators false confidence in its predictions.
 
 **Collaborative filtering**
 Infer importance from patterns across multiple users (memories that many users
-access tend to be important). Rejected because Enhanced Cognee is a single-user
+access tend to be important). Rejected because RNR Enhanced Cognee is a single-user
 or small-team system. There is insufficient cross-user data to build meaningful
 collaborative signals.
 

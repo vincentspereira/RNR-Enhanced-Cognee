@@ -70,7 +70,7 @@
           "refId": "A"
         }
       ],
-      "title": "Enhanced Cognee Status",
+      "title": "RNR Enhanced Cognee Status",
       "type": "stat"
     },
     {
@@ -492,7 +492,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Enhanced Cognee Overview",
+  "title": "RNR Enhanced Cognee Overview",
   "uid": "enhanced-cognee-overview",
   "version": 1
 }

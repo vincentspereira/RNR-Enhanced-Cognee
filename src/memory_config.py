@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Memory Configuration System
+RNR Enhanced Cognee Memory Configuration System
 Allows projects to define their own memory categories and prefixes
 This is a CONFIGURABLE system - NOT hardcoded to any specific project
 """
@@ -206,7 +206,7 @@ def create_project_config_example(output_path: str = ".enhanced-cognee-config.js
     """
     example_config = {
         "project_name": "My Project",
-        "description": "Example Enhanced Cognee configuration",
+        "description": "Example RNR Enhanced Cognee configuration",
         "categories": {
             "CATEGORY1": {
                 "name": "CATEGORY1",
@@ -263,7 +263,7 @@ def reset_config_manager():
 
 if __name__ == "__main__":
     # Example usage
-    print("=== Enhanced Cognee Configuration System ===\n")
+    print("=== RNR Enhanced Cognee Configuration System ===\n")
 
     # 1. Use default example configuration
     print("1. Default Example Configuration:")

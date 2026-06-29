@@ -1,5 +1,5 @@
 """
-Enhanced Security Framework for Enhanced Cognee Multi-Agent System
+Enhanced Security Framework for RNR Enhanced Cognee Multi-Agent System
 
 Comprehensive security implementation addressing all identified issues:
 1. Input validation enhancement for file upload endpoints

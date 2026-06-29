@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Enhanced Cognee Uninstallation Script for Linux/Mac
+# RNR Enhanced Cognee Uninstallation Script for Linux/Mac
 #
 # This script stops all services and optionally removes Docker volumes.
 #
@@ -9,7 +9,7 @@
 #   ./uninstall.sh --cleanup    # Stop and remove all data
 #   ./uninstall.sh --help       # Show help
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 
@@ -30,7 +30,7 @@ DOCKER_COMPOSE_FILE="$PROJECT_ROOT/docker/docker-compose-enhanced-cognee.yml"
 # Functions
 print_header() {
     echo -e "${BLUE}============================================${NC}"
-    echo -e "${BLUE}  Enhanced Cognee Uninstallation${NC}"
+    echo -e "${BLUE}  RNR Enhanced Cognee Uninstallation${NC}"
     echo -e "${BLUE}============================================${NC}"
     echo ""
 }
@@ -58,7 +58,7 @@ confirm_action() {
 }
 
 stop_services() {
-    print_info "Stopping Enhanced Cognee services..."
+    print_info "Stopping RNR Enhanced Cognee services..."
 
     if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
         print_warn "Docker compose file not found: $DOCKER_COMPOSE_FILE"
@@ -76,7 +76,7 @@ cleanup_volumes() {
         return
     fi
 
-    print_warn "This will permanently delete all Enhanced Cognee data!"
+    print_warn "This will permanently delete all RNR Enhanced Cognee data!"
 
     if ! confirm_action; then
         print_info "Volume cleanup cancelled"
@@ -113,7 +113,7 @@ print_completion() {
     echo -e "${GREEN}  Uninstallation Complete${NC}"
     echo -e "${GREEN}============================================${NC}"
     echo ""
-    echo "Enhanced Cognee services have been stopped."
+    echo "RNR Enhanced Cognee services have been stopped."
     echo ""
 
     if [ "$CLEANUP_VOLUMES" = true ]; then
@@ -125,7 +125,7 @@ print_completion() {
     fi
 
     echo ""
-    echo "To reinstall Enhanced Cognee, run:"
+    echo "To reinstall RNR Enhanced Cognee, run:"
     echo "  $ ./install.sh"
     echo ""
 }
@@ -139,7 +139,7 @@ parse_args() {
                 shift
                 ;;
             --help)
-                echo "Enhanced Cognee Uninstallation Script"
+                echo "RNR Enhanced Cognee Uninstallation Script"
                 echo ""
                 echo "Usage:"
                 echo "  ./uninstall.sh [options]"

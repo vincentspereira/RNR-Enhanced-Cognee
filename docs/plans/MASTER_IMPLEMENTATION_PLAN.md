@@ -1,10 +1,10 @@
-# Enhanced Cognee - Master Implementation Plan
+# RNR Enhanced Cognee - Master Implementation Plan
 
 **Prepared**: 2026-05-13
 **Author**: Vincent S. Pereira
 **Status**: Active - living document; update as phases complete
 
-This document is the single authoritative reference for where Enhanced Cognee
+This document is the single authoritative reference for where RNR Enhanced Cognee
 has been, where it is now, and what to do next. It answers all 11 questions
 raised in the post-Phase-6 review session and provides a concrete roadmap with
 priorities, effort estimates, and acceptance criteria.
@@ -18,7 +18,7 @@ priorities, effort estimates, and acceptance criteria.
 3. [Status Before vs. After](#3-status-before-vs-after)
 4. [How the System Changed (Changelog)](#4-how-the-system-changed)
 5. [Pros and Cons](#5-pros-and-cons)
-6. [Feature Comparison: Enhanced Cognee vs. Original Cognee](#6-feature-comparison)
+6. [Feature Comparison: RNR Enhanced Cognee vs. Original Cognee](#6-feature-comparison)
 7. [Upstream Contribution Strategy](#7-upstream-contribution-strategy)
 8. [README and Documentation Maintenance](#8-readme-and-docs)
 9. [License and Attribution](#9-license-and-attribution)
@@ -138,13 +138,13 @@ definitions removed; all 497 unit tests still pass; no tool registration errors.
 4. Run categories gate: `python scripts/check_no_hardcoded_categories.py src/ bin/`
 
 #### 2.3 - GitHub Repository Setup [S]
-**What**: The README references `https://github.com/vincentspereira/Enhanced-Cognee`
+**What**: The README references `https://github.com/vincentspereira/RNR-Enhanced-Cognee`
 but this repo may not be public or may not exist yet.
 **Why**: Required for upstream contribution and community use.
 **Acceptance criteria**: Repo is public with correct topics, description, and
 homepage URL pointing to documentation.
 **Steps**:
-1. Create GitHub repo at `vincentspereira/Enhanced-Cognee` (or fork topoteretes/cognee)
+1. Create GitHub repo at `vincentspereira/RNR-Enhanced-Cognee` (or fork topoteretes/cognee)
 2. Push current state (main branch)
 3. Add topics: `cognee`, `mcp`, `memory`, `ai-agents`, `knowledge-graph`
 4. Set description: "Enterprise-grade fork of Cognee with 70 MCP tools, 4-DB stack,
@@ -190,7 +190,7 @@ implemented.
 1. Create `enhanced_cognee_lite_server.py` with SQLite backend
 2. Include 10 essential MCP tools (add_memory, search_memories, get_memories,
    get_memory, update_memory, delete_memory, list_agents, cognify, search, health)
-3. Add `pip install enhanced-cognee[lite]` setup.cfg extra
+3. Add `pip install RNR-Enhanced-Cognee[lite]` setup.cfg extra
 4. Write a `docs/guides/LITE_MODE_GUIDE.md` setup guide
 
 #### 2.8 - Prometheus + Grafana Dashboard [L]
@@ -205,7 +205,7 @@ there is no Grafana dashboard configured.
 4. Document in `docs/operations/MONITORING_SETUP_GUIDE.md`
 
 #### 2.9 - PyPI Package Publishing [M]
-**What**: Publish `enhanced-cognee` to PyPI so users can `pip install enhanced-cognee`.
+**What**: Publish `RNR-Enhanced-Cognee` to PyPI so users can `pip install RNR-Enhanced-Cognee`.
 **Why**: Standard distribution mechanism; currently only installable from source.
 **Steps**:
 1. Update `setup.cfg` or `pyproject.toml` with correct metadata
@@ -236,7 +236,7 @@ actual benchmarks. Remove or replace the claim with measured data.
 **Why**: Unverified performance claims reduce credibility.
 **Steps**:
 1. Set up a Locust load test script (`tests/performance/locust_test.py`)
-2. Run against both stock Cognee (SQLite) and Enhanced Cognee (full stack)
+2. Run against both stock Cognee (SQLite) and RNR Enhanced Cognee (full stack)
 3. Document results in `docs/reports/PERFORMANCE_BENCHMARK.md`
 4. Update README with actual measured numbers
 
@@ -384,9 +384,9 @@ The categories gate (`scripts/check_no_hardcoded_categories.py`) now passes on:
 
 ## 6. Feature Comparison
 
-### Enhanced Cognee vs. Original Cognee
+### RNR Enhanced Cognee vs. Original Cognee
 
-| Feature | Original Cognee v1.0.9 | Enhanced Cognee |
+| Feature | Original Cognee v1.0.9 | RNR Enhanced Cognee |
 |---------|----------------------|-----------------|
 | Core ECL pipeline (add, cognify, search) | Yes | Yes (100% compatible) |
 | Database | SQLite / pluggable | PostgreSQL + Qdrant + Neo4j + Redis |
@@ -408,9 +408,9 @@ The categories gate (`scripts/check_no_hardcoded_categories.py`) now passes on:
 | ASCII-only output | No | Yes (Windows cp1252 compatible) |
 | Docker deployment | Basic | Production-ready with health checks |
 
-### Enhanced Cognee vs. Session-Memory Plugins (e.g., Claude-Mem)
+### RNR Enhanced Cognee vs. Session-Memory Plugins (e.g., Claude-Mem)
 
-| Feature | Session-Memory Plugin | Enhanced Cognee |
+| Feature | Session-Memory Plugin | RNR Enhanced Cognee |
 |---------|-----------------------|-----------------|
 | Installation | One command (plugin marketplace) | Docker + config |
 | Automatic context injection | Yes (via hooks) | No (manual via MCP tools) |
@@ -421,7 +421,7 @@ The categories gate (`scripts/check_no_hardcoded_categories.py`) now passes on:
 | Enterprise features | No | Yes (RBAC, audit, backup) |
 | Upstream tracking | No | Yes (automated) |
 
-**Summary**: Enhanced Cognee is the right choice for multi-agent enterprise
+**Summary**: RNR Enhanced Cognee is the right choice for multi-agent enterprise
 deployments. A simple session-memory plugin is the right choice for individual
 developers who want zero-config memory.
 
@@ -434,7 +434,7 @@ Here is a step-by-step strategy.
 
 ### 7.1 - What Would Be Accepted Upstream
 
-The following Enhanced Cognee additions are generic enough that upstream would likely
+The following RNR Enhanced Cognee additions are generic enough that upstream would likely
 accept them as pull requests:
 
 | Enhancement | Estimated Acceptance | Notes |
@@ -451,14 +451,14 @@ accept them as pull requests:
 
 ### 7.2 - How to Contribute
 
-**Step 1**: Fork topoteretes/cognee on GitHub (separate from your Enhanced Cognee fork)
+**Step 1**: Fork topoteretes/cognee on GitHub (separate from your RNR Enhanced Cognee fork)
 
 **Step 2**: Create a feature branch per contribution:
 ```
 git checkout -b feat/mcp-session-memory-tools
 ```
 
-**Step 3**: Cherry-pick only the relevant commits from Enhanced Cognee:
+**Step 3**: Cherry-pick only the relevant commits from RNR Enhanced Cognee:
 ```
 git cherry-pick <Phase 2 commits>
 ```
@@ -472,7 +472,7 @@ pytest tests/ -v  # must pass 100%
 - Clear description of what the tools do
 - Reference to the upstream API they wrap
 - Test coverage for the new tools
-- No references to Enhanced Cognee-specific infrastructure (use upstream DB adapters)
+- No references to RNR Enhanced Cognee-specific infrastructure (use upstream DB adapters)
 
 ### 7.3 - Benefits to You
 
@@ -485,7 +485,7 @@ pytest tests/ -v  # must pass 100%
 
 - More MCP tool coverage attracts developers using MCP-compatible IDEs
 - External loader tools (URL, DB) make cognee more usable out of the box
-- Production experience from Enhanced Cognee deployment provides real-world
+- Production experience from RNR Enhanced Cognee deployment provides real-world
   validation of the v1.0.9 API
 
 ### 7.5 - Recommended First PR
@@ -493,7 +493,7 @@ pytest tests/ -v  # must pass 100%
 Start with the 6 Phase 3 loader tools (`ingest_url`, `ingest_db`, `translate_text`,
 `regex_extract_entities`, `extract_graph_v2`, `list_loaders`). These:
 - Wrap existing upstream tasks with no modifications
-- Are completely generic (no Enhanced Cognee-specific code)
+- Are completely generic (no RNR Enhanced Cognee-specific code)
 - Add real value for anyone using cognee as an MCP server
 - Have test coverage already in `bin/mcp_modules/phase3_loaders.py`
 
@@ -549,7 +549,7 @@ Apache 2.0 requires a `NOTICE` file for derivative works. Create `NOTICE` at the
 project root with this content:
 
 ```
-Enhanced Cognee
+RNR Enhanced Cognee
 Copyright 2026 Vincent S. Pereira
 
 This product is a derivative work of Cognee
@@ -577,7 +577,7 @@ Third-party components:
 - pgvector: https://github.com/pgvector/pgvector (MIT)
 ```
 
-**Note**: Neo4j Community Edition is GPL v3. If Enhanced Cognee is distributed
+**Note**: Neo4j Community Edition is GPL v3. If RNR Enhanced Cognee is distributed
 as a product (not just a tool or internal service), consult a license attorney
 on GPL compatibility with Apache 2.0 in your use case.
 
@@ -585,7 +585,7 @@ on GPL compatibility with Apache 2.0 in your use case.
 
 Contributors should be listed in `docs/policies/CONTRIBUTORS.md`. At minimum:
 - Topoteretes UG (original Cognee)
-- Vincent S. Pereira (Enhanced Cognee)
+- Vincent S. Pereira (RNR Enhanced Cognee)
 
 ---
 
@@ -628,7 +628,7 @@ Reduces duplication and makes the codebase maintainable.
 **Next action**: See Task 2.2 above.
 
 ### 11.3 - PyPI Publication [Value: HIGH, Effort: M]
-Enables `pip install enhanced-cognee`. Dramatically lowers barrier to entry.
+Enables `pip install RNR-Enhanced-Cognee`. Dramatically lowers barrier to entry.
 **Next action**: Update `setup.cfg`, build wheel, publish to TestPyPI first.
 
 ### 11.4 - Integration Test Suite [Value: HIGH, Effort: L]
@@ -691,7 +691,7 @@ Adds a layer of semantic structure to stored memories.
 - `bin/enhanced_cognee_cli.py` (NEW - argparse CLI, 7 commands)
 - `bin/setup_wizard.py` (updated - added Docker startup, health, MCP config steps)
 - `bin/enhanced_cognee_mcp_server.py` (updated - 7 new tools, session init, backend selection)
-- `pyproject.toml` (updated - `enhanced-cognee` entry point added)
+- `pyproject.toml` (updated - `RNR-Enhanced-Cognee` entry point added)
 - `tests/unit/test_phase4_coverage.py` (updated - tool count 72 -> 79)
 
 Tool count: 72 -> 79 (+7 tools: search_quick, get_memory_detail, get_related, start_session, end_session, get_session_context, get_session_history)
@@ -699,7 +699,7 @@ Tool count: 72 -> 79 (+7 tools: search_quick, get_memory_detail, get_related, st
 ---
 
 These items were identified in the post-Phase-6 user review as the next major
-improvement area. They bring Enhanced Cognee closer to the ease-of-use of
+improvement area. They bring RNR Enhanced Cognee closer to the ease-of-use of
 simpler alternatives while keeping enterprise depth.
 
 ### 12.1 - Flexible Database Stack [Value: HIGH, Effort: L]
@@ -746,12 +746,12 @@ of `pip install` from Original Cognee while keeping the enterprise stack availab
 
 **Phase A - pip install with auto-config (Effort: M)**:
 ```bash
-pip install enhanced-cognee
-enhanced-cognee setup          # interactive wizard
-enhanced-cognee start          # starts MCP server + stack
+pip install RNR-Enhanced-Cognee
+RNR-Enhanced-Cognee setup          # interactive wizard
+RNR-Enhanced-Cognee start          # starts MCP server + stack
 ```
 
-The `enhanced-cognee setup` wizard should:
+The `RNR-Enhanced-Cognee setup` wizard should:
 1. Ask: full stack or lite mode?
 2. If full: offer to start Docker stack automatically
 3. Ask for LLM provider and API key (or "use local Ollama")
@@ -761,9 +761,9 @@ The `enhanced-cognee setup` wizard should:
 
 **Phase B - Docker automation (Effort: S)**:
 ```bash
-enhanced-cognee docker up      # equivalent to docker compose up -d
-enhanced-cognee docker status  # show container health
-enhanced-cognee docker down    # clean shutdown
+RNR-Enhanced-Cognee docker up      # equivalent to docker compose up -d
+RNR-Enhanced-Cognee docker status  # show container health
+RNR-Enhanced-Cognee docker down    # clean shutdown
 ```
 
 **Implementation steps**:
@@ -771,7 +771,7 @@ enhanced-cognee docker down    # clean shutdown
 2. Add `setup` command with questionnaire (use `questionary` library)
 3. Add `docker` sub-commands that wrap docker compose
 4. Register as entry point in `setup.cfg`:
-   `[options.entry_points] console_scripts = enhanced-cognee = bin.enhanced_cognee_cli:main`
+   `[options.entry_points] console_scripts = RNR-Enhanced-Cognee = bin.enhanced_cognee_cli:main`
 5. Publish to PyPI (see 11.3)
 
 **Reference**: Original Cognee uses `pip install cognee` + environment variables.
@@ -866,7 +866,7 @@ recent memories into context without the user needing to ask.
 **How Claude-Mem does it**: Uses MCP hooks (`preToolUse`, `postToolUse`) to
 automatically call memory search on every conversation turn.
 
-**Enhanced Cognee approach** (compatible with any MCP IDE):
+**RNR Enhanced Cognee approach** (compatible with any MCP IDE):
 1. Add a `get_session_context` tool that returns the top-N most recent and relevant
    memories for a given agent/user
 2. Document in IDE setup guides how to configure the IDE to call this tool on startup
@@ -961,7 +961,7 @@ No code changes required - trigger types were already correct.
 
 **Goal**: Reduce the number of tools that require explicit user invocation from 18 to 5.
 The remaining 13 tools are promoted to Auto (A) or System (S) so that the AI IDE or the
-Enhanced Cognee system itself calls them at the right moment, without the user needing
+RNR Enhanced Cognee system itself calls them at the right moment, without the user needing
 to think about which tool to invoke.
 
 **CORRECTION (post-review 2026-05-13)**: A reassessment of the actual MCP server code
@@ -975,7 +975,7 @@ discrepancy is documented in Section 13.10 below.
 - **Auto (A)**: The LLM/IDE invokes these based on conversation context. The tool
   docstring is the signal - it tells the model "call me when X happens". No code changes
   needed; only docstring improvements.
-- **System (S)**: The Enhanced Cognee system calls these internally - either via the
+- **System (S)**: The RNR Enhanced Cognee system calls these internally - either via the
   MaintenanceScheduler (recurring), as post-ingestion pipeline hooks (event-driven),
   or via policy rules (threshold-driven). No user action needed at all.
 
@@ -1361,15 +1361,15 @@ When Phase 8 implementation is complete, update README.md:
    ```
    Manual (M): 5 tools  - require explicit user action
    Auto (A): 24 tools   - AI IDE calls based on conversation context
-   System (S): 41 tools - Enhanced Cognee calls internally
+   System (S): 41 tools - RNR Enhanced Cognee calls internally
    ```
 
 2. **Manual tools list**: Reduce to 5: `delete_memory`, `restore_backup`,
    `cancel_task`, `forget_memory`, `ingest_db`.
 
-3. **Why Use Enhanced Cognee section**: Add bullet:
+3. **Why Use RNR Enhanced Cognee section**: Add bullet:
    "Minimal manual overhead - 93% of tools (65 of 70) are called automatically
-   by the AI IDE or by the Enhanced Cognee system itself. Only 5 destructive
+   by the AI IDE or by the RNR Enhanced Cognee system itself. Only 5 destructive
    operations require explicit user confirmation."
 
 4. **Mermaid System Architecture diagram**: Add a "Post-Ingestion Pipeline" node
@@ -1515,13 +1515,13 @@ Two tools are missing explicit `TRIGGER TYPE:` annotations in their docstrings:
 - `alembic-enhanced.ini` (Alembic ini for Enhanced stack)
 
 **MCP tool added:** `query_audit_log` (total tools: 72 -> 80)
-**CLI command added:** `enhanced-cognee migrate upgrade/downgrade/current/history`
+**CLI command added:** `RNR-Enhanced-Cognee migrate upgrade/downgrade/current/history`
 
 All modules degrade gracefully when optional dependencies (Presidio, OpenTelemetry) are not installed.
 
 ---
 
-This phase brings Enhanced Cognee from "feature complete" to "production grade".
+This phase brings RNR Enhanced Cognee from "feature complete" to "production grade".
 It addresses gaps found during the post-Phase-8 review: security hardening,
 observability stack, resilience patterns, and operational maturity.
 
@@ -1759,14 +1759,14 @@ schema is created on first run with no migration path.
 
 **Implementation**:
 1. Add `alembic/` directory with initial baseline migration
-2. Add `enhanced-cognee migrate` CLI command (depends on 12.2 CLI work)
+2. Add `RNR-Enhanced-Cognee migrate` CLI command (depends on 12.2 CLI work)
 3. Run migrations automatically on server startup (config-gated)
 4. Add migration version display to `get_stats` MCP tool
 
 **Acceptance**:
 - Schema changes are versioned in git
-- `enhanced-cognee migrate --check` shows pending migrations
-- `enhanced-cognee migrate --apply` runs them
+- `RNR-Enhanced-Cognee migrate --check` shows pending migrations
+- `RNR-Enhanced-Cognee migrate --apply` runs them
 
 ---
 
@@ -1786,7 +1786,7 @@ Tool count: 80 (Phase 9 baseline) -> 93 (Phase 10 complete).
 | 15.5 | Tier promotion | src/memory_tier_manager.py | promote_memory_tier, get_tier_stats |
 | 15.6 | Graph compaction | src/graph_compactor.py | compact_knowledge_graph, get_graph_stats |
 
-These features turn Enhanced Cognee from a flat memory store into a true knowledge
+These features turn RNR Enhanced Cognee from a flat memory store into a true knowledge
 management system with provenance, confidence, and lifecycle management.
 
 ### 15.1 - Memory Versioning [Value: HIGH, Effort: M]

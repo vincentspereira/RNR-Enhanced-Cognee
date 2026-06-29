@@ -1,9 +1,9 @@
-# Enhanced Cognee Implementation for Codex
+# RNR Enhanced Cognee Implementation for Codex
 
 ## Overview
 
 This document is the Codex-facing counterpart to `CLAUDE.md`. Both files describe
-the same Enhanced Cognee memory architecture; this one is tuned for the Codex CLI
+the same RNR Enhanced Cognee memory architecture; this one is tuned for the Codex CLI
 and uses ASCII-only formatting throughout (no emojis, no checkmarks) so it round-trips
 cleanly through Windows cp1252 consoles.
 
@@ -83,7 +83,7 @@ Configuration file (`.enhanced-cognee-config.json`):
 
 ### 3. Standard Memory MCP Interface
 
-Enhanced Cognee MCP server provides standard memory tools for Codex integration.
+RNR Enhanced Cognee MCP server provides standard memory tools for Codex integration.
 
 Available Memory Tools:
 
@@ -95,7 +95,7 @@ Available Memory Tools:
 - `delete_memory`    -- Delete memory
 - `list_agents`      -- List all agents with memories
 
-Enhanced Cognee Tools:
+RNR Enhanced Cognee Tools:
 
 - `cognify`    -- Add data to knowledge graph
 - `search`     -- Search knowledge graph
@@ -113,7 +113,7 @@ a `TenantContext` automatically.
 
 Completed components:
 
-- [OK] Enhanced Cognee MCP server (stdio + FastAPI HTTP variants, ASCII-only)
+- [OK] RNR Enhanced Cognee MCP server (stdio + FastAPI HTTP variants, ASCII-only)
 - [OK] Standard Memory MCP tools (Codex-compatible)
 - [OK] Dynamic Category System (no hardcoded categories)
 - [OK] Multi-tenant data partitioning (ContextVar + naming helpers + per-tenant
@@ -136,7 +136,7 @@ MCP Server Configuration:
 ### Memory Stack Architecture
 
 ```
-Enhanced Cognee Memory Stack (default profile, 100% MIT + Apache-2.0)
+RNR Enhanced Cognee Memory Stack (default profile, 100% MIT + Apache-2.0)
 +-- PostgreSQL + pgvector (Port 25432)
 |   +-- Relational database with vector extension
 |   +-- Agent memory persistence
@@ -154,9 +154,9 @@ Enhanced Cognee Memory Stack (default profile, 100% MIT + Apache-2.0)
 |   +-- High-speed caching layer
 |   +-- Real-time memory access
 |   +-- Session management
-+-- Enhanced Cognee MCP Server
++-- RNR Enhanced Cognee MCP Server
     +-- Standard Memory MCP tools (Codex)
-    +-- Enhanced Cognee tools (advanced features)
+    +-- RNR Enhanced Cognee tools (advanced features)
     +-- ASCII-only output (Windows compatible)
 ```
 
@@ -296,7 +296,7 @@ Parameters: None
 Returns:    List of all agent IDs with memory counts
 ```
 
-### Enhanced Cognee Tools (Advanced)
+### RNR Enhanced Cognee Tools (Advanced)
 
 Cognify -- transform data to knowledge:
 
@@ -490,7 +490,7 @@ Parameters:
   agent_id: "my-agent"
 ```
 
-### 4. Use Enhanced Cognee Tools
+### 4. Use RNR Enhanced Cognee Tools
 
 ```
 Call MCP tool: cognify  (data: "Text to process and add to knowledge graph")
@@ -517,7 +517,7 @@ codex mcp list
 # Via MCP tool
 health() ->
 Returns:
-  Enhanced Cognee Health:
+  RNR Enhanced Cognee Health:
   OK PostgreSQL
   OK Qdrant
   OK ArcadeDB
@@ -529,7 +529,7 @@ Returns:
 ```python
 get_stats() ->
 {
-  "status": "Enhanced Cognee MCP Server",
+  "status": "RNR Enhanced Cognee MCP Server",
   "databases": {
     "postgresql": "OK Connected (42 documents)",
     "qdrant":     "OK Connected (5 collections)",
@@ -698,7 +698,7 @@ MCP Server:
 - [OK] Stdio MCP server (`enhanced_cognee_mcp_server.py`)
 - [OK] FastAPI HTTP MCP server (`src/enhanced_cognee_mcp.py`)
 - [OK] Standard Memory MCP tools (Codex compatible)
-- [OK] Enhanced Cognee tools (advanced features)
+- [OK] RNR Enhanced Cognee tools (advanced features)
 - [OK] ASCII-only output (Windows compatible)
 - [OK] API key auth + token-bucket rate limiter + payload cap (PR #37)
 
@@ -855,7 +855,7 @@ docker exec -it valkey-enhanced valkey-cli PING
 Call MCP tool: health
 
 Returns:
-  Enhanced Cognee Health:
+  RNR Enhanced Cognee Health:
   OK PostgreSQL
   OK Qdrant
   OK ArcadeDB
@@ -939,7 +939,7 @@ Client SDKs:
 
 ---
 
-Enhanced Cognee Implementation -- enterprise-grade memory architecture for
+RNR Enhanced Cognee Implementation -- enterprise-grade memory architecture for
 Codex with standard MCP memory interface, dynamic categories, multi-tenant
 isolation, cross-language SDKs, and ASCII-only output.
 

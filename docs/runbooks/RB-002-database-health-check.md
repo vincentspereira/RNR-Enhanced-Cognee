@@ -1,6 +1,6 @@
 # Runbook RB-002: Database Health Check and Recovery
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Developers and operators
 
 ---
@@ -8,7 +8,7 @@
 ## When to Use This Runbook
 
 Use this runbook when:
-- The enhanced-cognee health command reports [FAIL] for one or more databases
+- The RNR-Enhanced-Cognee health command reports [FAIL] for one or more databases
 - MCP tools return [ERR] messages mentioning a specific database
 - The MCP server starts but some tools return no results
 
@@ -16,11 +16,11 @@ Use this runbook when:
 
 ## Step 1: Run the Health Check Command
 
-    enhanced-cognee health
+    RNR-Enhanced-Cognee health
 
 Review each line. Identify which databases show [FAIL]. A healthy output looks like:
 
-    Enhanced Cognee Health Check
+    RNR Enhanced Cognee Health Check
     --------------------------------
     [OK] PostgreSQL  localhost:25432
     [OK] Qdrant      localhost:26333
@@ -53,12 +53,12 @@ Common log messages and causes:
 
 ## Step 3: Restart Failed Containers
 
-    enhanced-cognee docker up
+    RNR-Enhanced-Cognee docker up
 
 This restarts any stopped containers without affecting running ones. Wait 15 seconds
 for databases to initialise, then rerun:
 
-    enhanced-cognee health
+    RNR-Enhanced-Cognee health
 
 If a container fails to start after two attempts, proceed to manual verification.
 
@@ -66,7 +66,7 @@ If a container fails to start after two attempts, proceed to manual verification
 
 ## Step 4: Manual Connection Verification
 
-Use these commands to verify connectivity independently of the Enhanced Cognee CLI.
+Use these commands to verify connectivity independently of the RNR Enhanced Cognee CLI.
 
 **PostgreSQL:**
 
@@ -108,7 +108,7 @@ unless a backup was taken (see RB-003).
 
 After recovery, rerun the health check and confirm all lines show [OK]:
 
-    enhanced-cognee health
+    RNR-Enhanced-Cognee health
 
 If [FAIL] persists for a specific database after following the steps above, open
 an issue and include the output of:

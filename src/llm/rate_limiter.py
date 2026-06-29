@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - LLM API Rate Limiter
+RNR Enhanced Cognee - LLM API Rate Limiter
 
 This module provides rate limiting for LLM API calls to:
 - Prevent hitting provider rate limits
@@ -14,7 +14,7 @@ Supports:
 - Custom limits per provider
 - Token-based and request-based rate limiting
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

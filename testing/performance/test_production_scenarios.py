@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Advanced Performance Testing Scenarios
+RNR Enhanced Cognee Advanced Performance Testing Scenarios
 
 This module provides comprehensive production-like performance testing scenarios for the Enhanced
 Cognee Multi-Agent System, including real-world user behavior modeling, long-running stability

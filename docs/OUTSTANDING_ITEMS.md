@@ -1,6 +1,6 @@
 # Outstanding Items & Gap Analysis
 
-A frank look at what's still rough or missing in Enhanced Cognee.
+A frank look at what's still rough or missing in RNR Enhanced Cognee.
 Originally written 2026-05-18; refreshed 2026-05-21 to mark items
 that have actually shipped. Categorised by urgency.
 
@@ -53,7 +53,7 @@ content task tracked by issue #67 -- the monitoring mechanism itself is done.
 `deploy/integration-with-mas/README.md`. Code-level wiring intentionally
 deferred to a future session per the original session constraint.
 
-**Risk:** MAS won't actually consume Enhanced Cognee memories until this
+**Risk:** MAS won't actually consume RNR Enhanced Cognee memories until this
 is implemented.
 
 **Fix:** Allocate 1-2 weeks for the integration sprint. Follow the
@@ -160,7 +160,7 @@ install step is in the installer scripts.
 
 **Status:** Live. `mkdocs-material` config + the `Docs Site` workflow
 (`docs-site.yml`) build and deploy on every push to main. GitHub Pages was
-enabled via `gh api -X POST repos/vincentspereira/Enhanced-Cognee/pages
+enabled via `gh api -X POST repos/vincentspereira/RNR-Enhanced-Cognee/pages
 -f build_type=workflow`; the workflow is green and the site is live at
 https://vincentspereira.github.io/Enhanced-Cognee/ . (The mkdocs build
 always succeeded; the deploy step had 404'd until Pages was enabled.)
@@ -289,7 +289,7 @@ captured and the three real baselines stand; 15 on a ratcheting mypy
 allowlist (now 5 modules). What genuinely remains:
 
 1. **MAS integration** (item 4, DEFERRED) -- code-level wiring is owned by the
-   MAS team; Enhanced Cognee only needs to be *ready*, which it now is (both
+   MAS team; RNR Enhanced Cognee only needs to be *ready*, which it now is (both
    stdio MCP and HTTP `/tools` surfaces verified). Largest remaining item but
    not on EC's plate.
 2. **Port upstream v1.1.2 changes** -- the upstream-sync monitor flagged a new

@@ -12,9 +12,9 @@ cognee_path = Path(__file__).parent / "cognee-mcp" / "src"
 sys.path.insert(0, str(cognee_path))
 
 def main():
-    """Main entry point - Enhanced Cognee MCP with Enterprise Stack"""
+    """Main entry point - RNR Enhanced Cognee MCP with Enterprise Stack"""
 
-    # Enhanced Cognee Mode
+    # RNR Enhanced Cognee Mode
     os.environ["ENHANCED_COGNEE_MODE"] = "true"
 
     # Multi-Provider LLM Configuration (Ollama - Local)
@@ -85,7 +85,7 @@ def main():
     os.environ["ENV"] = "local"
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-    print("Starting Enhanced Cognee MCP Server")
+    print("Starting RNR Enhanced Cognee MCP Server")
     print("Architecture: PostgreSQL+pgVector | Qdrant | Neo4j | Redis")
     print("LLM: Z.ai (primary) + Ollama (embeddings)")
     print("Memory: Enhanced categorization with ATS/OMA/SMC prefixes")

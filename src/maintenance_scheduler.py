@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Maintenance Scheduler
+RNR Enhanced Cognee - Maintenance Scheduler
 
-Automated maintenance system for Enhanced Cognee stack:
+Automated maintenance system for RNR Enhanced Cognee stack:
 - Scheduled cleanup of expired memories
 - Scheduled archival of old data
 - Index optimization
@@ -15,7 +15,7 @@ Features:
 - Performance metrics
 - Failure alerts
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 class MaintenanceScheduler:
     """
-    Background maintenance scheduler for Enhanced Cognee.
+    Background maintenance scheduler for RNR Enhanced Cognee.
 
     Manages automated maintenance tasks like cleanup, archival, and optimization.
     """

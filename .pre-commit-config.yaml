@@ -1,4 +1,4 @@
-# Enhanced Cognee - Pre-commit hooks
+# RNR Enhanced Cognee - Pre-commit hooks
 # Run: pre-commit install   (once)
 # Run: pre-commit run --all-files  (check all)
 

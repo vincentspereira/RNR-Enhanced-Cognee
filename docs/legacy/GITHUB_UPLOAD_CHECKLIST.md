@@ -1,4 +1,4 @@
-# GitHub Upload Checklist for Enhanced Cognee
+# GitHub Upload Checklist for RNR Enhanced Cognee
 
 ## ✅ Completed Tasks
 
@@ -22,7 +22,7 @@
   - Architecture diagrams
   - License and acknowledgments
 
-- ✅ `CONTRIBUTING.md` - Tailored for Enhanced Cognee with:
+- ✅ `CONTRIBUTING.md` - Tailored for RNR Enhanced Cognee with:
   - Development setup
   - Code style guidelines
   - ASCII-only output requirements
@@ -69,7 +69,7 @@
 
 4. **Create a new GitHub repository**:
    - Go to https://github.com/new
-   - Repository name: `enhanced-cognee`
+   - Repository name: `RNR-Enhanced-Cognee`
    - Description: "Enterprise-grade AI memory infrastructure - Enhanced fork of Cognee with PostgreSQL, Qdrant, Neo4j, Redis, and MCP server"
    - Visibility: Public
    - Initialize with: README (this will be replaced)
@@ -84,7 +84,7 @@
    git commit -m "feat: prepare for public GitHub release
 
    - Added comprehensive README.md with original Cognee credit
-   - Updated CONTRIBUTING.md for Enhanced Cognee
+   - Updated CONTRIBUTING.md for RNR Enhanced Cognee
    - Cleaned .env.example (removed real credentials)
    - Removed personal information from documentation
    - Added ASCII-only output requirements
@@ -158,7 +158,7 @@ Enterprise-grade AI memory infrastructure - Enhanced fork of Cognee with Postgre
 
 ## 📊 Repository Summary
 
-**Enhanced Cognee** is a derivative work of [Cognee](https://github.com/topoteretes/cognee) with:
+**RNR Enhanced Cognee** is a derivative work of [Cognee](https://github.com/topoteretes/cognee) with:
 
 ### Key Enhancements:
 1. PostgreSQL + pgVector (instead of SQLite)
@@ -172,7 +172,7 @@ Enterprise-grade AI memory infrastructure - Enhanced fork of Cognee with Postgre
 
 ### Files to Upload:
 - ✅ README.md (comprehensive, with credits)
-- ✅ CONTRIBUTING.md (tailored for Enhanced Cognee)
+- ✅ CONTRIBUTING.md (tailored for RNR Enhanced Cognee)
 - ✅ LICENSE (Apache 2.0)
 - ✅ .env.example (placeholders only)
 - ✅ .gitignore (properly configured)

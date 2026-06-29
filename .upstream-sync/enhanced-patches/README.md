@@ -1,6 +1,6 @@
-# Enhanced Cognee Fork Patches
+# RNR Enhanced Cognee Fork Patches
 
-Canonical record of Enhanced Cognee's customizations to upstream
+Canonical record of RNR Enhanced Cognee's customizations to upstream
 `topoteretes/cognee`. These MUST be re-applied after a full rebase onto a new
 upstream tag (see `docs/UPSTREAM_SYNC_RUNBOOK.md`, section 8).
 
@@ -8,15 +8,15 @@ upstream tag (see `docs/UPSTREAM_SYNC_RUNBOOK.md`, section 8).
 
 ### telemetry_opt_in.diff -> `cognee/shared/utils.py`
 Privacy: product telemetry is made **OPT-IN**. `send_telemetry()` returns
-immediately unless `COGNEE_TELEMETRY_ENABLED` is set, so Enhanced Cognee never
+immediately unless `COGNEE_TELEMETRY_ENABLED` is set, so RNR Enhanced Cognee never
 phones home to `https://test.prometh.ai` by default -- in ANY context (general
 use, MCP, API, or an air-gapped consuming app). The upstream `TELEMETRY_DISABLED`
 and `ENV {test, dev}` gates are retained as defence-in-depth.
 
-This is the SOLE telemetry mechanism. Enhanced Cognee is deliberately left
+This is the SOLE telemetry mechanism. RNR Enhanced Cognee is deliberately left
 general-purpose (cloud LLMs and HTTP requests remain enabled); any air-gap
 configuration (local-only LLM, `ALLOW_HTTP_REQUESTS=False`, etc.) belongs INSIDE
-the air-gapped consuming application (e.g. LSWA), not in Enhanced Cognee.
+the air-gapped consuming application (e.g. LSWA), not in RNR Enhanced Cognee.
 
 Re-apply after every rebase of `cognee/`:
 

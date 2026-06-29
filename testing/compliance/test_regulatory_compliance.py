@@ -1,7 +1,7 @@
 """
-Enhanced Cognee Regulatory Compliance Testing Framework
+RNR Enhanced Cognee Regulatory Compliance Testing Framework
 
-This module provides comprehensive compliance testing for the Enhanced Cognee
+This module provides comprehensive compliance testing for the RNR Enhanced Cognee
 Multi-Agent System, covering major regulatory frameworks including GDPR, SOC 2,
 PCI DSS, ISO 27001, HIPAA, and industry-specific requirements.
 

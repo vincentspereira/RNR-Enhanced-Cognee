@@ -1,11 +1,11 @@
 #!/bin/bash
 ################################################################################
-# Enhanced Cognee Lite Mode - Installation Script (Linux/Mac)
+# RNR Enhanced Cognee Lite Mode - Installation Script (Linux/Mac)
 #
 # Lightweight setup with SQLite, no Docker required.
 # Setup time: <2 minutes
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 ################################################################################
@@ -37,7 +37,7 @@ LITE_DIR="$SCRIPT_DIR/src/lite_mode"
 CONFIG_FILE="$LITE_DIR/lite_config.json"
 DB_FILE="$SCRIPT_DIR/cognee_lite.db"
 
-print_info "Enhanced Cognee Lite Mode Installation"
+print_info "RNR Enhanced Cognee Lite Mode Installation"
 echo "==========================================="
 echo ""
 
@@ -168,7 +168,7 @@ else:
 # Test adding a memory
 doc_id = db.add_document(
     data_id="test_memory",
-    data_text="Enhanced Cognee Lite Mode installation test",
+    data_text="RNR Enhanced Cognee Lite Mode installation test",
     data_type="test",
     metadata={"test": True},
     user_id="installer",
@@ -198,12 +198,12 @@ fi
 print_info "Creating startup script..."
 cat > "$SCRIPT_DIR/start_lite.sh" <<'EOF'
 #!/bin/bash
-# Enhanced Cognee Lite Mode - Startup Script
+# RNR Enhanced Cognee Lite Mode - Startup Script
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-echo "Starting Enhanced Cognee Lite Mode..."
+echo "Starting RNR Enhanced Cognee Lite Mode..."
 echo "Database: $SCRIPT_DIR/cognee_lite.db"
 echo ""
 

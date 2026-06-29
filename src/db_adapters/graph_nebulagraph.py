@@ -4,7 +4,7 @@ NebulaGraph (https://www.nebula-graph.io/) is an Apache-2.0 distributed
 graph database. Its native query language is nGQL, but NebulaGraph 3+
 also supports openCypher syntax for a subset of operations. This
 adapter routes through the official ``nebula3-python`` driver and uses
-openCypher mode for the narrow query subset Enhanced Cognee's call
+openCypher mode for the narrow query subset RNR Enhanced Cognee's call
 sites use.
 
 **Storage model:** all graph nodes live in a single tag (default

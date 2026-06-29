@@ -1,4 +1,4 @@
--- Enhanced Cognee - LLM Rate Limit Statistics Table Migration
+-- RNR Enhanced Cognee - LLM Rate Limit Statistics Table Migration
 -- Version: 1.0.0
 -- Date: 2026-02-06
 -- Description: Create table for tracking LLM API rate limit statistics

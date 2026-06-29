@@ -36,7 +36,7 @@ You can immediately see:
 
 ```
 +-------------------+
-| Enhanced Cognee   |
+| RNR Enhanced Cognee   |
 | MCP server        |
 |   (instrumented)  |---->[OTLP/gRPC port 4317]----+
 +-------------------+                              |

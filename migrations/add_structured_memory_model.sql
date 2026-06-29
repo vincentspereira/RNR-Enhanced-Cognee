@@ -1,9 +1,9 @@
--- Enhanced Cognee - Structured Memory Model Migration
+-- RNR Enhanced Cognee - Structured Memory Model Migration
 --
 -- This migration adds hierarchical observation structure like claude-mem.
 -- Enables structured memory types, concepts, and rich metadata.
 --
--- Author: Enhanced Cognee Team
+-- Author: RNR Enhanced Cognee Team
 -- Version: 1.0.0
 -- Date: 2026-02-06
 

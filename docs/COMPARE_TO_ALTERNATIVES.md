@@ -1,13 +1,13 @@
-# Enhanced Cognee vs Alternatives
+# RNR Enhanced Cognee vs Alternatives
 
 A clear-eyed comparison so first-time visitors can decide in under 30 seconds whether
-Enhanced Cognee fits their use case.
+RNR Enhanced Cognee fits their use case.
 
 ## TL;DR
 
 | If you need... | Use |
 |---|---|
-| Production-grade, multi-database memory layer with 122 MCP tools | **Enhanced Cognee** |
+| Production-grade, multi-database memory layer with 122 MCP tools | **RNR Enhanced Cognee** |
 | Lightweight Cognee with single-DB setup, no enterprise features | [Cognee](https://github.com/topoteretes/cognee) (upstream) |
 | Hosted memory-as-a-service with no ops burden | [Mem0](https://github.com/mem0ai/mem0) |
 | Long-term memory for chat agents with temporal knowledge graphs | [Zep](https://github.com/getzep/zep) (Apache-2.0, Go + Python SDKs) |
@@ -18,7 +18,7 @@ Enhanced Cognee fits their use case.
 
 ## Detailed Comparison
 
-| Feature | Enhanced Cognee | Cognee (upstream) | Mem0 | Zep | Letta | LangChain Memory |
+| Feature | RNR Enhanced Cognee | Cognee (upstream) | Mem0 | Zep | Letta | LangChain Memory |
 |---|---|---|---|---|---|---|
 | **Setup** | Docker Compose + pip/uv (one-command installer) | Docker / pip | Hosted (SaaS) | Docker | Docker / pip | pip install |
 | **Self-hostable** | Yes | Yes | Open-source variant | Yes (Apache-2.0) | Yes | N/A |
@@ -41,8 +41,8 @@ Enhanced Cognee fits their use case.
 | **Python SDK** | Yes (`enhanced-cognee-client` on PyPI) | Yes | Yes | Yes (`zep-python`) | Yes | Built-in |
 
 **Zep note:** Zep added a strong "temporal knowledge graph" memory feature in
-2024 (Graphiti) which is conceptually similar to Enhanced Cognee's Neo4j layer.
-The trade-off: Zep is great for chat-message memory; Enhanced Cognee is broader
+2024 (Graphiti) which is conceptually similar to RNR Enhanced Cognee's Neo4j layer.
+The trade-off: Zep is great for chat-message memory; RNR Enhanced Cognee is broader
 (tool-call memory, code memory, multi-agent memory, MCP-native).
 
 **LlamaIndex note:** Not included in the table because it's primarily a
@@ -50,7 +50,7 @@ retrieval framework, not a memory layer. If you need RAG over a static corpus,
 use LlamaIndex; if you need agent memory that grows over time, use Enhanced
 Cognee (or one of the others above).
 
-## When Enhanced Cognee is the right choice
+## When RNR Enhanced Cognee is the right choice
 
 - You want **all 4 storage tiers** (relational + vector + graph + cache) without
   cobbling them together yourself.
@@ -62,7 +62,7 @@ Cognee (or one of the others above).
   tenant isolation) out of the box.
 - You want **self-hostable, free-software** infrastructure without vendor lock-in.
 
-## When Enhanced Cognee is NOT the right choice
+## When RNR Enhanced Cognee is NOT the right choice
 
 - You want a **single Python import** and an in-process dict — use LangChain Memory.
 - You don't want to run Docker at all — use Mem0's hosted SaaS.
@@ -70,9 +70,9 @@ Cognee (or one of the others above).
 - You need **stateful agents with built-in workflow orchestration** — try Letta.
 - Your use case is **research / experimentation** where production-grade is overkill.
 
-## What Enhanced Cognee adds over upstream Cognee
+## What RNR Enhanced Cognee adds over upstream Cognee
 
-The upstream `topoteretes/cognee` is the foundation. Enhanced Cognee adds:
+The upstream `topoteretes/cognee` is the foundation. RNR Enhanced Cognee adds:
 
 1. **122 MCP tools** vs upstream's REST-only API
 2. **Enterprise stack** (Postgres + Qdrant + Neo4j + Valkey bundled) vs single-DB
@@ -94,20 +94,20 @@ classification of every tool).
 
 ## Cost over time (self-hosted, 1 user)
 
-| Month | Enhanced Cognee | Mem0 (Pro) | Letta (Cloud) |
+| Month | RNR Enhanced Cognee | Mem0 (Pro) | Letta (Cloud) |
 |---|---|---|---|
 | Month 1 | ~5 EUR (VPS) | $19 | $25 |
 | Month 12 | ~60 EUR/year | $228/year | $300/year |
 | Month 24 | ~120 EUR/year | $456/year | $600/year |
 
-For a single developer running Claude Code with personal memory, Enhanced Cognee
+For a single developer running Claude Code with personal memory, RNR Enhanced Cognee
 self-hosted is the most cost-effective option after month 3.
 
 ## Migration paths
 
-| From | To Enhanced Cognee | Notes |
+| From | To RNR Enhanced Cognee | Notes |
 |---|---|---|
 | Cognee (upstream) | Direct migration | All data formats compatible; add the 4-DB stack |
 | Mem0 | Use `cognify(data=...)` for each memory | Manual but straightforward |
 | LangChain Memory | Iterate + add_memory() | One-time script; preserve agent_id |
-| In-house solution | Use `mcp_memory_tools.add_memory()` in bulk | Match your schema to Enhanced Cognee's |
+| In-house solution | Use `mcp_memory_tools.add_memory()` in bulk | Match your schema to RNR Enhanced Cognee's |

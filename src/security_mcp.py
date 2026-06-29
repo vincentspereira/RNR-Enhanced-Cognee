@@ -1,5 +1,5 @@
 """
-Enhanced Cognee MCP Security Module
+RNR Enhanced Cognee MCP Security Module
 
 Provides authorization, input validation, and confirmation mechanisms
 for MCP tools to ensure production-ready security.

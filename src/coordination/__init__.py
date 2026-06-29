@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Coordination System
+RNR Enhanced Cognee Coordination System
 Comprehensive coordination layer for sub-agents with dynamic category configuration.
 """
 
@@ -9,7 +9,7 @@ from .distributed_decision import DistributedDecisionMaker
 from .coordination_api import app
 
 __version__ = "1.0.0"
-__author__ = "Enhanced Cognee Team"
+__author__ = "RNR Enhanced Cognee Team"
 
 # Coordination system components
 __all__ = [
@@ -21,7 +21,7 @@ __all__ = [
 
 # System metadata
 COORDINATION_SYSTEM_INFO = {
-    "name": "Enhanced Cognee Coordination System",
+    "name": "RNR Enhanced Cognee Coordination System",
     "version": __version__,
     "description": "Comprehensive coordination layer for multi-agent system",
     "components": {

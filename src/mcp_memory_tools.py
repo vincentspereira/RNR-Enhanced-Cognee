@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Standard Memory MCP Tools Module
+RNR Enhanced Cognee - Standard Memory MCP Tools Module
 
 This module contains the standard memory MCP tools that provide
 the core memory interface for Claude Code integration.

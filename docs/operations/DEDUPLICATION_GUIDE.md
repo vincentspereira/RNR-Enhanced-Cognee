@@ -1,10 +1,10 @@
-# Enhanced Cognee - Deduplication Guide
+# RNR Enhanced Cognee - Deduplication Guide
 
-Complete guide to deduplicating memories in Enhanced Cognee.
+Complete guide to deduplicating memories in RNR Enhanced Cognee.
 
 ## Overview
 
-Enhanced Cognee includes comprehensive deduplication capabilities:
+RNR Enhanced Cognee includes comprehensive deduplication capabilities:
 - Automatic duplicate detection
 - Scheduled periodic deduplication
 - Dry-run mode for preview
@@ -317,4 +317,4 @@ asyncio.run(check())
 
 ---
 
-**Deduplication** - Keep your Enhanced Cognee memory lean and efficient.
+**Deduplication** - Keep your RNR Enhanced Cognee memory lean and efficient.

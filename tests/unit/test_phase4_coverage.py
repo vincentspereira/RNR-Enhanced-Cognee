@@ -398,7 +398,7 @@ class TestPhase2ToolImports:
     def test_no_hardcoded_categories_in_mcp_server(self):
         """categories gate: no 'ats', 'oma', 'smc' in the Enhanced MCP server.
 
-        The gate is scoped to files introduced/owned by Enhanced Cognee phases.
+        The gate is scoped to files introduced/owned by RNR Enhanced Cognee phases.
         Legacy src/ violations (agent_memory_integration.py, coordination/, etc.)
         are tracked separately and will be cleaned up in a future sprint.
         """

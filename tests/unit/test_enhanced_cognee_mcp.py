@@ -171,7 +171,7 @@ def client():
 
     # Rebuild app without lifespan for TestClient isolation
     from fastapi import FastAPI
-    test_app = FastAPI(title="Enhanced Cognee MCP Server Test")
+    test_app = FastAPI(title="RNR Enhanced Cognee MCP Server Test")
     test_app.include_router(mod.server.app.router)
 
     # enhanced_mode=False makes any lifespan startup a no-op, so the mocked DB
@@ -1455,7 +1455,7 @@ class TestAppStructure:
 
     def test_app_has_correct_title(self):
         import src.enhanced_cognee_mcp as mod
-        assert mod.app.title == "Enhanced Cognee MCP Server"
+        assert mod.app.title == "RNR Enhanced Cognee MCP Server"
 
     def test_server_instance_created(self):
         import src.enhanced_cognee_mcp as mod

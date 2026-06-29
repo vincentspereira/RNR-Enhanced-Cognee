@@ -1,12 +1,12 @@
 # Phase 3 Visualizations - Quick Start Guide
 
-**Enhanced Cognee Dashboard - Data Visualization Features**
+**RNR Enhanced Cognee Dashboard - Data Visualization Features**
 
 ---
 
 ## Overview
 
-Phase 3 adds comprehensive data visualization capabilities to the Enhanced Cognee Dashboard. This guide helps you get started with the new features.
+Phase 3 adds comprehensive data visualization capabilities to the RNR Enhanced Cognee Dashboard. This guide helps you get started with the new features.
 
 ---
 

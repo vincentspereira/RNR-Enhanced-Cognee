@@ -1,5 +1,5 @@
 """
-Integration Tests for Enhanced Cognee Memory Stack
+Integration Tests for RNR Enhanced Cognee Memory Stack
 
 Tests integration between PostgreSQL+pgVector, Qdrant, Neo4j, and Redis
 for memory consistency, synchronization, and performance under load.
@@ -73,7 +73,7 @@ class TestMemoryStackIntegration:
     def sample_memory_data(self, sample_memory_embedding):
         """Sample memory data for testing"""
         return {
-            "content": "Enhanced Cognee integration test memory",
+            "content": "RNR Enhanced Cognee integration test memory",
             "agent_id": "test_agent_001",
             "embedding": sample_memory_embedding,
             "memory_type": "episodic",

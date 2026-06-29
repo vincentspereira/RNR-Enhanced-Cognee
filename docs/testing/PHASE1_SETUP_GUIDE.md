@@ -1,8 +1,8 @@
-# Enhanced Cognee Phase 1 Setup Guide
+# RNR Enhanced Cognee Phase 1 Setup Guide
 
 ## 🎯 Overview
 
-This guide walks you through the complete setup of Phase 1 of the Enhanced Cognee testing framework. Phase 1 focuses on establishing the foundation infrastructure, testing tools, and basic configuration needed for comprehensive testing.
+This guide walks you through the complete setup of Phase 1 of the RNR Enhanced Cognee testing framework. Phase 1 focuses on establishing the foundation infrastructure, testing tools, and basic configuration needed for comprehensive testing.
 
 ## 📋 Prerequisites
 
@@ -24,7 +24,7 @@ This guide walks you through the complete setup of Phase 1 of the Enhanced Cogne
   - 26333 (Qdrant)
   - 27474 (Neo4j)
   - 26379 (Redis)
-  - 28080 (Enhanced Cognee API)
+  - 28080 (RNR Enhanced Cognee API)
   - 29090 (Prometheus)
   - 29300 (Grafana)
 
@@ -32,7 +32,7 @@ This guide walks you through the complete setup of Phase 1 of the Enhanced Cogne
 
 ### 1. Clone Repository and Navigate
 ```bash
-cd "C:\Users\Vincent_Pereira\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 ```
 
 ### 2. Run Automated Setup
@@ -101,7 +101,7 @@ pip install --upgrade pip
 # Install testing framework
 pip install -r testing/requirements.txt
 
-# Install Enhanced Cognee in development mode
+# Install RNR Enhanced Cognee in development mode
 pip install -e .
 ```
 
@@ -205,7 +205,7 @@ REDIS_HOST=localhost
 REDIS_PORT=26379
 REDIS_PASSWORD=test_password
 
-# Enhanced Cognee Configuration
+# RNR Enhanced Cognee Configuration
 ENHANCED_COGNEE_PORT=28080
 LOG_LEVEL=INFO
 TESTING_MODE=true
@@ -320,7 +320,7 @@ asyncio.run(test_connections())
 
 ### Web Interfaces
 
-- **Enhanced Cognee API**: http://localhost:28080
+- **RNR Enhanced Cognee API**: http://localhost:28080
 - **API Documentation**: http://localhost:28080/docs
 - **Prometheus**: http://localhost:29090
 - **Grafana**: http://localhost:29300
@@ -393,7 +393,7 @@ chmod +x testing/scripts/*.sh
 #!/bin/bash
 # health_check.sh
 
-echo "🔍 Enhanced Cognee Infrastructure Health Check"
+echo "🔍 RNR Enhanced Cognee Infrastructure Health Check"
 
 # Check Docker services
 echo "Docker Services:"
@@ -424,7 +424,7 @@ docker stats --no-stream
    pytest -m "unit or integration" -v --cov-report=html
    ```
 
-2. **Start Enhanced Cognee API**
+2. **Start RNR Enhanced Cognee API**
    ```bash
    cd ..
    python -m cognee.api
@@ -471,4 +471,4 @@ If you encounter issues during setup:
 4. Create an issue in the project repository
 
 *Last Updated: 2025-11-13*
-*Enhanced Cognee Testing Framework*
+*RNR Enhanced Cognee Testing Framework*

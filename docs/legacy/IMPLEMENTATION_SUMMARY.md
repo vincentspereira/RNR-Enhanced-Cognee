@@ -1,8 +1,8 @@
-# Enhanced Cognee - Implementation Summary
+# RNR Enhanced Cognee - Implementation Summary
 
 ## 🎯 Features Implemented
 
-This document summarizes all the enhanced features implemented for Enhanced Cognee.
+This document summarizes all the enhanced features implemented for RNR Enhanced Cognee.
 
 ---
 
@@ -139,4 +139,4 @@ For full implementation, estimated additional storage needed:
 
 **Document Version:** 1.0  
 **Last Updated:** 2025-02-04  
-**Repository:** https://github.com/vincentspereira/Enhanced-Cognee
+**Repository:** https://github.com/vincentspereira/RNR-Enhanced-Cognee

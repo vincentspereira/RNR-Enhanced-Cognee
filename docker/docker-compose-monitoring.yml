@@ -1,8 +1,8 @@
 version: '3.8'
 
-# Enhanced Cognee Monitoring Stack
+# RNR Enhanced Cognee Monitoring Stack
 # Prometheus + Grafana + Node Exporter + cAdvisor
-# Provides comprehensive monitoring for Enhanced Cognee components
+# Provides comprehensive monitoring for RNR Enhanced Cognee components
 
 networks:
   monitoring:
@@ -262,7 +262,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # Custom Enhanced Cognee Exporter
+  # Custom RNR Enhanced Cognee Exporter
   enhanced-cognee-exporter:
     image: python:3.11-slim
     container_name: enhanced-cognee-exporter
@@ -275,7 +275,7 @@ services:
     volumes:
       - ./monitoring/enhanced-cognee-exporter:/app:ro
     ports:
-      - "29104:8000"  # Enhanced Cognee Exporter metrics
+      - "29104:8000"  # RNR Enhanced Cognee Exporter metrics
     networks:
       - monitoring
       - cognee-network
@@ -305,5 +305,5 @@ services:
   # Redis (dependency for redis-exporter)
   redis:
 
-  # Enhanced Cognee Server (dependency for custom exporter)
+  # RNR Enhanced Cognee Server (dependency for custom exporter)
   enhanced-cognee-server:

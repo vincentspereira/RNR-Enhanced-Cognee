@@ -1,7 +1,7 @@
 /**
- * Enhanced Cognee Node.js client.
+ * RNR Enhanced Cognee Node.js client.
  *
- * Talks to the FastAPI HTTP variant of the Enhanced Cognee MCP server
+ * Talks to the FastAPI HTTP variant of the RNR Enhanced Cognee MCP server
  * (src/enhanced_cognee_mcp.py) over HTTP/JSON. Endpoints covered:
  *
  *   POST  /memory/add          -> addMemory()
@@ -173,7 +173,7 @@ export class EnhancedCogneeClient {
       if (!resp.ok) {
         const text = await resp.text();
         throw new EnhancedCogneeError(
-          `Enhanced Cognee ${method} ${path} -> ${resp.status}`,
+          `RNR Enhanced Cognee ${method} ${path} -> ${resp.status}`,
           resp.status,
           text,
         );

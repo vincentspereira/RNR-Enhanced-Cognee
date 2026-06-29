@@ -1,4 +1,4 @@
-# Enhanced Cognee - Convenience targets for development and operations.
+# RNR Enhanced Cognee - Convenience targets for development and operations.
 # Cross-platform: works on Linux/macOS (GNU make) and Windows (via PowerShell or bash).
 # All targets are idempotent and safe to re-run.
 
@@ -35,7 +35,7 @@ COMPOSE_FILE ?= docker/docker-compose-enhanced-cognee.yml
 # ============================================================================
 
 help:	## Show this help
-	@echo "Enhanced Cognee - available commands:"
+	@echo "RNR Enhanced Cognee - available commands:"
 	@echo ""
 	@echo "  Development:"
 	@echo "    make install      Install Python deps + editable package"

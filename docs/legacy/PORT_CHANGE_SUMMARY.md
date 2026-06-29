@@ -120,5 +120,5 @@ npm run dev
 ---
 
 **Generated:** 2026-02-06
-**Enhanced Cognee Team**
+**RNR Enhanced Cognee Team**
 **Status:** Port change complete

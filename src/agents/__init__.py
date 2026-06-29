@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Agents System
+RNR Enhanced Cognee Agents System
 Dynamic agent registry - categories loaded from configuration.
 Legacy ATS/OMA/SMC agent modules were archived in Phase 4.
 """

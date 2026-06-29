@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Phase 9 Production Hardening: PII Detector
+RNR Enhanced Cognee - Phase 9 Production Hardening: PII Detector
 =============================================================
 Config-gated Personally Identifiable Information (PII) detection and
 redaction module.
@@ -14,7 +14,7 @@ data-scrubbing of content that is legitimately stored in memory.
 
 ASCII-only: no Unicode in string literals, comments, or log messages.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0 (Phase 9)
 """
 
@@ -79,7 +79,7 @@ _pii_detector: Optional["PIIDetector"] = None
 
 class PIIDetector:
     """
-    PII detection and redaction for Enhanced Cognee memory entries.
+    PII detection and redaction for RNR Enhanced Cognee memory entries.
 
     Presidio is used when available; regex patterns are used as fallback.
     The detector is disabled by default - pass enabled=True to activate it.

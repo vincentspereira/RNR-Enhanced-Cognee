@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Phase 9 Production Hardening: Circuit Breaker
+RNR Enhanced Cognee - Phase 9 Production Hardening: Circuit Breaker
 ================================================================
 Implements the circuit-breaker pattern to protect downstream database
 connections from cascading failures.
@@ -18,7 +18,7 @@ HALF_OPEN The breaker is testing whether the downstream service has
 
 ASCII-only: no Unicode in string literals, comments, or log messages.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0 (Phase 9)
 """
 
@@ -381,7 +381,7 @@ class CircuitBreakerRegistry:
 
 _registry = CircuitBreakerRegistry()
 
-# Pre-register breakers for the four Enhanced Cognee databases so that
+# Pre-register breakers for the four RNR Enhanced Cognee databases so that
 # callers get a ready-to-use breaker without an explicit registration step.
 for _name in _DEFAULT_BREAKER_NAMES:
     _registry.get(_name)

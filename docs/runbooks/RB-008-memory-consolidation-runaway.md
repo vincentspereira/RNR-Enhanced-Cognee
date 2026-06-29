@@ -1,6 +1,6 @@
 # Runbook RB-008: Memory Consolidation Runaway
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Operators, developers
 
 ---
@@ -165,8 +165,8 @@ To prevent future over-aggressive consolidation:
 
 3. Restart the MCP server to apply the change:
 
-       enhanced-cognee stop
-       enhanced-cognee start
+       RNR-Enhanced-Cognee stop
+       RNR-Enhanced-Cognee start
 
 4. Verify the new threshold is active:
 

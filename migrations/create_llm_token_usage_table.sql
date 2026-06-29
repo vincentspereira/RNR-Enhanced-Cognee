@@ -1,4 +1,4 @@
--- Enhanced Cognee - LLM Token Usage Tracking Table Migration
+-- RNR Enhanced Cognee - LLM Token Usage Tracking Table Migration
 -- Version: 1.0.0
 -- Date: 2026-02-06
 -- Description: Create table for tracking LLM token usage and costs
@@ -182,7 +182,7 @@ COMMENT ON FUNCTION cognee_db.cleanup_old_token_usage(INTEGER) IS
 -- GRANT EXECUTE ON FUNCTION cognee_db.get_token_usage_for_agent(VARCHAR, INTEGER) TO cognee_user;
 
 -- Add helpful comments
-COMMENT ON TABLE cognee_db.llm_token_usage IS 'Tracks LLM API token usage and costs for Enhanced Cognee';
+COMMENT ON TABLE cognee_db.llm_token_usage IS 'Tracks LLM API token usage and costs for RNR Enhanced Cognee';
 COMMENT ON COLUMN cognee_db.llm_token_usage.agent_id IS 'ID of the agent that made the LLM request';
 COMMENT ON COLUMN cognee_db.llm_token_usage.operation IS 'Type of operation (summarization, deduplication, extraction, etc.)';
 COMMENT ON COLUMN cognee_db.llm_token_usage.provider IS 'LLM provider (anthropic, openai, litellm)';

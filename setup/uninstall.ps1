@@ -1,5 +1,5 @@
 #
-# Enhanced Cognee Uninstallation Script for Windows
+# RNR Enhanced Cognee Uninstallation Script for Windows
 #
 # This script stops all services and optionally removes Docker volumes.
 #
@@ -8,7 +8,7 @@
 #   .\uninstall.ps1 -Cleanup     # Stop and remove all data
 #   .\uninstall.ps1 -Help        # Show help
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 
@@ -28,7 +28,7 @@ $DockerComposeFile = Join-Path $ProjectRoot "docker\docker-compose-enhanced-cogn
 
 function Print-Header {
     Write-Host "============================================" -ForegroundColor Cyan
-    Write-Host "  Enhanced Cognee Uninstallation" -ForegroundColor Cyan
+    Write-Host "  RNR Enhanced Cognee Uninstallation" -ForegroundColor Cyan
     Write-Host "============================================" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -59,7 +59,7 @@ function Confirm-Action {
 }
 
 function Stop-Services {
-    Print-Info "Stopping Enhanced Cognee services..."
+    Print-Info "Stopping RNR Enhanced Cognee services..."
 
     if (-not (Test-Path $DockerComposeFile)) {
         Print-Warn "Docker compose file not found: $DockerComposeFile"
@@ -82,7 +82,7 @@ function Remove-Volumes {
         return
     }
 
-    Print-Warn "This will permanently delete all Enhanced Cognee data!"
+    Print-Warn "This will permanently delete all RNR Enhanced Cognee data!"
 
     if (-not (Confirm-Action)) {
         Print-Info "Volume cleanup cancelled"
@@ -113,7 +113,7 @@ function Print-Completion {
     Write-Host "  Uninstallation Complete" -ForegroundColor Green
     Write-Host "============================================" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Enhanced Cognee services have been stopped."
+    Write-Host "RNR Enhanced Cognee services have been stopped."
     Write-Host ""
 
     if ($Cleanup) {
@@ -126,13 +126,13 @@ function Print-Completion {
     }
 
     Write-Host ""
-    Write-Host "To reinstall Enhanced Cognee, run:"
+    Write-Host "To reinstall RNR Enhanced Cognee, run:"
     Write-Host "  $ .\install.ps1"
     Write-Host ""
 }
 
 function Show-Help {
-    Write-Host "Enhanced Cognee Uninstallation Script for Windows"
+    Write-Host "RNR Enhanced Cognee Uninstallation Script for Windows"
     Write-Host ""
     Write-Host "Usage:"
     Write-Host "  .\uninstall.ps1 [options]"

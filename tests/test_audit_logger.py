@@ -1,5 +1,5 @@
 """
-Unit tests for Enhanced Cognee Audit Logger
+Unit tests for RNR Enhanced Cognee Audit Logger
 
 Tests the audit_logger module for:
 - Basic logging functionality
@@ -10,7 +10,7 @@ Tests the audit_logger module for:
 - Log querying and filtering
 - Log cleanup
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

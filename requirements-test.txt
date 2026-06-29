@@ -1,4 +1,4 @@
-# Testing Requirements for Enhanced Cognee
+# Testing Requirements for RNR Enhanced Cognee
 # Install with: pip install -r requirements-test.txt
 
 # Core Testing Framework

@@ -1,6 +1,6 @@
 # Security Policy
 
-Thank you for helping keep Enhanced Cognee secure.
+Thank you for helping keep RNR Enhanced Cognee secure.
 
 ## Supported Versions
 
@@ -32,7 +32,7 @@ You will be credited in the release notes unless you request otherwise.
 
 ## In-Scope
 
-- The Enhanced Cognee MCP server (`bin/enhanced_cognee_mcp_server.py`)
+- The RNR Enhanced Cognee MCP server (`bin/enhanced_cognee_mcp_server.py`)
 - The FastAPI HTTP variant (`src/enhanced_cognee_mcp.py`)
 - The Python SDK client (`enhanced-cognee-client` on PyPI)
 - All source modules under `src/`
@@ -49,7 +49,7 @@ You will be credited in the release notes unless you request otherwise.
 
 ## Hardening Checklist (Self-Hosted Operators)
 
-If you're running Enhanced Cognee in production, follow this checklist:
+If you're running RNR Enhanced Cognee in production, follow this checklist:
 
 - [ ] Change ALL default passwords in `docker/docker-compose-enhanced-cognee.yml`
 - [ ] Set `POSTGRES_PASSWORD`, `NEO4J_PASSWORD`, `REDIS_PASSWORD` via env vars or

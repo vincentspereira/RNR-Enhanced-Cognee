@@ -1,14 +1,14 @@
-# Enhanced Cognee — License Audit
+# RNR Enhanced Cognee — License Audit
 
 Comprehensive review of every third-party component shipped with or runtime
-required by Enhanced Cognee. Goal: zero license risk for self-hosted personal
+required by RNR Enhanced Cognee. Goal: zero license risk for self-hosted personal
 or commercial use, including future monetisation.
 
 **Audit date:** 2026-05-18 (revised 2026-05-19 -- Phase 2 ArcadeDB swap + Phase 4 SigNoz/Superset swap)
-**Enhanced Cognee license:** Apache-2.0 (permissive, commercial-friendly)
+**RNR Enhanced Cognee license:** Apache-2.0 (permissive, commercial-friendly)
 
 > **Status (after Phase 4 ship 2026-05-19):** the entire default
-> Enhanced Cognee deployment -- main 4-DB stack AND the optional
+> RNR Enhanced Cognee deployment -- main 4-DB stack AND the optional
 > monitoring stack -- is 100% MIT + Apache-2.0 / permissive. The
 > previous Grafana / Loki / Tempo (AGPLv3) components have been
 > removed; Neo4j (GPLv3) is retained as an opt-in legacy alternative
@@ -44,7 +44,7 @@ or commercial use, including future monetisation.
 ### 2. Qdrant — KEEP (no risk)
 
 - **License:** Apache-2.0
-- **Verdict:** Perfectly compatible. Same license as Enhanced Cognee. Commercial
+- **Verdict:** Perfectly compatible. Same license as RNR Enhanced Cognee. Commercial
   use unrestricted.
 
 ### 3. ArcadeDB — KEEP (default graph DB since 2026-05-19; Phase 2)
@@ -69,7 +69,7 @@ or commercial use, including future monetisation.
   under GPL-compatible terms.
 - **What's actually OK:**
   - **Running Neo4j as a separate service** (which we do via Docker) — no
-    copyleft obligation on Enhanced Cognee's own code. This is the "mere
+    copyleft obligation on RNR Enhanced Cognee's own code. This is the "mere
     aggregation" + "network service" pattern.
   - **Connecting via the network protocol (Bolt)** — no copyleft obligation.
   - **Self-hosted personal use** — no concern at all.
@@ -94,15 +94,15 @@ take on the conditional handling described above.
 - **Redis 8.0:** Re-added AGPLv3 as an option (May 2025). AGPLv3 is open-source
   but heavily copyleft — any service exposing AGPL software over a network must
   share its full source code.
-- **For an Apache-2.0 project like Enhanced Cognee:**
+- **For an Apache-2.0 project like RNR Enhanced Cognee:**
   - Self-hosted use: OK under any of the above (we're not distributing Redis).
   - Commercial SaaS use under SSPL: would require open-sourcing your entire
     service stack (per SSPL §13).
-  - Distributing Enhanced Cognee with bundled Redis: license incompatibility.
+  - Distributing RNR Enhanced Cognee with bundled Redis: license incompatibility.
 
 #### Why Valkey is the right choice
 
-- **License:** Apache-2.0 (same as Enhanced Cognee — zero friction)
+- **License:** Apache-2.0 (same as RNR Enhanced Cognee — zero friction)
 - **Fork point:** Redis 7.2.4 (before the license change), maintained by The
   Linux Foundation under the Valkey project.
 - **API compatibility:** 100% wire-protocol compatible with Redis. The
@@ -112,7 +112,7 @@ take on the conditional handling described above.
   benchmarks; Valkey 8.1 (Apr 2025) adds further improvements.
 - **Migration cost:** **swap one Docker image line, restart container.**
 
-#### What changed in Enhanced Cognee for this migration
+#### What changed in RNR Enhanced Cognee for this migration
 
 1. `docker/docker-compose-enhanced-cognee.yml`: `redis:7.4-alpine` →
    `valkey/valkey:8-alpine`
@@ -162,16 +162,16 @@ Apache-2.0. No GPL or copyleft contamination in our dependency graph.
 | Component | License | Notes |
 |---|---|---|
 | Prometheus | Apache-2.0 | Fully compatible |
-| Grafana OSS | AGPLv3 (since 2021) | Run as a service (we do) — no copyleft on Enhanced Cognee. Only an issue if you redistribute Grafana embedded in your product. |
+| Grafana OSS | AGPLv3 (since 2021) | Run as a service (we do) — no copyleft on RNR Enhanced Cognee. Only an issue if you redistribute Grafana embedded in your product. |
 | Loki | AGPLv3 | Same as Grafana — service-only model means no copyleft on us. |
 | Promtail | Apache-2.0 | Fully compatible |
 | Jaeger | Apache-2.0 | Fully compatible (added in OpenTelemetry guide) |
 
 **Mitigation for AGPL components:** the monitoring stack ships as a *separate*
 `monitoring/docker-compose-monitoring.yml` that operators bring up themselves.
-Enhanced Cognee doesn't bundle Grafana or Loki in any distributable artefact;
+RNR Enhanced Cognee doesn't bundle Grafana or Loki in any distributable artefact;
 we just provide configuration templates. AGPL obligations apply to the operator
-of Grafana/Loki, not to Enhanced Cognee.
+of Grafana/Loki, not to RNR Enhanced Cognee.
 
 If you want a pure-Apache monitoring stack:
 - Replace Grafana with **VictoriaMetrics' vmui** (Apache-2.0) — limited but functional
@@ -204,7 +204,7 @@ theoretical for our self-hosted model. Documented as a future optimisation.
 
 For each license that imposes requirements, here is our compliance:
 
-### Apache-2.0 (Enhanced Cognee itself + most deps)
+### Apache-2.0 (RNR Enhanced Cognee itself + most deps)
 
 - [x] LICENSE file at repo root contains Apache-2.0 text
 - [x] NOTICE file lists all Apache-2.0 components (now created)
@@ -227,9 +227,9 @@ For each license that imposes requirements, here is our compliance:
 ### GPLv3 (Neo4j Community)
 
 - [x] Run Neo4j as a separate network service (Docker container) — no copyleft
-      obligation on Enhanced Cognee
+      obligation on RNR Enhanced Cognee
 - [x] Use Neo4j's Apache-2.0 Bolt Python driver — no GPL contamination
-- [x] Do not redistribute Neo4j binaries inside Enhanced Cognee artefacts
+- [x] Do not redistribute Neo4j binaries inside RNR Enhanced Cognee artefacts
 - [x] Document this in `docs/LICENSE_AUDIT.md` (this file)
 
 ### PostgreSQL License
@@ -268,13 +268,13 @@ See `NOTICE` (created by this migration).
 
 ## Summary
 
-Enhanced Cognee is now **100% free for personal and commercial use**, including
+RNR Enhanced Cognee is now **100% free for personal and commercial use**, including
 future SaaS monetisation, with the following caveats:
 
 1. **Neo4j GPLv3:** Safe in our self-hosted-service deployment model. Not safe
    if you embed Neo4j JARs in a distributable binary.
 2. **Grafana/Loki AGPLv3:** Safe because they're optional, separate-stack, and
-   not redistributed by Enhanced Cognee.
+   not redistributed by RNR Enhanced Cognee.
 3. **All other components:** Permissive licenses, zero restrictions.
 
 The Redis → Valkey swap eliminates the largest license risk that existed prior
@@ -283,5 +283,5 @@ to this audit.
 ## See also
 
 - [`FEATURE_LICENSE_MATRIX.md`](FEATURE_LICENSE_MATRIX.md) -- per-feature view of the same licensing data, organised by what feature you are about to port into a downstream project (e.g. the user's Multi-Agent System / MAS). Cross-references this file for the per-dependency analysis.
-- [`COMMERCIALISATION_LICENSE_GUIDE.md`](COMMERCIALISATION_LICENSE_GUIDE.md) -- if you ever ship Enhanced Cognee itself as a paid product.
+- [`COMMERCIALISATION_LICENSE_GUIDE.md`](COMMERCIALISATION_LICENSE_GUIDE.md) -- if you ever ship RNR Enhanced Cognee itself as a paid product.
 - [`PROFILES.md`](PROFILES.md) -- per-profile adapter matrix and caveats.

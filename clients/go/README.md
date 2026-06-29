@@ -1,11 +1,11 @@
-# Enhanced Cognee Go Client
+# RNR Enhanced Cognee Go Client
 
-Official Go client for the [Enhanced Cognee](https://github.com/vincentspereira/Enhanced-Cognee) MCP HTTP server.
+Official Go client for the [RNR Enhanced Cognee](https://github.com/vincentspereira/RNR-Enhanced-Cognee) MCP HTTP server.
 
 ## Install
 
 ```bash
-go get github.com/vincentspereira/Enhanced-Cognee/clients/go
+go get github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go
 ```
 
 ## Quick start
@@ -18,7 +18,7 @@ import (
     "log"
     "os"
 
-    enhancedcognee "github.com/vincentspereira/Enhanced-Cognee/clients/go"
+    enhancedcognee "github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go"
 )
 
 func main() {

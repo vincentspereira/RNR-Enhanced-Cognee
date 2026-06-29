@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Soak Test
+RNR Enhanced Cognee Soak Test
 =========================
 Long-duration, sustained-load test that surfaces what a short burst (the
 100-user SLA profile in ``locustfile.py``) cannot: slow memory leaks and
@@ -425,7 +425,7 @@ def write_reports(out_dir: Path, stamp: str, meta: Dict[str, object],
 # ---------------------------------------------------------------------------
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Enhanced Cognee soak test")
+    ap = argparse.ArgumentParser(description="RNR Enhanced Cognee soak test")
     ap.add_argument("--duration", type=int, default=14400,
                     help="soak duration in seconds (default 14400 = 4h)")
     ap.add_argument("--users", type=int, default=40,

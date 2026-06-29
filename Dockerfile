@@ -44,7 +44,7 @@ COPY alembic_enhanced/ /app/alembic_enhanced
 
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching.
-# src/ holds the Enhanced Cognee FastAPI app (src.enhanced_cognee_mcp:app) that
+# src/ holds the RNR Enhanced Cognee FastAPI app (src.enhanced_cognee_mcp:app) that
 # entrypoint.sh launches -- it MUST be copied or the container exits on start.
 COPY ./src /app/src
 COPY ./cognee /app/cognee

@@ -1,8 +1,8 @@
 """
-Enhanced Cognee CI/CD Integration and Test Automation Framework
+RNR Enhanced Cognee CI/CD Integration and Test Automation Framework
 
 This module provides comprehensive CI/CD integration and test automation optimization
-for the Enhanced Cognee Multi-Agent System, including GitHub Actions workflows,
+for the RNR Enhanced Cognee Multi-Agent System, including GitHub Actions workflows,
 parallel test execution, intelligent test selection, and automated quality gates.
 
 Coverage Target: Part of overall test automation infrastructure
@@ -844,7 +844,7 @@ class TestCICDIntegration:
         """Test GitHub Actions workflow generation"""
         # Generate workflow YAML
         workflow = {
-            "name": "Enhanced Cognee CI/CD Pipeline",
+            "name": "RNR Enhanced Cognee CI/CD Pipeline",
             "on": {
                 "push": {
                     "branches": ["main", "develop"]

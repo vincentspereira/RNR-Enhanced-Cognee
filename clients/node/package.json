@@ -1,7 +1,7 @@
 {
   "name": "@enhanced-cognee/client",
   "version": "1.0.0",
-  "description": "Official Node.js client for Enhanced Cognee MCP HTTP server",
+  "description": "Official Node.js client for RNR Enhanced Cognee MCP HTTP server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -22,7 +22,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vincentspereira/Enhanced-Cognee.git",
+    "url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee.git",
     "directory": "clients/node"
   },
   "engines": {

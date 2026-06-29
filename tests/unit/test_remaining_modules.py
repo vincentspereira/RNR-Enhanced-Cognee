@@ -10,7 +10,7 @@ Tests for:
 6. Audit Logger (AuditLogger)
 7. WebSocket Server (RealtimeWebSocketServer)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-09
 """

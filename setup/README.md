@@ -1,6 +1,6 @@
-# Enhanced Cognee Setup Scripts
+# RNR Enhanced Cognee Setup Scripts
 
-This directory contains installation and setup scripts for Enhanced Cognee.
+This directory contains installation and setup scripts for RNR Enhanced Cognee.
 
 ## Installation
 

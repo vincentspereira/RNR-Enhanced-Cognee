@@ -45,7 +45,7 @@ against the provider's JWKS (signature, expiry, optionally audience + issuer).
 |---|---|---|
 | `ENHANCED_OIDC_ISSUER` | OIDC issuer URL (enables discovery + `iss` check) | `https://login.example.com/realms/acme` |
 | `ENHANCED_OIDC_JWKS_URI` | Explicit JWKS URL (skips discovery) | `https://login.example.com/realms/acme/protocol/openid-connect/certs` |
-| `ENHANCED_OIDC_AUDIENCE` | Expected `aud` claim (verified when set) | `enhanced-cognee` |
+| `ENHANCED_OIDC_AUDIENCE` | Expected `aud` claim (verified when set) | `RNR-Enhanced-Cognee` |
 | `ENHANCED_OIDC_ALGORITHMS` | Allowed algorithms (default `RS256`) | `RS256,ES256` |
 
 If `ENHANCED_OIDC_JWKS_URI` is not set but `ENHANCED_OIDC_ISSUER` is, the JWKS

@@ -1,7 +1,7 @@
 # Runbook RB-001: First-Time Setup
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
-**Audience:** Developers setting up Enhanced Cognee for the first time
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
+**Audience:** Developers setting up RNR Enhanced Cognee for the first time
 
 ---
 
@@ -17,20 +17,20 @@
 ## Step 1: Clone and Enter the Repository
 
     git clone <repository-url>
-    cd enhanced-cognee
+    cd RNR-Enhanced-Cognee
 
 ---
 
 ## Step 2: Install the Package
 
-Install in editable mode so the enhanced-cognee CLI is available:
+Install in editable mode so the RNR-Enhanced-Cognee CLI is available:
 
     pip install -e .
 
 Verify the CLI is on your PATH:
 
-    enhanced-cognee version
-    # Expected output: Enhanced Cognee 1.0.9-enhanced
+    RNR-Enhanced-Cognee version
+    # Expected output: RNR Enhanced Cognee 1.0.9-enhanced
 
 ---
 
@@ -38,7 +38,7 @@ Verify the CLI is on your PATH:
 
 The setup wizard creates the .env file and .enhanced-cognee-config.json:
 
-    enhanced-cognee setup
+    RNR-Enhanced-Cognee setup
 
 The wizard asks for:
 - Database passwords (defaults are safe for local development)
@@ -54,7 +54,7 @@ When the wizard finishes, confirm that .env exists in the project root:
 
 ## Step 4: Start the Database Containers
 
-    enhanced-cognee docker up
+    RNR-Enhanced-Cognee docker up
 
 This runs docker compose with the config/docker/docker-compose-enhanced-cognee.yml
 file. First run downloads container images; allow 2-5 minutes.
@@ -69,11 +69,11 @@ Expected containers: postgres-enhanced, qdrant-enhanced, neo4j-enhanced, redis-e
 
 ## Step 5: Run a Health Check
 
-    enhanced-cognee health
+    RNR-Enhanced-Cognee health
 
 Expected output:
 
-    Enhanced Cognee Health Check
+    RNR Enhanced Cognee Health Check
     --------------------------------
     [OK] PostgreSQL  localhost:25432
     [OK] Qdrant      localhost:26333
@@ -86,7 +86,7 @@ If any line shows [FAIL], see the Troubleshooting section below.
 
 ## Step 6: Start the MCP Server
 
-    enhanced-cognee start
+    RNR-Enhanced-Cognee start
 
 The server prints startup messages ending with "MCP server ready". Leave this
 terminal open. Configure your MCP client (e.g., Claude Code) to connect using
@@ -98,7 +98,7 @@ the path in ~/.claude.json (populated by the setup wizard).
 
 ### Docker not found
 
-    enhanced-cognee docker up
+    RNR-Enhanced-Cognee docker up
     [ERR] Docker not found. Install Docker Desktop and ensure it is running.
 
 Install Docker Desktop from https://docs.docker.com/desktop/ and start it before
@@ -108,7 +108,7 @@ retrying.
 
     [ERR] PostgreSQL port 25432 is already in use.
 
-Another process is using the Enhanced Cognee port. Find the process:
+Another process is using the RNR Enhanced Cognee port. Find the process:
 
     # Windows
     netstat -ano | findstr :25432
@@ -125,4 +125,4 @@ If the setup wizard did not finish, the .env file may be absent. Copy the exampl
 
     cp .env.example .env
 
-Then edit the passwords and re-run enhanced-cognee health to verify connectivity.
+Then edit the passwords and re-run RNR-Enhanced-Cognee health to verify connectivity.

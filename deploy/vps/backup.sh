@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Nightly backup for Enhanced Cognee VPS deployment.
+# Nightly backup for RNR Enhanced Cognee VPS deployment.
 # Run via cron: 30 2 * * * /usr/local/bin/cognee-backup
 #
 # Backs up:
@@ -102,7 +102,7 @@ docker cp cognee-mcp-valkey:/data/dump.rdb "$TARGET/valkey-dump.rdb" 2>/dev/null
 # ---------------------------------------------------------------------------
 
 cat > "$TARGET/MANIFEST.txt" <<EOF
-Enhanced Cognee Backup
+RNR Enhanced Cognee Backup
 ======================
 Date:       $(date -Iseconds)
 Hostname:   $(hostname)

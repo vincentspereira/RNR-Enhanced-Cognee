@@ -1,13 +1,13 @@
 # Runbook RB-009: Per-Agent Rate Limit Exceeded
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Operators, developers
 
 ---
 
 ## Overview
 
-Enhanced Cognee enforces per-agent rate limits on MCP tool calls to prevent a
+RNR Enhanced Cognee enforces per-agent rate limits on MCP tool calls to prevent a
 single agent from monopolizing server resources or triggering runaway loops. When
 an agent exceeds its configured rate limit, all subsequent calls within the rate
 window return an error response. This runbook guides the operator through
@@ -51,7 +51,7 @@ connection failures.
 
 Check MCP server logs for the affected agent:
 
-    enhanced-cognee logs --tail 500 | grep "rate_limit"
+    RNR-Enhanced-Cognee logs --tail 500 | grep "rate_limit"
 
 Note:
 - Which agent_id is hitting the limit.
@@ -135,8 +135,8 @@ If the agent has a legitimate need for more than the default calls per minute:
 
 2. Restart the MCP server to apply the change:
 
-       enhanced-cognee stop
-       enhanced-cognee start
+       RNR-Enhanced-Cognee stop
+       RNR-Enhanced-Cognee start
 
 3. Verify the new limit is active:
 
@@ -162,7 +162,7 @@ If Step 2 identified that the agent is calling a single tool at an abnormal rate
 
 1. Check whether the tool is returning errors that trigger retries:
 
-       enhanced-cognee logs --tail 200 | grep "<agent_id>"
+       RNR-Enhanced-Cognee logs --tail 200 | grep "<agent_id>"
 
    Look for repeated [ERR] responses from the same tool. If the tool is
    consistently failing and the agent is retrying without backoff, the agent is

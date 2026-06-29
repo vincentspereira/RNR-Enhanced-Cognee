@@ -1,4 +1,4 @@
-# Enhanced Cognee Testing Dependencies
+# RNR Enhanced Cognee Testing Dependencies
 # Core Testing Framework
 pytest==7.4.3
 pytest-cov==4.1.0
@@ -102,7 +102,7 @@ flake8==6.1.0
 mypy==1.7.1
 pre-commit==3.6.0
 
-# Enhanced Cognee Specific Dependencies
+# RNR Enhanced Cognee Specific Dependencies
 # (These should match your main application dependencies)
 cognee==0.4.0
 langchain==0.0.350

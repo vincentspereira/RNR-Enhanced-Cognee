@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Structured Memory Model
+RNR Enhanced Cognee - Structured Memory Model
 
 Implements hierarchical observations like claude-mem with structured types and concepts.
 Provides auto-categorization and rich metadata for memories.
@@ -19,7 +19,7 @@ Memory Concepts:
 - pattern: Design patterns or best practices
 - general: General concepts
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

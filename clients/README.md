@@ -1,6 +1,6 @@
-# Enhanced Cognee Cross-Language Clients
+# RNR Enhanced Cognee Cross-Language Clients
 
-Official SDKs for calling the [Enhanced Cognee](https://github.com/vincentspereira/Enhanced-Cognee) MCP HTTP server from non-Python codebases. All four clients (Python + the three here) expose the same HTTP contract — see `src/enhanced_cognee_mcp.py::setup_routes`.
+Official SDKs for calling the [RNR Enhanced Cognee](https://github.com/vincentspereira/RNR-Enhanced-Cognee) MCP HTTP server from non-Python codebases. All four clients (Python + the three here) expose the same HTTP contract — see `src/enhanced_cognee_mcp.py::setup_routes`.
 
 ## Languages
 

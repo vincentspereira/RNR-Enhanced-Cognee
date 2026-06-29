@@ -28,7 +28,7 @@ Using a tool like [Favicon.io](https://favicon.io) or [RealFaviconGenerator](htt
 
 ## Design Guidelines
 
-- Use the Enhanced Cognee logo
+- Use the RNR Enhanced Cognee logo
 - Blue color scheme (#3b82f6)
 - Clean, modern design
 - White background for icons
@@ -36,7 +36,7 @@ Using a tool like [Favicon.io](https://favicon.io) or [RealFaviconGenerator](htt
 
 ## Icon Content
 
-The Enhanced Cognee logo should feature:
+The RNR Enhanced Cognee logo should feature:
 - Brain or neural network icon
 - Clean lines
 - Modern aesthetic

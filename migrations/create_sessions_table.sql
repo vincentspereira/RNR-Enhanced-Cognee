@@ -1,9 +1,9 @@
--- Enhanced Cognee - Sessions Table Migration
+-- RNR Enhanced Cognee - Sessions Table Migration
 --
 -- This migration adds session tracking for Claude Code integration.
 -- Sessions allow for multi-prompt conversation tracking and context continuity.
 --
--- Author: Enhanced Cognee Team
+-- Author: RNR Enhanced Cognee Team
 -- Version: 1.0.0
 -- Date: 2026-02-06
 

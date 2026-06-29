@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Backup Verification System
+RNR Enhanced Cognee - Backup Verification System
 
-Automated backup integrity verification for Enhanced Cognee backups.
+Automated backup integrity verification for RNR Enhanced Cognee backups.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class BackupVerifier:
-    """Backup verification system for Enhanced Cognee."""
+    """Backup verification system for RNR Enhanced Cognee."""
 
     def __init__(
         self,

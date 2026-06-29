@@ -1,5 +1,5 @@
 """
-LLM Cost Tracker for Enhanced Cognee
+LLM Cost Tracker for RNR Enhanced Cognee
 =====================================
 Tracks LLM token usage and estimated API cost per agent and tool.
 
@@ -25,7 +25,7 @@ Usage
     # Inside an MCP tool (optional, improves attribution):
     set_llm_context(agent_id="my-agent", tool_name="recall")
 
-Author: Enhanced Cognee
+Author: RNR Enhanced Cognee
 Version: 1.0.0
 """
 

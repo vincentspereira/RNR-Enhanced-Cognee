@@ -1,11 +1,11 @@
-# Enhanced Cognee Examples
+# RNR Enhanced Cognee Examples
 
-End-to-end Python scripts demonstrating the most common Enhanced Cognee
+End-to-end Python scripts demonstrating the most common RNR Enhanced Cognee
 workflows. Each script is self-contained and runnable -- copy, edit
 the agent IDs / queries to fit your case, and you have a working
 starting point.
 
-These examples talk to a **live** Enhanced Cognee MCP server (default
+These examples talk to a **live** RNR Enhanced Cognee MCP server (default
 endpoint `http://localhost:8080`) -- bring the stack up first:
 
 ```bash
@@ -25,7 +25,7 @@ python bin/enhanced_cognee_mcp_server.py &
 
 ## Prerequisites
 
-- Enhanced Cognee MCP server running locally (default `http://localhost:8080`)
+- RNR Enhanced Cognee MCP server running locally (default `http://localhost:8080`)
 - Python 3.11+
 - The `enhanced-cognee-client` PyPI package, OR a direct MCP client
   (these examples use plain `requests` against the MCP server's

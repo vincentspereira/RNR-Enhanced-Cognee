@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Backup / list / restore workflow.
 
-Demonstrates Enhanced Cognee's disaster-recovery primitives. The
+Demonstrates RNR Enhanced Cognee's disaster-recovery primitives. The
 default flow exports each of the four DBs (Postgres / Qdrant /
 ArcadeDB / Valkey) to a snapshot directory; a restore replays them
 back. Verify the backup before treating it as authoritative.
@@ -37,7 +37,7 @@ def call(tool: str, **params: Any) -> Any:
 
 
 def main() -> int:
-    print("=== Enhanced Cognee: backup + restore dry-run ===\n")
+    print("=== RNR Enhanced Cognee: backup + restore dry-run ===\n")
 
     # 1. Trigger a full-stack backup. Returns a backup_id we can
     #    refer to later.

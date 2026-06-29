@@ -1,5 +1,5 @@
 """
-Advanced Search with Re-ranking for Enhanced Cognee
+Advanced Search with Re-ranking for RNR Enhanced Cognee
 Implements semantic search with intelligent re-ranking, query expansion, and multi-modal search
 """
 

@@ -1,10 +1,10 @@
 #!/bin/bash
-# Enhanced Cognee - Restore All Databases
+# RNR Enhanced Cognee - Restore All Databases
 #
 # Restores all databases from the specified backup.
 # Usage: ./scripts/restore_all.sh <backup_id>
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 
 set -e

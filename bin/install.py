@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee MCP Server - Automated Installer
+RNR Enhanced Cognee MCP Server - Automated Installer
 This script handles the complete installation process for new users.
 """
 
@@ -21,9 +21,9 @@ class EnhancedCogneeInstaller:
     def print_banner(self):
         """Print installation banner"""
         print("=" * 70)
-        print("[MEM] Enhanced Cognee MCP Server - Automated Installer")
+        print("[MEM] RNR Enhanced Cognee MCP Server - Automated Installer")
         print("=" * 70)
-        print("This installer will set up Enhanced Cognee with:")
+        print("This installer will set up RNR Enhanced Cognee with:")
         print("  [OK] PostgreSQL+pgVector database")
         print("  [OK] Qdrant vector database")
         print("  [OK] Neo4j graph database")
@@ -95,13 +95,13 @@ class EnhancedCogneeInstaller:
         return True
 
     def install_enhanced_cognee(self):
-        """Install Enhanced Cognee package"""
-        print("\n[INFO] Installing Enhanced Cognee...")
+        """Install RNR Enhanced Cognee package"""
+        print("\n[INFO] Installing RNR Enhanced Cognee...")
 
         # Create installation directory
         self.install_dir.mkdir(exist_ok=True)
 
-        # Copy Enhanced Cognee files (assuming we're running from the repo)
+        # Copy RNR Enhanced Cognee files (assuming we're running from the repo)
         current_dir = Path(__file__).parent
 
         # Required files and directories
@@ -269,7 +269,7 @@ class EnhancedCogneeInstaller:
 
         # Environment template
         env_template_path = config_dir / ".env.template"
-        env_template = """# Enhanced Cognee MCP Server Configuration
+        env_template = """# RNR Enhanced Cognee MCP Server Configuration
 # Copy this file to .env and fill in your API keys
 
 # LLM Configuration
@@ -322,10 +322,10 @@ EMBEDDING_DIMENSIONS=2560
 
         if self.system == "windows":
             # Windows batch file
-            start_script = desktop_dir / "Start Enhanced Cognee.bat"
+            start_script = desktop_dir / "Start RNR Enhanced Cognee.bat"
             with open(start_script, 'w') as f:
                 f.write(f'''@echo off
-echo Starting Enhanced Cognee MCP Server...
+echo Starting RNR Enhanced Cognee MCP Server...
 cd /d "{self.install_dir}"
 "{python_exe}" cognee_mcp_universal.py
 pause
@@ -337,7 +337,7 @@ pause
             start_script = desktop_dir / "start-enhanced-cognee.sh"
             with open(start_script, 'w') as f:
                 f.write(f'''#!/bin/bash
-echo "Starting Enhanced Cognee MCP Server..."
+echo "Starting RNR Enhanced Cognee MCP Server..."
 cd "{self.install_dir}"
 "{python_exe}" cognee_mcp_universal.py
 ''')
@@ -348,12 +348,12 @@ cd "{self.install_dir}"
         """Test the installation"""
         print("\n[INFO] Testing installation...")
 
-        # Test Enhanced Cognee import
+        # Test RNR Enhanced Cognee import
         try:
             result = subprocess.run([python_exe, '-c', 'import sys; sys.path.append("' + str(self.install_dir) + '"); import cognee_mcp_universal'],
                                   capture_output=True, text=True)
             if result.returncode == 0:
-                print("[OK] Enhanced Cognee import successful")
+                print("[OK] RNR Enhanced Cognee import successful")
             else:
                 print(f"[WARNING] Import test failed: {result.stderr}")
         except Exception as e:
@@ -435,7 +435,7 @@ except Exception as e:
         print("\n[INFO] Next Steps:")
         print("1. Copy .env.template to .env and add your API keys")
         print("2. Import the appropriate config file into your IDE")
-        print("3. Start using Enhanced Cognee in any supported IDE!")
+        print("3. Start using RNR Enhanced Cognee in any supported IDE!")
 
         print("\n[INFO] IDE Configuration:")
         print("- Claude Desktop: Copy config to AppData/Roaming/Claude/")
@@ -468,7 +468,7 @@ except Exception as e:
                 print("\n[ERROR] Prerequisites not met. Please install required software.")
                 return False
 
-            # Install Enhanced Cognee
+            # Install RNR Enhanced Cognee
             python_exe = self.install_enhanced_cognee()
 
             # Set up Docker

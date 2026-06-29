@@ -1,11 +1,11 @@
-# Enhanced Cognee Desktop Installer
+# RNR Enhanced Cognee Desktop Installer
 
-This directory contains everything needed to ship Enhanced Cognee as a
+This directory contains everything needed to ship RNR Enhanced Cognee as a
 double-click desktop application for Windows, macOS, and Linux.
 
 ## What the user gets
 
-A small launcher app ("Enhanced Cognee") that:
+A small launcher app ("RNR Enhanced Cognee") that:
 
 1. Checks Docker Desktop is installed and running (and helps the user get
    it if not -- this is the only prerequisite).
@@ -57,8 +57,8 @@ Test the launcher without building: `python installer/launcher.py`.
 `.github/workflows/build-installers.yml` builds all three platforms and
 publishes the two app images the stack pulls:
 
-- `ghcr.io/<owner>/enhanced-cognee-api` (from `dashboard/Dockerfile.api`)
-- `ghcr.io/<owner>/enhanced-cognee-dashboard` (from `dashboard/nextjs-dashboard/Dockerfile`)
+- `ghcr.io/<owner>/rnr-enhanced-cognee-api` (from `dashboard/Dockerfile.api`)
+- `ghcr.io/<owner>/rnr-enhanced-cognee-dashboard` (from `dashboard/nextjs-dashboard/Dockerfile`)
 
 Trigger by pushing a `v*` tag (also attaches installers to a GitHub
 Release) or manually via workflow dispatch.

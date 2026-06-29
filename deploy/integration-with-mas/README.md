@@ -1,16 +1,16 @@
-# Integrating Enhanced Cognee with Multi-Agent System (MAS)
+# Integrating RNR Enhanced Cognee with Multi-Agent System (MAS)
 
-This guide wires Enhanced Cognee as the memory layer for the Multi-Agent System
+This guide wires RNR Enhanced Cognee as the memory layer for the Multi-Agent System
 at `C:\Users\vince\Projects\AI Agents\Multi-Agent System`.
 
-**Per Q1 answer in PRODUCTION_READINESS_PLAN.md:** Enhanced Cognee SHARES the
-memory system with MAS's existing memory layer. They coexist; Enhanced Cognee
+**Per Q1 answer in PRODUCTION_READINESS_PLAN.md:** RNR Enhanced Cognee SHARES the
+memory system with MAS's existing memory layer. They coexist; RNR Enhanced Cognee
 becomes the primary store for new memories, while the existing layer remains
 for legacy data.
 
 ## Two integration surfaces (read this first)
 
-Enhanced Cognee exposes the SAME 122 tools over two transports. Pick the one
+RNR Enhanced Cognee exposes the SAME 122 tools over two transports. Pick the one
 that matches how the calling code runs:
 
 | Surface | Entry point | Tools | Transport | Use when |
@@ -53,7 +53,7 @@ that matches how the calling code runs:
                          |
                          v
                 +--------+----------+
-                |  Enhanced Cognee  |
+                |  RNR Enhanced Cognee  |
                 |   MCP Server      |
                 |  (122 tools)      |
                 +-------------------+
@@ -73,18 +73,18 @@ that matches how the calling code runs:
 > at ArcadeDB's Bolt endpoint, and `REDIS_HOST`/`REDIS_PORT` point at Valkey.
 > Set `ENHANCED_GRAPH_PROVIDER=neo4j` to opt back into Neo4j.
 
-## Step 1: Register Enhanced Cognee in MAS's `~/.claude.json`
+## Step 1: Register RNR Enhanced Cognee in MAS's `~/.claude.json`
 
 If MAS uses its own `.claude.json` (or a per-project equivalent), add the
-Enhanced Cognee MCP server entry:
+RNR Enhanced Cognee MCP server entry:
 
 ```json
 {
   "mcpServers": {
     "cognee": {
-      "command": "C:\\Users\\vince\\Projects\\AI Agents\\enhanced-cognee\\.venv\\Scripts\\python.exe",
+      "command": "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\.venv\\Scripts\\python.exe",
       "args": [
-        "C:\\Users\\vince\\Projects\\AI Agents\\enhanced-cognee\\bin\\enhanced_cognee_mcp_server.py"
+        "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\bin\\enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -113,10 +113,10 @@ Enhanced Cognee MCP server entry:
 
 ## Step 2: Agent ID Conventions
 
-MAS already has agent IDs in its codebase. Map them to Enhanced Cognee's
+MAS already has agent IDs in its codebase. Map them to RNR Enhanced Cognee's
 `agent_id` field so memories are properly segregated:
 
-| MAS Agent | Enhanced Cognee `agent_id` | Default `memory_category` |
+| MAS Agent | RNR Enhanced Cognee `agent_id` | Default `memory_category` |
 | --------- | -------------------------- | ------------------------- |
 | AlgorithmicTradingSystem | `trading-bot` | `trading` |
 | OrderManagementAgent     | `oma-agent`   | `trading` |
@@ -175,7 +175,7 @@ class MemoryRouter:
         self.cognee = cognee_client
 
     async def add(self, agent_id, content, category=None):
-        # All NEW memories go to Enhanced Cognee
+        # All NEW memories go to RNR Enhanced Cognee
         return await self.cognee.add_memory(
             content=content,
             agent_id=agent_id,

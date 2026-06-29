@@ -14,7 +14,7 @@ echo "=== pgVector Extension Update for PostgreSQL 18 ==="
 # Check if PostgreSQL 18 is running
 if ! docker ps | grep -q $CONTAINER_NAME; then
     echo "❌ PostgreSQL container is not running!"
-    echo "Please start your Enhanced Cognee stack with PostgreSQL 18 first"
+    echo "Please start your RNR Enhanced Cognee stack with PostgreSQL 18 first"
     exit 1
 fi
 

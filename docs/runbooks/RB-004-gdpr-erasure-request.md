@@ -1,6 +1,6 @@
 # Runbook RB-004: Processing a GDPR Erasure Request
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Compliance officers and developers handling data subject requests
 
 ---
@@ -8,7 +8,7 @@
 ## Overview
 
 GDPR Article 17 (right to erasure) requires that all personal data for a data
-subject be permanently deleted on request. Enhanced Cognee's GDPRManager covers
+subject be permanently deleted on request. RNR Enhanced Cognee's GDPRManager covers
 all four databases: PostgreSQL (documents, audit logs), Qdrant (vectors), Neo4j
 (graph nodes), and Redis (cached entries).
 
@@ -47,7 +47,7 @@ The tool returns a download path and a summary:
     Graph nodes: 12
     Audit log rows: 203
 
-Store the zip file in a secure location outside the Enhanced Cognee data directories.
+Store the zip file in a secure location outside the RNR Enhanced Cognee data directories.
 
 ---
 

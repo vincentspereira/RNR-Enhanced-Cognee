@@ -1,7 +1,7 @@
 """
-Enhanced Cognee End-to-End Workflow Automation Testing
+RNR Enhanced Cognee End-to-End Workflow Automation Testing
 
-This module provides comprehensive end-to-end testing automation for the Enhanced Cognee
+This module provides comprehensive end-to-end testing automation for the RNR Enhanced Cognee
 Multi-Agent System, covering complete business workflows, user journeys, system
 integration scenarios, and real-world operational workflows.
 

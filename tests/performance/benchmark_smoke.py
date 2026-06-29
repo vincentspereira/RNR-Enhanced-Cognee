@@ -1,7 +1,7 @@
 """
 Performance Smoke Benchmarks
 ============================
-Pinned baseline targets for Enhanced Cognee hot paths. These run under
+Pinned baseline targets for RNR Enhanced Cognee hot paths. These run under
 pytest-benchmark and fail if a regression exceeds the configured threshold.
 
 Targets (single-tenant, laptop-class hardware):

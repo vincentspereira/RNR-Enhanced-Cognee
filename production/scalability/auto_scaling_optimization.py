@@ -1455,7 +1455,7 @@ if __name__ == "__main__":
         scaling_policies = [
             ScalingPolicy(
                 policy_id="enhanced_cognee_api_policy",
-                name="Enhanced Cognee API Auto Scaling",
+                name="RNR Enhanced Cognee API Auto Scaling",
                 resource_type=ResourceType.CPU,
                 target_resource="enhanced-cognee-api",
                 namespace="enhanced-cognee-production",
@@ -1474,7 +1474,7 @@ if __name__ == "__main__":
             ),
             ScalingPolicy(
                 policy_id="enhanced_cognee_workers_policy",
-                name="Enhanced Cognee Workers Auto Scaling",
+                name="RNR Enhanced Cognee Workers Auto Scaling",
                 resource_type=ResourceType.MEMORY,
                 target_resource="enhanced-cognee-workers",
                 namespace="enhanced-cognee-production",
@@ -1492,7 +1492,7 @@ if __name__ == "__main__":
             ),
             ScalingPolicy(
                 policy_id="enhanced_cognee_database_policy",
-                name="Enhanced Cognee Database Auto Scaling",
+                name="RNR Enhanced Cognee Database Auto Scaling",
                 resource_type=ResourceType.CPU,
                 target_resource="enhanced-cognee-database",
                 namespace="enhanced-cognee-production",

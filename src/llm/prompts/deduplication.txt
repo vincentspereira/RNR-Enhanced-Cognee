@@ -2,7 +2,7 @@
 
 ## System Prompt
 
-You are an expert AI deduplication system for Enhanced Cognee. Your role is to analyze pairs of memories and determine if they are duplicates, near-duplicates, or distinct.
+You are an expert AI deduplication system for RNR Enhanced Cognee. Your role is to analyze pairs of memories and determine if they are duplicates, near-duplicates, or distinct.
 
 ## Duplicate Detection Criteria
 
@@ -88,12 +88,12 @@ You must respond with a JSON object:
 
 **Memory 1:**
 ```
-Fixed PostgreSQL connection timeout by updating POSTGRES_PORT from 5432 to 25432 in .env file to match Enhanced Cognee configuration.
+Fixed PostgreSQL connection timeout by updating POSTGRES_PORT from 5432 to 25432 in .env file to match RNR Enhanced Cognee configuration.
 ```
 
 **Memory 2:**
 ```
-Fixed postgres connection timeout. Updated POSTGRES_PORT from 5432 to 25432 in .env file for Enhanced Cognee stack.
+Fixed postgres connection timeout. Updated POSTGRES_PORT from 5432 to 25432 in .env file for RNR Enhanced Cognee stack.
 ```
 
 **Output:**
@@ -103,20 +103,20 @@ Fixed postgres connection timeout. Updated POSTGRES_PORT from 5432 to 25432 in .
   "duplicate_type": "exact",
   "similarity_score": 0.98,
   "confidence": 0.99,
-  "reasoning": "Memories contain identical information about the same fix with only trivial wording differences ('PostgreSQL' vs 'postgres', added 'stack' in second memory). Core fact (port change 5432→25432) and context (.env file, Enhanced Cognee) are identical.",
+  "reasoning": "Memories contain identical information about the same fix with only trivial wording differences ('PostgreSQL' vs 'postgres', added 'stack' in second memory). Core fact (port change 5432→25432) and context (.env file, RNR Enhanced Cognee) are identical.",
   "key_differences": [
     "Minor capitalization difference: PostgreSQL vs postgres"
   ],
   "key_similarities": [
     "Same fix: POSTGRES_PORT changed from 5432 to 25432",
     "Same file: .env",
-    "Same system: Enhanced Cognee",
+    "Same system: RNR Enhanced Cognee",
     "Same problem: connection timeout"
   ],
   "merge_recommendation": "keep_newer",
   "merge_strategy": "keep_one",
   "entities": {
-    "shared": ["PostgreSQL", ".env", "Enhanced Cognee"],
+    "shared": ["PostgreSQL", ".env", "RNR Enhanced Cognee"],
     "unique_to_memory1": [],
     "unique_to_memory2": []
   }
@@ -127,7 +127,7 @@ Fixed postgres connection timeout. Updated POSTGRES_PORT from 5432 to 25432 in .
 
 **Memory 1:**
 ```
-Implementing audit logger for Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels.
+Implementing audit logger for RNR Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels.
 ```
 
 **Memory 2:**
@@ -160,7 +160,7 @@ Audit logging system implementation details:
   ],
   "merge_recommendation": "merge",
   "merge_strategy": "keep_most_complete",
-  "merged_content": "Implementing audit logger for Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels. Features include sensitive data anonymization and performance metrics tracking.",
+  "merged_content": "Implementing audit logger for RNR Enhanced Cognee. The audit_logger.py module tracks all automated operations with timestamps, operation types, agent IDs, and execution times. Uses JSON format for structured logging. Supports file and database logging channels. Features include sensitive data anonymization and performance metrics tracking.",
   "entities": {
     "shared": ["audit_logger.py", "JSON", "PostgreSQL"],
     "unique_to_memory1": [],
@@ -173,7 +173,7 @@ Audit logging system implementation details:
 
 **Memory 1:**
 ``
-Created undo_manager.py module for Enhanced Cognee. Provides undo mechanism for automated operations including memory add, update, delete, and summarization. Uses operation chains for grouping related actions. Configurable retention period (default 7 days).
+Created undo_manager.py module for RNR Enhanced Cognee. Provides undo mechanism for automated operations including memory add, update, delete, and summarization. Uses operation chains for grouping related actions. Configurable retention period (default 7 days).
 ```
 
 **Memory 2:**
@@ -195,14 +195,14 @@ Database schema created for undo_log table. Stores original_state and new_state 
     "Different aspects: logic/API vs storage/schema"
   ],
   "key_similarities": [
-    "Same system: Enhanced Cognee undo mechanism",
+    "Same system: RNR Enhanced Cognee undo mechanism",
     "Related concepts: undo operations, operation chains",
     "Same feature domain: automated operation tracking"
   ],
   "merge_recommendation": "keep_both",
   "merge_strategy": "none",
   "entities": {
-    "shared": ["undo", "operations", "Enhanced Cognee"],
+    "shared": ["undo", "operations", "RNR Enhanced Cognee"],
     "unique_to_memory1": ["undo_manager.py", "Python", "operation chains", "retention"],
     "unique_to_memory2": ["undo_log", "JSONB", "PostgreSQL", "indexes", "views"]
   }
@@ -213,7 +213,7 @@ Database schema created for undo_log table. Stores original_state and new_state 
 
 **Memory 1:**
 ``
-Meeting with the infrastructure team to discuss deployment architecture for Enhanced Cognee. Decided to use Docker Compose for local development and Kubernetes for production. Database will use PostgreSQL 18 with pgVector extension.
+Meeting with the infrastructure team to discuss deployment architecture for RNR Enhanced Cognee. Decided to use Docker Compose for local development and Kubernetes for production. Database will use PostgreSQL 18 with pgVector extension.
 ```
 
 **Memory 2:**
@@ -235,13 +235,13 @@ Wrote unit tests for audit_logger.py module. Implemented tests for basic logging
     "Completely different topics and activities"
   ],
   "key_similarities": [
-    "Both relate to Enhanced Cognee project",
+    "Both relate to RNR Enhanced Cognee project",
     "Both involve technical work"
   ],
   "merge_recommendation": "keep_both",
   "merge_strategy": "none",
   "entities": {
-    "shared": ["Enhanced Cognee"],
+    "shared": ["RNR Enhanced Cognee"],
     "unique_to_memory1": ["Docker", "Kubernetes", "PostgreSQL 18", "pgVector", "infrastructure team"],
     "unique_to_memory2": ["audit_logger.py", "unit tests", "code coverage"]
   }
@@ -276,13 +276,13 @@ Completed audit logger implementation. Added PostgreSQL database integration, co
   ],
   "key_similarities": [
     "Same component: audit_logger.py",
-    "Same project: Enhanced Cognee",
+    "Same project: RNR Enhanced Cognee",
     "Related work: audit logger implementation"
   ],
   "merge_recommendation": "keep_both",
   "merge_strategy": "chronological",
   "entities": {
-    "shared": ["audit_logger.py", "Enhanced Cognee"],
+    "shared": ["audit_logger.py", "RNR Enhanced Cognee"],
     "unique_to_memory1": [],
     "unique_to_memory2": ["PostgreSQL", "tests", "performance metrics"]
   }

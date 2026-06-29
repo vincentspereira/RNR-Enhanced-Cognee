@@ -477,7 +477,7 @@ class CICDPipelineManager:
     def create_github_actions_workflow(self) -> Dict[str, Any]:
         """Create GitHub Actions workflow configuration"""
         workflow = {
-            "name": "Enhanced Cognee CI/CD Pipeline",
+            "name": "RNR Enhanced Cognee CI/CD Pipeline",
             "on": {
                 "push": {
                     "branches": ["main", "develop"]
@@ -1259,7 +1259,7 @@ class ProductionDeploymentPreparer:
         """Generate deployment documentation"""
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-        documentation = f"""# Enhanced Cognee Production Deployment Documentation
+        documentation = f"""# RNR Enhanced Cognee Production Deployment Documentation
 
 ## Environment: {environment.value.upper()}
 **Generated:** {timestamp}
@@ -1514,7 +1514,7 @@ async def test_deployment_documentation_generation(deployment_preparer):
     documentation = await deployment_preparer.generate_deployment_documentation(DeploymentEnvironment.PRODUCTION)
 
     assert len(documentation) > 1000, "Documentation should be substantial"
-    assert "Enhanced Cognee Production Deployment Documentation" in documentation, "Should have title"
+    assert "RNR Enhanced Cognee Production Deployment Documentation" in documentation, "Should have title"
     assert "Infrastructure Configuration" in documentation, "Should have infrastructure section"
     assert "CI/CD Pipeline" in documentation, "Should have CI/CD section"
     assert "Environment Variables" in documentation, "Should have environment variables section"

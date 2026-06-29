@@ -1,5 +1,5 @@
 {
-  "_comment": "Enhanced Cognee configuration file. All Phase 8 automation features are OFF by default.",
+  "_comment": "RNR Enhanced Cognee configuration file. All Phase 8 automation features are OFF by default.",
   "categories": {
     "general": {"prefix": "gen_", "description": "General purpose memories"},
     "trading": {"prefix": "trading_", "description": "Trading system memories"},

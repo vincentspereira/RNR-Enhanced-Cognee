@@ -1,8 +1,8 @@
-# Enhanced Cognee Alerting Rules
-# Comprehensive monitoring rules for Enhanced Cognee components
+# RNR Enhanced Cognee Alerting Rules
+# Comprehensive monitoring rules for RNR Enhanced Cognee components
 
 groups:
-  # Enhanced Cognee Service Alerts
+  # RNR Enhanced Cognee Service Alerts
   - name: enhanced-cognee-service
     rules:
       - alert: EnhancedCogneeDown
@@ -12,8 +12,8 @@ groups:
           severity: critical
           service: enhanced-cognee
         annotations:
-          summary: "Enhanced Cognee server is down"
-          description: "Enhanced Cognee server has been down for more than 1 minute on {{ $labels.instance }}"
+          summary: "RNR Enhanced Cognee server is down"
+          description: "RNR Enhanced Cognee server has been down for more than 1 minute on {{ $labels.instance }}"
 
       - alert: EnhancedCogneeHighResponseTime
         expr: http_request_duration_seconds{quantile="0.95", job="enhanced-cognee-server"} > 2
@@ -22,7 +22,7 @@ groups:
           severity: warning
           service: enhanced-cognee
         annotations:
-          summary: "Enhanced Cognee high response time"
+          summary: "RNR Enhanced Cognee high response time"
           description: "95th percentile response time is {{ $value }}s on {{ $labels.instance }}"
 
       - alert: EnhancedCogneeHighErrorRate
@@ -32,7 +32,7 @@ groups:
           severity: critical
           service: enhanced-cognee
         annotations:
-          summary: "Enhanced Cognee high error rate"
+          summary: "RNR Enhanced Cognee high error rate"
           description: "Error rate is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
 
       - alert: EnhancedCogneeMemoryUsage
@@ -42,7 +42,7 @@ groups:
           severity: warning
           service: enhanced-cognee
         annotations:
-          summary: "Enhanced Cognee high memory usage"
+          summary: "RNR Enhanced Cognee high memory usage"
           description: "Memory usage is {{ $value }}MB on {{ $labels.instance }}"
 
   # Database Alerts

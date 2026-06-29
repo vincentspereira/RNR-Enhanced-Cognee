@@ -1,15 +1,15 @@
 """
-Enhanced Cognee - Undo Manager for Automated Actions
+RNR Enhanced Cognee - Undo Manager for Automated Actions
 
 This module provides a comprehensive undo mechanism for all automated operations
-in the Enhanced Cognee system. It tracks:
+in the RNR Enhanced Cognee system. It tracks:
 - Original state before modifications
 - Operation chains (groups of related operations)
 - Undo history with metadata
 - Redo capability
 - Automatic cleanup of old undo entries
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.1.0
 Date: 2026-05-14
 """
@@ -106,7 +106,7 @@ class UndoEntry:
 
 class UndoManager:
     """
-    Manages undo operations for Enhanced Cognee automations.
+    Manages undo operations for RNR Enhanced Cognee automations.
 
     Features:
     - Track original state before all modifications

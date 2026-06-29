@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Sprint 8 implements advanced features for Enhanced Cognee including Lite mode, comprehensive backup/recovery system, and automated maintenance scheduling.
+Sprint 8 implements advanced features for RNR Enhanced Cognee including Lite mode, comprehensive backup/recovery system, and automated maintenance scheduling.
 
 ## Implementation Status
 

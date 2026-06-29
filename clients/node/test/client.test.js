@@ -1,5 +1,5 @@
 /**
- * Tests for the Enhanced Cognee Node.js client.
+ * Tests for the RNR Enhanced Cognee Node.js client.
  *
  * Uses Node's built-in `node:test` runner so no extra dependency
  * is required. The HTTP server is mocked at the `fetchImpl` level

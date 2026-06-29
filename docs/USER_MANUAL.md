@@ -1,12 +1,12 @@
-# Enhanced Cognee - User Manual
+# RNR Enhanced Cognee - User Manual
 
 A step-by-step guide for everyday users. No technical knowledge needed.
 
 ---
 
-## 1. What is Enhanced Cognee?
+## 1. What is RNR Enhanced Cognee?
 
-Enhanced Cognee is your personal AI memory system. It stores notes,
+RNR Enhanced Cognee is your personal AI memory system. It stores notes,
 decisions, facts, and anything else you want remembered, and lets you (or
 your AI assistant) search and browse them later through a friendly web
 dashboard.
@@ -37,7 +37,7 @@ You only do this once.
 
 ---
 
-## 3. Installing Enhanced Cognee
+## 3. Installing RNR Enhanced Cognee
 
 ### Windows
 
@@ -47,7 +47,7 @@ You only do this once.
    click "More info" then "Run anyway".
 3. Follow the installer (Next, Next, Install). Leave "Create a desktop
    icon" ticked.
-4. When it finishes, "Enhanced Cognee" appears in your Start menu and on
+4. When it finishes, "RNR Enhanced Cognee" appears in your Start menu and on
    your desktop.
 
 ### Mac
@@ -68,18 +68,18 @@ You only do this once.
 3. Double-click to run.
 
    Alternative: download the `.tar.gz`, extract it, and run `./install.sh`
-   inside -- this adds "Enhanced Cognee" to your application menu.
+   inside -- this adds "RNR Enhanced Cognee" to your application menu.
 
 ---
 
 ## 4. Starting the system (every time)
 
-1. Open "Enhanced Cognee" (desktop icon / Start menu / Applications).
+1. Open "RNR Enhanced Cognee" (desktop icon / Start menu / Applications).
 2. The launcher window opens and checks Docker:
    - If Docker is not running, the launcher tries to start it for you.
    - If Docker is not installed, click "Get Docker Desktop" and see
      section 2 above.
-3. Click "Start Enhanced Cognee".
+3. Click "Start RNR Enhanced Cognee".
    - THE FIRST TIME ONLY: the system downloads its components (about
      2 GB). This can take 5-15 minutes depending on your internet. The
      activity log at the bottom shows progress. Later starts take under a
@@ -88,7 +88,7 @@ You only do this once.
    automatically at: http://localhost:9050
    (You can also click "Open Dashboard" any time.)
 
-To stop: click "Stop Enhanced Cognee" in the launcher. Your memories are
+To stop: click "Stop RNR Enhanced Cognee" in the launcher. Your memories are
 kept safe and will be there next time.
 
 ---
@@ -118,7 +118,7 @@ Type what you are looking for in plain words -- you do not need exact
 matches. Results are ranked by relevance.
 
 ### Sessions
-If you use Enhanced Cognee with an AI assistant (like Claude), each
+If you use RNR Enhanced Cognee with an AI assistant (like Claude), each
 conversation can be tracked as a session. Click a session to see the
 memories created during it on a timeline.
 
@@ -144,7 +144,7 @@ app does not delete it.
 
 **How do I completely remove my data?**
 Open a terminal/command prompt and run:
-`docker compose -p enhanced-cognee down -v`
+`docker compose -p RNR-Enhanced-Cognee down -v`
 (The `-v` removes the data volumes. This cannot be undone.)
 
 **Can I use it from another device?**

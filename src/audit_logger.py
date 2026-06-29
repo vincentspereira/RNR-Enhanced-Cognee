@@ -1,15 +1,15 @@
 """
-Enhanced Cognee - Audit Logger for Automated Actions
+RNR Enhanced Cognee - Audit Logger for Automated Actions
 
 This module provides comprehensive audit logging for all automated operations
-in the Enhanced Cognee system. It tracks:
+in the RNR Enhanced Cognee system. It tracks:
 - All automated MCP tool calls
 - Success/failure status
 - Performance metrics
 - Security-relevant events
 - Undo operation history
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -85,7 +85,7 @@ class AuditOperationType(Enum):
 
 class AuditLogger:
     """
-    Comprehensive audit logging system for Enhanced Cognee automations.
+    Comprehensive audit logging system for RNR Enhanced Cognee automations.
 
     Features:
     - Multi-channel logging (file, database, console)

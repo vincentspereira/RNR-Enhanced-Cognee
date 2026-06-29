@@ -1,5 +1,5 @@
 """
-System Tests for Enhanced Cognee MCP Server
+System Tests for RNR Enhanced Cognee MCP Server
 Tests the complete MCP server functionality
 """
 
@@ -32,9 +32,9 @@ class TestMCPServerInit:
         """Test MCP server object can be created"""
         from mcp.server import FastMCP
 
-        mcp = FastMCP("Test Enhanced Cognee")
+        mcp = FastMCP("Test RNR Enhanced Cognee")
         assert mcp is not None
-        assert mcp.name == "Test Enhanced Cognee"
+        assert mcp.name == "Test RNR Enhanced Cognee"
 
     @pytest.mark.system
     @pytest.mark.asyncio
@@ -86,7 +86,7 @@ class TestMCPTools:
             # Standard memory tools
             "add_memory", "search_memories", "get_memories", "get_memory",
             "update_memory", "delete_memory", "list_agents",
-            # Enhanced Cognee tools
+            # RNR Enhanced Cognee tools
             "cognify", "search", "list_data", "get_stats", "health",
             # Memory management
             "expire_memories", "get_memory_age_stats", "set_memory_ttl", "archive_category",
@@ -145,11 +145,11 @@ class TestStandardMemoryTools:
 
 
 # ============================================================================
-# Test Enhanced Cognee Tools
+# Test RNR Enhanced Cognee Tools
 # ============================================================================
 
 class TestEnhancedCogneeTools:
-    """Test Enhanced Cognee-specific tools"""
+    """Test RNR Enhanced Cognee-specific tools"""
 
     @pytest.mark.system
     @pytest.mark.asyncio
@@ -243,7 +243,7 @@ class TestToolResponses:
         result = await server.health()
 
         assert isinstance(result, str)
-        assert "Enhanced Cognee Health" in result
+        assert "RNR Enhanced Cognee Health" in result
 
 
 # ============================================================================

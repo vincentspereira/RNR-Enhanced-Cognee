@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-01-22
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
@@ -18,10 +18,10 @@ The original implementation defined a Python enum to classify memories by projec
 All ingestion paths validated the category parameter against this enum. Any value
 not in the list raised a ValueError and rejected the memory.
 
-This design originated from the first project that used Enhanced Cognee, which had
+This design originated from the first project that used RNR Enhanced Cognee, which had
 three subsystems: Algorithmic Trading System (ATS), Order Management Agent (OMA),
 and Signal Management Component (SMC). When a second, unrelated project tried to
-use Enhanced Cognee with categories relevant to its own domain, every add_memory
+use RNR Enhanced Cognee with categories relevant to its own domain, every add_memory
 call failed validation.
 
 Phase 6 of the development plan (purge hardcoded ats/oma/smc from legacy src/
@@ -60,7 +60,7 @@ No code outside of .enhanced-cognee-config.json may contain the strings "ats",
 ## Consequences
 
 **Positive**
-- Enhanced Cognee works for any project without code changes.
+- RNR Enhanced Cognee works for any project without code changes.
 - Adding a new category requires only a config file edit, not a code change and
   redeploy.
 - The system cannot silently miscategorize a memory due to an enum mismatch.

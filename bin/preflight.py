@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Pre-flight Checks
+RNR Enhanced Cognee - Pre-flight Checks
 
 Verification script to ensure all systems are operational before use.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class PreflightChecker:
     """
-    Pre-flight checker for Enhanced Cognee.
+    Pre-flight checker for RNR Enhanced Cognee.
 
     Verifies all dependencies and services are operational.
     """
@@ -45,7 +45,7 @@ class PreflightChecker:
             True if all checks passed, False otherwise
         """
         print("=" * 60)
-        print("  Enhanced Cognee Pre-flight Checks")
+        print("  RNR Enhanced Cognee Pre-flight Checks")
         print("=" * 60)
         print()
 
@@ -327,7 +327,7 @@ class PreflightChecker:
         print()
 
         if passed == total:
-            print("All systems operational! Enhanced Cognee is ready to use.")
+            print("All systems operational! RNR Enhanced Cognee is ready to use.")
         else:
             print("Some issues detected. Please fix the warnings above.")
             print("Run 'python setup_wizard.py' if configuration is missing.")
@@ -338,7 +338,7 @@ async def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Enhanced Cognee Pre-flight Checks"
+        description="RNR Enhanced Cognee Pre-flight Checks"
     )
     parser.add_argument(
         "--fix",

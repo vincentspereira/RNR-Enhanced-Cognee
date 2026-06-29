@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Direct knowledge-graph primitives: remember / recall / forget / improve.
 
-Demonstrates Enhanced Cognee's v1.0.9-style KG tools that operate on
+Demonstrates RNR Enhanced Cognee's v1.0.9-style KG tools that operate on
 the graph directly rather than going through the semantic-search
 cognify pipeline. Faster and more deterministic for cases where you
 already know what fact you're inserting.
@@ -33,7 +33,7 @@ def call(tool: str, **params: Any) -> Any:
 
 
 def main() -> int:
-    print("=== Enhanced Cognee: knowledge-graph primitives ===\n")
+    print("=== RNR Enhanced Cognee: knowledge-graph primitives ===\n")
 
     # 1. Remember three facts. `remember` adds them to the graph with
     #    automatic entity extraction.

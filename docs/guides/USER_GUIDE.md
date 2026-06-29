@@ -1,10 +1,10 @@
-# Enhanced Cognee MCP Server - Comprehensive User Guide
+# RNR Enhanced Cognee MCP Server - Comprehensive User Guide
 
 ## 🧠 Table of Contents
 
 1. [Introduction](#introduction)
-2. [What is Enhanced Cognee?](#what-is-enhanced-cognee)
-3. [Why Use Enhanced Cognee?](#why-use-enhanced-cognee)
+2. [What is RNR Enhanced Cognee?](#what-is-enhanced-cognee)
+3. [Why Use RNR Enhanced Cognee?](#why-use-enhanced-cognee)
 4. [Key Features](#key-features)
 5. [Getting Started](#getting-started)
 6. [Memory Management](#memory-management)
@@ -17,11 +17,11 @@
 
 ## 🎯 Introduction
 
-Enhanced Cognee is a powerful, enterprise-grade memory management system designed specifically for AI-powered development environments. It provides intelligent, context-aware memory capabilities that enhance your productivity across all projects.
+RNR Enhanced Cognee is a powerful, enterprise-grade memory management system designed specifically for AI-powered development environments. It provides intelligent, context-aware memory capabilities that enhance your productivity across all projects.
 
-## 🚀 What is Enhanced Cognee?
+## 🚀 What is RNR Enhanced Cognee?
 
-Enhanced Cognee is an **MCP (Model Context Protocol) Server** that provides:
+RNR Enhanced Cognee is an **MCP (Model Context Protocol) Server** that provides:
 
 - **Persistent Memory**: Store and retrieve information across sessions
 - **Intelligent Categorization**: Automatically organize memories by project type
@@ -29,10 +29,10 @@ Enhanced Cognee is an **MCP (Model Context Protocol) Server** that provides:
 - **Enterprise Database Stack**: PostgreSQL, Qdrant, Neo4j, Redis integration
 - **Multi-IDE Compatibility**: Works with Claude Desktop, Cursor, VS Code, and more
 
-## 💡 Why Use Enhanced Cognee?
+## 💡 Why Use RNR Enhanced Cognee?
 
 ### 🔄 Eliminate Repetition
-- **Never repeat explanations**: Enhanced Cognee remembers your project decisions
+- **Never repeat explanations**: RNR Enhanced Cognee remembers your project decisions
 - **Consistent context**: Maintain project understanding across sessions
 - **Cross-project insights**: Apply learnings from one project to another
 
@@ -52,7 +52,7 @@ Enhanced Cognee is an **MCP (Model Context Protocol) Server** that provides:
 
 ```mermaid
 graph TB
-    A[Enhanced Cognee] --> B[PostgreSQL+pgVector]
+    A[RNR Enhanced Cognee] --> B[PostgreSQL+pgVector]
     A --> C[Qdrant Vector DB]
     A --> D[Neo4j Graph DB]
     A --> E[Redis Cache]
@@ -97,7 +97,7 @@ graph TB
 
 ### 🔄 Project-Aware Detection
 
-Enhanced Cognee automatically detects your project type:
+RNR Enhanced Cognee automatically detects your project type:
 
 1. **Path Analysis**: Scans directory structure
 2. **File Detection**: Looks for project indicators
@@ -114,13 +114,13 @@ curl -fsSL https://raw.githubusercontent.com/your-username/enhanced-cognee/main/
 
 # Or clone and install manually
 git clone https://github.com/your-username/enhanced-cognee.git
-cd enhanced-cognee
+cd RNR-Enhanced-Cognee
 python install.py
 ```
 
 ### What Gets Installed
 
-- ✅ **Enhanced Cognee Server**: Universal MCP server
+- ✅ **RNR Enhanced Cognee Server**: Universal MCP server
 - ✅ **Database Stack**: PostgreSQL, Qdrant, Neo4j, Redis
 - ✅ **Configuration Files**: Ready-to-use IDE configs
 - ✅ **Desktop Shortcuts**: Easy server startup
@@ -181,7 +181,7 @@ Query your stored knowledge:
 
 ### Automatic Project Detection
 
-Enhanced Cognee automatically identifies project types:
+RNR Enhanced Cognee automatically identifies project types:
 
 #### **Multi-Agent System Detection**
 ```
@@ -206,7 +206,7 @@ Python packages/libraries            → Python Project
 
 ### Context Switching
 
-When you switch between projects, Enhanced Cognee:
+When you switch between projects, RNR Enhanced Cognee:
 
 1. **Detects New Context**: Identifies project type
 2. **Loads Relevant Memories**: Retrieves project-specific knowledge
@@ -215,7 +215,7 @@ When you switch between projects, Enhanced Cognee:
 
 ### Cross-Project Learning
 
-Enhanced Cognee can leverage knowledge from other projects:
+RNR Enhanced Cognee can leverage knowledge from other projects:
 
 ```
 "How did we handle user authentication in the e-commerce project?"
@@ -231,7 +231,7 @@ Enhanced Cognee can leverage knowledge from other projects:
 // AppData/Roaming/Claude/claude_desktop_config.json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": ["/path/to/enhanced-cognee/cognee_mcp_universal.py"],
       "env": {
@@ -248,7 +248,7 @@ Enhanced Cognee can leverage knowledge from other projects:
 // ~/.continue/config.json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": ["/path/to/enhanced-cognee/cognee_mcp_universal.py"]
     }
@@ -261,7 +261,7 @@ Enhanced Cognee can leverage knowledge from other projects:
 ```json
 // Cursor MCP Settings
 {
-  "enhanced-cognee": {
+  "RNR-Enhanced-Cognee": {
     "command": "python",
     "args": ["/path/to/enhanced-cognee/cognee_mcp_universal.py"],
     "cwd": "/path/to/enhanced-cognee"
@@ -275,7 +275,7 @@ Enhanced Cognee can leverage knowledge from other projects:
 // Windsurf MCP Configuration
 {
   "servers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "executable": "python",
       "args": ["/path/to/cognee_mcp_universal.py"],
       "workingDirectory": "/path/to/enhanced-cognee"
@@ -328,7 +328,7 @@ Define your own memory categories for specific projects:
 
 ### Memory Relationships
 
-Enhanced Cognee tracks relationships between memories:
+RNR Enhanced Cognee tracks relationships between memories:
 
 ```
 "What's related to our user authentication decision?"
@@ -400,7 +400,7 @@ docker ps | grep cognee
 docker-compose -f docker-compose-enhanced-cognee.yml restart
 
 # Check network connectivity
-docker network ls | grep enhanced-cognee
+docker network ls | grep RNR-Enhanced-Cognee
 ```
 
 #### **Memory Not Saving**
@@ -421,14 +421,14 @@ docker-compose logs postgres
 
 ## ❓ FAQ
 
-### Q: Does Enhanced Cognee work offline?
-A: Yes, Enhanced Cognee works offline. Only the initial LLM calls require internet connection.
+### Q: Does RNR Enhanced Cognee work offline?
+A: Yes, RNR Enhanced Cognee works offline. Only the initial LLM calls require internet connection.
 
 ### Q: How much storage does it use?
 A: Storage usage depends on your memory volume. Typically starts at a few hundred MB and grows with usage.
 
 ### Q: Can I use it with multiple IDEs simultaneously?
-A: Yes, Enhanced Cognee supports multiple IDE connections simultaneously.
+A: Yes, RNR Enhanced Cognee supports multiple IDE connections simultaneously.
 
 ### Q: Is my data private?
 A: Yes, all data is stored locally in your Docker containers and is not sent to external servers.
@@ -440,10 +440,10 @@ A: Backup the Docker volumes: `docker run --rm -v enhanced_cognee_data:/data -v 
 A: Yes, you can define custom categories for your specific project types.
 
 ### Q: How does it compare to other memory solutions?
-A: Enhanced Cognee offers enterprise-grade features, project-aware categorization, and multi-database architecture that surpasses basic memory solutions.
+A: RNR Enhanced Cognee offers enterprise-grade features, project-aware categorization, and multi-database architecture that surpasses basic memory solutions.
 
 ### Q: What's the performance like?
-A: With Redis caching and optimized databases, Enhanced Cognee provides sub-second memory retrieval and storage.
+A: With Redis caching and optimized databases, RNR Enhanced Cognee provides sub-second memory retrieval and storage.
 
 ## 📚 Additional Resources
 
@@ -460,7 +460,7 @@ We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md)
 
 ## 📄 License
 
-Enhanced Cognee is licensed under the MIT License. See [LICENSE](../LICENSE) for details.
+RNR Enhanced Cognee is licensed under the MIT License. See [LICENSE](../LICENSE) for details.
 
 ---
 

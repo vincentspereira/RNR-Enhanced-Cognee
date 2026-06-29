@@ -1,7 +1,7 @@
 """In-memory cache adapter (no external dependency).
 
 Exposes the minimum subset of the ``redis.asyncio.Redis`` API surface
-that Enhanced Cognee call sites use today (``ping`` / ``get`` / ``set``
+that RNR Enhanced Cognee call sites use today (``ping`` / ``get`` / ``set``
 / ``delete`` / ``close``). Suitable for the ``lean`` deployment profile
 (see ``docs/PROFILES.md``) and for tests that need a cache stand-in
 without an external service.

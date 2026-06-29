@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Memory Extractor for Claude Code Plugin
+RNR Enhanced Cognee - Memory Extractor for Claude Code Plugin
 
 This module extracts observations from Claude Code tool usage to automatically
 create meaningful memories.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

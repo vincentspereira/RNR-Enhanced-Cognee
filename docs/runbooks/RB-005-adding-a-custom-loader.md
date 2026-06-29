@@ -1,16 +1,16 @@
 # Runbook RB-005: Adding a Custom Document Loader Plugin
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Plugin developers
 
 ---
 
 ## Overview
 
-Enhanced Cognee discovers document loaders via Python package entry_points under the
+RNR Enhanced Cognee discovers document loaders via Python package entry_points under the
 group "enhanced_cognee.loaders". Three built-in loaders handle .txt/.md/.rst,
 .json/.jsonl, and .html/.htm files. This runbook adds a custom loader for a new
-file type without modifying the Enhanced Cognee source.
+file type without modifying the RNR Enhanced Cognee source.
 
 The example below adds a CSV loader for a package named my_cognee_plugins.
 
@@ -96,7 +96,7 @@ without reinstalling.
 Entry points are read at server startup. Restart the MCP server to pick up the
 newly registered loader:
 
-    enhanced-cognee start
+    RNR-Enhanced-Cognee start
 
 ---
 

@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Production Logging and Observability
+RNR Enhanced Cognee Production Logging and Observability
 
 This module provides comprehensive production logging and observability capabilities for the Enhanced
 Cognee Multi-Agent System, including structured logging, distributed tracing, log aggregation,

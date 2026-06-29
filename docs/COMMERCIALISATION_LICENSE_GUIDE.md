@@ -1,6 +1,6 @@
 # Commercialisation & License Compliance Guide
 
-**Question:** If Enhanced Cognee is monetised, sold as SaaS, or incorporated
+**Question:** If RNR Enhanced Cognee is monetised, sold as SaaS, or incorporated
 into another commercial system (e.g., the Multi-Agent System), are there
 license-compliance risks from the open-source components we depend on?
 
@@ -15,7 +15,7 @@ below. The full component-by-component license list is in
 
 | Component | License | Self-host commercial | Bundled-product distribution | SaaS commercial |
 |---|---|---|---|---|
-| Enhanced Cognee (own code) | Apache-2.0 | OK | OK | OK |
+| RNR Enhanced Cognee (own code) | Apache-2.0 | OK | OK | OK |
 | Cognee (upstream) | Apache-2.0 | OK | OK | OK |
 | Valkey | Apache-2.0 | OK | OK | OK |
 | PostgreSQL + pgvector | PostgreSQL License | OK | OK | OK |
@@ -53,7 +53,7 @@ binaries occurs.
 
 ---
 
-## Scenario 3: You distribute Enhanced Cognee as a packaged product (e.g., a "MAS Enterprise Edition" tarball that customers install on their machines)
+## Scenario 3: You distribute RNR Enhanced Cognee as a packaged product (e.g., a "MAS Enterprise Edition" tarball that customers install on their machines)
 
 **Status (since 2026-05-19, Phase 2):** ArcadeDB (Apache-2.0) replaced Neo4j
 as the default graph DB. The default packaged product is now copyleft-free for
@@ -111,16 +111,16 @@ and [HANDOVER §4 Phase 3](./HANDOVER.md).
 
 ---
 
-## Scenario 4: You embed Enhanced Cognee inside the Multi-Agent System (MAS)
+## Scenario 4: You embed RNR Enhanced Cognee inside the Multi-Agent System (MAS)
 
 **Two questions to answer first:**
 
 1. **What's MAS's license?** If MAS is also Apache-2.0 (or any permissive
    license), there's no friction. If MAS is proprietary or has a different
    license, check below.
-2. **How are MAS and Enhanced Cognee combined?** Three integration models:
+2. **How are MAS and RNR Enhanced Cognee combined?** Three integration models:
 
-### 4a. MAS imports Enhanced Cognee as a Python library
+### 4a. MAS imports RNR Enhanced Cognee as a Python library
 
 If MAS does `from enhanced_cognee_client import ...`, this is normal library
 usage. Apache-2.0 has no copyleft. MAS can be ANY license, including
@@ -129,7 +129,7 @@ proprietary closed-source.
 **Action:** Bump `enhanced-cognee-client` on PyPI when needed; nothing
 special required.
 
-### 4b. MAS shells out to a separate Enhanced Cognee MCP server
+### 4b. MAS shells out to a separate RNR Enhanced Cognee MCP server
 
 If MAS launches `bin/enhanced_cognee_mcp_server.py` as a child process or
 talks to it over network MCP, this is "mere aggregation" — even stronger
@@ -138,27 +138,27 @@ isolation than 4a. Zero copyleft concern.
 **Action:** Bundle the deploy/local/install scripts; MAS uses them as
 external tools.
 
-### 4c. MAS copies Enhanced Cognee source code into its own tree
+### 4c. MAS copies RNR Enhanced Cognee source code into its own tree
 
-If MAS source includes Enhanced Cognee files directly (vendored copy),
+If MAS source includes RNR Enhanced Cognee files directly (vendored copy),
 those copied files retain Apache-2.0 attribution. MAS as a whole can still
 be ANY license (Apache permits sublicensing).
 
 **Action:** Preserve LICENSE + NOTICE + per-file copyright headers from
-Enhanced Cognee in MAS's source tree.
+RNR Enhanced Cognee in MAS's source tree.
 
-**Bottom line:** Embedding Enhanced Cognee in MAS is unrestricted under any
+**Bottom line:** Embedding RNR Enhanced Cognee in MAS is unrestricted under any
 of the three models, regardless of MAS's commercial intent.
 
 ---
 
-## Scenario 5: MAS (with Enhanced Cognee inside) is sold as a closed-source commercial product
+## Scenario 5: MAS (with RNR Enhanced Cognee inside) is sold as a closed-source commercial product
 
 **Still safe, with caveats below.**
 
 ### What's safe
 
-- Enhanced Cognee code is Apache-2.0 → can be inside a closed-source product.
+- RNR Enhanced Cognee code is Apache-2.0 → can be inside a closed-source product.
 - All Python pip deps (Apache/MIT/BSD/PSF) → can be inside.
 - Valkey, Qdrant, Caddy (Apache-2.0) → safe.
 - PostgreSQL + pgvector (PostgreSQL license) → safe.
@@ -198,12 +198,12 @@ This pattern is used by hundreds of commercial products with no friction.
 
 ## Quick FAQ
 
-> **"Can I sell support contracts for Enhanced Cognee?"**
+> **"Can I sell support contracts for RNR Enhanced Cognee?"**
 
 Yes. Apache-2.0 explicitly permits commercial use without restriction.
 This is the Red Hat / Suse / Canonical business model.
 
-> **"Can I rename Enhanced Cognee to 'MyCompany Memory Platform' and sell it?"**
+> **"Can I rename RNR Enhanced Cognee to 'MyCompany Memory Platform' and sell it?"**
 
 Yes, with conditions:
 - Preserve the Apache-2.0 LICENSE and NOTICE files.
@@ -211,12 +211,12 @@ Yes, with conditions:
 - Don't claim the original code is your work; the existing copyright
   notices stay.
 
-> **"Can I keep my modifications to Enhanced Cognee private?"**
+> **"Can I keep my modifications to RNR Enhanced Cognee private?"**
 
 Yes. Apache-2.0 has no copyleft. You can fork, modify, and keep your
 modifications closed-source.
 
-> **"Can I bundle Enhanced Cognee with my proprietary closed-source agent framework?"**
+> **"Can I bundle RNR Enhanced Cognee with my proprietary closed-source agent framework?"**
 
 Yes (see Scenario 5). After Phase 4 (2026-05-19) the entire default
 stack is permissive, so there's no GPL/AGPL component to *not* bundle.
@@ -269,9 +269,9 @@ out of goodwill). Apache-2.0 has no source-disclosure requirement.
 - [ ] If unsure, get a 30-minute consult with a software lawyer
       (~ EUR 200-400; one-time cost)
 
-For most practical purposes, **Enhanced Cognee + Multi-Agent System +
+For most practical purposes, **RNR Enhanced Cognee + Multi-Agent System +
 commercialisation = no license obstacles**. The Apache-2.0 license under
-which Enhanced Cognee ships is the most permissive widely-used open-source
+which RNR Enhanced Cognee ships is the most permissive widely-used open-source
 license; combined with the Apache/MIT/BSD ecosystem of Python deps, the
 GPL Neo4j concern is the only one worth conscious attention, and it's
 mitigated by the "customer pulls their own image" deployment pattern that
@@ -279,7 +279,7 @@ we already use.
 
 ## See also
 
-When you're evaluating a specific Enhanced Cognee feature for inclusion in
+When you're evaluating a specific RNR Enhanced Cognee feature for inclusion in
 MAS (rather than evaluating the project as a whole), use:
 
 - [`FEATURE_LICENSE_MATRIX.md`](FEATURE_LICENSE_MATRIX.md) -- per-feature

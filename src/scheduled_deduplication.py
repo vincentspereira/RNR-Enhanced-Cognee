@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Scheduled Deduplication
+RNR Enhanced Cognee - Scheduled Deduplication
 
-Periodic deduplication system for Enhanced Cognee memories:
+Periodic deduplication system for RNR Enhanced Cognee memories:
 - Weekly scheduled deduplication
 - Dry-run mode for preview
 - Approval workflow
@@ -15,7 +15,7 @@ Features:
 - Token savings calculation
 - Audit trail
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 class ScheduledDeduplication:
     """
-    Scheduled deduplication system for Enhanced Cognee memories.
+    Scheduled deduplication system for RNR Enhanced Cognee memories.
 
     Performs periodic deduplication with approval workflow.
     """

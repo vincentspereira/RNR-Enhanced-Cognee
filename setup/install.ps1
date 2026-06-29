@@ -1,7 +1,7 @@
 #
-# Enhanced Cognee Installation Script for Windows
+# RNR Enhanced Cognee Installation Script for Windows
 #
-# This script installs Enhanced Cognee in one command.
+# This script installs RNR Enhanced Cognee in one command.
 # Supports both Full and Lite installation modes.
 #
 # Usage:
@@ -10,7 +10,7 @@
 #   .\install.ps1 -Mode lite   # Lite mode (SQLite only)
 #   .\install.ps1 -Help        # Show help
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 
@@ -33,7 +33,7 @@ $PythonCmd = "python"
 # Functions
 function Print-Header {
     Write-Host "============================================" -ForegroundColor Cyan
-    Write-Host "  Enhanced Cognee Installation" -ForegroundColor Cyan
+    Write-Host "  RNR Enhanced Cognee Installation" -ForegroundColor Cyan
     Write-Host "============================================" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -196,7 +196,7 @@ function Invoke-SetupWizard {
 }
 
 function Start-Services {
-    Print-Step "Starting Enhanced Cognee services..."
+    Print-Step "Starting RNR Enhanced Cognee services..."
 
     Set-Location $ProjectRoot
 
@@ -223,7 +223,7 @@ function Invoke-Preflight {
 
     if ($LASTEXITCODE -ne 0) {
         Print-Warn "Some pre-flight checks failed"
-        Print-Info "You may need to fix these issues before using Enhanced Cognee"
+        Print-Info "You may need to fix these issues before using RNR Enhanced Cognee"
     }
     else {
         Print-Success "All pre-flight checks passed"
@@ -241,7 +241,7 @@ function Add-ToPath {
     }
 
     Print-Success "CLI script created: $cliScript"
-    Print-Info "You can run Enhanced Cognee with: python $cliScript"
+    Print-Info "You can run RNR Enhanced Cognee with: python $cliScript"
     Print-Info "Or add the project directory to your PATH for easy access"
 }
 
@@ -251,7 +251,7 @@ function Print-Completion {
     Write-Host "  Installation Complete!" -ForegroundColor Green
     Write-Host "============================================" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Enhanced Cognee is ready to use!"
+    Write-Host "RNR Enhanced Cognee is ready to use!"
     Write-Host ""
     Write-Host "Quick Start:"
     Write-Host "  1. Check status:"
@@ -268,7 +268,7 @@ function Print-Completion {
 }
 
 function Show-Help {
-    Write-Host "Enhanced Cognee Installation Script for Windows"
+    Write-Host "RNR Enhanced Cognee Installation Script for Windows"
     Write-Host ""
     Write-Host "Usage:"
     Write-Host "  .\install.ps1 [options]"

@@ -1,6 +1,6 @@
-# Enhanced Cognee Client
+# RNR Enhanced Cognee Client
 
-Async Python client for the [Enhanced Cognee MCP server](https://github.com/vincentspereira/Enhanced-Cognee) - a production-grade knowledge-graph memory layer with 119 MCP tools.
+Async Python client for the [RNR Enhanced Cognee MCP server](https://github.com/vincentspereira/RNR-Enhanced-Cognee) - a production-grade knowledge-graph memory layer with 119 MCP tools.
 
 ## Install
 
@@ -18,7 +18,7 @@ async def main():
     async with EnhancedCogneeClient(host="localhost", port=8080) as client:
         # Store a memory
         result = await client.add_memory(
-            content="Enhanced Cognee has 119 MCP tools",
+            content="RNR Enhanced Cognee has 119 MCP tools",
             user_id="default",
             agent_id="my-agent",
         )

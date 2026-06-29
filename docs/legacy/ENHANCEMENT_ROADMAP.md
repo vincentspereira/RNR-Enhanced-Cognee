@@ -1,4 +1,4 @@
-# Enhanced Cognee - Comprehensive Enhancement Roadmap
+# RNR Enhanced Cognee - Comprehensive Enhancement Roadmap
 
 **Version:** 2.0
 **Date:** 2026-02-05
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This document outlines a comprehensive 12-month roadmap to enhance Enhanced Cognee to surpass claude-mem in ease of use while maintaining enterprise-grade capabilities.
+This document outlines a comprehensive 12-month roadmap to enhance RNR Enhanced Cognee to surpass claude-mem in ease of use while maintaining enterprise-grade capabilities.
 
 **Target Goals:**
 - Match claude-mem's ease of use (zero-config installation)
@@ -25,13 +25,13 @@ This document outlines a comprehensive 12-month roadmap to enhance Enhanced Cogn
 
 ### Overview
 
-Based on user requirements analysis, Enhanced Cognee has **20 tools (62.5%) already automatic**, **8 tools (25%) should be automated**, and **4 tools (12.5%) must remain manual/scheduled**.
+Based on user requirements analysis, RNR Enhanced Cognee has **20 tools (62.5%) already automatic**, **8 tools (25%) should be automated**, and **4 tools (12.5%) must remain manual/scheduled**.
 
 ### Automation Classification (USER-SPECIFIED)
 
 **Already Automatic (20 tools):** ✅
 - **Standard Memory (4):** `search_memories`, `get_memories`, `get_memory`, `list_agents`
-- **Enhanced Cognee (4):** `search`, `list_data`, `get_stats`, `health`
+- **RNR Enhanced Cognee (4):** `search`, `list_data`, `get_stats`, `health`
 - **Memory Management (1):** `get_memory_age_stats`
 - **Deduplication (2):** `check_duplicate`, `get_deduplication_stats`
 - **Summarization (1):** `get_summary_stats`
@@ -361,7 +361,7 @@ class EnhancedCogneePlugin:
 |---------|----------------|----------|-------------|-------|
 | T2.1.1 | Create install.sh (Linux/Mac) | P0 | 3 days | DevOps |
 | T2.1.2 | Create install.ps1 (Windows) | P0 | 3 days | DevOps |
-| T2.1.3 | Build enhanced-cognee CLI wrapper | P0 | 4 days | Backend |
+| T2.1.3 | Build RNR-Enhanced-Cognee CLI wrapper | P0 | 4 days | Backend |
 | T2.1.4 | Implement auto-configuration | P0 | 3 days | Backend |
 | T2.1.5 | Add health check command | P1 | 1 day | Backend |
 | T2.1.6 | Create uninstall script | P1 | 1 day | DevOps |
@@ -373,7 +373,7 @@ class EnhancedCogneePlugin:
 **setup_wizard.py (NEW from audit):**
 ```python
 #!/usr/bin/env python3
-"""Setup wizard for Enhanced Cognee"""
+"""Setup wizard for RNR Enhanced Cognee"""
 
 import os
 import secrets
@@ -381,7 +381,7 @@ from pathlib import Path
 
 def run_setup_wizard():
     print("=" * 60)
-    print("  Enhanced Cognee Setup Wizard")
+    print("  RNR Enhanced Cognee Setup Wizard")
     print("=" * 60)
     print()
 
@@ -406,7 +406,7 @@ NEO4J_PASSWORD={neo4j_password}
     print("✓ Configuration saved to .env")
     print("✓ Secure passwords generated automatically")
     print()
-    print("Enhanced Cognee is ready to use!")
+    print("RNR Enhanced Cognee is ready to use!")
 
 if __name__ == "__main__":
     run_setup_wizard()
@@ -415,7 +415,7 @@ if __name__ == "__main__":
 **preflight.py (NEW from audit):**
 ```python
 #!/usr/bin/env python3
-"""Pre-flight checks for Enhanced Cognee"""
+"""Pre-flight checks for RNR Enhanced Cognee"""
 
 async def pre_flight_check():
     """Verify all systems operational before use"""
@@ -1092,8 +1092,8 @@ def is_git_repository(path: str) -> bool:
 
 **Lite Mode - Installation:**
 ```bash
-pip install enhanced-cognee[lite]
-enhanced-cognee start --mode lite
+pip install RNR-Enhanced-Cognee[lite]
+RNR-Enhanced-Cognee start --mode lite
 # Setup time: < 2 minutes
 # No Docker required
 ```
@@ -1260,18 +1260,18 @@ docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 python enhanced_cognee_mcp_server.py
 
 # Option 2: Manual install
-pip install enhanced-cognee[full]
-enhanced-cognee start --mode full
+pip install RNR-Enhanced-Cognee[full]
+RNR-Enhanced-Cognee start --mode full
 ```
 
 **Lite Mode (Coming Soon):**
 ```bash
 # Simple install
-pip install enhanced-cognee[lite]
-enhanced-cognee start --mode lite
+pip install RNR-Enhanced-Cognee[lite]
+RNR-Enhanced-Cognee start --mode lite
 
 # Or interactive
-enhanced-cognee install
+RNR-Enhanced-Cognee install
 # Select mode: [ ] Full (Docker, 4 DBs)
 #            [ ] Lite (SQLite, no Docker)
 ```
@@ -1553,5 +1553,5 @@ Phase 3: Polish (Months 7-12)
 4. Begin implementation of T1.1.1 (MCP tool integration tests)
 
 **For questions or clarification, contact:**
-- GitHub Issues: https://github.com/vincentspereira/Enhanced-Cognee/issues
-- Discussions: https://github.com/vincentspereira/Enhanced-Cognee/discussions
+- GitHub Issues: https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues
+- Discussions: https://github.com/vincentspereira/RNR-Enhanced-Cognee/discussions

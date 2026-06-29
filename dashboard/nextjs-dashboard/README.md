@@ -1,13 +1,13 @@
-# Enhanced Cognee Dashboard
+# RNR Enhanced Cognee Dashboard
 
 **Version:** 1.0.0
 **Status:** Phase 1 Foundation (Complete)
 
-Enterprise-grade Next.js 14 dashboard for the Enhanced Cognee AI memory system.
+Enterprise-grade Next.js 14 dashboard for the RNR Enhanced Cognee AI memory system.
 
 ## Overview
 
-This dashboard provides a modern, responsive web interface for visualizing, managing, and analyzing memories in the Enhanced Cognee system. Built with Next.js 14 (App Router), TypeScript, Tailwind CSS, and TanStack Query.
+This dashboard provides a modern, responsive web interface for visualizing, managing, and analyzing memories in the RNR Enhanced Cognee system. Built with Next.js 14 (App Router), TypeScript, Tailwind CSS, and TanStack Query.
 
 ## Features
 
@@ -66,7 +66,7 @@ This dashboard provides a modern, responsive web interface for visualizing, mana
 ### Prerequisites
 
 - Node.js 18+ and npm
-- Enhanced Cognee backend API running on port 8000
+- RNR Enhanced Cognee backend API running on port 8000
 
 ### Installation
 
@@ -268,7 +268,7 @@ export function MyComponent() {
 
 ## API Integration
 
-The dashboard integrates with the Enhanced Cognee backend API running on `http://localhost:8000` (configurable via `NEXT_PUBLIC_API_URL`).
+The dashboard integrates with the RNR Enhanced Cognee backend API running on `http://localhost:8000` (configurable via `NEXT_PUBLIC_API_URL`).
 
 ### Available Endpoints
 
@@ -399,15 +399,15 @@ npm run lint
 
 ## Contributing
 
-This is part of the Enhanced Cognee project. Please follow the established coding patterns and conventions.
+This is part of the RNR Enhanced Cognee project. Please follow the established coding patterns and conventions.
 
 ## License
 
-Same as Enhanced Cognee project.
+Same as RNR Enhanced Cognee project.
 
 ## Support
 
-For issues or questions, please refer to the main Enhanced Cognee documentation or create an issue in the project repository.
+For issues or questions, please refer to the main RNR Enhanced Cognee documentation or create an issue in the project repository.
 
 ---
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Test Runner
+RNR Enhanced Cognee Test Runner
 Runs comprehensive test suite with coverage reporting
 """
 
@@ -35,7 +35,7 @@ def main():
     print("""
 ======================================================================
 
-           Enhanced Cognee Comprehensive Test Suite
+           RNR Enhanced Cognee Comprehensive Test Suite
 
    Coverage Target: >98%   Success Rate: 100%
    Warnings: 0              Skipped: 0

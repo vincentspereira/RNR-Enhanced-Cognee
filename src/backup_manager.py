@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Backup Manager
+RNR Enhanced Cognee - Backup Manager
 
-Comprehensive backup system for Enhanced Cognee stack:
+Comprehensive backup system for RNR Enhanced Cognee stack:
 - PostgreSQL (pg_dump)
 - Qdrant (snapshot API)
 - Neo4j (backup API)
@@ -15,7 +15,7 @@ Features:
 - Backup verification
 - Backup metadata tracking
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 class BackupManager:
     """
-    Comprehensive backup manager for Enhanced Cognee databases.
+    Comprehensive backup manager for RNR Enhanced Cognee databases.
 
     Supports backing up:
     - PostgreSQL (via pg_dump)

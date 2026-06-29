@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Context Injection Hooks
+RNR Enhanced Cognee - Context Injection Hooks
 
 Provides hooks for automatic context injection in Claude Code.
 Implements SessionStart, UserPromptSubmit, PostToolUse, Stop, SessionEnd hooks.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

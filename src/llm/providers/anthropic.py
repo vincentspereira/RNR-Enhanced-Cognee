@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Anthropic Claude LLM Provider
+RNR Enhanced Cognee - Anthropic Claude LLM Provider
 
-Implementation of Anthropic Claude API integration for Enhanced Cognee.
+Implementation of Anthropic Claude API integration for RNR Enhanced Cognee.
 
 Supports:
 - Claude 3.5 Sonnet (claude-3-5-sonnet-20241022)
@@ -10,7 +10,7 @@ Supports:
 - Claude 3 Sonnet (claude-3-sonnet-20240229)
 - Claude 3 Haiku (claude-3-haiku-20240307)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

@@ -31,7 +31,7 @@ Python 3.10-3.14.
 When to pick MySQL / MariaDB over postgres:
 
 - You already operate MySQL at scale and don't want a second
-  RDBMS for Enhanced Cognee specifically.
+  RDBMS for RNR Enhanced Cognee specifically.
 - Your hosting provider only offers managed MySQL (e.g. Aurora
   MySQL, Cloud SQL for MySQL, Azure DB for MySQL).
 - You need MariaDB's vector type (MariaDB 11.7+).

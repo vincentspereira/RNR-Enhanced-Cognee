@@ -1,8 +1,8 @@
-# Enhanced Cognee - 21 SDLC Agents Integration Guide
+# RNR Enhanced Cognee - 21 SDLC Agents Integration Guide
 
 ## Overview
 
-This document explains how Enhanced Cognee benefits and integrates with your **21 SDLC Sub Agents** located at:
+This document explains how RNR Enhanced Cognee benefits and integrates with your **21 SDLC Sub Agents** located at:
 ```
 C:\Users\vince\Projects\AI Agents\Multi-Agent System\agents\agent - sdlc
 ```
@@ -430,7 +430,7 @@ Time 00:02 - Agents make decisions based on fresh data
               │ MCP Protocol
               │
 ┌─────────────▼───────────────────────────────────────────────┐
-│         Enhanced Cognee MCP Server                           │
+│         RNR Enhanced Cognee MCP Server                           │
 │  - 30+ MCP tools exposed                                     │
 │  - ASCII-only output                                         │
 │  - Multi-IDE support                                         │
@@ -473,10 +473,10 @@ Time 00:02 - Agents make decisions based on fresh data
 
 ## Getting Started with 21 SDLC Agents
 
-### Step 1: Start Enhanced Cognee
+### Step 1: Start RNR Enhanced Cognee
 
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 
 # Start databases
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
@@ -495,14 +495,14 @@ Each of your 21 SDLC agents needs to be configured to use the MCP server. This i
 agent_config = {
     "memory_system": {
         "enabled": True,
-        "mcp_server": "enhanced-cognee",
+        "mcp_server": "RNR-Enhanced-Cognee",
         "agent_id": "requirements-agent",  # Unique ID for each agent
         "auto_sync": True,  # Enable real-time sync
     }
 }
 ```
 
-### Step 3: Agent Uses Enhanced Cognee
+### Step 3: Agent Uses RNR Enhanced Cognee
 
 **Example: Requirements Agent**
 ```python
@@ -674,7 +674,7 @@ get_slow_queries(threshold_ms=1000)
 
 ## Summary
 
-Enhanced Cognee provides **comprehensive infrastructure** for your 21 SDLC agents:
+RNR Enhanced Cognee provides **comprehensive infrastructure** for your 21 SDLC agents:
 
 1. **Real-Time Sync** - Instant coordination via Redis pub/sub
 2. **Cross-Agent Sharing** - Access control and collaboration
@@ -692,7 +692,7 @@ Enhanced Cognee provides **comprehensive infrastructure** for your 21 SDLC agent
 - Scalable to 100+ agents
 
 **Next Steps:**
-1. Configure Enhanced Cognee for your agents
+1. Configure RNR Enhanced Cognee for your agents
 2. Set appropriate sharing policies
 3. Configure real-time sync subscriptions
 4. Monitor performance metrics
@@ -700,5 +700,5 @@ Enhanced Cognee provides **comprehensive infrastructure** for your 21 SDLC agent
 
 ---
 
-**Repository:** https://github.com/vincentspereira/Enhanced-Cognee
+**Repository:** https://github.com/vincentspereira/RNR-Enhanced-Cognee
 **Documentation:** See MCP_IDE_SETUP_GUIDE.md for IDE setup

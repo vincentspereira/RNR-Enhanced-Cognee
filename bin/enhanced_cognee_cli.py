@@ -1,13 +1,13 @@
 """
-Enhanced Cognee CLI
+RNR Enhanced Cognee CLI
 ===================
 Entry point: enhanced-cognee
 
 Commands:
   setup     Run the interactive setup wizard
-  start     Start the Enhanced Cognee MCP server
+  start     Start the RNR Enhanced Cognee MCP server
   docker    Manage Docker services (up / down / status)
-  health    Check connectivity to all four Enhanced Cognee databases
+  health    Check connectivity to all four RNR Enhanced Cognee databases
   version   Print the package version
 
 All output is ASCII-only (Windows cp1252 compatible).
@@ -98,14 +98,14 @@ def _load_dotenv_simple() -> None:
 
 def cmd_version(_args) -> int:
     ver = _read_version()
-    print(f"Enhanced Cognee {ver}")
+    print(f"RNR Enhanced Cognee {ver}")
     return 0
 
 
 def cmd_health(_args) -> int:
     _load_dotenv_simple()
     all_ok = True
-    print("Enhanced Cognee Health Check")
+    print("RNR Enhanced Cognee Health Check")
     print("-" * 32)
     for name, (host_var, port_var, def_host, def_port) in _SERVICES.items():
         host = os.environ.get(host_var, def_host)
@@ -130,7 +130,7 @@ def cmd_health(_args) -> int:
 
 
 def cmd_setup(_args) -> int:
-    print("Starting Enhanced Cognee Setup Wizard...")
+    print("Starting RNR Enhanced Cognee Setup Wizard...")
     print("=" * 40)
     # Import and run setup wizard directly if possible; otherwise subprocess
     try:
@@ -150,7 +150,7 @@ def cmd_setup(_args) -> int:
 
 
 def cmd_start(args) -> int:
-    """Start the Enhanced Cognee MCP server (foreground unless --detach)."""
+    """Start the RNR Enhanced Cognee MCP server (foreground unless --detach)."""
     detach = getattr(args, "detach", False)
     python = sys.executable
     cmd = [python, _MCP_SERVER]
@@ -170,7 +170,7 @@ def cmd_start(args) -> int:
         print(f"OK  MCP server started in background (PID {proc.pid})")
         print(f"    To stop: kill {proc.pid}")
     else:
-        print("Starting Enhanced Cognee MCP Server (Ctrl+C to stop)...")
+        print("Starting RNR Enhanced Cognee MCP Server (Ctrl+C to stop)...")
         try:
             subprocess.run(cmd, cwd=_PROJECT_ROOT, check=False)
         except KeyboardInterrupt:
@@ -192,7 +192,7 @@ def cmd_docker(args) -> int:
     ]
 
     if action == "up":
-        print("Starting Enhanced Cognee Docker services...")
+        print("Starting RNR Enhanced Cognee Docker services...")
         cmd = base_cmd + ["up", "-d"]
         result = subprocess.run(cmd, cwd=_PROJECT_ROOT)
         if result.returncode == 0:
@@ -203,7 +203,7 @@ def cmd_docker(args) -> int:
         return result.returncode
 
     elif action == "down":
-        print("Stopping Enhanced Cognee Docker services...")
+        print("Stopping RNR Enhanced Cognee Docker services...")
         result = subprocess.run(base_cmd + ["down"], cwd=_PROJECT_ROOT)
         if result.returncode == 0:
             print("OK  Docker services stopped.")
@@ -236,7 +236,7 @@ def cmd_docker(args) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="enhanced-cognee",
-        description="Enhanced Cognee - enterprise memory MCP server",
+        description="RNR Enhanced Cognee - enterprise memory MCP server",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -256,13 +256,13 @@ Examples:
     # -- version --
     subs.add_parser(
         "version",
-        help="Print the Enhanced Cognee version",
+        help="Print the RNR Enhanced Cognee version",
     )
 
     # -- health --
     subs.add_parser(
         "health",
-        help="Check connectivity to all four Enhanced Cognee databases",
+        help="Check connectivity to all four RNR Enhanced Cognee databases",
     )
 
     # -- setup --
@@ -274,7 +274,7 @@ Examples:
     # -- start --
     start_p = subs.add_parser(
         "start",
-        help="Start the Enhanced Cognee MCP server",
+        help="Start the RNR Enhanced Cognee MCP server",
     )
     start_p.add_argument(
         "--detach", "-d",
@@ -307,7 +307,7 @@ Examples:
     # -- migrate --
     migrate_p = subs.add_parser(
         "migrate",
-        help="Run Enhanced Cognee database schema migrations",
+        help="Run RNR Enhanced Cognee database schema migrations",
     )
     migrate_subs = migrate_p.add_subparsers(dest="action", metavar="<action>")
     migrate_subs.required = True
@@ -328,7 +328,7 @@ Examples:
 # ---------------------------------------------------------------------------
 
 def cmd_migrate(args) -> int:
-    """Run Enhanced Cognee database schema migrations via Alembic."""
+    """Run RNR Enhanced Cognee database schema migrations via Alembic."""
     action = getattr(args, "action", "upgrade")
     revision = getattr(args, "revision", "head")
     _ALEMBIC_INI = os.path.join(_PROJECT_ROOT, "alembic-enhanced.ini")

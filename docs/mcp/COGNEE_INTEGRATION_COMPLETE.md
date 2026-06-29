@@ -100,9 +100,9 @@
 - `GRAPH_DATABASE_PROVIDER`: kuzu
 
 ### **Installation Path**
-- **Source**: `C:\Users\Vincent_Pereira\cognee\`
-- **MCP Server**: `C:\Users\Vincent_Pereira\cognee\cognee-mcp\src\server.py`
-- **Environment File**: `C:\Users\Vincent_Pereira\cognee\.env`
+- **Source**: `C:\Users\vince\cognee\`
+- **MCP Server**: `C:\Users\vince\cognee\cognee-mcp\src\server.py`
+- **Environment File**: `C:\Users\vince\cognee\.env`
 
 ---
 

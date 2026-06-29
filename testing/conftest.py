@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Testing Configuration
+RNR Enhanced Cognee Testing Configuration
 Shared fixtures and configuration for all test categories
 """
 
@@ -22,7 +22,7 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 sys.path.insert(0, str(project_root / "cognee"))
 
-# Enhanced Cognee imports
+# RNR Enhanced Cognee imports
 try:
     from src.agent_memory_integration import AgentMemoryIntegration
 except ImportError as e:
@@ -224,7 +224,7 @@ def authenticate_user(username: str, password: str) -> bool:
 def sample_memory_data():
     """Sample memory data for testing"""
     return {
-        "content": "Test memory content for Enhanced Cognee",
+        "content": "Test memory content for RNR Enhanced Cognee",
         "agent_id": "test_agent",
         "memory_type": "episodic",
         "metadata": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
   "version": "1.0.0",
-  "dashboard_title": "Enhanced Cognee -- Memory Growth",
+  "dashboard_title": "RNR Enhanced Cognee -- Memory Growth",
   "description": "Memory-store size and category mix over time. Driven by the shared_memory.documents Postgres table.",
   "css": "",
   "slug": "ec-memory-growth",

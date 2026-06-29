@@ -1,4 +1,4 @@
-# Enhanced Cognee Superset dataset definitions.
+# RNR Enhanced Cognee Superset dataset definitions.
 #
 # These are the upstream datasets (SQL queries against the live
 # databases) that all 4 dashboards depend on. Import this file FIRST
@@ -7,7 +7,7 @@
 # Format follows Apache Superset 4.x's dataset import schema. Each
 # dataset binds to a `database_name` -- you must first create database
 # connections in Superset matching those names (see README.md for the
-# DSNs Enhanced Cognee ships with).
+# DSNs RNR Enhanced Cognee ships with).
 
 version: "1.0.0"
 
@@ -22,7 +22,7 @@ datasets:
     schema: shared_memory
     table_name: documents
     description: |
-      Document-store rows from the Enhanced Cognee memory pipeline.
+      Document-store rows from the RNR Enhanced Cognee memory pipeline.
       Drives `memory_growth.json` -- size + category mix over time.
 
   - dataset_name: memory_documents_daily
@@ -123,7 +123,7 @@ datasets:
     description: |
       Per-day, per-hour tool-call counts grouped by agent. Drives the
       heatmap in `agent_activity.json`. Queries the SigNoz traces
-      table where Enhanced Cognee MCP spans land.
+      table where RNR Enhanced Cognee MCP spans land.
 
   - dataset_name: signoz_endpoint_latency
     database_name: signoz_clickhouse

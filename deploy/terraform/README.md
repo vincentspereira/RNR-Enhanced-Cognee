@@ -1,8 +1,8 @@
-# Enhanced Cognee -- Production-Class Host (Terraform)
+# RNR Enhanced Cognee -- Production-Class Host (Terraform)
 
 Turnkey provisioning for the **SLA / soak re-confirmation on real hardware**.
 One `terraform apply` brings up a dedicated-vCPU box (Hetzner Cloud or
-DigitalOcean), bootstraps the full Enhanced Cognee stack via cloud-init, and
+DigitalOcean), bootstraps the full RNR Enhanced Cognee stack via cloud-init, and
 leaves you one SSH command away from a hard PASS/FAIL SLA report.
 
 This exists because the headline capacity numbers

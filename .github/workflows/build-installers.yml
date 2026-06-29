@@ -1,5 +1,5 @@
 # Build desktop installers (Windows / macOS / Linux) and publish the Docker
-# images the launcher stack pulls (ghcr.io/<owner>/enhanced-cognee-api and
+# images the launcher stack pulls (ghcr.io/<owner>/rnr-enhanced-cognee-api and
 # enhanced-cognee-dashboard).
 #
 # Trigger: version tags (v*) or manual dispatch. Artifacts are uploaded per
@@ -43,8 +43,8 @@ jobs:
           file: dashboard/Dockerfile.api
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-api:latest
-            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-api:${{ env.EC_VERSION }}
+            ghcr.io/${{ github.repository_owner }}/rnr-enhanced-cognee-api:latest
+            ghcr.io/${{ github.repository_owner }}/rnr-enhanced-cognee-api:${{ env.EC_VERSION }}
       - name: Build and push dashboard image
         uses: docker/build-push-action@v6
         with:
@@ -52,8 +52,8 @@ jobs:
           file: dashboard/nextjs-dashboard/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-dashboard:latest
-            ghcr.io/${{ github.repository_owner }}/enhanced-cognee-dashboard:${{ env.EC_VERSION }}
+            ghcr.io/${{ github.repository_owner }}/rnr-enhanced-cognee-dashboard:latest
+            ghcr.io/${{ github.repository_owner }}/rnr-enhanced-cognee-dashboard:${{ env.EC_VERSION }}
 
   windows:
     name: Windows installer

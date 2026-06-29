@@ -1,4 +1,4 @@
-# Enhanced Cognee Testing Prometheus Configuration
+# RNR Enhanced Cognee Testing Prometheus Configuration
 # Comprehensive monitoring for testing infrastructure and performance metrics
 
 global:
@@ -28,7 +28,7 @@ scrape_configs:
     scrape_interval: 30s
     metrics_path: '/metrics'
 
-  # Enhanced Cognee API Metrics
+  # RNR Enhanced Cognee API Metrics
   - job_name: 'enhanced-cognee-api'
     static_configs:
       - targets: ['enhanced-cognee-api:8000']
@@ -105,7 +105,7 @@ scrape_configs:
       'form': ['API']
       'apikey': ['zap-test-api-key']
 
-  # Custom Enhanced Cognee Metrics Exporter
+  # Custom RNR Enhanced Cognee Metrics Exporter
   - job_name: 'enhanced-cognee-exporter'
     static_configs:
       - targets: ['enhanced-cognee-exporter:8000']

@@ -1,13 +1,13 @@
 # Runbook RB-003: Backup and Restore
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Operators and developers
 
 ---
 
 ## Overview
 
-Enhanced Cognee's BackupManager covers all four databases:
+RNR Enhanced Cognee's BackupManager covers all four databases:
 
 - PostgreSQL: pg_dump (SQL format, gzip-compressed)
 - Qdrant: snapshot API (collection-level snapshots)
@@ -78,9 +78,9 @@ The tool stops writes, restores each database in sequence, and restarts connecti
     [OK] Qdrant restored (2 collections)
     [OK] Neo4j restored
     [OK] Redis restored
-    [DONE] Restore complete. Run enhanced-cognee health to verify.
+    [DONE] Restore complete. Run RNR-Enhanced-Cognee health to verify.
 
-Run enhanced-cognee health after restore to confirm all databases are reachable.
+Run RNR-Enhanced-Cognee health after restore to confirm all databases are reachable.
 
 ---
 

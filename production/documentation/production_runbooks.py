@@ -1,7 +1,7 @@
 """
-Enhanced Cognee Production Documentation and Runbooks
+RNR Enhanced Cognee Production Documentation and Runbooks
 
-This module provides comprehensive production documentation and runbooks for the Enhanced Cognee
+This module provides comprehensive production documentation and runbooks for the RNR Enhanced Cognee
 Multi-Agent System, including operational procedures, troubleshooting guides, and emergency
 response procedures.
 
@@ -459,7 +459,7 @@ class ProductionDocumentationFramework:
         return Runbook(
             runbook_id="deployment_procedure",
             title="Application Deployment Procedure",
-            description="Standard procedure for deploying Enhanced Cognee to production",
+            description="Standard procedure for deploying RNR Enhanced Cognee to production",
             category=RunbookCategory.DEPLOYMENT,
             severity=IncidentSeverity.MEDIUM,
             estimated_duration_minutes=45,
@@ -562,7 +562,7 @@ class ProductionDocumentationFramework:
         return Runbook(
             runbook_id="service_restart",
             title="Service Restart Procedure",
-            description="Procedure for restarting Enhanced Cognee services in production",
+            description="Procedure for restarting RNR Enhanced Cognee services in production",
             category=RunbookCategory.MAINTENANCE,
             severity=IncidentSeverity.HIGH,
             estimated_duration_minutes=15,
@@ -653,7 +653,7 @@ class ProductionDocumentationFramework:
         return Runbook(
             runbook_id="backup_procedure",
             title="System Backup Procedure",
-            description="Comprehensive backup procedure for Enhanced Cognee production system",
+            description="Comprehensive backup procedure for RNR Enhanced Cognee production system",
             category=RunbookCategory.BACKUP_RECOVERY,
             severity=IncidentSeverity.LOW,
             estimated_duration_minutes=30,
@@ -734,7 +734,7 @@ class ProductionDocumentationFramework:
         return Runbook(
             runbook_id="database_maintenance",
             title="Database Maintenance Procedure",
-            description="Database maintenance procedures for Enhanced Cognee",
+            description="Database maintenance procedures for RNR Enhanced Cognee",
             category=RunbookCategory.MAINTENANCE,
             severity=IncidentSeverity.MEDIUM,
             estimated_duration_minutes=60,

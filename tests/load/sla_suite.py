@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee SLA Suite
+RNR Enhanced Cognee SLA Suite
 =========================
 Runs the capacity-focused 100-user burst (the same profile that produced the
 2026-06-04 dev-box baseline) and emits a hard PASS/FAIL verdict against the SLA
@@ -119,7 +119,7 @@ def write_report(out_dir: Path, stamp: str, meta: dict, sla: dict,
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Enhanced Cognee SLA suite")
+    ap = argparse.ArgumentParser(description="RNR Enhanced Cognee SLA suite")
     ap.add_argument("--users", type=int, default=100)
     ap.add_argument("--spawn-rate", type=int, default=10)
     ap.add_argument("--run-time", type=int, default=90, dest="run_time")

@@ -1,4 +1,4 @@
-# Enhanced Cognee Memory Dashboard - Visual Wireframes
+# RNR Enhanced Cognee Memory Dashboard - Visual Wireframes
 
 **Version:** 1.0.0
 **Companion Document:** UX_UI_SPECIFICATION.md
@@ -29,7 +29,7 @@ This document provides ASCII-based wireframes for key screens to supplement the 
 
 ```
 +------------------------------------------------------------------------------------------+
-|  [LOGO]  Enhanced Cognee                                    [Search]  [User Avatar]      |
+|  [LOGO]  RNR Enhanced Cognee                                    [Search]  [User Avatar]      |
 +------------------------------------------------------------------------------------------+
 |         |                                                                              |
 |  SIDEBAR |  DASHBOARD                                                    Health: [OK]    |
@@ -71,7 +71,7 @@ This document provides ASCII-based wireframes for key screens to supplement the 
 
 ```
 +--------------------------------------------------------------+
-|  [<] Enhanced Cognee                      [Search]  [User]   |
+|  [<] RNR Enhanced Cognee                      [Search]  [User]   |
 +--------------------------------------------------------------+
 |  [Home] [Mem] [Search] [Sessions] [Analytics] [More]         |
 +--------------------------------------------------------------+
@@ -104,7 +104,7 @@ This document provides ASCII-based wireframes for key screens to supplement the 
 
 ```
 +----------------------------------------------------------+
-|  [=] Enhanced Cognee                      [?]  [User]    |
+|  [=] RNR Enhanced Cognee                      [?]  [User]    |
 +----------------------------------------------------------+
 |  DASHBOARD                                       [OK]     |
 +----------------------------------------------------------+
@@ -931,4 +931,4 @@ Progress Bar:
 **Last Updated:** 2025-02-06
 **Status:** Visual Wireframes - Companion to UX_UI_SPECIFICATION.md
 
-These wireframes provide a visual reference for implementing the Enhanced Cognee Memory Dashboard. Use them in conjunction with the detailed UX/UI Specification document.
+These wireframes provide a visual reference for implementing the RNR Enhanced Cognee Memory Dashboard. Use them in conjunction with the detailed UX/UI Specification document.

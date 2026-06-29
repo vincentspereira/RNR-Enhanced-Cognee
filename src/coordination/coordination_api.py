@@ -64,7 +64,7 @@ async def lifespan(app: FastAPI):
 
 # FastAPI app initialization with lifespan
 app = FastAPI(
-    title="Enhanced Cognee Coordination API",
+    title="RNR Enhanced Cognee Coordination API",
     description="Unified coordination interface for multi-agent system",
     version="1.0.0",
     lifespan=lifespan

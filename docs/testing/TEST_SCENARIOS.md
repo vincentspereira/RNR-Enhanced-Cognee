@@ -1,4 +1,4 @@
-# Enhanced Cognee Test Scenarios
+# RNR Enhanced Cognee Test Scenarios
 
 ## 📋 Table of Contents
 
@@ -16,7 +16,7 @@
 
 ## 🎯 Overview
 
-This document provides detailed scenario-based test cases for the Enhanced Cognee system. These scenarios are designed to validate complete end-to-end workflows, system resilience under various conditions, and business requirement fulfillment. Each scenario includes specific objectives, agent involvement, expected duration, success criteria, and detailed test steps.
+This document provides detailed scenario-based test cases for the RNR Enhanced Cognee system. These scenarios are designed to validate complete end-to-end workflows, system resilience under various conditions, and business requirement fulfillment. Each scenario includes specific objectives, agent involvement, expected duration, success criteria, and detailed test steps.
 
 ### Scenario Categories
 - **Business Workflow Scenarios**: Real business use cases and workflows
@@ -1733,5 +1733,5 @@ compliance_success_criteria = {
 
 *Document Version: 1.0*
 *Last Updated: 2025-11-13*
-*Enhanced Cognee Test Scenarios*
-*Author: Enhanced Cognee Development Team*
+*RNR Enhanced Cognee Test Scenarios*
+*Author: RNR Enhanced Cognee Development Team*

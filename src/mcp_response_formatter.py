@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - MCP Response Formatter
+RNR Enhanced Cognee - MCP Response Formatter
 
 Standardizes all MCP tool return values to consistent JSON format.
 

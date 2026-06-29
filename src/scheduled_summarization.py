@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Scheduled Summarization
+RNR Enhanced Cognee - Scheduled Summarization
 
-Periodic summarization system for Enhanced Cognee memories:
+Periodic summarization system for RNR Enhanced Cognee memories:
 - Monthly scheduled summarization
 - Content preservation (original always kept)
 - Summarization by age, type, and concept
@@ -15,7 +15,7 @@ Features:
 - Detailed statistics
 - Configurable thresholds
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class ScheduledSummarization:
     """
-    Scheduled summarization system for Enhanced Cognee memories.
+    Scheduled summarization system for RNR Enhanced Cognee memories.
 
     Performs periodic summarization of old memories while preserving originals.
     """

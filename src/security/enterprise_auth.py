@@ -1,4 +1,4 @@
-"""Enterprise authentication + authorization for Enhanced Cognee.
+"""Enterprise authentication + authorization for RNR Enhanced Cognee.
 
 This module is the single source of truth for *who is calling* (authentication)
 and *what they may do* (authorization) across both server surfaces:

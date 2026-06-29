@@ -1,5 +1,5 @@
 """
-Test Configuration and Fixtures for Enhanced Cognee
+Test Configuration and Fixtures for RNR Enhanced Cognee
 Provides fixtures and utilities for comprehensive testing
 """
 
@@ -431,7 +431,7 @@ def pytest_collection_finish(session):
 def pytest_report_header(config):
     """Add custom header to pytest output"""
     return [
-        "Enhanced Cognee Test Suite",
+        "RNR Enhanced Cognee Test Suite",
         f"Coverage Target: 98%",
         f"Test Requirements: 100% success, 0 warnings, 0 skipped"
     ]

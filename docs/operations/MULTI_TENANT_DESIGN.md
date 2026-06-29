@@ -1,11 +1,11 @@
-# Multi-Tenant Design for Enhanced Cognee
+# Multi-Tenant Design for RNR Enhanced Cognee
 
 **Status:** Design only (Phase F3, deferred from initial launch)
 **Per Q2 in PRODUCTION_READINESS_PLAN.md:** "agent decides on tenant definition"
 
 ## Tenant Definition
 
-A **tenant** in Enhanced Cognee is **one customer organisation** (or one paying
+A **tenant** in RNR Enhanced Cognee is **one customer organisation** (or one paying
 human if self-serve). Each tenant gets:
 
 - An isolated namespace for memories (schema-level in Postgres, collection-prefix
@@ -23,7 +23,7 @@ account. Within a tenant, multiple human users / agents share the same data pool
 
 ```
 +-----------------------------------------------------------+
-|              Enhanced Cognee Multi-Tenant                 |
+|              RNR Enhanced Cognee Multi-Tenant                 |
 +-----------------------------------------------------------+
 |  +-------------+  +-------------+  +-------------+        |
 |  |  Tenant A   |  |  Tenant B   |  |  Tenant C   |  ...   |

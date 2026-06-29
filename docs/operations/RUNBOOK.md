@@ -1,4 +1,4 @@
-# Enhanced Cognee Operations Runbook
+# RNR Enhanced Cognee Operations Runbook
 
 A copy-pasteable playbook for the 10 most common incidents.
 
@@ -221,9 +221,9 @@ challenge needs port 80 reachable).
 **Diagnose:**
 ```bash
 # Is the process even running?
-sudo systemctl status enhanced-cognee
+sudo systemctl status RNR-Enhanced-Cognee
 # Stuck on something?
-sudo journalctl -u enhanced-cognee --since "5 minutes ago" | tail -50
+sudo journalctl -u RNR-Enhanced-Cognee --since "5 minutes ago" | tail -50
 # Check for deadlock symptoms:
 docker exec cognee-mcp-postgres psql -U cognee_user -d cognee_db -c "
   SELECT pid, state, wait_event_type, wait_event, query
@@ -236,7 +236,7 @@ docker exec cognee-mcp-postgres psql -U cognee_user -d cognee_db -c "
 **Fix:**
 ```bash
 # Hard restart
-sudo systemctl restart enhanced-cognee
+sudo systemctl restart RNR-Enhanced-Cognee
 
 # If postgres has stuck locks:
 docker exec cognee-mcp-postgres psql -U cognee_user -d cognee_db -c "

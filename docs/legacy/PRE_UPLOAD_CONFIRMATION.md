@@ -1,6 +1,6 @@
-# ✅ Pre-Upload Confirmation - Enhanced Cognee
+# ✅ Pre-Upload Confirmation - RNR Enhanced Cognee
 
-**Repository:** https://github.com/vincentspereira/Enhanced-Cognee
+**Repository:** https://github.com/vincentspereira/RNR-Enhanced-Cognee
 **Visibility:** Public
 **Status:** ✅ READY FOR UPLOAD
 
@@ -11,12 +11,12 @@
 ### 1. GitHub Username Replaced
 - ✅ README.md: `YOUR_USERNAME` → `vincentspereira` (7 occurrences)
 - ✅ CONTRIBUTING.md: `YOUR_USERNAME` → `vincentspereira` (6 occurrences)
-- ✅ All repository URLs updated to `vincentspereira/Enhanced-Cognee`
+- ✅ All repository URLs updated to `vincentspereira/RNR-Enhanced-Cognee`
 
 ### 2. Repository URLs Updated
-- ✅ Clone URL: `https://github.com/vincentspereira/Enhanced-Cognee.git`
-- ✅ Issues URL: `https://github.com/vincentspereira/Enhanced-Cognee/issues`
-- ✅ Discussions URL: `https://github.com/vincentspereira/Enhanced-Cognee/discussions`
+- ✅ Clone URL: `https://github.com/vincentspereira/RNR-Enhanced-Cognee.git`
+- ✅ Issues URL: `https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues`
+- ✅ Discussions URL: `https://github.com/vincentspereira/RNR-Enhanced-Cognee/discussions`
 
 ---
 
@@ -29,7 +29,7 @@
   - Installation instructions
   - MCP server integration guide
   - Your GitHub username: `vincentspereira`
-  - Repository: `Enhanced-Cognee`
+  - Repository: `RNR-Enhanced-Cognee`
 
 - ✅ **CONTRIBUTING.md** - Contributing guidelines with:
   - Your GitHub username: `vincentspereira`
@@ -50,12 +50,12 @@
 
 ### 1. README.md
 Check these sections:
-- Repository URL (should be `vincentspereira/Enhanced-Cognee`)
+- Repository URL (should be `vincentspereira/RNR-Enhanced-Cognee`)
 - Your name in acknowledgments (optional)
 - Contact information (optional)
 
 ### 2. CONTRIBUTING.md
-- Repository links should point to `vincentspereira/Enhanced-Cognee`
+- Repository links should point to `vincentspereira/RNR-Enhanced-Cognee`
 - No personal contact info (unless you want to add it)
 
 ### 3. Verify No Credentials
@@ -76,23 +76,23 @@ Open these files and verify:
 
 ### Step 2: Commit all changes
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 
 # Add all files
 git add .
 
 # Commit with descriptive message
-git commit -m "feat: prepare Enhanced Cognee for public GitHub release
+git commit -m "feat: prepare RNR Enhanced Cognee for public GitHub release
 
 - Added comprehensive README.md with original Cognee credit
-- Updated CONTRIBUTING.md with Enhanced Cognee guidelines  
+- Updated CONTRIBUTING.md with RNR Enhanced Cognee guidelines  
 - Cleaned .env.example (removed all real credentials)
 - Removed personal information from documentation
 - Added ASCII-only output requirements
 - Added dynamic category system documentation
 - Added MCP server integration guide
 - Added comparison table (Original vs Enhanced)
-- Updated all URLs to vincentspereira/Enhanced-Cognee
+- Updated all URLs to vincentspereira/RNR-Enhanced-Cognee
 
 Credits:
 - Original Cognee: https://github.com/topoteretes/cognee
@@ -102,7 +102,7 @@ Credits:
 ### Step 3: Add GitHub remote and push
 ```bash
 # Add your GitHub repository as remote
-git remote add origin https://github.com/vincentspereira/Enhanced-Cognee.git
+git remote add origin https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
 
 # Verify remote was added
 git remote -v
@@ -115,7 +115,7 @@ git push -u origin main
 ```
 
 ### Step 4: Verify on GitHub
-1. Go to: https://github.com/vincentspereira/Enhanced-Cognee
+1. Go to: https://github.com/vincentspereira/RNR-Enhanced-Cognee
 2. Check README.md displays correctly
 3. Verify all links work
 4. Confirm no sensitive files were uploaded
@@ -149,7 +149,7 @@ Before uploading, verify:
 
 ```bash
 # Check git status (should NOT show .env)
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 git status
 
 # Search for any remaining credentials
@@ -164,7 +164,7 @@ grep -r "sk-\|api_key\|password\|secret" --include="*.py" --include="*.md" --exc
 
 All files are prepared with:
 - ✅ Your GitHub username: `vincentspereira`
-- ✅ Repository name: `Enhanced-Cognee`
+- ✅ Repository name: `RNR-Enhanced-Cognee`
 - ✅ No personal credentials
 - ✅ Original Cognee properly credited
 - ✅ Apache License 2.0 maintained

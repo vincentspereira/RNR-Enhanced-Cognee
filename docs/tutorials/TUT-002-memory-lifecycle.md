@@ -2,7 +2,7 @@
 
 **Audience:** Intermediate users who have completed TUT-001
 **Time required:** 25 minutes
-**Prerequisites:** Enhanced Cognee running; at least a few memories stored
+**Prerequisites:** RNR Enhanced Cognee running; at least a few memories stored
 
 ---
 
@@ -10,7 +10,7 @@
 
 Memories accumulate over time. Without lifecycle management, a memory store grows
 indefinitely and search quality degrades as outdated or irrelevant memories compete
-with current ones. Enhanced Cognee provides tools for:
+with current ones. RNR Enhanced Cognee provides tools for:
 
 - Setting automatic expiry via TTL (time-to-live)
 - Expiring memories in bulk by age

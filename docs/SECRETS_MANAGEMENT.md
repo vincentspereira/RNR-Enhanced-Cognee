@@ -1,6 +1,6 @@
 # Secrets Management
 
-> **Audience:** anyone deploying Enhanced Cognee beyond a single developer
+> **Audience:** anyone deploying RNR Enhanced Cognee beyond a single developer
 > laptop (team deploys, production VPS, SaaS, CI/CD pipelines).
 >
 > **Scope:** how to keep database credentials, API keys, encryption keys,
@@ -172,14 +172,14 @@ jobs:
 Recommended setup:
 
 - **Local dev:** self-signed certs via `mkcert` (Apache-2.0); cert + key in `~/.config/enhanced-cognee/certs/`.
-- **Production single-VPS:** Let's Encrypt via Caddy (Apache-2.0) as a reverse proxy; Enhanced Cognee stays on plain HTTP behind Caddy. Caddy handles automatic cert renewal.
+- **Production single-VPS:** Let's Encrypt via Caddy (Apache-2.0) as a reverse proxy; RNR Enhanced Cognee stays on plain HTTP behind Caddy. Caddy handles automatic cert renewal.
 - **Production K8s:** cert-manager (Apache-2.0) issuing certs into Kubernetes secrets, mounted into the pod at the expected paths.
 
-When Enhanced Cognee terminates TLS itself (no reverse proxy), the recommended cert paths are inside a Docker secret or a tmpfs-mounted directory so the private key never persists to a disk image. Example:
+When RNR Enhanced Cognee terminates TLS itself (no reverse proxy), the recommended cert paths are inside a Docker secret or a tmpfs-mounted directory so the private key never persists to a disk image. Example:
 
 ```yaml
 services:
-  enhanced-cognee:
+  RNR-Enhanced-Cognee:
     environment:
       ENHANCED_HTTPS_CERT_FILE: /run/secrets/server_cert
       ENHANCED_HTTPS_KEY_FILE: /run/secrets/server_key

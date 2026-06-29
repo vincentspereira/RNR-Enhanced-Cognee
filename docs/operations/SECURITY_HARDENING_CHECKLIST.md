@@ -1,4 +1,4 @@
-# Enhanced Cognee - Security Hardening Checklist
+# RNR Enhanced Cognee - Security Hardening Checklist
 
 ## Pre-Deployment Security Checklist
 
@@ -244,7 +244,7 @@ Create `scripts/security_check.sh`:
 
 ```bash
 #!/bin/bash
-echo "=== Enhanced Cognee Security Check ==="
+echo "=== RNR Enhanced Cognee Security Check ==="
 
 # Check if .env.production exists
 if [ ! -f .env.production ]; then

@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-02-01
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee exposes approximately 58 MCP tools to Claude Code and other MCP
+RNR Enhanced Cognee exposes approximately 58 MCP tools to Claude Code and other MCP
 clients. The tools range from lightweight read operations (health, get_stats) to
 irreversible destructive operations (gdpr_delete_user_data, rollback_restore,
 forget_memory).

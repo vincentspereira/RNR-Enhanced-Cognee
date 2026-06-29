@@ -1,9 +1,9 @@
 # ===========================================================================
-# Enhanced Cognee -- DigitalOcean production-class host (Terraform)
+# RNR Enhanced Cognee -- DigitalOcean production-class host (Terraform)
 # ===========================================================================
 # DigitalOcean equivalent of the Hetzner config. Provisions a CPU-Optimized
 # (dedicated-vCPU) droplet, bootstrapped by the shared cloud-init template into
-# a running Enhanced Cognee stack for the SLA / soak re-confirmation.
+# a running RNR Enhanced Cognee stack for the SLA / soak re-confirmation.
 #
 # Why CPU-Optimized (c-*): dedicated vCPU -> reproducible p95/p99 (no
 # noisy-neighbour jitter). Basic droplets share CPU and muddy the numbers.

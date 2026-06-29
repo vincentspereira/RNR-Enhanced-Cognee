@@ -51,7 +51,7 @@ _BATCH = 500
 
 class GraphCompactor:
     """
-    Perform compaction / maintenance on the Enhanced Cognee Neo4j knowledge graph.
+    Perform compaction / maintenance on the RNR Enhanced Cognee Neo4j knowledge graph.
 
     Requires neo4j_driver; postgres_pool is optional (used for stale-relation pruning).
     """

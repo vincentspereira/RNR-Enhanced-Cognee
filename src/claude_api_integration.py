@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Official Claude API Integration for Enhanced Cognee
+Official Claude API Integration for RNR Enhanced Cognee
 Provides native Anthropic Claude API integration with streaming, tool use, and function calling
 """
 
@@ -53,14 +53,14 @@ class ClaudeResponse:
 
 class ClaudeAPIClient:
     """
-    Official Claude API Client for Enhanced Cognee
+    Official Claude API Client for RNR Enhanced Cognee
 
     Features:
     - Native Anthropic Claude API integration
     - Streaming and non-streaming responses
     - Tool use and function calling
     - Memory-aware conversations
-    - Integration with Enhanced Cognee memory
+    - Integration with RNR Enhanced Cognee memory
     """
 
     def __init__(
@@ -79,7 +79,7 @@ class ClaudeAPIClient:
             model: Claude model to use
             max_tokens: Maximum tokens in response
             temperature: Response randomness (0-1)
-            memory_integration: Enhanced Cognee memory integration
+            memory_integration: RNR Enhanced Cognee memory integration
         """
         self.api_key = api_key
         self.model = model
@@ -96,7 +96,7 @@ class ClaudeAPIClient:
         # Initialize Anthropic client
         self._init_client()
 
-        # Register default Enhanced Cognee tools
+        # Register default RNR Enhanced Cognee tools
         self._register_default_tools()
 
     def _init_client(self):
@@ -110,12 +110,12 @@ class ClaudeAPIClient:
             raise
 
     def _register_default_tools(self):
-        """Register default Enhanced Cognee memory tools"""
+        """Register default RNR Enhanced Cognee memory tools"""
 
         # Tool: add_memory
         self.tools["add_memory"] = ClaudeTool(
             name="add_memory",
-            description="Add a memory entry to Enhanced Cognee",
+            description="Add a memory entry to RNR Enhanced Cognee",
             input_schema={
                 "type": "object",
                 "properties": {
@@ -140,7 +140,7 @@ class ClaudeAPIClient:
         # Tool: search_memories
         self.tools["search_memories"] = ClaudeTool(
             name="search_memories",
-            description="Search memories in Enhanced Cognee",
+            description="Search memories in RNR Enhanced Cognee",
             input_schema={
                 "type": "object",
                 "properties": {
@@ -247,7 +247,7 @@ class ClaudeAPIClient:
             handler=self._tool_advanced_search
         )
 
-        logger.info(f"OK Registered {len(self.tools)} Enhanced Cognee tools")
+        logger.info(f"OK Registered {len(self.tools)} RNR Enhanced Cognee tools")
 
     async def _tool_add_memory(self, **kwargs) -> str:
         """Tool handler: add_memory"""
@@ -652,7 +652,7 @@ class ClaudeAPIClient:
         system_prompt: Optional[str] = None
     ) -> ClaudeResponse:
         """
-        Chat with memory context from Enhanced Cognee
+        Chat with memory context from RNR Enhanced Cognee
 
         Args:
             message: User message
@@ -684,9 +684,9 @@ User message: {message}"""
             else:
                 enhanced_message = message
 
-            # Default system prompt for Enhanced Cognee
+            # Default system prompt for RNR Enhanced Cognee
             if not system_prompt:
-                system_prompt = """You are Enhanced Cognee, an intelligent memory assistant with access to a knowledge graph and advanced search capabilities. You can store, retrieve, and analyze memories using the available tools. Be helpful, accurate, and concise."""
+                system_prompt = """You are RNR Enhanced Cognee, an intelligent memory assistant with access to a knowledge graph and advanced search capabilities. You can store, retrieve, and analyze memories using the available tools. Be helpful, accurate, and concise."""
 
             # Chat with enhanced message
             return await self.chat(
@@ -744,7 +744,7 @@ async def example_claude_api_usage():
 
     # Example 4: Streaming response
     async for chunk in client.chat(
-        message="Tell me about Enhanced Cognee",
+        message="Tell me about RNR Enhanced Cognee",
         stream=True
     ):
         print(chunk, end="", flush=True)

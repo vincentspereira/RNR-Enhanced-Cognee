@@ -1,4 +1,4 @@
-# Enhanced Cognee - Launcher Stack
+# RNR Enhanced Cognee - Launcher Stack
 #
 # Deployed by the desktop launcher (installer/launcher.py) into the per-user
 # app data directory, next to a generated .env file and the database
@@ -111,7 +111,7 @@ services:
     restart: unless-stopped
 
   backend-api:
-    image: ${IMAGE_REGISTRY:-ghcr.io/vincentspereira}/enhanced-cognee-api:${IMAGE_TAG:-latest}
+    image: ${IMAGE_REGISTRY:-ghcr.io/vincentspereira}/rnr-enhanced-cognee-api:${IMAGE_TAG:-latest}
     container_name: enhanced-cognee-api
     environment:
       POSTGRES_HOST: postgres
@@ -154,7 +154,7 @@ services:
     restart: unless-stopped
 
   dashboard:
-    image: ${IMAGE_REGISTRY:-ghcr.io/vincentspereira}/enhanced-cognee-dashboard:${IMAGE_TAG:-latest}
+    image: ${IMAGE_REGISTRY:-ghcr.io/vincentspereira}/rnr-enhanced-cognee-dashboard:${IMAGE_TAG:-latest}
     container_name: enhanced-cognee-dashboard
     environment:
       # Browser-reachable URL (NEXT_PUBLIC_* is baked into client-side JS)

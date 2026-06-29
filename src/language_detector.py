@@ -1,5 +1,5 @@
 """
-Language Detection Module for Enhanced Cognee
+Language Detection Module for RNR Enhanced Cognee
 
 Supports 28 languages with automatic detection using langdetect library.
 """

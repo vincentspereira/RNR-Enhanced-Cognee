@@ -1,17 +1,17 @@
 # Runbook RB-007: Upstream Sync Conflict Resolution
 
-**Applies to:** Enhanced Cognee 1.0.9-enhanced and later
+**Applies to:** RNR Enhanced Cognee 1.0.9-enhanced and later
 **Audience:** Maintainers responsible for upstream parity
 
 ---
 
 ## Overview
 
-Enhanced Cognee is a fork of topoteretes/cognee. A scheduled GitHub Actions
+RNR Enhanced Cognee is a fork of topoteretes/cognee. A scheduled GitHub Actions
 workflow runs weekly to detect changes in the upstream repository. When the
 workflow fires a "new upstream version" alert, this runbook guides the maintainer
 through classifying and incorporating the upstream changes without breaking the
-Enhanced Cognee extensions.
+RNR Enhanced Cognee extensions.
 
 ---
 
@@ -66,15 +66,15 @@ proceeding. Items you cannot classify should be escalated to a second maintainer
 
 ---
 
-### Step 3: Check whether Enhanced Cognee overrides the changed files
+### Step 3: Check whether RNR Enhanced Cognee overrides the changed files
 
-For each changed file identified in Step 2, check whether Enhanced Cognee has
+For each changed file identified in Step 2, check whether RNR Enhanced Cognee has
 modified that file:
 
     git log --oneline cognee/<changed_file_path>
 
-If the log is empty, Enhanced Cognee has not touched the file; the upstream change
-can be applied directly. If the log has entries, Enhanced Cognee has extended or
+If the log is empty, RNR Enhanced Cognee has not touched the file; the upstream change
+can be applied directly. If the log has entries, RNR Enhanced Cognee has extended or
 overridden the file; the upstream change must be merged carefully.
 
 ---
@@ -109,11 +109,11 @@ Additive changes are the safest category. For each additive item:
 
 ### Fix B: Internal changes (no public API change)
 
-For internal changes in files that Enhanced Cognee has not modified:
+For internal changes in files that RNR Enhanced Cognee has not modified:
 
     git checkout upstream/<tag> -- cognee/<changed_file_path>
 
-For internal changes in files that Enhanced Cognee has modified:
+For internal changes in files that RNR Enhanced Cognee has modified:
 
 1. View the upstream diff for the file:
 
@@ -132,12 +132,12 @@ For internal changes in files that Enhanced Cognee has modified:
 
 API-breaking changes require the most care.
 
-1. Identify which Enhanced Cognee MCP tools call the changed upstream function
+1. Identify which RNR Enhanced Cognee MCP tools call the changed upstream function
    or class:
 
        python -m scripts.find_upstream_callers --symbol <changed_symbol>
 
-   The script outputs a list of Enhanced Cognee files and line numbers.
+   The script outputs a list of RNR Enhanced Cognee files and line numbers.
 
 2. Update each caller to use the new upstream API. Test each tool after updating:
 
@@ -147,7 +147,7 @@ API-breaking changes require the most care.
 
        git checkout upstream/<tag> -- cognee/<changed_file_path>
 
-   Then re-apply any Enhanced Cognee extensions that existed in the file (visible
+   Then re-apply any RNR Enhanced Cognee extensions that existed in the file (visible
    in git log for that file).
 
 4. Run the full test suite:
@@ -176,7 +176,7 @@ After all changes are applied and tests pass:
 
     pytest
     pre-commit run --all-files
-    enhanced-cognee health
+    RNR-Enhanced-Cognee health
 
 All three must pass before committing the sync changes.
 
@@ -194,7 +194,7 @@ Commit with a message of the form:
 
 1. The test suite passes with no failures.
 2. pre-commit run --all-files reports no violations.
-3. enhanced-cognee health shows all components [OK].
+3. RNR-Enhanced-Cognee health shows all components [OK].
 4. The tracking issue is closed or updated with the sync summary.
 
 ---
@@ -211,7 +211,7 @@ Commit with a message of the form:
     - Additive:      N items (N stubs, N fully implemented)
     - Internal:      N items
 
-    Files modified in Enhanced Cognee: <list>
+    Files modified in RNR Enhanced Cognee: <list>
 
     Test results: pytest <pass/fail>  pre-commit <pass/fail>
 

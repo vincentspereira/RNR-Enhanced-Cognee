@@ -1,4 +1,4 @@
-# Enhanced Cognee Dashboard API - Python Dependencies
+# RNR Enhanced Cognee Dashboard API - Python Dependencies
 # FastAPI Backend Requirements
 
 # Core Framework

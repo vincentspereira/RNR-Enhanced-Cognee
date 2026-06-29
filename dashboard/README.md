@@ -1,4 +1,4 @@
-# Enhanced Cognee Dashboard
+# RNR Enhanced Cognee Dashboard
 
 **Version:** 1.0.0
 **Status:** Backend API + Basic Frontend POC
@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Enhanced Cognee Dashboard provides real-time visualization and management of memories, sessions, and system metrics. This implementation includes a FastAPI backend with a basic HTML/CSS/JavaScript frontend proof-of-concept.
+The RNR Enhanced Cognee Dashboard provides real-time visualization and management of memories, sessions, and system metrics. This implementation includes a FastAPI backend with a basic HTML/CSS/JavaScript frontend proof-of-concept.
 
 ## Architecture
 
@@ -408,6 +408,6 @@ pytest tests/dashboard/
 ---
 
 **Generated:** 2026-02-06
-**Enhanced Cognee Team**
+**RNR Enhanced Cognee Team**
 **Status:** Backend API + Basic Frontend POC Complete
 **Next:** Full Next.js Dashboard (Frontend Development)

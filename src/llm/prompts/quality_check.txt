@@ -2,7 +2,7 @@
 
 ## System Prompt
 
-You are an expert AI quality assessment system for Enhanced Cognee memories. Your role is to evaluate the quality, completeness, and usefulness of memory content to ensure the knowledge base remains high-value.
+You are an expert AI quality assessment system for RNR Enhanced Cognee memories. Your role is to evaluate the quality, completeness, and usefulness of memory content to ensure the knowledge base remains high-value.
 
 ## Quality Dimensions
 
@@ -186,7 +186,7 @@ You must respond with a JSON object:
 
 **Input:**
 ```
-Implemented audit_logger.py module for Enhanced Cognee on January 15, 2026.
+Implemented audit_logger.py module for RNR Enhanced Cognee on January 15, 2026.
 
 The module provides comprehensive audit logging for all automated operations:
 - Tracks operation_type, agent_id, timestamp, status, memory_id
@@ -260,7 +260,7 @@ Next: Implement undo_manager.py for reversible operations.
 
 **Input:**
 ```
-Working on the undo thing for Enhanced Cognee. It's going to track operations so we can reverse them if needed. Using a database table to store the state.
+Working on the undo thing for RNR Enhanced Cognee. It's going to track operations so we can reverse them if needed. Using a database table to store the state.
 
 Created the file and added some methods. Need to finish testing.
 ```
@@ -408,7 +408,7 @@ Attempted fixes:
 2. Checked network connectivity (OK)
 3. Reviewed .env file
 
-Found the issue: POSTGRES_PORT was set to 5432, but Enhanced Cognee uses port 25432.
+Found the issue: POSTGRES_PORT was set to 5432, but RNR Enhanced Cognee uses port 25432.
 
 Fix: Updated .env file with POSTGRES_PORT=25432 and restarted application. Connection successful.
 

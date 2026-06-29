@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
   "version": "1.0.0",
-  "dashboard_title": "Enhanced Cognee -- Agent Activity",
+  "dashboard_title": "RNR Enhanced Cognee -- Agent Activity",
   "description": "Heatmap of MCP tool calls per agent over time, plus per-tool drill-down. Driven by SigNoz traces in ClickHouse.",
   "css": "",
   "slug": "ec-agent-activity",

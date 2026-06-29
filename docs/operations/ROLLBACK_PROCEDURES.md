@@ -1,10 +1,10 @@
-# Enhanced Cognee - Rollback Procedures
+# RNR Enhanced Cognee - Rollback Procedures
 
-Procedures for rolling back failed operations in Enhanced Cognee.
+Procedures for rolling back failed operations in RNR Enhanced Cognee.
 
 ## Overview
 
-Enhanced Cognee includes comprehensive rollback capabilities:
+RNR Enhanced Cognee includes comprehensive rollback capabilities:
 - Automatic rollback on failed restore
 - Manual rollback of operations
 - Transaction-based operations
@@ -259,7 +259,7 @@ manager.validate_restored_data(['postgresql', 'qdrant', 'neo4j', 'redis'])
 
 ### Emergency Recovery Checklist
 
-- [ ] Stop all Enhanced Cognee services
+- [ ] Stop all RNR Enhanced Cognee services
 - [ ] Identify last known good backup
 - [ ] Verify backup integrity
 - [ ] Restore all databases

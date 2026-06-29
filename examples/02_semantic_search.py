@@ -35,7 +35,7 @@ def call(tool: str, **params: Any) -> Any:
 # paragraphs give the cognify pipeline material to extract entities
 # and relationships from.
 CORPUS = [
-    """Enhanced Cognee is a fork of topoteretes/cognee that adds 122 MCP
+    """RNR Enhanced Cognee is a fork of topoteretes/cognee that adds 122 MCP
     tools, a 4-database stack (PostgreSQL + Qdrant + ArcadeDB + Valkey),
     and GDPR / audit / encryption primitives. The project is licensed
     under Apache-2.0.""",
@@ -54,7 +54,7 @@ CORPUS = [
 
 
 def main() -> int:
-    print("=== Enhanced Cognee: semantic search ===\n")
+    print("=== RNR Enhanced Cognee: semantic search ===\n")
 
     # 1. Cognify -- send each corpus item through the knowledge-graph
     #    extraction pipeline. Returns a document/job ID per item.
@@ -74,7 +74,7 @@ def main() -> int:
     queries = [
         "Which graph database is the default?",
         "Why did Redis get replaced?",
-        "What MCP tools does Enhanced Cognee expose?",
+        "What MCP tools does RNR Enhanced Cognee expose?",
     ]
     for q in queries:
         print(f"  Q: {q}")

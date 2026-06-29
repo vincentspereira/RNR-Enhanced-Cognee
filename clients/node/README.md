@@ -1,6 +1,6 @@
-# Enhanced Cognee Node.js Client
+# RNR Enhanced Cognee Node.js Client
 
-Official Node.js / TypeScript client for the [Enhanced Cognee](https://github.com/vincentspereira/Enhanced-Cognee) MCP HTTP server.
+Official Node.js / TypeScript client for the [RNR Enhanced Cognee](https://github.com/vincentspereira/RNR-Enhanced-Cognee) MCP HTTP server.
 
 ## Install
 

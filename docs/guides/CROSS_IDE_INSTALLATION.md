@@ -1,6 +1,6 @@
-# Enhanced Cognee MCP Server - Cross-IDE Installation Guide
+# RNR Enhanced Cognee MCP Server - Cross-IDE Installation Guide
 
-This guide explains how to install and use the Enhanced Cognee MCP server across various IDEs and editors.
+This guide explains how to install and use the RNR Enhanced Cognee MCP server across various IDEs and editors.
 
 ## 📋 Table of Contents
 
@@ -15,7 +15,7 @@ This guide explains how to install and use the Enhanced Cognee MCP server across
 ## 🎯 Prerequisites
 
 ### Required Software
-- **Python 3.8+** (Enhanced Cognee is Python-based)
+- **Python 3.8+** (RNR Enhanced Cognee is Python-based)
 - **Node.js 18+** (for MCP protocol support)
 - **Docker & Docker Compose** (for database stack)
 - **Git** (for cloning repositories)
@@ -41,11 +41,11 @@ This guide explains how to install and use the Enhanced Cognee MCP server across
 
 ## 🔧 Universal Installation Steps
 
-### Step 1: Clone Enhanced Cognee Repository
+### Step 1: Clone RNR Enhanced Cognee Repository
 
 ```bash
 git clone https://github.com/your-username/enhanced-cognee.git
-cd enhanced-cognee
+cd RNR-Enhanced-Cognee
 ```
 
 ### Step 2: Install Python Dependencies
@@ -74,7 +74,7 @@ docker-compose -f docker-compose-enhanced-cognee.yml up -d
 docker ps | grep cognee
 ```
 
-### Step 4: Test Enhanced Cognee Server
+### Step 4: Test RNR Enhanced Cognee Server
 
 ```bash
 # Test the universal server
@@ -98,7 +98,7 @@ python cognee_mcp_universal.py
    // ~/.continue/config.json
    {
      "mcpServers": {
-       "enhanced-cognee": {
+       "RNR-Enhanced-Cognee": {
          "command": "python",
          "args": ["/path/to/enhanced-cognee/cognee_mcp_universal.py"],
          "env": {
@@ -115,22 +115,22 @@ python cognee_mcp_universal.py
 
 1. **Install Kilo Code Extension**
 2. **Configure MCP settings** in extension preferences
-3. **Add Enhanced Cognee server** configuration
+3. **Add RNR Enhanced Cognee server** configuration
 
 #### Method 3: Using Claude in VS Code
 
 1. **Install Claude Dev Extension**
 2. **Enable MCP mode** in settings
-3. **Configure Enhanced Cognee** as memory provider
+3. **Configure RNR Enhanced Cognee** as memory provider
 
 ### Cursor
 
 1. **Open Cursor Settings**
 2. **Navigate to MCP Configuration**
-3. **Add Enhanced Cognee Server:**
+3. **Add RNR Enhanced Cognee Server:**
    ```json
    {
-     "enhanced-cognee": {
+     "RNR-Enhanced-Cognee": {
        "command": "python",
        "args": ["/full/path/to/enhanced-cognee/cognee_mcp_universal.py"],
        "env": {
@@ -147,7 +147,7 @@ python cognee_mcp_universal.py
 1. **Open Windsurf Settings**
 2. **Go to Extensions → MCP Servers**
 3. **Add New Server:**
-   - Name: `enhanced-cognee`
+   - Name: `RNR-Enhanced-Cognee`
    - Command: `python`
    - Args: `["/path/to/enhanced-cognee/cognee_mcp_universal.py"]`
    - Environment: `{"PYTHONPATH": "/path/to/enhanced-cognee"}`
@@ -156,12 +156,12 @@ python cognee_mcp_universal.py
 
 1. **Open Antigravity Settings**
 2. **Enable MCP Protocol**
-3. **Configure Enhanced Cognee:**
+3. **Configure RNR Enhanced Cognee:**
    ```json
    {
      "mcp": {
        "servers": {
-         "enhanced-cognee": {
+         "RNR-Enhanced-Cognee": {
            "executable": "python",
            "args": ["/path/to/cognee_mcp_universal.py"],
            "cwd": "/path/to/enhanced-cognee"
@@ -177,14 +177,14 @@ python cognee_mcp_universal.py
 2. **Configure Plugin Settings:**
    - Server executable: `python`
    - Arguments: path to `cognee_mcp_universal.py`
-   - Working directory: Enhanced Cognee directory
+   - Working directory: RNR Enhanced Cognee directory
    - Environment variables: `PYTHONPATH`
 
 ## ⚙️ Configuration
 
 ### Environment Variables
 
-Create a `.env` file in the Enhanced Cognee directory:
+Create a `.env` file in the RNR Enhanced Cognee directory:
 
 ```env
 # LLM Configuration
@@ -209,7 +209,7 @@ EMBEDDING_ENDPOINT=http://localhost:11434/api/embed
 
 ### IDE-Specific Memory Prefixes
 
-The Enhanced Cognee server automatically detects project type and applies appropriate prefixes:
+The RNR Enhanced Cognee server automatically detects project type and applies appropriate prefixes:
 
 - **Multi-Agent Systems**: `ats_`, `oma_`, `smc_`
 - **Web Development**: `fe_`, `be_`, `dev_`
@@ -222,7 +222,7 @@ The Enhanced Cognee server automatically detects project type and applies approp
 ### 1. Test Database Connections
 
 ```bash
-cd enhanced-cognee
+cd RNR-Enhanced-Cognee
 python -c "
 import psycopg2, redis, qdrant_client, neo4j
 # Test connections...
@@ -230,7 +230,7 @@ print('All databases connected successfully!')
 "
 ```
 
-### 2. Test Enhanced Cognee Server
+### 2. Test RNR Enhanced Cognee Server
 
 ```bash
 python cognee_mcp_universal.py
@@ -258,7 +258,7 @@ netstat -tulpn | grep -E "(25432|26333|27687|26379)"
 
 #### 2. Python Path Issues
 ```bash
-# Verify Python can find Enhanced Cognee
+# Verify Python can find RNR Enhanced Cognee
 export PYTHONPATH=/path/to/enhanced-cognee:$PYTHONPATH
 python -c "import cognee"
 ```
@@ -288,7 +288,7 @@ docker-compose -f docker-compose-enhanced-cognee.yml logs
 - Check environment variables
 
 **General:**
-- Ensure Enhanced Cognee server is running
+- Ensure RNR Enhanced Cognee server is running
 - Verify Python environment is activated
 - Check firewall settings for Docker ports
 
@@ -310,7 +310,7 @@ Once installed, you can:
 
 ## 📚 Additional Resources
 
-- [Enhanced Cognee Documentation](./README.md)
+- [RNR Enhanced Cognee Documentation](./README.md)
 - [MCP Protocol Specification](https://modelcontextprotocol.io/)
 - [Docker Troubleshooting Guide](./DOCKER_TROUBLESHOOTING.md)
 - [IDE-Specific Configuration Examples](./IDE_EXAMPLES.md)

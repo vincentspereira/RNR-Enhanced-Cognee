@@ -18,14 +18,14 @@
 
 2. **GitHub Copilot (VS Code Extension)**
    - MCP server configuration
-   - @enhanced-cognee syntax for tool invocation
-   - Advanced usage combining Copilot with Enhanced Cognee
+   - @RNR-Enhanced-Cognee syntax for tool invocation
+   - Advanced usage combining Copilot with RNR Enhanced Cognee
    - Integration examples
 
 **Key Features Added:**
 - Complete setup instructions for both IDEs
 - Configuration examples for VS Code settings
-- Usage scenarios showing how to use Enhanced Cognee tools
+- Usage scenarios showing how to use RNR Enhanced Cognee tools
 - Integration with Copilot Chat interface
 - Troubleshooting tips
 
@@ -128,7 +128,7 @@
 
 ### Technical Architecture:
 ```
-21 SDLC Agents → Enhanced Cognee MCP Server → Databases
+21 SDLC Agents → RNR Enhanced Cognee MCP Server → Databases
                         ↓
         (30+ MCP tools, ASCII output, Multi-IDE support)
                         ↓
@@ -339,7 +339,7 @@ pytest --cov=src --cov-report=html
 
 ### GitHub Repository:
 
-**Repository:** https://github.com/vincentspereira/Enhanced-Cognee
+**Repository:** https://github.com/vincentspereira/RNR-Enhanced-Cognee
 
 **Latest Commits:**
 1. `feat: add Kilo Code and GitHub Copilot to Multi-IDE support`
@@ -374,7 +374,7 @@ pytest --cov=src --cov-report=html
 ### 1. Run the Tests
 
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 
 # Install test dependencies
 pip install -r requirements-test.txt
@@ -418,9 +418,9 @@ See `SDLC_AGENTS_INTEGRATION.md` for:
 
 **All three tasks completed successfully! 🎉**
 
-Enhanced Cognee now has:
+RNR Enhanced Cognee now has:
 - ✅ Multi-IDE support (8 IDEs including Kilo Code and GitHub Copilot)
 - ✅ Complete 21 SDLC agents integration
 - ✅ Comprehensive testing suite (250+ tests, >98% coverage)
 
-**Repository:** https://github.com/vincentspereira/Enhanced-Cognee
+**Repository:** https://github.com/vincentspereira/RNR-Enhanced-Cognee

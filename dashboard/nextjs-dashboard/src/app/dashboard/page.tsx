@@ -20,7 +20,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
-          Overview of your Enhanced Cognee memory system
+          Overview of your RNR Enhanced Cognee memory system
         </p>
       </div>
 

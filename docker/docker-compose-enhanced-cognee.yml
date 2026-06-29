@@ -1,6 +1,6 @@
-# Enhanced Cognee Memory Stack - Single-host Docker Compose configuration
+# RNR Enhanced Cognee Memory Stack - Single-host Docker Compose configuration
 # Replaces default Cognee stack with enterprise-grade components.
-# Components: PostgreSQL+pgVector, Qdrant, ArcadeDB, Valkey, Enhanced Cognee app.
+# Components: PostgreSQL+pgVector, Qdrant, ArcadeDB, Valkey, RNR Enhanced Cognee app.
 #
 # Graph DB default since Phase 2: ArcadeDB (Apache-2.0, openCypher + Bolt
 # drop-in for Neo4j). To run with Neo4j instead, see docs/ARCADEDB_MIGRATION.md.
@@ -219,7 +219,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # Enhanced Cognee MCP Server - Main Memory Provider (FastAPI HTTP app)
+  # RNR Enhanced Cognee MCP Server - Main Memory Provider (FastAPI HTTP app)
   enhanced-cognee:
     build:
       context: ..

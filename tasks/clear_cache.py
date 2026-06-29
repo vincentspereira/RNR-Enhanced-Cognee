@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Clear Cache Task
+RNR Enhanced Cognee - Clear Cache Task
 
 Scheduled task to clear Redis cache.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 """
 

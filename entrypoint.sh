@@ -1,5 +1,5 @@
 #!/bin/sh
-# Enhanced Cognee container entrypoint (POSIX sh).
+# RNR Enhanced Cognee container entrypoint (POSIX sh).
 #
 # Responsibilities:
 #   1. Optionally run Alembic migrations (set ENHANCED_RUN_MIGRATIONS=1).

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Prometheus Exporter
-Exports Enhanced Cognee metrics for Prometheus monitoring
+RNR Enhanced Cognee Prometheus Exporter
+Exports RNR Enhanced Cognee metrics for Prometheus monitoring
 """
 
 import asyncio
@@ -19,7 +19,7 @@ from prometheus_client import start_http_server, Gauge, Counter, Histogram, Summ
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Enhanced Cognee Metrics
+# RNR Enhanced Cognee Metrics
 # Memory Operations
 MEMORY_OPERATIONS_TOTAL = Counter(
     'enhanced_cognee_memory_operations_total',
@@ -111,7 +111,7 @@ AGENT_RESPONSE_TIME = Summary(
 )
 
 class EnhancedCogneeExporter:
-    """Enhanced Cognee Prometheus Exporter"""
+    """RNR Enhanced Cognee Prometheus Exporter"""
 
     def __init__(self):
         self.api_url = os.getenv('ENHANCED_COGNEE_API_URL', 'http://enhanced-cognee-server:8080')
@@ -120,7 +120,7 @@ class EnhancedCogneeExporter:
 
     async def start(self):
         """Start the exporter"""
-        logger.info("Starting Enhanced Cognee Prometheus Exporter")
+        logger.info("Starting RNR Enhanced Cognee Prometheus Exporter")
 
         # Start HTTP server
         port = int(os.getenv('EXPORTER_PORT', 8000))
@@ -141,7 +141,7 @@ class EnhancedCogneeExporter:
                 await asyncio.sleep(5)
 
     async def collect_all_metrics(self):
-        """Collect all Enhanced Cognee metrics"""
+        """Collect all RNR Enhanced Cognee metrics"""
         try:
             # Initialize HTTP session
             if not self.session:
@@ -249,7 +249,7 @@ class EnhancedCogneeExporter:
     async def collect_memory_metrics(self):
         """Collect memory metrics"""
         try:
-            # This would integrate with actual Enhanced Cognee memory statistics
+            # This would integrate with actual RNR Enhanced Cognee memory statistics
             # For now, using placeholder data
 
             # Simulate memory storage metrics
@@ -303,7 +303,7 @@ async def main():
     try:
         await exporter.start()
     except KeyboardInterrupt:
-        logger.info("Shutting down Enhanced Cognee exporter")
+        logger.info("Shutting down RNR Enhanced Cognee exporter")
     finally:
         await exporter.close()
 

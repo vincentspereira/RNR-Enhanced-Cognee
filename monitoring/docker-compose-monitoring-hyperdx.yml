@@ -1,4 +1,4 @@
-# Enhanced Cognee - Alternative observability stack: HyperDX (MIT)
+# RNR Enhanced Cognee - Alternative observability stack: HyperDX (MIT)
 #
 # This is the *alternative* to the primary SigNoz + Apache Superset stack
 # in docker-compose-monitoring.yml. Pick this one if you prefer
@@ -28,7 +28,7 @@
 #   HyperDX UI:         http://localhost:8080
 #   Prometheus:         http://localhost:9090
 #
-# Point Enhanced Cognee at the OTel collector by exporting:
+# Point RNR Enhanced Cognee at the OTel collector by exporting:
 #   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 #
 # HyperDX exposes a single image (hyperdx/hyperdx-local) that bundles

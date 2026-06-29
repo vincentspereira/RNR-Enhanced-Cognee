@@ -5,7 +5,7 @@ Provides transparent at-rest encryption/decryption for memory content stored
 in PostgreSQL.  Each memory can be independently encrypted with a per-tenant
 or global key.  Key rotation is supported by re-encrypting all rows.
 
-CRYPTOGRAPHY (Enhanced Cognee):
+CRYPTOGRAPHY (RNR Enhanced Cognee):
   - New data is encrypted with **AES-256-GCM** (authenticated encryption,
     256-bit key, fresh 96-bit nonce per message).  Ciphertext is stored with
     the "enc2:" prefix.

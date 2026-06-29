@@ -5,7 +5,7 @@ Phase 5 quick-win adapters (Memgraph / Kuzu / NetworkX-in-memory /
 Memcached / SQLite) shipped 2026-05-20. See "Provider matrix" below
 for the full set and the "Deferred" section for what's still pending.
 
-Enhanced Cognee ships four deployment **profiles** -- presets that pin
+RNR Enhanced Cognee ships four deployment **profiles** -- presets that pin
 the four `ENHANCED_*_PROVIDER` env vars to a coherent combination. They
 exist so that the same code base can run on a laptop, a 4 GB VPS, an
 enterprise cluster, or someone's BYO managed cloud, without forking the
@@ -102,7 +102,7 @@ Limitations (intentional):
   sub-section below for what's supported
 
 `lean` is not recommended for production; it exists so that "give me
-the smallest possible Enhanced Cognee" works as a single Postgres
+the smallest possible RNR Enhanced Cognee" works as a single Postgres
 container.
 
 ---
@@ -520,7 +520,7 @@ Milvus collection with `id` (VARCHAR PK) + `vector` + `payload`
 
 `src/db_adapters/graph_arangodb.py` (shipped 2026-05-20). Apache-2.0
 multi-model DB; native AQL query language. The adapter translates
-the narrow Cypher subset Enhanced Cognee uses into AQL via the
+the narrow Cypher subset RNR Enhanced Cognee uses into AQL via the
 `python-arango` client. All graph nodes live in a single
 ArangoDB document collection (default `cognee_graph_nodes`,
 configurable via `ARANGO_COLLECTION_NAME`).
@@ -583,7 +583,7 @@ top of ladybug's native graph API.
 
 `src/db_adapters/graph_apache_age.py` is a hand-rolled shim that wraps
 Cypher in AGE's `SELECT * FROM cypher('graph', $$ ... $$)` SQL form. It
-covers the slice of Cypher Enhanced Cognee call sites use today; complex
+covers the slice of Cypher RNR Enhanced Cognee call sites use today; complex
 Cypher features will raise `NotImplementedError` with a pointer back to
 this file.
 
@@ -687,7 +687,7 @@ per-tier deep-dives below for query-matrix limitations.
 
 > The vector tier's API surface (Qdrant's `QdrantClient`) is rich
 > (`get_collections` / `create_collection` / `upsert` / `search` / etc.).
-> All five non-Qdrant adapters cover the narrow slice Enhanced Cognee
+> All five non-Qdrant adapters cover the narrow slice RNR Enhanced Cognee
 > actually uses; everything else (named vectors, sparse vectors,
 > payload indexes, quantization, rich search filters, hybrid search)
 > raises a clear `NotImplementedError`. The first adapter shipped
@@ -735,14 +735,14 @@ precedence than the canonical `ENHANCED_*_PROVIDER` names.
 To install only the adapters you actually use:
 
 ```bash
-pip install "enhanced-cognee[graph-memgraph]"     # adds neo4j driver
-pip install "enhanced-cognee[graph-kuzu]"
-pip install "enhanced-cognee[graph-networkx]"
-pip install "enhanced-cognee[cache-memcached]"
-pip install "enhanced-cognee[relational-sqlite]"
+pip install "RNR-Enhanced-Cognee[graph-memgraph]"     # adds neo4j driver
+pip install "RNR-Enhanced-Cognee[graph-kuzu]"
+pip install "RNR-Enhanced-Cognee[graph-networkx]"
+pip install "RNR-Enhanced-Cognee[cache-memcached]"
+pip install "RNR-Enhanced-Cognee[relational-sqlite]"
 ```
 
-Or all of them at once: `pip install "enhanced-cognee[graph-memgraph,graph-kuzu,graph-networkx,cache-memcached,relational-sqlite]"`.
+Or all of them at once: `pip install "RNR-Enhanced-Cognee[graph-memgraph,graph-kuzu,graph-networkx,cache-memcached,relational-sqlite]"`.
 
 ---
 

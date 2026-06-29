@@ -132,7 +132,7 @@ different host ports.
 ## 4. Cypher dialect notes
 
 ArcadeDB implements openCypher with a few divergences from Neo4j's
-flavour. The ones that matter for Enhanced Cognee:
+flavour. The ones that matter for RNR Enhanced Cognee:
 
 | Feature                              | Neo4j 5            | ArcadeDB           | Workaround                                                       |
 | ------------------------------------ | ------------------ | ------------------ | ---------------------------------------------------------------- |
@@ -144,7 +144,7 @@ flavour. The ones that matter for Enhanced Cognee:
 | `elementId(n)`                       | full               | not available      | Use `id(n)` -- ArcadeDB returns numeric/Rid id; `backup_manager.py` already abstracts via `element_id(node)` helper |
 | Multi-database support               | yes (`USE db`)     | partial (datab. per server) | Use `cognee_graph` as the single default database         |
 
-Enhanced Cognee's existing Cypher usage (in `src/agent_memory_integration.py`,
+RNR Enhanced Cognee's existing Cypher usage (in `src/agent_memory_integration.py`,
 `backup_manager.py`, `recovery_manager.py`) uses only the rows marked
 "full" above. No code changes were required for the migration.
 

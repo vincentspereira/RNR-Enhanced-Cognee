@@ -1,5 +1,5 @@
 /**
- * React Hook for Real-Time Enhanced Cognee Updates
+ * React Hook for Real-Time RNR Enhanced Cognee Updates
  * Provides SSE connection and WebSocket functionality
  */
 

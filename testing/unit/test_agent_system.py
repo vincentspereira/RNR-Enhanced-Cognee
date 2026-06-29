@@ -1,5 +1,5 @@
 """
-Unit Tests for Enhanced Cognee Agent System
+Unit Tests for RNR Enhanced Cognee Agent System
 
 Tests for all 21 agents across ATS, OMA, and SMC categories.
 Includes agent initialization, functionality, coordination, and memory integration.

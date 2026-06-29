@@ -1,8 +1,8 @@
-# Enhanced Cognee Testing Guide
+# RNR Enhanced Cognee Testing Guide
 
 ## Overview
 
-This document describes the comprehensive testing strategy for Enhanced Cognee, including unit tests, integration tests, system tests, and end-to-end tests.
+This document describes the comprehensive testing strategy for RNR Enhanced Cognee, including unit tests, integration tests, system tests, and end-to-end tests.
 
 ---
 
@@ -420,7 +420,7 @@ When adding new features:
 
 ## Summary
 
-Enhanced Cognee has comprehensive testing across:
+RNR Enhanced Cognee has comprehensive testing across:
 
 - ✅ 6 core modules tested
 - ✅ Unit tests for all functions
@@ -435,5 +435,5 @@ Enhanced Cognee has comprehensive testing across:
 
 ---
 
-**Repository**: https://github.com/vincentspereira/Enhanced-Cognee
+**Repository**: https://github.com/vincentspereira/RNR-Enhanced-Cognee
 **Issues**: Report test failures at GitHub Issues

@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-05-14
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee has two project-wide rules that every code change must respect:
+RNR Enhanced Cognee has two project-wide rules that every code change must respect:
 
 1. ASCII-only output: no Unicode symbols, no emoji, no arrows (ADR-002).
 2. Dynamic categories: no hardcoded ATS, OMA, or SMC strings in code (ADR-003,

@@ -1,7 +1,7 @@
 """
 Enhanced Testing Fixtures and Shared Utilities
 
-Comprehensive test fixtures for all Enhanced Cognee testing categories.
+Comprehensive test fixtures for all RNR Enhanced Cognee testing categories.
 Provides database connections, mock services, test data, and utilities.
 """
 
@@ -25,7 +25,7 @@ from dataclasses import dataclass
 # Import test data generator
 from .test_data_generator import TestDataGenerator, DataCategory, MemoryType, TestMemoryData
 
-# Import Enhanced Cognee components (will be mocked if not available)
+# Import RNR Enhanced Cognee components (will be mocked if not available)
 try:
     from src.agent_memory_integration import AgentMemoryIntegration
 except ImportError:
@@ -254,7 +254,7 @@ def mock_api_server():
 def sample_memory_data():
     """Sample memory data for testing"""
     return {
-        "content": "Sample memory content for Enhanced Cognee testing",
+        "content": "Sample memory content for RNR Enhanced Cognee testing",
         "agent_id": "test_agent",
         "memory_type": "episodic",
         "metadata": {
@@ -650,7 +650,7 @@ def assert_valid_agent_id(agent_id: str):
 
 if __name__ == "__main__":
     # Example usage of fixtures
-    print("Enhanced Cognee Test Fixtures")
+    print("RNR Enhanced Cognee Test Fixtures")
     print("Available fixtures:")
     print("- test_data_generator")
     print("- temp_directory")

@@ -2,7 +2,7 @@
 """Basic memory CRUD: add / get / search / update / delete.
 
 Demonstrates the standard memory MCP interface that Claude Code uses.
-Bring the Enhanced Cognee stack + MCP server up first; see examples/README.md.
+Bring the RNR Enhanced Cognee stack + MCP server up first; see examples/README.md.
 
 Run:
     python examples/01_basic_memory_crud.py
@@ -33,7 +33,7 @@ def call(tool: str, **params: Any) -> Any:
 
 
 def main() -> int:
-    print("=== Enhanced Cognee: basic memory CRUD ===\n")
+    print("=== RNR Enhanced Cognee: basic memory CRUD ===\n")
 
     # 1. Add three memories under a single agent_id
     print("[1/5] Adding memories...")

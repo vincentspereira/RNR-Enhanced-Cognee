@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - LLM Provider Base Interface
+RNR Enhanced Cognee - LLM Provider Base Interface
 
 This module defines the base interface for all LLM provider implementations.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

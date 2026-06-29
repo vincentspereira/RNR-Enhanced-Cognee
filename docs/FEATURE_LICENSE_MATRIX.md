@@ -1,6 +1,6 @@
 # Feature -> License Matrix
 
-> **Purpose:** When porting Enhanced Cognee features into a downstream project
+> **Purpose:** When porting RNR Enhanced Cognee features into a downstream project
 > (e.g. Multi-Agent System / MAS or any other commercial product), you need
 > to know which open-source licenses each feature pulls in. This file tags
 > every major feature with its license footprint and a verdict for
@@ -19,7 +19,7 @@
 | **OPT-IN** | Strong copyleft / restrictive (GPL, AGPL, BSL, SSPL, Commons Clause). The feature works with this provider but the project defaults to an alternative; do NOT pull in the copyleft provider unless you can comply with its terms. |
 | **CONFLICT** | License is incompatible with closed-source distribution. Skip the feature or replace its dependency. |
 
-The Enhanced Cognee codebase itself is **Apache-2.0** (`LICENSE` at repo root). All feature tags below assume the consuming project tolerates Apache-2.0.
+The RNR Enhanced Cognee codebase itself is **Apache-2.0** (`LICENSE` at repo root). All feature tags below assume the consuming project tolerates Apache-2.0.
 
 ---
 
@@ -234,7 +234,7 @@ All four SDKs use only permissive transitive dependencies (httpx / undici / net/
 
 ## Quick Reference for MAS Integration
 
-If you're porting a feature from Enhanced Cognee into MAS and MAS is closed-source / commercial:
+If you're porting a feature from RNR Enhanced Cognee into MAS and MAS is closed-source / commercial:
 
 1. **Anything tagged SAFE or SAFE+ATTR is fair game.** Just include the upstream NOTICE / LICENSE attribution in your MAS distribution.
 2. **REVIEW tags require legal sign-off.** Usually fine for dynamic linking but the lawyer should look at it.
@@ -247,7 +247,7 @@ If you're porting a feature from Enhanced Cognee into MAS and MAS is closed-sour
 
 ## Quick Reference for the Default Stack
 
-Enhanced Cognee's default stack is **100% MIT + Apache-2.0 + PostgreSQL-license** (no GPL, no AGPL, no BSL, no SSPL):
+RNR Enhanced Cognee's default stack is **100% MIT + Apache-2.0 + PostgreSQL-license** (no GPL, no AGPL, no BSL, no SSPL):
 
 | Tier | Default provider | License |
 | --- | --- | --- |
@@ -264,6 +264,6 @@ When MAS imports any feature using only the default stack providers, the verdict
 ## See also
 
 - [`docs/LICENSE_AUDIT.md`](LICENSE_AUDIT.md) -- per-dependency analysis with Phase 5 license refresh rationale
-- [`docs/COMMERCIALISATION_LICENSE_GUIDE.md`](COMMERCIALISATION_LICENSE_GUIDE.md) -- if you ever ship Enhanced Cognee as a paid product
+- [`docs/COMMERCIALISATION_LICENSE_GUIDE.md`](COMMERCIALISATION_LICENSE_GUIDE.md) -- if you ever ship RNR Enhanced Cognee as a paid product
 - [`docs/PROFILES.md`](PROFILES.md) -- per-profile adapter matrix and caveats
 - `NOTICE` (repo root) -- third-party attributions required by Apache-2.0 §4(d)

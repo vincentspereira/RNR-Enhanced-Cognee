@@ -1,4 +1,4 @@
-# Enhanced Cognee — Session Handover Brief
+# RNR Enhanced Cognee — Session Handover Brief
 
 **Audience:** A fresh Claude Code Terminal session (paste this file's contents
 into your first message, or `cat docs/HANDOVER.md` and ask Claude to read it).
@@ -11,8 +11,8 @@ into your first message, or `cat docs/HANDOVER.md` and ask Claude to read it).
 
 ## 1. Project location and rules
 
-- **Repo root:** `C:\Users\vince\Projects\AI Agents\enhanced-cognee\`
-- **Upstream:** `topoteretes/cognee` (we are a fork at `vincentspereira/Enhanced-Cognee`)
+- **Repo root:** `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\`
+- **Upstream:** `topoteretes/cognee` (we are a fork at `vincentspereira/RNR-Enhanced-Cognee`)
 - **Default branch:** `main` (protected — see §5 below)
 - **Always read first:** the project's `CLAUDE.md` (project-wide rules) and
   the user's `~/.claude/CLAUDE.md` (personal rules).
@@ -85,7 +85,7 @@ already reflects them (see DR-11 and DR-12 in the Decision Records appendix).
 
 ### 3.2 Observability stack — SigNoz + Apache Superset (revised 2026-05-19)
 
-Today's Enhanced Cognee monitoring stack (in the optional
+Today's RNR Enhanced Cognee monitoring stack (in the optional
 `monitoring/docker-compose-monitoring.yml`) bundles **Grafana + Loki + Tempo + Prometheus + Jaeger**.
 Of those, Grafana, Loki, and Tempo are AGPLv3. Replace them with a fully
 permissive stack:
@@ -247,7 +247,7 @@ Steps:
 
 4. **Update `docs/MONITORING.md`** with the new setup. One section per
    component (Prometheus, SigNoz, ClickHouse, Apache Superset). Include the
-   OTLP endpoint URLs the user can paste into their Enhanced Cognee `.env`.
+   OTLP endpoint URLs the user can paste into their RNR Enhanced Cognee `.env`.
 
 5. **Update `docs/COMMERCIALISATION_LICENSE_GUIDE.md`** — the FAQ "What if I
    want to remove all GPL/AGPL components entirely?" now answers "the default
@@ -381,7 +381,7 @@ When Phase 4 (SigNoz + Apache Superset swap) lands:
 In order, when you start the new session:
 
 1. `~/.claude/CLAUDE.md` — global Vincent rules (ASCII-only etc.)
-2. `CLAUDE.md` (repo root) — Enhanced Cognee project rules
+2. `CLAUDE.md` (repo root) — RNR Enhanced Cognee project rules
 3. **`docs/STRATEGY.md`** — single source of truth for direction and decisions
 4. `docs/OUTSTANDING_ITEMS.md` — deep-dive on each gap (also collated in STRATEGY §7)
 5. `docs/PLUGGABLE_DB_BACKENDS.md` — older deep-dive on pluggable design
@@ -450,7 +450,7 @@ they weren't called out explicitly:
 3. **Cognee upstream's `Ladybug` dependency.** `pyproject.toml` pins
    `ladybug==0.16.1` as a hard dependency because upstream Cognee imports it at
    module level. If Ladybug isn't installable on a customer machine (e.g.
-   air-gapped without PyPI), Enhanced Cognee won't import either. Worth
+   air-gapped without PyPI), RNR Enhanced Cognee won't import either. Worth
    evaluating whether to lazy-load it.
 
 4. **The `AGENTS.md` file at repo root** is untracked (was visible in `git
@@ -463,7 +463,7 @@ they weren't called out explicitly:
 6. **The `.beads/` directory** sometimes throws `Warning: Failed to import bd
    changes after merge / Run 'bd import -i .beads/issues.jsonl' manually to
    see the error`. Ignore; it's a Vincent's local-tooling thing, unrelated to
-   Enhanced Cognee functionality.
+   RNR Enhanced Cognee functionality.
 
 7. **Hetzner CX22 VPS deployment** target: 4 GB RAM, 2 vCPUs. ArcadeDB on
    Java 21 will use 1-2 GB; Postgres + Qdrant + Valkey + MCP server need to

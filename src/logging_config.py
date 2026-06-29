@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Standardized Logging Configuration
+RNR Enhanced Cognee - Standardized Logging Configuration
 
 Provides consistent logging format throughout the codebase.
 Replaces all print() statements with proper logger calls.

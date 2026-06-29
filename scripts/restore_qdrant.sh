@@ -1,10 +1,10 @@
 #!/bin/bash
-# Enhanced Cognee - Restore Qdrant
+# RNR Enhanced Cognee - Restore Qdrant
 #
 # Restores Qdrant vector database from the specified backup.
 # Usage: ./scripts/restore_qdrant.sh <backup_id>
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 
 set -e

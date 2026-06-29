@@ -1,13 +1,13 @@
-# Enhanced Cognee - Production Monitoring Setup Guide
+# RNR Enhanced Cognee - Production Monitoring Setup Guide
 
 ## Overview
 
-This guide covers setting up comprehensive monitoring for Enhanced Cognee in production, including metrics collection, visualization, alerting, and log aggregation.
+This guide covers setting up comprehensive monitoring for RNR Enhanced Cognee in production, including metrics collection, visualization, alerting, and log aggregation.
 
 ## Architecture
 
 ```
-Enhanced Cognee → Prometheus (Metrics) → Grafana (Dashboards)
+RNR Enhanced Cognee → Prometheus (Metrics) → Grafana (Dashboards)
                         ↓
                     Loki (Logs)
                         ↓
@@ -21,7 +21,7 @@ Enhanced Cognee → Prometheus (Metrics) → Grafana (Dashboards)
 File: `monitoring/prometheus.yml`
 
 ```yaml
-# Prometheus configuration for Enhanced Cognee monitoring
+# Prometheus configuration for RNR Enhanced Cognee monitoring
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
@@ -42,7 +42,7 @@ rule_files:
 
 # Scrape configurations
 scrape_configs:
-  # Enhanced Cognee MCP Server Metrics
+  # RNR Enhanced Cognee MCP Server Metrics
   - job_name: 'enhanced-cognee-server'
     static_configs:
       - targets: ['enhanced-cognee-server:9090']
@@ -231,7 +231,7 @@ File: `monitoring/grafana/provisioning/dashboards/cognee-main-dashboard.json`
 ```json
 {
   "dashboard": {
-    "title": "Enhanced Cognee - Production Dashboard",
+    "title": "RNR Enhanced Cognee - Production Dashboard",
     "tags": ["cognee", "production"],
     "timezone": "browser",
     "panels": [
@@ -437,7 +437,7 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: enhanced-cognee
+          job: RNR-Enhanced-Cognee
           __path__: /var/log/cognee/**/*.log
 ```
 
@@ -786,4 +786,4 @@ Recommended alert thresholds:
 - **Warning**: Response time p95 > 1s, cache hit rate < 70%, query time > 500ms
 - **Info**: New deployment, high traffic (normal), cache warming
 
-This monitoring setup provides complete visibility into your Enhanced Cognee production deployment!
+This monitoring setup provides complete visibility into your RNR Enhanced Cognee production deployment!

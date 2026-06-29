@@ -1,6 +1,6 @@
-# Enhanced Cognee - Emergency Recovery Procedures
+# RNR Enhanced Cognee - Emergency Recovery Procedures
 
-Emergency procedures for critical Enhanced Cognee failures.
+Emergency procedures for critical RNR Enhanced Cognee failures.
 
 ## Overview
 
@@ -173,7 +173,7 @@ for backup in backups[:5]:
 
 ```bash
 # 1. Stop writes to prevent further loss
-# (Stop Enhanced Cognee MCP server)
+# (Stop RNR Enhanced Cognee MCP server)
 
 # 2. Identify backup before data loss
 # Compare document counts in backups

@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Dashboard REST API
+RNR Enhanced Cognee - Dashboard REST API
 
 FastAPI-based REST API for the web dashboard (dashboard/nextjs-dashboard).
 Provides real, database-backed endpoints for memory management, search,
@@ -19,7 +19,7 @@ dashboard stays usable.
 
 All output is ASCII-only (Windows cp1252 compatible).
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 2.0.0
 """
 
@@ -302,8 +302,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Enhanced Cognee Dashboard API",
-    description="REST API for the Enhanced Cognee web dashboard",
+    title="RNR Enhanced Cognee Dashboard API",
+    description="REST API for the RNR Enhanced Cognee web dashboard",
     version="2.0.0",
     lifespan=lifespan,
 )
@@ -1702,7 +1702,7 @@ async def dashboard_root():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Enhanced Cognee Dashboard</title>
+        <title>RNR Enhanced Cognee Dashboard</title>
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
@@ -1728,7 +1728,7 @@ async def dashboard_root():
     <body>
         <div class="container">
             <div class="header">
-                <h1>Enhanced Cognee Dashboard (built-in view)</h1>
+                <h1>RNR Enhanced Cognee Dashboard (built-in view)</h1>
                 <p>Quick status view. The full dashboard runs at
                    <a href="http://localhost:9050">http://localhost:9050</a>.</p>
             </div>
@@ -1859,7 +1859,7 @@ async def dashboard_root():
 if __name__ == "__main__":
     import uvicorn
 
-    print("Starting Enhanced Cognee Dashboard API...")
+    print("Starting RNR Enhanced Cognee Dashboard API...")
     print("Built-in view:        http://localhost:8000")
     print("API documentation:    http://localhost:8000/docs")
     print("Full dashboard (run separately): http://localhost:9050")

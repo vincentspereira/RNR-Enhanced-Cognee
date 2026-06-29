@@ -2,7 +2,7 @@
 Phase 13 - Property-Based Tests (18.1)
 ========================================
 Uses Hypothesis to verify invariants that must hold for all valid inputs
-across Enhanced Cognee's core modules.  No live database connections are
+across RNR Enhanced Cognee's core modules.  No live database connections are
 needed; all storage is mocked or in-memory.
 
 Invariants tested:

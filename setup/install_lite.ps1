@@ -1,10 +1,10 @@
 ################################################################################
-# Enhanced Cognee Lite Mode - Installation Script (Windows)
+# RNR Enhanced Cognee Lite Mode - Installation Script (Windows)
 #
 # Lightweight setup with SQLite, no Docker required.
 # Setup time: <2 minutes
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 ################################################################################
@@ -17,7 +17,7 @@ $LiteDir = Join-Path $ScriptDir "src\lite_mode"
 $ConfigFile = Join-Path $LiteDir "lite_config.json"
 $DbFile = Join-Path $ScriptDir "cognee_lite.db"
 
-Write-Host "Enhanced Cognee Lite Mode Installation" -ForegroundColor Green
+Write-Host "RNR Enhanced Cognee Lite Mode Installation" -ForegroundColor Green
 Write-Host "===========================================" -ForegroundColor Green
 Write-Host ""
 
@@ -162,7 +162,7 @@ else:
 # Test adding a memory
 doc_id = db.add_document(
     data_id='test_memory',
-    data_text='Enhanced Cognee Lite Mode installation test',
+    data_text='RNR Enhanced Cognee Lite Mode installation test',
     data_type='test',
     metadata={'test': True},
     user_id='installer',
@@ -193,12 +193,12 @@ if ($LASTEXITCODE -eq 0) {
 # Create startup script
 Write-Host "[INFO] Creating startup script..." -ForegroundColor Green
 $startupScript = @"
-# Enhanced Cognee Lite Mode - Startup Script
+# RNR Enhanced Cognee Lite Mode - Startup Script
 
 `$ScriptDir = Split-Path -Parent `$MyInvocation.MyCommand.Path
 Set-Location `$ScriptDir
 
-Write-Host "Starting Enhanced Cognee Lite Mode..."
+Write-Host "Starting RNR Enhanced Cognee Lite Mode..."
 Write-Host "Database: `$ScriptDir\cognee_lite.db"
 Write-Host ""
 

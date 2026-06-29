@@ -1,4 +1,4 @@
-name: Enhanced Cognee CI/CD Pipeline
+name: RNR Enhanced Cognee CI/CD Pipeline
 
 on:
   push:
@@ -197,7 +197,7 @@ jobs:
         #   PYSEC-2025-211..218 (transformers, 8 advisories): NO fixed release
         #     exists (present in 4.53.0, the latest stable). All require loading an
         #     attacker-controlled checkpoint/model file (deserialization /
-        #     convert_config code-injection RCE). Enhanced Cognee loads only
+        #     convert_config code-injection RCE). RNR Enhanced Cognee loads only
         #     trusted, pinned embedding models -- never untrusted checkpoints --
         #     so these are out of its threat model. Revisit when a stable fix ships.
         run: |
@@ -711,7 +711,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Enhanced Cognee image
+      - name: Build and push RNR Enhanced Cognee image
         if: steps.dockercheck.outputs.available == 'true'
         uses: docker/build-push-action@v7
         with:
@@ -731,8 +731,8 @@ jobs:
           context: ./dashboard
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/enhanced-cognee-dashboard:latest
-            ${{ secrets.DOCKER_USERNAME }}/enhanced-cognee-dashboard:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/rnr-enhanced-cognee-dashboard:latest
+            ${{ secrets.DOCKER_USERNAME }}/rnr-enhanced-cognee-dashboard:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -760,7 +760,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: context.ref.replace('refs/tags/', ''),
               name: 'Release ' + context.ref.replace('refs/tags/', ''),
-              body: 'Enhanced Cognee Release',
+              body: 'RNR Enhanced Cognee Release',
               draft: false,
               prerelease: false
             })

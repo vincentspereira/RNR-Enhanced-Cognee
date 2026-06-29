@@ -1,4 +1,4 @@
-# Enhanced Cognee Frontend Quick Start Guide
+# RNR Enhanced Cognee Frontend Quick Start Guide
 
 **Version:** 1.0.0
 **Last Updated:** 2025-02-06
@@ -8,7 +8,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for setting up and implementing the Enhanced Cognee Memory Dashboard frontend using Next.js 14, TypeScript, and Tailwind CSS.
+This guide provides step-by-step instructions for setting up and implementing the RNR Enhanced Cognee Memory Dashboard frontend using Next.js 14, TypeScript, and Tailwind CSS.
 
 ---
 
@@ -387,7 +387,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <span className="hidden font-bold sm:inline-block">
-            Enhanced Cognee
+            RNR Enhanced Cognee
           </span>
         </Link>
 
@@ -464,7 +464,7 @@ export function Sidebar() {
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-background md:flex">
       <div className="flex h-16 items-center border-b px-6">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-lg">Enhanced Cognee</span>
+          <span className="font-bold text-lg">RNR Enhanced Cognee</span>
         </Link>
       </div>
 
@@ -516,7 +516,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Enhanced Cognee Dashboard",
+  title: "RNR Enhanced Cognee Dashboard",
   description: "Enterprise-grade AI memory system dashboard",
 };
 
@@ -811,7 +811,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
-          Overview of your Enhanced Cognee memory system
+          Overview of your RNR Enhanced Cognee memory system
         </p>
       </div>
 

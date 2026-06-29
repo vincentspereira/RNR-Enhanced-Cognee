@@ -1,6 +1,6 @@
 # Quick Start
 
-Get Enhanced Cognee running locally in under 5 minutes.
+Get RNR Enhanced Cognee running locally in under 5 minutes.
 
 ## Prerequisites
 
@@ -11,15 +11,15 @@ Get Enhanced Cognee running locally in under 5 minutes.
 ## 1. Clone + boot the stack
 
 ```bash
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 
 # Boot the 4-container default stack (PostgreSQL + Qdrant + Valkey + ArcadeDB)
-docker compose -p enhanced-cognee \
+docker compose -p RNR-Enhanced-Cognee \
   -f config/docker/docker-compose-enhanced-cognee.yml up -d
 
 # Wait ~10s for containers to become healthy, then verify
-docker ps --filter "network=enhanced-cognee" \
+docker ps --filter "network=RNR-Enhanced-Cognee" \
   --format "table {{.Names}}\t{{.Status}}"
 ```
 
@@ -99,7 +99,7 @@ Then in another terminal:
 # Add a memory
 curl -X POST http://127.0.0.1:8080/mcp/add_memory \
   -H "Content-Type: application/json" \
-  -d '{"content":"Enhanced Cognee uses ArcadeDB as default graph DB","agent_id":"my-agent"}'
+  -d '{"content":"RNR Enhanced Cognee uses ArcadeDB as default graph DB","agent_id":"my-agent"}'
 
 # Search
 curl -X POST http://127.0.0.1:8080/mcp/search_memories \
@@ -147,7 +147,7 @@ Run step 2's `psql -f docker/init-scripts/01-init-pgvector.sql` to bootstrap.
 Check `~/.claude.json` env vars match the running containers (ports, credentials, provider names).
 
 **`UnicodeEncodeError: 'charmap' codec can't encode character`?**
-You ran Enhanced Cognee against a Windows cp1252 console with Unicode in some output. Our code is ASCII-only by policy; check if a custom plugin / wrapper is injecting emoji. The fix is to remove the emoji or change PYTHONIOENCODING=utf-8 on the calling side.
+You ran RNR Enhanced Cognee against a Windows cp1252 console with Unicode in some output. Our code is ASCII-only by policy; check if a custom plugin / wrapper is injecting emoji. The fix is to remove the emoji or change PYTHONIOENCODING=utf-8 on the calling side.
 
 ## Next steps
 

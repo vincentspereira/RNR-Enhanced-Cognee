@@ -1,5 +1,5 @@
 """
-Enhanced Cognee Load Test Profile
+RNR Enhanced Cognee Load Test Profile
 =================================
 Three workload classes against the FastAPI MCP HTTP variant
 (src/enhanced_cognee_mcp.py served on http://localhost:8080):
@@ -176,7 +176,7 @@ class HealthCheckUser(HttpUser):
 
 SEMANTIC_QUERIES = [
     "Which graph database is the default?",
-    "What MCP tools does Enhanced Cognee expose?",
+    "What MCP tools does RNR Enhanced Cognee expose?",
     "Why did Redis get replaced?",
     "How does ArcadeDB compare to Neo4j?",
     "What is the lean deployment profile?",

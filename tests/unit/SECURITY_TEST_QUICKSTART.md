@@ -74,7 +74,7 @@ pip install boto3 fastapi starlette bleach python-magic filetype slowapi pydanti
 ### Issue: Import errors
 **Solution:** Ensure you're running from project root
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 pytest tests/unit/test_security_modules.py -v
 ```
 

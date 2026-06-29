@@ -1,4 +1,4 @@
-# Enhanced Cognee Dashboard - Multi-Stage Docker Build
+# RNR Enhanced Cognee Dashboard - Multi-Stage Docker Build
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat

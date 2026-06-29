@@ -1,7 +1,7 @@
 """
 Phase 13 - Chaos Engineering and Resilience Tests (18.2 / 18.3)
 ================================================================
-Validates that Enhanced Cognee degrades gracefully under adverse conditions:
+Validates that RNR Enhanced Cognee degrades gracefully under adverse conditions:
 network failures, resource exhaustion, concurrent mutations, and partial
 availability of the four-database stack.
 

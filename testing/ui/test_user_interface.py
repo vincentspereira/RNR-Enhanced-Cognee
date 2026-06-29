@@ -1,7 +1,7 @@
 """
-Enhanced Cognee UI Testing Framework
+RNR Enhanced Cognee UI Testing Framework
 
-This module provides comprehensive UI testing capabilities for the Enhanced Cognee
+This module provides comprehensive UI testing capabilities for the RNR Enhanced Cognee
 Multi-Agent System, including web UI components, mobile responsive testing,
 accessibility compliance (WCAG 2.1), cross-browser compatibility, and visual
 regression testing.
@@ -98,7 +98,7 @@ class MockPage:
     """Mock Playwright Page class"""
     def __init__(self):
         self.url = "http://localhost:3000"
-        self.title = "Enhanced Cognee Dashboard"
+        self.title = "RNR Enhanced Cognee Dashboard"
         self.elements = {}
 
     async def goto(self, url: str):
@@ -147,7 +147,7 @@ class MockElement:
 
 
 class UITestFramework:
-    """Comprehensive UI testing framework for Enhanced Cognee"""
+    """Comprehensive UI testing framework for RNR Enhanced Cognee"""
 
     def __init__(self):
         self.playwright = None

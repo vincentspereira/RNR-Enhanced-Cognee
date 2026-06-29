@@ -1,6 +1,6 @@
-# Enhanced Cognee Executables
+# RNR Enhanced Cognee Executables
 
-This directory contains executable Python scripts for Enhanced Cognee.
+This directory contains executable Python scripts for RNR Enhanced Cognee.
 
 ## Main Scripts
 

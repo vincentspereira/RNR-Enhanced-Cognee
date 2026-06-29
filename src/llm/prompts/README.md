@@ -1,6 +1,6 @@
-# LLM Prompt Templates for Enhanced Cognee
+# LLM Prompt Templates for RNR Enhanced Cognee
 
-This directory contains comprehensive prompt templates for all LLM-powered operations in Enhanced Cognee.
+This directory contains comprehensive prompt templates for all LLM-powered operations in RNR Enhanced Cognee.
 
 ## Available Templates
 
@@ -390,4 +390,4 @@ When adding new templates:
 
 **Last Updated:** 2026-02-06
 **Version:** 1.0.0
-**Maintained By:** Enhanced Cognee Team
+**Maintained By:** RNR Enhanced Cognee Team

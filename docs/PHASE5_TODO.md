@@ -25,7 +25,7 @@ sessions; this file is the single landing page for "what's left."
 shipped. Each follows the same duck-typed `_CollectionDescription` /
 `_SearchHit` / `_CountResult` shape so call sites don't have to
 special-case the provider. All five expose the narrow QdrantClient
-surface Enhanced Cognee actually uses; the long tail of Qdrant
+surface RNR Enhanced Cognee actually uses; the long tail of Qdrant
 features (rich filters, named vectors, sparse vectors, payload
 indexes, quantization, hybrid search) raises `NotImplementedError`
 with a clear pointer to the per-adapter sub-section in PROFILES.md.

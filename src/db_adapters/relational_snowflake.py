@@ -2,7 +2,7 @@
 
 Wraps Snowflake's ``snowflake-connector-python`` (Apache-2.0).
 Snowflake is a cloud-native columnar analytical warehouse with
-massive horizontal scale; this adapter lets Enhanced Cognee target
+massive horizontal scale; this adapter lets RNR Enhanced Cognee target
 it as the relational backend when the workload is primarily
 analytical (LLM cost roll-ups, embedding-store analytics, agent-
 activity time series).
@@ -29,7 +29,7 @@ The connector is sync-only natively; we wrap calls in
 When to pick Snowflake:
 
 - Your analytics live in Snowflake already and you want to keep
-  Enhanced Cognee's relational tier there.
+  RNR Enhanced Cognee's relational tier there.
 - Need cross-region replication, time-travel queries, or compute/
   storage separation.
 

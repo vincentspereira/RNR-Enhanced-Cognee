@@ -1,6 +1,6 @@
 # Apache Superset Dashboards
 
-This directory holds the Enhanced Cognee BI / analytical Superset
+This directory holds the RNR Enhanced Cognee BI / analytical Superset
 dashboards. The dashboards in here are the non-APM-style charts that
 the old Grafana dashboard used to host -- the APM-style charts
 (request latency, error rates, RED metrics, flamegraphs) now live
@@ -18,7 +18,7 @@ natively in the SigNoz UI and don't need exports.
 | `perf_regression.json` | Per-endpoint p50 / p95 / p99 latency + error-rate (Locust regression tracking) | ClickHouse `signoz_index_v2` |
 
 All 5 dashboards are **importable scaffolds** -- they target the
-real schemas Enhanced Cognee writes, so they light up as soon as
+real schemas RNR Enhanced Cognee writes, so they light up as soon as
 there is data in the underlying tables.
 
 ## First-time setup

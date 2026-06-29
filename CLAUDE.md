@@ -1,8 +1,8 @@
-# Enhanced Cognee Implementation for Claude
+# RNR Enhanced Cognee Implementation for Claude
 
 ## Overview
 
-This document provides comprehensive guidance for Claude AI to effectively utilize the Enhanced Cognee memory architecture as the **exclusive memory system** for all operations.
+This document provides comprehensive guidance for Claude AI to effectively utilize the RNR Enhanced Cognee memory architecture as the **exclusive memory system** for all operations.
 
 ## CRITICAL REQUIREMENTS
 
@@ -75,7 +75,7 @@ def add_memory(agent_id: str, content: str, memory_category: str):
 ```
 
 ### 3. Standard Memory MCP Interface
-**CRITICAL**: Enhanced Cognee MCP server provides standard memory tools for Claude Code integration.
+**CRITICAL**: RNR Enhanced Cognee MCP server provides standard memory tools for Claude Code integration.
 
 **Available Memory Tools:**
 - `add_memory` - Add memory entry
@@ -86,7 +86,7 @@ def add_memory(agent_id: str, content: str, memory_category: str):
 - `delete_memory` - Delete memory
 - `list_agents` - List all agents with memories
 
-**Enhanced Cognee Tools:**
+**RNR Enhanced Cognee Tools:**
 - `cognify` - Add data to knowledge graph
 - `search` - Search knowledge graph
 - `list_data` - List all documents
@@ -96,7 +96,7 @@ def add_memory(agent_id: str, content: str, memory_category: str):
 ## 🎯 Implementation Status
 
 **Completed Components**:
-- [OK] Enhanced Cognee MCP Server (simplified, ASCII-only)
+- [OK] RNR Enhanced Cognee MCP Server (simplified, ASCII-only)
 - [OK] Standard Memory MCP Tools (Claude Code compatible)
 - [OK] Dynamic Category System (no hardcoded categories)
 - [OK] Enhanced Memory Stack: PostgreSQL, Qdrant, Neo4j, Redis
@@ -111,7 +111,7 @@ def add_memory(agent_id: str, content: str, memory_category: str):
 
 ### Memory Stack Architecture
 ```
-Enhanced Cognee Memory Stack
+RNR Enhanced Cognee Memory Stack
 ├── PostgreSQL + pgVector (Port 25432)
 │   ├── Relational database with vector extension
 │   ├── Agent memory persistence
@@ -129,9 +129,9 @@ Enhanced Cognee Memory Stack
 │   ├── High-speed caching layer
 │   ├── Real-time memory access
 │   └── Session management
-└── Enhanced Cognee MCP Server
+└── RNR Enhanced Cognee MCP Server
     ├── Standard Memory MCP Tools (Claude Code)
-    ├── Enhanced Cognee Tools (advanced features)
+    ├── RNR Enhanced Cognee Tools (advanced features)
     └── ASCII-only output (Windows compatible)
 ```
 
@@ -154,7 +154,7 @@ No hardcoded ATS/OMA/SMC restrictions!
 
 ### Memory Operations with MCP Tools
 
-When working with Enhanced Cognee memory via MCP:
+When working with RNR Enhanced Cognee memory via MCP:
 
 **Adding Memories:**
 ```
@@ -227,7 +227,7 @@ Parameters: None
 Returns: List of all agent IDs with memory counts
 ```
 
-### Enhanced Cognee Tools (Advanced)
+### RNR Enhanced Cognee Tools (Advanced)
 
 **Cognify - Transform data to knowledge:**
 ```
@@ -510,7 +510,7 @@ Parameters:
 Call MCP tool: list_agents
 ```
 
-### 4. Use Enhanced Cognee Tools
+### 4. Use RNR Enhanced Cognee Tools
 
 **Cognify - Transform data to knowledge:**
 ```
@@ -552,7 +552,7 @@ claude mcp list
 # Via MCP tool
 health() ->
 Returns:
-  Enhanced Cognee Health:
+  RNR Enhanced Cognee Health:
   OK PostgreSQL
   OK Qdrant
   OK Neo4j
@@ -566,7 +566,7 @@ Returns:
 get_stats() ->
 Returns:
   {
-    "status": "Enhanced Cognee MCP Server",
+    "status": "RNR Enhanced Cognee MCP Server",
     "databases": {
       "postgresql": "OK Connected (42 documents)",
       "qdrant": "OK Connected (5 collections)",
@@ -617,10 +617,10 @@ performance = await trading_agent.get_trading_performance(days_back=7)
 ### Error Handling
 ```python
 try:
-    # Perform Enhanced Cognee operations
+    # Perform RNR Enhanced Cognee operations
     result = await integration.add_memory(...)
 except Exception as e:
-    logger.error(f"Enhanced Cognee operation failed: {e}")
+    logger.error(f"RNR Enhanced Cognee operation failed: {e}")
     # Implement fallback or retry logic
 ```
 
@@ -800,7 +800,7 @@ ENHANCED_COGNEE_CONFIG_PATH=.enhanced-cognee-config.json
 **MCP Server:**
 - [OK] Simplified MCP server (`enhanced_cognee_mcp_server.py`)
 - [OK] Standard Memory MCP tools (Claude Code compatible)
-- [OK] Enhanced Cognee tools (advanced features)
+- [OK] RNR Enhanced Cognee tools (advanced features)
 - [OK] ASCII-only output (Windows compatible)
 
 **Configuration:**
@@ -933,7 +933,7 @@ docker exec -it redis-enhanced redis-cli PING
 Call MCP tool: health
 
 Returns:
-  Enhanced Cognee Health:
+  RNR Enhanced Cognee Health:
   OK PostgreSQL
   OK Qdrant
   OK Neo4j
@@ -1014,7 +1014,7 @@ class CustomMemoryWrapper:
 
 ---
 
-**Enhanced Cognee Implementation** - Enterprise-grade memory architecture for Claude Code with standard MCP memory interface, dynamic categories, and ASCII-only output.
+**RNR Enhanced Cognee Implementation** - Enterprise-grade memory architecture for Claude Code with standard MCP memory interface, dynamic categories, and ASCII-only output.
 
 **For Claude:** This system provides a complete, production-ready memory framework that works as Claude Code's default memory system. All components are fully functional and integrated with standard memory MCP tools.
 

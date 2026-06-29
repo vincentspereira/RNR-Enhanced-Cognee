@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee MCP Server - Universal Project-Aware Version
+RNR Enhanced Cognee MCP Server - Universal Project-Aware Version
 This version automatically detects the current project and applies appropriate memory categorization.
 """
 
@@ -111,7 +111,7 @@ def detect_project_type(current_path=None):
 def setup_project_environment(project_info):
     """Set up environment variables based on project type"""
 
-    # Common Enhanced Cognee settings
+    # Common RNR Enhanced Cognee settings
     os.environ["ENHANCED_COGNEE_MODE"] = "true"
     os.environ["PROJECT_TYPE"] = project_info["type"]
     os.environ["PROJECT_NAME"] = project_info["name"]
@@ -224,7 +224,7 @@ def setup_project_environment(project_info):
 def print_project_info(project_info):
     """Print project detection and configuration information"""
     print("=" * 60)
-    print("Enhanced Cognee MCP Server - Universal Edition")
+    print("RNR Enhanced Cognee MCP Server - Universal Edition")
     print("=" * 60)
     print(f"Project Path: {project_info['path']}")
     print(f"Project Name: {project_info['name']}")
@@ -242,7 +242,7 @@ def print_project_info(project_info):
     print("Features: Project-aware categorization + Intelligent caching")
 
 def main():
-    """Main entry point - Project-aware Enhanced Cognee MCP"""
+    """Main entry point - Project-aware RNR Enhanced Cognee MCP"""
 
     # Detect current project
     project_info = detect_project_type()
@@ -259,7 +259,7 @@ def main():
     try:
         # Import and start the server
         from server import mcp
-        print("\nStarting Enhanced Cognee MCP Server...")
+        print("\nStarting RNR Enhanced Cognee MCP Server...")
         print("Available tools: cognify, search, list_data, delete, prune, codify")
         print(f"Memory categorization: {project_info['memory_config']} mode")
         mcp.run()

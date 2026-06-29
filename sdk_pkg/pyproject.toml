@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "enhanced-cognee-client"
 version = "1.0.0"
-description = "Async Python client for the Enhanced Cognee MCP server (119 tools)"
+description = "Async Python client for the RNR Enhanced Cognee MCP server (119 tools)"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 authors = [
@@ -30,9 +30,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vincentspereira/Enhanced-Cognee"
-Repository = "https://github.com/vincentspereira/Enhanced-Cognee"
-"Bug Tracker" = "https://github.com/vincentspereira/Enhanced-Cognee/issues"
+Homepage = "https://github.com/vincentspereira/RNR-Enhanced-Cognee"
+Repository = "https://github.com/vincentspereira/RNR-Enhanced-Cognee"
+"Bug Tracker" = "https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

@@ -1,5 +1,5 @@
 """
-Security Middleware for Enhanced Cognee Multi-Agent System
+Security Middleware for RNR Enhanced Cognee Multi-Agent System
 
 FastAPI middleware implementations for all security features
 """

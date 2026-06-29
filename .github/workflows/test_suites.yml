@@ -2,7 +2,7 @@ name: Test Suites (Upstream Cognee - manual only)
 permissions:
   contents: read
 
-# NOTE (Enhanced Cognee): This is the upstream Cognee test suite. It is
+# NOTE (RNR Enhanced Cognee): This is the upstream Cognee test suite. It is
 # preserved for upstream-sync diffability but is no longer triggered on
 # push/PR because our authoritative pipeline is `ci-cd-pipeline.yml`.
 # Run manually via the Actions tab if you need to validate upstream parity.

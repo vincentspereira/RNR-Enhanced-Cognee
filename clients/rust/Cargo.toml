@@ -2,9 +2,9 @@
 name = "enhanced-cognee-client"
 version = "1.0.0"
 edition = "2021"
-description = "Official Rust client for the Enhanced Cognee MCP HTTP server"
+description = "Official Rust client for the RNR Enhanced Cognee MCP HTTP server"
 license = "Apache-2.0"
-repository = "https://github.com/vincentspereira/Enhanced-Cognee"
+repository = "https://github.com/vincentspereira/RNR-Enhanced-Cognee"
 documentation = "https://docs.rs/enhanced-cognee-client"
 keywords = ["enhanced-cognee", "memory", "mcp", "ai", "vector-search"]
 categories = ["api-bindings", "asynchronous"]

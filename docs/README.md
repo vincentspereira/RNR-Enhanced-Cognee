@@ -1,6 +1,6 @@
-# Enhanced Cognee Documentation
+# RNR Enhanced Cognee Documentation
 
-Welcome to the Enhanced Cognee documentation. This section contains comprehensive guides, architecture documentation, and operational procedures.
+Welcome to the RNR Enhanced Cognee documentation. This section contains comprehensive guides, architecture documentation, and operational procedures.
 
 ## Quick Links
 
@@ -28,7 +28,7 @@ User guides for installation, configuration, and usage:
 
 ### [Architecture](architecture/)
 System design and architecture documentation:
-- Enhanced Cognee architecture
+- RNR Enhanced Cognee architecture
 - Strategic plan and design decisions
 - Implementation guides
 

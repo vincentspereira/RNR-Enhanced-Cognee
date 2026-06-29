@@ -1,7 +1,7 @@
 """
 bin/mcp_modules/__init__.py
 ============================
-MCP Tool Module Framework for Enhanced Cognee.
+MCP Tool Module Framework for RNR Enhanced Cognee.
 
 This package provides a register(mcp) protocol for decomposing the monolithic
 `bin/enhanced_cognee_mcp_server.py` into focused, maintainable sub-modules.

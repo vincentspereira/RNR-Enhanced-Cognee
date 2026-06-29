@@ -1,5 +1,5 @@
 """
-Memory Summarization Module for Enhanced Cognee
+Memory Summarization Module for RNR Enhanced Cognee
 Automatically summarizes old or large memories to save space
 """
 

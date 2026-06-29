@@ -1,5 +1,5 @@
 """
-Real-Time Memory Synchronization Module for Enhanced Cognee
+Real-Time Memory Synchronization Module for RNR Enhanced Cognee
 Enables real-time memory updates across multiple agents using Redis pub/sub
 """
 

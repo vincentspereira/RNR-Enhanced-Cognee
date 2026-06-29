@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-05-14
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee stores two kinds of knowledge: unstructured full-text memories
+RNR Enhanced Cognee stores two kinds of knowledge: unstructured full-text memories
 (free-form text in shared_memory.documents) and structured facts extracted from
 those memories by the extract_graph_v2 tool (e.g., "Paris is the capital of
 France", "User prefers dark mode").
@@ -102,11 +102,11 @@ query patterns.
 
 **Negative**
 - A new Alembic migration is required. Existing deployments must run
-  enhanced-cognee migrate upgrade head before the Phase 11 tools are usable.
+  RNR-Enhanced-Cognee migrate upgrade head before the Phase 11 tools are usable.
   See RB-010 for migration failure recovery.
 - EAV schemas are considered an anti-pattern in relational database design when
   the set of attributes is fixed and known in advance, because wide typed tables
-  are more efficient. Enhanced Cognee's observation attributes are open-ended
+  are more efficient. RNR Enhanced Cognee's observation attributes are open-ended
   (any entity, any attribute), so EAV is appropriate here, but developers must be
   aware that the value column is always TEXT and type coercion is the application's
   responsibility.

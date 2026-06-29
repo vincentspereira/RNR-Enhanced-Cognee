@@ -6,7 +6,7 @@
 
 ## Overview
 
-Comprehensive test suite for all Enhanced Cognee security modules covering authentication, authorization, encryption, input validation, file upload security, rate limiting, threat detection, and security monitoring.
+Comprehensive test suite for all RNR Enhanced Cognee security modules covering authentication, authorization, encryption, input validation, file upload security, rate limiting, threat detection, and security monitoring.
 
 **Total Tests:** 107 test cases across 22 test classes
 **Current Pass Rate:** 14 passed, 93 skipped (due to missing optional dependencies)
@@ -397,7 +397,7 @@ All security modules follow the project's ASCII-only output requirement:
 
 ## Conclusion
 
-The Enhanced Cognee security test suite provides comprehensive coverage of all critical security functionality:
+The RNR Enhanced Cognee security test suite provides comprehensive coverage of all critical security functionality:
 
 **Strengths:**
 - 107 test cases covering all security modules
@@ -423,4 +423,4 @@ The Enhanced Cognee security test suite provides comprehensive coverage of all c
 
 **Test Suite Version:** 1.0.0
 **Last Updated:** 2026-02-09
-**Maintained By:** Enhanced Cognee Security Team
+**Maintained By:** RNR Enhanced Cognee Security Team

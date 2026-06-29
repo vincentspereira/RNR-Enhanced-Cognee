@@ -1,5 +1,5 @@
 # Long-running, heavy and resource-consuming tests for release validation
-# NOTE (Enhanced Cognee): converted to manual-only because the underlying
+# NOTE (RNR Enhanced Cognee): converted to manual-only because the underlying
 # load_tests.yml requires upstream-only secrets (LLM_API_KEY, AWS_*, etc.)
 # that this fork does not configure. Run manually via the Actions tab when
 # you have those secrets provisioned.

@@ -22,8 +22,8 @@ To review changes side-by-side:
 [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-[![Tests](https://img.shields.io/badge/Tests-148%20Passing-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-[![Coverage](https://img.shields.io/badge/Coverage-Expanding%20Plan-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+[![Tests](https://img.shields.io/badge/Tests-148%20Passing-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+[![Coverage](https://img.shields.io/badge/Coverage-Expanding%20Plan-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 ```
 
 ### PROPOSED:
@@ -32,10 +32,10 @@ To review changes side-by-side:
 [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-[![Tests](https://img.shields.io/badge/Tests-365%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-[![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-[![Security](https://img.shields.io/badge/Security-0%20Critical%20Vulns-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+[![Tests](https://img.shields.io/badge/Tests-365%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+[![Coverage](https://img.shields.io/badge/Coverage-92%25%2B-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+[![Security](https://img.shields.io/badge/Security-0%20Critical%20Vulns-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 ```
 
 ---
@@ -258,7 +258,7 @@ To review changes side-by-side:
   - Native Anthropic Claude API support
   - All Claude 3 models (Sonnet, Haiku, Opus)
   - Streaming and non-streaming responses
-  - Tool use with 6 Enhanced Cognee tools
+  - Tool use with 6 RNR Enhanced Cognee tools
   - Memory-aware conversations
   - Automatic tool result handling
 - Real-Time Web Dashboard (1,049 lines)
@@ -382,12 +382,12 @@ To review changes side-by-side:
 
 ### CURRENT:
 ```markdown
-Enhanced Cognee provides **32 MCP tools** across multiple categories:
+RNR Enhanced Cognee provides **32 MCP tools** across multiple categories:
 ```
 
 ### PROPOSED:
 ```markdown
-Enhanced Cognee provides **33 MCP tools** across multiple categories:
+RNR Enhanced Cognee provides **33 MCP tools** across multiple categories:
 ```
 
 ### ADD AFTER EXISTING TOOLS:

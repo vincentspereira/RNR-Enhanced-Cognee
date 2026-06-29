@@ -1,6 +1,6 @@
-# Enhanced Cognee Rust Client
+# RNR Enhanced Cognee Rust Client
 
-Official Rust client for the [Enhanced Cognee](https://github.com/vincentspereira/Enhanced-Cognee) MCP HTTP server.
+Official Rust client for the [RNR Enhanced Cognee](https://github.com/vincentspereira/RNR-Enhanced-Cognee) MCP HTTP server.
 
 ## Install
 

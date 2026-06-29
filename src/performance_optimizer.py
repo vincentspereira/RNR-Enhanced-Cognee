@@ -1,5 +1,5 @@
 """
-Performance Optimization Module for Enhanced Cognee
+Performance Optimization Module for RNR Enhanced Cognee
 
 Optimizes database queries for multi-language support with targeted performance.
 """

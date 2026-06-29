@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# PostgreSQL 16 to 18 Migration Script for Enhanced Cognee
+# PostgreSQL 16 to 18 Migration Script for RNR Enhanced Cognee
 # Simple upgrade process
 
 set -e
 
-echo "=== PostgreSQL 16 to 18 Migration for Enhanced Cognee ==="
+echo "=== PostgreSQL 16 to 18 Migration for RNR Enhanced Cognee ==="
 echo "⚠️  This will upgrade PostgreSQL from version 16 to 18"
 echo ""
 
@@ -135,5 +135,5 @@ echo "  ✅ Updated pgVector to latest version"
 echo "  ✅ Data preserved (same volumes)"
 echo "  ✅ Enhanced performance configuration applied"
 echo ""
-echo "🚀 Your Enhanced Cognee system is now running PostgreSQL 18!"
+echo "🚀 Your RNR Enhanced Cognee system is now running PostgreSQL 18!"
 echo "📈 Expected performance improvements: 15-25% faster queries"

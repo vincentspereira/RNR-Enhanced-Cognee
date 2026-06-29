@@ -81,7 +81,7 @@ export default function DeveloperPage() {
         <CardContent className="p-6">
           <h2 className="text-lg font-semibold mb-1">API Documentation</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Interactive Swagger UI for the Enhanced Cognee API.
+            Interactive Swagger UI for the RNR Enhanced Cognee API.
           </p>
           <div className="flex flex-wrap gap-3">
             <a

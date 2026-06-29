@@ -1,10 +1,10 @@
-# Enhanced Cognee - Maintenance Scheduling Guide
+# RNR Enhanced Cognee - Maintenance Scheduling Guide
 
 Complete guide to configuring and managing automated maintenance tasks.
 
 ## Overview
 
-Enhanced Cognee includes a comprehensive maintenance scheduler based on APScheduler:
+RNR Enhanced Cognee includes a comprehensive maintenance scheduler based on APScheduler:
 - Scheduled cleanup of expired memories
 - Scheduled archival of old data
 - Index optimization
@@ -13,7 +13,7 @@ Enhanced Cognee includes a comprehensive maintenance scheduler based on APSchedu
 
 ## Scheduling Architecture
 
-Enhanced Cognee uses APScheduler with cron expressions:
+RNR Enhanced Cognee uses APScheduler with cron expressions:
 
 ```python
 from src.maintenance_scheduler import MaintenanceScheduler
@@ -401,4 +401,4 @@ except Exception as e:
 
 ---
 
-**Maintenance Scheduling** - Automated maintenance for healthy Enhanced Cognee deployments.
+**Maintenance Scheduling** - Automated maintenance for healthy RNR Enhanced Cognee deployments.

@@ -1,5 +1,5 @@
 """
-Comprehensive System Tests for All Enhanced Cognee MCP Tools
+Comprehensive System Tests for All RNR Enhanced Cognee MCP Tools
 Tests 60+ MCP tools with CORRECT async mock patterns
 
 CRITICAL PATTERN:
@@ -306,11 +306,11 @@ class TestStandardMemoryTools:
 
 
 # ============================================================================
-# TEST CLASS 2: Enhanced Cognee Tools (5 tools)
+# TEST CLASS 2: RNR Enhanced Cognee Tools (5 tools)
 # ============================================================================
 
 class TestEnhancedCogneeTools:
-    """Test Enhanced Cognee-specific tools"""
+    """Test RNR Enhanced Cognee-specific tools"""
 
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -1157,7 +1157,7 @@ class TestToolRegistration:
             # Standard Memory (7)
             "add_memory", "search_memories", "get_memories", "get_memory",
             "update_memory", "delete_memory", "list_agents",
-            # Enhanced Cognee (5)
+            # RNR Enhanced Cognee (5)
             "cognify", "search", "list_data", "get_stats", "health",
             # Memory Management (4)
             "expire_memories", "get_memory_age_stats", "set_memory_ttl", "archive_category",
@@ -1282,9 +1282,9 @@ class TestConfiguration:
         """Test MCP server object can be created"""
         from mcp.server import FastMCP
 
-        mcp = FastMCP("Test Enhanced Cognee")
+        mcp = FastMCP("Test RNR Enhanced Cognee")
         assert mcp is not None
-        assert mcp.name == "Test Enhanced Cognee"
+        assert mcp.name == "Test RNR Enhanced Cognee"
 
 
 # ============================================================================

@@ -1,4 +1,4 @@
-# Contributing to Enhanced Cognee
+# Contributing to RNR Enhanced Cognee
 
 Welcome! This is the quick-start guide for contributors. The full
 contributor guide -- coding standards, DCO, dev setup, test conventions
@@ -90,7 +90,7 @@ maintainer or open a private security advisory on GitHub.
 
 ## License + DCO
 
-Enhanced Cognee is Apache-2.0. Every commit must conform to the
+RNR Enhanced Cognee is Apache-2.0. Every commit must conform to the
 [Developer Certificate of Origin](https://developercertificate.org/);
 the PR template includes the DCO affirmation checkbox. Sign-off your
 commits with `git commit -s` if you prefer the inline DCO line.

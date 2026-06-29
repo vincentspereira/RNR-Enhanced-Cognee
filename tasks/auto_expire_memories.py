@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Auto Expire Memories Task
+RNR Enhanced Cognee - Auto Expire Memories Task
 
 Scheduled task to delete memories older than specified days.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 """
 

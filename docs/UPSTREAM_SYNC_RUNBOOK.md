@@ -1,6 +1,6 @@
 # Upstream Sync Runbook
 
-**Project**: Enhanced Cognee  
+**Project**: RNR Enhanced Cognee  
 **Upstream**: topoteretes/cognee (https://github.com/topoteretes/cognee)  
 **Local baseline**: see `.upstream-sync/last_seen_release.txt`
 
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Enhanced Cognee is a fork of topoteretes/cognee with an extended MCP server,
+RNR Enhanced Cognee is a fork of topoteretes/cognee with an extended MCP server,
 4-database stack (PostgreSQL, Qdrant, Neo4j, Redis), and additional tooling.
 
 This runbook describes how to:
@@ -40,7 +40,7 @@ Required GitHub Secrets (set in repo settings):
 To check for new upstream releases without waiting for the weekly cron:
 
 ```bat
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 python scripts/upstream_diff.py --check-only
 ```
 
@@ -166,7 +166,7 @@ assert count == 72, f"Expected 72 @mcp.tool() decorators, found {count}"
 ### Step 6: Run the test suite
 
 ```bat
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 python -m pytest tests/unit/ -q
 ```
 

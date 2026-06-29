@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Claude Code Plugin for Auto Memory Capture
+RNR Enhanced Cognee - Claude Code Plugin for Auto Memory Capture
 
 This plugin integrates with Claude Code to automatically capture observations
 from user actions and add them as memories.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import logging
 
-# Import Enhanced Cognee components
+# Import RNR Enhanced Cognee components
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
@@ -96,7 +96,7 @@ class EnhancedCogneePlugin:
             "contexts_injected": 0
         }
 
-        logger.info("Enhanced Cognee Plugin initialized")
+        logger.info("RNR Enhanced Cognee Plugin initialized")
 
     async def post_tool_use_hook(
         self,

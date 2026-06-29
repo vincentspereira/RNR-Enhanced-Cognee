@@ -1,6 +1,6 @@
 <div align="center">
 
-# Enhanced Cognee
+# RNR Enhanced Cognee
 
 ### Enterprise-Grade AI Memory Infrastructure with Multi-Agent Support
 
@@ -8,11 +8,11 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-4661%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-  [![Coverage](https://img.shields.io/badge/Coverage-95%25%2B-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-  [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-  [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
-  [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-4661%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+  [![Coverage](https://img.shields.io/badge/Coverage-95%25%2B-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+  [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+  [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+  [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 
 ![Tests](https://img.shields.io/badge/tests-4661%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
@@ -122,7 +122,7 @@ pivot and MAS integration (next session).
   (Prometheus + Grafana + Loki).
 - **uv-powered installs** for ~20x faster setup.
 - **Docker container** renamed: `cognee-mcp-redis` -> `cognee-mcp-valkey` (in
-  the `enhanced-cognee` Compose project alongside the other 3 databases).
+  the `RNR-Enhanced-Cognee` Compose project alongside the other 3 databases).
 
 Full session summary in
 [`docs/SESSION_SUMMARY_2026-05-18.md`](docs/SESSION_SUMMARY_2026-05-18.md).
@@ -134,7 +134,7 @@ Full session summary in
 - [Install in 30 Seconds](#install-in-30-seconds)
 - [Quick Comparison](#quick-comparison)
 - [Overview](#overview)
-- [What is Enhanced Cognee?](#what-is-enhanced-cognee)
+- [What is RNR Enhanced Cognee?](#what-is-enhanced-cognee)
 - [New Features](#new-features)
 - [Comparison with Original Cognee](#comparison-with-original-cognee)
 - [Screenshots and Demos](#screenshots-and-demos)
@@ -170,15 +170,15 @@ Full session summary in
 
 **Windows:**
 ```powershell
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
 ```
 
 **Linux / macOS:**
 ```bash
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 ./deploy/local/install.sh
 ```
 
@@ -196,13 +196,13 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 
 > **Looking for a broader market comparison?** See
 > [`docs/COMPARE_TO_ALTERNATIVES.md`](docs/COMPARE_TO_ALTERNATIVES.md) for a
-> feature-by-feature table comparing Enhanced Cognee against Mem0, Letta
+> feature-by-feature table comparing RNR Enhanced Cognee against Mem0, Letta
 > (formerly MemGPT), LangChain Memory, and upstream Cognee. Includes cost
 > tables, migration paths, and "when to choose each" recommendations.
 
-### Enhanced Cognee vs Original Cognee vs Claude-Mem
+### RNR Enhanced Cognee vs Original Cognee vs Claude-Mem
 
-| Feature                         | Original Cognee            | Claude-Mem                                | **Enhanced Cognee**                               |
+| Feature                         | Original Cognee            | Claude-Mem                                | **RNR Enhanced Cognee**                               |
 | ------------------------------- | -------------------------- | ----------------------------------------- | ------------------------------------------------- |
 | **Primary Use Case**            | AI agent memory platform   | Claude Code session memory                | Enterprise multi-agent memory                     |
 | **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + ArcadeDB + Valkey**       |
@@ -233,7 +233,7 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 
 ### Decision Guide
 
-**Choose Enhanced Cognee if you need:**
+**Choose RNR Enhanced Cognee if you need:**
 
 - Multi-agent coordination (100+ agents)
 - Enterprise-grade scalability
@@ -260,11 +260,11 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 
 ---
 
-## Why Use Enhanced Cognee
+## Why Use RNR Enhanced Cognee
 
 ### If you need enterprise-grade memory across many agents
 
-Enhanced Cognee is the right tool when you need:
+RNR Enhanced Cognee is the right tool when you need:
 - Memory shared across 10+ concurrent agents with access control
 - Knowledge graph relationships (not just flat key-value storage)
 - Production monitoring with Prometheus metrics
@@ -272,7 +272,7 @@ Enhanced Cognee is the right tool when you need:
 - Automated backup and recovery
 - 122 MCP tools covering the complete memory lifecycle
 
-### How to invoke Enhanced Cognee
+### How to invoke RNR Enhanced Cognee
 
 **Step 1 - Start the database stack:**
 ```bash
@@ -310,16 +310,16 @@ python bin/enhanced_cognee_mcp_server.py
 | Need | Best Choice |
 |------|-------------|
 | Single developer, zero config, quick setup | Session-memory plugin (e.g., Claude-Mem) |
-| Multi-agent enterprise system | **Enhanced Cognee** |
+| Multi-agent enterprise system | **RNR Enhanced Cognee** |
 | Flexible DB choice, simple SDK | Original Cognee |
-| Knowledge graph + enterprise features + 122 MCP tools | **Enhanced Cognee** |
+| Knowledge graph + enterprise features + 122 MCP tools | **RNR Enhanced Cognee** |
 | Token-efficient progressive search | Session-memory plugin |
 
 ---
 
 ## Overview
 
-**Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
+**RNR Enhanced Cognee** is an enterprise-enhanced fork of the original [Cognee](https://github.com/topoteretes/cognee) AI memory framework. It upgrades the memory stack with production-ready databases while maintaining compatibility with the original Cognee API and adding:
 
 - ✅ **122 MCP tools** for comprehensive memory management (including v1.0.9 session memory, web ingestion, translation, cascade v2 graph extraction, memory versioning, GDPR, plugins, webhooks)
 - ✅ **Dynamic category system** (no hardcoded categories; configure via .enhanced-cognee-config.json)
@@ -360,9 +360,9 @@ python bin/enhanced_cognee_mcp_server.py
 
 ---
 
-## What is Enhanced Cognee?
+## What is RNR Enhanced Cognee?
 
-Enhanced Cognee builds upon the original Cognee framework by replacing the default database stack with enterprise-grade alternatives and adding comprehensive multi-agent support and MCP server capabilities.
+RNR Enhanced Cognee builds upon the original Cognee framework by replacing the default database stack with enterprise-grade alternatives and adding comprehensive multi-agent support and MCP server capabilities.
 
 ### 1. Enhanced Database Stack
 
@@ -490,7 +490,7 @@ All planned enhancements have been implemented:
 
 ## Production-Ready Enterprise Memory System
 
-Enhanced Cognee has completed all planned development sprints, delivering a production-ready enterprise memory system with comprehensive features and 95%+ test coverage.
+RNR Enhanced Cognee has completed all planned development sprints, delivering a production-ready enterprise memory system with comprehensive features and 95%+ test coverage.
 
 #### 1: Test Suite & LLM Integration
 
@@ -666,7 +666,7 @@ Enhanced Cognee has completed all planned development sprints, delivering a prod
 
 ## Comparison with Original Cognee
 
-| Feature                   | Original Cognee | Enhanced Cognee                               |
+| Feature                   | Original Cognee | RNR Enhanced Cognee                               |
 | ------------------------- | --------------- | --------------------------------------------- |
 | **Relational Database**   | SQLite          | PostgreSQL + pgVector                         |
 | **Vector Database**       | LanceDB         | Qdrant                                        |
@@ -703,7 +703,7 @@ Based on testing with enterprise datasets:
 
 ---
 
-## Original Cognee Features Available via Enhanced Cognee MCP
+## Original Cognee Features Available via RNR Enhanced Cognee MCP
 
 [OK] **100% Feature Coverage - All original Cognee capabilities are accessible via 122 MCP tools**
 
@@ -727,7 +727,7 @@ Based on testing with enterprise datasets:
 
 ### Database Comparison
 
-| Aspect       | Original Cognee       | Enhanced Cognee MCP                                     |
+| Aspect       | Original Cognee       | RNR Enhanced Cognee MCP                                     |
 | ------------ | --------------------- | ------------------------------------------------------- |
 | Architecture | Single database setup | **4-database stack** (PostgreSQL, Qdrant, Neo4j, Valkey) |
 | Performance  | Baseline              | **400-700% faster**                                     |
@@ -735,7 +735,7 @@ Based on testing with enterprise datasets:
 
 ### Enhanced Features NOT in Original Cognee
 
-The following **50+ enterprise features** are exclusive to Enhanced Cognee MCP:
+The following **50+ enterprise features** are exclusive to RNR Enhanced Cognee MCP:
 
 - ✅ **Backup & Recovery** (5 tools) - `create_backup`, `restore_backup`, `list_backups`, `verify_backup`, `rollback_restore`
 - ✅ **Performance Monitoring** (3 tools) - `get_performance_metrics`, `get_slow_queries`, `get_prometheus_metrics`
@@ -764,7 +764,7 @@ This document provides:
 
 - **Manual (M): 21 tools** - Only irreversible/destructive/compliance-sensitive operations requiring explicit user decision
 - **Auto (A): 45 tools** - Automatically triggered by MCP-compatible IDEs based on conversation context
-- **System (S): 56 tools** - Auto-triggered by Enhanced Cognee system (scheduler, hooks, events)
+- **System (S): 56 tools** - Auto-triggered by RNR Enhanced Cognee system (scheduler, hooks, events)
 - *Phases 7-14 complete: 122 tools total (including 3 undo operation tools). See [COGNEE_VS_ENHANCED_MCP_COMPARISON.md](COGNEE_VS_ENHANCED_MCP_COMPARISON.md) for the full 122-tool reference table with individual trigger assignments.*
 
 ### For MCP IDE Users
@@ -772,7 +772,7 @@ This document provides:
 **All 122 MCP tools are accessible via Standard Memory MCP protocol:**
 
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-2. Enhanced Cognee tools (115): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking, undo operations)
+2. RNR Enhanced Cognee tools (115): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking, undo operations)
 
 ### For Claude Code and Other AI IDEs
 
@@ -815,7 +815,7 @@ flowchart LR
     end
 
     subgraph MCP["MCP Server Layer - 122 Tools"]
-        MCP1[Enhanced Cognee Core<br/>5 Tools]
+        MCP1[RNR Enhanced Cognee Core<br/>5 Tools]
         MCP2[Standard Memory MCP<br/>7 Tools]
         MCP3[Memory Lifecycle<br/>TTL / Tiers / Consolidation<br/>9 Tools]
         MCP4[Deduplication<br/>6 Tools]
@@ -922,7 +922,7 @@ flowchart LR
 ### Enhanced Stack Architecture
 
 ```
-Enhanced Cognee Memory Stack -- default profile (production)
+RNR Enhanced Cognee Memory Stack -- default profile (production)
 ├── PostgreSQL + pgvector (Port 25432, PostgreSQL Licence + Apache-2.0)
 │   ├── Relational data storage
 │   ├── Vector similarity search (via pgvector extension)
@@ -943,7 +943,7 @@ Enhanced Cognee Memory Stack -- default profile (production)
 │   ├── Real-time pub/sub (agent coordination)
 │   ├── Session management
 │   └── Performance metrics
-└── Enhanced Cognee MCP Server
+└── RNR Enhanced Cognee MCP Server
     ├── 122 MCP tools
     ├── Multi-IDE support (MCP-compatible IDEs)
     ├── ASCII-only output (Windows console safe)
@@ -1040,7 +1040,7 @@ src/
 
 ## Upstream Sync Monitoring
 
-Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
+RNR Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
 
 ### Automated Weekly Check
 
@@ -1181,8 +1181,8 @@ flowchart LR
 
 ```bash
 # Clone repository
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 
 # Start Enhanced databases (one command)
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
@@ -1206,8 +1206,8 @@ cognee-mcp-valkey          Up   0.0.0.0:26379->6379/tcp
 
 ```bash
 # Clone the repository
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 
 # Create virtual environment
 python -m venv .venv
@@ -1269,11 +1269,11 @@ You should see:
 
 ```
 ==================================================================
-         Enhanced Cognee MCP Server - Enhanced Stack
+         RNR Enhanced Cognee MCP Server - Enhanced Stack
     PostgreSQL+pgVector | Qdrant | ArcadeDB | Valkey
 ==================================================================
 
-OK Initializing Enhanced Cognee stack...
+OK Initializing RNR Enhanced Cognee stack...
 OK PostgreSQL connected
 OK Qdrant connected (5 collections)
 OK ArcadeDB connected
@@ -1285,7 +1285,7 @@ OK Performance Analytics initialized
 OK Cross-Agent Sharing initialized
 OK Real-Time Sync initialized
 
-OK Enhanced Cognee MCP Server starting...
+OK RNR Enhanced Cognee MCP Server starting...
   Available tools: 122 tools listed below...
 ```
 
@@ -1315,7 +1315,7 @@ OK Enhanced Cognee MCP Server starting...
 
 **More IDEs:** See [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
-### 4. Use Enhanced Cognee
+### 4. Use RNR Enhanced Cognee
 
 In your AI IDE with MCP connected:
 
@@ -1338,7 +1338,7 @@ Found 3 memories about TypeScript:
 
 ## Multi-IDE Support
 
-Enhanced Cognee works with any **MCP-compatible IDE**:
+RNR Enhanced Cognee works with any **MCP-compatible IDE**:
 
 | IDE                     | Support Level | Setup Guide                                         |
 | ----------------------- | ------------- | --------------------------------------------------- |
@@ -1380,7 +1380,7 @@ from enhanced_cognee_client import EnhancedCogneeClient
 async with EnhancedCogneeClient(host="localhost", port=8080) as client:
     # Store a memory
     result = await client.add_memory(
-        content="Production deployed Enhanced Cognee on Hetzner CX22",
+        content="Production deployed RNR Enhanced Cognee on Hetzner CX22",
         user_id="default",
         agent_id="ops-bot",
     )
@@ -1404,7 +1404,7 @@ Full tool reference: see [MCP Tools Reference](#mcp-tools-reference) below.
 
 ## MCP Tools Reference
 
-Enhanced Cognee provides **122 MCP tools** with comprehensive automation across three trigger types:
+RNR Enhanced Cognee provides **122 MCP tools** with comprehensive automation across three trigger types:
 
 ### Standard Memory Tools (7)
 
@@ -1418,7 +1418,7 @@ Enhanced Cognee provides **122 MCP tools** with comprehensive automation across 
 | `delete_memory`   | Delete memory             | (M) Manual   | Deletes memory → publishes events → logs performance         |
 | `list_agents`     | List all agents           | (A) Auto     | Lists agents → logs performance                              |
 
-### Enhanced Cognee Tools (5)
+### RNR Enhanced Cognee Tools (5)
 
 | Tool            | Purpose                           | Trigger Type | Automation Chain                                                                                  |
 | --------------- | --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
@@ -1842,11 +1842,11 @@ AI IDE automatically calls:
 - `register_webhook` - When user supplies a webhook endpoint URL for event delivery
 - `delete_observation` - When AI IDE removes a specific EAV observation from a memory
 
-#### 3. System Invocation (S) - Enhanced Cognee Controlled
+#### 3. System Invocation (S) - RNR Enhanced Cognee Controlled
 
 **How it works:**
 
-- Enhanced Cognee automatically triggers tools based on events
+- RNR Enhanced Cognee automatically triggers tools based on events
 - Chained automation after user/AI actions
 - Scheduled maintenance tasks
 - Performance monitoring and optimization
@@ -1876,7 +1876,7 @@ System automatically triggers:
 →   → get_performance_metrics() [SYSTEM - logs performance]
 ```
 
-**Tools triggered by Enhanced Cognee system (68 tools):**
+**Tools triggered by RNR Enhanced Cognee system (68 tools):**
 
 **Performance & Monitoring (5 tools):**
 
@@ -1959,7 +1959,7 @@ System automatically triggers:
 
 - **14 tools** require explicit manual invocation (M) - irreversible/destructive/legal/financial-impact operations
 - **40 tools** are automatically triggered by AI IDEs (A)
-- **68 tools** are automatically triggered by Enhanced Cognee system (S)
+- **68 tools** are automatically triggered by RNR Enhanced Cognee system (S)
 - **Total: 122 tools** - 83% (101/122) called automatically, no user action required
 
 ### Hybrid Approach (Best of All Three)
@@ -1970,7 +1970,7 @@ System automatically triggers:
 sequenceDiagram
     participant User
     participant AI as AI IDE
-    participant MCP as Enhanced Cognee MCP
+    participant MCP as RNR Enhanced Cognee MCP
     participant Sys as System Automation
 
     Note over User,AI: Session Start
@@ -2065,7 +2065,7 @@ All without any manual configuration - comprehensive automation out of the box!
 
 ## v1.0.9 API Parity
 
-Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
+RNR Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
 
 ### Session-Aware Memory (Phase 2)
 
@@ -2118,7 +2118,7 @@ All 15 `SearchType` values supported by `recall` and `search`:
 ## Agent Integration
 
 The original 21 SDLC agent modules (ATS, OMA, SMC categories) have been archived
-as of Phase 4 due to hardcoded category violations. Enhanced Cognee now uses a
+as of Phase 4 due to hardcoded category violations. RNR Enhanced Cognee now uses a
 dynamic agent registry loaded from `.enhanced-cognee-config.json`. See
 `.archive/2026-05-13_agents_ats_oma_smc/ARCHIVE_NOTES.md` for migration guidance.
 
@@ -2134,7 +2134,7 @@ Agents are registered dynamically from your configuration file:
 }
 ```
 
-Enhanced Cognee supports unlimited custom agent types with:
+RNR Enhanced Cognee supports unlimited custom agent types with:
 
 - [OK] Valkey pub/sub for sub-millisecond agent coordination
 - [OK] Event broadcasting (memory_added, memory_updated, memory_deleted)
@@ -2146,7 +2146,7 @@ Enhanced Cognee supports unlimited custom agent types with:
 
 ## Cross-Language Client SDKs
 
-Enhanced Cognee ships four official client SDKs that all hit the same HTTP contract -- the `/mcp/*` routes exposed by `src/enhanced_cognee_mcp.py`. Same 5 core endpoints, same `X-API-Key` + `X-Tenant-ID` headers.
+RNR Enhanced Cognee ships four official client SDKs that all hit the same HTTP contract -- the `/mcp/*` routes exposed by `src/enhanced_cognee_mcp.py`. Same 5 core endpoints, same `X-API-Key` + `X-Tenant-ID` headers.
 
 | Language | Location | Tests | Status |
 | --- | --- | --- | --- |
@@ -2172,7 +2172,7 @@ from enhanced_cognee_client import EnhancedCogneeClient
 async def main():
     async with EnhancedCogneeClient(host="localhost", port=8080) as client:
         result = await client.add_memory(
-            content="Enhanced Cognee has 122 MCP tools",
+            content="RNR Enhanced Cognee has 122 MCP tools",
             user_id="default",
             agent_id="my-agent",
         )
@@ -2200,7 +2200,7 @@ const results = await client.searchMemories({ query: "MCP tools", limit: 5 });
 ### Go SDK
 
 ```go
-import "github.com/vincentspereira/enhanced-cognee/clients/go"
+import "github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go"
 
 ctx := context.Background()
 client := cognee.New(cognee.Options{
@@ -2242,7 +2242,7 @@ let hits = client.search_memories("MCP tools", 5, None).await?;
 
 ## Multi-Tenant Data Partitioning
 
-Enhanced Cognee enforces tenant isolation at the storage layer. Each tenant's data lives in its own Postgres tables (`shared_memory.documents_t_<tenant>`), Qdrant collections (`<name>_t_<tenant>`), Valkey key prefixes (`t_<tenant>:...`), and graph databases (`<name>_t_<tenant>`). No application code has to be aware of tenancy -- it's transparent via Python's `ContextVar`.
+RNR Enhanced Cognee enforces tenant isolation at the storage layer. Each tenant's data lives in its own Postgres tables (`shared_memory.documents_t_<tenant>`), Qdrant collections (`<name>_t_<tenant>`), Valkey key prefixes (`t_<tenant>:...`), and graph databases (`<name>_t_<tenant>`). No application code has to be aware of tenancy -- it's transparent via Python's `ContextVar`.
 
 ### How it works
 
@@ -2310,7 +2310,7 @@ See [`src/mcp_security.py`](src/mcp_security.py) for the implementation and the 
 
 ## Performance Benchmarks
 
-Enhanced Cognee ships **two complementary benchmark suites**:
+RNR Enhanced Cognee ships **two complementary benchmark suites**:
 
 1. **Synthetic per-tool dispatch benchmark** (`benchmarks/benchmark_all_tools.py`) -- measures the Python dispatch overhead for all 122 MCP tools using mocked database pools. Useful for catching algorithmic regressions in the tool layer.
 2. **Real cross-provider Locust benchmark** (`tests/benchmarks/run_provider_comparison.py`) -- drives Locust against the live MCP HTTP variant for 5 provider permutations (default / lean / neo4j_stack / embedded / memgraph_kuzu) and emits side-by-side RPS / p50 / p95 / p99 / error% tables (JSON + Markdown). Used by the CI regression gate via `compare_to_baseline.py`.
@@ -2381,7 +2381,7 @@ Results are saved to `benchmarks/results/benchmark_results.json`.
 
 ## Testing
 
-Enhanced Cognee has a comprehensive test suite with **100% pass rate**:
+RNR Enhanced Cognee has a comprehensive test suite with **100% pass rate**:
 
 ```bash
 # Install test dependencies
@@ -2429,7 +2429,7 @@ Comprehensive documentation is available:
 | ------------------------------------------------------------------------------- | -------------------------------- |
 | [README.md](README.md)                                                          | This file - project overview                            |
 | [Cognee vs Enhanced Comparison](COGNEE_VS_ENHANCED_MCP_COMPARISON.md)           | Full 122-tool feature-by-feature comparison             |
-| [GitHub Release v1.0.0](https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0) | Release notes and changelog |
+| [GitHub Release v1.0.0](https://github.com/vincentspereira/RNR-Enhanced-Cognee/releases/tag/enhanced-v1.0.0) | Release notes and changelog |
 | [PyPI: enhanced-cognee-client](https://pypi.org/project/enhanced-cognee-client/1.0.0/) | Python SDK on PyPI        |
 | [Profiles + per-adapter caveats](docs/PROFILES.md)                              | The 5 pre-baked profiles + the per-adapter supported-method matrix (PostgreSQL, Qdrant, ArcadeDB, Apache AGE, Neo4j, Memgraph, Kuzu, NetworkX, ArangoDB, NebulaGraph, Ladybug + all vector adapters) |
 | [Pluggable DB Backends](docs/PLUGGABLE_DB_BACKENDS.md)                          | Architectural overview of the 4-tier pluggable factory + how to add a new adapter |
@@ -2438,7 +2438,7 @@ Comprehensive documentation is available:
 | [License Audit](docs/LICENSE_AUDIT.md)                                          | Per-component licence analysis for the default stack |
 | [Feature -> License Matrix](docs/FEATURE_LICENSE_MATRIX.md)                     | Per-feature OSS dependency + license + MAS-incorporation verdict (use when porting features into closed-source / commercial products) |
 | [Strategy](docs/STRATEGY.md)                                                    | Long-term roadmap, decision records, alternative stacks |
-| [Compare to Alternatives](docs/COMPARE_TO_ALTERNATIVES.md)                      | Enhanced Cognee vs Mem0 / Letta / LangChain |
+| [Compare to Alternatives](docs/COMPARE_TO_ALTERNATIVES.md)                      | RNR Enhanced Cognee vs Mem0 / Letta / LangChain |
 | [Master Implementation Plan](docs/plans/MASTER_IMPLEMENTATION_PLAN.md)          | Comprehensive project roadmap and plans                 |
 | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)                             | Multi-IDE setup for MCP-compatible IDEs                 |
 | [SDLC Agents Integration Guide](docs/development/SDLC_AGENTS_INTEGRATION.md)    | 21 SDLC agents integration guide                        |
@@ -2485,12 +2485,12 @@ Create `.enhanced-cognee-config.json` in your project root:
 }
 ```
 
-No code changes required - Enhanced Cognee loads categories at runtime.
+No code changes required - RNR Enhanced Cognee loads categories at runtime.
 Any category name, any prefix.
 
 ### Port Configuration
 
-Enhanced Cognee uses non-standard ports to avoid conflicts:
+RNR Enhanced Cognee uses non-standard ports to avoid conflicts:
 
 | Service             | Default Port | Enhanced Port |
 | ------------------- | ------------ | ------------- |
@@ -2602,7 +2602,7 @@ enhanced-cognee/
 │   └── automation/                    # Automation configs
 ├── cognee/                            # Original Cognee framework
 │   └── infrastructure/                # Database adapters
-├── src/                               # Enhanced Cognee modules
+├── src/                               # RNR Enhanced Cognee modules
 │   ├── memory_management.py           # TTL, expiry, archival
 │   ├── memory_deduplication.py        # Duplicate detection
 │   ├── memory_summarization.py        # Auto summarization
@@ -2661,8 +2661,8 @@ We welcome contributions! Please see our [Contributing Guidelines](docs/developm
 
 ```bash
 # Fork the repository
-git clone https://github.com/vincentspereira/Enhanced-Cognee.git
-cd Enhanced-Cognee
+git clone https://github.com/vincentspereira/RNR-Enhanced-Cognee.git
+cd RNR-Enhanced-Cognee
 
 # Create virtual environment
 python -m venv .venv
@@ -2711,7 +2711,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ### Copyright
 
-Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
+RNR Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
 by Topoteretes UG, licensed under the Apache License, Version 2.0.
 
 The Apache 2.0 license requires that:
@@ -2722,7 +2722,7 @@ The Apache 2.0 license requires that:
 
 ```
 Copyright 2024 Topoteretes UG (Original Cognee)
-Copyright 2026 Vincent S. Pereira (Enhanced Cognee additions)
+Copyright 2026 Vincent S. Pereira (RNR Enhanced Cognee additions)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -2743,7 +2743,7 @@ limitations under the License.
 
 ### Original Cognee
 
-Enhanced Cognee is a derivative work based on the excellent [Cognee](https://github.com/topoteretes/cognee) framework by **Topoteretes UG**.
+RNR Enhanced Cognee is a derivative work based on the excellent [Cognee](https://github.com/topoteretes/cognee) framework by **Topoteretes UG**.
 
 - **Original Repository**: https://github.com/topoteretes/cognee
 - **Original Documentation**: https://docs.cognee.ai/
@@ -2751,7 +2751,7 @@ Enhanced Cognee is a derivative work based on the excellent [Cognee](https://git
 
 ### Third-Party Libraries
 
-Enhanced Cognee integrates with these excellent open-source projects:
+RNR Enhanced Cognee integrates with these excellent open-source projects:
 
 - **PostgreSQL**: https://www.postgresql.org/
 - **pgvector**: https://github.com/pgvector/pgvector
@@ -2780,15 +2780,15 @@ Enhanced Cognee integrates with these excellent open-source projects:
 - The original Cognee development team for creating an excellent framework
 - The contributors to all the underlying open-source projects
 - The MCP protocol specification contributors
-- All contributors to Enhanced Cognee
+- All contributors to RNR Enhanced Cognee
 
 ---
 
 ## Support
 
 - **Documentation**: See the `docs/` directory and MD files in project root
-- **Issues**: Report bugs and request features via [GitHub Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues)
-- **Discussions**: Use [GitHub Discussions](https://github.com/vincentspereira/Enhanced-Cognee/discussions) for questions
+- **Issues**: Report bugs and request features via [GitHub Issues](https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues)
+- **Discussions**: Use [GitHub Discussions](https://github.com/vincentspereira/RNR-Enhanced-Cognee/discussions) for questions
 
 ---
 
@@ -2806,7 +2806,7 @@ Key documents and references:
 | [docs/LICENSE_AUDIT.md](docs/LICENSE_AUDIT.md) | Full license analysis of every component |
 | [docs/FEATURE_LICENSE_MATRIX.md](docs/FEATURE_LICENSE_MATRIX.md) | Per-feature license + MAS-incorporation verdict |
 | [docs/PRODUCTION_READINESS_PLAN.md](docs/PRODUCTION_READINESS_PLAN.md) | Six-phase roadmap (all phases complete) |
-| [docs/COMPARE_TO_ALTERNATIVES.md](docs/COMPARE_TO_ALTERNATIVES.md) | Enhanced Cognee vs Mem0 / Letta / LangChain |
+| [docs/COMPARE_TO_ALTERNATIVES.md](docs/COMPARE_TO_ALTERNATIVES.md) | RNR Enhanced Cognee vs Mem0 / Letta / LangChain |
 | [docs/PROFILES.md](docs/PROFILES.md) | 5 pre-baked profiles + per-adapter supported-method matrices |
 | [docs/PLUGGABLE_DB_BACKENDS.md](docs/PLUGGABLE_DB_BACKENDS.md) | Architectural overview of the 4-tier pluggable factory |
 | [docs/PHASE5_TODO.md](docs/PHASE5_TODO.md) | Honest Phase 5 backlog accounting |
@@ -2829,8 +2829,8 @@ Key documents and references:
 
 ## Contributors
 
-<a href="https://github.com/vincentspereira/Enhanced-Cognee/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vincentspereira/Enhanced-Cognee" alt="Contributors" />
+<a href="https://github.com/vincentspereira/RNR-Enhanced-Cognee/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vincentspereira/RNR-Enhanced-Cognee" alt="Contributors" />
 </a>
 
 Contributions welcome! See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the contributor covenant and [SECURITY.md](SECURITY.md) for responsible disclosure.
@@ -2861,7 +2861,7 @@ See [`docs/PRODUCTION_READINESS_PLAN.md`](docs/PRODUCTION_READINESS_PLAN.md) for
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vincentspereira/Enhanced-Cognee&type=Date)](https://star-history.com/#vincentspereira/Enhanced-Cognee&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=vincentspereira/RNR-Enhanced-Cognee&type=Date)](https://star-history.com/#vincentspereira/RNR-Enhanced-Cognee&Date)
 
 ---
 
@@ -2871,9 +2871,9 @@ See [`docs/PRODUCTION_READINESS_PLAN.md`](docs/PRODUCTION_READINESS_PLAN.md) for
 
   **Enterprise-Grade AI Memory Infrastructure for Multi-Agent Systems**
 
-  [Star us on GitHub](https://github.com/vincentspereira/Enhanced-Cognee) ·
-  [Report Issues](https://github.com/vincentspereira/Enhanced-Cognee/issues) ·
-  [Request Features](https://github.com/vincentspereira/Enhanced-Cognee/issues)
+  [Star us on GitHub](https://github.com/vincentspereira/RNR-Enhanced-Cognee) ·
+  [Report Issues](https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues) ·
+  [Request Features](https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues)
 
   **[Documentation](docs/) · [Testing Guide](docs/development/TESTING.md) · [Multi-IDE Setup](docs/guides/MCP_IDE_SETUP.md) · [Agent Integration](#agent-integration)**
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Cognee Deployment Script
+# RNR Enhanced Cognee Deployment Script
 # Deploys enterprise-grade memory stack with Enhanced features
 # Replaces: SQLite->PostgreSQL, LanceDB->Qdrant, Kuzu->Neo4j, adds Redis
 
@@ -117,7 +117,7 @@ create_networks() {
 }
 
 deploy_services() {
-    log_info "Deploying Enhanced Cognee services..."
+    log_info "Deploying RNR Enhanced Cognee services..."
 
     cd "$PROJECT_DIR"
 
@@ -140,8 +140,8 @@ deploy_services() {
         fi
     done
 
-    # Deploy Enhanced Cognee services
-    log_info "Deploying Enhanced Cognee application..."
+    # Deploy RNR Enhanced Cognee services
+    log_info "Deploying RNR Enhanced Cognee application..."
     docker compose -f "$COMPOSE_FILE" up -d enhanced-cognee enhanced-cognee-dashboard
 
     log_success "All services deployed"
@@ -173,25 +173,25 @@ verify_deployment() {
     # Test connectivity
     log_info "Testing service connectivity..."
 
-    # Test Enhanced Cognee API
+    # Test RNR Enhanced Cognee API
     if curl -f http://localhost:8080/health &>/dev/null; then
-        log_success "Enhanced Cognee API is accessible"
+        log_success "RNR Enhanced Cognee API is accessible"
     else
-        log_warning "Enhanced Cognee API not yet ready (this is normal for first deployment)"
+        log_warning "RNR Enhanced Cognee API not yet ready (this is normal for first deployment)"
     fi
 
     # Test Dashboard
     if curl -f http://localhost:3000/health &>/dev/null; then
-        log_success "Enhanced Cognee Dashboard is accessible"
+        log_success "RNR Enhanced Cognee Dashboard is accessible"
     else
-        log_warning "Enhanced Cognee Dashboard not yet ready (this is normal for first deployment)"
+        log_warning "RNR Enhanced Cognee Dashboard not yet ready (this is normal for first deployment)"
     fi
 
     log_success "Deployment verification completed"
 }
 
 show_status() {
-    log_info "Enhanced Cognee Deployment Status"
+    log_info "RNR Enhanced Cognee Deployment Status"
     echo "======================================="
 
     cd "$PROJECT_DIR"
@@ -201,8 +201,8 @@ show_status() {
 
     echo ""
     echo "Service URLs:"
-    echo "- Enhanced Cognee API:     http://localhost:8080"
-    echo "- Enhanced Cognee Dashboard: http://localhost:3000"
+    echo "- RNR Enhanced Cognee API:     http://localhost:8080"
+    echo "- RNR Enhanced Cognee Dashboard: http://localhost:3000"
     echo "- PostgreSQL:               localhost:5432"
     echo "- Qdrant:                   http://localhost:6333"
     echo "- Neo4j Browser:            http://localhost:7474"
@@ -217,9 +217,9 @@ show_status() {
 
 # Main deployment flow
 main() {
-    log_info "Starting Enhanced Cognee deployment..."
+    log_info "Starting RNR Enhanced Cognee deployment..."
     echo "Deploying enterprise-grade memory stack with Enhanced features"
-    echo "Stack: PostgreSQL + pgVector, Qdrant, Neo4j, Redis + Enhanced Cognee"
+    echo "Stack: PostgreSQL + pgVector, Qdrant, Neo4j, Redis + RNR Enhanced Cognee"
     echo ""
 
     # Pre-deployment checks
@@ -242,7 +242,7 @@ main() {
     # Show status
     show_status
 
-    log_success "Enhanced Cognee deployment completed successfully!"
+    log_success "RNR Enhanced Cognee deployment completed successfully!"
     echo ""
     echo "Next steps:"
     echo "1. Access the dashboard at http://localhost:3000"
@@ -262,13 +262,13 @@ case "${1:-deploy}" in
         show_status
         ;;
     "stop")
-        log_info "Stopping Enhanced Cognee services..."
+        log_info "Stopping RNR Enhanced Cognee services..."
         cd "$PROJECT_DIR"
         docker compose -f "$COMPOSE_FILE" down
         log_success "Services stopped"
         ;;
     "restart")
-        log_info "Restarting Enhanced Cognee services..."
+        log_info "Restarting RNR Enhanced Cognee services..."
         cd "$PROJECT_DIR"
         docker compose -f "$COMPOSE_FILE" restart
         log_success "Services restarted"
@@ -278,24 +278,24 @@ case "${1:-deploy}" in
         docker compose -f "$COMPOSE_FILE" logs -f "${2:-enhanced-cognee}"
         ;;
     "clean")
-        log_warning "This will remove all Enhanced Cognee services and data. Are you sure? (y/N)"
+        log_warning "This will remove all RNR Enhanced Cognee services and data. Are you sure? (y/N)"
         read -r response
         if [[ "$response" =~ ^[Yy]$ ]]; then
             cd "$PROJECT_DIR"
             docker compose -f "$COMPOSE_FILE" down -v
             docker system prune -f
-            log_success "Enhanced Cognee stack cleaned up"
+            log_success "RNR Enhanced Cognee stack cleaned up"
         else
             log_info "Cleanup cancelled"
         fi
         ;;
     "help"|"-h"|"--help")
-        echo "Enhanced Cognee Deployment Script"
+        echo "RNR Enhanced Cognee Deployment Script"
         echo ""
         echo "Usage: $0 [COMMAND]"
         echo ""
         echo "Commands:"
-        echo "  deploy   Deploy Enhanced Cognee stack (default)"
+        echo "  deploy   Deploy RNR Enhanced Cognee stack (default)"
         echo "  status   Show deployment status"
         echo "  stop     Stop all services"
         echo "  restart  Restart all services"
@@ -305,7 +305,7 @@ case "${1:-deploy}" in
         echo ""
         echo "Examples:"
         echo "  $0 deploy                    # Deploy the stack"
-        echo "  $0 logs enhanced-cognee      # Show Enhanced Cognee logs"
+        echo "  $0 logs enhanced-cognee      # Show RNR Enhanced Cognee logs"
         echo "  $0 status                    # Show deployment status"
         ;;
     *)

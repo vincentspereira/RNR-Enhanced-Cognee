@@ -1,4 +1,4 @@
-# Enhanced Cognee - Multi-Language Support Guide
+# RNR Enhanced Cognee - Multi-Language Support Guide
 
 **Version:** 1.0.0
 **Date:** 2026-02-06
@@ -8,13 +8,13 @@
 
 ## Overview
 
-Enhanced Cognee now supports **28 languages** with automatic language detection, multi-language search, and cross-language functionality. This guide explains how to use these features.
+RNR Enhanced Cognee now supports **28 languages** with automatic language detection, multi-language search, and cross-language functionality. This guide explains how to use these features.
 
 ---
 
 ## Supported Languages
 
-Enhanced Cognee supports the following 28 languages:
+RNR Enhanced Cognee supports the following 28 languages:
 
 | Code | Language | Native Name |
 |------|----------|-------------|
@@ -497,6 +497,6 @@ For issues or questions about multi-language features:
 ---
 
 **Generated:** 2026-02-06
-**Enhanced Cognee Team**
+**RNR Enhanced Cognee Team**
 **Sprint:** 9 - Multi-Language & Polish
 **Status:** Multi-Language Support COMPLETE

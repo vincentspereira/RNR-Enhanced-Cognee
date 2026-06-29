@@ -1,10 +1,10 @@
-# Enhanced Cognee - Disaster Recovery Guide
+# RNR Enhanced Cognee - Disaster Recovery Guide
 
-Complete disaster recovery procedures for Enhanced Cognee memory stack.
+Complete disaster recovery procedures for RNR Enhanced Cognee memory stack.
 
 ## Overview
 
-Enhanced Cognee includes comprehensive disaster recovery capabilities:
+RNR Enhanced Cognee includes comprehensive disaster recovery capabilities:
 - Automated backups of all databases
 - On-demand backup creation
 - Full or partial database restore
@@ -185,4 +185,4 @@ For critical recovery issues:
 
 ---
 
-**Enhanced Cognee Recovery System** - Comprehensive disaster recovery for production deployments.
+**RNR Enhanced Cognee Recovery System** - Comprehensive disaster recovery for production deployments.

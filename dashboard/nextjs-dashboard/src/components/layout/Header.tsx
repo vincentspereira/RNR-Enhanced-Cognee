@@ -36,7 +36,7 @@ export function Header() {
             <span className="text-primary-foreground font-bold text-lg">E</span>
           </div>
           <span className="hidden font-bold sm:inline-block">
-            Enhanced Cognee
+            RNR Enhanced Cognee
           </span>
         </Link>
 

@@ -1,5 +1,5 @@
 """
-System Tests for Enhanced Cognee End-to-End Workflows
+System Tests for RNR Enhanced Cognee End-to-End Workflows
 
 Tests complete business scenarios and workflows across all system components.
 Includes agent coordination, memory management, API integration, and monitoring.
@@ -23,7 +23,7 @@ class TestSystemAuthenticationWorkflow:
 
     @pytest.fixture
     def api_base_url(self):
-        """Base URL for Enhanced Cognee API"""
+        """Base URL for RNR Enhanced Cognee API"""
         return "http://localhost:28080"
 
     @pytest.fixture
@@ -254,7 +254,7 @@ class TestTradingAlgorithmWorkflow:
 
     @pytest.fixture
     def api_base_url(self):
-        """Base URL for Enhanced Cognee API"""
+        """Base URL for RNR Enhanced Cognee API"""
         return "http://localhost:28080"
 
     @pytest.fixture
@@ -565,7 +565,7 @@ class TestSystemMemoryManagementWorkflow:
 
     @pytest.fixture
     def api_base_url(self):
-        """Base URL for Enhanced Cognee API"""
+        """Base URL for RNR Enhanced Cognee API"""
         return "http://localhost:28080"
 
     def test_complete_memory_lifecycle(self, api_base_url):

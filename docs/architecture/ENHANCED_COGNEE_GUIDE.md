@@ -1,8 +1,8 @@
-# Enhanced Cognee - Cloud-like Features, 100% Self-Hosted
+# RNR Enhanced Cognee - Cloud-like Features, 100% Self-Hosted
 
 ## Overview
 
-Enhanced Cognee provides premium cloud-like features while maintaining complete self-hosted independence. This enterprise-grade enhancement adds a local web dashboard, automatic updates, enterprise security, resource analytics, and much more - all running locally without any cloud dependencies or costs.
+RNR Enhanced Cognee provides premium cloud-like features while maintaining complete self-hosted independence. This enterprise-grade enhancement adds a local web dashboard, automatic updates, enterprise security, resource analytics, and much more - all running locally without any cloud dependencies or costs.
 
 ## 🚀 Key Features
 
@@ -61,7 +61,7 @@ Enhanced Cognee provides premium cloud-like features while maintaining complete 
    python scripts/test_enhanced_cognee.py
    ```
 
-3. **Start Enhanced Cognee**
+3. **Start RNR Enhanced Cognee**
    ```python
    from scripts.mcp_abstractions import CogneeCloudEnhancedWrapper
 
@@ -89,7 +89,7 @@ pip install flask==2.3.3 flask-socketio==5.3.6 cryptography==41.0.7 psutil==5.9.
 
 ### Basic Configuration
 
-Create a configuration file at `C:\Users\Vincent_Pereira\.claude\cognee_config.json`:
+Create a configuration file at `C:\Users\vince\.claude\cognee_config.json`:
 
 ```json
 {
@@ -487,8 +487,8 @@ print("Analytics working")
 ## 📁 File Structure
 
 ```
-C:\Users\Vincent_Pereira\.claude\
-├── cognee_data\                 # Enhanced Cognee data directory
+C:\Users\vince\.claude\
+├── cognee_data\                 # RNR Enhanced Cognee data directory
 │   ├── analytics\               # Analytics data and reports
 │   ├── backups\                 # System backups
 │   ├── security\                # Security data
@@ -498,7 +498,7 @@ C:\Users\Vincent_Pereira\.claude\
 │   ├── updates\                 # Update packages
 │   ├── templates\               # Dashboard templates
 │   └── static\                  # Dashboard static files
-├── scripts\                     # Enhanced Cognee scripts
+├── scripts\                     # RNR Enhanced Cognee scripts
 │   ├── cognee_dashboard.py      # Web dashboard
 │   ├── cognee_updater.py        # Update manager
 │   ├── cognee_analytics.py      # Analytics engine
@@ -541,7 +541,7 @@ pip install cryptography==41.0.7
 ```python
 # Check database file exists
 from pathlib import Path
-db_path = Path("C:/Users/Vincent_Pereira/.claude/cognee_data/analytics.db")
+db_path = Path("C:/Users/vince/.claude/cognee_data/analytics.db")
 print(f"Database exists: {db_path.exists()}")
 
 # Recreate database if corrupted
@@ -595,7 +595,7 @@ print(f"System metrics: {metrics}")
 
 ### Feature Requests
 
-Enhanced Cognee is continuously evolving. For feature requests or bug reports:
+RNR Enhanced Cognee is continuously evolving. For feature requests or bug reports:
 - Check existing documentation
 - Review test results
 - Examine configuration options
@@ -673,7 +673,7 @@ Enhanced Cognee is continuously evolving. For feature requests or bug reports:
 
 ## 🎉 Conclusion
 
-Enhanced Cognee transforms your self-hosted knowledge management platform into an enterprise-grade solution with cloud-like features. Enjoy the benefits of advanced functionality, comprehensive security, and powerful analytics - all while maintaining complete control over your data and infrastructure.
+RNR Enhanced Cognee transforms your self-hosted knowledge management platform into an enterprise-grade solution with cloud-like features. Enjoy the benefits of advanced functionality, comprehensive security, and powerful analytics - all while maintaining complete control over your data and infrastructure.
 
 **Zero cloud dependencies • Zero ongoing costs • Maximum functionality**
 

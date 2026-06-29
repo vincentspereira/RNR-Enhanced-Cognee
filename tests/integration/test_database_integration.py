@@ -1,5 +1,5 @@
 """
-Integration Tests for Enhanced Cognee
+Integration Tests for RNR Enhanced Cognee
 Tests integration with real databases (PostgreSQL, Qdrant, Redis)
 """
 

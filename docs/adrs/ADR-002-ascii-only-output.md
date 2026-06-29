@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-01-18
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee runs as an MCP server that Claude Code invokes directly on the
+RNR Enhanced Cognee runs as an MCP server that Claude Code invokes directly on the
 developer's machine. On Windows, the default console encoding is cp1252, which maps
 only the 256 characters of ISO-8859-1. Python's stdout defaults to this encoding
 when a Windows terminal is detected.
@@ -29,7 +29,7 @@ the server log rather than in the Claude Code chat interface.
 
 ## Decision
 
-All strings returned by MCP tools, all CLI output from the enhanced-cognee command,
+All strings returned by MCP tools, all CLI output from the RNR-Enhanced-Cognee command,
 and all log messages written to stdout or stderr must use only ASCII characters
 (code points U+0000 through U+007F).
 

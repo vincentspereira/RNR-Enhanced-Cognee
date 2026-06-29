@@ -2,7 +2,7 @@
 name = "cognee"
 
 # "1.0.9+enhanced": PEP 440 local-version identifier on upstream v1.0.9.
-# The "+enhanced" segment denotes Enhanced Cognee additions
+# The "+enhanced" segment denotes RNR Enhanced Cognee additions
 # (PostgreSQL/Qdrant/Neo4j/Valkey stack, 122 MCP tools, enterprise features).
 # (Previously "1.0.9-enhanced" -- a hyphen is not PEP 440 compliant; uv and
 # strict resolvers reject it. The plus sign keeps the same intent.)
@@ -254,7 +254,7 @@ docling = ["docling>=2.54", "transformers>=4.55"]
 
 [project.urls]
 Homepage = "https://www.cognee.ai"
-Repository = "https://github.com/vincentspereira/Enhanced-Cognee"
+Repository = "https://github.com/vincentspereira/RNR-Enhanced-Cognee"
 Upstream = "https://github.com/topoteretes/cognee"
 
 [project.scripts]

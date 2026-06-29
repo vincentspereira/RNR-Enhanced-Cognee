@@ -1,5 +1,5 @@
-# AlertManager Configuration for Enhanced Cognee
-# Manages alert routing and notification for Enhanced Cognee monitoring
+# AlertManager Configuration for RNR Enhanced Cognee
+# Manages alert routing and notification for RNR Enhanced Cognee monitoring
 
 global:
   smtp_smarthost: 'localhost:587'
@@ -26,7 +26,7 @@ route:
       group_wait: 5s
       repeat_interval: 5m
       routes:
-        # Enhanced Cognee service down
+        # RNR Enhanced Cognee service down
         - match:
             service: enhanced-cognee
           receiver: 'enhanced-cognee-critical'
@@ -87,7 +87,7 @@ route:
 
 # Inhibit rules to prevent alert spam
 inhibit_rules:
-  # Inhibit non-critical alerts if Enhanced Cognee is down
+  # Inhibit non-critical alerts if RNR Enhanced Cognee is down
   - source_match:
       service: enhanced-cognee
       severity: critical
@@ -108,7 +108,7 @@ receivers:
   - name: 'critical-alerts'
     email_configs:
       - to: 'admin@enhanced-cognee.com'
-        subject: '[CRITICAL] Enhanced Cognee Alert: {{ .GroupLabels.alertname }}'
+        subject: '[CRITICAL] RNR Enhanced Cognee Alert: {{ .GroupLabels.alertname }}'
         body: |
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}
@@ -120,12 +120,12 @@ receivers:
       - url: 'http://localhost:5001/critical'
         send_resolved: true
 
-  # Enhanced Cognee critical alerts
+  # RNR Enhanced Cognee critical alerts
   - name: 'enhanced-cognee-critical'
     slack_configs:
       - api_url: 'YOUR_SLACK_WEBHOOK_URL'
         channel: '#enhanced-cognee-alerts'
-        title: '🚨 Enhanced Cognee Critical Alert'
+        title: '🚨 RNR Enhanced Cognee Critical Alert'
         text: |
           {{ range .Alerts }}
           *{{ .Annotations.summary }}*
@@ -134,9 +134,9 @@ receivers:
         send_resolved: true
     email_configs:
       - to: 'enhanced-cognee-team@example.com'
-        subject: '🚨 CRITICAL: Enhanced Cognee Service Issue'
+        subject: '🚨 CRITICAL: RNR Enhanced Cognee Service Issue'
         body: |
-          Enhanced Cognee critical alert triggered:
+          RNR Enhanced Cognee critical alert triggered:
 
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}
@@ -166,9 +166,9 @@ receivers:
   - name: 'warning-alerts'
     email_configs:
       - to: 'alerts@enhanced-cognee.com'
-        subject: '⚠️ Enhanced Cognee Warning: {{ .GroupLabels.alertname }}'
+        subject: '⚠️ RNR Enhanced Cognee Warning: {{ .GroupLabels.alertname }}'
         body: |
-          Warning alert from Enhanced Cognee:
+          Warning alert from RNR Enhanced Cognee:
 
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}

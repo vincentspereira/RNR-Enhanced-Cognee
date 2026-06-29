@@ -1,6 +1,6 @@
 name: build | Build and Push Cognee MCP Docker Image to dockerhub (manual only)
 
-# NOTE (Enhanced Cognee): Pushes to upstream `cognee/cognee-mcp` on Docker Hub
+# NOTE (RNR Enhanced Cognee): Pushes to upstream `cognee/cognee-mcp` on Docker Hub
 # that this fork does not own. Also requires the self-hosted `docker_build_runner`
 # label which we do not provide. Converted to manual-only.
 on:

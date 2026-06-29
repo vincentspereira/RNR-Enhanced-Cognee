@@ -2,7 +2,7 @@
 
 ## Summary
 
-Created comprehensive test suite for remaining untested modules in Enhanced Cognee.
+Created comprehensive test suite for remaining untested modules in RNR Enhanced Cognee.
 
 **Test File:** `tests/unit/test_remaining_modules.py`
 
@@ -194,5 +194,5 @@ Test Coverage (estimated): 85%+
 ---
 
 **Created:** 2026-02-09
-**Author:** Enhanced Cognee Team
+**Author:** RNR Enhanced Cognee Team
 **Status:** Ready for Integration

@@ -1,7 +1,7 @@
 # `tests/load/` -- Locust load-test scenarios
 
 Workload definitions for performance / latency characterisation of the
-Enhanced Cognee MCP server. Run them against a **live** stack -- they
+RNR Enhanced Cognee MCP server. Run them against a **live** stack -- they
 are not unit tests and are not exercised by CI.
 
 ## Quick start

@@ -31,10 +31,10 @@
 
 **Question:** Original Cognee lets you pick the database (LanceDB / Qdrant /
 PGVector / Weaviate / Milvus for vectors; Neo4j / Kuzu / Memgraph for graph).
-Should Enhanced Cognee do the same? Especially if it'll be incorporated into
+Should RNR Enhanced Cognee do the same? Especially if it'll be incorporated into
 MAS for commercialisation?
 
-**Short answer:** **Yes -- but introduce it gradually.** Enhanced Cognee was
+**Short answer:** **Yes -- but introduce it gradually.** RNR Enhanced Cognee was
 designed around a fixed 4-database stack for operational simplicity. As we
 grow toward commercial use cases, pluggability becomes a real win. This
 document scopes out HOW to add it without breaking existing deployments.
@@ -73,13 +73,13 @@ The pattern is: **factory modules** with a switch on env var → return the
 right driver instance. E.g.,
 `cognee/infrastructure/databases/vector/create_vector_engine.py`.
 
-Enhanced Cognee uses this factory pattern under the hood (we inherit it
+RNR Enhanced Cognee uses this factory pattern under the hood (we inherit it
 from upstream) but we **hard-code** which providers we use because we ship
 the Docker stack pre-configured.
 
 ---
 
-## Proposed Architecture for Enhanced Cognee
+## Proposed Architecture for RNR Enhanced Cognee
 
 ### Tier 1: Production Defaults (no change to current behaviour)
 
@@ -140,7 +140,7 @@ Goal: env var routing works for all 4 DB tiers without changing functionality.
 2. Create `src/db_factory.py` with `get_*_engine()` functions that read env
    vars and return the right driver.
 3. For each NEW provider, implement an adapter class with the methods
-   Enhanced Cognee's code expects.
+   RNR Enhanced Cognee's code expects.
 4. Update test fixtures to mock the factory, not the specific drivers.
 
 ### Phase 2: Apache AGE adapter (1 week)
@@ -241,7 +241,7 @@ We add new capability via env vars; we don't change existing defaults.
 
 ## Relation to MAS
 
-If Enhanced Cognee is incorporated into MAS:
+If RNR Enhanced Cognee is incorporated into MAS:
 
 - **If MAS has its own DB choices already**, pluggability is critical.
   Customers shouldn't run TWO Postgres instances (MAS's + Enhanced

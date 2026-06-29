@@ -1,9 +1,9 @@
--- Enhanced Cognee - Progressive Disclosure Support
+-- RNR Enhanced Cognee - Progressive Disclosure Support
 --
 -- This migration adds support for progressive disclosure (token-efficient search).
 -- Adds summary column and indexes for efficient 3-layer search.
 --
--- Author: Enhanced Cognee Team
+-- Author: RNR Enhanced Cognee Team
 -- Version: 1.0.0
 -- Date: 2026-02-06
 

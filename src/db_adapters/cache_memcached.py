@@ -3,7 +3,7 @@
 Memcached is a BSD-licensed in-memory K/V store. It has a fundamentally
 narrower API than Redis -- no sorted sets, no hash tables, no pub/sub,
 no key enumeration. This adapter exposes the small subset of the
-``redis.asyncio.Redis`` surface that Enhanced Cognee actually uses
+``redis.asyncio.Redis`` surface that RNR Enhanced Cognee actually uses
 (``ping`` / ``get`` / ``set`` / ``delete`` / ``exists`` / ``expire`` /
 ``close``), wrapping ``pymemcache`` and running the sync calls via
 ``asyncio.to_thread`` so the async contract holds.

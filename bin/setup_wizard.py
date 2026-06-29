@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Setup Wizard
+RNR Enhanced Cognee - Setup Wizard
 ================================
-Interactive setup wizard for Enhanced Cognee configuration.
+Interactive setup wizard for RNR Enhanced Cognee configuration.
 Generates secure passwords and creates .env file automatically.
 
 Steps:
@@ -14,7 +14,7 @@ Steps:
   7. Health check (poll all 4 services)
   8. MCP config (print claude.json snippet)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.1.0 (Phase 7 enhancement - 2026-05-13)
 """
 
@@ -61,7 +61,7 @@ _SERVICE_LABELS = {
 
 class SetupWizard:
     """
-    Interactive setup wizard for Enhanced Cognee.
+    Interactive setup wizard for RNR Enhanced Cognee.
 
     Guides users through initial configuration with sensible defaults
     and secure password generation.
@@ -133,7 +133,7 @@ class SetupWizard:
 
     def _print_header(self):
         print("=" * 60)
-        print("  Enhanced Cognee Setup Wizard v1.1")
+        print("  RNR Enhanced Cognee Setup Wizard v1.1")
         print("=" * 60)
         print()
         if self.non_interactive:
@@ -182,7 +182,7 @@ class SetupWizard:
         # Step 2: Database ports
         print("Step 2: Database Port Configuration")
         print("-" * 60)
-        print("Enhanced Cognee uses non-standard ports to avoid conflicts.")
+        print("RNR Enhanced Cognee uses non-standard ports to avoid conflicts.")
         for key, label in _SERVICE_LABELS.items():
             default_port = _DEFAULT_PORTS[key]
             port_key = f"{key}_PORT"
@@ -249,7 +249,7 @@ class SetupWizard:
     def _generate_env_content(self, config: Dict[str, Any]) -> str:
         ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         lines = [
-            "# Enhanced Cognee Configuration",
+            "# RNR Enhanced Cognee Configuration",
             f"# Generated: {ts}",
             "",
             "# Enhanced Mode",
@@ -488,7 +488,7 @@ class SetupWizard:
         print("  Setup Complete!")
         print("=" * 60)
         print()
-        print("Enhanced Cognee is configured and ready.")
+        print("RNR Enhanced Cognee is configured and ready.")
         print()
         print("Next steps:")
         print("  Start databases:        enhanced-cognee docker up")
@@ -522,7 +522,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Enhanced Cognee Setup Wizard"
+        description="RNR Enhanced Cognee Setup Wizard"
     )
     parser.add_argument(
         "--non-interactive",

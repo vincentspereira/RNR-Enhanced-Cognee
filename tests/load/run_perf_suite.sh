@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ===========================================================================
-# Enhanced Cognee -- production-host performance suite (one command)
+# RNR Enhanced Cognee -- production-host performance suite (one command)
 # ===========================================================================
 # Runs the SLA burst and/or the multi-hour soak on a provisioned host. This is
 # the turnkey entry point the deploy/terraform/ outputs point at:

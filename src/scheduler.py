@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Task Scheduler
+RNR Enhanced Cognee - Task Scheduler
 
 Background task scheduler for automated operations.
 Supports scheduled deduplication, summarization, and other tasks.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 class TaskScheduler:
     """
-    Background task scheduler for Enhanced Cognee.
+    Background task scheduler for RNR Enhanced Cognee.
 
     Manages scheduled automation tasks like deduplication and summarization.
     """

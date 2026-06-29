@@ -1,7 +1,7 @@
 """
 Notification Manager - Phase 12 (17.4)
 =========================================
-Delivers Slack and Discord notifications when Enhanced Cognee events occur.
+Delivers Slack and Discord notifications when RNR Enhanced Cognee events occur.
 
 Features:
     - Slack webhook integration (blocks-based messages)
@@ -132,7 +132,7 @@ class NotificationManager:
             "channel_id": channel_id,
             "timestamp": datetime.now(UTC).isoformat(),
         }
-        text = f"Enhanced Cognee test notification for channel: {channel_id}"
+        text = f"RNR Enhanced Cognee test notification for channel: {channel_id}"
 
         if cfg["type"] == "slack":
             payload = self._build_slack_payload("notification.test", text, test_data)

@@ -1,4 +1,4 @@
--- Enhanced Cognee - Undo Log Table Migration
+-- RNR Enhanced Cognee - Undo Log Table Migration
 -- Version: 1.0.0
 -- Date: 2026-02-06
 -- Description: Create undo_log table for tracking undoable operations

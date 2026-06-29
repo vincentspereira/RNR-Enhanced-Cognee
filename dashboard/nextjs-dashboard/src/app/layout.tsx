@@ -11,8 +11,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Enhanced Cognee Dashboard",
-    template: "%s | Enhanced Cognee",
+    default: "RNR Enhanced Cognee Dashboard",
+    template: "%s | RNR Enhanced Cognee",
   },
   description:
     "Enterprise-grade AI memory management system with real-time updates, advanced search, and powerful analytics.",
@@ -25,30 +25,30 @@ export const metadata: Metadata = {
     "analytics",
     "visualization",
   ],
-  authors: [{ name: "Enhanced Cognee Team" }],
-  creator: "Enhanced Cognee",
-  publisher: "Enhanced Cognee",
+  authors: [{ name: "RNR Enhanced Cognee Team" }],
+  creator: "RNR Enhanced Cognee",
+  publisher: "RNR Enhanced Cognee",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9050"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9050",
-    title: "Enhanced Cognee Dashboard",
+    title: "RNR Enhanced Cognee Dashboard",
     description:
       "Enterprise-grade AI memory management system with real-time updates, advanced search, and powerful analytics.",
-    siteName: "Enhanced Cognee",
+    siteName: "RNR Enhanced Cognee",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Enhanced Cognee Dashboard",
+        alt: "RNR Enhanced Cognee Dashboard",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Enhanced Cognee Dashboard",
+    title: "RNR Enhanced Cognee Dashboard",
     description:
       "Enterprise-grade AI memory management system with real-time updates, advanced search, and powerful analytics.",
     images: ["/og-image.png"],

@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Token Counting Utility
+RNR Enhanced Cognee - Token Counting Utility
 
 This module provides token counting for different LLM providers to:
 - Track token usage for cost management
@@ -12,7 +12,7 @@ Supports:
 - OpenAI GPT (GPT-4, GPT-4 Turbo, GPT-3.5)
 - LiteLLM wrapper providers
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

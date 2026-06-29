@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Authentication & Authorization System
+RNR Enhanced Cognee - Authentication & Authorization System
 
 Implements JWT authentication, API key management, and RBAC.
-Enterprise-grade security for Enhanced Cognee.
+Enterprise-grade security for RNR Enhanced Cognee.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

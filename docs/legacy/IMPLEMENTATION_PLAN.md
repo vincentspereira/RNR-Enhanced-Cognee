@@ -1,4 +1,4 @@
-# Enhanced Cognee - Full Implementation Plan
+# RNR Enhanced Cognee - Full Implementation Plan
 
 ## Execution Order & Timeline
 

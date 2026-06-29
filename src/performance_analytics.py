@@ -1,5 +1,5 @@
 """
-Performance Analytics Module for Enhanced Cognee
+Performance Analytics Module for RNR Enhanced Cognee
 Collects and exposes performance metrics for monitoring
 """
 

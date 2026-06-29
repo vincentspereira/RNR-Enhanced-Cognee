@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-05-14
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-Enhanced Cognee stores memory content in the shared_memory.documents table in
+RNR Enhanced Cognee stores memory content in the shared_memory.documents table in
 PostgreSQL. This content may include personally identifiable information, business
 logic, API keys, or other sensitive material provided by agents. An attacker who
 gains read access to the PostgreSQL host (via a misconfigured Docker network, a

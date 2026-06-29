@@ -7,7 +7,7 @@
 **Target Repositories:**
 
 - Upstream: [topoteretes/cognee](https://github.com/topoteretes/cognee) (Original)
-- Local: `C:\Users\vince\Projects\AI Agents\enhanced-cognee` (Enhanced)
+- Local: `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee` (Enhanced)
 
 ---
 
@@ -15,7 +15,7 @@
 
 This plan answers seven things, in order:
 
-1. Where Enhanced Cognee stands today vs Original Cognee (the gap)
+1. Where RNR Enhanced Cognee stands today vs Original Cognee (the gap)
 2. What is the same in both
 3. What is different
 4. What is unique to each
@@ -31,7 +31,7 @@ Each section ends with concrete deliverables. No work is performed until you (Vi
 
 ### 1.1 Headline Findings
 
-| Metric                    | Original Cognee                 | Enhanced Cognee                     | Gap                                 |
+| Metric                    | Original Cognee                 | RNR Enhanced Cognee                     | Gap                                 |
 | ------------------------- | ------------------------------- | ----------------------------------- | ----------------------------------- |
 | Current stable version    | `v1.0.9`                        | `v0.5.1`                            | ~14 minor + 1 major releases behind |
 | Latest dev release        | `v1.1.0.dev0` (2026-05-12)      | n/a                                 | n/a                                 |
@@ -87,7 +87,7 @@ I used four signals, in order:
 | --------------------- | --------------------------------------------------- | --------------------- |
 | Original GitHub repo  | `topoteretes/cognee`                                | Structure + content   |
 | Original release feed | `gh api /repos/topoteretes/cognee/releases`         | Recent feature deltas |
-| Local Enhanced repo   | `C:\Users\vince\Projects\AI Agents\enhanced-cognee` | Current state         |
+| Local Enhanced repo   | `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee` | Current state         |
 | Local cognee fork     | `enhanced-cognee/cognee/`                           | Frozen base (v0.5.1)  |
 | Enhanced MCP server   | `bin/enhanced_cognee_mcp_server.py` (4088 lines)    | Tool inventory        |
 | Original MCP server   | `cognee-mcp/src/server.py` (current)                | Tool inventory        |
@@ -107,7 +107,7 @@ These gaps will be closed during Phase 0 pre-flight (Section 9.1).
 
 ### 3.1 Version Drift
 
-- **Enhanced Cognee** (`pyproject.toml` at repo root): `version = "0.5.1"`
+- **RNR Enhanced Cognee** (`pyproject.toml` at repo root): `version = "0.5.1"`
 - **Original Cognee** (`pyproject.toml` on `master`): `version = "1.0.1"`
 - **Latest stable release** on GitHub: `v1.0.9` (2026-05-08)
 - **Latest dev release**: `v1.1.0.dev0` (2026-05-12)
@@ -394,7 +394,7 @@ These are features Original has shipped that Enhanced does not yet have.
 - **`graph_only` option for forget endpoint** (v1.0.4)
 - **Markdown-wrapped JSON in infer-schema endpoint** (v1.0.4)
 
-### 6.2 Unique to Enhanced Cognee (Not in Original)
+### 6.2 Unique to RNR Enhanced Cognee (Not in Original)
 
 These are features Enhanced has built on top that Original does not have.
 
@@ -731,7 +731,7 @@ Port `cognee/infrastructure/loaders/external/`:
 - `unstructured_loader.py`
 - `advanced_pdf_loader.py`
 
-These are heavy dependencies. Wrap in optional install groups (e.g., `pip install enhanced-cognee[docling]`).
+These are heavy dependencies. Wrap in optional install groups (e.g., `pip install RNR-Enhanced-Cognee[docling]`).
 
 #### 7.4.2 Translation Tasks
 
@@ -1309,7 +1309,7 @@ Please confirm or correct the following before approval:
 ## 14. Glossary
 
 - **Original Cognee**: The upstream open-source project at `topoteretes/cognee`.
-- **Enhanced Cognee**: This local fork with PostgreSQL/Qdrant/Neo4j/Redis stack and 58 MCP tools.
+- **RNR Enhanced Cognee**: This local fork with PostgreSQL/Qdrant/Neo4j/Redis stack and 58 MCP tools.
 - **Port**: Bring a feature from Original into Enhanced.
 - **Sync**: Keep Enhanced up to date with Original's new releases.
 - **P0/P1/P2/P3**: Priority levels (Critical/High/Useful/Optional).

@@ -1,4 +1,4 @@
-# Enhanced Cognee Dashboard - Docker Deployment Guide
+# RNR Enhanced Cognee Dashboard - Docker Deployment Guide
 
 **Status:** [OK] All dependencies are LOCAL (not global)
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-This guide explains how to run the Enhanced Cognee Dashboard using Docker containers. All dependencies (Node.js, Python, databases) are installed locally within containers - **no global installations required**.
+This guide explains how to run the RNR Enhanced Cognee Dashboard using Docker containers. All dependencies (Node.js, Python, databases) are installed locally within containers - **no global installations required**.
 
 ---
 
@@ -55,7 +55,7 @@ This guide explains how to run the Enhanced Cognee Dashboard using Docker contai
 ### 1. Start All Services
 
 ```bash
-cd C:\Users\vince\Projects\AI Agents\enhanced-cognee\dashboard
+cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\dashboard
 docker compose -f docker-compose-dashboard.yml up -d
 ```
 
@@ -251,7 +251,7 @@ All database data is stored in Docker volumes:
 
 ```bash
 # List volumes
-docker volume ls | grep enhanced-cognee
+docker volume ls | grep RNR-Enhanced-Cognee
 
 # Backup PostgreSQL data
 docker run --rm \
@@ -394,5 +394,5 @@ docker compose -f docker-compose-dashboard.yml build --no-cache
 ---
 
 **Generated:** 2026-02-06
-**Enhanced Cognee Dashboard Team**
+**RNR Enhanced Cognee Dashboard Team**
 **Status:** Docker deployment ready

@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 **Date:** 2026-02-05
-**Deciders:** Enhanced Cognee maintainers
+**Deciders:** RNR Enhanced Cognee maintainers
 
 ---
 
 ## Context
 
-The full Enhanced Cognee stack requires four running Docker containers. During
+The full RNR Enhanced Cognee stack requires four running Docker containers. During
 development and in lightweight deployments, a contributor may want to run only
 PostgreSQL (the primary store) without Qdrant, Neo4j, or Redis. A data analyst
 may run Qdrant and PostgreSQL but not Neo4j. A CI environment may have none of

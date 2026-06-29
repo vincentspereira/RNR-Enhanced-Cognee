@@ -1,4 +1,4 @@
-# Enhanced Cognee - Production Dockerfile
+# RNR Enhanced Cognee - Production Dockerfile
 # Production-tuned build of the FastAPI HTTP app (src.enhanced_cognee_mcp:app).
 # Referenced by docker/docker-compose-production.yml (build context = repo root).
 #
@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Enhanced Cognee runtime dependencies (mirrors the enhanced-cognee image)
+# Install RNR Enhanced Cognee runtime dependencies (mirrors the enhanced-cognee image)
 RUN pip install --no-cache-dir \
     psycopg2-binary==2.9.9 \
     qdrant-client==1.10.0 \
@@ -50,7 +50,7 @@ RUN pip install --no-cache-dir \
     openai==1.12.0 \
     prometheus-client==0.20.0
 
-# Copy Enhanced Cognee application code
+# Copy RNR Enhanced Cognee application code
 COPY src/ /app/src/
 COPY alembic/ /app/alembic/
 COPY alembic.ini /app/

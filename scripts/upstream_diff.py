@@ -1,7 +1,7 @@
 """
 upstream_diff.py
 ================
-Compares the local Enhanced Cognee fork against the latest topoteretes/cognee
+Compares the local RNR Enhanced Cognee fork against the latest topoteretes/cognee
 upstream release and produces a structured diff report.
 
 Usage
@@ -310,7 +310,7 @@ def build_report(
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare Enhanced Cognee fork against latest upstream topoteretes/cognee release."
+        description="Compare RNR Enhanced Cognee fork against latest upstream topoteretes/cognee release."
     )
     p.add_argument(
         "--check-only",
@@ -398,7 +398,7 @@ def main() -> int:
         )
         return 0  # success - report is written, CI email step decides what to do
 
-    print("OK Enhanced Cognee is current with upstream.")
+    print("OK RNR Enhanced Cognee is current with upstream.")
     return 0
 
 

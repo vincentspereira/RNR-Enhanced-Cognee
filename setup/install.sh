@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Enhanced Cognee Installation Script for Linux/Mac
+# RNR Enhanced Cognee Installation Script for Linux/Mac
 #
-# This script installs Enhanced Cognee in one command.
+# This script installs RNR Enhanced Cognee in one command.
 # Supports both Full and Lite installation modes.
 #
 # Usage:
@@ -11,7 +11,7 @@
 #   ./install.sh --mode lite   # Lite mode (SQLite only)
 #   ./install.sh --help        # Show help
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 
@@ -32,7 +32,7 @@ PYTHON_CMD="python3"
 # Functions
 print_header() {
     echo -e "${BLUE}============================================${NC}"
-    echo -e "${BLUE}  Enhanced Cognee Installation${NC}"
+    echo -e "${BLUE}  RNR Enhanced Cognee Installation${NC}"
     echo -e "${BLUE}============================================${NC}"
     echo ""
 }
@@ -177,7 +177,7 @@ run_setup_wizard() {
 
 # Start services
 start_services() {
-    print_step "Starting Enhanced Cognee services..."
+    print_step "Starting RNR Enhanced Cognee services..."
 
     cd "$PROJECT_ROOT"
 
@@ -222,7 +222,7 @@ create_cli_symlink() {
         sudo ln -sf "$CLI_SCRIPT" /usr/local/bin/enhanced-cognee
         print_success "Symlink created: /usr/local/bin/enhanced-cognee"
     else
-        print_info "You can run Enhanced Cognee with: $CLI_SCRIPT"
+        print_info "You can run RNR Enhanced Cognee with: $CLI_SCRIPT"
     fi
 }
 
@@ -233,7 +233,7 @@ print_completion() {
     echo -e "${GREEN}  Installation Complete!${NC}"
     echo -e "${GREEN}============================================${NC}"
     echo ""
-    echo "Enhanced Cognee is ready to use!"
+    echo "RNR Enhanced Cognee is ready to use!"
     echo ""
     echo "Quick Start:"
     echo "  1. Check status:"
@@ -258,7 +258,7 @@ parse_args() {
                 shift 2
                 ;;
             --help)
-                echo "Enhanced Cognee Installation Script"
+                echo "RNR Enhanced Cognee Installation Script"
                 echo ""
                 echo "Usage:"
                 echo "  ./install.sh [options]"

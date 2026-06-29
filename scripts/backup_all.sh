@@ -1,10 +1,10 @@
 #!/bin/bash
 ################################################################################
-# Enhanced Cognee - Manual Backup Script
+# RNR Enhanced Cognee - Manual Backup Script
 #
-# Manually backup all databases in the Enhanced Cognee stack.
+# Manually backup all databases in the RNR Enhanced Cognee stack.
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 # Date: 2026-02-06
 ################################################################################
@@ -14,7 +14,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
-echo "[INFO] Enhanced Cognee - Manual Backup"
+echo "[INFO] RNR Enhanced Cognee - Manual Backup"
 echo "======================================="
 echo ""
 

@@ -1,6 +1,6 @@
-# Enhanced Cognee Configuration
+# RNR Enhanced Cognee Configuration
 
-This directory contains all configuration files for Enhanced Cognee.
+This directory contains all configuration files for RNR Enhanced Cognee.
 
 ## Structure
 
@@ -41,7 +41,7 @@ Automation and scheduling configuration files:
 - `summarization_config.json` - Summarization settings
 
 **Usage:**
-These files are loaded automatically by the Enhanced Cognee system. Edit them to customize automation behavior.
+These files are loaded automatically by the RNR Enhanced Cognee system. Edit them to customize automation behavior.
 
 ## Port Mappings
 

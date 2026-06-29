@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """GDPR primitives: consent / export / erasure.
 
-Demonstrates the right-to-erasure flow that Enhanced Cognee exposes for
+Demonstrates the right-to-erasure flow that RNR Enhanced Cognee exposes for
 compliance with GDPR Articles 15 (access) and 17 (erasure). The MCP
-server emits tenant-scoped operations so a single Enhanced Cognee
+server emits tenant-scoped operations so a single RNR Enhanced Cognee
 instance can serve many isolated users.
 
 Run:
@@ -34,7 +34,7 @@ def call(tool: str, **params: Any) -> Any:
 
 
 def main() -> int:
-    print("=== Enhanced Cognee: GDPR right-to-erasure workflow ===\n")
+    print("=== RNR Enhanced Cognee: GDPR right-to-erasure workflow ===\n")
 
     # Use a fresh user_id so each run is independent.
     user_id = f"user-{uuid.uuid4().hex[:8]}"

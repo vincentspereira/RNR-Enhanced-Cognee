@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Claude Code Plugins
+RNR Enhanced Cognee - Claude Code Plugins
 
-This package contains plugins for Enhanced Cognee integration with Claude Code.
+This package contains plugins for RNR Enhanced Cognee integration with Claude Code.
 
 Plugins:
 - claude_code_plugin: Automatic memory capture from Claude Code actions
@@ -17,7 +17,7 @@ Usage:
     auto_manager = AutoSessionManager(plugin)
     await auto_manager.start()
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

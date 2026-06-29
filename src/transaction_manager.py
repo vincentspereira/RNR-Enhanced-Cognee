@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Transaction Manager
+RNR Enhanced Cognee - Transaction Manager
 
 Provides database transaction support with rollback capability for multi-step operations.
 

@@ -1,4 +1,4 @@
-//! Tests for the Enhanced Cognee Rust client using `wiremock` to mock the
+//! Tests for the RNR Enhanced Cognee Rust client using `wiremock` to mock the
 //! HTTP server.
 
 use enhanced_cognee_client::{Client, Error, MemoryEntry, SearchQuery};

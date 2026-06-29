@@ -1,10 +1,10 @@
-site_name: Enhanced Cognee
+site_name: RNR Enhanced Cognee
 site_description: Enterprise-grade AI memory infrastructure with multi-tenant support, 30 pluggable storage providers, and 122 MCP tools
 site_url: https://vincentspereira.github.io/Enhanced-Cognee/
 site_author: Vincent S. Pereira
 
-repo_url: https://github.com/vincentspereira/Enhanced-Cognee
-repo_name: vincentspereira/Enhanced-Cognee
+repo_url: https://github.com/vincentspereira/RNR-Enhanced-Cognee
+repo_name: vincentspereira/RNR-Enhanced-Cognee
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; 2026 Vincent S. Pereira -- Apache-2.0
@@ -119,7 +119,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/vincentspereira/Enhanced-Cognee
+      link: https://github.com/vincentspereira/RNR-Enhanced-Cognee
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/enhanced-cognee-client/
   version:

@@ -3,7 +3,7 @@
 Wraps the ``databricks-sql-connector`` (Apache-2.0) Python driver
 against a Databricks SQL Warehouse endpoint. Useful when the
 analytics workloads live in a Databricks lakehouse and you want
-Enhanced Cognee to share that data plane.
+RNR Enhanced Cognee to share that data plane.
 
 The connector is sync-only natively; we wrap calls in
 ``asyncio.to_thread`` so the async signature is honest. Same

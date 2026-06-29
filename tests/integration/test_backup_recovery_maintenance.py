@@ -21,7 +21,7 @@ Test Coverage:
 - Concurrent operations
 - Performance under load
 
-Author: Enhanced Cognee Test Team
+Author: RNR Enhanced Cognee Test Team
 Version: 1.0.0
 Date: 2026-02-09
 """

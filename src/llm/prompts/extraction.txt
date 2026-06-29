@@ -2,7 +2,7 @@
 
 ## System Prompt
 
-You are an expert AI entity extraction system for Enhanced Cognee. Your role is to identify, classify, and extract entities from text memories to enable better knowledge graph construction and semantic search.
+You are an expert AI entity extraction system for RNR Enhanced Cognee. Your role is to identify, classify, and extract entities from text memories to enable better knowledge graph construction and semantic search.
 
 ## Entity Categories
 
@@ -96,10 +96,10 @@ You must respond with a JSON object:
     ],
     "organizations": [
       {
-        "name": "Enhanced Cognee Team",
+        "name": "RNR Enhanced Cognee Team",
         "type": "organization",
         "confidence": 0.98,
-        "context": "Enhanced Cognee Team decided on...",
+        "context": "RNR Enhanced Cognee Team decided on...",
         "metadata": {}
       }
     ],
@@ -185,7 +185,7 @@ You must respond with a JSON object:
 
 **Input:**
 ```
-Implemented audit_logger.py module for Enhanced Cognee. The module tracks all automated operations with PostgreSQL database backend. Alex wrote the core logic, and Sarah created the database schema. Used Python 3.11 with asyncpg library for async database operations. Configuration stored in automation_config.json.
+Implemented audit_logger.py module for RNR Enhanced Cognee. The module tracks all automated operations with PostgreSQL database backend. Alex wrote the core logic, and Sarah created the database schema. Used Python 3.11 with asyncpg library for async database operations. Configuration stored in automation_config.json.
 ```
 
 **Output:**
@@ -210,10 +210,10 @@ Implemented audit_logger.py module for Enhanced Cognee. The module tracks all au
     ],
     "organizations": [
       {
-        "name": "Enhanced Cognee",
+        "name": "RNR Enhanced Cognee",
         "type": "project",
         "confidence": 0.99,
-        "context": "Enhanced Cognee project",
+        "context": "RNR Enhanced Cognee project",
         "metadata": {}
       }
     ],
@@ -309,7 +309,7 @@ Implemented audit_logger.py module for Enhanced Cognee. The module tracks all au
 Sprint 1 Planning Meeting - January 15, 2026
 Attendees: Vince, Mike, Sarah, Alex
 
-Discussed implementation timeline for Enhanced Cognee. Decided to use 4-week sprint:
+Discussed implementation timeline for RNR Enhanced Cognee. Decided to use 4-week sprint:
 - Week 1: Audit logging and undo mechanism (Mike, Sarah)
 - Week 2: LLM integration and prompt templates (Alex)
 - Week 3: Claude Code plugin (Vince)
@@ -331,7 +331,7 @@ Target: Complete Sprint 1 by February 12th, 2026.
     ],
     "organizations": [
       {
-        "name": "Enhanced Cognee",
+        "name": "RNR Enhanced Cognee",
         "type": "project",
         "confidence": 0.99,
         "context": "Project being planned",
@@ -413,7 +413,7 @@ Target: Complete Sprint 1 by February 12th, 2026.
     {"source": "Mike", "target": "audit logging", "type": "assigned_to", "confidence": 0.88},
     {"source": "Sarah", "target": "undo mechanism", "type": "assigned_to", "confidence": 0.88},
     {"source": "Alex", "target": "LLM integration", "type": "assigned_to", "confidence": 0.88},
-    {"source": "Sprint 1", "target": "Enhanced Cognee", "type": "sprint_of", "confidence": 0.92}
+    {"source": "Sprint 1", "target": "RNR Enhanced Cognee", "type": "sprint_of", "confidence": 0.92}
   ],
   "summary": {
     "total_entities": 14,
@@ -431,7 +431,7 @@ ERROR: Connection timeout to PostgreSQL at localhost:5432
 Time: 2026-01-15 10:23:45 UTC
 Error Code: 08006
 
-Investigation revealed that POSTGRES_PORT in .env was set to 5432, but Enhanced Cognee uses port 25432. Updated configuration and restarted application. Connection successful after fix.
+Investigation revealed that POSTGRES_PORT in .env was set to 5432, but RNR Enhanced Cognee uses port 25432. Updated configuration and restarted application. Connection successful after fix.
 
 Files modified:
 - .env (POSTGRES_PORT: 5432 → 25432)
@@ -494,7 +494,7 @@ Files modified:
         "text": "25432",
         "type": "port_number",
         "confidence": 0.96,
-        "context": "Correct Enhanced Cognee PostgreSQL port",
+        "context": "Correct RNR Enhanced Cognee PostgreSQL port",
         "metadata": {"purpose": "database", "correct": true}
       }
     ],
@@ -509,7 +509,7 @@ Files modified:
     ],
     "organizations": [
       {
-        "name": "Enhanced Cognee",
+        "name": "RNR Enhanced Cognee",
         "type": "project",
         "confidence": 0.97,
         "context": "Project using custom PostgreSQL port",
@@ -529,7 +529,7 @@ Files modified:
   "relationships": [
     {"source": "PostgreSQL", "target": "localhost:5432", "type": "failed_connection_to", "confidence": 0.94},
     {"source": "PostgreSQL", "target": "localhost:25432", "type": "successful_connection_to", "confidence": 0.94},
-    {"source": ".env", "target": "Enhanced Cognee", "type": "configures", "confidence": 0.90},
+    {"source": ".env", "target": "RNR Enhanced Cognee", "type": "configures", "confidence": 0.90},
     {"source": "connection timeout", "target": "PostgreSQL", "type": "error_in", "confidence": 0.92}
   ],
   "summary": {

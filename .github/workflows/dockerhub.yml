@@ -1,6 +1,6 @@
 name: build | Build and Push Docker Image to dockerhub (manual only)
 
-# NOTE (Enhanced Cognee): This pushes to upstream `cognee/cognee` on Docker Hub,
+# NOTE (RNR Enhanced Cognee): This pushes to upstream `cognee/cognee` on Docker Hub,
 # which this fork does not own. Build/publish is handled by `ci-cd-pipeline.yml`
 # using our own DOCKER_USERNAME secret. Converted to manual-only.
 on:

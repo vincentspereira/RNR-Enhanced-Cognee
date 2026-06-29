@@ -82,8 +82,8 @@ docker exec cognee-mcp-postgres psql -U postgres -c \
 sudo sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$NEW_PG_PWD|" \
     /etc/enhanced-cognee/secrets.env
 
-# 4. Restart Enhanced Cognee
-sudo systemctl restart enhanced-cognee
+# 4. Restart RNR Enhanced Cognee
+sudo systemctl restart RNR-Enhanced-Cognee
 ```
 
 **Rotation cadence:** every 90 days for DB passwords, every 30 days for JWT

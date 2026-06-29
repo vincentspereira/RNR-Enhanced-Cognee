@@ -1,6 +1,6 @@
-# Enhanced Cognee — Session Summary (2026-05-17 / 2026-05-18)
+# RNR Enhanced Cognee — Session Summary (2026-05-17 / 2026-05-18)
 
-This document captures the production-readiness sprint that took Enhanced Cognee
+This document captures the production-readiness sprint that took RNR Enhanced Cognee
 from "feature-complete" (838 tests, 31% coverage, 7 failures) to
 "production-ready" (~4047 tests, 92% coverage, 0 failures, all infrastructure
 shipped).

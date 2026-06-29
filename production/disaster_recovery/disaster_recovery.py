@@ -1,8 +1,8 @@
 """
-Enhanced Cognee Disaster Recovery and Business Continuity Testing
+RNR Enhanced Cognee Disaster Recovery and Business Continuity Testing
 
 This module provides comprehensive disaster recovery and business continuity testing capabilities
-for the Enhanced Cognee Multi-Agent System, including backup validation, failover testing,
+for the RNR Enhanced Cognee Multi-Agent System, including backup validation, failover testing,
 recovery time objectives, and business continuity plan validation.
 
 Phase 4: Production Readiness and Optimization (Weeks 11-12)

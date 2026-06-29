@@ -1,4 +1,4 @@
-# Enhanced Cognee Testing Suite
+# RNR Enhanced Cognee Testing Suite
 
 ## 📁 Directory Structure
 

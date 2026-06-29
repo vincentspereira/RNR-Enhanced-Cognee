@@ -1,4 +1,4 @@
-# MCP Tool Automation Analysis - Enhanced Cognee
+# MCP Tool Automation Analysis - RNR Enhanced Cognee
 
 **Date:** 2026-02-05
 **Purpose:** Analyze which manually triggered MCP tools can be automated for better UX
@@ -7,7 +7,7 @@
 
 ## EXECUTIVE SUMMARY
 
-Out of 32 MCP tools in Enhanced Cognee, **12 tools (37.5%) are good candidates for automation**, while **20 tools (62.5%) should remain manual** due to potential destructive consequences or need for explicit user intent.
+Out of 32 MCP tools in RNR Enhanced Cognee, **12 tools (37.5%) are good candidates for automation**, while **20 tools (62.5%) should remain manual** due to potential destructive consequences or need for explicit user intent.
 
 **Key Finding:** Many tools currently marked as "manual" can be safely automated with proper safeguards, significantly improving user experience and reducing cognitive load.
 

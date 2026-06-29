@@ -1,5 +1,5 @@
 """
-Unit Tests for Enhanced Cognee Memory Operations
+Unit Tests for RNR Enhanced Cognee Memory Operations
 
 Tests for memory stack components including PostgreSQL+pgVector,
 Qdrant, Neo4j, and Redis memory operations.
@@ -42,7 +42,7 @@ class TestPostgreSQLMemoryOperations:
         """Test memory storage with vector embedding"""
         # Arrange
         memory_data = {
-            "content": "Test memory content for Enhanced Cognee",
+            "content": "Test memory content for RNR Enhanced Cognee",
             "agent_id": "test_agent_001",
             "embedding": sample_memory_embedding,
             "memory_type": "episodic",

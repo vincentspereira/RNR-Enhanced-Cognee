@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Enhanced Cognee Dashboard - Complete Stack
+# RNR Enhanced Cognee Dashboard - Complete Stack
 # Includes: Databases (PostgreSQL, Qdrant, Neo4j, Redis) + Dashboard (Next.js) + Backend API (FastAPI)
 
 networks:

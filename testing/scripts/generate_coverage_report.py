@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee Coverage Report Generator
+RNR Enhanced Cognee Coverage Report Generator
 
 Generates comprehensive code coverage reports with multiple output formats,
 visualization, and detailed analysis for all test categories.
@@ -169,7 +169,7 @@ class CoverageReportGenerator:
         report = {
             "report_metadata": {
                 "generated_at": datetime.now(timezone.utc).isoformat(),
-                "generator": "Enhanced Cognee Coverage Generator",
+                "generator": "RNR Enhanced Cognee Coverage Generator",
                 "version": "1.0.0",
                 "framework": "pytest + coverage.py"
             },
@@ -255,7 +255,7 @@ class CoverageReportGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Cognee Coverage Report</title>
+    <title>RNR Enhanced Cognee Coverage Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <style>
@@ -285,7 +285,7 @@ class CoverageReportGenerator:
     <div class="container">
         <div class="row mt-4">
             <div class="col-12">
-                <h1 class="text-center mb-4">Enhanced Cognee Coverage Report</h1>
+                <h1 class="text-center mb-4">RNR Enhanced Cognee Coverage Report</h1>
                 <div class="text-center mb-4">
                     <span class="{'status-passed' if overall['status'] == 'passed' else 'status-failed'}">
                         Overall Status: {overall['status'].upper()}
@@ -358,7 +358,7 @@ class CoverageReportGenerator:
             <div class="col-12 text-center">
                 <small class="text-muted">
                     Report generated on {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}
-                    by Enhanced Cognee Coverage Generator
+                    by RNR Enhanced Cognee Coverage Generator
                 </small>
             </div>
         </div>
@@ -736,7 +736,7 @@ class CoverageReportGenerator:
         """Generate executive summary for stakeholders"""
         summary = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "project": "Enhanced Cognee Testing Framework",
+            "project": "RNR Enhanced Cognee Testing Framework",
             "version": "1.0.0",
             "overall_status": aggregated_data["overall"]["status"],
             "coverage_achievement": {
@@ -813,7 +813,7 @@ class CoverageReportGenerator:
 
 def main():
     """Main function to generate comprehensive coverage reports"""
-    parser = argparse.ArgumentParser(description="Generate Enhanced Cognee coverage reports")
+    parser = argparse.ArgumentParser(description="Generate RNR Enhanced Cognee coverage reports")
     parser.add_argument(
         "--reports-dir",
         default="reports/coverage",
@@ -837,7 +837,7 @@ def main():
     # Initialize report generator
     generator = CoverageReportGenerator(args.reports_dir)
 
-    print("🚀 Enhanced Cognee Coverage Report Generator")
+    print("🚀 RNR Enhanced Cognee Coverage Report Generator")
     print("=" * 50)
     print(f"Reports directory: {args.reports_dir}")
     print(f"Output formats: {args.formats}")

@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Auto Archive Sessions Task
+RNR Enhanced Cognee - Auto Archive Sessions Task
 
 Scheduled task to archive sessions older than specified days.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 """
 

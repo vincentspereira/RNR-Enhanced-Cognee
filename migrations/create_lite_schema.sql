@@ -1,4 +1,4 @@
--- Enhanced Cognee Lite Mode Schema
+-- RNR Enhanced Cognee Lite Mode Schema
 -- SQLite database with FTS5 full-text search
 -- No Docker required, lightweight setup
 

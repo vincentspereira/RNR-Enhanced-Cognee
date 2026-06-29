@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee MCP Server
+RNR Enhanced Cognee MCP Server
 Integrates with enterprise-grade memory stack: PostgreSQL+pgVector, Qdrant, Neo4j, Redis
 Provides DYNAMIC and CONFIGURABLE memory architecture (not hardcoded to specific categories)
 """
@@ -322,14 +322,14 @@ async def lifespan(app: "FastAPI"):
 
 
 class EnhancedCogneeMCPServer:
-    """Enhanced Cognee MCP Server with enterprise-grade memory stack integration"""
+    """RNR Enhanced Cognee MCP Server with enterprise-grade memory stack integration"""
 
     def __init__(self):
         self.postgres_pool = None
         self.qdrant_client = None
         self.neo4j_driver = None
         self.redis_client = None
-        self.app = FastAPI(title="Enhanced Cognee MCP Server", lifespan=lifespan)
+        self.app = FastAPI(title="RNR Enhanced Cognee MCP Server", lifespan=lifespan)
         self.app.state.server = self
         self._install_cors_middleware()
         self._install_security_middleware()
@@ -555,10 +555,10 @@ class EnhancedCogneeMCPServer:
         dependency recovers, and routes needing it return 503).
         """
         if not config.enhanced_mode:
-            logger.warning("Enhanced Cognee mode is not enabled")
+            logger.warning("RNR Enhanced Cognee mode is not enabled")
             return
 
-        logger.info("Initializing Enhanced Cognee MCP Server...")
+        logger.info("Initializing RNR Enhanced Cognee MCP Server...")
 
         await self._connect_with_retry(self._init_postgresql, "PostgreSQL")
         await self._connect_with_retry(self._init_qdrant, "Qdrant")
@@ -585,12 +585,12 @@ class EnhancedCogneeMCPServer:
         ]
         if self.postgres_pool is None:
             logger.error(
-                "Enhanced Cognee started DEGRADED: PostgreSQL unavailable. "
+                "RNR Enhanced Cognee started DEGRADED: PostgreSQL unavailable. "
                 "Readiness will report 503 until it recovers."
             )
         else:
             logger.info(
-                f"Enhanced Cognee MCP Server initialized "
+                f"RNR Enhanced Cognee MCP Server initialized "
                 f"(connected: {', '.join(connected) or 'none'})"
             )
 
@@ -1568,12 +1568,12 @@ if __name__ == "__main__":
         if ca_certs:
             kwargs["ssl_ca_certs"] = ca_certs
         logger.info(
-            f"Enhanced Cognee MCP starting on HTTPS https://{host}:{port} "
+            f"RNR Enhanced Cognee MCP starting on HTTPS https://{host}:{port} "
             f"(cert={cert_file}, key={key_file}, ca={ca_certs or 'none'})"
         )
     else:
         logger.info(
-            f"Enhanced Cognee MCP starting on HTTP http://{host}:{port} "
+            f"RNR Enhanced Cognee MCP starting on HTTP http://{host}:{port} "
             f"(set ENHANCED_HTTPS_CERT_FILE + ENHANCED_HTTPS_KEY_FILE to "
             f"enable TLS termination at the application layer)"
         )

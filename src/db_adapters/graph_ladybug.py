@@ -6,7 +6,7 @@ already pinned as a hard core dependency in ``pyproject.toml``
 because upstream Cognee imports it at module level inside
 ``cognee/infrastructure/databases/dataset_database_handler/``.
 
-This adapter exposes Ladybug as an Enhanced Cognee graph provider via
+This adapter exposes Ladybug as an RNR Enhanced Cognee graph provider via
 ``ENHANCED_GRAPH_PROVIDER=ladybug`` for parity with the upstream
 Cognee default. The implementation is structurally similar to
 ``graph_networkx_inmemory`` (in-process, narrow Cypher subset)

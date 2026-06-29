@@ -29,7 +29,7 @@ export default function LoginPage() {
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary mb-4">
             <span className="text-primary-foreground font-bold text-xl">E</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Enhanced Cognee</h1>
+          <h1 className="text-2xl font-bold tracking-tight">RNR Enhanced Cognee</h1>
           <p className="text-muted-foreground mt-1">AI Memory Management Dashboard</p>
         </div>
 

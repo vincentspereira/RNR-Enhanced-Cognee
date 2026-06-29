@@ -1,6 +1,6 @@
 """
 Comprehensive Integration Testing Framework
-Validates integration across all phases and components of Enhanced Cognee Multi-Agent System
+Validates integration across all phases and components of RNR Enhanced Cognee Multi-Agent System
 """
 
 import os

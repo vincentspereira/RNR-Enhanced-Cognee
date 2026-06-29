@@ -2,7 +2,7 @@
 """
 Sub-Agent Coordination System
 Coordinates communication and task orchestration across 21 sub-agents
-Uses Enhanced Cognee memory stack as coordination backbone
+Uses RNR Enhanced Cognee memory stack as coordination backbone
 """
 
 import asyncio

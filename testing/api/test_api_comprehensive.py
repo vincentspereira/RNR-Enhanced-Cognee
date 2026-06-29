@@ -1,7 +1,7 @@
 """
-Enhanced Cognee API Testing Framework
+RNR Enhanced Cognee API Testing Framework
 
-This module provides comprehensive API testing capabilities for the Enhanced Cognee
+This module provides comprehensive API testing capabilities for the RNR Enhanced Cognee
 21-agent Multi-Agent System, covering RESTful APIs, GraphQL endpoints, API contracts,
 performance validation, and security testing.
 
@@ -73,7 +73,7 @@ class GraphQLQuery:
 
 
 class APITestFramework:
-    """Comprehensive API testing framework for Enhanced Cognee"""
+    """Comprehensive API testing framework for RNR Enhanced Cognee"""
 
     def __init__(self, base_url: str, auth_token: str = None):
         self.base_url = base_url.rstrip('/')

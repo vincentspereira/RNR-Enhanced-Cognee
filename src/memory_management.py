@@ -1,5 +1,5 @@
 """
-Memory Management Module for Enhanced Cognee
+Memory Management Module for RNR Enhanced Cognee
 Provides memory expiry, archival, and cleanup policies
 """
 

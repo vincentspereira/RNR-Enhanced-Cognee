@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - Progressive Disclosure Search
+RNR Enhanced Cognee - Progressive Disclosure Search
 
 Implements 3-layer progressive disclosure for token-efficient search.
 Achieves 10x token efficiency by returning compact results first.
@@ -14,7 +14,7 @@ Usage Pattern:
 2. get_timeline(memory_id, before=5, after=5) -> Get context around interesting memory
 3. get_memory_batch([id1, id2, id3]) -> Get full details for selected memories
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

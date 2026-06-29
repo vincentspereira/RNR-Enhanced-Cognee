@@ -1,4 +1,4 @@
-# Enhanced Cognee deployment profile: lean
+# RNR Enhanced Cognee deployment profile: lean
 #
 # Goal: smallest viable stack. Postgres-only persistence (graph runs as
 # an extension inside Postgres via Apache AGE); cache is in-process.

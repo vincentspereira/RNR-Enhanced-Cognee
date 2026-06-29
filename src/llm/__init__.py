@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - LLM Integration Module
+RNR Enhanced Cognee - LLM Integration Module
 
-This module provides LLM provider integrations for Enhanced Cognee's AI-powered features.
+This module provides LLM provider integrations for RNR Enhanced Cognee's AI-powered features.
 
 Supported Providers:
 - Anthropic Claude (Claude 3.5 Sonnet, Haiku, Opus)
@@ -21,7 +21,7 @@ Usage:
     client = AnthropicClient()
     summary = await client.summarize(text, target_ratio=0.3)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

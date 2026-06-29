@@ -1,4 +1,4 @@
-# Enhanced Cognee Implementation Guide
+# RNR Enhanced Cognee Implementation Guide
 
 ## 📋 Table of Contents
 
@@ -14,7 +14,7 @@
 
 ## 🎯 Overview
 
-Enhanced Cognee is an enterprise-grade memory architecture that extends the original Cognee system with:
+RNR Enhanced Cognee is an enterprise-grade memory architecture that extends the original Cognee system with:
 
 - **Enhanced Memory Stack**: PostgreSQL+pgVector, Qdrant, Neo4j, Redis
 - **21-Agent Integration**: ATS/OMA/SMC categorized agent system
@@ -28,7 +28,7 @@ Enhanced Cognee is an enterprise-grade memory architecture that extends the orig
 
 ```mermaid
 graph TB
-    A[Enhanced Cognee] --> B[PostgreSQL+pgVector]
+    A[RNR Enhanced Cognee] --> B[PostgreSQL+pgVector]
     A --> C[Qdrant Vector DB]
     A --> D[Neo4j Graph DB]
     A --> E[Redis Cache]
@@ -43,7 +43,7 @@ graph TB
 
 ```mermaid
 graph LR
-    A[Enhanced Cognee] --> B[ATS - 7 Agents]
+    A[RNR Enhanced Cognee] --> B[ATS - 7 Agents]
     A --> C[OMA - 10 Agents]
     A --> D[SMC - 6 Agents]
 
@@ -63,7 +63,7 @@ graph LR
 
 ```bash
 # Clone or navigate to the project
-cd C:\Users\Vincent_Pereira\Projects\AI Agents\enhanced-cognee
+cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee
 
 # Start Enhanced stack
 docker-compose -f docker/docker-compose-enhanced-cognee.yml up -d
@@ -85,7 +85,7 @@ QDRANT_API_KEY=your_qdrant_api_key
 NEO4J_PASSWORD=neo4j_password
 REDIS_PASSWORD=redis_password
 
-# Enhanced Cognee Configuration
+# RNR Enhanced Cognee Configuration
 ENHANCED_COGNEE_PORT=28080
 LOG_LEVEL=INFO
 MEMORY_RETENTION_DAYS=30
@@ -101,7 +101,7 @@ AGENT_DISCOVERY_INTERVAL=60
 version: '3.8'
 
 services:
-  enhanced-cognee:
+  RNR-Enhanced-Cognee:
     build:
       context: .
       dockerfile: docker/Dockerfile.enhanced-cognee
@@ -450,9 +450,9 @@ async def test_memory_integration():
 # examples/docker_deployment.sh
 #!/bin/bash
 
-# Enhanced Cognee Docker Deployment Script
+# RNR Enhanced Cognee Docker Deployment Script
 
-echo "Starting Enhanced Cognee Deployment..."
+echo "Starting RNR Enhanced Cognee Deployment..."
 
 # Create networks
 docker network create cognee-network --driver overlay
@@ -469,7 +469,7 @@ sleep 30
 docker-compose -f docker/docker-compose-monitoring.yml up -d
 
 echo "Deployment Complete!"
-echo "Enhanced Cognee: http://localhost:28080"
+echo "RNR Enhanced Cognee: http://localhost:28080"
 echo "Grafana Dashboard: http://localhost:3000"
 echo "Prometheus: http://localhost:9090"
 ```
@@ -546,7 +546,7 @@ async def debug_agent_memory():
 docker-compose -f docker/docker-compose-enhanced-cognee.yml ps
 
 # View logs
-docker-compose -f docker/docker-compose-enhanced-cognee.yml logs enhanced-cognee
+docker-compose -f docker/docker-compose-enhanced-cognee.yml logs RNR-Enhanced-Cognee
 
 # Restart services
 docker-compose -f docker/docker-compose-enhanced-cognee.yml restart
@@ -591,7 +591,7 @@ async def configure_memory_optimization():
 
 ### Grafana Dashboards
 
-- **Enhanced Cognee Overview**: System-wide metrics
+- **RNR Enhanced Cognee Overview**: System-wide metrics
 - **Agent Performance**: Individual agent metrics
 - **Memory Analytics**: Storage and query statistics
 - **Infrastructure Health**: Component health monitoring
@@ -599,4 +599,4 @@ async def configure_memory_optimization():
 ---
 
 *Last Updated: 2025-11-12*
-*Enhanced Cognee Implementation Guide*
+*RNR Enhanced Cognee Implementation Guide*

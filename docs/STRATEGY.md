@@ -1,4 +1,4 @@
-# Enhanced Cognee — Consolidated Strategy Document
+# RNR Enhanced Cognee — Consolidated Strategy Document
 
 **Audience:** maintainers, technical evaluators, future commercial customers, MAS integrators.
 **Supersedes / collates:** PLUGGABLE_DB_BACKENDS.md, OUTSTANDING_ITEMS.md, LICENSE_AUDIT.md,
@@ -13,7 +13,7 @@ source of truth for **what we're doing, why, and what's next**.
 ## Table of Contents
 
 1. [Executive Summary](#1-executive-summary)
-2. [Where Enhanced Cognee Fits in the Market](#2-where-enhanced-cognee-fits-in-the-market)
+2. [Where RNR Enhanced Cognee Fits in the Market](#2-where-enhanced-cognee-fits-in-the-market)
 3. [License & Commercialisation Risk Map](#3-license--commercialisation-risk-map)
 4. [Pluggable Database Backends — Final Design](#4-pluggable-database-backends--final-design)
 5. [Component-by-Component Alternatives Analysis](#5-component-by-component-alternatives-analysis)
@@ -29,7 +29,7 @@ source of truth for **what we're doing, why, and what's next**.
 
 ## 1. Executive Summary
 
-Enhanced Cognee is a fork of upstream `topoteretes/cognee` that adds:
+RNR Enhanced Cognee is a fork of upstream `topoteretes/cognee` that adds:
 
 - 122 MCP tools (vs upstream's 0 — upstream is REST-only)
 - 4-database stack (PostgreSQL + Qdrant + Neo4j + Valkey) vs upstream's single-DB
@@ -60,7 +60,7 @@ strongly recommended for any customer-facing release.
 
 ---
 
-## 2. Where Enhanced Cognee Fits in the Market
+## 2. Where RNR Enhanced Cognee Fits in the Market
 
 ### When to choose us
 
@@ -86,7 +86,7 @@ strongly recommended for any customer-facing release.
 
 | If you need...                                                   | Use                        |
 | ---------------------------------------------------------------- | -------------------------- |
-| Production-grade, multi-database memory layer with 122 MCP tools | **Enhanced Cognee**        |
+| Production-grade, multi-database memory layer with 122 MCP tools | **RNR Enhanced Cognee**        |
 | Lightweight Cognee with single-DB setup, no enterprise features  | Cognee (upstream)          |
 | Hosted memory-as-a-service with no ops burden                    | Mem0                       |
 | Long-term memory for chat agents with temporal knowledge graphs  | Zep (Apache-2.0)           |
@@ -105,7 +105,7 @@ A full side-by-side feature matrix lives in [`COMPARE_TO_ALTERNATIVES.md`](./COM
 
 | Component                  | License            | Self-host commercial | Bundled-product distribution | SaaS commercial |
 | -------------------------- | ------------------ | -------------------- | ---------------------------- | --------------- |
-| Enhanced Cognee (own code) | Apache-2.0         | OK                   | OK                           | OK              |
+| RNR Enhanced Cognee (own code) | Apache-2.0         | OK                   | OK                           | OK              |
 | Cognee (upstream)          | Apache-2.0         | OK                   | OK                           | OK              |
 | PostgreSQL + pgvector      | PostgreSQL         | OK                   | OK                           | OK              |
 | Qdrant                     | Apache-2.0         | OK                   | OK                           | OK              |
@@ -127,7 +127,7 @@ A full side-by-side feature matrix lives in [`COMPARE_TO_ALTERNATIVES.md`](./COM
    - 3b. Bundle Neo4j JARs in your installer → **Triggers GPLv3 obligations.** Avoid.
    - 3c. Switch to Apache AGE on PostgreSQL → **Cleanest.** Recommended for
         purely Apache-2.0 distros.
-4. **You embed Enhanced Cognee inside MAS** (or any other parent product):
+4. **You embed RNR Enhanced Cognee inside MAS** (or any other parent product):
    - 4a. Import as Python library → unrestricted.
    - 4b. MAS shells out to MCP server → unrestricted.
    - 4c. Vendored copy → unrestricted, preserve LICENSE + NOTICE.
@@ -331,7 +331,7 @@ For the full rationale, see [`PLUGGABLE_DB_BACKENDS.md`](./PLUGGABLE_DB_BACKENDS
 The user asked us to consider: ArcadeDB, ArangoDB, TigerGraph, NebulaGraph,
 Apache AGE, NetworkX, Memgraph, Kuzu, Ladybug.
 
-#### Filter 1: license-compatible with Enhanced Cognee's commercialisation goals
+#### Filter 1: license-compatible with RNR Enhanced Cognee's commercialisation goals
 
 | Option         | License                   | Commercial-safe? | Notes                                                     |
 | -------------- | ------------------------- | ---------------- | --------------------------------------------------------- |
@@ -346,7 +346,7 @@ Apache AGE, NetworkX, Memgraph, Kuzu, Ladybug.
 | **Memgraph**   | **BSL 1.1**               | **NO**           | 4-yr delay to Apache; restrictive commercial use          |
 | **TigerGraph** | **Proprietary free tier** | **NO**           | Not open source; commercial license needed for production |
 
-#### Filter 2: feature fit for Enhanced Cognee's use case
+#### Filter 2: feature fit for RNR Enhanced Cognee's use case
 
 We need:
 
@@ -440,8 +440,8 @@ strictly better at it).
 | Self-hosted personal use                                  | **OK** — no licence issues                                           |
 | Self-hosted commercial (support contracts)                | **OK** — no licence issues                                           |
 | SaaS commercial (you host)                                | **OK** — no licence issues                                           |
-| **Distribute Enhanced Cognee as a packaged product**      | **OK** — 100% permissive; can be bundled                              |
-| Closed-source commercial product bundling Enhanced Cognee | **OK** — MIT + Apache-2.0 freely embeddable                          |
+| **Distribute RNR Enhanced Cognee as a packaged product**      | **OK** — 100% permissive; can be bundled                              |
+| Closed-source commercial product bundling RNR Enhanced Cognee | **OK** — MIT + Apache-2.0 freely embeddable                          |
 
 Note: this is the first observability stack that passes the bundled-product
 Scenario 3 cleanly. Grafana + Loki + Tempo (AGPL) required a "customer pulls
@@ -482,9 +482,9 @@ this path.
 | Coroot                                  | Apache-2.0      | Kubernetes-native; eBPF auto-instrumentation; not aligned with our compose deployment |
 | Apache Superset alone                   | Apache-2.0      | No log / trace ingestion — needs a partner like SigNoz                                |
 
-### 5.3 What this means for Enhanced Cognee's current observability touch-points
+### 5.3 What this means for RNR Enhanced Cognee's current observability touch-points
 
-Enhanced Cognee touches observability in four places today; the SigNoz +
+RNR Enhanced Cognee touches observability in four places today; the SigNoz +
 Apache Superset migration affects them as follows:
 
 | Touch point                                         | Today                                                | After SigNoz + Apache Superset migration                                |
@@ -563,7 +563,7 @@ Prerequisites: Docker Desktop, Python 3.11+, Claude Code installed.
 
 ```powershell
 # 1. Bring up the stack
-cd "C:\Users\vince\Projects\AI Agents\enhanced-cognee"
+cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 
 # 2. Verify
@@ -583,13 +583,13 @@ and configures HTTPS via Let's Encrypt. Detailed steps in
 
 ### Cost over time (self-hosted, 1 user)
 
-| Month    | Enhanced Cognee | Mem0 (Pro) | Letta (Cloud) |
+| Month    | RNR Enhanced Cognee | Mem0 (Pro) | Letta (Cloud) |
 | -------- | --------------- | ---------- | ------------- |
 | Month 1  | ~5 EUR (VPS)    | $19        | $25           |
 | Month 12 | ~60 EUR/year    | $228/year  | $300/year     |
 | Month 24 | ~120 EUR/year   | $456/year  | $600/year     |
 
-After month ~3, self-hosted Enhanced Cognee is the most cost-effective option
+After month ~3, self-hosted RNR Enhanced Cognee is the most cost-effective option
 for a single developer using Claude Code with personal memory.
 
 ---
@@ -618,7 +618,7 @@ for a single developer using Claude Code with personal memory.
 
 | #   | Item                                                     | Effort         |
 | --- | -------------------------------------------------------- | -------------- |
-| M1  | `examples/` directory with real Enhanced-Cognee examples | 4 hours        |
+| M1  | `examples/` directory with real RNR-Enhanced-Cognee examples | 4 hours        |
 | M2  | `CONTRIBUTING.md`                                        | 2 hours        |
 | M3  | Issue templates + PR template                            | 45 minutes     |
 | M4  | Pre-commit hooks installed by default                    | 15 minutes     |
@@ -659,7 +659,7 @@ Full long-form list in [`OUTSTANDING_ITEMS.md`](./OUTSTANDING_ITEMS.md).
 | 3-4  | **ArcadeDB swap (new default)** -- **SHIPPED 2026-05-19** | `arcadedb` provider working end-to-end; Bolt drop-in for existing Neo4j paths; docker-compose updated; passing all integration tests; benchmarks vs Neo4j. See `docs/ARCADEDB_MIGRATION.md`. |
 | 5    | **SigNoz + Apache Superset observability swap** -- **SHIPPED 2026-05-19** | SigNoz (MIT) replaces Grafana+Loki+Tempo+Jaeger; Apache Superset (Apache-2.0) added for BI dashboards; Prometheus kept; APM dashboards migrate into SigNoz, custom dashboards into Superset; `init_tracing()` documents the SigNoz OTLP endpoint (4317). See `docs/MONITORING.md`. |
 | 6    | **Apache AGE pluggable adapter** -- **SHIPPED 2026-05-19** | `apache_age` provider working; `lean` profile (one-container Postgres-only setup) shipped. See `docs/PROFILES.md`. |
-| 7-8  | MAS integration sprint             | MAS reads/writes Enhanced Cognee memories; auth wiring; agent-ID mapping.                                                                                  |
+| 7-8  | MAS integration sprint             | MAS reads/writes RNR Enhanced Cognee memories; auth wiring; agent-ID mapping.                                                                                  |
 | 9    | Vector + cache pluggable adapters  | `pgvector` + `in_memory` cache + `sqlite` relational shipped (covers "lean" profile completely).                                                           |
 | 10   | `examples/` + docs site            | 4-5 Enhanced-specific examples; mkdocs-material at GitHub Pages.                                                                                           |
 | 11   | Performance run                    | Locust against live stack; documented p50/p95/p99; perf regression dashboard.                                                                              |
@@ -682,7 +682,7 @@ alongside other work.
 | DR-06 | ~~ArcadeDB as secondary pluggable graph DB~~ **SUPERSEDED by DR-11**                                                                                     | 2026-05-19           | Original recommendation; superseded by maintainer decision later same day.                                                                                                            |
 | DR-07 | ~~Keep Grafana/Loki as default monitoring~~ **SUPERSEDED by DR-12**                                                                                      | 2026-05-19           | Original recommendation; superseded by maintainer decision later same day.                                                                                                            |
 | DR-08 | Pluggable DB backends via env vars (gradual, Tier 1/2/3)                                                                                                 | 2026-05-19           | Default unchanged; new providers opt-in; minimises regression risk.                                                                                                                   |
-| DR-09 | Apache-2.0 license for all Enhanced Cognee code                                                                                                          | 2025-Q4              | Maximally permissive; aligned with upstream and Python ecosystem norms.                                                                                                               |
+| DR-09 | Apache-2.0 license for all RNR Enhanced Cognee code                                                                                                          | 2025-Q4              | Maximally permissive; aligned with upstream and Python ecosystem norms.                                                                                                               |
 | DR-10 | ASCII-only output rule                                                                                                                                   | 2025-Q4              | Windows cp1252 console support; enforced via pre-commit hook.                                                                                                                         |
 | DR-11 | **ArcadeDB becomes new default graph DB; Apache AGE + Neo4j + ArangoDB + NebulaGraph + Kuzu + NetworkX + Memgraph + Ladybug + TigerGraph are pluggable** -- **SHIPPED 2026-05-19** | 2026-05-19 (revised); shipped 2026-05-19 | ArcadeDB's Cypher + Bolt compatibility = near-zero code change from current Neo4j paths; multi-model future-proofs the engine choice. AGE retained for "lean" Postgres-only profiles. Phase 2 implementation in PR #20: `src/db_adapters/graph_arcadedb.py` + factory default flip + docker-compose swap; see `docs/ARCADEDB_MIGRATION.md`. |
 | DR-12 | ~~OpenObserve replaces Grafana + Loki + Tempo + Prometheus + Jaeger~~ **SUPERSEDED by DR-13**                                                            | 2026-05-19           | Original same-day recommendation; superseded because OpenObserve is AGPL-3.0 (same risk profile as Grafana + Loki + Tempo today), so the swap didn't actually improve licence posture. |

@@ -178,7 +178,7 @@ def send_telemetry(event_name: str, user_id: str | UUID, additional_properties: 
 
     Privacy-first default: product telemetry is OPT-IN. This function is a
     no-op unless COGNEE_TELEMETRY_ENABLED is set to a truthy value, so
-    Enhanced Cognee never phones home by default (air-gapped /
+    RNR Enhanced Cognee never phones home by default (air-gapped /
     privacy-compliant operation, e.g. the Legal & Social Work Assistant).
 
     Three identity layers are sent with every event:
@@ -197,7 +197,7 @@ def send_telemetry(event_name: str, user_id: str | UUID, additional_properties: 
     if additional_properties is None:
         additional_properties = {}
 
-    # Enhanced Cognee privacy-first default: product telemetry is OPT-IN.
+    # RNR Enhanced Cognee privacy-first default: product telemetry is OPT-IN.
     # No event ever leaves the machine unless COGNEE_TELEMETRY_ENABLED is set
     # to a truthy value. This guarantees air-gapped / privacy-compliant
     # operation (e.g. the Legal & Social Work Assistant integration) even when

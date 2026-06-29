@@ -87,7 +87,7 @@ def require_api_key(provided: Optional[str]) -> None:
     # Constant-time comparison to avoid leaking the key via timing.
     if not provided or not secrets.compare_digest(str(provided), str(expected)):
         raise PermissionError(
-            "Enhanced Cognee API: missing or invalid X-API-Key / api_key. "
+            "RNR Enhanced Cognee API: missing or invalid X-API-Key / api_key. "
             "Provide the ENHANCED_API_KEY value to call mutating MCP tools."
         )
 

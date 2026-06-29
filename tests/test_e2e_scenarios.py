@@ -1,5 +1,5 @@
 """
-End-to-End Tests for Enhanced Cognee
+End-to-End Tests for RNR Enhanced Cognee
 
 Tests complete user scenarios from start to finish.
 """

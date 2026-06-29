@@ -1,8 +1,8 @@
--- Enhanced Cognee - Security Schema Migration
+-- RNR Enhanced Cognee - Security Schema Migration
 --
 -- This migration adds tables for JWT authentication, API keys, RBAC, and security audit.
 --
--- Author: Enhanced Cognee Team
+-- Author: RNR Enhanced Cognee Team
 -- Version: 1.0.0
 -- Date: 2026-02-06
 

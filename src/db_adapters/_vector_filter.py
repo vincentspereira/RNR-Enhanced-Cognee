@@ -2,7 +2,7 @@
 
 Centralises the qdrant-shaped ``Filter`` -> backend-specific translation
 that pgvector / lancedb / chroma / weaviate / milvus all need. The
-qdrant API surface Enhanced Cognee uses is narrow -- almost exclusively
+qdrant API surface RNR Enhanced Cognee uses is narrow -- almost exclusively
 single ``must=[FieldCondition(key, match=MatchValue(value))]`` filters
 on a top-level payload key (see ``src/gdpr_manager.py::delete_user_data``
 and the locust load-gen workloads). This module pins that narrow

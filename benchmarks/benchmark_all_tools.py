@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Performance Benchmark - Enhanced Cognee MCP Server (119 tools)
+Performance Benchmark - RNR Enhanced Cognee MCP Server (119 tools)
 
 Measures pure-Python overhead of all tool functions using mocked DB pools.
 No live services or Docker required.
@@ -747,7 +747,7 @@ async def run_benchmarks():
         print(f"ERR Failed to import server module: {_import_error}")
         print("Some tools may still be benchmarked from direct lookups.")
 
-    banner = "Performance Benchmark - Enhanced Cognee MCP Server (119 tools)"
+    banner = "Performance Benchmark - RNR Enhanced Cognee MCP Server (119 tools)"
     sep = "=" * len(banner)
     print(f"\n{banner}")
     print(sep)

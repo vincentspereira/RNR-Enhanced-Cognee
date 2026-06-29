@@ -1,5 +1,5 @@
 """
-Alembic env.py for Enhanced Cognee PostgreSQL schema.
+Alembic env.py for RNR Enhanced Cognee PostgreSQL schema.
 
 Reads database URL from environment variables, falling back to alembic.ini.
 Uses asyncpg driver for async migration support.

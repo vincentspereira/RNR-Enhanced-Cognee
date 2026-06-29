@@ -1,8 +1,8 @@
-# Original Cognee vs Enhanced Cognee MCP - Feature Comparison
+# Original Cognee vs RNR Enhanced Cognee MCP - Feature Comparison
 
 **Analysis Date:** 2026-05-14
 **Previous Version:** 2026-02-12 (58 tools, pre-Phase 10)
-**Purpose:** Compare original Cognee (topoteretes/cognee) features with Enhanced Cognee MCP server
+**Purpose:** Compare original Cognee (topoteretes/cognee) features with RNR Enhanced Cognee MCP server
 availability for Claude Code and other AI IDEs
 **Phase Status:** Phase 14 complete - Encryption, Observations, Notifications, Importance Scoring, Re-ranking
 
@@ -10,7 +10,7 @@ availability for Claude Code and other AI IDEs
 
 ## EXECUTIVE SUMMARY
 
-[OK] **CONCLUSION: Enhanced Cognee MCP server provides a SUPERSET of original Cognee features**
+[OK] **CONCLUSION: RNR Enhanced Cognee MCP server provides a SUPERSET of original Cognee features**
 
 - **100% of original Cognee core features are available via MCP**
 - **100+ additional enterprise features** beyond original Cognee
@@ -18,20 +18,20 @@ availability for Claude Code and other AI IDEs
 - **4-database Enhanced stack** (vs. single database in original Cognee)
 - **4,158 unit tests** with 100% pass rate
 - **Python SDK** available: `pip install enhanced-cognee-client` (PyPI v1.0.0)
-- **GitHub Release:** https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0
+- **GitHub Release:** https://github.com/vincentspereira/RNR-Enhanced-Cognee/releases/tag/enhanced-v1.0.0
 
 ---
 
 ## PART 1: ORIGINAL COGNEE CORE FEATURES - COVERAGE TABLE
 
-The sections below map each original Cognee capability to its Enhanced Cognee MCP equivalent.
+The sections below map each original Cognee capability to its RNR Enhanced Cognee MCP equivalent.
 Coverage is 100% across all original categories.
 
 ### 1. ECL Pipeline Framework
 
 **Original Cognee:** Extract, Cognify, Load pipeline architecture
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name | Trigger Type |
 |---------|------------------|-----------|--------------|
@@ -42,7 +42,7 @@ Coverage is 100% across all original categories.
 
 **MCP Implementation Details:**
 ```python
-# Enhanced Cognee MCP provides:
+# RNR Enhanced Cognee MCP provides:
 await add_memory(content, agent_id, metadata)   # Add data
 await cognify(data)                              # Transform to knowledge graph
 await search(query, limit)                       # Search knowledge graph
@@ -63,7 +63,7 @@ await search(query, limit)                       # Search knowledge graph
 - Entity-relationship extraction
 - Knowledge graph visualization via Graphistry
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Notes |
 |---------|------------------|-------|
@@ -93,7 +93,7 @@ await search(query, limit)                       # Search knowledge graph
 - Weaviate
 - Milvus
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Vector Store | Status | Port | MCP Access |
 |-------------|--------|------|------------|
@@ -118,7 +118,7 @@ await search(query, limit)                       # Search knowledge graph
 - Ollama
 - Anthropic (Claude)
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | LLM Provider | MCP Support | Notes |
 |--------------|------------|-------|
@@ -143,7 +143,7 @@ await search(query, limit)                       # Search knowledge graph
 - FalkorDB (experimental)
 - Kuzu (replaced by Ladybug in v1.0.4 upstream)
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Graph DB | Status | Port | MCP Access |
 |---------|--------|------|-----------|
@@ -170,7 +170,7 @@ await search(query, limit)                       # Search knowledge graph
 - Text chunking
 - Sentence splitting
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -185,7 +185,7 @@ await search(query, limit)                       # Search knowledge graph
 
 **MCP Implementation:**
 ```python
-# Enhanced Cognee MCP provides:
+# RNR Enhanced Cognee MCP provides:
 await cognify(data)             # Extract, cognify, load in one call
 await ingest_url(url)           # Ingest from URL
 await ingest_db(conn, query)    # Ingest from database query
@@ -209,7 +209,7 @@ await get_stats()               # Get document statistics
 - Hybrid search (vector + graph)
 - Insight extraction
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -250,7 +250,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - User-specific graphs
 - Access control lists (ACL)
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -279,7 +279,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - Basic duplicate detection
 - Similarity checking
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -300,7 +300,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - Basic summarization
 - LLM-based compression
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -324,7 +324,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - No dedicated backup system
 - Snapshot UI added in v1.0.8 upstream (not ported)
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -344,7 +344,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - Basic logging
 - No dedicated monitoring
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -363,7 +363,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 - English-focused
 - No multi-language features (translation tasks exist upstream but are not session-facing)
 
-**Enhanced Cognee MCP Availability:**
+**RNR Enhanced Cognee MCP Availability:**
 
 | Feature | Available via MCP | Tool Name |
 |---------|------------------|-----------|
@@ -382,7 +382,7 @@ cross-language search, search analytics - all available as Enhanced exclusive fe
 ## PART 2: NEW FEATURES - PHASES 10 THROUGH 14
 
 The following capability groups were not present in either the original Cognee or the February 2026
-Enhanced Cognee report. They represent net-new enterprise capabilities delivered in Phases 10-14.
+RNR Enhanced Cognee report. They represent net-new enterprise capabilities delivered in Phases 10-14.
 
 ### Phase 10: Memory Lifecycle, Versioning, and Audit Trail
 
@@ -498,7 +498,7 @@ scores (Phase 14) and confidence scores (Phase 10) with vector similarity and re
 ## PART 3: COMPLETE 122-TOOL REFERENCE TABLE
 
 **Key:** M = Manual (requires explicit user invocation), A = Auto (triggered by Claude Code or AI IDE),
-S = System (triggered by Enhanced Cognee system or scheduled task)
+S = System (triggered by RNR Enhanced Cognee system or scheduled task)
 
 | # | Tool Name | Category | Trigger |
 |---|-----------|----------|---------|
@@ -509,12 +509,12 @@ S = System (triggered by Enhanced Cognee system or scheduled task)
 | 5 | `update_memory` | Standard Memory | A |
 | 6 | `delete_memory` | Standard Memory | M |
 | 7 | `list_agents` | Standard Memory | A |
-| 8 | `cognify` | Enhanced Cognee Core | A |
-| 9 | `search` | Enhanced Cognee Core | A |
-| 10 | `list_data` | Enhanced Cognee Core | A |
-| 11 | `get_stats` | Enhanced Cognee Core | A |
-| 12 | `health` | Enhanced Cognee Core | A |
-| 13 | `create_backup` | Enhanced Cognee Core / Backup | A |
+| 8 | `cognify` | RNR Enhanced Cognee Core | A |
+| 9 | `search` | RNR Enhanced Cognee Core | A |
+| 10 | `list_data` | RNR Enhanced Cognee Core | A |
+| 11 | `get_stats` | RNR Enhanced Cognee Core | A |
+| 12 | `health` | RNR Enhanced Cognee Core | A |
+| 13 | `create_backup` | RNR Enhanced Cognee Core / Backup | A |
 | 14 | `expire_memories` | Memory Management / TTL | S |
 | 15 | `get_memory_age_stats` | Memory Management / TTL | S |
 | 16 | `set_memory_ttl` | Memory Management / TTL | A |
@@ -710,7 +710,7 @@ Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
 
 ### System Tools (S) - 56
 
-Auto-triggered by the Enhanced Cognee system, schedulers, or background processes:
+Auto-triggered by the RNR Enhanced Cognee system, schedulers, or background processes:
 
 **Memory Management / TTL (2):**
 1. `get_memory_age_stats` - Age statistics for TTL decisions
@@ -819,7 +819,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 - **No caching layer**
 - **No dedicated backup system** at the database layer
 
-### Enhanced Cognee (via MCP)
+### RNR Enhanced Cognee (via MCP)
 
 - **4-database Enhanced stack running simultaneously:**
   - PostgreSQL + pgVector (port 25432)
@@ -850,7 +850,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 - [OK] Compatible with Claude Code default memory interface
 - [OK] Compatible with other MCP-capable AI IDEs
 
-**Enhanced Cognee MCP Tools (115 additional tools):**
+**RNR Enhanced Cognee MCP Tools (115 additional tools):**
 - [OK] All 122 tools accessible via MCP protocol
 - [OK] No LLM API key required from the IDE
 - [OK] Automatic database connection management
@@ -863,10 +863,10 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "C:\\Users\\vince\\Projects\\AI Agents\\enhanced-cognee\\bin\\enhanced_cognee_mcp_server.py"
+        "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\bin\\enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -948,7 +948,7 @@ Auto-triggered by the Enhanced Cognee system, schedulers, or background processe
 
 ### Overview
 
-The Enhanced Cognee Python SDK provides a type-safe async client for all core memory operations
+The RNR Enhanced Cognee Python SDK provides a type-safe async client for all core memory operations
 without requiring direct MCP connection. It is distributed as a standalone PyPI package.
 
 - **Package name:** `enhanced-cognee-client`
@@ -1016,7 +1016,7 @@ asyncio.run(main())
 
 ### GitHub Release
 
-GitHub Release: https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0
+GitHub Release: https://github.com/vincentspereira/RNR-Enhanced-Cognee/releases/tag/enhanced-v1.0.0
 
 ---
 
@@ -1076,7 +1076,7 @@ The following gates run automatically before each commit and push:
 
 ### Features NOT Available in Original Cognee
 
-The following capability groups exist exclusively in Enhanced Cognee:
+The following capability groups exist exclusively in RNR Enhanced Cognee:
 
 #### 1. Enterprise Memory Stack
 
@@ -1189,7 +1189,7 @@ The following capability groups exist exclusively in Enhanced Cognee:
 
 ## CONCLUSION
 
-[OK] **Enhanced Cognee MCP server provides complete access to original Cognee features
+[OK] **RNR Enhanced Cognee MCP server provides complete access to original Cognee features
 PLUS 100+ enterprise enhancements across 25 feature groups.**
 
 ### By the Numbers (2026-05-14)
@@ -1243,7 +1243,7 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 
 ### Recommendation
 
-Enhanced Cognee MCP server is recommended for:
+RNR Enhanced Cognee MCP server is recommended for:
 
 - Production deployments requiring enterprise features
 - Multi-agent AI systems needing cross-agent memory sharing
@@ -1261,9 +1261,9 @@ Enhanced Cognee MCP server is recommended for:
 
 - Original Cognee Repository: https://github.com/topoteretes/cognee
 - Cognee Documentation: https://docs.cognee.ai/
-- Enhanced Cognee Repository: https://github.com/vincentspereira/Enhanced-Cognee
-- Enhanced Cognee GitHub Release: https://github.com/vincentspereira/Enhanced-Cognee/releases/tag/enhanced-v1.0.0
-- Enhanced Cognee Python SDK (PyPI): https://pypi.org/project/enhanced-cognee-client/1.0.0/
+- RNR Enhanced Cognee Repository: https://github.com/vincentspereira/RNR-Enhanced-Cognee
+- RNR Enhanced Cognee GitHub Release: https://github.com/vincentspereira/RNR-Enhanced-Cognee/releases/tag/enhanced-v1.0.0
+- RNR Enhanced Cognee Python SDK (PyPI): https://pypi.org/project/enhanced-cognee-client/1.0.0/
 - Cognee API Reference: https://docs.cognee.ai/api-reference/introduction
 - Claude Agent SDK Integration: https://www.cognee.ai/blog/integrations/claude-agent-sdk-persistent-memory-with-cognee-integration
 - LobeHub MCP Servers: https://lobehub.com/zh/mcp/vincentspereira-enhanced-cognee

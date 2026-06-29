@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Cognee Phase 1 Foundation Setup Script
+# RNR Enhanced Cognee Phase 1 Foundation Setup Script
 # Sets up testing infrastructure and prepares environment for comprehensive testing
 
 set -e  # Exit on any error
@@ -41,10 +41,10 @@ log_info() {
 # Print banner
 print_banner() {
     log "============================================================"
-    log "🚀 Enhanced Cognee Phase 1 Foundation Setup"
+    log "🚀 RNR Enhanced Cognee Phase 1 Foundation Setup"
     log "============================================================"
     log "This script will set up the testing infrastructure for"
-    log "the Enhanced Cognee comprehensive testing framework."
+    log "the RNR Enhanced Cognee comprehensive testing framework."
     log "============================================================"
 }
 
@@ -113,8 +113,8 @@ setup_python_environment() {
     log_info "Installing testing dependencies..."
     pip install -r testing/requirements.txt
 
-    # Install Enhanced Cognee in development mode
-    log_info "Installing Enhanced Cognee in development mode..."
+    # Install RNR Enhanced Cognee in development mode
+    log_info "Installing RNR Enhanced Cognee in development mode..."
     pip install -e .
 
     log "✅ Python environment setup completed!"
@@ -294,7 +294,7 @@ generate_setup_report() {
     REPORT_FILE="$TESTING_DIR/reports/setup_report_$(date +%Y%m%d_%H%M%S).md"
 
     cat > "$REPORT_FILE" << EOF
-# Enhanced Cognee Phase 1 Setup Report
+# RNR Enhanced Cognee Phase 1 Setup Report
 
 **Generated:** $(date '+%Y-%m-%d %H:%M:%S')
 **Environment:** Testing
@@ -312,13 +312,13 @@ generate_setup_report() {
 - **Grafana:** ✅ Running on port 29300
 
 ### Testing Services
-- **Enhanced Cognee API:** Configured for port 28080
+- **RNR Enhanced Cognee API:** Configured for port 28080
 - **Locust Master:** Configured for port 28089
 - **OWASP ZAP:** Configured for port 28090
 
 ## Access URLs
 
-- **Enhanced Cognee API:** http://localhost:28080
+- **RNR Enhanced Cognee API:** http://localhost:28080
 - **Prometheus:** http://localhost:29090
 - **Grafana:** http://localhost:29300 (admin/test_admin)
 - **Neo4j Browser:** http://localhost:27474 (neo4j/test_password)
@@ -395,7 +395,7 @@ main() {
     log ""
     log "🚀 Next Steps:"
     log "   1. Run: cd testing && pytest -m 'unit or integration' -v"
-    log "   2. Start Enhanced Cognee API: python -m cognee.api"
+    log "   2. Start RNR Enhanced Cognee API: python -m cognee.api"
     log "   3. Run performance tests with Locust"
     log ""
     log "📋 Full setup report saved in: $TESTING_DIR/reports/"

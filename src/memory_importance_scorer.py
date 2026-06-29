@@ -99,7 +99,7 @@ def _component_source_type(source_type: Optional[str]) -> float:
 
 class MemoryImportanceScorer:
     """
-    Heuristic importance scoring for Enhanced Cognee memory entries.
+    Heuristic importance scoring for RNR Enhanced Cognee memory entries.
 
     All methods degrade gracefully when the pool is unavailable.
     """

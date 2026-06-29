@@ -1,4 +1,4 @@
-# robots.txt for Enhanced Cognee Dashboard
+# robots.txt for RNR Enhanced Cognee Dashboard
 
 User-agent: *
 Allow: /

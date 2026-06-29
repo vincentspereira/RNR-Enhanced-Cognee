@@ -8,7 +8,7 @@ Test coverage for:
 4. DataProtectionManager - Encryption and PII protection
 5. SecurityDeploymentManager - Security automation and monitoring
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-09
 """

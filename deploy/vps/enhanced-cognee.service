@@ -1,5 +1,5 @@
 [Unit]
-Description=Enhanced Cognee MCP Server (FastAPI variant)
+Description=RNR Enhanced Cognee MCP Server (FastAPI variant)
 After=network-online.target docker.service
 Wants=network-online.target docker.service
 Requires=docker.service

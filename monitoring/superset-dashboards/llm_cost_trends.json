@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/apache/superset/blob/master/superset/commands/importers/dashboard.py",
   "version": "1.0.0",
-  "dashboard_title": "Enhanced Cognee -- LLM Cost Trends",
+  "dashboard_title": "RNR Enhanced Cognee -- LLM Cost Trends",
   "description": "Daily / weekly LLM token spend by agent, model, and provider. Driven by shared_memory.llm_usage written by src/llm_cost_tracker.py.",
   "css": "",
   "slug": "ec-llm-cost-trends",

@@ -1,4 +1,4 @@
--- Enhanced Cognee - Audit Log Table Migration
+-- RNR Enhanced Cognee - Audit Log Table Migration
 -- Version: 1.0.0
 -- Date: 2026-02-06
 -- Description: Create audit_log table for tracking all automated operations
@@ -145,7 +145,7 @@ ORDER BY call_count DESC;
 -- GRANT SELECT ON cognee_db.v_audit_log_performance TO cognee_user;
 
 -- Add helpful comments
-COMMENT ON TABLE cognee_db.audit_log IS 'Audit log for all automated operations in Enhanced Cognee';
+COMMENT ON TABLE cognee_db.audit_log IS 'Audit log for all automated operations in RNR Enhanced Cognee';
 COMMENT ON COLUMN cognee_db.audit_log.log_id IS 'Unique identifier for the log entry (SHA-256 hash)';
 COMMENT ON COLUMN cognee_db.audit_log.timestamp IS 'Timestamp of the operation (UTC)';
 COMMENT ON COLUMN cognee_db.audit_log.operation_type IS 'Type of operation performed (e.g., memory_add, deduplicate_run)';

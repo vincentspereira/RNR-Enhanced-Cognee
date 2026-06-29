@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Real-Time WebSocket Server for Enhanced Cognee Dashboard
+Real-Time WebSocket Server for RNR Enhanced Cognee Dashboard
 Provides WebSocket connections for live updates, memory changes, and notifications
 """
 
@@ -52,7 +52,7 @@ class WebSocketEvent:
 
 class RealTimeWebSocketServer:
     """
-    Real-Time WebSocket Server for Enhanced Cognee
+    Real-Time WebSocket Server for RNR Enhanced Cognee
 
     Features:
     - Live memory updates
@@ -123,7 +123,7 @@ class RealTimeWebSocketServer:
                 event_type=EventType.SYSTEM_STATUS,
                 data={
                     "status": "connected",
-                    "message": "Connected to Enhanced Cognee Real-Time Server",
+                    "message": "Connected to RNR Enhanced Cognee Real-Time Server",
                     "available_events": [e.value for e in EventType]
                 }
             ))
@@ -342,7 +342,7 @@ class WebSocketClient:
         self.subscriptions: Set[EventType] = set()
 
 
-# Integration with Enhanced Cognee Memory Operations
+# Integration with RNR Enhanced Cognee Memory Operations
 class RealTimeMemoryIntegration:
     """
     Integrates WebSocket server with memory operations
@@ -355,7 +355,7 @@ class RealTimeMemoryIntegration:
 
         Args:
             ws_server: WebSocket server instance
-            memory_integration: Enhanced Cognee memory integration
+            memory_integration: RNR Enhanced Cognee memory integration
         """
         self.ws_server = ws_server
         self.memory_integration = memory_integration

@@ -1,4 +1,4 @@
-# Enhanced Cognee Examples
+# RNR Enhanced Cognee Examples
 
 ## 📚 Table of Contents
 
@@ -21,7 +21,7 @@ from agent_memory_integration import AgentMemoryIntegration, MemoryType
 async def basic_memory_example():
     """Basic memory storage and retrieval"""
 
-    # Initialize Enhanced Cognee
+    # Initialize RNR Enhanced Cognee
     memory_system = AgentMemoryIntegration()
     await memory_system.initialize()
 
@@ -687,7 +687,7 @@ if __name__ == "__main__":
 # examples/10_production_deployment.sh
 #!/bin/bash
 
-# Enhanced Cognee Production Deployment Script
+# RNR Enhanced Cognee Production Deployment Script
 
 set -e
 
@@ -720,7 +720,7 @@ ENHANCED_COGNE_DIR="${ENHANCED_COGNE_DIR:-$(pwd)}"
 BACKUP_DIR="/tmp/backup_$(date +%Y%m%d_%H%M%S)"
 ENV_FILE="${ENHANCED_COGNE_DIR}/.env"
 
-log "Starting Enhanced Cognee Production Deployment"
+log "Starting RNR Enhanced Cognee Production Deployment"
 
 # Pre-deployment checks
 log "Running pre-deployment checks..."
@@ -737,9 +737,9 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Check if Enhanced Cognee directory exists
+# Check if RNR Enhanced Cognee directory exists
 if [ ! -d "$ENHANCED_COGNE_DIR" ]; then
-    error "Enhanced Cognee directory not found: $ENHANCED_COGNE_DIR"
+    error "RNR Enhanced Cognee directory not found: $ENHANCED_COGNE_DIR"
     exit 1
 fi
 
@@ -776,8 +776,8 @@ docker-compose -f docker/docker-compose-enhanced-cognee.yml down 2>/dev/null || 
 log "Pulling latest Docker images..."
 docker-compose -f docker/docker-compose-enhanced-cogyne.yml pull
 
-# Start Enhanced Cognee stack
-log "Starting Enhanced Cognee stack..."
+# Start RNR Enhanced Cognee stack
+log "Starting RNR Enhanced Cognee stack..."
 docker-compose -f docker/docker-compose-enhanced-cognee.yml up -d
 
 # Wait for services to be healthy
@@ -819,11 +819,11 @@ else
     exit 1
 fi
 
-# Check Enhanced Cognee service
+# Check RNR Enhanced Cognee service
 if curl -f http://localhost:28080/health &>/dev/null; then
-    log "✅ Enhanced Cognee service is healthy"
+    log "✅ RNR Enhanced Cognee service is healthy"
 else
-    error "❌ Enhanced Cognee service is not responding"
+    error "❌ RNR Enhanced Cognee service is not responding"
     exit 1
 fi
 
@@ -842,10 +842,10 @@ if [ -f "docker/docker-compose-monitoring.yml" ]; then
 fi
 
 # Display service URLs
-log "🎉 Enhanced Cognee is now running!"
+log "🎉 RNR Enhanced Cognee is now running!"
 log ""
 log "Service URLs:"
-log "  Enhanced Cognee API: http://localhost:28080"
+log "  RNR Enhanced Cognee API: http://localhost:28080"
 log "  Grafana Dashboard: http://localhost:3000"
 log "  Prometheus: http://localhost:9090"
 log ""
@@ -857,22 +857,22 @@ log "Management Commands:"
 log "  View logs: docker-compose logs -f"
 log "  Stop services: docker-compose down"
 log "  Restart services: docker-compose restart"
-log "  Scale services: docker-compose up --scale enhanced-cognee=3"
+log "  Scale services: docker-compose up --scale RNR-Enhanced-Cognee=3"
 
 log "Deployment completed successfully!"
 
 # Create monitoring script
 cat > scripts/monitor.sh << 'EOF'
 #!/bin/bash
-# Enhanced Cognee Monitoring Script
+# RNR Enhanced Cognee Monitoring Script
 
-echo "=== Enhanced Cognee System Status ==="
+echo "=== RNR Enhanced Cognee System Status ==="
 
 echo "Service Status:"
 docker-compose ps
 
 echo -e "\nMemory Usage:"
-docker-compose exec enhanced-cognee python -c "
+docker-compose exec RNR-Enhanced-Cognee python -c "
 import sys
 sys.path.append('src')
 from agent_memory_integration import AgentMemoryIntegration
@@ -899,12 +899,12 @@ log "Created monitoring script: scripts/monitor.sh"
 # Create backup script
 cat > scripts/backup.sh << 'EOF'
 #!/bin/bash
-# Enhanced Cognee Backup Script
+# RNR Enhanced Cognee Backup Script
 
 BACKUP_DIR="/backup/enhanced-cognee/$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
-echo "Creating Enhanced Cognee backup..."
+echo "Creating RNR Enhanced Cognee backup..."
 
 # Backup configurations
 cp -r docker/ src/ "$BACKUP_DIR/"
@@ -946,7 +946,7 @@ log "- Examples: examples/ENHANCED_COGNEE_EXAMPLES.md"
 
 ```yaml
 # examples/11_configuration_templates.yml
-# Enhanced Cognee Configuration Templates
+# RNR Enhanced Cognee Configuration Templates
 
 # Production Environment Template
 production:
@@ -1046,4 +1046,4 @@ Each example includes:
 ---
 
 *Last Updated: 2025-11-12*
-*Enhanced Cognee Examples Collection*
+*RNR Enhanced Cognee Examples Collection*

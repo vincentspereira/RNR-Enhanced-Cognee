@@ -1,11 +1,11 @@
-# Enhanced Cognee - Comprehensive Automation Analysis
+# RNR Enhanced Cognee - Comprehensive Automation Analysis
 
 ## Overview
 
-This document provides a comprehensive analysis of the Enhanced Cognee MCP tool automation system, detailing how tools interact with each other through three types of triggers:
+This document provides a comprehensive analysis of the RNR Enhanced Cognee MCP tool automation system, detailing how tools interact with each other through three types of triggers:
 - **Manual (M)** - User explicitly triggers
 - **Auto (A)** - AI IDE triggers based on context
-- **System (S)** - Enhanced Cognee triggers automatically based on other tool executions
+- **System (S)** - RNR Enhanced Cognee triggers automatically based on other tool executions
 
 ---
 
@@ -18,7 +18,7 @@ User explicitly triggers the tool through direct commands or UI actions. These a
 AI IDE triggers the tool automatically based on user queries and context needs. The AI IDE decides when to invoke these tools without user intervention.
 
 ### 3. System (S)
-Enhanced Cognee system triggers these tools automatically as a consequence of other tool executions. These represent internal automation, dependency chains, and maintenance operations.
+RNR Enhanced Cognee system triggers these tools automatically as a consequence of other tool executions. These represent internal automation, dependency chains, and maintenance operations.
 
 ---
 

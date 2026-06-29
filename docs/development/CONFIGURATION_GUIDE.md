@@ -1,6 +1,6 @@
-# Enhanced Cognee Configuration Guide
+# RNR Enhanced Cognee Configuration Guide
 
-**⚠️ CRITICAL CLARIFICATION**: Enhanced Cognee is **NOT hardcoded** to specific prefixes like `ats_`, `oma_`, `smc_`. Those are **Multi-Agent System (MAS) specific**. Your project can define **ANY categories and prefixes** that make sense for your use case.
+**⚠️ CRITICAL CLARIFICATION**: RNR Enhanced Cognee is **NOT hardcoded** to specific prefixes like `ats_`, `oma_`, `smc_`. Those are **Multi-Agent System (MAS) specific**. Your project can define **ANY categories and prefixes** that make sense for your use case.
 
 ---
 
@@ -19,7 +19,7 @@
 
 ### What This Guide Covers
 
-Enhanced Cognee provides a **flexible, project-specific configuration system** for memory categorization. This document explains how to configure Enhanced Cognee for **YOUR** project's needs.
+RNR Enhanced Cognee provides a **flexible, project-specific configuration system** for memory categorization. This document explains how to configure RNR Enhanced Cognee for **YOUR** project's needs.
 
 ### What This is NOT
 
@@ -86,12 +86,12 @@ Edit the file with your project-specific configuration:
 
 ### Step 3: Configure MCP Server
 
-Update your MCP configuration to point to Enhanced Cognee:
+Update your MCP configuration to point to RNR Enhanced Cognee:
 
 ```json
 {
   "mcpServers": {
-    "enhanced-cognee": {
+    "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": ["PATH/TO/enhanced-cognee/cognee-mcp/src/server.py"],
       "type": "stdio",
@@ -108,7 +108,7 @@ Update your MCP configuration to point to Enhanced Cognee:
 }
 ```
 
-### Step 4: Start Using Enhanced Cognee
+### Step 4: Start Using RNR Enhanced Cognee
 
 The MCP server will automatically load your `.enhanced-cognee-config.json` file and use your custom categories and prefixes.
 
@@ -416,7 +416,7 @@ For projects organized by function:
 
 ### Issue: Configuration Not Loading
 
-**Problem**: Enhanced Cognee is using default categories instead of your custom ones.
+**Problem**: RNR Enhanced Cognee is using default categories instead of your custom ones.
 
 **Solutions**:
 1. Verify config file location: Must be in project root or parent directories
@@ -448,14 +448,14 @@ For projects organized by function:
 
 **Solutions**:
 1. Verify `retention_days` is set in config
-2. Check cleanup jobs are running in Enhanced Cognee
+2. Check cleanup jobs are running in RNR Enhanced Cognee
 3. Manually trigger cleanup: Use `prune` MCP tool
 
 ---
 
 ## 📚 Additional Resources
 
-- [Enhanced Cognee README](../README.md) - Main Enhanced Cognee documentation
+- [RNR Enhanced Cognee README](../README.md) - Main RNR Enhanced Cognee documentation
 - [MCP Protocol Guide](https://modelcontextprotocol.io/) - MCP specification
 - [Configuration Examples](../examples/) - More example configurations
 
@@ -469,4 +469,4 @@ When creating configurations for new projects, please consider sharing them as e
 
 **Last Updated**: January 2, 2026
 **Version**: 1.0.0
-**Maintained By**: Enhanced Cognee Team
+**Maintained By**: RNR Enhanced Cognee Team

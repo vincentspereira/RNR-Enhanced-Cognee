@@ -18,7 +18,7 @@
 | 5 | `update_memory` | Manual | **AUTOMATE** | P1 | Smart updates with intent detection (correction, enhancement) | Sprint 4 |
 | 6 | `delete_memory` | Manual | **Keep Manual** | - | Destructive - user must explicitly delete | Keep Manual |
 | 7 | `list_agents` | Automatic | **Keep Auto** | - | Already triggered on initialization | Already Auto |
-| **Enhanced Cognee Tools** | | | | | | |
+| **RNR Enhanced Cognee Tools** | | | | | | |
 | 8 | `cognify` | Manual | **AUTOMATE** | P0 | Auto-process documents (.md, .txt, .pdf) when added | Sprint 2 |
 | 9 | `search` | Manual | **Keep Manual** | - | User-initiated knowledge graph search | Keep Manual |
 | 10 | `list_data` | Manual | **Keep Manual** | - | User-initiated data listing | Keep Manual |
@@ -60,7 +60,7 @@
 | Category | Total Tools | Already Auto | Should Automate | Keep Manual | Net Change |
 |----------|-------------|-------------|----------------|-------------|------------|
 | **Standard Memory MCP** | 7 | 4 (57%) | 2 (29%) | 1 (14%) | +2 automate |
-| **Enhanced Cognee** | 5 | 2 (40%) | 1 (20%) | 2 (40%) | +1 automate |
+| **RNR Enhanced Cognee** | 5 | 2 (40%) | 1 (20%) | 2 (40%) | +1 automate |
 | **Memory Management** | 4 | 0 (0%) | 2 (50%) | 2 (50%) | +2 automate |
 | **Deduplication** | 3 | 1 (33%) | 1 (33%) | 1 (33%) | +1 automate |
 | **Summarization** | 3 | 0 (0%) | 2 (67%) | 1 (33%) | +2 automate |

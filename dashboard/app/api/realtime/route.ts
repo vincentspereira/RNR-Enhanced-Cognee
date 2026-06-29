@@ -1,5 +1,5 @@
 /**
- * Next.js API Route for Real-Time Enhanced Cognee Features
+ * Next.js API Route for Real-Time RNR Enhanced Cognee Features
  * Provides SSE endpoints for live updates and WebSocket connection management
  */
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       // Send initial connection message
       sendEvent({
         type: 'connected',
-        message: 'Connected to Enhanced Cognee Real-Time Updates',
+        message: 'Connected to RNR Enhanced Cognee Real-Time Updates',
         timestamp: new Date().toISOString(),
         subscribedTo: eventType
       });

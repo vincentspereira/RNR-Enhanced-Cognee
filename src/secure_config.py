@@ -1,4 +1,4 @@
-"""Fail-closed secret/config resolution for Enhanced Cognee."""
+"""Fail-closed secret/config resolution for RNR Enhanced Cognee."""
 import os
 import logging
 from typing import Optional

@@ -4,9 +4,9 @@
 
 You may notice **92+ contributors** listed for this repository. Here's why:
 
-### 🎯 Enhanced Cognee Contributors
+### 🎯 RNR Enhanced Cognee Contributors
 
-This **Enhanced Cognee** fork has been developed by:
+This **RNR Enhanced Cognee** fork has been developed by:
 
 - **Vincent Pereira** (@vincentspereira)
   - Enhanced database stack integration (PostgreSQL, Qdrant, Neo4j, Redis)
@@ -16,13 +16,13 @@ This **Enhanced Cognee** fork has been developed by:
   - Production-ready Docker deployment
   - Documentation and guides
 
-These are the **only contributors who worked specifically on Enhanced Cognee features**.
+These are the **only contributors who worked specifically on RNR Enhanced Cognee features**.
 
 ### 🙏 Original Cognee Contributors
 
 The remaining contributors listed are from the **original Cognee project** (https://github.com/topoteretes/cognee).
 
-Enhanced Cognee is built on top of the excellent Cognee framework, and we preserve the complete git history to:
+RNR Enhanced Cognee is built on top of the excellent Cognee framework, and we preserve the complete git history to:
 - Give proper attribution to the original developers
 - Maintain Apache License 2.0 compliance
 - Provide transparency on the codebase origins
@@ -37,7 +37,7 @@ Enhanced Cognee is built on top of the excellent Cognee framework, and we preser
 - Python SDK and CLI
 - Documentation and examples
 
-**Enhanced Cognee** (2025): 1 contributor
+**RNR Enhanced Cognee** (2025): 1 contributor
 - Enterprise database upgrades
 - MCP server integration
 - Dynamic categories
@@ -61,7 +61,7 @@ https://github.com/topoteretes/cognee/graphs/contributors
 
 ## Want to Contribute?
 
-We welcome contributions to Enhanced Cognee! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions to RNR Enhanced Cognee! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **Areas for contribution:**
 - Additional database adapters
@@ -77,11 +77,11 @@ Your contributions will be clearly attributed and visible in this repository's h
 
 ## Attribution
 
-**Enhanced Cognee** is a derivative work of [Cognee](https://github.com/topoteretes/cognee).
+**RNR Enhanced Cognee** is a derivative work of [Cognee](https://github.com/topoteretes/cognee).
 
 - **Original Repository**: https://github.com/topoteretes/cognee
 - **Original License**: Apache License 2.0
-- **Enhancement Repository**: https://github.com/vincentspereira/Enhanced-Cognee
+- **Enhancement Repository**: https://github.com/vincentspereira/RNR-Enhanced-Cognee
 - **Enhancement License**: Apache License 2.0
 
 Both projects are licensed under the Apache License 2.0, which requires preserving attribution to all contributors.

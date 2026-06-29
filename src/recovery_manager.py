@@ -1,7 +1,7 @@
 """
-Enhanced Cognee - Recovery Manager
+RNR Enhanced Cognee - Recovery Manager
 
-Comprehensive disaster recovery system for Enhanced Cognee stack:
+Comprehensive disaster recovery system for RNR Enhanced Cognee stack:
 - PostgreSQL restore from pg_dump
 - Qdrant restore from snapshot
 - Neo4j restore from backup
@@ -17,7 +17,7 @@ Features:
 - Detailed recovery logging
 - User-friendly error messages (ASCII-only)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 class RecoveryManager:
     """
-    Comprehensive recovery manager for Enhanced Cognee databases.
+    Comprehensive recovery manager for RNR Enhanced Cognee databases.
 
     Supports restoring:
     - PostgreSQL (from pg_dump)

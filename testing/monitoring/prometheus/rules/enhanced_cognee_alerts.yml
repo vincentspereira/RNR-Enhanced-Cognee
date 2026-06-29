@@ -1,4 +1,4 @@
-# Enhanced Cognee Testing Alert Rules
+# RNR Enhanced Cognee Testing Alert Rules
 # Comprehensive alerting rules for testing infrastructure and performance monitoring
 
 groups:
@@ -11,8 +11,8 @@ groups:
           severity: critical
           service: enhanced-cognee-api
         annotations:
-          summary: "Enhanced Cognee API is down"
-          description: "Enhanced Cognee API has been down for more than 1 minute"
+          summary: "RNR Enhanced Cognee API is down"
+          description: "RNR Enhanced Cognee API has been down for more than 1 minute"
           runbook_url: "https://docs.enhanced-cognee.com/troubleshooting/api-down"
 
       - alert: EnhancedCogneeHighLatency
@@ -22,7 +22,7 @@ groups:
           severity: warning
           service: enhanced-cognee-api
         annotations:
-          summary: "Enhanced Cognee API high latency detected"
+          summary: "RNR Enhanced Cognee API high latency detected"
           description: "95th percentile latency is {{ $value }}s, which is above the 100ms threshold"
           runbook_url: "https://docs.enhanced-cognee.com/troubleshooting/high-latency"
 
@@ -33,7 +33,7 @@ groups:
           severity: warning
           service: enhanced-cognee-api
         annotations:
-          summary: "Enhanced Cognee API high error rate"
+          summary: "RNR Enhanced Cognee API high error rate"
           description: "Error rate is {{ $value | humanizePercentage }}, which is above 5%"
           runbook_url: "https://docs.enhanced-cognee.com/troubleshooting/high-error-rate"
 
@@ -44,7 +44,7 @@ groups:
           severity: warning
           service: enhanced-cognee-api
         annotations:
-          summary: "Enhanced Cognee API high memory usage"
+          summary: "RNR Enhanced Cognee API high memory usage"
           description: "Memory usage is {{ $value }}GB, which is above 2GB"
           runbook_url: "https://docs.enhanced-cognee.com/troubleshooting/high-memory"
 

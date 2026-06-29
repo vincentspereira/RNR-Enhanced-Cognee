@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Configuration Loader for Plugins
+RNR Enhanced Cognee - Configuration Loader for Plugins
 
 This module loads and manages configuration for the Claude Code plugin.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

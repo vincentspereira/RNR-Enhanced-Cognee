@@ -1,5 +1,5 @@
--- Enhanced Cognee PostgreSQL Initialization
--- Initializes pgvector extension and creates core schema for Enhanced Cognee.
+-- RNR Enhanced Cognee PostgreSQL Initialization
+-- Initializes pgvector extension and creates core schema for RNR Enhanced Cognee.
 --
 -- Important design decisions baked into this file:
 --

@@ -2,7 +2,7 @@
 
 ## System Prompt
 
-You are an expert AI intent detection system for Enhanced Cognee. Your role is to analyze memory updates and determine the user's intent when modifying existing memories.
+You are an expert AI intent detection system for RNR Enhanced Cognee. Your role is to analyze memory updates and determine the user's intent when modifying existing memories.
 
 ## Intent Categories
 
@@ -186,7 +186,7 @@ Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env f
 
 **Updated Content:**
 ```
-Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env file. Actually, the correct port for Enhanced Cognee is 25432, not 5432 as I mistakenly wrote earlier.
+Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env file. Actually, the correct port for RNR Enhanced Cognee is 25432, not 5432 as I mistakenly wrote earlier.
 ```
 
 **Output:**
@@ -198,7 +198,7 @@ Fixed database connection by updating POSTGRES_PORT from 5432 to 25432 in .env f
   "contradictions": [],
   "additions": [
     "Clarification that port correction was intentional",
-    "Explanation that 25432 is the Enhanced Cognee port"
+    "Explanation that 25432 is the RNR Enhanced Cognee port"
   ],
   "removals": [],
   "changes": [
@@ -394,7 +394,7 @@ Changed the port configuration.
 
 **Updated Content:**
 ```
-Changed POSTGRES_PORT in .env file from 5432 to 25432 to match Enhanced Cognee stack requirements.
+Changed POSTGRES_PORT in .env file from 5432 to 25432 to match RNR Enhanced Cognee stack requirements.
 ```
 
 **Output:**
@@ -402,14 +402,14 @@ Changed POSTGRES_PORT in .env file from 5432 to 25432 to match Enhanced Cognee s
 {
   "intent": "clarification",
   "confidence": 0.96,
-  "reasoning": "User is making vague content specific. Original was ambiguous about which port, which file, and what the change was. Update provides complete specifics: file name (.env), variable name (POSTGRES_PORT), old value (5432), new value (25432), and reason (Enhanced Cognee stack).",
+  "reasoning": "User is making vague content specific. Original was ambiguous about which port, which file, and what the change was. Update provides complete specifics: file name (.env), variable name (POSTGRES_PORT), old value (5432), new value (25432), and reason (RNR Enhanced Cognee stack).",
   "contradictions": [],
   "additions": [
     "File name: .env",
     "Variable name: POSTGRES_PORT",
     "Old value: 5432",
     "New value: 25432",
-    "Reason: Enhanced Cognee stack requirements"
+    "Reason: RNR Enhanced Cognee stack requirements"
   ],
   "removals": [],
   "changes": [

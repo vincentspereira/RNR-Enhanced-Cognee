@@ -1,10 +1,10 @@
 #!/bin/bash
-# Enhanced Cognee - Restore Neo4j
+# RNR Enhanced Cognee - Restore Neo4j
 #
 # Restores Neo4j graph database from the specified backup.
 # Usage: ./scripts/restore_neo4j.sh <backup_id>
 #
-# Author: Enhanced Cognee Team
+# Author: RNR Enhanced Cognee Team
 # Version: 1.0.0
 
 set -e

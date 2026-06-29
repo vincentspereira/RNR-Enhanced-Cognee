@@ -1,5 +1,5 @@
 """
-Performance Tests for Enhanced Cognee System
+Performance Tests for RNR Enhanced Cognee System
 
 Load testing, stress testing, and performance benchmarking for all system components.
 Tests memory operations, API endpoints, agent coordination, and system scalability.
@@ -26,7 +26,7 @@ class TestSystemLoadTesting:
 
     @pytest.fixture
     def api_base_url(self):
-        """Base URL for Enhanced Cognee API"""
+        """Base URL for RNR Enhanced Cognee API"""
         return "http://localhost:28080"
 
     @pytest.fixture
@@ -357,7 +357,7 @@ class TestSystemStressTesting:
 
     @pytest.fixture
     def api_base_url(self):
-        """Base URL for Enhanced Cognee API"""
+        """Base URL for RNR Enhanced Cognee API"""
         return "http://localhost:28080"
 
     def test_memory_system_stress(self, api_base_url):

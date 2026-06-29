@@ -1,10 +1,10 @@
 """
-Enhanced Cognee - Approval Workflow System
+RNR Enhanced Cognee - Approval Workflow System
 
 Provides approval workflow for automated operations.
 Supports CLI and dashboard-based approval.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """

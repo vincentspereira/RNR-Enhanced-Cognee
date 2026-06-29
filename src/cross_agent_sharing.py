@@ -1,5 +1,5 @@
 """
-Cross-Agent Memory Sharing Module for Enhanced Cognee
+Cross-Agent Memory Sharing Module for RNR Enhanced Cognee
 Enables controlled memory sharing between agents
 """
 

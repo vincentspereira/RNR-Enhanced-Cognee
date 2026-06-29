@@ -2,7 +2,7 @@
 Plugin Loader - Phase 12 (17.1)
 ==================================
 Provides a lightweight plugin system so third-party packages can extend
-Enhanced Cognee with custom document loaders, memory processors, or search
+RNR Enhanced Cognee with custom document loaders, memory processors, or search
 backends without modifying the core codebase.
 
 Plugin discovery:
@@ -47,7 +47,7 @@ ENTRY_POINTS_GROUP = "enhanced_cognee.loaders"
 
 class EnhancedCogneeLoader(ABC):
     """
-    Abstract base class for Enhanced Cognee document loaders.
+    Abstract base class for RNR Enhanced Cognee document loaders.
 
     Subclass this and register via entry_points to add support for new
     file types or data sources.
@@ -174,7 +174,7 @@ _BUILTIN_LOADERS: List[Type[EnhancedCogneeLoader]] = [
 
 class PluginRegistry:
     """
-    Discover and manage Enhanced Cognee loader plugins.
+    Discover and manage RNR Enhanced Cognee loader plugins.
 
     Call discover() once at startup; then use get_loader_for() to retrieve
     an appropriate loader instance for a given file or URL.

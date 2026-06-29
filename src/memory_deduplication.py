@@ -1,5 +1,5 @@
 """
-Memory Deduplication Module for Enhanced Cognee
+Memory Deduplication Module for RNR Enhanced Cognee
 Prevents duplicate memories using vector similarity and text matching
 """
 

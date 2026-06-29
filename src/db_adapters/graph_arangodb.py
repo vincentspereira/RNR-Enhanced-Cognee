@@ -3,7 +3,7 @@
 ArangoDB (https://arangodb.com/) is an Apache-2.0 multi-model database
 with native AQL (ArangoDB Query Language). Native Cypher support is
 experimental, so this adapter translates the narrow Cypher subset
-Enhanced Cognee's call sites actually use into AQL and executes via
+RNR Enhanced Cognee's call sites actually use into AQL and executes via
 the official ``python-arango`` client.
 
 **Storage model:** all graph nodes live in a single ArangoDB

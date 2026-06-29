@@ -1,5 +1,5 @@
 """
-Enhanced Cognee - LLM Integration and Session/State Unit Tests
+RNR Enhanced Cognee - LLM Integration and Session/State Unit Tests
 
 Comprehensive test suite for LLM providers, rate limiting, token counting,
 session management, document processing, auto-configuration, progressive
@@ -16,7 +16,7 @@ Test Categories:
 - Structured Memory (StructuredMemoryModel, AutoCategorizer)
 - Approval Workflow (ApprovalWorkflowManager, CLI/Dashboard interfaces)
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-09
 """

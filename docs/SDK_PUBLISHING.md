@@ -128,7 +128,7 @@ Once published, the crate auto-appears at https://crates.io/crates/enhanced-cogn
 ### pkg.go.dev (Go SDK)
 
 **Registry:** none -- pkg.go.dev is a documentation site, not a package registry.
-**Module path:** `github.com/vincentspereira/Enhanced-Cognee/clients/go`
+**Module path:** `github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go`
 **Cost:** free, no account, no token.
 
 #### How Go module publishing actually works
@@ -152,14 +152,14 @@ There's no upload step. There's no API token. There's no account.
 
 2. **Verify after pushing:**
    ```bash
-   go list -m github.com/vincentspereira/Enhanced-Cognee/clients/go@v1.0.1
+   go list -m github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go@v1.0.1
    ```
 
    If proxy.golang.org hasn't indexed yet (~30 min), this returns an error; retry later.
 
 3. **pkg.go.dev URL** appears at:
    ```
-   https://pkg.go.dev/github.com/vincentspereira/Enhanced-Cognee/clients/go
+   https://pkg.go.dev/github.com/vincentspereira/RNR-Enhanced-Cognee/clients/go
    ```
 
    Triggered on the first `go get` from any user; you can warm it by running `go list -m ...@latest` from any machine.

@@ -1,4 +1,4 @@
-# Tutorial 01: Getting Started with Enhanced Cognee
+# Tutorial 01: Getting Started with RNR Enhanced Cognee
 
 **Audience:** New users
 **Time required:** 20 minutes
@@ -6,9 +6,9 @@
 
 ---
 
-## What Is Enhanced Cognee?
+## What Is RNR Enhanced Cognee?
 
-Enhanced Cognee is an enterprise-grade memory server for AI agents. It gives a
+RNR Enhanced Cognee is an enterprise-grade memory server for AI agents. It gives a
 language model (such as Claude) a persistent, searchable store of memories that
 survives across sessions. Each memory is a piece of text -- a note, a decision, a
 fact, a code snippet -- stored with metadata that makes it retrievable later.
@@ -20,7 +20,7 @@ Under the hood, four specialized databases power different aspects of memory:
 - Neo4j stores relationships between memory entities as a knowledge graph
 - Redis caches hot memories for fast repeated access
 
-You do not interact with these databases directly. The Enhanced Cognee MCP server
+You do not interact with these databases directly. The RNR Enhanced Cognee MCP server
 exposes all operations as simple tool calls.
 
 ---
@@ -29,7 +29,7 @@ exposes all operations as simple tool calls.
 
 MCP (Model Context Protocol) is the interface between Claude and external servers.
 When you call an MCP tool, you name the tool and pass parameters, and the server
-returns a plain text response. All Enhanced Cognee tools return ASCII-only strings
+returns a plain text response. All RNR Enhanced Cognee tools return ASCII-only strings
 so they work on any operating system.
 
 ---
@@ -38,8 +38,8 @@ so they work on any operating system.
 
 If you have not already completed RB-001, do that first. Then:
 
-    enhanced-cognee docker up
-    enhanced-cognee start
+    RNR-Enhanced-Cognee docker up
+    RNR-Enhanced-Cognee start
 
 Leave the server running in a terminal window.
 
@@ -51,7 +51,7 @@ Leave the server running in a terminal window.
 
 Expected response:
 
-    Enhanced Cognee Health:
+    RNR Enhanced Cognee Health:
     [OK] PostgreSQL
     [OK] Qdrant
     [OK] Neo4j

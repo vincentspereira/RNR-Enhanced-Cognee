@@ -39,7 +39,7 @@ until you reply with approval.
 ```
 Remove "21 SDLC Agents" bullet - those agents were archived in Phase 4.
 
-### 1.4 - "What is Enhanced Cognee?" section, item 2 (lines 167-175)
+### 1.4 - "What is RNR Enhanced Cognee?" section, item 2 (lines 167-175)
 **Current**: "59 MCP Tools" heading and bullets that list old tool categories
 **Should be**: "70 MCP Tools" and updated category list including Phase 2/3 additions:
 ```
@@ -82,7 +82,7 @@ Insert after line ~194 (after the "New Features" heading):
 ```markdown
 ## v1.0.9 API Parity
 
-Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
+RNR Enhanced Cognee tracks and exposes the full topoteretes/cognee v1.0.9 public API via MCP tools.
 
 ### Session-Aware Memory (Phase 2)
 These tools wrap the `cognee.api.v1.*` modules added in upstream v1.0.9:
@@ -136,7 +136,7 @@ Add after the "Architecture" section:
 ```markdown
 ## Upstream Sync Monitoring
 
-Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
+RNR Enhanced Cognee includes automation to stay current with upstream topoteretes/cognee releases.
 
 ### Automated Weekly Check
 A GitHub Actions workflow (`.github/workflows/upstream_sync.yml`) runs every Monday at 08:00 UTC:
@@ -185,7 +185,7 @@ Categories are NOT hardcoded. Define your own in `.enhanced-cognee-config.json`:
 }
 ```
 
-No code changes required - Enhanced Cognee loads categories at runtime.
+No code changes required - RNR Enhanced Cognee loads categories at runtime.
 Any category name, any prefix. The old ATS/OMA/SMC categories are not used.
 ```
 
@@ -200,7 +200,7 @@ The `ats/`, `oma/`, `smc/` agent directories were archived in Phase 4 for violat
 ```markdown
 ## Agent Integration
 The original 21 SDLC agent modules (ATS, OMA, SMC categories) have been archived
-as of Phase 4 due to hardcoded category violations. Enhanced Cognee now uses a
+as of Phase 4 due to hardcoded category violations. RNR Enhanced Cognee now uses a
 dynamic agent registry loaded from `.enhanced-cognee-config.json`. See
 `.archive/2026-05-13_agents_ats_oma_smc/ARCHIVE_NOTES.md` for migration guidance.
 ```
@@ -235,14 +235,14 @@ Remove:
 ```markdown
 ## License
 
-Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
+RNR Enhanced Cognee is derived from [Cognee](https://github.com/topoteretes/cognee)
 by Topoteretes UG, licensed under the Apache License, Version 2.0.
 
 **Original Cognee copyright**: Copyright 2024 Topoteretes UG
 
-**Enhanced Cognee additions copyright**: Copyright 2026 Vincent S. Pereira
+**RNR Enhanced Cognee additions copyright**: Copyright 2026 Vincent S. Pereira
 
-All Enhanced Cognee additions, modifications, and original code are also
+All RNR Enhanced Cognee additions, modifications, and original code are also
 released under the Apache License, Version 2.0.
 
 The Apache 2.0 license requires that:

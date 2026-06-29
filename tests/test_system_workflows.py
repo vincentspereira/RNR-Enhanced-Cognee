@@ -1,5 +1,5 @@
 """
-System Tests for Enhanced Cognee
+System Tests for RNR Enhanced Cognee
 
 Tests complete end-to-end workflows with all components.
 """

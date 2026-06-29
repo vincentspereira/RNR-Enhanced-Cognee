@@ -1,6 +1,6 @@
 # Progressive Disclosure Search - Usage Guide
 
-**Enhanced Cognee Token-Efficient Search**
+**RNR Enhanced Cognee Token-Efficient Search**
 
 This guide explains how to use progressive disclosure search for 10x token efficiency.
 
@@ -458,4 +458,4 @@ Savings: 74% reduction
 ---
 
 **Generated:** 2026-02-06
-**Enhanced Cognee Team**
+**RNR Enhanced Cognee Team**

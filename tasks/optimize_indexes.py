@@ -1,9 +1,9 @@
 """
-Enhanced Cognee - Optimize Indexes Task
+RNR Enhanced Cognee - Optimize Indexes Task
 
 Scheduled task to optimize database indexes.
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 """
 

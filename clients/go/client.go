@@ -1,4 +1,4 @@
-// Package enhancedcognee is the official Go client for the Enhanced Cognee
+// Package enhancedcognee is the official Go client for the RNR Enhanced Cognee
 // MCP HTTP server. It talks to the FastAPI variant at
 // src/enhanced_cognee_mcp.py over HTTP/JSON.
 //
@@ -40,7 +40,7 @@ type Options struct {
 	Timeout    time.Duration // optional; defaults to 30s
 }
 
-// Client is the Enhanced Cognee MCP HTTP client.
+// Client is the RNR Enhanced Cognee MCP HTTP client.
 type Client struct {
 	baseURL  string
 	apiKey   string

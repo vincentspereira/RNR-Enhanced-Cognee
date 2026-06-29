@@ -1,4 +1,4 @@
-# Enhanced Cognee — Production-Readiness Master Plan
+# RNR Enhanced Cognee — Production-Readiness Master Plan
 
 **Created:** 2026-05-14
 **Owner:** Vincent S. Pereira
@@ -8,7 +8,7 @@
 
 ## How To Use This Document
 
-This is the single source of truth for getting Enhanced Cognee from "feature-complete"
+This is the single source of truth for getting RNR Enhanced Cognee from "feature-complete"
 to "deployed in production."
 
 **For the human (Vincent):**
@@ -71,7 +71,7 @@ to "deployed in production."
 
 **ALL 6 PHASES COMPLETE.** Bonus work since plan was written:
 - [x] **License audit + Redis → Valkey migration** (DONE 2026-05-18, Apache-2.0 throughout)
-- [x] **Docker Compose UI grouping fix** (DONE 2026-05-18, all 4 containers under `enhanced-cognee` project)
+- [x] **Docker Compose UI grouping fix** (DONE 2026-05-18, all 4 containers under `RNR-Enhanced-Cognee` project)
 
 ---
 
@@ -273,7 +273,7 @@ Push to `main` -> every workflow goes green.
 | E2  | Create `deploy/vps/README.md`: step-by-step Ubuntu 24.04 setup on a low-cost VPS (Hetzner CX22 ~4.50 EUR/mo or DigitalOcean $6/mo). Install Docker, clone, run compose, UFW (only 22 + 443 open), Caddy for automatic HTTPS, systemd for auto-restart. No Kubernetes, no managed DBs.                             | Documented runbook.                                          |
 | E3  | Add `deploy/vps/Caddyfile` template. Reverse-proxies HTTPS to FastAPI MCP variant (`src/enhanced_cognee_mcp.py`) with automatic Let's Encrypt cert.                                                                                                                                                               | TLS works on port 443.                                       |
 | E4  | Add `deploy/vps/backup.sh` cron script. Nightly export of postgres + redis + neo4j to `/var/backups/enhanced-cognee/`. 30-day rotation.                                                                                                                                                                           | Backups appear after one run.                                |
-| E5  | Create `deploy/integration-with-mas/README.md`. How to wire Enhanced Cognee as memory layer for `C:\Users\vince\Projects\AI Agents\Multi-Agent System`. Includes: `mcpServers` config block, agent-id conventions (trading-bot, sdlc-agent, analysis-agent), category prefixes (`trading_`, `dev_`, `analysis_`). | MAS can call all 122 tools end-to-end.                       |
+| E5  | Create `deploy/integration-with-mas/README.md`. How to wire RNR Enhanced Cognee as memory layer for `C:\Users\vince\Projects\AI Agents\Multi-Agent System`. Includes: `mcpServers` config block, agent-id conventions (trading-bot, sdlc-agent, analysis-agent), category prefixes (`trading_`, `dev_`, `analysis_`). | MAS can call all 122 tools end-to-end.                       |
 | E6  | Create `docs/operations/RUNBOOK.md`. "What to do when..." for 10 common incidents: postgres down, qdrant slow, undo log full, backup failure, disk full, network partition, container OOM, SSL cert expiry, MCP server hang, schema migration failure. Each section has copy-pasteable commands.                  | Each section actionable.                                     |
 
 ### Gate
@@ -303,7 +303,7 @@ Fresh laptop installs and runs the full stack with one command.
 | F10 | Database migrations: introduce Alembic or Yoyo. Convert all `_ensure_schema()` calls to versioned migrations.                                                                                                  | Schema versions explicit and reversible.  |
 | F11 | Encrypt `.env` at rest using `sops` + `age`.                                                                                                                                                                   | DB passwords no longer plaintext on disk. |
 | F12 | Enable Dependabot for `pip` and `actions` ecosystems.                                                                                                                                                          | Weekly PRs for CVEs.                      |
-| F13 | Add "Compare to alternatives" table to top of README (Enhanced Cognee vs vanilla Cognee vs Mem0 vs Letta).                                                                                                     | First-time visitor decides in <30s.       |
+| F13 | Add "Compare to alternatives" table to top of README (RNR Enhanced Cognee vs vanilla Cognee vs Mem0 vs Letta).                                                                                                     | First-time visitor decides in <30s.       |
 | F14 | Add rate limiting to FastAPI MCP transport (slowapi or starlette-limiter) for when it's internet-exposed.                                                                                                      | Per-IP throttle enforced.                 |
 
 ---
@@ -317,12 +317,12 @@ You confirmed "Gmail account" — so:
    passwords without 2FA.)
 3. **Open App Passwords page:** https://myaccount.google.com/apppasswords
 4. **Create an app password:**
-   - App name: `Enhanced Cognee Upstream Sync`
+   - App name: `RNR Enhanced Cognee Upstream Sync`
    - Click Create
    - Google shows a 16-character password like `abcd efgh ijkl mnop`. **Copy
      immediately — shown only once.** Spaces can be kept or stripped (both work).
 5. **Add to GitHub repo secrets:**
-   - Open https://github.com/vincentspereira/Enhanced-Cognee/settings/secrets/actions
+   - Open https://github.com/vincentspereira/RNR-Enhanced-Cognee/settings/secrets/actions
    - Click "New repository secret"
      - Name: `MAIL_USERNAME`
      - Value: `vincyspereira@gmail.com` (your full Gmail address, exactly that)
@@ -332,7 +332,7 @@ You confirmed "Gmail account" — so:
      - Value: the 16-character app password from step 4
    - Click "Add secret"
 6. **Verify by manual trigger:**
-   - Browser: https://github.com/vincentspereira/Enhanced-Cognee/actions
+   - Browser: https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions
    - Left sidebar: click "Upstream Sync Monitor"
    - Right side: click "Run workflow" dropdown
    - Branch: `main`. baseline_override: leave blank.
@@ -356,8 +356,8 @@ You confirmed "Gmail account" — so:
 
 | #       | Question                                                                                                                                                                                                        | Affects Phase | Status     |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------- |
-| Q1      | For Phase E5 (MAS integration), should Enhanced Cognee be the *only* memory system the Multi-Agent System uses, or share with its existing memory layer? Affects category prefix design and migration strategy. | E             | ANSWERED   |
-| Reply 1 | Enhanced Cognee should share the memory system with MAS's existing memory layer                                                                                                                                 |               |            |
+| Q1      | For Phase E5 (MAS integration), should RNR Enhanced Cognee be the *only* memory system the Multi-Agent System uses, or share with its existing memory layer? Affects category prefix design and migration strategy. | E             | ANSWERED   |
+| Reply 1 | RNR Enhanced Cognee should share the memory system with MAS's existing memory layer                                                                                                                                 |               |            |
 | Q2      | For Phase F3 (multi-tenant), what is a "tenant"? One human user, one organisation, or one application? Affects isolation model and pricing.                                                                     | F             | ANSWERED   |
 | Reply 2 | You may decide on this                                                                                                                                                                                          |               |            |
 | Q3      | For Phase F1 (Grafana), do you already run Grafana somewhere, or should the plan include a `docker-compose-monitoring.yml` to spin up Prometheus + Grafana + Loki alongside the main stack?                     | F             | ANSWERED   |

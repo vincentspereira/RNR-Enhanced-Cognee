@@ -1,4 +1,4 @@
-# Enhanced Cognee Memory Stack - Hierarchical Configuration
+# RNR Enhanced Cognee Memory Stack - Hierarchical Configuration
 # First Layer: cognee (main service)
 # Second Layer: PostgreSQL+pgVector, Qdrant, Neo4j, Redis (within cognee service)
 
@@ -25,7 +25,7 @@ volumes:
 
 services:
   # ===========================================
-  # FIRST LAYER: Enhanced Cognee Service
+  # FIRST LAYER: RNR Enhanced Cognee Service
   # ===========================================
   cognee:
     image: python:3.11-slim
@@ -119,7 +119,7 @@ services:
       - ./.env:/app/.env
 
     ports:
-      - "28080:8080"  # Enhanced Cognee HTTP API
+      - "28080:8080"  # RNR Enhanced Cognee HTTP API
       - "8000:8000"   # Cognee MCP Server Port
 
     networks:
