@@ -1,3 +1,9 @@
+# --- Line-ending normalization (repo is now WSL2/Linux primary) ---------------
+# Force LF in the repo and on checkout for every auto-detected text file, so the
+# Windows -> WSL2 move can never re-introduce CRLF. Git's content-based binary
+# detection (NUL byte) keeps images/db/cache files untouched automatically.
+* text=auto eol=lf
+
 # ignore jupyter notebooks in the language bar on github
 notebooks/** linguist-vendored
 
@@ -6,6 +12,19 @@ notebooks/** linguist-vendored
 
 # Shell scripts + cloud-init run on Linux hosts -- force LF so a CRLF shebang
 # never breaks them (e.g. "bad interpreter: /usr/bin/env bash^M").
+# (Redundant under "* text=auto eol=lf" above, kept explicit for clarity.)
 *.sh        text eol=lf
 *.bash      text eol=lf
 *.tftpl     text eol=lf
+
+# Explicit binary guards (auto-detection already handles these; pinned for safety).
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.pdf  binary
+*.db   binary
+*.sqlite3 binary
+*.coverage binary
