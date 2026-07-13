@@ -7,7 +7,7 @@
 **Target Repositories:**
 
 - Upstream: [topoteretes/cognee](https://github.com/topoteretes/cognee) (Original)
-- Local: `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee` (Enhanced)
+- Local: `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee` (Enhanced)
 
 ---
 
@@ -87,7 +87,7 @@ I used four signals, in order:
 | --------------------- | --------------------------------------------------- | --------------------- |
 | Original GitHub repo  | `topoteretes/cognee`                                | Structure + content   |
 | Original release feed | `gh api /repos/topoteretes/cognee/releases`         | Recent feature deltas |
-| Local Enhanced repo   | `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee` | Current state         |
+| Local Enhanced repo   | `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee` | Current state         |
 | Local cognee fork     | `enhanced-cognee/cognee/`                           | Frozen base (v0.5.1)  |
 | Enhanced MCP server   | `bin/enhanced_cognee_mcp_server.py` (4088 lines)    | Tool inventory        |
 | Original MCP server   | `cognee-mcp/src/server.py` (current)                | Tool inventory        |

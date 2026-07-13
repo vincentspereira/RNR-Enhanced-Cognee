@@ -162,7 +162,7 @@ install step is in the installer scripts.
 (`docs-site.yml`) build and deploy on every push to main. GitHub Pages was
 enabled via `gh api -X POST repos/vincentspereira/RNR-Enhanced-Cognee/pages
 -f build_type=workflow`; the workflow is green and the site is live at
-https://vincentspereira.github.io/Enhanced-Cognee/ . (The mkdocs build
+https://vincentspereira.github.io/RNR-Enhanced-Cognee/ . (The mkdocs build
 always succeeded; the deploy step had 404'd until Pages was enabled.)
 
 ### 15. Type checking with mypy is opt-in -- [PARTIAL -- ratcheting allowlist active]

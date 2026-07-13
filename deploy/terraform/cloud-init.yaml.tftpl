@@ -1,9 +1,9 @@
 #cloud-config
 # ===========================================================================
-# Enhanced Cognee -- production-class host bootstrap (cloud-init)
+# RNR Enhanced Cognee -- production-class host bootstrap (cloud-init)
 # ===========================================================================
 # Rendered by Terraform (deploy/terraform/{hetzner,digitalocean}). Brings a
-# fresh Ubuntu 24.04 box from bare metal to a running Enhanced Cognee stack
+# fresh Ubuntu 24.04 box from bare metal to a running RNR Enhanced Cognee stack
 # non-interactively -- the automated equivalent of deploy/vps/README.md steps
 # 2-9, so the production-hardware SLA re-confirmation is one `terraform apply`.
 #
@@ -131,4 +131,4 @@ runcmd:
   - systemctl enable --now docker
   - /opt/bootstrap-enhanced-cognee.sh > /var/log/enhanced-cognee-bootstrap.log 2>&1
 
-final_message: "Enhanced Cognee host bootstrapped in $UPTIME s. See /var/log/enhanced-cognee-bootstrap.log"
+final_message: "RNR Enhanced Cognee host bootstrapped in $UPTIME s. See /var/log/enhanced-cognee-bootstrap.log"

@@ -11,7 +11,7 @@ into your first message, or `cat docs/HANDOVER.md` and ask Claude to read it).
 
 ## 1. Project location and rules
 
-- **Repo root:** `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\`
+- **Repo root:** `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee`
 - **Upstream:** `topoteretes/cognee` (we are a fork at `vincentspereira/RNR-Enhanced-Cognee`)
 - **Default branch:** `main` (protected — see §5 below)
 - **Always read first:** the project's `CLAUDE.md` (project-wide rules) and
@@ -292,7 +292,7 @@ the full table. Highlights:
 - **H4.** Performance tests: run locust against live stack, document p50/p95/p99.
 
 ### MEDIUM
-- **M1.** `examples/` directory: 4-5 Enhanced-Cognee-specific Python scripts.
+- **M1.** `examples/` directory: 4-5 RNR-Enhanced-Cognee-specific Python scripts.
 - **M2.** `CONTRIBUTING.md`.
 - **M3.** GitHub Issue/PR templates.
 - **M4.** `pre-commit install` in installer scripts (currently optional).

@@ -40,7 +40,7 @@ Required GitHub Secrets (set in repo settings):
 To check for new upstream releases without waiting for the weekly cron:
 
 ```bat
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 python scripts/upstream_diff.py --check-only
 ```
 
@@ -166,7 +166,7 @@ assert count == 72, f"Expected 72 @mcp.tool() decorators, found {count}"
 ### Step 6: Run the test suite
 
 ```bat
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 python -m pytest tests/unit/ -q
 ```
 

@@ -1,4 +1,4 @@
-; Enhanced Cognee - Inno Setup installer script
+; RNR Enhanced Cognee - Inno Setup installer script
 ; Build via installer\build\build_windows.ps1 (which compiles the launcher
 ; with PyInstaller first), or directly:
 ;   iscc /DAppVersion=1.0.0 installer\windows\EnhancedCognee.iss
@@ -9,12 +9,12 @@
 
 [Setup]
 AppId={{8E2B2F4D-5A1C-4C9D-9B7E-EC0A1EE5C0DE}
-AppName=Enhanced Cognee
+AppName=RNR Enhanced Cognee
 AppVersion={#AppVersion}
-AppPublisher=Enhanced Cognee Team
+AppPublisher=RNR Enhanced Cognee Team
 AppPublisherURL=https://github.com/vincentspereira/enhanced-cognee
-DefaultDirName={autopf}\Enhanced Cognee
-DefaultGroupName=Enhanced Cognee
+DefaultDirName={autopf}\RNR Enhanced Cognee
+DefaultGroupName=RNR Enhanced Cognee
 DisableProgramGroupPage=yes
 OutputDir=..\dist
 OutputBaseFilename=EnhancedCognee-Setup-{#AppVersion}
@@ -22,7 +22,7 @@ Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=lowest
-UninstallDisplayName=Enhanced Cognee
+UninstallDisplayName=RNR Enhanced Cognee
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -34,12 +34,12 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\dist\EnhancedCogneeLauncher.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\Enhanced Cognee"; Filename: "{app}\EnhancedCogneeLauncher.exe"
-Name: "{group}\{cm:UninstallProgram,Enhanced Cognee}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\Enhanced Cognee"; Filename: "{app}\EnhancedCogneeLauncher.exe"; Tasks: desktopicon
+Name: "{group}\RNR Enhanced Cognee"; Filename: "{app}\EnhancedCogneeLauncher.exe"
+Name: "{group}\{cm:UninstallProgram,RNR Enhanced Cognee}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\RNR Enhanced Cognee"; Filename: "{app}\EnhancedCogneeLauncher.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\EnhancedCogneeLauncher.exe"; Description: "{cm:LaunchProgram,Enhanced Cognee}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\EnhancedCogneeLauncher.exe"; Description: "{cm:LaunchProgram,RNR Enhanced Cognee}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 ; Keep user data (%LOCALAPPDATA%\EnhancedCognee) - memories survive reinstall

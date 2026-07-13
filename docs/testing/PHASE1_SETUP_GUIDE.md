@@ -32,7 +32,7 @@ This guide walks you through the complete setup of Phase 1 of the RNR Enhanced C
 
 ### 1. Clone Repository and Navigate
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 ```
 
 ### 2. Run Automated Setup

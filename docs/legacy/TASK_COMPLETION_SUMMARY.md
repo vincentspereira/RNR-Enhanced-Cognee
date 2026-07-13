@@ -374,7 +374,7 @@ pytest --cov=src --cov-report=html
 ### 1. Run the Tests
 
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 
 # Install test dependencies
 pip install -r requirements-test.txt

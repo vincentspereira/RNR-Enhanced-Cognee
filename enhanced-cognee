@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Enhanced Cognee CLI Wrapper
+RNR Enhanced Cognee CLI Wrapper
 
-Main command-line interface for Enhanced Cognee.
+Main command-line interface for RNR Enhanced Cognee.
 
 Usage:
     enhanced-cognee start [--mode {full,lite}]
@@ -13,7 +13,7 @@ Usage:
     enhanced-cognee uninstall
     enhanced-cognee logs
 
-Author: Enhanced Cognee Team
+Author: RNR Enhanced Cognee Team
 Version: 1.0.0
 Date: 2026-02-06
 """
@@ -29,7 +29,7 @@ from typing import Optional
 
 
 class EnhancedCogneeCLI:
-    """Command-line interface for Enhanced Cognee."""
+    """Command-line interface for RNR Enhanced Cognee."""
 
     def __init__(self):
         """Initialize CLI."""
@@ -69,10 +69,10 @@ class EnhancedCogneeCLI:
             sys.exit(1)
 
     def cmd_start(self, args):
-        """Start Enhanced Cognee services."""
+        """Start RNR Enhanced Cognee services."""
         mode = args.mode or self._get_installation_mode()
 
-        print(f"Starting Enhanced Cognee in {mode} mode...")
+        print(f"Starting RNR Enhanced Cognee in {mode} mode...")
 
         if mode == "lite":
             print("INFO Lite mode does not require Docker")
@@ -90,13 +90,13 @@ class EnhancedCogneeCLI:
             print("INFO MCP server should be started separately:")
             print("  python enhanced_cognee_mcp_server.py")
 
-        print("OK Enhanced Cognee started")
+        print("OK RNR Enhanced Cognee started")
 
     def cmd_stop(self, args):
-        """Stop Enhanced Cognee services."""
+        """Stop RNR Enhanced Cognee services."""
         mode = self._get_installation_mode()
 
-        print(f"Stopping Enhanced Cognee ({mode} mode)...")
+        print(f"Stopping RNR Enhanced Cognee ({mode} mode)...")
 
         if mode == "full":
             if self._stop_docker():
@@ -106,11 +106,11 @@ class EnhancedCogneeCLI:
         else:
             print("INFO Lite mode - no Docker services to stop")
 
-        print("OK Enhanced Cognee stopped")
+        print("OK RNR Enhanced Cognee stopped")
 
     def cmd_status(self, args):
-        """Show Enhanced Cognee status."""
-        print("Enhanced Cognee Status")
+        """Show RNR Enhanced Cognee status."""
+        print("RNR Enhanced Cognee Status")
         print("-" * 60)
 
         mode = self._get_installation_mode()
@@ -157,7 +157,7 @@ class EnhancedCogneeCLI:
         """Run installation wizard."""
         import subprocess
 
-        print("Starting Enhanced Cognee setup wizard...")
+        print("Starting RNR Enhanced Cognee setup wizard...")
         print()
 
         result = subprocess.run(
@@ -172,8 +172,8 @@ class EnhancedCogneeCLI:
         sys.exit(result.returncode)
 
     def cmd_uninstall(self, args):
-        """Uninstall Enhanced Cognee."""
-        print("WARNING: This will stop all Enhanced Cognee services")
+        """Uninstall RNR Enhanced Cognee."""
+        print("WARNING: This will stop all RNR Enhanced Cognee services")
         response = input("Do you want to continue? (y/N): ").strip().lower()
 
         if response != 'y':
@@ -187,10 +187,10 @@ class EnhancedCogneeCLI:
             print("Removing Docker volumes...")
             self._cleanup_docker()
 
-        print("OK Enhanced Cognee uninstalled")
+        print("OK RNR Enhanced Cognee uninstalled")
 
     def cmd_logs(self, args):
-        """Show Enhanced Cognee logs."""
+        """Show RNR Enhanced Cognee logs."""
         service = args.service or "all"
 
         if service == "mcp":
@@ -284,18 +284,18 @@ class EnhancedCogneeCLI:
 
     def print_help(self):
         """Print help message."""
-        print("Enhanced Cognee CLI")
+        print("RNR Enhanced Cognee CLI")
         print()
         print("Usage:")
         print("  enhanced-cognee <command> [options]")
         print()
         print("Commands:")
-        print("  start       Start Enhanced Cognee services")
-        print("  stop        Stop Enhanced Cognee services")
+        print("  start       Start RNR Enhanced Cognee services")
+        print("  stop        Stop RNR Enhanced Cognee services")
         print("  status      Show service status")
         print("  health      Run health checks")
         print("  install     Run installation wizard")
-        print("  uninstall   Uninstall Enhanced Cognee")
+        print("  uninstall   Uninstall RNR Enhanced Cognee")
         print("  logs        Show service logs")
         print()
         print("Options:")
@@ -307,14 +307,14 @@ class EnhancedCogneeCLI:
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Enhanced Cognee Command-Line Interface",
+        description="RNR Enhanced Cognee Command-Line Interface",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # Start command
-    start_parser = subparsers.add_parser("start", help="Start Enhanced Cognee")
+    start_parser = subparsers.add_parser("start", help="Start RNR Enhanced Cognee")
     start_parser.add_argument(
         "--mode",
         choices=["full", "lite"],
@@ -322,7 +322,7 @@ def main():
     )
 
     # Stop command
-    subparsers.add_parser("stop", help="Stop Enhanced Cognee")
+    subparsers.add_parser("stop", help="Stop RNR Enhanced Cognee")
 
     # Status command
     subparsers.add_parser("status", help="Show status")
@@ -334,7 +334,7 @@ def main():
     subparsers.add_parser("install", help="Run installation wizard")
 
     # Uninstall command
-    uninstall_parser = subparsers.add_parser("uninstall", help="Uninstall Enhanced Cognee")
+    uninstall_parser = subparsers.add_parser("uninstall", help="Uninstall RNR Enhanced Cognee")
     uninstall_parser.add_argument(
         "--cleanup",
         action="store_true",

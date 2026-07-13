@@ -55,7 +55,7 @@ This guide explains how to run the RNR Enhanced Cognee Dashboard using Docker co
 ### 1. Start All Services
 
 ```bash
-cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\dashboard
+cd /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/dashboard
 docker compose -f docker-compose-dashboard.yml up -d
 ```
 

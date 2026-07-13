@@ -76,7 +76,7 @@ Open these files and verify:
 
 ### Step 2: Commit all changes
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 
 # Add all files
 git add .
@@ -149,7 +149,7 @@ Before uploading, verify:
 
 ```bash
 # Check git status (should NOT show .env)
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 git status
 
 # Search for any remaining credentials

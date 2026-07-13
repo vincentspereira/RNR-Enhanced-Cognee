@@ -1,7 +1,7 @@
 # Integrating RNR Enhanced Cognee with Multi-Agent System (MAS)
 
 This guide wires RNR Enhanced Cognee as the memory layer for the Multi-Agent System
-at `C:\Users\vince\Projects\AI Agents\Multi-Agent System`.
+at `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System`.
 
 **Per Q1 answer in PRODUCTION_READINESS_PLAN.md:** RNR Enhanced Cognee SHARES the
 memory system with MAS's existing memory layer. They coexist; RNR Enhanced Cognee
@@ -82,9 +82,9 @@ RNR Enhanced Cognee MCP server entry:
 {
   "mcpServers": {
     "cognee": {
-      "command": "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\.venv\\Scripts\\python.exe",
+      "command": "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/.venv/bin/python",
       "args": [
-        "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\bin\\enhanced_cognee_mcp_server.py"
+        "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/bin/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -128,7 +128,7 @@ MAS already has agent IDs in its codebase. Map them to RNR Enhanced Cognee's
 
 ## Step 3: Configure Category Prefixes
 
-Create `C:\Users\vince\Projects\AI Agents\Multi-Agent System\.enhanced-cognee-config.json`:
+Create `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System/.enhanced-cognee-config.json`:
 
 ```json
 {
@@ -158,7 +158,7 @@ Set the env var so MAS picks it up:
 ```bash
 # Windows (Powershell)
 [Environment]::SetEnvironmentVariable("ENHANCED_COGNEE_CONFIG_PATH",
-    "C:\Users\vince\Projects\AI Agents\Multi-Agent System\.enhanced-cognee-config.json",
+    "/home/vincentspereira/Projects/AI-Agents/Multi-Agent System/.enhanced-cognee-config.json",
     "User")
 ```
 

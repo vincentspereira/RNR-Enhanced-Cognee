@@ -6,7 +6,7 @@ RNR Enhanced Cognee events occur (memory added, backup complete, consolidation
 finished, GDPR request processed, etc.).
 
 Features:
-    - HMAC-SHA256 signatures (header: X-Enhanced-Cognee-Signature)
+    - HMAC-SHA256 signatures (header: X-RNR-Enhanced-Cognee-Signature)
     - Configurable retry with exponential backoff (up to 3 attempts)
     - Per-webhook event type filtering
     - Enable/disable individual webhooks without deleting them
@@ -23,7 +23,7 @@ Webhook payload structure:
 Signature verification (for receiver):
     import hmac, hashlib
     expected = hmac.new(secret.encode(), body_bytes, hashlib.sha256).hexdigest()
-    assert request.headers["X-Enhanced-Cognee-Signature"] == f"sha256={expected}"
+    assert request.headers["X-RNR-Enhanced-Cognee-Signature"] == f"sha256={expected}"
 """
 
 from __future__ import annotations
@@ -185,9 +185,9 @@ class WebhookManager:
         signature = self._sign_payload(wh.secret, body)
         headers = {
             "Content-Type": "application/json",
-            "X-Enhanced-Cognee-Signature": signature,
-            "X-Enhanced-Cognee-Event": payload.get("event", "unknown"),
-            "X-Enhanced-Cognee-Webhook-ID": wh.id,
+            "X-RNR-Enhanced-Cognee-Signature": signature,
+            "X-RNR-Enhanced-Cognee-Event": payload.get("event", "unknown"),
+            "X-RNR-Enhanced-Cognee-Webhook-ID": wh.id,
         }
 
         try:

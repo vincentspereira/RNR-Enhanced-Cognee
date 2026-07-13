@@ -6,19 +6,19 @@
 
 1. **Start the RNR Enhanced Cognee databases:**
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 ```
 
 2. **Start the Dashboard API:**
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 python dashboard/dashboard_api.py
 ```
 
 3. **Start the Next.js Dashboard:**
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\dashboard\nextjs-dashboard"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/dashboard/nextjs-dashboard"
 npm run dev
 ```
 

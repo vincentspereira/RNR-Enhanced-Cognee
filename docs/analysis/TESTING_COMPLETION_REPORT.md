@@ -249,7 +249,7 @@ pip install pytest pytest-asyncio pytest-mock pytest-cov langdetect
 
 2. **Ensure databases are running (for integration/system tests):**
 ```bash
-cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee
+cd /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 ```
 
@@ -451,7 +451,7 @@ pip install langdetect
 **Solution:**
 ```bash
 # Ensure you're in the project root
-cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee
+cd /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee
 
 # Add src to PYTHONPATH
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"

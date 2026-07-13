@@ -74,7 +74,7 @@ The full implementation will require significant code changes across multiple fi
 - Inter-agent communication support
 
 ### 9. Real-Time Memory Synchronization (for 21 SDLC Agents)
-**Agent location:** `C:\Users\vince\Projects\AI Agents\Multi-Agent System\agents\agent - sdlc`
+**Agent location:** `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System/agents/agent - sdlc`
 
 **Implementation approach:**
 - Event-based synchronization system

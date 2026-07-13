@@ -1,5 +1,5 @@
 """
-Comprehensive Unit Tests for ALL 60+ MCP Tools in Enhanced Cognee MCP Server
+Comprehensive Unit Tests for ALL 60+ MCP Tools in RNR Enhanced Cognee MCP Server
 
 Tests EVERY tool with:
 1. Happy path - normal operation
@@ -482,11 +482,11 @@ class TestStandardMemoryTools:
 
 
 # ============================================================================
-# 2. Enhanced Cognee Tools (5 tools)
+# 2. RNR Enhanced Cognee Tools (5 tools)
 # ============================================================================
 
 class TestEnhancedCogneeTools:
-    """Test Enhanced Cognee core functionality tools"""
+    """Test RNR Enhanced Cognee core functionality tools"""
 
     @pytest.mark.asyncio
     async def test_cognify_happy_path(self, mock_global_instances, mock_postgres_conn):
@@ -577,7 +577,7 @@ class TestEnhancedCogneeTools:
         result = await server.get_stats()
 
         assert_ascii_only(result)
-        assert "Enhanced Cognee" in result or "status" in result.lower()
+        assert "RNR Enhanced Cognee" in result or "status" in result.lower()
 
     @pytest.mark.asyncio
     async def test_health_happy_path(self, mock_global_instances):
@@ -2149,7 +2149,7 @@ Coverage Summary for test_all_mcp_tools.py:
 Tools Tested: 60+
 Test Categories:
 1. Standard Memory Tools (7): add_memory, search_memories, get_memories, get_memory, update_memory, delete_memory, list_agents
-2. Enhanced Cognee Tools (5): cognify, search, list_data, get_stats, health
+2. RNR Enhanced Cognee Tools (5): cognify, search, list_data, get_stats, health
 3. Memory Management (4): expire_memories, get_memory_age_stats, set_memory_ttl, archive_category
 4. Deduplication (6): check_duplicate, auto_deduplicate, get_deduplication_stats, deduplicate, schedule_deduplication, deduplication_report
 5. Summarization (5): summarize_old_memories, summarize_category, get_summary_stats, schedule_summarization, summary_stats

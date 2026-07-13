@@ -866,7 +866,7 @@ Auto-triggered by the RNR Enhanced Cognee system, schedulers, or background proc
     "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "C:\\Users\\vince\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\bin\\enhanced_cognee_mcp_server.py"
+        "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/bin/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",

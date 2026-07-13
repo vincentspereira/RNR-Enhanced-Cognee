@@ -131,7 +131,7 @@ A full side-by-side feature matrix lives in [`COMPARE_TO_ALTERNATIVES.md`](./COM
    - 4a. Import as Python library → unrestricted.
    - 4b. MAS shells out to MCP server → unrestricted.
    - 4c. Vendored copy → unrestricted, preserve LICENSE + NOTICE.
-5. **MAS-with-Enhanced-Cognee as closed-source commercial product**:
+5. **MAS-with-RNR-Enhanced-Cognee as closed-source commercial product**:
    Safe under Apache-2.0; apply Scenario-3 rules for Neo4j and Scenario-1
    rules for Grafana/Loki (keep them optional + separate compose file).
 
@@ -563,7 +563,7 @@ Prerequisites: Docker Desktop, Python 3.11+, Claude Code installed.
 
 ```powershell
 # 1. Bring up the stack
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 
 # 2. Verify

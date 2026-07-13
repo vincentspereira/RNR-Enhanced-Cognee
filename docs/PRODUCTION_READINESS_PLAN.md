@@ -53,7 +53,7 @@ to "deployed in production."
 ## Deployment Plan Targets (user-confirmed)
 
 - **Initial:** Local / self-hosted on laptop, integrate with Multi-Agent System at
-  `C:\Users\vince\Projects\AI Agents\Multi-Agent System`
+  `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System`
 - **Next:** Self-hosted on a low-cost VPS (Hetzner / DigitalOcean, target less than $10/month)
 - **Future (only when monetising):** Higher-tier VPS or managed cloud
 - **Cost constraint:** Zero spend during development and early production
@@ -273,7 +273,7 @@ Push to `main` -> every workflow goes green.
 | E2  | Create `deploy/vps/README.md`: step-by-step Ubuntu 24.04 setup on a low-cost VPS (Hetzner CX22 ~4.50 EUR/mo or DigitalOcean $6/mo). Install Docker, clone, run compose, UFW (only 22 + 443 open), Caddy for automatic HTTPS, systemd for auto-restart. No Kubernetes, no managed DBs.                             | Documented runbook.                                          |
 | E3  | Add `deploy/vps/Caddyfile` template. Reverse-proxies HTTPS to FastAPI MCP variant (`src/enhanced_cognee_mcp.py`) with automatic Let's Encrypt cert.                                                                                                                                                               | TLS works on port 443.                                       |
 | E4  | Add `deploy/vps/backup.sh` cron script. Nightly export of postgres + redis + neo4j to `/var/backups/enhanced-cognee/`. 30-day rotation.                                                                                                                                                                           | Backups appear after one run.                                |
-| E5  | Create `deploy/integration-with-mas/README.md`. How to wire RNR Enhanced Cognee as memory layer for `C:\Users\vince\Projects\AI Agents\Multi-Agent System`. Includes: `mcpServers` config block, agent-id conventions (trading-bot, sdlc-agent, analysis-agent), category prefixes (`trading_`, `dev_`, `analysis_`). | MAS can call all 122 tools end-to-end.                       |
+| E5  | Create `deploy/integration-with-mas/README.md`. How to wire RNR Enhanced Cognee as memory layer for `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System`. Includes: `mcpServers` config block, agent-id conventions (trading-bot, sdlc-agent, analysis-agent), category prefixes (`trading_`, `dev_`, `analysis_`). | MAS can call all 122 tools end-to-end.                       |
 | E6  | Create `docs/operations/RUNBOOK.md`. "What to do when..." for 10 common incidents: postgres down, qdrant slow, undo log full, backup failure, disk full, network partition, container OOM, SSL cert expiry, MCP server hang, schema migration failure. Each section has copy-pasteable commands.                  | Each section actionable.                                     |
 
 ### Gate

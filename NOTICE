@@ -1,4 +1,4 @@
-Enhanced Cognee
+RNR Enhanced Cognee
 Copyright 2024-2026 Vincent S. Pereira
 
 This product is a derivative work of Cognee
@@ -36,7 +36,7 @@ Neo4j Community Edition
   Copyright Neo4j Inc.
   License: GPLv3 (Community Edition); Commercial license available for Enterprise
   Used as a separate network service via Docker; no copyleft obligation on
-  Enhanced Cognee's own code per the "mere aggregation" + "network service"
+  RNR Enhanced Cognee's own code per the "mere aggregation" + "network service"
   patterns. See docs/LICENSE_AUDIT.md for the full analysis. If you require
   a fully Apache-2.0 graph database, see the alternatives section in that doc
   (Apache AGE on PostgreSQL is the recommended swap when needed).
@@ -100,10 +100,10 @@ OPTIONAL MONITORING STACK (separate docker-compose, not bundled)
   Promtail (Apache-2.0)
   Jaeger (Apache-2.0)
 
-Grafana and Loki are AGPLv3. They are NOT redistributed by Enhanced Cognee;
+Grafana and Loki are AGPLv3. They are NOT redistributed by RNR Enhanced Cognee;
 operators bring them up separately via monitoring/docker-compose-monitoring.yml
 if desired. AGPL obligations apply to the operator of those services, not to
-Enhanced Cognee. See docs/LICENSE_AUDIT.md for the full analysis.
+RNR Enhanced Cognee. See docs/LICENSE_AUDIT.md for the full analysis.
 
 ================================================================================
 END OF NOTICE

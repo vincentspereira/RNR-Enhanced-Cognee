@@ -89,7 +89,7 @@ pip install flask==2.3.3 flask-socketio==5.3.6 cryptography==41.0.7 psutil==5.9.
 
 ### Basic Configuration
 
-Create a configuration file at `C:\Users\vince\.claude\cognee_config.json`:
+Create a configuration file at `/home/vincentspereira/.claude/cognee_config.json`:
 
 ```json
 {
@@ -487,7 +487,7 @@ print("Analytics working")
 ## 📁 File Structure
 
 ```
-C:\Users\vince\.claude\
+/home/vincentspereira/.claude
 ├── cognee_data\                 # RNR Enhanced Cognee data directory
 │   ├── analytics\               # Analytics data and reports
 │   ├── backups\                 # System backups
@@ -541,7 +541,7 @@ pip install cryptography==41.0.7
 ```python
 # Check database file exists
 from pathlib import Path
-db_path = Path("C:/Users/vince/.claude/cognee_data/analytics.db")
+db_path = Path("/home/vincentspereira/.claude/cognee_data/analytics.db")
 print(f"Database exists: {db_path.exists()}")
 
 # Recreate database if corrupted

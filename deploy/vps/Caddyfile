@@ -1,4 +1,4 @@
-# Caddyfile for Enhanced Cognee VPS deployment.
+# Caddyfile for RNR Enhanced Cognee VPS deployment.
 # Replace 'cognee.example.com' with your actual domain.
 # Drop in: /etc/caddy/Caddyfile
 

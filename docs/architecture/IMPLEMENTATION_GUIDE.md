@@ -63,7 +63,7 @@ graph LR
 
 ```bash
 # Clone or navigate to the project
-cd C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee
+cd /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee
 
 # Start Enhanced stack
 docker-compose -f docker/docker-compose-enhanced-cognee.yml up -d

@@ -8,7 +8,7 @@ Two paths, depending on where you're deploying.
 | **B. VPS (Hetzner CX22)** | Production, shared with team, internet-reachable | 45 min |
 
 Both paths assume you already have:
-- The repo cloned at `C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee\` (or equivalent)
+- The repo cloned at `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee` (or equivalent)
 - Docker Desktop installed
 - Python 3.11+ installed
 - Claude Code installed
@@ -38,7 +38,7 @@ You should see 4 containers, all `(healthy)`:
 If any are missing or unhealthy:
 
 ```powershell
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 # Wait 30 seconds, then check again
 docker ps
@@ -47,7 +47,7 @@ docker ps
 ### A2. Run the smoke test
 
 ```powershell
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 
 # Postgres
 docker exec cognee-mcp-postgres pg_isready -U cognee_user
@@ -77,7 +77,7 @@ out of the box.
 
 ```powershell
 # Run the installer (idempotent - safe to re-run)
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
 ```
 
@@ -114,8 +114,8 @@ You should see `cognee` listed with green status. If it shows red/failed:
    paths to the venv Python and the MCP server script
 2. Open a PowerShell, run the MCP server directly and look for errors:
    ```powershell
-   cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
-   .venv\Scripts\python.exe bin\enhanced_cognee_mcp_server.py
+   cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
+   .venv/bin/python bin\enhanced_cognee_mcp_server.py
    ```
 3. Most common cause: Docker stack not running. Run `docker ps` and confirm.
 
@@ -139,7 +139,7 @@ the memory you just stored.
 
 ### A7. (Optional) Integrate with the Multi-Agent System
 
-If you want the MAS agents at `C:\Users\vince\Projects\AI Agents\Multi-Agent System`
+If you want the MAS agents at `/home/vincentspereira/Projects/AI-Agents/Multi-Agent System`
 to use RNR Enhanced Cognee as their memory layer, follow
 [`deploy/integration-with-mas/README.md`](../deploy/integration-with-mas/README.md).
 
@@ -385,8 +385,8 @@ For more detailed troubleshooting see [`docs/operations/RUNBOOK.md`](operations/
 2. `tail -20 ~/.claude/logs/mcp.log` -- look for the actual error
 3. Try running the server directly to see stderr:
    ```powershell
-   cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
-   .venv\Scripts\python.exe bin\enhanced_cognee_mcp_server.py
+   cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
+   .venv/bin/python bin\enhanced_cognee_mcp_server.py
    ```
 
 ### "Permission denied" running install.ps1

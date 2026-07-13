@@ -4,7 +4,7 @@
 
 This document explains how RNR Enhanced Cognee benefits and integrates with your **21 SDLC Sub Agents** located at:
 ```
-C:\Users\vince\Projects\AI Agents\Multi-Agent System\agents\agent - sdlc
+/home/vincentspereira/Projects/AI-Agents/Multi-Agent System/agents/agent - sdlc
 ```
 
 ---
@@ -476,7 +476,7 @@ Time 00:02 - Agents make decisions based on fresh data
 ### Step 1: Start RNR Enhanced Cognee
 
 ```bash
-cd "C:\Users\vince\Projects\AI Agents\RNR Enhanced Cognee"
+cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"
 
 # Start databases
 docker compose -f docker/docker-compose-enhanced-cognee.yml up -d

@@ -57,10 +57,10 @@ Add this block to `~/.claude.json` (Claude Code) or your IDE's MCP config:
     "cognee": {
       "command": "python",
       "args": [
-        "/path/to/Enhanced-Cognee/bin/enhanced_cognee_mcp_server.py"
+        "/path/to/RNR-Enhanced-Cognee/bin/enhanced_cognee_mcp_server.py"
       ],
       "env": {
-        "PYTHONPATH": "/path/to/Enhanced-Cognee",
+        "PYTHONPATH": "/path/to/RNR-Enhanced-Cognee",
         "ENHANCED_COGNEE_MODE": "true",
         "POSTGRES_HOST": "localhost",
         "POSTGRES_PORT": "25432",
