@@ -5,7 +5,7 @@ Welcome to the RNR Enhanced Cognee documentation. This section contains comprehe
 ## Quick Links
 
 ### Getting Started
-- [Quick Start Guide](guides/QUICK_START.md) - Get started quickly
+- [Quick Start Guide](QUICK_START.md) - Get started quickly
 - [Installation Guide](guides/CROSS_IDE_INSTALLATION.md) - Installation instructions
 - [Configuration Guide](development/CONFIGURATION_GUIDE.md) - Configuration options
 - [User Guide](guides/USER_GUIDE.md) - Complete user documentation
@@ -13,8 +13,11 @@ Welcome to the RNR Enhanced Cognee documentation. This section contains comprehe
 ### Key Documentation
 - [MCP IDE Setup](guides/MCP_IDE_SETUP.md) - Configure MCP for your IDE
 - [Frontend Quickstart](guides/FRONTEND_QUICKSTART.md) - Frontend setup guide
-- [Lite Mode Guide](guides/LITE_MODE_GUIDE.md) - Minimal installation
 - [Backup & Restore](guides/BACKUP_RESTORE_GUIDE.md) - Backup procedures
+- [Outstanding Items & Gap Analysis](OUTSTANDING_ITEMS.md) - Frank status of every gap, shipped or open
+- [Secrets Management](SECRETS_MANAGEMENT.md) - Key/secret lifecycle incl. AES-256-GCM encryption-at-rest rotation
+- [Session Handover Brief](HANDOVER.md) - Current-state brief for new agent sessions
+- [Runbooks](runbooks/) - RB-001 to RB-010 incident and operations playbooks
 
 ## Documentation Sections
 

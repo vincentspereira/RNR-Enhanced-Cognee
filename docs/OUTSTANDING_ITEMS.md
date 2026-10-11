@@ -2,7 +2,9 @@
 
 A frank look at what's still rough or missing in RNR Enhanced Cognee.
 Originally written 2026-05-18; refreshed 2026-05-21 to mark items
-that have actually shipped. Categorised by urgency.
+that have actually shipped; refreshed again 2026-10-11 (mypy ratchet
+status + the 2026-06 security/perf sprint closures below).
+Categorised by urgency.
 
 > **Status legend:**
 >
@@ -169,10 +171,9 @@ always succeeded; the deploy step had 404'd until Pages was enabled.)
 
 **Status:** Enforced on a ratcheting allowlist, not yet repo-wide. The CI
 lint job runs a BLOCKING `mypy` over a curated set of fully-annotated core
-modules (10 as of 2026-06-04: auth.py, enterprise_auth.py, mcp_security.py,
-multi_tenant.py, rate_limiter.py, secure_config.py, circuit_breaker.py,
-mcp_response_formatter.py, encryption_manager.py, gdpr_manager.py -- i.e. the
-authn/authz + secret-loading + tenant + encryption + GDPR core); type breakage
+modules (**29 as of 2026-07**, ratcheted 5 -> 10 -> 29 across
+f1eea6e8c / a33d0ab57 / 572b439ff: the authn/authz + secret-loading +
+tenant + encryption + GDPR + security + data-governance core); type breakage
 in any of them now fails CI. A second, informational `mypy src/` sweep reports
 the remaining debt without blocking. That debt is **~900 errors across 92
 files** under the strict config -- a multi-day annotation workstream, hence the
@@ -277,6 +278,26 @@ MEDIUM items. The 11 items now marked [SHIPPED]:
 | 11 | Issue templates                            | Already shipped                   |
 | 12 | PR template                                | Already shipped                   |
 | 13 | Pre-commit hooks not enforced              | `.pre-commit-config.yaml` present |
+
+## 2026-06 -> 2026-07 sprint closures (recorded 2026-10-11)
+
+The security / performance / CI hardening sprint closed the following
+(no numbered gaps above — these were newly surfaced and fixed in-source):
+
+| Commit      | What shipped |
+| ----------- | ------------ |
+| `0413d0575` | Committed secrets scrubbed; fail-closed credential handling; log rotation |
+| `dbc2e494f` | HTTP servers hardened (resilience + observability) |
+| `2d8222d0e` | Enterprise RBAC, SSO/OIDC, audit logging on both server surfaces |
+| `620787923` | Generic `POST /tools/{tool_name}` — all 122 tools over HTTP |
+| `907940e52` | HTTP port standardized on 8080 everywhere |
+| `7d7d92bd1` | FTS GIN index to meet the p95 SLA; adapter micro-benchmark |
+| `5357227f4` | Production-host IaC + turnkey SLA/soak re-run suite |
+| `049c4a9b4` | Encryption at rest upgraded Fernet AES-128-CBC -> AES-256-GCM |
+| `ba3d1d109` | Product telemetry made opt-in (`COGNEE_TELEMETRY_ENABLED`) |
+| `a0bf7db36` | 2h/40u soak baseline recorded — PASS, no memory leak |
+| `8aec117a0` | Node/TS SDK build repaired (was blocking npm publish) |
+| `6d6e19275` | Required CI gate (`ci-required.yml`) merged 2026-10-11 from `qa/ci-required-gate` (VIN-39) |
 
 ## Recommended Next-Sprint Priority
 

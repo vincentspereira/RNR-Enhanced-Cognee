@@ -99,8 +99,14 @@ def add_memory(agent_id: str, content: str, memory_category: str):
 - [OK] RNR Enhanced Cognee MCP Server (simplified, ASCII-only)
 - [OK] Standard Memory MCP Tools (Claude Code compatible)
 - [OK] Dynamic Category System (no hardcoded categories)
-- [OK] Enhanced Memory Stack: PostgreSQL, Qdrant, Neo4j, Redis
+- [OK] Enhanced Memory Stack: PostgreSQL, Qdrant, ArcadeDB (default graph), Valkey
 - [OK] ASCII-only output (no Unicode encoding issues)
+- [OK] AES-256-GCM encryption at rest (upgraded from Fernet 2026-06)
+- [OK] Enterprise RBAC + SSO/OIDC + audit logging on both server surfaces
+- [OK] Opt-in product telemetry (COGNEE_TELEMETRY_ENABLED; no phone-home by default)
+- [OK] All 122 MCP tools over HTTP (POST /tools/{tool_name}; port 8080)
+- [OK] SLA + soak baselines: 210.6 RPS @ 100 users, p95 170 ms; 2h soak, no leak
+- [OK] Required CI gate (unit tests, no services) merged from qa/ci-required-gate 2026-10-11
 
 **MCP Server Configuration:**
 - Location: `/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py`

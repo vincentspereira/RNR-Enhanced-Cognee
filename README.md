@@ -8,13 +8,13 @@
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-4661%20Passing%20(100%25)-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
+  [![Tests](https://img.shields.io/badge/Tests-4184%20Unit-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![Coverage](https://img.shields.io/badge/Coverage-95%25%2B-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Hardened-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![Production](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
 
-![Tests](https://img.shields.io/badge/tests-4661%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-4184%20unit-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
@@ -25,15 +25,37 @@
 ![SDKs](https://img.shields.io/badge/SDKs-Python%20%7C%20Node%20%7C%20Go%20%7C%20Rust-blueviolet)
 ![Multi-tenant](https://img.shields.io/badge/multi--tenant-X--Tenant--ID-success)
 
-**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, multi-tenant data partitioning, cross-language client SDKs (Python / Node / Go / Rust), encryption at rest, MCP server hardening (API-key + rate limit + payload cap), Redis-backed personalization, and production-ready security hardening**
+**An enhanced fork of [Cognee](https://github.com/topoteretes/cognee) with 122 MCP tools, enterprise-grade multi-agent coordination, multi-tenant data partitioning, cross-language client SDKs (Python / Node / Go / Rust), AES-256-GCM encryption at rest, enterprise RBAC + SSO/OIDC + audit logging, opt-in telemetry, full HTTP tool dispatch (`POST /tools/{tool_name}`), MCP server hardening (API-key + rate limit + payload cap), Redis-backed personalization, and production-ready security hardening**
 
 </div>
 
 ---
 
+## Latest Updates (2026-10-11)
+
+**Security, privacy, and production-hardening sprint (2026-06 through 2026-07) + Required CI gate (merged 2026-10-11).** Highlights since the 2026-05-21 update:
+
+- **Encryption at rest upgraded: Fernet AES-128-CBC -> AES-256-GCM** (authenticated encryption). New writes use AES-256-GCM (`enc2:` prefix, HKDF-derived key); legacy `enc:` Fernet rows remain readable and are re-encrypted transparently on key rotation. See `src/encryption_manager.py` and [`docs/SECRETS_MANAGEMENT.md`](docs/SECRETS_MANAGEMENT.md).
+- **Enterprise RBAC, SSO/OIDC, and audit logging** shipped on both server surfaces (stdio MCP + FastAPI HTTP): `src/security/enterprise_auth.py`, `src/security/auth.py`, `src/audit_logger.py`, plus an approval workflow and security middleware.
+- **Privacy: product telemetry is opt-in.** `send_telemetry()` returns immediately unless `COGNEE_TELEMETRY_ENABLED` is set -- no silent phone-home in any context, including air-gapped deployments (patch tracked under `.upstream-sync/enhanced-patches/`).
+- **All 122 MCP tools over HTTP.** New generic `POST /tools/{tool_name}` route on the FastAPI server dispatches through the FastMCP registry, complementing the named `/mcp/*` routes. HTTP port standardized on **8080** everywhere (`MCP_SERVER_PORT=8080`).
+- **HTTP servers hardened**: fail-closed credential handling, log rotation, resilience and observability improvements; committed secrets scrubbed from the repo and a leaked API key removed from the setup guide.
+- **Performance: p95 SLA met and verified under load.**
+  - SLA baseline (2026-06-04, 100 users / 90 s / mixed profiles): **210.6 RPS (2.1x target), 0.00% errors, p95 = 170 ms** -- every endpoint under the 200 ms target. The fix that got search under SLA was a functional GIN full-text index matching `search_memory()`'s tsvector expression exactly.
+  - Soak baseline (2026-06-09, 40 users / 2 h): **593,609 requests, 0.00% errors, no memory leak** (server RSS slope -3.85 MB/h, R^2 0.235 -- flat).
+  - In-process adapter micro-benchmark suite added for the providers the Locust harness cannot reach (lean/embedded permutations); three Locust baselines stand (`default`, `neo4j_stack`, `memgraph_kuzu`).
+- **CI gates made blocking and green**: F821 undefined-name gate, blocking pip-audit (with 8 no-fix transformer checkpoint advisories ignored), SBOM + Docker jobs repaired, and the mypy blocking allowlist ratcheted 5 -> 10 -> **29 modules** (authn/authz, security, data-governance core).
+- **Required CI gate merged (2026-10-11)**: `qa/ci-required-gate` fast-forwarded into `main` -- `.github/workflows/ci-required.yml` runs the unit suite with no service containers, giving PRs a fast, green required check alongside the full pipeline (VIN-39).
+- **Client SDK**: Node/TypeScript build repaired (was blocking npm publish); `publish-clients.yml` release workflow in place pending registry secrets.
+- **Hygiene**: 243 unused imports removed, 10 F821 bugs fixed, graph-backup NameError fixed, vulnerable deps bumped (aiohttp 3.14 for CVE-2026-34993 + CVE-2026-47265, cryptography 48, accelerate 1.13, testcontainers 4.14), repo-wide LF normalization, RNR rebrand completed with Windows -> WSL path migration, Starlette `HTTP_422_UNPROCESSABLE_ENTITY` deprecation fixed.
+- **Tests**: **4,184 unit tests collected** (verified 2026-10-11) plus system / integration / e2e / load suites.
+
+---
+
 ## Latest Updates (2026-05-21)
 
-**Multi-tenant + cross-language SDKs + real benchmark baseline shipped.** A 16-PR run since the 2026-05-20 update (PRs #32-#46) closed out the remaining Phase 5 work. Headline:
+**Multi-tenant + cross-language SDKs + real benchmark baseline shipped.**
+ A 16-PR run since the 2026-05-20 update (PRs #32-#46) closed out the remaining Phase 5 work. Headline:
 
 - **Multi-tenant data partitioning (PRs #39 / #42 / #43).** `TenantContext` ContextVar + naming helpers (`tenant_scoped_table` / `tenant_scoped_collection` / `tenant_scoped_key` / `tenant_scoped_graph`); lazy per-tenant Postgres schema bootstrap via `ensure_tenant_schema` using `CREATE TABLE LIKE INCLUDING ALL`; FastAPI `X-Tenant-ID` header middleware that opens the tenant context for the entire request. Wired across 24 storage modules + 100+ call sites. `ENHANCED_REQUIRE_TENANT=1` production safety knob refuses un-tenanted writes. 15 cross-tenant isolation tests verify documents_t_a never bleeds into documents_t_b.
 - **Cross-language client SDKs (PR #41).** Three new SDKs alongside the existing Python client -- `clients/node/` (TypeScript, 7 tests using `node:test` + mocked fetch), `clients/go/` (9 tests via `net/http/httptest`, context.Context first arg per Go idiom), `clients/rust/` (7 tests via `wiremock`, async via tokio + reqwest/rustls). All four share the same HTTP contract (5 endpoints) and the same `X-API-Key` + `X-Tenant-ID` headers.
@@ -219,7 +241,7 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 | **TTL/Expiry**                  | No                         | No                                        | **Yes (configurable)**                            |
 | **Cross-Agent Sharing**         | No                         | No                                        | **Yes (4 policies)**                              |
 | **Real-Time Sync**              | No                         | No                                        | **Yes (pub/sub)**                                 |
-| **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + Grafana**                          |
+| **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + SigNoz + Superset**                |
 | **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                          |
 | **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)** |
 | **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                                       |
@@ -341,7 +363,7 @@ python bin/enhanced_cognee_mcp_server.py
 - ✅ **Production deployment** (Docker, monitoring, security hardened)
 - ✅ **CI/CD pipeline** (7 automated stages)
 - ✅ **Security audit** (0 critical vulnerabilities)
-- ✅ **Comprehensive test coverage** (4,661 tests, 100% pass rate)
+- ✅ **Comprehensive test coverage** (4,184+ unit tests; system / integration / e2e / load suites)
 - ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
 
 ### What is the Original Cognee?
@@ -368,7 +390,7 @@ RNR Enhanced Cognee builds upon the original Cognee framework by replacing the d
 
 - **PostgreSQL + pgVector** (instead of SQLite)
 - **Qdrant** (instead of LanceDB)
-- **Neo4j** (instead of Kuzu)
+- **ArcadeDB** (instead of Kuzu; 100% Apache-2.0, openCypher + Bolt -- Neo4j remains a first-class pluggable provider via `ENHANCED_GRAPH_PROVIDER=neo4j`)
 - **Valkey 8** (Apache-2.0 cache layer, Redis-compatible)
 
 ### 2. 122 MCP Tools
@@ -388,7 +410,7 @@ RNR Enhanced Cognee builds upon the original Cognee framework by replacing the d
 - Memory versioning, provenance tracking, confidence scoring (Phase 10)
 - GDPR delete/export, consent management, tenant isolation (Phase 11)
 - Plugin loader system, webhook support (Phase 12)
-- Encryption at rest (Fernet AES-128-CBC), structured EAV observations, Slack/Discord notifications
+- Encryption at rest (AES-256-GCM authenticated; legacy Fernet readable), structured EAV observations, Slack/Discord notifications
 - Heuristic importance scoring and multi-signal re-ranking (Phase 13/14)
 - Python SDK client package (enhanced_cognee_client) with 16 async methods
 - 10 Architecture Decision Records (ADR-001 to ADR-010) and 10 Runbooks (RB-001 to RB-010)
@@ -406,7 +428,7 @@ RNR Enhanced Cognee builds upon the original Cognee framework by replacing the d
 - Docker deployment with health checks
 - Non-conflicting port mappings
 - Comprehensive error handling
-- 4,661 tests passing (100% pass rate, 0 skipped)
+- 4,184+ unit tests collected (system / integration / e2e suites on top)
 - Multi-IDE support (MCP-compatible IDEs)
 
 ---
@@ -494,7 +516,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 
 #### 1: Test Suite & LLM Integration
 
-- Comprehensive test suite with 4,661 tests (100% pass rate)
+- Comprehensive test suite (4,184+ unit tests)
 - Multi-LLM integration (multi-provider support)
 - Token counting and rate limiting
 - Test infrastructure (pytest, fixtures, mocks)
@@ -560,7 +582,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 
 - 28 language support
 - Cross-language search
-- Comprehensive testing (4,661 tests, 100% pass rate)
+- Comprehensive testing (4,184+ unit tests)
 - Performance optimization
 - **Files:** 15 files, 4,200+ lines
 
@@ -587,7 +609,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 
 - Production Docker configuration
 - Security hardening checklist (100+ items)
-- Monitoring setup (Prometheus, Grafana)
+- Monitoring setup (Prometheus, SigNoz, Superset)
 - Deployment documentation
 - **Files:** 4 files, 1,200+ lines
 
@@ -621,7 +643,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 | Memory Expiry & TTL         | ✅      | Automatic archival and cleanup                  |
 | Cross-Agent Sharing         | ✅      | Access control and permissions                  |
 | Real-Time Sync              | ✅      | Valkey pub/sub synchronization                  |
-| Encryption at Rest          | ✅      | Fernet AES-128-CBC + HMAC-SHA256 per memory     |
+| Encryption at Rest          | ✅      | AES-256-GCM authenticated per memory (legacy Fernet readable) |
 | Structured Observations     | ✅      | EAV table (entity, attribute, value) per memory |
 | Importance Scoring          | ✅      | Heuristic: access*0.4 + recency*0.3 + confidence*0.2 + source*0.1 |
 | Heuristic Re-ranking        | ✅      | Multi-signal: similarity*0.5 + importance*0.25 + recency*0.15 + confidence*0.10 |
@@ -656,7 +678,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 | Feature             | Status | Description                             |
 | ------------------- | ------ | --------------------------------------- |
 | Backup & Recovery   | ✅      | Automated backups for all databases     |
-| Monitoring          | ✅      | Prometheus, Grafana, Loki, AlertManager |
+| Monitoring          | ✅      | Prometheus, SigNoz, Superset, AlertManager |
 | Security Hardening  | ✅      | 100+ checklist items                    |
 | Deployment Guide    | ✅      | Step-by-step production deployment      |
 | Performance Testing | ✅      | Locust load testing                     |
@@ -670,7 +692,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 | ------------------------- | --------------- | --------------------------------------------- |
 | **Relational Database**   | SQLite          | PostgreSQL + pgVector                         |
 | **Vector Database**       | LanceDB         | Qdrant                                        |
-| **Graph Database**        | Kuzu            | Neo4j                                         |
+| **Graph Database**        | Kuzu            | ArcadeDB (default; Neo4j pluggable)           |
 | **Caching Layer**         | None            | Valkey 8                                      |
 | **Memory Categories**     | None            | Dynamic JSON-based                            |
 | **MCP Tools**             | None            | [OK] **122 tools**                               |
@@ -681,7 +703,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 | **Cross-Agent Sharing**   | None            | [OK] **4 access policies**                       |
 | **TTL & Archival**        | None            | [OK] **Automated lifecycle**                     |
 | **IDE Support**           | None            | [OK] **MCP-compatible IDEs**                     |
-| **Test Coverage**         | Basic           | [OK] **4,661 tests passing (100% pass rate)**    |
+| **Test Coverage**         | Basic           | [OK] **4,184+ unit tests collected (2026-10-11)** |
 | **MCP IDE Integration**   | No              | [OK] **Standard Memory MCP**                     |
 | **Port Configuration**    | Default ports   | Enhanced range (25000+)                          |
 | **Output Encoding**       | None            | ASCII-only (Windows compatible)                  |
@@ -721,7 +743,7 @@ Based on testing with enterprise datasets:
 
 | Original Feature                        | Enhanced MCP Implementation                 | Status     |
 | --------------------------------------- | ------------------------------------------- | ---------- |
-| Neo4j Support                           | Neo4j (port 27687)                          | ✅ Active   |
+| Neo4j Support                           | ArcadeDB default (bolt port 27687, drop-in); Neo4j via `ENHANCED_GRAPH_PROVIDER=neo4j` | ✅ Active   |
 | Vector Stores (LanceDB/Qdrant/PGVector) | Qdrant (port 26333) + PGVector (port 25432) | ✅ Enhanced |
 | Graph Databases (NetworkX/Neo4j)        | Neo4j + internal NetworkX                   | ✅ Active   |
 
@@ -1029,7 +1051,7 @@ src/
 ├── backup_manager.py             # Backup and recovery
 ├── plugin_registry.py            # Plugin loader system
 ├── webhook_manager.py            # Webhook delivery
-├── encryption_manager.py         # Fernet AES-128-CBC encryption at rest (Phase 14)
+├── encryption_manager.py         # AES-256-GCM encryption at rest (upgraded from Fernet 2026-06)
 ├── memory_observation.py         # EAV structured observations (Phase 14)
 ├── notification_manager.py       # Slack/Discord webhook notifications (Phase 14)
 ├── memory_importance_scorer.py   # Heuristic importance scoring (Phase 14)
@@ -1650,11 +1672,11 @@ Register HTTP webhook endpoints to receive real-time memory event notifications.
 
 | Tool                    | Purpose                                      | Trigger Type | Automation Chain                                     |
 | ----------------------- | -------------------------------------------- | ------------ | ---------------------------------------------------- |
-| `encrypt_memory`        | Encrypt a memory's content with Fernet key   | (S) System   | Reads memory -> encrypts -> writes back with enc: prefix |
+| `encrypt_memory`        | Encrypt a memory's content (AES-256-GCM) | (S) System   | Reads memory -> encrypts -> writes back with enc2: prefix |
 | `get_encryption_stats`  | Report encrypted vs plaintext memory counts  | (S) System   | Queries DB -> returns JSON stats                     |
 | `rotate_encryption_key` | Re-encrypt all memories with a new master key| (M) Manual   | Decrypts old -> re-encrypts new -> updates rows      |
 
-**Implementation details:** Fernet AES-128-CBC + HMAC-SHA256. Idempotent: content already starting with `enc:` is skipped. Key rotation is row-by-row to avoid table locks.
+**Implementation details:** AES-256-GCM authenticated encryption with an HKDF-derived key (`enc2:` prefix). Legacy `enc:` Fernet rows decrypt transparently for reads and are re-encrypted to AES-256-GCM on key rotation. Idempotent: content already starting with `enc2:` / `enc:` is skipped. Key rotation is row-by-row to avoid table locks.
 
 ### Structured Observations Tools - Phase 14 (4)
 
@@ -2146,7 +2168,12 @@ RNR Enhanced Cognee supports unlimited custom agent types with:
 
 ## Cross-Language Client SDKs
 
-RNR Enhanced Cognee ships four official client SDKs that all hit the same HTTP contract -- the `/mcp/*` routes exposed by `src/enhanced_cognee_mcp.py`. Same 5 core endpoints, same `X-API-Key` + `X-Tenant-ID` headers.
+RNR Enhanced Cognee ships four official client SDKs that all hit the same HTTP contract exposed by `src/enhanced_cognee_mcp.py` (default port **8080**). Two route families are available:
+
+- **Named `/mcp/*` routes** -- the 6 standard memory endpoints (`add_memory` / `search_memories` / `get_memories` / `update_memory` / `delete_memory` / `list_agents`) plus `/health`.
+- **Generic `POST /tools/{tool_name}`** -- dispatches to **any of the 122 MCP tools** through the FastMCP registry, so the full tool surface is reachable from plain HTTP clients (added 2026-06; the `enhanced_cognee_client` SDK and `examples/` target this route).
+
+Both accept the same `X-API-Key` + `X-Tenant-ID` headers.
 
 | Language | Location | Tests | Status |
 | --- | --- | --- | --- |
@@ -2323,7 +2350,7 @@ First non-synthetic baseline shipped 2026-05-21. Captured against a live stack (
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **neo4j_stack** | neo4j | qdrant | redis | postgres | **49.06** | **2** | **7** | **11** | **0.00** |
 
-2,911 requests served, **0 failures**. Per-endpoint breakdown in `tests/benchmarks/baselines/2026-05-21_neo4j_stack.md`. The four remaining permutations (default with ArcadeDB / lean with Apache AGE+pgvector / embedded with ladybug+lancedb / memgraph_kuzu) need their respective stacks running before they can be baselined; `compare_to_baseline.py` treats them as "[NEW] -- no baseline, skipped" so the regression gate stays inert for them rather than ringing false alarms.
+2,911 requests served, **0 failures**. Two more permutations were baselined on 2026-05-21/2026-06-03: `default` (ArcadeDB stack -- 48.9 RPS, p50=11 ms, p95=14 ms, 0 failures) and `memgraph_kuzu`. The `lean` and `embedded` permutations intentionally get **no** Locust baseline: a code-path audit showed the harness only exercises the Postgres request path, so `lean` would duplicate `default` and `embedded` (sqlite) cannot run the harness's Postgres-dialect SQL. Those providers are characterised by the in-process adapter micro-benchmark instead. Per-endpoint breakdowns in `tests/benchmarks/baselines/`.
 
 Re-run the live benchmark yourself:
 
@@ -2341,6 +2368,30 @@ python -m tests.benchmarks.run_provider_comparison \
     --permutations neo4j_stack \
     --output-dir tests/benchmarks/baselines/output
 ```
+
+### SLA load baseline (2026-06-04) -- 100 concurrent users
+
+Capacity run of `tests/load/locustfile.py` against the HTTP server on the default stack (Postgres 18 + pgvector, Qdrant, Valkey, ArcadeDB). 100 users, spawn-rate 10, 90 s, mixed Read/Write/Mixed profiles:
+
+| SLA target | Result | Status |
+| --- | --- | --- |
+| >= 100 RPS sustained | **210.6 RPS** | MET (2.1x) |
+| 0% error rate at 100 users | **0.00%** (0 / 18,862 reqs) | MET |
+| p95 latency < 200 ms | **170 ms aggregate** (every endpoint < 200 ms) | MET |
+
+The p95 target was initially missed at 230 ms, driven entirely by `search_memories` (Postgres recomputed a tsvector per row per query). A functional GIN index matching the query expression exactly (`idx_documents_content_fts`) switched the planner to a Bitmap Index Scan and brought p95 under SLA. Details: `tests/benchmarks/baselines/2026-06-04_sla_100users.md`.
+
+### Soak baseline (2026-06-09) -- 40 users for 2 hours
+
+Long-duration soak via `tests/load/soak_test.py` to surface leaks / latency drift that short bursts cannot:
+
+| Check | Result | Status |
+| --- | --- | --- |
+| Memory leak (server RSS slope) | **-3.85 MB/h**, R^2 0.235 | **PASS -- no leak** |
+| Error rate over the full run | **0.00%** (0 / 593,609 reqs) | MET |
+| Sustained throughput | 82.5 RPS @ 40 users | stable |
+
+A leak is flagged only when RSS slope exceeds 25 MB/h with a consistent trend (R^2 > 0.5); the measured slope is negative -- RSS oscillates around ~232 MB across 593k requests / 2 hours. Details: `tests/benchmarks/baselines/2026-06-09_soak_40u_2h.md`. The production-host IaC + turnkey SLA/soak re-run suite lives in `tests/load/`.
 
 ### Synthetic per-tool dispatch benchmark
 
@@ -2404,16 +2455,17 @@ open htmlcov/index.html
 ### Test Statistics
 
 - **Total Test Files:** 129 test modules (96 unit + 3 system + 7 integration + 3 benchmarks + 2 load + 2 e2e + the rest)
-- **Total collected tests:** 4,661 (4,137 unit + 93 system + others)
-- **Unit tests:** 4,137 passing (100% pass rate)
+- **Total collected unit tests:** 4,184 (verified 2026-10-11; system / integration / e2e / load suites on top)
+- **Unit tests:** 4,184 collected (run via `pytest tests/unit/` -- this is what the Required CI gate executes, no services needed)
 - **System tests:** 93 (`tests/system/`)
 - **Integration tests:** `tests/integration/` boots real DBs; non-blocking in CI via `continue-on-error: true`. Includes 8 live ArcadeDB + Apache AGE tests and the live SigNoz smoke test (`test_signoz_smoke.py`, gated by `ENHANCED_RUN_SIGNOZ_SMOKE=1`).
 - **Multi-tenant isolation tests:** 15 cross-tenant tests verifying tenant A's writes never bleed into tenant B's storage across Postgres / Qdrant / Valkey / graph.
 - **Benchmark suite:** `tests/benchmarks/run_provider_comparison.py` drives Locust against 5 provider permutations + emits comparison tables. First real baseline shipped 2026-05-21 (`baselines/2026-05-21_neo4j_stack.json` -- 49.06 RPS / p50=2ms / p95=7ms / p99=11ms / 0 failures).
 - **Load tests:** `tests/load/locustfile.py` -- 8 `HttpUser` classes (read-heavy / write-heavy / mixed / health + 4 Phase-5 scenarios: SemanticSearch / KnowledgeGraph / GDPRWorkflow / BackupVerify).
 - **Coverage gap auditor:** `tests/coverage_audit.py` reads `coverage.xml`, reports modules below the 85% gate sorted by uncovered count.
+- **CI:** the full pipeline (`.github/workflows/ci-cd-pipeline.yml`) runs lint, mypy (blocking allowlist, 29 modules), unit tests, security audit (blocking pip-audit), SBOM, Docker, and service-backed integration tests. The **Required CI gate** (`.github/workflows/ci-required.yml`, merged from `qa/ci-required-gate`) gives PRs a fast, service-free unit-test check that is green by design.
 - **Code Coverage:** 95%+ unit coverage (pytest.ini gate at 85%)
-- **Success Rate:** 100% (4,137 / 4,137 unit tests passing)
+- **Success Rate:** unit suite green in CI (Required CI gate + full pipeline Unit Tests job)
 - **Warnings:** 0
 - **Skipped Tests:** 0 in unit suite; integration tests skip gracefully when a live service isn't reachable.
 
@@ -2435,6 +2487,9 @@ Comprehensive documentation is available:
 | [Pluggable DB Backends](docs/PLUGGABLE_DB_BACKENDS.md)                          | Architectural overview of the 4-tier pluggable factory + how to add a new adapter |
 | [ArcadeDB Migration](docs/ARCADEDB_MIGRATION.md)                                | How to migrate from a Neo4j default to ArcadeDB (or back) |
 | [Phase 5 Outstanding TODO](docs/PHASE5_TODO.md)                                 | Honest accounting of what's shipped vs deferred since 2026-05-20 |
+| [Outstanding Items & Gap Analysis](docs/OUTSTANDING_ITEMS.md)                   | Frank status of every gap, shipped or open (refreshed through 2026-06) |
+| [Secrets Management](docs/SECRETS_MANAGEMENT.md)                                | Key/secret lifecycle incl. AES-256-GCM encryption-at-rest rotation |
+| [Session Handover Brief](docs/HANDOVER.md)                                      | Point-in-state handover brief for new agent sessions |
 | [License Audit](docs/LICENSE_AUDIT.md)                                          | Per-component licence analysis for the default stack |
 | [Feature -> License Matrix](docs/FEATURE_LICENSE_MATRIX.md)                     | Per-feature OSS dependency + license + MAS-incorporation verdict (use when porting features into closed-source / commercial products) |
 | [Strategy](docs/STRATEGY.md)                                                    | Long-term roadmap, decision records, alternative stacks |
@@ -2503,6 +2558,10 @@ RNR Enhanced Cognee uses non-standard ports to avoid conflicts:
 ### Environment Variables
 
 See `.env.example` for all available configuration options.
+
+### Telemetry (opt-in)
+
+Product telemetry is **off by default** -- the server never phones home unless you explicitly set `COGNEE_TELEMETRY_ENABLED`. Upstream `TELEMETRY_DISABLED` / `ENV={test,dev}` gates are retained as defence-in-depth. This makes RNR Enhanced Cognee safe for air-gapped deployments out of the box (patch tracked in `.upstream-sync/enhanced-patches/telemetry_opt_in.diff`).
 
 ---
 
@@ -2616,7 +2675,7 @@ enhanced-cognee/
 │   ├── backup_manager.py              # Backup and recovery
 │   ├── plugin_registry.py             # Plugin loader system
 │   ├── webhook_manager.py             # Webhook delivery
-│   ├── encryption_manager.py          # Fernet encryption at rest
+│   ├── encryption_manager.py          # AES-256-GCM encryption at rest
 │   ├── memory_observation.py          # EAV structured observations
 │   ├── notification_manager.py        # Slack/Discord notifications
 │   ├── memory_importance_scorer.py    # Heuristic importance scoring
@@ -2839,21 +2898,29 @@ Contributions welcome! See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the cont
 
 ## Roadmap
 
-Production-ready today. Items shipped during 2026-05-19..2026-05-21 sprint are pulled out of the roadmap; remaining post-launch enhancements (in priority order):
+Production-ready today. Items shipped during the 2026-05-19..2026-05-21 sprint and the 2026-06 security/perf sprint are pulled out of the roadmap; remaining post-launch enhancements (in priority order):
 
 | Status | Item | Notes |
 |---|---|---|
+| ✅ Shipped 2026-10-11 | Required CI gate | `qa/ci-required-gate` merged into `main`: fast unit-only required check, no service containers (VIN-39). |
+| ✅ Shipped 2026-06 | SLA + soak baselines | 100-user SLA run met all targets (210.6 RPS / 0% errors / p95 170 ms) after the FTS GIN index fix; 2h/40u soak passed with no memory leak. |
+| ✅ Shipped 2026-06 | Encryption upgrade | Fernet AES-128-CBC -> AES-256-GCM authenticated encryption with legacy read path + key rotation. |
+| ✅ Shipped 2026-06 | Enterprise RBAC / SSO / audit | Role-based access control, OIDC SSO, and audit logging on both server surfaces. |
+| ✅ Shipped 2026-06 | All 122 tools over HTTP | Generic `POST /tools/{tool_name}` dispatch; HTTP port standardized on 8080. |
+| ✅ Shipped 2026-06 | Opt-in telemetry | No silent phone-home; `COGNEE_TELEMETRY_ENABLED` to opt in. |
 | ✅ Shipped 2026-05-21 | Multi-tenant data partitioning | TenantContext + naming helpers + per-tenant Postgres schema bootstrap + X-Tenant-ID HTTP middleware (PRs #39, #42, #43). 15 cross-tenant isolation tests. |
-| ✅ Shipped 2026-05-21 | Cross-language SDKs | Node + Go + Rust clients alongside Python (PR #41). |
+| ✅ Shipped 2026-05-21 | Cross-language SDKs | Node + Go + Rust clients alongside Python (PR #41); Node TS build repaired 2026-06. |
 | ✅ Shipped 2026-05-20 | Pluggable database backends | 30 providers across 4 tiers shipped via PRs #19-#46. |
 | ✅ Shipped 2026-05-19 | Apache AGE replacing Neo4j | ArcadeDB became the default (PR #20); Apache AGE shipped as alternate (PR #21). |
 | ✅ Shipped 2026-05-19 | OpenTelemetry / Jaeger wiring | OpenTelemetry shipped via SigNoz observability swap (PR #22); live smoke test added in PR #38. |
+| ✅ Resolved 2026-06 | Benchmark permutation coverage | `default` + `memgraph_kuzu` baselined alongside `neo4j_stack`; `lean`/`embedded` closed via code-path audit + in-process adapter micro-benchmark. |
 | Considered | sops + age encrypted secrets | When multi-developer deploys begin. |
-| Considered | Publish 3 new SDKs to public registries | Node to npm, Go to pkg.go.dev, Rust to crates.io. Code is registry-ready; CI release workflow not yet wired. |
-| Considered | Baseline the remaining 4 benchmark permutations | `default` (ArcadeDB stack), `lean` (Apache AGE+pgvector), `embedded` (ladybug+lancedb), `memgraph_kuzu`. Need their respective stacks running. |
+| Considered | Publish 3 new SDKs to public registries | Node to npm, Go to pkg.go.dev, Rust to crates.io. Code + `publish-clients.yml` workflow ready; blocked on npm/crates.io accounts + `NPM_TOKEN` / `CARGO_REGISTRY_TOKEN` secrets. |
+| Considered | Broaden blocking mypy allowlist | 29 modules enforced today; ~900 informational errors remain across 92 files. |
 | Future | Web UI dashboard | Currently terminal/MCP-only (Superset dashboards exist but for observability, not Cognee admin). |
 | Future | Distributed deployment (Swarm/K8s) | Single-node only today. |
-| Future | Multi-Agent System integration | Deferred to a future session per the original session constraint. |
+| Future | Port upstream v1.1.2 changes | Flagged by the upstream-sync monitor (issue #67). |
+| Future | Multi-Agent System integration | Deferred; both integration surfaces (stdio MCP + HTTP `/tools`) verified ready. |
 
 See [`docs/PRODUCTION_READINESS_PLAN.md`](docs/PRODUCTION_READINESS_PLAN.md) for the full roadmap with effort estimates.
 

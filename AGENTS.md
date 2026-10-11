@@ -109,7 +109,7 @@ a `TenantContext` automatically.
 
 ---
 
-## Implementation Status (as of 2026-05-21)
+## Implementation Status (as of 2026-10-11)
 
 Completed components:
 
@@ -122,6 +122,16 @@ Completed components:
 - [OK] 20+ pluggable storage providers across 4 tiers
 - [OK] Cross-language client SDKs: Python, Node.js, Go, Rust
 - [OK] ASCII-only output (no Unicode encoding issues)
+- [OK] AES-256-GCM encryption at rest (upgraded from Fernet 2026-06;
+       legacy enc: rows readable, rotated transparently)
+- [OK] Enterprise RBAC + SSO/OIDC + audit logging on both server surfaces
+- [OK] Opt-in telemetry (no phone-home unless COGNEE_TELEMETRY_ENABLED is set)
+- [OK] All 122 MCP tools over HTTP via generic POST /tools/{tool_name}
+       (port standardized on 8080; MCP_SERVER_PORT=8080)
+- [OK] SLA + soak baselines: 210.6 RPS @ 100 users, 0% errors, p95 170 ms;
+       2h/40u soak -- 593k requests, no memory leak
+- [OK] Required CI gate (.github/workflows/ci-required.yml; unit tests only,
+       no service containers) -- merged from qa/ci-required-gate 2026-10-11
 
 MCP Server Configuration:
 

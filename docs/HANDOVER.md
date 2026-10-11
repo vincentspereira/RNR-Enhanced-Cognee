@@ -9,6 +9,38 @@ into your first message, or `cat docs/HANDOVER.md` and ask Claude to read it).
 
 ---
 
+## 0. Current state (refreshed 2026-10-11) — READ THIS FIRST
+
+The sections below §0 are the original 2026-05-19 brief and are historical.
+Facts that have moved on since then:
+
+- **Phases 1-5 all shipped** (pluggable DB tiers, ArcadeDB default, AGE,
+  SigNoz + Superset swap, long-tail adapters). See the "Latest Updates"
+  sections in the root `README.md` (2026-05-18 through 2026-10-11).
+- **Tests:** 4,184 unit tests collected (verified 2026-10-11); system /
+  integration / e2e / load suites on top. The old "4,158 tests" figure is
+  historical.
+- **CI:** full pipeline (`ci-cd-pipeline.yml`) + a new **Required CI gate**
+  (`ci-required.yml`, merged from `qa/ci-required-gate` on 2026-10-11) that
+  runs the unit suite with no service containers. Blocking gates now include
+  F821, pip-audit, and a mypy allowlist (29 modules).
+- **Security (2026-06 sprint):** encryption at rest upgraded Fernet ->
+  **AES-256-GCM**; enterprise RBAC + SSO/OIDC + audit logging on both server
+  surfaces; secrets scrubbed; fail-closed creds; log rotation; telemetry is
+  **opt-in** (`COGNEE_TELEMETRY_ENABLED`).
+- **HTTP surface:** all 122 tools reachable via generic
+  `POST /tools/{tool_name}`; port standardized on **8080**.
+- **Benchmarks:** SLA baseline 2026-06-04 (100 users: 210.6 RPS, 0% errors,
+  p95 170 ms — FTS GIN index fix) and soak baseline 2026-06-09 (2 h / 40 u /
+  593k reqs, no leak). Locust baselines exist for `default`, `neo4j_stack`,
+  and `memgraph_kuzu`; `lean`/`embedded` closed via code-path audit.
+- **Docs site** live at https://vincentspereira.github.io/RNR-Enhanced-Cognee/
+- **Gap status:** see [`docs/OUTSTANDING_ITEMS.md`](./OUTSTANDING_ITEMS.md)
+  (refreshed through 2026-06) — its "Recommended Next-Sprint Priority" list
+  is the current backlog.
+
+---
+
 ## 1. Project location and rules
 
 - **Repo root:** `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee`

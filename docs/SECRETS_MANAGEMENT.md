@@ -14,7 +14,7 @@
 | **Database credentials** | `POSTGRES_PASSWORD`, `ARCADEDB_PASSWORD`, `NEO4J_PASSWORD` | Docker compose `environment:` blocks |
 | **External-service API keys** | `LLM_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `QDRANT_API_KEY` | `~/.claude.json`, `.env` |
 | **MCP-server hardening tokens** | `ENHANCED_API_KEY` | `~/.claude.json`, `.env` |
-| **Encryption keys** | The Fernet key minted by `src/encryption_manager.py` (stored in a secrets backend, not env) | Operator-managed |
+| **Encryption keys** | The master key consumed by `src/encryption_manager.py` (stored in a secrets backend, not env) | Operator-managed |
 | **TLS certificate material** | `ENHANCED_HTTPS_CERT_FILE`, `ENHANCED_HTTPS_KEY_FILE` paths | File-system paths (the files themselves are sensitive) |
 
 `POSTGRES_USER`, port numbers, `ENHANCED_GRAPH_PROVIDER`, etc. are NOT secrets -- they're configuration. Mixing them with secrets is fine; the rules below apply only to the secret subset.
@@ -201,7 +201,7 @@ Minimum rotation cadence for each secret class:
 | Class | Rotation cadence | Trigger conditions |
 | --- | --- | --- |
 | Database passwords (`POSTGRES_PASSWORD`, `ARCADEDB_PASSWORD`) | Every 90 days | Suspected leak; departing team member; quarterly review |
-| Encryption keys (Fernet, KMS) | Every 365 days; never rotate keys that have encrypted long-lived data without re-encrypting that data first | Suspected leak; audit finding |
+| Encryption keys (AES-256-GCM master key, KMS) | Every 365 days; rotation re-encrypts long-lived data row-by-row via `rotate_encryption_key` | Suspected leak; audit finding |
 | External-service API keys (`LLM_API_KEY`, `QDRANT_API_KEY`) | Every 90 days | Suspected leak; usage anomaly |
 | `ENHANCED_API_KEY` | Every 60 days | Any 401 spike (rotate-on-attack); team change |
 | TLS certificates | 90 days (Let's Encrypt default) | Cert expiry; domain change |
@@ -220,4 +220,4 @@ Minimum rotation cadence for each secret class:
 - [`SECURITY.md`](../SECURITY.md) -- responsible disclosure policy
 - [`docs/operations/SECURITY_HARDENING_CHECKLIST.md`](operations/SECURITY_HARDENING_CHECKLIST.md) -- pre-prod checklist
 - [`src/mcp_security.py`](../src/mcp_security.py) -- the auth + rate-limit + payload-cap helpers protected by `ENHANCED_API_KEY` and friends
-- [`src/encryption_manager.py`](../src/encryption_manager.py) -- Fernet AES-128-CBC encryption at rest
+- [`src/encryption_manager.py`](../src/encryption_manager.py) -- AES-256-GCM encryption at rest (legacy Fernet rows readable; `enc2:` prefix for new writes)
