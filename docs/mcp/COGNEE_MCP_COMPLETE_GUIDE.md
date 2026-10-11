@@ -12,7 +12,7 @@ Cognee is now successfully configured as your **primary memory MCP server** with
 - **Cognee Library**: `/home/vincentspereira/cognee/cognee-mcp/src/server.py`
 
 ### MCP Configuration
-- **Global MCP Config**: `/home/vincentspereira/.claude.json` (lines 273-280)
+- **Global MCP Config**: `/home/vincentspereira/the MCP configuration file` (lines 273-280)
 
 ## 🔧 Current Configuration
 
@@ -75,14 +75,14 @@ EMBEDDING_DIMENSIONS=2560
 2. Edit `/home/vincentspereira/cognee/cognee_mcp_wrapper.py` line 18
 3. Restart MCP server:
    ```bash
-   claude mcp remove cognee-primary
-   claude mcp add cognee-primary python "/home/vincentspereira/cognee/cognee_mcp_wrapper.py"
+   <ide-cli> mcp remove cognee-primary
+   <ide-cli> mcp add cognee-primary python "/home/vincentspereira/cognee/cognee_mcp_wrapper.py"
    ```
 
 ## 🎯 How Cognee Works
 
 ### Auto-Invocation
-Claude will automatically use Cognee for:
+The client will automatically use Cognee for:
 - Memory-related tasks
 - Knowledge graph operations
 - Semantic search requests
@@ -99,11 +99,11 @@ Claude will automatically use Cognee for:
 ### Server Not Connecting
 ```bash
 # Check server status
-claude mcp list
+<ide-cli> mcp list
 
 # Restart server
-claude mcp remove cognee-primary
-claude mcp add cognee-primary python "/home/vincentspereira/cognee/cognee_mcp_wrapper.py"
+<ide-cli> mcp remove cognee-primary
+<ide-cli> mcp add cognee-primary python "/home/vincentspereira/cognee/cognee_mcp_wrapper.py"
 ```
 
 ### API Key Issues

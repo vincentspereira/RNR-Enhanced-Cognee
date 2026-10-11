@@ -12,7 +12,7 @@ Each benchmark can be run independently with appropriate dependencies:
 
 ### Mem0
 ```bash
-pip install mem0ai openai
+pip install mem0ai
 python qa_benchmark_mem0.py
 ```
 
@@ -30,7 +30,7 @@ python qa_benchmark_graphiti.py
 
 ## Environment
 Create `.env` with required API keys:
-- `OPENAI_API_KEY` (all benchmarks)
+- `LLM_API_KEY` (all benchmarks)
 - `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` (Graphiti only)
 
 ## Usage

@@ -11,7 +11,7 @@ RNR Enhanced Cognee fits their use case.
 | Lightweight Cognee with single-DB setup, no enterprise features | [Cognee](https://github.com/topoteretes/cognee) (upstream) |
 | Hosted memory-as-a-service with no ops burden | [Mem0](https://github.com/mem0ai/mem0) |
 | Long-term memory for chat agents with temporal knowledge graphs | [Zep](https://github.com/getzep/zep) (Apache-2.0, Go + Python SDKs) |
-| Stateful agent platform with built-in workflows | [Letta (formerly MemGPT)](https://github.com/letta-ai/letta) |
+| Stateful agent platform with built-in workflows | [Letta](https://github.com/letta-ai/letta) |
 | Document-corpus retrieval with memory | [LlamaIndex](https://github.com/run-llama/llama_index) |
 | In-process Python memory for prototyping | [LangChain Memory](https://python.langchain.com/) |
 | Pure semantic search over a vector corpus (no graph, no agents) | [Qdrant](https://github.com/qdrant/qdrant), [Weaviate](https://github.com/weaviate/weaviate), [Chroma](https://github.com/chroma-core/chroma) |
@@ -54,7 +54,7 @@ Cognee (or one of the others above).
 
 - You want **all 4 storage tiers** (relational + vector + graph + cache) without
   cobbling them together yourself.
-- You need **MCP tool access** from Claude Code, Cursor, Copilot, or any other
+- You need **MCP tool access** from any MCP-compatible IDE or
   MCP-compatible IDE — without writing a custom server.
 - You're running an **agent fleet** (trading bot, SDLC agent, analysis agent) and
   need per-agent memory segregation, cross-agent sharing, and audit trails.
@@ -100,7 +100,7 @@ classification of every tool).
 | Month 12 | ~60 EUR/year | $228/year | $300/year |
 | Month 24 | ~120 EUR/year | $456/year | $600/year |
 
-For a single developer running Claude Code with personal memory, RNR Enhanced Cognee
+For a single developer running your MCP-compatible IDE with personal memory, RNR Enhanced Cognee
 self-hosted is the most cost-effective option after month 3.
 
 ## Migration paths

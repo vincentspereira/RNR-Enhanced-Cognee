@@ -56,7 +56,7 @@ These tools are already triggered automatically by the AI IDE or system:
 These tools currently require manual triggering but can be safely automated with proper safeguards:
 
 **Standard Memory (2):**
-- `add_memory` - Auto-capture observations via Claude Code plugin
+- `add_memory` - Auto-capture observations via MCP client plugin
 - `update_memory` - Smart updates with intent detection
 
 **RNR Enhanced Cognee (1):**
@@ -104,7 +104,7 @@ These tools require explicit user intent or scheduled execution:
 
 **Tools:** 4
 - `publish_memory_event` - Auto-publish on memory changes (2 days, Sprint 1)
-- `add_memory` - Auto-capture via Claude Code plugin (5 days, Sprint 1)
+- `add_memory` - Auto-capture via MCP client plugin (5 days, Sprint 1)
 - `cognify` - Auto-process documents (3 days, Sprint 2)
 - `auto_deduplicate` - Scheduled weekly (2 days, Sprint 2)
 
@@ -231,7 +231,7 @@ These tools require explicit user intent or scheduled execution:
 
 ## ROADMAP INTEGRATION
 
-All automation enhancements have been integrated into **ENHANCEMENT_ROADMAP.md**:
+All automation enhancements have been integrated into **the enhancement roadmap (archived)**:
 
 ### Updated Sections:
 
@@ -243,7 +243,7 @@ All automation enhancements have been integrated into **ENHANCEMENT_ROADMAP.md**
 
 2. **Sprint 1** (Section 1.3)
    - Auto-publish memory events
-   - Auto-add memories via Claude Code plugin
+   - Auto-add memories via MCP client plugin
    - Configuration template
    - Audit logging and undo mechanism
 
@@ -286,7 +286,7 @@ All automation enhancements have been integrated into **ENHANCEMENT_ROADMAP.md**
 4. **MCP_TOOL_AUTOMATION_FINAL_CLASSIFICATION.md** - This file (final classification)
 
 ### Modified Files:
-1. **ENHANCEMENT_ROADMAP.md** - Updated with user-specified classification
+1. **the enhancement roadmap (archived)** - Updated with user-specified classification
    - Updated automation classification overview
    - Updated implementation plan (3 phases)
    - Updated sprint-specific tasks (removed sync from automation)
@@ -369,4 +369,4 @@ User's classification views analytics/query tools as "automatic" because they're
 
 **Total Automation Effort:** 30 days across 5 months
 
-**All changes integrated into ENHANCEMENT_ROADMAP.md**
+**All changes integrated into the enhancement roadmap (archived)**

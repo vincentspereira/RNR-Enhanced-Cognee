@@ -121,7 +121,7 @@ Layer 1 compact search.
 # Search for authentication-related memories
 results = await mcp.call_tool("search_index", {
     "query": "OAuth authentication flow",
-    "agent_id": "claude-code",
+    "agent_id": "my-agent",
     "limit": 20
 })
 ```
@@ -194,7 +194,7 @@ Layer 3 full details.
       "summary": "Brief summary...",
       "created_at": "2026-02-06T10:00:00Z",
       "updated_at": "2026-02-06T10:00:00Z",
-      "agent_id": "claude-code"
+      "agent_id": "my-agent"
     }
   ]
 }

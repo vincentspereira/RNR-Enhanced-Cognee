@@ -89,7 +89,7 @@ pip install flask==2.3.3 flask-socketio==5.3.6 cryptography==41.0.7 psutil==5.9.
 
 ### Basic Configuration
 
-Create a configuration file at `/home/vincentspereira/.claude/cognee_config.json`:
+Create a configuration file at `~/.config/enhanced-cognee/cognee_config.json`:
 
 ```json
 {
@@ -487,7 +487,7 @@ print("Analytics working")
 ## 📁 File Structure
 
 ```
-/home/vincentspereira/.claude
+~/.config/enhanced-cognee
 ├── cognee_data\                 # RNR Enhanced Cognee data directory
 │   ├── analytics\               # Analytics data and reports
 │   ├── backups\                 # System backups
@@ -508,7 +508,7 @@ print("Analytics working")
 │   └── test_enhanced_cognee.py  # Test suite
 ├── docs\                        # Documentation
 │   └── ENHANCED_COGNEE_GUIDE.md # This guide
-└── .claude.json                 # MCP configuration
+└── the MCP configuration file                 # MCP configuration
 ```
 
 ## 🔍 Troubleshooting
@@ -541,7 +541,7 @@ pip install cryptography==41.0.7
 ```python
 # Check database file exists
 from pathlib import Path
-db_path = Path("/home/vincentspereira/.claude/cognee_data/analytics.db")
+db_path = Path("~/.config/enhanced-cognee/cognee_data/analytics.db")
 print(f"Database exists: {db_path.exists()}")
 
 # Recreate database if corrupted
@@ -552,7 +552,7 @@ db_path.unlink(missing_ok=True)
 ```python
 # Check internet connection
 import requests
-response = requests.get("https://api.github.com/repos/anthropics/cognee/releases")
+response = requests.get("https://api.github.com/repos/topoteretes/cognee/releases")
 print(f"GitHub API accessible: {response.status_code == 200}")
 ```
 
@@ -677,4 +677,4 @@ RNR Enhanced Cognee transforms your self-hosted knowledge management platform in
 
 **Zero cloud dependencies • Zero ongoing costs • Maximum functionality**
 
-For additional help or questions, refer to the test suite and documentation files in the `.claude` directory.
+For additional help or questions, refer to the test suite and documentation files in the project documentation.

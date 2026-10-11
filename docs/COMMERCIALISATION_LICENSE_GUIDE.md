@@ -107,7 +107,7 @@ Apache AGE remains a pluggable graph backend for users who want a
 Postgres-only deployment (no separate Java container at all). It is shipping
 as `ENHANCED_GRAPH_PROVIDER=apache_age` in Phase 3 -- not yet wired but
 documented in [`STRATEGY.md` §4.2](./STRATEGY.md#42-recommended-new-default-arcadedb-revised-2026-05-19)
-and [HANDOVER §4 Phase 3](./HANDOVER.md).
+per the phased delivery plan.
 
 ---
 

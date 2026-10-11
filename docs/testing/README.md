@@ -68,7 +68,7 @@ This directory contains comprehensive documentation for the RNR Enhanced Cognee 
 10. **Compliance Tests** (1% coverage) - Regulatory compliance
 
 ### Open-Source Testing Stack
-- **Evaluation**: MLflow + OpenAI Evals
+- **Evaluation**: MLflow + LLM evaluation
 - **Performance**: Locust + Apache Bench + K6
 - **Chaos**: Chaos Mesh + Gremlin
 - **Security**: OWASP ZAP + Bandit + Semgrep

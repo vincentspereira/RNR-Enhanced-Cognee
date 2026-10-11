@@ -11,7 +11,7 @@
 | # | Tool Name | Current Status | Recommended | Priority | Rationale | Timeline |
 |---|-----------|---------------|------------|----------|-----------|----------|
 | **Standard Memory MCP Tools** | | | | | | |
-| 1 | `add_memory` | Manual | **AUTOMATE** | P0 | Auto-capture observations via Claude Code plugin (like Claude-Mem) | Sprint 1 |
+| 1 | `add_memory` | Manual | **AUTOMATE** | P0 | Auto-capture observations via MCP client plugin (like session-memory plugins) | Sprint 1 |
 | 2 | `search_memories` | Automatic | **Keep Auto** | - | Already triggered when user asks questions | Already Auto |
 | 3 | `get_memories` | Automatic | **Keep Auto** | - | Already triggered on session startup | Already Auto |
 | 4 | `get_memory` | Automatic | **Keep Auto** | - | Already triggered when referencing IDs | Already Auto |
@@ -80,7 +80,7 @@
 | Tool | Effort | Risk | Why Automate |
 |------|--------|------|-------------|
 | **1. `publish_memory_event`** | 2 days | Low | Essential for real-time multi-agent sync. Currently must manually publish events. |
-| **2. `add_memory`** | 5 days | Medium | Auto-capture observations via Claude Code plugin (matches Claude-Mem behavior). |
+| **2. `add_memory`** | 5 days | Medium | Auto-capture observations via MCP client plugin (matches session-memory plugins behavior). |
 | **3. `cognify`** | 3 days | Low | Auto-process .md, .txt, .pdf documents when added to project. |
 | **4. `auto_deduplicate`** | 2 days | Low | Scheduled weekly cleanup. Dry-run mode with approval prevents mistakes. |
 
@@ -346,4 +346,4 @@ Phase 3: Intelligent Automation (Month 5-6)
 3. `auto_deduplicate` - Scheduled cleanup (2 days) - Maintains database health
 4. `publish_memory_event` - Auto-publish (2 days) - Enables real-time sync
 
-**All automation tasks are now integrated into ENHANCEMENT_ROADMAP.md with detailed implementation guidance.**
+**All automation tasks are now integrated into the enhancement roadmap (archived) with detailed implementation guidance.**

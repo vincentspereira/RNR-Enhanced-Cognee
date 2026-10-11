@@ -75,7 +75,7 @@ This 12-week implementation roadmap provides a detailed plan for establishing co
 - Setup OWASP ZAP for security testing
 - Configure Chaos Mesh for chaos engineering
 - Install MLflow for experiment tracking
-- Setup OpenAI Evals for LLM evaluation
+- Setup LLM eval frameworks for LLM evaluation
 ```
 
 **Deliverables**:

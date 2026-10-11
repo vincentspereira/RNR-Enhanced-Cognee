@@ -6,7 +6,7 @@ Get RNR Enhanced Cognee running locally in under 5 minutes.
 
 - Docker Desktop or compatible (Docker Engine 20+, Compose v2+)
 - Python 3.10+
-- (Optional) A Claude Code or Cursor install for MCP integration
+- (Optional) An MCP-compatible IDE install for MCP integration
 
 ## 1. Clone + boot the stack
 
@@ -47,9 +47,9 @@ docker exec -i cognee-mcp-postgres psql -U cognee_user -d cognee_db \
 
 ## 3. Use it -- two paths
 
-### Path A: Claude Code / Cursor MCP integration (recommended)
+### Path A: IDE MCP integration (recommended)
 
-Add this block to `~/.claude.json` (Claude Code) or your IDE's MCP config:
+Add this block to `your IDE's MCP configuration` (your MCP-compatible IDE) or your IDE's MCP config:
 
 ```json
 {
@@ -85,7 +85,7 @@ Add this block to `~/.claude.json` (Claude Code) or your IDE's MCP config:
 }
 ```
 
-Restart Claude Code. You should see 122 new tools available with names like `add_memory`, `search_memories`, `cognify`, `get_memories`, etc.
+Restart your MCP-compatible IDE. You should see 122 new tools available with names like `add_memory`, `search_memories`, `cognify`, `get_memories`, etc.
 
 ### Path B: HTTP variant for cross-language SDKs
 
@@ -144,7 +144,7 @@ The Bolt plugin isn't installed in the public `arcadedata/arcadedb:latest` image
 Run step 2's `psql -f docker/init-scripts/01-init-pgvector.sql` to bootstrap.
 
 **Memory operations return 500?**
-Check `~/.claude.json` env vars match the running containers (ports, credentials, provider names).
+Check `your IDE's MCP configuration` env vars match the running containers (ports, credentials, provider names).
 
 **`UnicodeEncodeError: 'charmap' codec can't encode character`?**
 You ran RNR Enhanced Cognee against a Windows cp1252 console with Unicode in some output. Our code is ASCII-only by policy; check if a custom plugin / wrapper is injecting emoji. The fix is to remove the emoji or change PYTHONIOENCODING=utf-8 on the calling side.

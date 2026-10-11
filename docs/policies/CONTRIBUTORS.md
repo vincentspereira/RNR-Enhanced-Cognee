@@ -10,7 +10,7 @@ This **RNR Enhanced Cognee** fork has been developed by:
 
 - **Vincent Pereira** (@vincentspereira)
   - Enhanced database stack integration (PostgreSQL, Qdrant, Neo4j, Redis)
-  - MCP server implementation for Claude Code
+  - MCP server implementation for your MCP-compatible IDE
   - Dynamic memory category system
   - ASCII-only output for Windows compatibility
   - Production-ready Docker deployment

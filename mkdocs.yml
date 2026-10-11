@@ -112,7 +112,6 @@ nav:
   - Project Status:
       - Outstanding Items: OUTSTANDING_ITEMS.md
       - Phase 5 TODO: PHASE5_TODO.md
-      - Handover: HANDOVER.md
   - Operations:
       - Upstream Sync Runbook: UPSTREAM_SYNC_RUNBOOK.md
 

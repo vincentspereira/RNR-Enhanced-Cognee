@@ -67,7 +67,7 @@
 - **`/mcp/*` HTTP routes (PR #46).** Six new FastAPI endpoints (`add_memory` / `search_memories` / `get_memories` / `update_memory` / `delete_memory` / `list_agents`) mirror the standard MCP tool surface over HTTP, so cross-language SDKs + Locust scenarios + any HTTP caller targeting the documented MCP contract gets a working endpoint.
 - **Real Redis-backed personalization (PR #46).** `_personalized_score` in `advanced_search_reranking.py` now combines three signals: same-agent affinity (1.3x), interaction recency boost up to +0.5 (linear decay over a 30-day retained window), and query-affinity boost up to +0.3 (term overlap with the user's recent searches). Public `record_interaction()` API + rolling 20-entry search history capture on every `search()` call. 11 new unit tests.
 - **Coverage auditor + live SigNoz smoke (PR #38).** `tests/coverage_audit.py` reads `coverage.xml`, reports modules below the 85% gate sorted by uncovered count; `tests/integration/test_signoz_smoke.py` emits an OTel span via `src/tracing.py`, polls SigNoz's Query Service until the span surfaces in `signoz_traces.signoz_index_v2`, then asserts the trace ID round-trips.
-- **Docs refresh.** New `AGENTS.md` (Codex equivalent of `CLAUDE.md`; PR #45) -- ArcadeDB default, Valkey naming, 20+ pluggable providers, multi-tenant section, MCP hardening env knobs, body uses only ASCII so it round-trips through Windows cp1252 consoles. `docs/PHASE5_TODO.md` refresh (PR #44) tracks all multi-tenant + SDK sub-PRs.
+- **Docs refresh.** Contributor onboarding doc added (PR #45) -- ArcadeDB default, Valkey naming, 20+ pluggable providers, multi-tenant section, MCP hardening env knobs, ASCII-only body so it round-trips through Windows cp1252 consoles. `docs/PHASE5_TODO.md` refresh (PR #44) tracks all multi-tenant + SDK sub-PRs.
 - **Postgres init script rewrite (PR #46).** Previous version had three latent bugs: MySQL-style inline `INDEX` clauses (every `CREATE TABLE` failed with a syntax error), hardcoded `('ats', 'oma', 'smc')` `CHECK` constraints (directly violated the dynamic-categories rule -- any custom category hit a constraint violation), and broken `GET DIAGNOSTICS`. Rewritten with separate `CREATE INDEX` statements, plain `VARCHAR(100)` for `memory_category`, per-agent legacy schemas dropped (`shared_memory` is now the single source of truth, per-tenant variants materialised lazily), proper `ON CONFLICT` unique key for the `memory_usage` upsert trigger.
 - **Test suite: 4,661 passing (4,137 unit + 93 system + others), 0 failures, 95% coverage**, +707 tests since the 2026-05-20 update.
 
@@ -146,9 +146,6 @@ pivot and MAS integration (next session).
 - **Docker container** renamed: `cognee-mcp-redis` -> `cognee-mcp-valkey` (in
   the `RNR-Enhanced-Cognee` Compose project alongside the other 3 databases).
 
-Full session summary in
-[`docs/SESSION_SUMMARY_2026-05-18.md`](docs/SESSION_SUMMARY_2026-05-18.md).
-
 ---
 
 ## Table of Contents
@@ -208,7 +205,7 @@ Both installers are idempotent and:
 - Detect Python 3.11+
 - Create `.venv` and use `uv` (~20x faster than pip)
 - Bring up the 4-database Docker stack (PostgreSQL + Qdrant + ArcadeDB + Valkey)
-- Register the MCP server in `~/.claude.json`
+- Register the MCP server in your IDE's MCP configuration
 
 Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKSTART.md).
 
@@ -218,40 +215,40 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 
 > **Looking for a broader market comparison?** See
 > [`docs/COMPARE_TO_ALTERNATIVES.md`](docs/COMPARE_TO_ALTERNATIVES.md) for a
-> feature-by-feature table comparing RNR Enhanced Cognee against Mem0, Letta
-> (formerly MemGPT), LangChain Memory, and upstream Cognee. Includes cost
+> feature-by-feature table comparing RNR Enhanced Cognee against Mem0, Letta,
+> LangChain Memory, and upstream Cognee. Includes cost
 > tables, migration paths, and "when to choose each" recommendations.
 
-### RNR Enhanced Cognee vs Original Cognee vs Claude-Mem
+### RNR Enhanced Cognee vs Original Cognee
 
-| Feature                         | Original Cognee            | Claude-Mem                                | **RNR Enhanced Cognee**                               |
-| ------------------------------- | -------------------------- | ----------------------------------------- | ------------------------------------------------- |
-| **Primary Use Case**            | AI agent memory platform   | Claude Code session memory                | Enterprise multi-agent memory                     |
-| **Storage**                     | SQLite + choice of DBs     | SQLite + FTS5                             | **PostgreSQL + Qdrant + ArcadeDB + Valkey**       |
-| **Vector Search**               | Optional (LanceDB, Qdrant) | ChromaDB (optional)                       | **Qdrant (built-in)**                             |
-| **Graph Database**              | Neo4j, Kuzu, Neptune       | None                                      | **ArcadeDB (default, Apache-2.0); Neo4j pluggable** |
-| **Caching Layer**               | FsCache                    | None                                      | **Valkey 8 (Apache-2.0, Redis-compatible)**                           |
-| **Installation**                | pip install                | Plugin marketplace (1 command)            | Docker compose (complex)                          |
-| **Configuration**               | Manual .env                | Auto-config (zero-conf)                   | Manual .env + JSON                                |
-| **MCP Tools**                   | cognee-mcp directory       | 4 search tools                            | **122 comprehensive tools**                       |
-| **Automatic Context Injection** | No                         | **Yes (via hooks)**                       | No (manual)                                       |
-| **Token Efficiency**            | Standard                   | **Progressive disclosure (~10x savings)** | Standard                                          |
-| **Memory Compression**          | No                         | **Yes (AI-powered)**                      | **Yes (LLM-powered)**                             |
-| **Memory Deduplication**        | No                         | No                                        | **Yes (auto-deduplication)**                      |
-| **TTL/Expiry**                  | No                         | No                                        | **Yes (configurable)**                            |
-| **Cross-Agent Sharing**         | No                         | No                                        | **Yes (4 policies)**                              |
-| **Real-Time Sync**              | No                         | No                                        | **Yes (pub/sub)**                                 |
-| **Performance Monitoring**      | Basic logs                 | No                                        | **Prometheus + SigNoz + Superset**                |
-| **Search Types**                | 15 specialized types       | FTS5 + 4 tools                            | **15 specialized types**                          |
-| **Multi-Language Support**      | English                    | **28 languages**                          | **28 languages (detect, search, cross-language)** |
-| **Session Tracking**            | Dataset-based              | **Multi-prompt sessions**                 | Agent-based                                       |
-| **Web Viewer**                  | cognee-frontend            | **Yes (localhost:37777)**                 | ArcadeDB Studio at localhost:22480                |
-| **Memory Hierarchy**            | Flat                       | **Structured observations**               | **EAV observations (entity-attribute-value)**     |
-| **Scalability**                 | Single machine             | Single machine                            | **Distributed architecture**                      |
-| **Concurrent Agents**           | Limited                    | Not applicable                            | **100+ agents**                                   |
-| **Enterprise Features**         | Basic permissions          | No                                        | **RBAC, audit logging, backup**                   |
-| **Performance**                 | Baseline                   | Optimized for single user                 | **400-700% faster**                               |
-| **Target User**                 | Developers                 | Individual developers                     | **Enterprise teams**                              |
+| Feature                         | Original Cognee            | **RNR Enhanced Cognee**                               |
+| ------------------------------- | -------------------------- | ------------------------------------------------- |
+| **Primary Use Case**            | AI agent memory platform   | Enterprise multi-agent memory                     |
+| **Storage**                     | SQLite + choice of DBs     | **PostgreSQL + Qdrant + ArcadeDB + Valkey**       |
+| **Vector Search**               | Optional (LanceDB, Qdrant) | **Qdrant (built-in)**                             |
+| **Graph Database**              | Neo4j, Kuzu, Neptune       | **ArcadeDB (default, Apache-2.0); Neo4j pluggable** |
+| **Caching Layer**               | FsCache                    | **Valkey 8 (Apache-2.0, Redis-compatible)**       |
+| **Installation**                | pip install                | Docker compose (complex)                          |
+| **Configuration**               | Manual .env                | Manual .env + JSON                                |
+| **MCP Tools**                   | cognee-mcp directory       | **122 comprehensive tools**                       |
+| **Automatic Context Injection** | No                         | No (manual)                                       |
+| **Token Efficiency**            | Standard                   | Standard (progressive disclosure available)       |
+| **Memory Compression**          | No                         | **Yes (LLM-powered)**                             |
+| **Memory Deduplication**        | No                         | **Yes (auto-deduplication)**                      |
+| **TTL/Expiry**                  | No                         | **Yes (configurable)**                            |
+| **Cross-Agent Sharing**         | No                         | **Yes (4 policies)**                              |
+| **Real-Time Sync**              | No                         | **Yes (pub/sub)**                                 |
+| **Performance Monitoring**      | Basic logs                 | **Prometheus + SigNoz + Superset**                |
+| **Search Types**                | 15 specialized types       | **15 specialized types**                          |
+| **Multi-Language Support**      | English                    | **28 languages (detect, search, cross-language)** |
+| **Session Tracking**            | Dataset-based              | Agent-based                                       |
+| **Web Viewer**                  | cognee-frontend            | ArcadeDB Studio at localhost:22480                |
+| **Memory Hierarchy**            | Flat                       | **EAV observations (entity-attribute-value)**     |
+| **Scalability**                 | Single machine             | **Distributed architecture**                      |
+| **Concurrent Agents**           | Limited                    | **100+ agents**                                   |
+| **Enterprise Features**         | Basic permissions          | **RBAC, audit logging, backup**                   |
+| **Performance**                 | Baseline                   | **400-700% faster**                               |
+| **Target User**                 | Developers                 | **Enterprise teams**                              |
 
 ### Decision Guide
 
@@ -264,7 +261,7 @@ Full deployment guide: [`docs/DEPLOYMENT_QUICKSTART.md`](docs/DEPLOYMENT_QUICKST
 - Real-time synchronization
 - Production deployment with monitoring
 
-**Choose Claude-Mem if you need:**
+**Choose a lightweight session-memory plugin if you need:**
 
 - Individual developer memory
 - Zero-configuration setup
@@ -331,7 +328,7 @@ python bin/enhanced_cognee_mcp_server.py
 
 | Need | Best Choice |
 |------|-------------|
-| Single developer, zero config, quick setup | Session-memory plugin (e.g., Claude-Mem) |
+| Single developer, zero config, quick setup | Session-memory plugin |
 | Multi-agent enterprise system | **RNR Enhanced Cognee** |
 | Flexible DB choice, simple SDK | Original Cognee |
 | Knowledge graph + enterprise features + 122 MCP tools | **RNR Enhanced Cognee** |
@@ -364,7 +361,7 @@ python bin/enhanced_cognee_mcp_server.py
 - ✅ **CI/CD pipeline** (7 automated stages)
 - ✅ **Security audit** (0 critical vulnerabilities)
 - ✅ **Comprehensive test coverage** (4,184+ unit tests; system / integration / e2e / load suites)
-- ✅ **Support for 8 AI IDEs** (Claude Code, VS Code, Cursor, Windsurf, Antigravity, Continue.dev, Kilo Code, GitHub Copilot)
+- ✅ **Works with any MCP-compatible IDE or client** (VS Code and every editor with MCP support)
 
 ### What is the Original Cognee?
 
@@ -441,14 +438,8 @@ All planned enhancements have been implemented:
 
 #### 1. Multi-IDE MCP Support
 
-- ✅ Claude Code (Anthropic)
-- ✅ VS Code (with Continue.dev)
-- ✅ Cursor IDE
-- ✅ Windsurf (Codeium)
-- ✅ Antigravity
-- ✅ Continue.dev Standalone
-- ✅ **Kilo Code** (VS Code extension)
-- ✅ **GitHub Copilot** (VS Code extension)
+- ✅ Any MCP-compatible IDE or editor
+- ✅ Any custom MCP client that speaks the Model Context Protocol
 
 **Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
@@ -599,7 +590,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 - SDLC integration (21 sub-agents)
 
 - Query expansion and semantic clustering
-* Multi-LLM summarization (multi-provider support, including OpenAI, Anthropic, Ollama)
+* Multi-LLM summarization (pluggable multi-provider support: cloud and local models)
 
 * Semantic memory clustering
 
@@ -652,7 +643,7 @@ RNR Enhanced Cognee has completed all planned development sprints, delivering a 
 
 | Feature                    | Status | Description                                                             |
 | -------------------------- | ------ | ----------------------------------------------------------------------- |
-| Intelligent Summarization  | ✅      | Multi-provider LLM support, including OpenAI, Anthropic, Ollama support |
+| Intelligent Summarization  | ✅      | Pluggable multi-provider LLM support (cloud + local) |
 | Semantic Clustering        | ✅      | Qdrant-based similarity clustering                                      |
 | Advanced Search            | ✅      | Query expansion, re-ranking, highlighting                               |
 | Multi-Language Support     | ✅      | 28 languages with cross-language search                                 |
@@ -796,17 +787,11 @@ This document provides:
 1. Standard Memory MCP tools (7): `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
 2. RNR Enhanced Cognee tools (115): Advanced features for enterprise deployments (Phase 2 session memory, Phase 3 external loaders, Phase 7-14 progressive search, session management, audit, GDPR, encryption, observations, notifications, importance scoring, re-ranking, undo operations)
 
-### For Claude Code and Other AI IDEs
+### For MCP-Capable IDEs
 
-**Any MCP-capable AI IDE can access all 122 tools:**
-
-- Claude Code (Anthropic - primary reference implementation)
-- Cursor IDE
-- Windsurf (Codeium)
-- Antigravity
-- Continue.dev
-- VS Code (with Continue.dev or Kilo Code extensions)
-- GitHub Copilot
+**Any MCP-capable IDE or client can access all 122 tools.** If your editor
+speaks the Model Context Protocol, it can drive the full tool surface --
+no per-IDE integration work required.
 
 **No LLM API keys required** - All configuration is server-side.
 
@@ -815,7 +800,7 @@ This document provides:
 ## Screenshots and Demos
 
 > **TODO:** Add terminal GIFs / screenshots showing:
-> - Claude Code calling `add_memory` and `search_memories` via MCP
+> - An MCP-compatible IDE calling `add_memory` and `search_memories`
 > - The Grafana dashboard with live metrics
 > - A typical `undo_last` workflow
 > - Multi-agent shared memory in action
@@ -1316,7 +1301,7 @@ OK RNR Enhanced Cognee MCP Server starting...
 **MCP Configuration** (example for any MCP-compatible IDE):
 
 ```json
-// ~/.claude.json
+// your IDE's MCP configuration file
 {
   "mcpServers": {
     "cognee": {
@@ -1360,19 +1345,15 @@ Found 3 memories about TypeScript:
 
 ## Multi-IDE Support
 
-RNR Enhanced Cognee works with any **MCP-compatible IDE**:
+RNR Enhanced Cognee works with any **MCP-compatible IDE or client**. The
+server exposes the standard Model Context Protocol over stdio and HTTP, so
+every editor, extension, or custom client with MCP support can use it
+unchanged:
 
-| IDE                     | Support Level | Setup Guide                                         |
+| Client surface          | Support Level | Setup Guide                                         |
 | ----------------------- | ------------- | --------------------------------------------------- |
-| **Claude Code**         | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Cursor**              | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Windsurf**            | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Antigravity**         | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Continue.dev**        | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **VS Code (+Continue)** | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Kilo Code**           | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **GitHub Copilot**      | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
-| **Other MCP IDEs**      | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Any MCP-compatible IDE** | [OK] Full  | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
+| **Custom MCP clients**  | [OK] Full     | [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md) |
 
 **Complete Setup Guide:** [MCP IDE Setup Guide](docs/guides/MCP_IDE_SETUP.md)
 
@@ -1380,9 +1361,9 @@ RNR Enhanced Cognee works with any **MCP-compatible IDE**:
 
 ## Quick Examples
 
-A taste of the most-used MCP tools. These work from any MCP-compatible IDE (Claude Code, Cursor, Copilot).
+A taste of the most-used MCP tools. These work from any MCP-compatible IDE.
 
-### From Claude Code (natural language)
+### From your IDE (natural language)
 
 ```
 > Remember that I prefer async/await over callbacks.
@@ -1391,7 +1372,7 @@ A taste of the most-used MCP tools. These work from any MCP-compatible IDE (Clau
 > Show me a summary of my last 10 conversations with the trading bot.
 ```
 
-Claude reads the intent and calls the right MCP tool automatically:
+The IDE reads the intent and calls the right MCP tool automatically:
 `remember()`, `search_memories()`, `undo_last()`, `get_session_history()`.
 
 ### From Python (via the SDK)
@@ -1792,7 +1773,7 @@ or carry direct financial impact:
 
 **How it works:**
 
-- AI IDE (Claude Code, Cursor, etc.) decides when to call tools
+- The AI IDE decides when to call tools
 - Based on user queries and context needs
 - No user intervention required
 - Most common usage pattern
@@ -2489,7 +2470,6 @@ Comprehensive documentation is available:
 | [Phase 5 Outstanding TODO](docs/PHASE5_TODO.md)                                 | Honest accounting of what's shipped vs deferred since 2026-05-20 |
 | [Outstanding Items & Gap Analysis](docs/OUTSTANDING_ITEMS.md)                   | Frank status of every gap, shipped or open (refreshed through 2026-06) |
 | [Secrets Management](docs/SECRETS_MANAGEMENT.md)                                | Key/secret lifecycle incl. AES-256-GCM encryption-at-rest rotation |
-| [Session Handover Brief](docs/HANDOVER.md)                                      | Point-in-state handover brief for new agent sessions |
 | [License Audit](docs/LICENSE_AUDIT.md)                                          | Per-component licence analysis for the default stack |
 | [Feature -> License Matrix](docs/FEATURE_LICENSE_MATRIX.md)                     | Per-feature OSS dependency + license + MAS-incorporation verdict (use when porting features into closed-source / commercial products) |
 | [Strategy](docs/STRATEGY.md)                                                    | Long-term roadmap, decision records, alternative stacks |
@@ -2500,12 +2480,8 @@ Comprehensive documentation is available:
 | [Testing Guide](docs/development/TESTING.md)                                    | Complete testing guide           |
 | [Superset Dashboards](monitoring/superset-dashboards/README.md)                 | 5 importable Superset dashboards (memory_growth, agent_activity, llm_cost_trends, dedup_effectiveness, perf_regression) + dataset definitions |
 | [Monitoring (SigNoz + Superset)](docs/MONITORING.md)                            | Phase 4 observability stack overview (replaces Grafana + Loki + Tempo + Jaeger) |
-| [Task Completion Summary](docs/legacy/TASK_COMPLETION_SUMMARY.md)               | Task completion summary          |
 | [Contributing Guidelines](docs/development/CONTRIBUTING.md)                     | Contribution guidelines          |
 | [Contributors](docs/policies/CONTRIBUTORS.md)                                   | Contributor history              |
-| [Enhancement Roadmap](docs/legacy/ENHANCEMENT_ROADMAP.md)                       | 12-month enhancement roadmap     |
-| [Audit Summary](docs/reports/audits/AUDIT_SUMMARY.md)                           | Comprehensive audit summary      |
-| [Final Completion Summary](docs/reports/summaries/FINAL_COMPLETION_SUMMARY.md)  | Final completion summary         |
 | [Production Deployment Guide](docs/operations/PRODUCTION_DEPLOYMENT_GUIDE.md)   | Production deployment guide      |
 | [Security Hardening Checklist](docs/operations/SECURITY_HARDENING_CHECKLIST.md) | Security hardening checklist     |
 | [Monitoring Setup Guide](docs/operations/MONITORING_SETUP_GUIDE.md)             | Monitoring setup guide           |

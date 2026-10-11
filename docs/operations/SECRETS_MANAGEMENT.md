@@ -27,7 +27,7 @@ NEO4J_PASSWORD=<generate-32-char-random-string>
 REDIS_PASSWORD=<generate-32-char-random-string>
 QDRANT_API_KEY=<generate-32-char-random-string>
 JWT_SECRET=<generate-64-char-random-string>
-ANTHROPIC_API_KEY=sk-ant-...
+LLM_API_KEY=sk-...
 GMAIL_APP_PASSWORD=<16-char-app-password>
 ```
 

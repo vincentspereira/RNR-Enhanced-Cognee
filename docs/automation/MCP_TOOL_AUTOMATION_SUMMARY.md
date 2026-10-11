@@ -1,13 +1,13 @@
 # MCP Tool Automation - Implementation Summary
 
 **Date:** 2026-02-05
-**Task:** Analyze and add MCP tool automation to ENHANCEMENT_ROADMAP.md
+**Task:** Analyze and add MCP tool automation to the enhancement roadmap (archived)
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-Successfully analyzed all 32 MCP tools in RNR Enhanced Cognee and identified **12 tools (37.5%) that can be safely automated** to improve user experience. All automation enhancements have been integrated into the ENHANCEMENT_ROADMAP.md file.
+Successfully analyzed all 32 MCP tools in RNR Enhanced Cognee and identified **12 tools (37.5%) that can be safely automated** to improve user experience. All automation enhancements have been integrated into the the enhancement roadmap (archived).
 
 ---
 
@@ -39,7 +39,7 @@ Tools requiring explicit user intent:
 
 **HIGH Priority (Safe Automation) - Sprint 1-2:**
 1. `publish_memory_event` - Auto-publish on memory changes (2 days)
-2. `add_memory` - Auto-capture observations via Claude Code plugin (5 days)
+2. `add_memory` - Auto-capture observations via MCP client plugin (5 days)
 3. `cognify` - Auto-process documents (.md, .txt, .pdf) (3 days)
 4. `auto_deduplicate` - Scheduled weekly deduplication (2 days)
 
@@ -59,7 +59,7 @@ Tools requiring explicit user intent:
 
 ## PART B: ENHANCEMENT_ROADMAP UPDATES
 
-### Updates Made to ENHANCEMENT_ROADMAP.md
+### Updates Made to the enhancement roadmap (archived)
 
 **Version:** Updated from 2.0 to 2.1 (automation-enhanced)
 
@@ -99,14 +99,14 @@ Tools requiring explicit user intent:
 
 **Tasks Added:**
 - T1.3.1: Auto-publish memory events on changes (2 days)
-- T1.3.2: Auto-add memories via Claude Code plugin (5 days)
+- T1.3.2: Auto-add memories via MCP client plugin (5 days)
 - T1.3.3: Create automation_config.json template (1 day)
 - T1.3.4: Add audit logging for automated actions (2 days)
 - T1.3.5: Implement undo mechanism for auto-actions (3 days)
 
 **Implementation Examples Included:**
 - Auto-publish hook code
-- Claude Code plugin auto-capture code
+- MCP client plugin auto-capture code
 - Configuration template JSON
 
 ### 3. Sprint 2 Automation Tasks (NEW)
@@ -175,7 +175,7 @@ Tools requiring explicit user intent:
 
 ### 7. Updated Feature Checklist
 
-**Section:** `## Claude-Mem Feature Integration Checklist`
+**Section:** `## session-memory plugins Feature Integration Checklist`
 
 **Added:**
 ```markdown
@@ -183,7 +183,7 @@ Tools requiring explicit user intent:
 
 Phase 1: Safe Automation (Sprint 1-2) - 4 tools
 - [ ] 17. Auto-publish memory events on changes - Sprint 1
-- [ ] 18. Auto-add memories via Claude Code plugin - Sprint 1
+- [ ] 18. Auto-add memories via MCP client plugin - Sprint 1
 - [ ] 19. Auto-cognify document processing - Sprint 2
 - [ ] 20. Scheduled deduplication (weekly) - Sprint 2
 
@@ -308,7 +308,7 @@ Total: 28 Features (16 original + 12 automation)
    - Better collaboration with automatic sharing
 
 4. **Enhanced User Experience**
-   - "Just works" experience like Claude-Mem
+   - "Just works" experience like session-memory plugins
    - Less manual tool invocation
    - Smarter system behavior
 
@@ -364,7 +364,7 @@ Total: 28 Features (16 original + 12 automation)
    - Configuration examples
 
 ### Modified Files:
-1. **ENHANCEMENT_ROADMAP.md**
+1. **the enhancement roadmap (archived)**
    - Added "MCP Tool Automation Roadmap" section
    - Added automation tasks to Sprint 1 (Section 1.3)
    - Added automation tasks to Sprint 2 (Section 2.2)
@@ -425,7 +425,7 @@ Total: 28 Features (16 original + 12 automation)
 
 ### Short-Term Actions (Months 2-3)
 
-5. **Implement Claude Code Plugin**
+5. **Implement MCP Client Plugin**
    - Auto-capture observations hook
    - Auto-inject context hook
    - Publish to marketplace
@@ -461,7 +461,7 @@ Successfully analyzed all 32 MCP tools and created a comprehensive automation ro
 
 **Files for Reference:**
 - `MCP_TOOL_AUTOMATION_ANALYSIS.md` - Detailed analysis
-- `ENHANCEMENT_ROADMAP.md` - Updated implementation plan
+- `the enhancement roadmap (archived)` - Updated implementation plan
 
 **Next Steps:**
 1. Review automation analysis document

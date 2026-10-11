@@ -138,4 +138,3 @@ When considering whether to pull something from this file forward:
 - Roadmap source of truth: [`STRATEGY.md` §4.3](./STRATEGY.md#43-implementation-phases-effort-estimates-revised-2026-05-19)
 - Decision records: [`STRATEGY.md` §9](./STRATEGY.md#9-appendix-decision-records)
 - Active provider matrix: [`PROFILES.md`](./PROFILES.md)
-- Session handover: [`HANDOVER.md`](./HANDOVER.md)

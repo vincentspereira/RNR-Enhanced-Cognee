@@ -89,8 +89,8 @@ If any line shows [FAIL], see the Troubleshooting section below.
     RNR-Enhanced-Cognee start
 
 The server prints startup messages ending with "MCP server ready". Leave this
-terminal open. Configure your MCP client (e.g., Claude Code) to connect using
-the path in ~/.claude.json (populated by the setup wizard).
+terminal open. Configure your MCP client (e.g., your MCP-compatible IDE) to connect using
+the path in your IDE's MCP configuration (populated by the setup wizard).
 
 ---
 

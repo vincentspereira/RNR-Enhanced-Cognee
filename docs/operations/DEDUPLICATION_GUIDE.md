@@ -78,7 +78,7 @@ Deduplicate memories for a specific agent:
 # Deduplicate single agent
 python -c "
 result = await deduplicate(
-    agent_id='claude-code',
+    agent_id='my-agent',
     dry_run=False
 )
 "

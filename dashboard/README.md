@@ -164,7 +164,7 @@ curl http://localhost:8000/api/stats
 ### List Memories
 
 ```bash
-curl http://localhost:8000/api/memories?limit=10&agent_id=claude-code
+curl http://localhost:8000/api/memories?limit=10&agent_id=my-agent
 ```
 
 ### Search Memories

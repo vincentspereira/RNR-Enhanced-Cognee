@@ -8,14 +8,14 @@
 
 ## Context
 
-RNR Enhanced Cognee runs as an MCP server that Claude Code invokes directly on the
+RNR Enhanced Cognee runs as an MCP server that your MCP-compatible IDE invokes directly on the
 developer's machine. On Windows, the default console encoding is cp1252, which maps
 only the 256 characters of ISO-8859-1. Python's stdout defaults to this encoding
 when a Windows terminal is detected.
 
 During early development, MCP tool return strings used Unicode symbols for readability:
 checkmarks (U+2713), cross marks (U+2717), warning triangles (U+26A0), and status
-emoji. When Claude Code captured these strings and relayed them to the Windows
+emoji. When your MCP-compatible IDE captured these strings and relayed them to the Windows
 terminal, Python raised:
 
     UnicodeEncodeError: 'charmap' codec can't encode character '✓'
@@ -23,7 +23,7 @@ terminal, Python raised:
 
 This exception crashed the MCP server process, making all tools unavailable until
 manual restart. The failure was non-obvious to users because the error appeared in
-the server log rather than in the Claude Code chat interface.
+the server log rather than in the your MCP-compatible IDE chat interface.
 
 ---
 
@@ -72,6 +72,6 @@ and some Windows terminal versions still misinterpret the encoding declaration.
 
 **Force PYTHONIOENCODING=utf-8 via environment variable**
 Setting PYTHONIOENCODING=utf-8 in the MCP server launch environment would override
-cp1252. Rejected because the MCP server is launched by Claude Code, which may not
+cp1252. Rejected because the MCP server is launched by your MCP-compatible IDE, which may not
 propagate arbitrary environment variables, and because the fix depends on the
 caller rather than the server itself.

@@ -63,7 +63,7 @@ pytest tests/unit/test_llm_session_state.py::TestSessionMemoryIntegration -v
 ### Run Specific Test Methods
 
 ```bash
-# Test Anthropic client initialization
+# Test LLM provider client initialization
 pytest tests/unit/test_llm_session_state.py::TestAnthropicClient::test_initialization_with_api_key -v
 
 # Test rate lock acquisition
@@ -377,4 +377,4 @@ tests/
 
 This test suite provides comprehensive coverage of LLM Integration and Session/State modules. Run tests regularly to ensure code quality and catch regressions early.
 
-For detailed coverage information, see `tests/TEST_COVERAGE_SUMMARY.md`
+For detailed coverage information, run `pytest --cov=src --cov-report=term`

@@ -3,7 +3,7 @@
 **Analysis Date:** 2026-05-14
 **Previous Version:** 2026-02-12 (58 tools, pre-Phase 10)
 **Purpose:** Compare original Cognee (topoteretes/cognee) features with RNR Enhanced Cognee MCP server
-availability for Claude Code and other AI IDEs
+availability for your MCP-compatible IDE and other AI IDEs
 **Phase Status:** Phase 14 complete - Encryption, Observations, Notifications, Importance Scoring, Re-ranking
 
 ---
@@ -14,7 +14,7 @@ availability for Claude Code and other AI IDEs
 
 - **100% of original Cognee core features are available via MCP**
 - **100+ additional enterprise features** beyond original Cognee
-- **122 production-ready MCP tools** accessible to Claude Code (up from 58 in the Feb 2026 report)
+- **122 production-ready MCP tools** accessible to your MCP-compatible IDE (up from 58 in the Feb 2026 report)
 - **4-database Enhanced stack** (vs. single database in original Cognee)
 - **4,158 unit tests** with 100% pass rate
 - **Python SDK** available: `pip install enhanced-cognee-client` (PyPI v1.0.0)
@@ -113,23 +113,23 @@ await search(query, limit)                       # Search knowledge graph
 ### 4. LLM Provider Support
 
 **Original Cognee:**
-- OpenAI (default)
+- Cloud providers (default)
 - Anyscale
-- Ollama
-- Anthropic (Claude)
+- Ollama (local)
+- Additional cloud providers
 
 **RNR Enhanced Cognee MCP Availability:**
 
 | LLM Provider | MCP Support | Notes |
 |--------------|------------|-------|
-| OpenAI | [OK] YES | Default |
-| Anthropic | [OK] YES | Supported |
+| Cloud providers | [OK] YES | Default |
+| Local LLMs | [OK] YES | Via configuration |
 | Local LLMs | [OK] YES | Via configuration |
 | Groq | [OK] YES | Supported |
 
 **MCP Integration:**
 - LLM configuration handled server-side
-- No LLM API key required from Claude Code
+- No LLM API key required from your MCP-compatible IDE
 - Automatic provider selection based on configuration
 - LLM cost tracking available via `get_llm_cost_report()` and `set_cost_budget()` - Enhanced exclusive
 
@@ -497,7 +497,7 @@ scores (Phase 14) and confidence scores (Phase 10) with vector similarity and re
 
 ## PART 3: COMPLETE 122-TOOL REFERENCE TABLE
 
-**Key:** M = Manual (requires explicit user invocation), A = Auto (triggered by Claude Code or AI IDE),
+**Key:** M = Manual (requires explicit user invocation), A = Auto (triggered by your MCP-compatible IDE or AI IDE),
 S = System (triggered by RNR Enhanced Cognee system or scheduled task)
 
 | # | Tool Name | Category | Trigger |
@@ -660,7 +660,7 @@ These require explicit user invocation due to destructive, irreversible, or comp
 
 ### Auto Tools (A) - 45
 
-Automatically triggered by Claude Code, AI IDEs, or on-demand by callers:
+Automatically triggered by your MCP-compatible IDE, AI IDEs, or on-demand by callers:
 
 1. `add_memory` - Add memory (Standard Memory MCP)
 2. `search_memories` - Semantic + text search (Standard Memory MCP)
@@ -841,13 +841,13 @@ Auto-triggered by the RNR Enhanced Cognee system, schedulers, or background proc
 
 ---
 
-## PART 6: AVAILABILITY TO CLAUDE CODE AND AI IDEs
+## PART 6: AVAILABILITY TO MCP CLIENTS AND AI IDEs
 
 ### Via MCP Protocol
 
 **Standard Memory MCP Tools (7 tools):**
 - [OK] All 7 Standard Memory MCP tools available
-- [OK] Compatible with Claude Code default memory interface
+- [OK] Compatible with MCP clients' default memory interface
 - [OK] Compatible with other MCP-capable AI IDEs
 
 **RNR Enhanced Cognee MCP Tools (115 additional tools):**
@@ -858,7 +858,7 @@ Auto-triggered by the RNR Enhanced Cognee system, schedulers, or background proc
 - [OK] ASCII-only output (Windows cp1252 compatible)
 - [OK] Pre-commit hooks enforce ASCII compliance and no-hardcoded-categories
 
-### Configuration for Claude Code
+### Configuration for your MCP-compatible IDE
 
 ```json
 {
@@ -1089,7 +1089,7 @@ The following capability groups exist exclusively in RNR Enhanced Cognee:
 #### 2. Standard Memory MCP Protocol (7 tools)
 
 - `add_memory`, `search_memories`, `get_memories`, `get_memory`, `update_memory`, `delete_memory`, `list_agents`
-- Seamless Claude Code integration with the standard memory interface
+- Seamless MCP client integration with the standard memory interface
 
 #### 3. Enterprise Security
 
@@ -1207,11 +1207,11 @@ PLUS 100+ enterprise enhancements across 25 feature groups.**
 | Notifications | None | Slack + Discord | NEW (Phase 14) |
 | Importance scoring | None | Heuristic formula | NEW (Phase 14) |
 
-### For Claude Code Users
+### For MCP Client Users
 
 1. All original Cognee capabilities available via 122 MCP tools
 2. Standard Memory MCP protocol ensures seamless integration
-3. No LLM keys required from Claude Code
+3. No LLM keys required from your MCP-compatible IDE
 4. 4-database Enhanced stack provides 400-700% performance improvement
 5. Enterprise features not found in original Cognee:
    - Backup and recovery (5 tools)
@@ -1265,8 +1265,6 @@ RNR Enhanced Cognee MCP server is recommended for:
 - RNR Enhanced Cognee GitHub Release: https://github.com/vincentspereira/RNR-Enhanced-Cognee/releases/tag/enhanced-v1.0.0
 - RNR Enhanced Cognee Python SDK (PyPI): https://pypi.org/project/enhanced-cognee-client/1.0.0/
 - Cognee API Reference: https://docs.cognee.ai/api-reference/introduction
-- Claude Agent SDK Integration: https://www.cognee.ai/blog/integrations/claude-agent-sdk-persistent-memory-with-cognee-integration
 - LobeHub MCP Servers: https://lobehub.com/zh/mcp/vincentspereira-enhanced-cognee
 - Local: bin/enhanced_cognee_mcp_server.py (Phase 14 hardened, 122 tools)
 - Local: docs/plans/COGNEE_UPSTREAM_PARITY_AND_SYNC_PLAN.md (2026-05-13, approved)
-- Local: docs/reports/sprints/ (Sprints 1-10, all complete)

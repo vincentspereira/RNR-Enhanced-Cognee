@@ -70,7 +70,7 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
   // Process agent activity data (mock)
   const agentActivityData = useMemo(() => {
     return [
-      { agent: "Claude Code", memories: 245, searches: 120, updates: 45 },
+      { agent: "Ops Bot", memories: 245, searches: 120, updates: 45 },
       { agent: "Trading Bot", memories: 189, searches: 98, updates: 32 },
       { agent: "Dev Assistant", memories: 156, searches: 87, updates: 28 },
       { agent: "Analysis Agent", memories: 134, searches: 76, updates: 21 },

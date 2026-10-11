@@ -15,11 +15,11 @@ that matches how the calling code runs:
 
 | Surface | Entry point | Tools | Transport | Use when |
 | ------- | ----------- | ----- | --------- | -------- |
-| **A. stdio MCP** (primary) | `bin/enhanced_cognee_mcp_server.py` via `.claude.json` | all 122 | stdio (MCP protocol) | The caller is a Claude Code agent. This is how MAS agents consume memory. Works today; nothing to build. |
+| **A. stdio MCP** (primary) | `bin/enhanced_cognee_mcp_server.py` via `the MCP configuration file` | all 122 | stdio (MCP protocol) | The caller is a your MCP-compatible IDE agent. This is how MAS agents consume memory. Works today; nothing to build. |
 | **B. HTTP REST** | `src/enhanced_cognee_mcp.py` (FastAPI), port `8080` | all 122 via `POST /tools/{tool_name}` | HTTP/HTTPS | The caller is plain Python / another language / a service that is not an MCP client. Backed by the `enhanced_cognee_client` Python SDK. |
 
 - **Surface A is the recommended path for MAS** because MAS agents run on
-  Claude Code, which speaks MCP natively. Register the server (Step 1) and the
+  your MCP-compatible IDE, which speaks MCP natively. Register the server (Step 1) and the
   full tool set is available immediately -- no HTTP, no ports, no auth tokens.
 - **Surface B** is for non-MCP callers. The HTTP server listens on the port set
   by `ENHANCED_HTTPS_PORT` (default `8080`), authenticates every request
@@ -73,9 +73,9 @@ that matches how the calling code runs:
 > at ArcadeDB's Bolt endpoint, and `REDIS_HOST`/`REDIS_PORT` point at Valkey.
 > Set `ENHANCED_GRAPH_PROVIDER=neo4j` to opt back into Neo4j.
 
-## Step 1: Register RNR Enhanced Cognee in MAS's `~/.claude.json`
+## Step 1: Register RNR Enhanced Cognee in MAS's `your IDE's MCP configuration`
 
-If MAS uses its own `.claude.json` (or a per-project equivalent), add the
+If MAS uses its own `the MCP configuration file` (or a per-project equivalent), add the
 RNR Enhanced Cognee MCP server entry:
 
 ```json
@@ -212,10 +212,10 @@ class MemoryRouter:
 
 ### Surface A (stdio MCP) -- the path MAS uses
 
-After editing `.claude.json` (Step 1) and restarting Claude Code, the 122 tools
+After editing `the MCP configuration file` (Step 1) and restarting your MCP-compatible IDE, the 122 tools
 are available to the agent directly. Confirm by asking the agent to call
 `health` and then `add_memory` / `search_memories`. There is no port or token
-to manage -- the MCP transport is the stdio pipe Claude Code already owns.
+to manage -- the MCP transport is the stdio pipe your MCP-compatible IDE already owns.
 
 ### Surface B (HTTP) -- for non-MCP callers
 
@@ -288,7 +288,7 @@ curl -X POST http://localhost:8080/tools/add_memory \
 
 ## Troubleshooting
 
-- **`mcp not found` in MAS**: Confirm `~/.claude.json` was edited and Claude Code restarted.
+- **`mcp not found` in MAS**: Confirm `your IDE's MCP configuration` was edited and your MCP-compatible IDE restarted.
 - **Wrong agent_id in stored memories**: Check the MAS agent's `_agent_id` attribute matches the table above.
 - **Memory not searchable**: Check `cognify_status()` - background indexing may still be running.
 - **Slow responses**: Run `get_performance_metrics()` to find bottlenecks.

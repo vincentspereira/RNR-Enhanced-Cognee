@@ -117,9 +117,9 @@ python cognee_mcp_universal.py
 2. **Configure MCP settings** in extension preferences
 3. **Add RNR Enhanced Cognee server** configuration
 
-#### Method 3: Using Claude in VS Code
+#### Method 3: Using an AI coding extension in VS Code
 
-1. **Install Claude Dev Extension**
+1. **Install an AI coding extension**
 2. **Enable MCP mode** in settings
 3. **Configure RNR Enhanced Cognee** as memory provider
 

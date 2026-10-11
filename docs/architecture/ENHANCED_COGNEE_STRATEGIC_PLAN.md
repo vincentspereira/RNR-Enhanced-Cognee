@@ -57,7 +57,7 @@ This plan implements RNR Enhanced Cognee as your exclusive memory architecture w
 **Objective**: Complete documentation and knowledge transfer
 
 **Deliverables**:
-- **Documentation Updates**: README.md and Claude.md maintenance
+- **Documentation Updates**: README.md and contributor docs maintenance
 - **Implementation Documentation**: Complete technical reference
 - **Training Materials**: Operational guides and best practices
 - **Knowledge Transfer**: Team training and handover
@@ -236,7 +236,7 @@ Multi-Agent System/
 #### Task 10: Update Documentation
 **Pending Actions**:
 - Update README.md with RNR Enhanced Cognee details
-- Update Claude.md with new memory architecture
+- Update contributor docs with new memory architecture
 - Create agent-specific memory guides
 - Document troubleshooting procedures
 

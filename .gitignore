@@ -332,3 +332,7 @@ crash.*.log
 # Desktop installer build outputs
 installer/dist/
 installer/build/_pyinstaller/
+
+# Local agent instruction files (not published)
+CLAUDE.md
+AGENTS.md

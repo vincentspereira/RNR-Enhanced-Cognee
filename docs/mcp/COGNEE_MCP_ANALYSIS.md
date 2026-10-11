@@ -119,7 +119,7 @@ byterover-cipher (Limited)
 ### Completed:
 - ✅ Cognee source code cloned and installed
 - ✅ Python dependencies resolved
-- ✅ MCP server added to Claude configuration
+- ✅ MCP server added to the client configuration
 - ✅ Feature analysis completed
 - ✅ Priority positioning determined
 
@@ -137,7 +137,7 @@ byterover-cipher (Limited)
 ## Configuration Requirements
 
 Based on analysis, Cognee may require:
-- LLM API key configuration (OpenAI, Anthropic, or local models)
+- LLM API key configuration (cloud or local providers)
 - Database backend configuration (SQLite, PostgreSQL, etc.)
 - Vector database configuration (LanceDB, etc.)
 - Environment file setup (.env configuration)

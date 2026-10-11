@@ -1,7 +1,7 @@
 # Cognee Upstream Parity and Automated Sync Plan
 
 **Document Status:** DRAFT - AWAITING USER APPROVAL
-**Author:** Claude (Anthropic) for Vincent S. Pereira
+**Author:** Vincent S. Pereira
 **Date:** 2026-05-13
 **Plan Version:** 1.0
 **Target Repositories:**
@@ -66,7 +66,7 @@ Each section ends with concrete deliverables. No work is performed until you (Vi
 | Phase 6: Documentation & rollout | 2 days         | 0.5 week      | Low    |
 | **TOTAL**                        | **29-37 days** | **~8 weeks**  | -      |
 
-Note: Estimates assume one developer (or one Claude session per task) and exclude QA cycles for stakeholders.
+Note: Estimates assume one developer (or one focused work session per task) and exclude QA cycles for stakeholders.
 
 ---
 
@@ -141,7 +141,7 @@ These gaps will be closed during Phase 0 pre-flight (Section 9.1).
 | Search types missing   | `FEELING_LUCKY` (auto-select), `CYPHER`, `TEMPORAL`, `GRAPH_COMPLETION_COT`                                                                                            | Medium                                              |
 | Graph backend          | Original switched Kuzu -> Ladybug in v1.0.4                                                                                                                            | Medium (Enhanced uses Neo4j so impact is contained) |
 | Cloud connectivity     | `cognee.serve()` + `--serve-url` MCP arg                                                                                                                               | Low (Enhanced is self-hosted-first)                 |
-| Coding agent rules     | `cognee/tasks/codingagents/` rule associations                                                                                                                         | Medium (useful for Claude/Cursor)                   |
+| Coding agent rules     | `cognee/tasks/codingagents/` rule associations                                                                                                                         | Medium (useful for IDE integration)                   |
 | Session memory         | `infrastructure/session/feedback_detection.py` + session-aware MCP tools                                                                                               | Medium                                              |
 | MCP transport security | Original has TransportSecuritySettings + CORS + DNS-rebinding protection                                                                                               | **High** (security)                                 |
 | MCP transport options  | Original supports `stdio`, `sse`, `http` with arguments                                                                                                                | Medium                                              |
@@ -480,7 +480,7 @@ These are features Enhanced has built on top that Original does not have.
 | `security/`, `security_mcp.py`                                     | Input validation, authz, confirmation | Enhanced-only                                                       |
 | `coordination/`                                                    | Agent coordination                    | Enhanced-only                                                       |
 | `ecosystem/`                                                       | Third-party integration               | Enhanced-only                                                       |
-| `claude_api_integration.py`                                        | Direct Claude API                     | Enhanced-only                                                       |
+| `claude_api_integration.py`                                        | Direct LLM provider API                     | Enhanced-only                                                       |
 | `mcp_memory_tools.py`                                              | MCP-side helpers                      | Enhanced-only                                                       |
 | `mcp_response_formatter.py`                                        | Consistent response shapes            | Enhanced-only                                                       |
 | `logging_config.py`                                                | Structured logging                    | Enhanced-only                                                       |
@@ -600,7 +600,7 @@ These are features Enhanced has built on top that Original does not have.
 
 **What**: Every newly ported file must be scrubbed of Unicode symbols before merge. Add a CI check.
 
-**Why**: Per `CLAUDE.md`, all output must use ASCII to avoid Windows `cp1252` `UnicodeEncodeError`.
+**Why**: Per the project conventions, all output must use ASCII to avoid Windows `cp1252` `UnicodeEncodeError`.
 
 **Where**:
 
@@ -688,7 +688,7 @@ These are features Enhanced has built on top that Original does not have.
 
 **What**: Port `cognee/tasks/codingagents/coding_rule_associations.py` and `coding_rules_retriever.py`.
 
-**Why**: Enables Claude Code / Cursor / Windsurf to record interaction patterns and surface them as rules. Closes a gap in agent integration.
+**Why**: Enables your MCP-compatible IDE / Cursor / Windsurf to record interaction patterns and surface them as rules. Closes a gap in agent integration.
 
 **Where**:
 
@@ -801,7 +801,7 @@ These are heavy dependencies. Wrap in optional install groups (e.g., `pip instal
 
 ### 7.6 Per-Port Checklist (Applies to Every Item)
 
-For each item above, the developer (or Claude) must:
+For each item above, the developer must:
 
 1. Read the Original file(s) in full
 2. Identify dependencies on other Original modules and confirm they exist locally (or add them first)
@@ -822,7 +822,7 @@ For each item above, the developer (or Claude) must:
 
 #### 8.1.1 Hardcoded Categories in `src/agents/`
 
-**Finding**: `src/agents/` contains directories `ats`, `oma`, `smc`, and a literal `{ats,oma,smc}` directory (likely a shell-glob mistake). This directly violates `CLAUDE.md`'s "no hardcoded categories" rule.
+**Finding**: `src/agents/` contains directories `ats`, `oma`, `smc`, and a literal `{ats,oma,smc}` directory (likely a shell-glob mistake). This directly violates the project's "no hardcoded categories" rule.
 
 **Fix (P0)**:
 
@@ -873,8 +873,8 @@ For each item above, the developer (or Claude) must:
 **Fix (P2)**:
 
 - Promote `docs/README.md` to a true index
-- Move sprint reports to `docs/reports/sprints/` (already done, mostly)
-- Move "audit complete" docs to `docs/archive/`
+- Move sprint reports into archived docs (already done, mostly)
+- Move "audit complete" docs into the archive
 - Keep a single "What's the current state?" doc up to date: `docs/STATE.md`
 
 ### 8.2 Per-Feature Hardening Pass
@@ -1197,7 +1197,7 @@ This means the automation handles only forward-going releases. The big initial c
 
 ## 11. Approval Gates
 
-This plan has six approval gates. Each requires Vincent's explicit "approved" before Claude (or the automation) proceeds to the next.
+This plan has six approval gates. Each requires Vincent's explicit "approved" before the next stage proceeds.
 
 | Gate   | What's Approved                                                           | Output                                           |
 | ------ | ------------------------------------------------------------------------- | ------------------------------------------------ |
@@ -1314,13 +1314,12 @@ Please confirm or correct the following before approval:
 - **Sync**: Keep Enhanced up to date with Original's new releases.
 - **P0/P1/P2/P3**: Priority levels (Critical/High/Useful/Optional).
 - **Gate (G0-G6)**: Approval checkpoint requiring Vincent's sign-off.
-- **MCP**: Model Context Protocol - Claude's tool integration standard.
+- **MCP**: Model Context Protocol - open tool integration standard.
 
 ---
 
 ## 15. Sign-Off
 
-**Drafted by**: Claude (Anthropic) on 2026-05-13
 **Awaiting approval from**: Vincent S. Pereira
 **Approval format**: Add a section below titled `## 16. Approval Record` with:
 

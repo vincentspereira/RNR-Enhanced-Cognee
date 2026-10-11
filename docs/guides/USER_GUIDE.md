@@ -27,7 +27,7 @@ RNR Enhanced Cognee is an **MCP (Model Context Protocol) Server** that provides:
 - **Intelligent Categorization**: Automatically organize memories by project type
 - **Cross-Project Learning**: Leverage insights from previous projects
 - **Enterprise Database Stack**: PostgreSQL, Qdrant, Neo4j, Redis integration
-- **Multi-IDE Compatibility**: Works with Claude Desktop, Cursor, VS Code, and more
+- **Multi-IDE Compatibility**: Works with MCP desktop clients, Cursor, VS Code, and more
 
 ## 💡 Why Use RNR Enhanced Cognee?
 
@@ -225,10 +225,10 @@ RNR Enhanced Cognee can leverage knowledge from other projects:
 
 ## 🔧 Integration with IDEs
 
-### Claude Desktop
+### MCP desktop clients
 
 ```json
-// AppData/Roaming/Claude/claude_desktop_config.json
+// your desktop MCP client's config file
 {
   "mcpServers": {
     "RNR-Enhanced-Cognee": {

@@ -46,7 +46,7 @@ docker compose -f monitoring/docker-compose-monitoring.yml up -d
 #    a) Restart the MCP server with OTEL_EXPORTER_OTLP_ENDPOINT set:
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 #    b) Or add the env var to your installer-registered MCP entry in
-#       ~/.claude.json under mcpServers.cognee.env.
+#       your IDE's MCP configuration under mcpServers.cognee.env.
 ```
 
 UIs once everything is healthy:

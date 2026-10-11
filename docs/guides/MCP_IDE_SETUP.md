@@ -1,142 +1,32 @@
-# RNR Enhanced Cognee MCP - Multi-IDE Setup Guide
+# RNR Enhanced Cognee MCP - Client Setup Guide
 
-RNR Enhanced Cognee MCP server works with any **MCP-compatible** AI IDE or editor. This guide shows you how to set it up with popular AI IDEs.
-
----
-
-## 🎯 What is MCP?
-
-The **Model Context Protocol (MCP)** is an open standard that allows AI assistants to communicate with external tools and data sources. RNR Enhanced Cognee provides a full MCP server implementation.
+RNR Enhanced Cognee MCP server works with any **MCP-compatible** IDE, editor,
+or custom client. This guide shows you how to connect any Model Context
+Protocol client to the server.
 
 ---
 
-## 🚀 Supported IDEs & Editors
+## What is MCP?
 
-### ✅ Officially Tested:
-- **Claude Code** (Anthropic)
-- **VS Code** (with Continue.dev, Kilo Code)
-- **Cursor**
-- **Windsurf**
-- **Antigravity**
-- **Continue.dev**
-- **GitHub Copilot** (VS Code extension)
-
-### ✅ Should Work (MCP-Compatible):
-- **Cline** (VS Code extension)
-- **Roo Code** (VS Code extension)
-- **Any MCP-compatible client**
+The **Model Context Protocol (MCP)** is an open standard that allows AI
+assistants to communicate with external tools and data sources. RNR Enhanced
+Cognee provides a full MCP server implementation exposing 122 tools.
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
 1. **RNR Enhanced Cognee MCP Server** installed
-2. **Enhanced databases running** (PostgreSQL, Qdrant, Neo4j, Redis)
+2. **Enhanced databases running** (PostgreSQL, Qdrant, ArcadeDB, Valkey)
 3. **Python 3.10+** with required packages
 4. **API keys** configured (if using LLM features)
 
 ---
 
-## 🔧 Setup Instructions by IDE
+## Setup Instructions (any MCP client)
 
-### 1. Claude Code (Anthropic)
-
-**Configuration File:** `~/.claude.json` (macOS/Linux) or `%APPDATA%\Claude\claude.json` (Windows)
-
-```json
-{
-  "mcpServers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
-**Verify:**
-```bash
-# Check MCP server status
-claude mcp list
-
-# Should show:
-# RNR-Enhanced-Cognee: python .../enhanced_cognee_mcp_server.py - ✅ Connected
-```
-
----
-
-### 2. VS Code (with Continue.dev)
-
-**Step 1: Install Continue.dev Extension**
-```bash
-# Install from VS Code Marketplace
-# Search: "Continue - Autocomplete AI Chat"
-```
-
-**Step 2: Configure Continue**
-
-Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\config.json` (Windows):
-
-```json
-{
-  "experimental": {
-    "model": "claude-3.5-sonnet",
-    "mcpServers": {
-      "RNR-Enhanced-Cognee": {
-        "command": "python",
-        "args": [
-          "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
-        ],
-        "env": {
-          "ENHANCED_COGNEE_MODE": "true",
-          "POSTGRES_HOST": "localhost",
-          "POSTGRES_PORT": "25432",
-          "POSTGRES_DB": "cognee_db",
-          "POSTGRES_USER": "cognee_user",
-          "POSTGRES_PASSWORD": "your-db-password",
-          "QDRANT_HOST": "localhost",
-          "QDRANT_PORT": "26333",
-          "NEO4J_URI": "bolt://localhost:27687",
-          "NEO4J_USER": "neo4j",
-          "NEO4J_PASSWORD": "your-db-password",
-          "REDIS_HOST": "localhost",
-          "REDIS_PORT": "26379"
-        }
-      }
-    }
-  }
-}
-```
-
-**Step 3: Restart VS Code**
-
-**Step 4: Verify**
-- Open Continue sidebar in VS Code
-- Type `/` to see available tools
-- You should see RNR Enhanced Cognee tools listed
-
----
-
-### 3. Cursor IDE
-
-**Configuration File:** `~/.cursorrc` (macOS/Linux) or `%USERPROFILE%\.cursorrc` (Windows)
+MCP clients launch the server over **stdio**. Register the server in your
+client's MCP configuration using the standard `mcpServers` schema:
 
 ```json
 {
@@ -144,7 +34,7 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
     "RNR-Enhanced-Cognee": {
       "command": "python",
       "args": [
-        "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
+        "/path/to/enhanced-cognee/bin/enhanced_cognee_mcp_server.py"
       ],
       "env": {
         "ENHANCED_COGNEE_MODE": "true",
@@ -156,8 +46,6 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
         "QDRANT_HOST": "localhost",
         "QDRANT_PORT": "26333",
         "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "26379"
       }
@@ -166,368 +54,44 @@ Create/edit `~/.continue/config.json` (macOS/Linux) or `%USERPROFILE%\.continue\
 }
 ```
 
-**Verify:**
-- Open Cursor settings
-- Go to MCP Servers section
-- RNR Enhanced Cognee should appear as connected
+Notes:
 
----
+- Use the **absolute path** to the server script and to the Python
+  interpreter that has the dependencies installed.
+- The `env` block can be omitted if your `.env` file already configures
+  the database connections.
+- `NEO4J_URI` is kept for compatibility; with the default profile it
+  points at ArcadeDB's Bolt port (27687).
 
-### 4. Windsurf (Codeium)
+### Connecting over HTTP instead of stdio
 
-**Configuration File:** `~/.windsurfm/config.json`
+If your client speaks MCP over HTTP (or you want to use the plain REST
+surface), start the FastAPI server and point the client at port 8080:
 
-```json
-{
-  "mcp": {
-    "servers": {
-      "RNR-Enhanced-Cognee": {
-        "command": "python",
-        "args": [
-          "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
-        ],
-        "env": {
-          "ENHANCED_COGNEE_MODE": "true",
-          "POSTGRES_HOST": "localhost",
-          "POSTGRES_PORT": "25432",
-          "POSTGRES_DB": "cognee_db",
-          "POSTGRES_USER": "cognee_user",
-          "POSTGRES_PASSWORD": "your-db-password",
-          "QDRANT_HOST": "localhost",
-          "QDRANT_PORT": "26333",
-          "NEO4J_URI": "bolt://localhost:27687",
-          "NEO4J_USER": "neo4j",
-          "NEO4J_PASSWORD": "your-db-password",
-          "REDIS_HOST": "localhost",
-          "REDIS_PORT": "26379"
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-### 5. Antigravity
-
-**Configuration File:** Antigravity settings → MCP Servers
-
-```json
-{
-  "mcpServers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "/absolute/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
----
-
-### 6. Continue.dev Standalone
-
-**Configuration File:** `~/.continuerc/config.json`
-
-```json
-{
-  "mcpServers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "/path/to/enhanced-cognee/enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
----
-
-### 7. Kilo Code (VS Code Extension)
-
-**Kilo Code** is a VS Code extension that provides AI-powered coding assistance with MCP support.
-
-**Step 1: Install Kilo Code Extension**
 ```bash
-# Install from VS Code Marketplace
-# Search: "Kilo Code"
+python -m uvicorn src.enhanced_cognee_mcp:app --host 127.0.0.1 --port 8080
 ```
 
-**Step 2: Configure Kilo Code**
-
-Create/edit VS Code settings (`settings.json`):
-
-**Via UI:**
-1. Open VS Code
-2. Go to Settings (Ctrl+, / Cmd+,)
-3. Search for "kilo code"
-4. Find "Kilo Code: MCP Servers" setting
-5. Click "Edit in settings.json"
-
-**Via settings.json:**
-
-```json
-{
-  "kiloCode.mcpServers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
-**Alternative: Workspace Configuration**
-
-Create `.vscode/settings.json` in your project:
-
-```json
-{
-  "kiloCode.mcpServers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "${workspaceFolder}/../RNR Enhanced Cognee/enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
-**Step 3: Reload VS Code**
-- Press Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac)
-- Type "Reload Window" and press Enter
-
-**Step 4: Verify**
-- Open Kilo Code panel in VS Code
-- Look for MCP connection indicator
-- Should show "RNR Enhanced Cognee" as connected
-
-**Usage with Kilo Code:**
-```
-# In Kilo Code chat interface
-User: Add memory about my project setup
-Kilo Code: [Uses add_memory tool]
-
-User: Search memories about database
-Kilo Code: [Uses search_memories tool]
-```
+- Named routes: `POST /mcp/add_memory`, `/mcp/search_memories`, ...
+- Generic dispatch: `POST /tools/{tool_name}` -- reaches all 122 tools.
+- Auth headers: `X-API-Key` (when `ENHANCED_API_KEY` is set) and
+  `X-Tenant-ID` (multi-tenant deployments).
 
 ---
 
-### 8. GitHub Copilot (VS Code Extension)
+## Testing the Connection
 
-**GitHub Copilot** now supports MCP servers for extended capabilities.
+### Method 1: Client-side MCP listing
 
-**Step 1: Install GitHub Copilot Extension**
-```bash
-# Install from VS Code Marketplace
-# Search: "GitHub Copilot"
-```
-
-**Step 2: Configure GitHub Copilot MCP**
-
-Create/edit VS Code settings (`settings.json`):
-
-**Via UI:**
-1. Open VS Code
-2. Go to Settings (Ctrl+, / Cmd+,)
-3. Search for "github.copilot.mcp"
-4. Click "Edit in settings.json"
-
-**Via settings.json:**
-
-```json
-{
-  "github.copilot.mcp.servers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "C:\\Users\\YourUsername\\Projects\\AI Agents\\RNR-Enhanced-Cognee\\enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
-**Alternative: Workspace Configuration**
-
-Create `.vscode/settings.json` in your project:
-
-```json
-{
-  "github.copilot.mcp.servers": {
-    "RNR-Enhanced-Cognee": {
-      "command": "python",
-      "args": [
-        "${workspaceFolder}/../RNR Enhanced Cognee/enhanced_cognee_mcp_server.py"
-      ],
-      "env": {
-        "ENHANCED_COGNEE_MODE": "true",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "25432",
-        "POSTGRES_DB": "cognee_db",
-        "POSTGRES_USER": "cognee_user",
-        "POSTGRES_PASSWORD": "your-db-password",
-        "QDRANT_HOST": "localhost",
-        "QDRANT_PORT": "26333",
-        "NEO4J_URI": "bolt://localhost:27687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "your-db-password",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "26379"
-      }
-    }
-  }
-}
-```
-
-**Step 3: Reload VS Code**
-- Press Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac)
-- Type "Reload Window" and press Enter
-
-**Step 4: Verify**
-- Open GitHub Copilot Chat (Ctrl+I / Cmd+I)
-- Type `@RNR-Enhanced-Cognee` to see available tools
-- Should list all RNR Enhanced Cognee MCP tools
-
-**Usage with GitHub Copilot:**
-```
-# In Copilot Chat interface
-User: @RNR-Enhanced-Cognee Add memory about my coding preferences
-Copilot: [Uses add_memory tool] Memory added!
-
-User: @RNR-Enhanced-Cognee Search for memories about testing
-Copilot: [Uses search_memories tool] Found 2 memories about testing
-
-User: @RNR-Enhanced-Cognee Get performance metrics
-Copilot: [Uses get_performance_metrics tool]
-```
-
-**Advanced GitHub Copilot Features:**
-
-**Combine Copilot with RNR Enhanced Cognee:**
-```
-# Copilot can use RNR Enhanced Cognee for context
-User: @RNR-Enhanced-Cognee Remember my API endpoint structure
-Copilot: [Stores in RNR Enhanced Cognee]
-
-# Later in coding session
-User: @RNR-Enhanced-Cognee What do you know about my API structure?
-Copilot: [Retrieves from RNR Enhanced Cognee]
-Based on your memories:
-- API base URL: https://api.example.com/v2
-- Authentication: Bearer token
-- Rate limit: 1000 requests/minute
-
-# Now Copilot uses this context for code generation
-User: Generate API client code
-Copilot: [Generates code matching your remembered structure]
-```
-
-**Note:** GitHub Copilot MCP support may require:
-- GitHub Copilot Chat extension installed
-- Copilot subscription (free or paid)
-- Latest version of Copilot extensions
-
----
-
-## 🧪 Testing MCP Connection
-
-### Method 1: Using Claude Code CLI
-```bash
-# List all MCP servers
-claude mcp list
-
-# Check specific server status
-claude mcp test RNR-Enhanced-Cognee
-```
+Most MCP clients provide a command or palette action that lists configured
+MCP servers and their connection status. Look for the server named
+`RNR-Enhanced-Cognee` and confirm it reports connected with 122 tools.
 
 ### Method 2: Manual Test
+
 ```bash
 # Start the MCP server manually
-python enhanced_cognee_mcp_server.py
+python bin/enhanced_cognee_mcp_server.py
 
 # Should see:
 # =================================================================
@@ -536,8 +100,8 @@ python enhanced_cognee_mcp_server.py
 # OK Initializing RNR Enhanced Cognee stack...
 # OK PostgreSQL connected
 # OK Qdrant connected (X collections)
-# OK Neo4j connected
-# OK Redis connected
+# OK ArcadeDB connected
+# OK Valkey connected
 #
 # OK RNR Enhanced Cognee MCP Server starting...
 #   Available tools:
@@ -549,12 +113,12 @@ python enhanced_cognee_mcp_server.py
 
 ---
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Issue: MCP Server Not Connecting
 
 **Symptoms:**
-- IDE shows "Failed to connect"
+- Client shows "Failed to connect"
 - Tools not appearing
 
 **Solutions:**
@@ -564,8 +128,7 @@ python enhanced_cognee_mcp_server.py
    which python  # macOS/Linux
    where python  # Windows
 
-   # Use absolute path in IDE config:
-   /usr/local/bin/python/enhanced_cognee_mcp_server.py
+   # Use the absolute path in your client's MCP config
    ```
 
 2. **Check Enhanced databases are running:**
@@ -575,33 +138,26 @@ python enhanced_cognee_mcp_server.py
    # Should show:
    # postgres-enhanced
    # qdrant-enhanced
-   # neo4j-enhanced
-   # redis-enhanced
+   # arcadedb-enhanced
+   # cognee-mcp-valkey
    ```
 
 3. **Verify .env configuration:**
    ```bash
-   cat .env | grep -E "POSTGRES|QDRANT|NEO4J|REDIS"
+   cat .env | grep -E "POSTGRES|QDRANT|ARCADEDB|REDIS"
    ```
 
 4. **Check Python dependencies:**
    ```bash
-   pip list | grep -E "asyncpg|qdrant|neo4j|redis"
+   pip list | grep -E "asyncpg|qdrant|mcp|redis"
    ```
 
-### Issue: Tools Not Showing in IDE
+### Issue: Tools Not Showing in the Client
 
 **Solution:**
-1. Restart the IDE completely
-2. Clear MCP cache:
-   ```bash
-   # Claude Code
-   rm -rf ~/.claude/mcp_cache
-
-   # Continue.dev
-   rm -rf ~/.continue/mcp_cache
-   ```
-3. Re-configure MCP server
+1. Restart the client completely
+2. Clear the client's MCP cache (see your client's documentation)
+3. Re-configure the MCP server entry
 
 ### Issue: Unicode Encoding Errors on Windows
 
@@ -611,18 +167,19 @@ UnicodeEncodeError: 'charmap' codec can't encode character
 ```
 
 **Solution:**
-The RNR Enhanced Cognee MCP server uses ASCII-only output by design. If you still see errors:
+The RNR Enhanced Cognee MCP server uses ASCII-only output by design. If you
+still see errors:
 
-```python
-# Set environment variable in IDE config:
+```json
 "PYTHONIOENCODING": "utf-8"
 ```
 
 ---
 
-## 📊 Available MCP Tools
+## Available MCP Tools
 
-Once connected, RNR Enhanced Cognee provides **30+ tools** across multiple categories:
+Once connected, RNR Enhanced Cognee provides **122 tools** across multiple
+categories:
 
 ### Standard Memory Tools
 - `add_memory` - Add memory entries
@@ -672,11 +229,15 @@ Once connected, RNR Enhanced Cognee provides **30+ tools** across multiple categ
 - `get_sync_status` - Get synchronization status
 - `sync_agent_state` - Sync memories between agents
 
+See the root `README.md` for the complete 122-tool reference with trigger
+types.
+
 ---
 
-## 🎯 Usage Examples by IDE
+## Usage Examples
 
-### Claude Code
+From any MCP-connected client:
+
 ```
 You: Add a memory about my project structure
 AI: [Uses add_memory tool]
@@ -684,105 +245,12 @@ You: Search for memories about microservices
 AI: [Uses search_memories tool]
 ```
 
-### VS Code + Continue
+From Python (HTTP surface):
+
+```python
+from enhanced_cognee_client import EnhancedCogneeClient
+
+async with EnhancedCogneeClient(host="localhost", port=8080) as client:
+    await client.add_memory(content="Project uses hexagonal architecture")
+    hits = await client.search_memories(query="architecture", limit=5)
 ```
-# In Continue chat interface
-User: /add_memory "I use PostgreSQL for my database"
-AI: Memory added successfully!
-
-User: /search_memories "database"
-AI: Found 3 memories about database:
-    1. I use PostgreSQL for my database
-    2. Database port is 25432
-    3. Redis is used for caching
-```
-
-### Cursor
-```
-# In Cursor AI chat
-You: Remember that I prefer TypeScript
-AI: [Uses add_memory tool] Got it! I'll remember your preference.
-
-You: What do you know about my preferences?
-AI: [Uses search_memories tool] Based on your memories:
-    - You prefer TypeScript
-    - You use RNR Enhanced Cognee for memory
-    - You like ASCII-only output
-```
-
-### Kilo Code
-```
-# In Kilo Code panel
-User: Add memory about my project architecture
-Kilo Code: [Uses add_memory tool] Memory saved successfully!
-
-User: What are my coding standards?
-Kilo Code: [Uses search_memories tool] Based on your memories:
-    - PEP 8 for Python
-    - 4-space indentation
-    - Type hints required
-    - Docstrings for all functions
-```
-
-### GitHub Copilot
-```
-# In Copilot Chat (Ctrl+I / Cmd+I)
-User: @RNR-Enhanced-Cognee Add memory about my API design
-Copilot: [Uses add_memory tool] Added to memory!
-
-User: @RNR-Enhanced-Cognee Search for API-related memories
-Copilot: [Uses search_memories tool] Found 5 memories:
-    - RESTful API design principles
-    - JWT authentication
-    - OpenAPI 3.0 specification
-    - Error handling patterns
-    - Rate limiting strategy
-```
-
----
-
-## 🚀 Next Steps
-
-1. **Configure your preferred IDE** using the examples above
-2. **Start Enhanced databases:**
-   ```bash
-   docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
-   ```
-3. **Test MCP connection** in your IDE
-4. **Start using RNR Enhanced Cognee tools** through the AI assistant
-
----
-
-## 📚 Additional Resources
-
-- **RNR Enhanced Cognee README:** https://github.com/vincentspereira/RNR-Enhanced-Cognee
-- **MCP Specification:** https://modelcontextprotocol.io/
-- **Claude Code Docs:** https://docs.anthropic.com/
-- **Continue.dev Docs:** https://docs.continue.dev/
-- **Cursor Docs:** https://cursor.sh/docs
-
----
-
-## 💡 Tips
-
-1. **Use absolute paths** for the MCP server script
-2. **Start databases first** before starting the IDE
-3. **Check logs** if tools don't appear
-4. **Restart IDE** after configuration changes
-5. **Test with simple command first** (e.g., `health` tool)
-
----
-
-## 🆘 Support
-
-If you encounter issues:
-
-1. Check this guide's troubleshooting section
-2. Verify Enhanced databases are running
-3. Review IDE-specific MCP documentation
-4. Check GitHub Issues: https://github.com/vincentspereira/RNR-Enhanced-Cognee/issues
-5. Open a new issue with details about your IDE and error
-
----
-
-**Happy coding with RNR Enhanced Cognee across all your favorite AI IDEs! 🚀**

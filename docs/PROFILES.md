@@ -748,7 +748,6 @@ Or all of them at once: `pip install "RNR-Enhanced-Cognee[graph-memgraph,graph-k
 
 ## Related docs
 
-- `docs/HANDOVER.md` section 4 -- phase-by-phase roadmap
 - `docs/STRATEGY.md` section 4.1 -- profile design
 - `docs/STRATEGY.md` DR-08 -- env-var routing decision
 - `docs/ARCADEDB_MIGRATION.md` -- Phase 2 ArcadeDB swap

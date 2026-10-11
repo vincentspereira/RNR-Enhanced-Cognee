@@ -408,7 +408,7 @@ The categories gate (`scripts/check_no_hardcoded_categories.py`) now passes on:
 | ASCII-only output | No | Yes (Windows cp1252 compatible) |
 | Docker deployment | Basic | Production-ready with health checks |
 
-### RNR Enhanced Cognee vs. Session-Memory Plugins (e.g., Claude-Mem)
+### RNR Enhanced Cognee vs. Session-Memory Plugins (e.g., session-memory plugins)
 
 | Feature | Session-Memory Plugin | RNR Enhanced Cognee |
 |---------|-----------------------|-----------------|
@@ -504,7 +504,7 @@ Start with the 6 Phase 3 loader tools (`ingest_url`, `ingest_db`, `translate_tex
 ### 8.1 - README Update Policy
 
 The README was updated on 2026-05-13 (this session) with all Phase 1-6 changes.
-The `docs/README_PROPOSED_CHANGES.md` process worked well: propose -> review ->
+The proposed-changes review process worked well: propose -> review ->
 approve -> apply. Use the same process for future major changes.
 
 **Trigger for next README update**: When any of the following changes:
@@ -523,12 +523,12 @@ approve -> apply. Use the same process for future major changes.
 | `.upstream-sync/sync-metadata.json` | 2026-05-13 | After each sync |
 | `docs/reports/PERFORMANCE_BENCHMARK.md` | Not yet created | After benchmarking |
 
-### 8.3 - IDE Configuration Files (CLAUDE.md)
+### 8.3 - IDE Configuration Files
 
-The `CLAUDE.md` file is a configuration artifact for the Claude Code IDE. It
-instructs the IDE on project rules (ASCII-only output, dynamic categories, etc.).
-This file should NOT be removed or renamed as it would break Claude Code's
-ability to enforce project-specific constraints.
+IDE instruction files (which tell the editor about project rules such as
+ASCII-only output and dynamic categories) are maintained locally and are not
+tracked in the repository -- see `.gitignore`. Project rules themselves are
+documented in the contributor documentation and the README.
 
 If other IDE configurations are needed (e.g., `.cursor/rules`, `.windsurf/rules`),
 create IDE-specific equivalents that reference the same project rules.
@@ -788,7 +788,7 @@ with validation at each step. No Docker or Python knowledge required.
 ```
 Step 1: Check prerequisites (Docker, Python 3.10+)
 Step 2: Choose deployment mode (Full / Lite / Custom)
-Step 3: Configure LLM provider (OpenAI / local Ollama / other)
+Step 3: Configure LLM provider (cloud / local / other)
 Step 4: Start database containers (with live progress bar)
 Step 5: Verify all connections (health check)
 Step 6: Configure categories (.enhanced-cognee-config.json)
@@ -829,12 +829,12 @@ a proper standalone viewer.
 
 ---
 
-### 12.5 - Token-Efficient Progressive Search (from Claude-Mem) [Value: MEDIUM, Effort: L]
+### 12.5 - Token-Efficient Progressive Search (from session-memory plugins) [Value: MEDIUM, Effort: L]
 
 **Goal**: Implement a 3-layer progressive disclosure search that saves 10x tokens
 vs. returning full memory content in every response.
 
-**Design** (inspired by Claude-Mem's approach):
+**Design** (inspired by session-memory plugins' approach):
 - Layer 1 (QUICK): Return only memory IDs + one-line summaries (< 50 tokens per result)
 - Layer 2 (DETAILED): Return full content for specific IDs requested
 - Layer 3 (GRAPH): Traverse relationships for contextually related memories
@@ -858,12 +858,12 @@ vs. returning full memory content in every response.
 
 ---
 
-### 12.6 - Automatic Context Injection at Session Start (from Claude-Mem) [Value: MEDIUM, Effort: M]
+### 12.6 - Automatic Context Injection at Session Start (from session-memory plugins) [Value: MEDIUM, Effort: M]
 
 **Goal**: At the start of every IDE session, automatically inject the most relevant
 recent memories into context without the user needing to ask.
 
-**How Claude-Mem does it**: Uses MCP hooks (`preToolUse`, `postToolUse`) to
+**How session-memory plugins does it**: Uses MCP hooks (`preToolUse`, `postToolUse`) to
 automatically call memory search on every conversation turn.
 
 **RNR Enhanced Cognee approach** (compatible with any MCP IDE):
@@ -885,7 +885,7 @@ automatically call memory search on every conversation turn.
 
 ---
 
-### 12.7 - Session Tracking (from Claude-Mem) [Value: LOW, Effort: M]
+### 12.7 - Session Tracking (from session-memory plugins) [Value: LOW, Effort: M]
 
 **Goal**: Track multi-turn conversation sessions so memory retrieval can be
 scoped to "current session" vs "all history".
@@ -908,7 +908,7 @@ automatically use the active session ID if one is set.
 
 ---
 
-### 12.8 - Memory Hierarchy / Structured Observations (from Claude-Mem) [Value: LOW, Effort: L]
+### 12.8 - Memory Hierarchy / Structured Observations (from session-memory plugins) [Value: LOW, Effort: L]
 
 **Goal**: Store memories in a structured format (entity + attribute + value)
 rather than flat text blobs. This enables precise updates ("update fact X")
@@ -997,7 +997,7 @@ The following was verified directly in `bin/enhanced_cognee_mcp_server.py`:
 
 **Auto (A) tool mechanism - CONFIRMED BUT DEPENDS ON DOCSTRINGS:**
 
-Auto tools work in MCP-compatible IDEs (Claude Code, Cursor, Windsurf) when:
+Auto tools work in MCP-compatible IDEs (your MCP-compatible IDE, Cursor, Windsurf) when:
 1. The tool's `description` or docstring clearly states when the tool should be called.
 2. The LLM has access to the tool list (which MCP provides automatically).
 3. The conversation context matches the "when to call" condition in the docstring.
@@ -1316,8 +1316,8 @@ After implementing Phase 8, verify with the following checks:
 
 **Auto (A) tool verification:**
 ```
-Test: In Claude Code, add a file to a project without asking to save.
-Expected: Claude automatically calls `remember` with the decision context.
+Test: In your MCP-compatible IDE, add a file to a project without asking to save.
+Expected: the IDE automatically calls `remember` with the decision context.
 Pass condition: memory_id returned in tool call log without user explicitly typing
                "remember this".
 ```
@@ -1382,7 +1382,7 @@ When Phase 8 implementation is complete, update README.md:
 Implement in this order to minimize risk:
 
 1. **Step 1 (docstrings only - no risk)**: Promote 6 tools to Auto (A)
-   by improving their docstrings. Commit. Verify in Claude Code that the IDE
+   by improving their docstrings. Commit. Verify in your MCP-compatible IDE that the IDE
    starts calling them without prompting.
 
 2. **Step 2 (scheduler bootstrap - low risk)**: Add `_bootstrap_scheduler_defaults()`
@@ -1814,7 +1814,7 @@ management system with provenance, confidence, and lifecycle management.
 {
   "source_type": "user_input | url | database | agent_inference | file_ingestion",
   "source_uri": "https://example.com/article",
-  "source_agent": "claude-code",
+  "source_agent": "my-agent",
   "source_session": "session-uuid",
   "extraction_method": "remember | cognify | ingest_url | ...",
   "confidence": 0.95,

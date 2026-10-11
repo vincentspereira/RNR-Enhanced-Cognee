@@ -11,7 +11,7 @@ Both paths assume you already have:
 - The repo cloned at `/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee` (or equivalent)
 - Docker Desktop installed
 - Python 3.11+ installed
-- Claude Code installed
+- your MCP-compatible IDE installed
 
 ---
 
@@ -73,7 +73,7 @@ If all 4 return success, the stack is healthy.
 commands above are equivalent. If you use WSL or Git Bash, `make smoke` works
 out of the box.
 
-### A3. Install the MCP server in Claude Code
+### A3. Install the MCP server in your MCP-compatible IDE
 
 ```powershell
 # Run the installer (idempotent - safe to re-run)
@@ -86,7 +86,7 @@ The installer:
 2. Creates `.venv` if missing
 3. Installs RNR Enhanced Cognee in editable mode
 4. Verifies Docker stack is healthy
-5. Registers the MCP server in `%USERPROFILE%\.claude.json`
+5. Registers the MCP server in `your IDE's MCP configuration file`
 
 To also enable auto-start on Windows login:
 
@@ -96,13 +96,13 @@ powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1 -AutoStart
 
 This creates a Task Scheduler entry that brings up the Docker stack when you log in.
 
-### A4. Restart Claude Code
+### A4. Restart your MCP-compatible IDE
 
-Quit Claude Code completely (right-click tray icon -> Exit). Reopen it.
+Quit your MCP-compatible IDE completely (right-click tray icon -> Exit). Reopen it.
 
 ### A5. Verify the MCP server is connected
 
-In Claude Code, run:
+In your MCP-compatible IDE, run:
 
 ```
 /mcp
@@ -110,7 +110,7 @@ In Claude Code, run:
 
 You should see `cognee` listed with green status. If it shows red/failed:
 
-1. Open `%USERPROFILE%\.claude.json` and verify the `cognee` entry has correct
+1. Open `your IDE's MCP configuration file` and verify the `cognee` entry has correct
    paths to the venv Python and the MCP server script
 2. Open a PowerShell, run the MCP server directly and look for errors:
    ```powershell
@@ -121,20 +121,20 @@ You should see `cognee` listed with green status. If it shows red/failed:
 
 ### A6. Test the integration
 
-In Claude Code, try:
+In your MCP-compatible IDE, try:
 
 ```
-Hey Claude, please use the RNR Enhanced Cognee MCP to store this memory:
+Please use the RNR Enhanced Cognee MCP to store this memory:
 "Production deployment quickstart was followed successfully on <date>"
 ```
 
-Claude should call `add_memory(...)` and confirm. Then:
+The IDE should call `add_memory(...)` and confirm. Then:
 
 ```
 Now please search for "production deployment"
 ```
 
-Claude should call `search_memories(query="production deployment")` and return
+The IDE should call `search_memories(query="production deployment")` and return
 the memory you just stored.
 
 ### A7. (Optional) Integrate with the Multi-Agent System
@@ -331,7 +331,7 @@ curl -sf https://cognee.example.com/health
 If you get TLS errors, wait 1-2 minutes (Let's Encrypt may still be issuing).
 If you get connection refused, check `sudo ufw status` and `sudo systemctl status RNR-Enhanced-Cognee`.
 
-### B11. Hook your Claude Code into the remote MCP server
+### B11. Hook your MCP-compatible IDE into the remote MCP server
 
 This requires the Python SDK client:
 
@@ -340,7 +340,7 @@ This requires the Python SDK client:
 pip install enhanced-cognee-client
 ```
 
-Then edit `~/.claude.json` to add a remote MCP entry (replace the local one):
+Then edit `your IDE's MCP configuration` to add a remote MCP entry (replace the local one):
 
 ```json
 {
@@ -357,7 +357,7 @@ Then edit `~/.claude.json` to add a remote MCP entry (replace the local one):
 }
 ```
 
-Restart Claude Code. The MCP server now routes all 122 tool calls through HTTPS
+Restart your MCP-compatible IDE. The MCP server now routes all 122 tool calls through HTTPS
 to your VPS.
 
 ### B12. Operations cheatsheet
@@ -379,10 +379,10 @@ For more detailed troubleshooting see [`docs/operations/RUNBOOK.md`](operations/
 
 ## Common Issues
 
-### "MCP server failed to connect" in Claude Code
+### "MCP server failed to connect" in your MCP-compatible IDE
 
 1. `docker ps` -- are all 4 containers up?
-2. `tail -20 ~/.claude/logs/mcp.log` -- look for the actual error
+2. `tail -20 your IDE's MCP logs` -- look for the actual error
 3. Try running the server directly to see stderr:
    ```powershell
    cd "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee"

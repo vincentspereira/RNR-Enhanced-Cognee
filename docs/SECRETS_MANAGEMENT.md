@@ -12,8 +12,8 @@
 | Category | Example env vars | Where it lives in this project |
 | --- | --- | --- |
 | **Database credentials** | `POSTGRES_PASSWORD`, `ARCADEDB_PASSWORD`, `NEO4J_PASSWORD` | Docker compose `environment:` blocks |
-| **External-service API keys** | `LLM_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `QDRANT_API_KEY` | `~/.claude.json`, `.env` |
-| **MCP-server hardening tokens** | `ENHANCED_API_KEY` | `~/.claude.json`, `.env` |
+| **External-service API keys** | `LLM_API_KEY`, `QDRANT_API_KEY` | `your IDE's MCP configuration`, `.env` |
+| **MCP-server hardening tokens** | `ENHANCED_API_KEY` | `your IDE's MCP configuration`, `.env` |
 | **Encryption keys** | The master key consumed by `src/encryption_manager.py` (stored in a secrets backend, not env) | Operator-managed |
 | **TLS certificate material** | `ENHANCED_HTTPS_CERT_FILE`, `ENHANCED_HTTPS_KEY_FILE` paths | File-system paths (the files themselves are sensitive) |
 
@@ -21,12 +21,12 @@
 
 ## Four levels of secrecy (pick the one that matches your deployment)
 
-### Level 1 -- Developer laptop / local Claude Code MCP
+### Level 1 -- Developer laptop / local your MCP-compatible IDE MCP
 
-**Default for personal use.** Secrets live in `~/.claude.json` (MCP env vars) and an optional `.env` file in the project root. Both are `.gitignore`d. No special tooling required.
+**Default for personal use.** Secrets live in `your IDE's MCP configuration` (MCP env vars) and an optional `.env` file in the project root. Both are `.gitignore`d. No special tooling required.
 
 Pros: zero setup overhead.
-Cons: secrets stored in plain text on disk; if the laptop is compromised, everything in `~/.claude.json` leaks.
+Cons: secrets stored in plain text on disk; if the laptop is compromised, everything in `your IDE's MCP configuration` leaks.
 
 Use this when:
 
@@ -61,7 +61,7 @@ In `/etc/enhanced-cognee/.env`:
 POSTGRES_PASSWORD=use-a-32-char-random-string-here
 ARCADEDB_PASSWORD=use-another-one
 ENHANCED_API_KEY=use-a-third-one
-LLM_API_KEY=sk-real-anthropic-key
+LLM_API_KEY=sk-real-provider-key
 ```
 
 Pros: secrets co-located with the deploy; works with vanilla compose; backups can include `/etc/enhanced-cognee/.env` only if the backup is encrypted.
@@ -212,7 +212,7 @@ Minimum rotation cadence for each secret class:
 
 - The docker-compose files are fail-closed: `POSTGRES_PASSWORD`, `ARCADEDB_PASSWORD`, and `NEO4J_PASSWORD` are required (`${VAR:?...}`) with **no baked-in default**, so the stack will not start without them. The local installers (`deploy/local/install.sh` / `install.ps1`) generate a strong random password per service at install time and write it to the stack `.env`. To rotate or set one manually, a 32-byte random string from `python -c "import secrets; print(secrets.token_urlsafe(32))"` works. **Never reuse a known/shared password for any non-localhost deploy.**
 - Multi-tenant deployments should also set `ENHANCED_REQUIRE_TENANT=1` (production safety knob) so un-tenanted storage calls raise rather than silently fall back to the global tables. Not a secret, but related to the same trust model.
-- `~/.claude.json` is the canonical secrets store for personal Claude Code MCP usage. Keep its mode at `0600` (owner-only read).
+- `your IDE's MCP configuration` is the canonical secrets store for personal your MCP-compatible IDE MCP usage. Keep its mode at `0600` (owner-only read).
 - Never commit `.env` files. The repo `.gitignore` already excludes them; if you find one in git history, scrub it (`git filter-repo` or BFG) and rotate every key it contained.
 
 ## See also

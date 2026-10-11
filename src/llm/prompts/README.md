@@ -314,18 +314,18 @@ Each template follows this structure:
 ## Model Compatibility
 
 These templates are designed for:
-- **Primary:** Claude 3.5 Sonnet (claude-3-5-sonnet-20241022)
-- **Compatible:** Claude 3 Opus, Claude 3 Haiku
-- **Adaptable:** GPT-4, GPT-4 Turbo (may require minor adjustments)
+- **Primary:** any current frontier-class chat model with strong JSON adherence
+- **Compatible:** smaller/larger variants of the same model family
+- **Adaptable:** other provider families (may require minor adjustments)
 
 ### Model-Specific Notes
 
-**Claude 3.5 Sonnet:**
+**Frontier-class models:**
 - Optimal performance
 - Follows JSON schema well
 - Good with few-shot learning
 
-**GPT-4:**
+**Other families:**
 - May need temperature adjustment (0.3-0.7)
 - Ensure JSON format is enforced
 - Consider using function calling for structured output

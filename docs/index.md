@@ -13,7 +13,7 @@ Enterprise-grade AI memory infrastructure with multi-tenant support, **30 plugga
 
 RNR Enhanced Cognee is a fork of [Cognee](https://github.com/topoteretes/cognee) that adds production-grade infrastructure: multi-tenant data partitioning, 30 pluggable storage providers, four official client SDKs, MCP server hardening (API-key + rate limit + payload cap), HTTPS/TLS support, encryption at rest, GDPR tooling, backup + recovery, and SigNoz + Apache Superset observability.
 
-It exposes 122 MCP tools (Model Context Protocol) for AI IDEs like Claude Code, Cursor, and Continue, plus a FastAPI HTTP variant for cross-language SDK use.
+It exposes 122 MCP tools (Model Context Protocol) for AI IDEs like MCP-compatible IDEs, plus a FastAPI HTTP variant for cross-language SDK use.
 
 ## Default stack -- 100% MIT + Apache-2.0
 
@@ -91,7 +91,7 @@ docker compose -p RNR-Enhanced-Cognee -f config/docker/docker-compose-enhanced-c
 python -m uvicorn src.enhanced_cognee_mcp:app --port 8080
 ```
 
-Then point Claude Code's MCP config at `bin/enhanced_cognee_mcp_server.py`. Full setup in [Quick Start](QUICK_START.md).
+Then point your MCP-compatible IDE's MCP config at `bin/enhanced_cognee_mcp_server.py`. Full setup in [Quick Start](QUICK_START.md).
 
 ## License
 

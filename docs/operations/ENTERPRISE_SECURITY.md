@@ -11,7 +11,7 @@ Two server surfaces are covered:
   server. Full per-route RBAC, bearer (OIDC/JWT) + API-key authentication,
   audit logging, and multi-tenant enforcement, all applied via middleware.
 - **stdio MCP server** (`bin/enhanced_cognee_mcp_server.py`) -- the local server
-  Claude Code launches. Per-tool RBAC + audit logging applied via a single
+  your MCP-compatible IDE launches. Per-tool RBAC + audit logging applied via a single
   `mcp.tool()` wrapper (covers all tools). SSO/OIDC does not apply here (there
   is no HTTP request to carry a bearer token); a local role is assumed instead.
 
@@ -137,7 +137,7 @@ require `system:admin`. The full map is `TOOL_PERMISSIONS` in
 `enterprise_auth.py`. Read/introspection tools require only authentication.
 
 stdio RBAC is **off by default** (the local caller is assumed to be admin so
-Claude Code is unaffected). Lock a deployment down with:
+your MCP-compatible IDE is unaffected). Lock a deployment down with:
 
 | Variable | Effect |
 |---|---|

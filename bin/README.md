@@ -5,7 +5,7 @@ This directory contains executable Python scripts for RNR Enhanced Cognee.
 ## Main Scripts
 
 ### MCP Servers
-- `enhanced_cognee_mcp_server.py` - Main MCP server for Claude Code integration
+- `enhanced_cognee_mcp_server.py` - Main MCP server for MCP client integration
 - `cognee_mcp_fallback.py` - Fallback MCP server implementation
 - `cognee_mcp_universal.py` - Universal MCP wrapper
 - `cognee_mcp_wrapper.py` - MCP wrapper for compatibility
@@ -37,7 +37,7 @@ python bin/run_tests.py
 
 ## MCP Configuration
 
-Update your `~/.claude.json` configuration:
+Update your `your IDE's MCP configuration` configuration:
 
 ```json
 {

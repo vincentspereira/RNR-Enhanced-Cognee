@@ -80,7 +80,7 @@ pip install cognee
 
 ```python
 import os
-os.environ["LLM_API_KEY"] = "ВАШ_OPENAI_API_KEY"
+os.environ["LLM_API_KEY"] = "ВАШ_LLM_API_KEY"
 ```
 
 Вы также можете установить переменные, создав файл .env, используя наш <a href="https://github.com/topoteretes/cognee/blob/main/.env.template">шаблон</a>.

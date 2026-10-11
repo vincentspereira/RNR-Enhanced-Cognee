@@ -66,7 +66,7 @@ strongly recommended for any customer-facing release.
 
 - You want **all 4 storage tiers** (relational + vector + graph + cache) without
   cobbling them together yourself.
-- You need **MCP tool access** from Claude Code, Cursor, Copilot, or any other
+- You need **MCP tool access** from any MCP-compatible IDE or
   MCP-compatible IDE — without writing a custom server.
 - You're running an **agent fleet** (trading bot, SDLC agent, analysis agent)
   and need per-agent memory segregation, cross-agent sharing, and audit trails.
@@ -90,7 +90,7 @@ strongly recommended for any customer-facing release.
 | Lightweight Cognee with single-DB setup, no enterprise features  | Cognee (upstream)          |
 | Hosted memory-as-a-service with no ops burden                    | Mem0                       |
 | Long-term memory for chat agents with temporal knowledge graphs  | Zep (Apache-2.0)           |
-| Stateful agent platform with built-in workflows                  | Letta (formerly MemGPT)    |
+| Stateful agent platform with built-in workflows                  | Letta    |
 | Document-corpus retrieval with memory                            | LlamaIndex                 |
 | In-process Python memory for prototyping                         | LangChain Memory           |
 | Pure semantic search over a vector corpus (no graph, no agents)  | Qdrant / Weaviate / Chroma |
@@ -559,7 +559,7 @@ Docker image bundling its sub-services into a single container.
 
 ### Path A: Local laptop deployment
 
-Prerequisites: Docker Desktop, Python 3.11+, Claude Code installed.
+Prerequisites: Docker Desktop, Python 3.11+, your MCP-compatible IDE installed.
 
 ```powershell
 # 1. Bring up the stack
@@ -569,10 +569,10 @@ docker compose -f docker/docker-compose-enhanced-cognee.yml up -d
 # 2. Verify
 docker ps    # 4 containers, all (healthy)
 
-# 3. Install MCP server in Claude Code
+# 3. Install MCP server in your MCP-compatible IDE
 powershell -ExecutionPolicy Bypass -File deploy/local/install.ps1
 
-# 4. Restart Claude Code → 122 tools available
+# 4. Restart your MCP-compatible IDE → 122 tools available
 ```
 
 ### Path B: VPS deployment
@@ -590,7 +590,7 @@ and configures HTTPS via Let's Encrypt. Detailed steps in
 | Month 24 | ~120 EUR/year   | $456/year  | $600/year     |
 
 After month ~3, self-hosted RNR Enhanced Cognee is the most cost-effective option
-for a single developer using Claude Code with personal memory.
+for a single developer using your MCP-compatible IDE with personal memory.
 
 ---
 

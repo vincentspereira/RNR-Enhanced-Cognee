@@ -205,7 +205,7 @@ git commit -m "feat: port upstream vX.Y.Z changes
 - M new SearchType values: TYPE1, TYPE2
 - Updated X cognee/ files for compatibility
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+Co-Authored-By: Contributor Name <noreply@example.com>"
 
 git push -u origin feature/port-upstream-vX.Y.Z
 ```

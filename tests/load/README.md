@@ -66,7 +66,7 @@ locust -f tests/load/locustfile.py BackupVerifyUser \
        --host http://localhost:8080
 ```
 
-## Recommended SLAs (per HANDOVER section 5 H4)
+## Recommended SLAs
 
 These are *targets*, not CI gates. The scenarios are the workload spec;
 the thresholds for "good enough" depend on your hardware and traffic

@@ -210,7 +210,7 @@ Multi-region is an enterprise sales conversation.
 
 **Status:** Terminal/MCP only.
 
-**Why low:** The audience (developers using Claude Code) prefers CLI.
+**Why low:** The audience (developers using MCP IDEs) prefers CLI.
 A dashboard is more valuable for non-technical operations teams.
 
 ### 19. Internationalisation of error messages / logs

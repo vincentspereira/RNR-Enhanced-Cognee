@@ -117,7 +117,7 @@ graph TB
 
         subgraph "Testing Tools"
             E[MLflow] --> E1[Experiment Tracking]
-            F[OpenAI Evals] --> F1[LLM Evaluation]
+            F[LLM eval frameworks] --> F1[LLM Evaluation]
             G[Locust] --> G1[Load Testing]
             H[Chaos Mesh] --> H1[Chaos Engineering]
             I[OWASP ZAP] --> I1[Security Testing]

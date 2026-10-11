@@ -118,7 +118,7 @@ Type what you are looking for in plain words -- you do not need exact
 matches. Results are ranked by relevance.
 
 ### Sessions
-If you use RNR Enhanced Cognee with an AI assistant (like Claude), each
+If you use RNR Enhanced Cognee with an AI assistant, each
 conversation can be tracked as a session. Click a session to see the
 memories created during it on a timeline.
 
@@ -189,6 +189,6 @@ text on the project's GitHub Issues page.
 - REST API: http://localhost:8000 (interactive docs at /docs)
 - Databases (localhost only): PostgreSQL 25432, Qdrant 26333, ArcadeDB
   22480 (HTTP) / 27687 (Bolt), Valkey 26379
-- MCP server integration for Claude Code and other IDEs: see
+- MCP server integration for your MCP-compatible IDE and other IDEs: see
   `docs/guides/CROSS_IDE_INSTALLATION.md`
 - Developer setup from source: see `docs/QUICK_START.md`

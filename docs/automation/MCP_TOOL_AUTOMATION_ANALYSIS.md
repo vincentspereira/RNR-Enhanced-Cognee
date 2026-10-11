@@ -82,7 +82,7 @@ Out of 32 MCP tools in RNR Enhanced Cognee, **12 tools (37.5%) are good candidat
 
 **Automation Approach:**
 ```python
-# Claude Code Plugin Hook: postToolUse
+# MCP Client Plugin Hook: postToolUse
 async def auto_add_memory(tool_result):
     """Automatically capture observations after tool use"""
 
@@ -113,7 +113,7 @@ async def auto_add_memory(tool_result):
 - ✅ Reduces cognitive load - memories captured automatically
 - ✅ No lost information - all actions remembered
 - ✅ Better context for future sessions
-- ✅ Matches Claude-Mem's automatic observation capture
+- ✅ Matches session-memory plugins' automatic observation capture
 
 **Cons:**
 - ⚠️ May add too many memories (noise)
@@ -208,7 +208,7 @@ async def auto_cognify(document_path: str):
 - ✅ Automatic knowledge graph population
 - ✅ No manual processing required
 - ✅ Better search with knowledge graph
-- ✅ Matches Claude-Mem's automatic processing
+- ✅ Matches session-memory plugins' automatic processing
 
 **Cons:**
 - ⚠️ May process irrelevant files
@@ -553,7 +553,7 @@ async def should_summarize_category(category: str) -> bool:
 | Sprint | Feature | Effort | Risk |
 |--------|---------|--------|------|
 | Sprint 1 | Auto-publish events on memory changes | 2 days | Low |
-| Sprint 1 | Auto-add memories via Claude Code plugin | 5 days | Medium |
+| Sprint 1 | Auto-add memories via MCP client plugin | 5 days | Medium |
 | Sprint 2 | Auto-cognify document processing | 3 days | Low |
 | Sprint 2 | Scheduled deduplication (weekly) | 2 days | Low |
 
@@ -621,7 +621,7 @@ async def should_summarize_category(category: str) -> bool:
    - Better collaboration with automatic sharing
 
 4. **Enhanced User Experience**
-   - "Just works" experience like Claude-Mem
+   - "Just works" experience like session-memory plugins
    - Less manual tool invocation
    - Smarter system behavior
 
@@ -768,7 +768,7 @@ async def should_summarize_category(category: str) -> bool:
 ## NEXT STEPS
 
 1. ✅ **Review this analysis** - Approve automation candidates
-2. ✅ **Update ENHANCEMENT_ROADMAP.md** - Add automation tasks
+2. ✅ **Update the enhancement roadmap (archived)** - Add automation tasks
 3. ✅ **Create automation_config.json** - Default configuration template
 4. ✅ **Implement Phase 1 automation** - Start with low-risk features
 5. ✅ **Add safety mechanisms** - Undo, audit logs, user notifications

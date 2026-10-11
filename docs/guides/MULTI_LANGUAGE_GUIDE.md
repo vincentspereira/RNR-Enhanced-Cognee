@@ -101,7 +101,7 @@ Search memories with language filtering.
 - `query` (string): Search query text
 - `language` (string): Language code to filter by (e.g., 'en', 'es')
 - `user_id` (string): User identifier (default: 'default')
-- `agent_id` (string): Agent identifier (default: 'claude-code')
+- `agent_id` (string): Agent identifier (default agent identifier)
 - `limit` (integer): Maximum results (default: 10)
 
 **Returns:**
@@ -132,7 +132,7 @@ Get statistics on language distribution across memories.
 
 **Parameters:**
 - `user_id` (string): User identifier (default: 'default')
-- `agent_id` (string): Agent identifier (default: 'claude-code')
+- `agent_id` (string): Agent identifier (default agent identifier)
 
 **Returns:**
 - Language distribution with counts and percentages
@@ -161,7 +161,7 @@ Automatically detects query language and boosts results in the same language.
 **Parameters:**
 - `query` (string): Search query text (language auto-detected)
 - `user_id` (string): User identifier (default: 'default')
-- `agent_id` (string): Agent identifier (default: 'claude-code')
+- `agent_id` (string): Agent identifier (default agent identifier)
 - `limit` (integer): Maximum results (default: 10)
 
 **Returns:**
@@ -471,7 +471,7 @@ distribution = multi_language_search.get_language_distribution(memories)
 
 ### MCP Tools
 
-All features are available via MCP tools for Claude Code integration.
+All features are available via MCP tools for MCP client integration.
 
 ---
 

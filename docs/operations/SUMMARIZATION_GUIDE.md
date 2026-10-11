@@ -109,8 +109,8 @@ Configure monthly summarization (default: 1st of month, 3 AM):
 ```json
 {
   "llm_settings": {
-    "provider": "anthropic",
-    "model": "claude-3-haiku",
+    "provider": "your-provider",
+    "model": "small-fast-model",
     "max_tokens": 300
   }
 }
@@ -118,8 +118,8 @@ Configure monthly summarization (default: 1st of month, 3 AM):
 
 ### Supported Providers
 
-- **Anthropic**: Claude models (recommended)
-- **OpenAI**: GPT models
+- **Primary cloud provider**: hosted models (recommended)
+- **Alternative providers**: equivalent model tiers
 - **Local**: Ollama, llama.cpp
 
 ### Fallback Mode
@@ -263,8 +263,8 @@ Adjust summary length:
 // Or use better LLM
 {
   "llm_settings": {
-    "provider": "anthropic",
-    "model": "claude-3-sonnet"  // Better quality
+    "provider": "your-provider",
+    "model": "larger-model"  // Better quality
   }
 }
 ```
@@ -293,7 +293,7 @@ Adjust summary length:
 {
   "llm_settings": {
     "api_key": "your_key",
-    "endpoint": "https://api.anthropic.com"
+    "endpoint": "https://api.your-provider.example"
   }
 }
 ```

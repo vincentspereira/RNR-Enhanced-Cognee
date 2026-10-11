@@ -9,7 +9,7 @@
 ## What Is RNR Enhanced Cognee?
 
 RNR Enhanced Cognee is an enterprise-grade memory server for AI agents. It gives a
-language model (such as Claude) a persistent, searchable store of memories that
+language model a persistent, searchable store of memories that
 survives across sessions. Each memory is a piece of text -- a note, a decision, a
 fact, a code snippet -- stored with metadata that makes it retrievable later.
 
@@ -27,7 +27,7 @@ exposes all operations as simple tool calls.
 
 ## What Is an MCP Tool?
 
-MCP (Model Context Protocol) is the interface between Claude and external servers.
+MCP (Model Context Protocol) is the interface between AI applications and external servers.
 When you call an MCP tool, you name the tool and pass parameters, and the server
 returns a plain text response. All RNR Enhanced Cognee tools return ASCII-only strings
 so they work on any operating system.

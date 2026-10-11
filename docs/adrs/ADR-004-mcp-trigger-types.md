@@ -8,12 +8,12 @@
 
 ## Context
 
-RNR Enhanced Cognee exposes approximately 58 MCP tools to Claude Code and other MCP
+RNR Enhanced Cognee exposes approximately 58 MCP tools to your MCP-compatible IDE and other MCP
 clients. The tools range from lightweight read operations (health, get_stats) to
 irreversible destructive operations (gdpr_delete_user_data, rollback_restore,
 forget_memory).
 
-IDE integrations that use AI-assisted automation (such as Claude Code's background
+IDE integrations that use AI-assisted automation (such as your MCP-compatible IDE's background
 agent mode) may call MCP tools proactively when they believe a tool is relevant to
 the current task. Without classification, an automated agent could invoke
 gdpr_delete_user_data or rollback_restore without explicit human instruction, which

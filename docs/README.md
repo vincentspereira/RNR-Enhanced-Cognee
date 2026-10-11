@@ -16,7 +16,6 @@ Welcome to the RNR Enhanced Cognee documentation. This section contains comprehe
 - [Backup & Restore](guides/BACKUP_RESTORE_GUIDE.md) - Backup procedures
 - [Outstanding Items & Gap Analysis](OUTSTANDING_ITEMS.md) - Frank status of every gap, shipped or open
 - [Secrets Management](SECRETS_MANAGEMENT.md) - Key/secret lifecycle incl. AES-256-GCM encryption-at-rest rotation
-- [Session Handover Brief](HANDOVER.md) - Current-state brief for new agent sessions
 - [Runbooks](runbooks/) - RB-001 to RB-010 incident and operations playbooks
 
 ## Documentation Sections
@@ -58,10 +57,8 @@ Developer resources:
 
 ### [Reports](reports/)
 Project reports and analyses:
-- [Sprints](reports/sprints/) - Sprint completion reports (Sprint 1-10)
 - [Phases](reports/phases/) - Phase completion reports
 - [Audits](reports/audits/) - Security and performance audits
-- [Summaries](reports/summaries/) - Project completion summaries
 
 ### [Automation](automation/)
 Automation analysis and documentation:
@@ -87,24 +84,13 @@ Technical analyses and reports:
 - Feature analysis
 - Testing completion reports
 
-### [Archive](archive/)
-Archived documentation:
-- Outdated README copies
-- Draft documents
-
-### [Legacy](legacy/)
-Historical documentation:
-- Legacy implementation plans
-- Previous enhancement roadmaps
-- Historical test reports
-
 ## File Organization
 
 Documentation is organized by purpose and audience:
 - **Users** should start with [Guides](guides/)
 - **Developers** should review [Development](development/) and [Architecture](architecture/)
 - **Operators** should reference [Operations](operations/)
-- **Project historians** may find [Reports](reports/) and [Legacy](legacy/) useful
+- **Project historians** may find [Reports](reports/) useful
 
 ## Contribute
 

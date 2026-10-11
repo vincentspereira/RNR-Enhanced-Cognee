@@ -224,4 +224,3 @@ data is still on disk.
 - ArcadeDB documentation: https://docs.arcadedb.com/
 - ArcadeDB Bolt plugin: https://docs.arcadedb.com/#API-Bolt
 - STRATEGY.md DR-11: [Decision Records](./STRATEGY.md#9-appendix-decision-records)
-- HANDOVER §4 Phase 2: [Session handover brief](./HANDOVER.md)

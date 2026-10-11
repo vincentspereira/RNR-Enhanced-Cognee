@@ -9,7 +9,7 @@ Repeated runs of QA evaluation on 24-item HotpotQA subset, comparing Mem0, Graph
 
 ## Systems Evaluated
 
-- **Mem0**: OpenAI-based memory QA system
+- **Mem0**: LLM-based memory QA system
 - **Graphiti**: LangChain + Neo4j knowledge graph QA
 - **LightRAG**: Falkor's GraphRAG-SDK
 - **Cognee**: Multiple retriever configurations (GRAPH_COMPLETION, GRAPH_COMPLETION_COT, GRAPH_COMPLETION_CONTEXT_EXTENSION)

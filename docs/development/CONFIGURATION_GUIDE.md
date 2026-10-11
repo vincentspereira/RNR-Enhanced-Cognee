@@ -96,7 +96,7 @@ Update your MCP configuration to point to RNR Enhanced Cognee:
       "args": ["PATH/TO/enhanced-cognee/cognee-mcp/src/server.py"],
       "type": "stdio",
       "env": {
-        "LLM_API_KEY": "${ANTHROPIC_API_KEY}",
+        "LLM_API_KEY": "${LLM_API_KEY}",
         "DB_HOST": "localhost",
         "DB_PORT": "25432",
         "VECTOR_DB_URL": "http://localhost:26333",

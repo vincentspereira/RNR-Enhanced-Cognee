@@ -30,7 +30,7 @@ The RNR Enhanced Cognee codebase itself is **Apache-2.0** (`LICENSE` at repo roo
 | Memory CRUD (add/search/get/update/delete) | `src/mcp_memory_tools.py`, `src/agent_memory_integration.py`, `src/enhanced_cognee_mcp.py` | asyncpg, qdrant-client, redis | Apache-2.0 / Apache-2.0 / MIT | **SAFE+ATTR** |
 | Semantic search with embeddings | `src/advanced_search.py`, `src/advanced_search_reranking.py` | qdrant-client / pgvector | Apache-2.0 / PostgreSQL | **SAFE+ATTR** |
 | Memory deduplication | `src/memory_deduplication.py`, `src/scheduled_deduplication.py` | datasketch (MinHash) | MIT | **SAFE** |
-| Memory summarization | `src/memory_summarization.py`, `src/intelligent_summarization.py`, `src/scheduled_summarization.py` | (LLM API only) | Apache-2.0 (anthropic SDK) | **SAFE+ATTR** |
+| Memory summarization | `src/memory_summarization.py`, `src/intelligent_summarization.py`, `src/scheduled_summarization.py` | (LLM API only) | Apache-2.0 (LLM provider SDK) | **SAFE+ATTR** |
 | Memory consolidation | `src/memory_consolidator.py` | (pure Python) | (this repo Apache-2.0) | **SAFE+ATTR** |
 | Memory expiry / TTL / archival | `src/memory_management.py` | (pure Python) | (this repo Apache-2.0) | **SAFE+ATTR** |
 | Memory tier management | `src/memory_tier_manager.py` | (pure Python) | (this repo Apache-2.0) | **SAFE+ATTR** |
@@ -192,7 +192,7 @@ All vector adapters are SAFE for commercial use.
 | Document processor | `src/document_processor.py` | python-docx, pypdf, beautifulsoup4 | MIT / BSD / MIT | **SAFE** |
 | URL ingestion | (via MCP tool ingest_url) | httpx, beautifulsoup4 | BSD-3 / MIT | **SAFE** |
 | DB ingestion | (via MCP tool ingest_db) | sqlalchemy + driver-specific | MIT (sqlalchemy) | **SAFE** |
-| Claude API integration | `src/claude_api_integration.py` | anthropic SDK | **MIT** | **SAFE** |
+| LLM API integration | `src/claude_api_integration.py` | LLM provider SDK | **MIT** | **SAFE** |
 | Realtime sync | `src/realtime_sync.py` | redis-py (Valkey pub/sub) | MIT | **SAFE** |
 | Realtime WebSocket server | `src/realtime_websocket_server.py` | fastapi + websockets | MIT / BSD-3 | **SAFE** |
 | Cross-agent coordination | `src/coordination/` | (pure Python) | (this repo Apache-2.0) | **SAFE+ATTR** |

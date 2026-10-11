@@ -216,7 +216,7 @@ challenge needs port 80 reachable).
 
 ## 9. MCP server hangs (P0)
 
-**Symptoms:** `claude mcp list` shows the server as `Failed to connect`. Tool calls time out.
+**Symptoms:** your IDE's MCP listing shows the server as `Failed to connect`. Tool calls time out.
 
 **Diagnose:**
 ```bash

@@ -18,7 +18,7 @@ to "deployed in production."
 - Track progress via the phase checkboxes.
 - This doc is committed to git — review the diff when an agent updates it.
 
-**For the agent (Sonnet / Opus / Claude Code):**
+**For the implementing developer:**
 
 - Phases run sequentially: A -> B -> C -> D -> E. (F is parallel / optional polish.)
 - Each task has a Definition of Done in its acceptance column. Do not mark complete
@@ -269,7 +269,7 @@ Push to `main` -> every workflow goes green.
 
 | #   | Task                                                                                                                                                                                                                                                                                                              | Acceptance                                                   |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| E1  | Create `deploy/local/install.ps1` (Windows) and `deploy/local/install.sh` (Linux/macOS). Idempotent. Steps: clone repo, build `.venv`, `pip install -e .`, `docker compose -f docker/docker-compose-enhanced-cognee.yml up -d`, register MCP server in `~/.claude.json`.                                          | Fresh machine reaches working MCP server in under 5 minutes. |
+| E1  | Create `deploy/local/install.ps1` (Windows) and `deploy/local/install.sh` (Linux/macOS). Idempotent. Steps: clone repo, build `.venv`, `pip install -e .`, `docker compose -f docker/docker-compose-enhanced-cognee.yml up -d`, register MCP server in `your IDE's MCP configuration`.                                          | Fresh machine reaches working MCP server in under 5 minutes. |
 | E2  | Create `deploy/vps/README.md`: step-by-step Ubuntu 24.04 setup on a low-cost VPS (Hetzner CX22 ~4.50 EUR/mo or DigitalOcean $6/mo). Install Docker, clone, run compose, UFW (only 22 + 443 open), Caddy for automatic HTTPS, systemd for auto-restart. No Kubernetes, no managed DBs.                             | Documented runbook.                                          |
 | E3  | Add `deploy/vps/Caddyfile` template. Reverse-proxies HTTPS to FastAPI MCP variant (`src/enhanced_cognee_mcp.py`) with automatic Let's Encrypt cert.                                                                                                                                                               | TLS works on port 443.                                       |
 | E4  | Add `deploy/vps/backup.sh` cron script. Nightly export of postgres + redis + neo4j to `/var/backups/enhanced-cognee/`. 30-day rotation.                                                                                                                                                                           | Backups appear after one run.                                |
