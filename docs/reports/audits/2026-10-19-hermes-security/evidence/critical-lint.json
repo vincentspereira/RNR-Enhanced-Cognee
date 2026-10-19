@@ -1,0 +1,1160 @@
+[
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 515,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 516,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 516,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 516,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 517,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 517,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 517,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 518,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 518,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 518,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 519,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 522,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 523,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 523,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 523,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 523,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 524,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 527,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 528,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 528,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 549,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 550,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 550,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 550,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 551,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 551,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 551,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 551,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 552,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 552,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 552,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 587,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 588,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 588,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `,`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 588,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 589,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `type`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 589,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 589,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `,`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 589,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 590,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `type`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 590,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 590,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `,`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 590,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 591,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 591,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `,`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 591,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 591,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `,`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 591,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 592,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 627,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 628,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found string"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 629,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 629,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 629,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 630,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 633,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 634,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 634,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Got unexpected token $"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 635,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 636,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 636,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 636,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 636,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 636,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 637,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 659,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 660,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found string"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 661,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 661,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 661,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 662,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 665,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 666,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 666,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found string"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 668,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Got unexpected token $"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 669,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 670,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 670,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 670,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 670,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 670,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 671,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 678,
+    "rule": "invalid-syntax",
+    "message": "Expected an expression"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 679,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 679,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `=`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Got unexpected token $"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 681,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 682,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 682,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 682,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 682,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 682,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found string"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 684,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 685,
+    "rule": "invalid-syntax",
+    "message": "Expected `:`, found `}`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 770,
+    "rule": "invalid-syntax",
+    "message": "missing closing quote in string literal"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 771,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 771,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `:`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 772,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `:`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 772,
+    "rule": "invalid-syntax",
+    "message": "Expected a newline after line continuation character"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 777,
+    "rule": "invalid-syntax",
+    "message": "missing closing quote in string literal"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 778,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found identifier"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 778,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `:`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 779,
+    "rule": "invalid-syntax",
+    "message": "Expected `,`, found `:`"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 779,
+    "rule": "invalid-syntax",
+    "message": "Expected a newline after line continuation character"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 785,
+    "rule": "invalid-syntax",
+    "message": "Expected a statement"
+  },
+  {
+    "path": "production/deployment/production_deployment_preparation.py",
+    "line": 785,
+    "rule": "invalid-syntax",
+    "message": "Expected a statement"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1234,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1240,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1276,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1277,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1299,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1300,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1331,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1332,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1370,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1371,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1398,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1399,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1416,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1417,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1472,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1473,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1494,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/deployment/production_rollout_strategy.py",
+    "line": 1495,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/disaster_recovery/disaster_recovery.py",
+    "line": 827,
+    "rule": "F821",
+    "message": "Undefined name `statistics`"
+  },
+  {
+    "path": "production/disaster_recovery/disaster_recovery.py",
+    "line": 828,
+    "rule": "F821",
+    "message": "Undefined name `statistics`"
+  },
+  {
+    "path": "production/monitoring/production_monitoring.py",
+    "line": 296,
+    "rule": "F821",
+    "message": "Undefined name `check_id`"
+  },
+  {
+    "path": "production/monitoring/production_monitoring.py",
+    "line": 309,
+    "rule": "F821",
+    "message": "Undefined name `check_id`"
+  },
+  {
+    "path": "production/observability/production_logging.py",
+    "line": 187,
+    "rule": "F821",
+    "message": "Undefined name `sys`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1205,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1211,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1242,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1243,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1275,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1276,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1299,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1300,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1326,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1327,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1365,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1366,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1399,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1400,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1422,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/performance/performance_baseline.py",
+    "line": 1423,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 714,
+    "rule": "F821",
+    "message": "Undefined name `policy_id`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1189,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1195,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1238,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1265,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1266,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1296,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1297,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1312,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1313,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1338,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1339,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1352,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1353,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1369,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1370,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1390,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  },
+  {
+    "path": "production/scalability/auto_scaling_optimization.py",
+    "line": 1391,
+    "rule": "F821",
+    "message": "Undefined name `pytest`"
+  }
+]

@@ -173,48 +173,24 @@ class WebhookManager:
         sig = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
         return f"sha256={sig}"
 
-    async def _deliver_once(
-        self,
-        wh: WebhookConfig,
-        payload: Dict[str, Any],
-    ) -> bool:
-        """Attempt a single delivery. Returns True on HTTP 2xx."""
-        import asyncio
-
-        body = json.dumps(payload, ensure_ascii=True).encode("utf-8")
-        signature = self._sign_payload(wh.secret, body)
-        headers = {
-            "Content-Type": "application/json",
-            "X-RNR-Enhanced-Cognee-Signature": signature,
-            "X-RNR-Enhanced-Cognee-Event": payload.get("event", "unknown"),
-            "X-RNR-Enhanced-Cognee-Webhook-ID": wh.id,
-        }
-
+    async def _deliver_once(self, wh: WebhookConfig, payload: Dict[str, Any]) -> bool:
+        """Send a signed payload only to an explicitly approved origin."""
+        from src.security.capabilities import validate_destination
         try:
+            validate_destination(wh.url)
             import httpx
-            async with httpx.AsyncClient(timeout=10.0) as client:
-                resp = await client.post(wh.url, content=body, headers=headers)
-                return 200 <= resp.status_code < 300
-        except ImportError:
-            # httpx not installed — try stdlib urllib
-            import urllib.request
-            req = urllib.request.Request(
-                wh.url,
-                data=body,
-                headers=headers,
-                method="POST",
-            )
-            try:
-                loop = asyncio.get_event_loop()
-                response = await loop.run_in_executor(
-                    None, lambda: urllib.request.urlopen(req, timeout=10)
-                )
-                return 200 <= int(response.status) <= 299
-            except Exception as exc:
-                logger.debug("_deliver_once urllib failed: %s", exc)
-                return False
-        except Exception as exc:
-            logger.debug("_deliver_once failed for %s: %s", wh.url, exc)
+            body = json.dumps(payload, ensure_ascii=True).encode("utf-8")
+            headers = {
+                "Content-Type": "application/json",
+                "X-RNR-Enhanced-Cognee-Signature": self._sign_payload(wh.secret, body),
+                "X-RNR-Enhanced-Cognee-Event": payload.get("event", "unknown"),
+                "X-RNR-Enhanced-Cognee-Webhook-ID": wh.id,
+            }
+            async with httpx.AsyncClient(timeout=10, follow_redirects=False, trust_env=False) as client:
+                response = await client.post(wh.url, content=body, headers=headers)
+                return 200 <= response.status_code < 300
+        except Exception:
+            logger.debug("Webhook delivery unavailable or denied")
             return False
 
     async def fire(

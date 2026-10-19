@@ -1,10 +1,7 @@
 # Required CI gate for RNR-Enhanced-Cognee (VIN-39).
-# Minimal green-fast lane that mirrors the proven-green Unit Tests job of
-# ci-cd-pipeline.yml (run 29220894646: Unit Tests passed in 5m51s) at a
-# smaller scope: no service containers, unit tests only, no coverage floor.
-# The full pipeline keeps running alongside; its red Lint and Security Audit
-# jobs are tracked in VIN-39 and are NOT weakened or duplicated here.
-# Growing this gate (services, coverage floor) is follow-up work.
+# Unit tests deny outbound networking. A separate step exercises the actual
+# legacy install/upgrade SQL against disposable pgvector, without private data.
+# This does not establish graph/provider readiness or remote branch protection.
 name: Required CI
 
 on:
@@ -23,9 +20,21 @@ concurrency:
 
 jobs:
   required-ci:
+    # Preserve the existing check name used by repository branch protection.
     name: Required CI (unit tests)
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: synthetic-schema-qualification-only
+          POSTGRES_DB: cognee_schema_qualification
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 12
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,28 +42,64 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-cov pytest-asyncio pytest-mock hypothesis
-          pip install -r requirements.txt
-          pip install -e .
+          python -m pip install --require-hashes -r requirements-build.lock
+          pip install --require-hashes -r requirements-full.lock
+          pip install hypothesis
+          pip install --no-deps -e .
+
+      - name: Check the distributable package boundary
+        run: |
+          python -m hatchling build -t wheel
+          for artifact in dist/*.whl; do python tests/qualification/check_wheel_boundary.py "$artifact"; done
 
       - name: Run unit tests
+        env:
+          PYTHONPATH: tests/support/network_guard
+          COGNEE_TELEMETRY_ENABLED: '0'
+          TELEMETRY_DISABLED: '1'
+          LITELLM_LOCAL_MODEL_COST_MAP: 'True'
+          HF_HUB_OFFLINE: '1'
+          ENHANCED_LOAD_DOTENV: '0'
+          COGNEE_LOG_FILE: 'false'
         run: |
           pytest tests/unit/ -q \
             -p no:cacheprovider \
             --override-ini="addopts=" \
             --junitxml=junit.xml
 
+      - name: Test legacy fresh-install and upgrade fixtures
+        env:
+          RNR_QUALIFICATION_SCHEMA_URL: postgresql://postgres:synthetic-schema-qualification-only@127.0.0.1:5432/cognee_schema_qualification
+          COGNEE_TELEMETRY_ENABLED: '0'
+          ENHANCED_LOAD_DOTENV: '0'
+          COGNEE_LOG_FILE: 'false'
+        run: |
+          pytest tests/integration/test_legacy_schema_qualification.py -q -p no:cacheprovider --override-ini="addopts=" --junitxml=schema-qualification.xml
+
+      - name: Test upstream settings and configuration ownership
+        env:
+          PYTHONPATH: tests/support/network_guard
+          COGNEE_TELEMETRY_ENABLED: '0'
+          COGNEE_LOG_FILE: 'false'
+          ENHANCED_LOAD_DOTENV: '0'
+          HF_HUB_OFFLINE: '1'
+          LITELLM_LOCAL_MODEL_COST_MAP: 'True'
+        run: |
+          pytest cognee/tests/api/test_settings_security.py -q -p no:cacheprovider --override-ini="addopts=" -W ignore::pydantic.warnings.PydanticDeprecatedSince20 --junitxml=upstream-security.xml
+
       - name: Upload test evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-evidence
-          path: junit.xml
+          path: |
+            junit.xml
+            schema-qualification.xml
+            upstream-security.xml
           retention-days: 14
           if-no-files-found: ignore

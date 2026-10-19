@@ -91,7 +91,7 @@ export function VisualizationSettings({
             <Settings className="w-5 h-5 text-slate-400" />
             <h2 className="text-xl font-semibold text-slate-200">Visualization Settings</h2>
           </div>
-          <IconButton onClick={onClose} size="sm" icon={<X className="w-5 h-5" />} />
+          <IconButton onClick={onClose} aria-label="Close settings" size="sm" icon={<X className="w-5 h-5" />} />
         </div>
 
         {/* Settings */}
@@ -222,10 +222,10 @@ export function VisualizationSettings({
           <NeutralButton onClick={handleReset} size="sm">
             Reset to Defaults
           </NeutralButton>
-          <NeutralButton onClick={onClose} size="sm">
+          <NeutralButton onClick={onClose} aria-label="Close settings" size="sm">
             Cancel
           </NeutralButton>
-          <NeutralButton onClick={handleSave} size="sm" variant="primary">
+          <NeutralButton onClick={handleSave} size="sm" variant="default">
             Save Settings
           </NeutralButton>
         </div>

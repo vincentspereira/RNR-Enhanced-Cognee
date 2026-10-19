@@ -4,10 +4,10 @@
 #
 # Differences vs docker/Dockerfile.enhanced-cognee:
 #   - Multiple uvicorn workers (UVICORN_WORKERS, default 2)
-#   - No build tooling left in the final layer beyond what pip needs
+#   - Legacy single-stage build (use the root Dockerfile for separate build tools)
 #   - Non-root user, no --reload
 
-FROM python:3.12-slim
+FROM python:3.12.15-slim-trixie
 
 # Set working directory
 WORKDIR /app
@@ -23,35 +23,19 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Install RNR Enhanced Cognee runtime dependencies (mirrors the enhanced-cognee image)
-RUN pip install --no-cache-dir \
-    psycopg2-binary==2.9.9 \
-    qdrant-client==1.10.0 \
-    neo4j==5.25.0 \
-    redis==5.1.1 \
-    pgvector==0.3.2 \
-    fastapi==0.110.0 \
-    uvicorn==0.27.1 \
-    pydantic==2.6.1 \
-    sqlalchemy==2.0.25 \
-    alembic==1.13.1 \
-    python-dotenv==1.0.1 \
-    httpx==0.26.0 \
-    aiofiles==23.2.1 \
-    python-multipart==0.0.9 \
-    python-jose[cryptography]==3.3.0 \
-    passlib[bcrypt]==1.7.4 \
-    structlog==24.1.0 \
-    pyyaml==6.0.1 \
-    tiktoken==0.6.0 \
-    openai==1.12.0 \
-    prometheus-client==0.20.0
+COPY requirements-build.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock
+COPY requirements-full.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-full.lock
+RUN python -m pip check && python -m pip uninstall -y pip
 
 # Copy RNR Enhanced Cognee application code
 COPY src/ /app/src/
+COPY bin/ /app/bin/
+COPY cognee/ /app/cognee/
+COPY distributed/ /app/distributed/
+COPY alembic_enhanced/ /app/alembic_enhanced/
+COPY migrations/ /app/migrations/
 COPY alembic/ /app/alembic/
 COPY alembic.ini /app/
 COPY alembic-enhanced.ini /app/
@@ -61,8 +45,10 @@ COPY config/ /app/config/
 # PYTHONPATH=/app so the `src` package resolves (module is src.enhanced_cognee_mcp:app).
 ENV PYTHONPATH=/app
 ENV ENHANCED_COGNEE_MODE=true
+ENV ENHANCED_ENV=production ENHANCED_REQUIRE_TENANT=1
 ENV LOG_LEVEL=INFO
 ENV PYTHONUNBUFFERED=1
+ENV COGNEE_LOG_FILE=false ENHANCED_LOAD_DOTENV=0 COGNEE_TELEMETRY_ENABLED=0
 # Number of uvicorn workers (override at runtime).
 ENV UVICORN_WORKERS=2
 # Listen port (override at runtime).
@@ -72,9 +58,10 @@ ENV PORT=8080
 RUN groupadd --system appuser \
     && useradd --system --gid appuser --create-home --home-dir /home/appuser appuser \
     && mkdir -p /app/data /app/logs /app/tmp \
-    && chown -R appuser:appuser /app
+    && chown -R appuser:appuser /app/data /app/logs /app/tmp
 
 # Drop privileges.
+RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 USER appuser
 
 # Expose the app port.

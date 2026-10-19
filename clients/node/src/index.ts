@@ -30,6 +30,7 @@
 export interface ClientOptions {
   baseUrl?: string;
   apiKey?: string;
+  accessToken?: string;
   tenantId?: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
@@ -88,6 +89,7 @@ export class EnhancedCogneeError extends Error {
 export class EnhancedCogneeClient {
   private baseUrl: string;
   private apiKey?: string;
+  private accessToken?: string;
   private tenantId?: string;
   private fetchImpl: typeof fetch;
   private timeoutMs: number;
@@ -98,10 +100,20 @@ export class EnhancedCogneeClient {
       ?? process.env.ENHANCED_COGNEE_URL
       ?? "http://localhost:8080"
     ).replace(/\/$/, "");
-    this.apiKey = opts.apiKey ?? process.env.ENHANCED_API_KEY;
+    this.accessToken = opts.accessToken ?? process.env.ENHANCED_COGNEE_ACCESS_TOKEN;
+    this.apiKey = opts.apiKey ?? (this.accessToken ? undefined : process.env.ENHANCED_API_KEY);
+    const origin = new URL(this.baseUrl);
+    if (!["http:", "https:"].includes(origin.protocol) || origin.username || origin.password || origin.search || origin.hash) {
+      throw new Error("baseUrl must use HTTP or HTTPS without embedded credentials, query or fragment");
+    }
+    if (this.apiKey && this.accessToken) throw new Error("Use either apiKey or accessToken");
+    if ((this.apiKey || this.accessToken) && origin.protocol === "http:" && !["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname)) {
+      throw new Error("Authenticated remote services require HTTPS");
+    }
     this.tenantId = opts.tenantId ?? process.env.ENHANCED_TENANT_ID;
     this.fetchImpl = opts.fetchImpl ?? fetch;
     this.timeoutMs = opts.timeoutMs ?? 30_000;
+    if (!Number.isFinite(this.timeoutMs) || this.timeoutMs <= 0) throw new Error("timeoutMs must be positive");
   }
 
   /** Add a memory entry. */
@@ -160,6 +172,7 @@ export class EnhancedCogneeClient {
       "Accept": "application/json",
     };
     if (this.apiKey) headers["X-API-Key"] = this.apiKey;
+    if (this.accessToken) headers["Authorization"] = `Bearer ${this.accessToken}`;
     if (this.tenantId) headers["X-Tenant-ID"] = this.tenantId;
 
     try {
@@ -168,10 +181,31 @@ export class EnhancedCogneeClient {
         headers,
         body: body ? JSON.stringify(body) : undefined,
         signal: ctrl.signal,
+        redirect: "error",
       });
 
+      const reader = resp.body?.getReader();
+      const parts: Uint8Array[] = [];
+      let size = 0;
+      if (reader) {
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            size += value.length;
+            if (size > 1024 * 1024) throw new Error("Response exceeds the 1 MiB client limit");
+            parts.push(value);
+          }
+        } finally {
+          await reader.cancel();
+        }
+      }
+      const bytes = new Uint8Array(size);
+      let offset = 0;
+      for (const part of parts) { bytes.set(part, offset); offset += part.length; }
+      const text = new TextDecoder().decode(bytes);
+
       if (!resp.ok) {
-        const text = await resp.text();
         throw new EnhancedCogneeError(
           `RNR Enhanced Cognee ${method} ${path} -> ${resp.status}`,
           resp.status,
@@ -179,7 +213,7 @@ export class EnhancedCogneeClient {
         );
       }
 
-      return resp.json();
+      return JSON.parse(text);
     } finally {
       clearTimeout(timer);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Input, Card, CardContent } from "@/components/atoms";
@@ -25,7 +25,7 @@ import {
   Plus
 } from "lucide-react";
 
-export default function MemoriesListPage() {
+function MemoriesListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -471,5 +471,13 @@ export default function MemoriesListPage() {
         onClose={() => setIsAddModalOpen(false)}
       />
     </div>
+  );
+}
+
+export default function MemoriesListPage() {
+  return (
+    <Suspense fallback={<MemoryListSkeleton count={5} />}>
+      <MemoriesListContent />
+    </Suspense>
   );
 }

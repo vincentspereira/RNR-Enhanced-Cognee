@@ -220,7 +220,7 @@ test.describe("Forms", () => {
         return (
           el.hasAttribute("aria-label") ||
           el.hasAttribute("aria-labelledby") ||
-          el.labels !== null && el.labels.length > 0 ||
+          ("labels" in el && el.labels !== null && (el.labels as NodeListOf<HTMLLabelElement>).length > 0) ||
           el.closest("label") !== null
         );
       });

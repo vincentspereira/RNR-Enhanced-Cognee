@@ -3,6 +3,8 @@ Production Rollout Strategy Framework
 Implements comprehensive production rollout strategies including canary, blue-green, and rolling deployments
 """
 
+import pytest
+
 import os
 import json
 import time

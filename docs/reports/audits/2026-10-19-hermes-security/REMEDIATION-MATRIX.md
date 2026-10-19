@@ -1,0 +1,42 @@
+# Finding-by-finding remediation record
+
+Date: 19 October 2026. All changes are local and under qualification.
+The original README and evidence describe the pre-remediation baseline. This
+matrix records the repaired behavior and the remaining limits. "Contained" means
+the restricted Hermes profile avoids the affected legacy path, not that every
+optional provider or old interface has been repaired and qualified.
+
+| Finding | Implemented behavior | Remaining qualification or work |
+|---|---|---|
+| F01 - Tool permissions | Explicit policies for all 122 registered tools; unknown tools and unavailable auth denied; actual stdio readonly denial passed | Full per-tool side-effect metadata and wider end-to-end coverage remain |
+| F02 - Dashboard protection | Shared authentication, tenant binding and permission boundary; direct SQL uses scoped names; anonymous deletion denied before storage | Dashboard still needs canonical-service delegation and authenticated browser qualification |
+| F03 - Identity binding | Verified identity binds tenant, user and agent; project credentials confined to restricted API; nested identity conflicts denied | Wider legacy/provider identity coverage remains |
+| F04 - Unscoped SQL | Literal shared-document tool SQL converted to scope helpers; tenant callers denied unqualified upstream global graph APIs | Canonical-service consolidation across legacy transports remains |
+| F05 - Derived scopes | Main HTTP vector collection, graph database and cache names scoped; canonical recall authorizes before decrypting | All legacy derived-store providers and correction cleanup remain unqualified |
+| F06 - Tenant aliases | External identifiers must be canonical; no lossy external normalization; migration requires an explicit mapping | Existing noncanonical namespaces need individual reviewed mappings |
+| F07 - Plaintext writes | Restricted service encrypts complete memory payload and internal vectors; real database verification passed | Legacy write paths are not universally encrypted; avoid them for private deployment |
+| F08 - Encryption failure | Persistent key required; protected failures raise; named-key writes and mixed-key reads supported; bounded operator-only current/history rotation rolls back a failed batch | Owner-controlled custody, rollout coordination, private backup recovery and all legacy-store rotation remain |
+| F09 - Correction/retraction | Canonical current version, owner/version checks, expiry, revocation on correction and authoritative recall exclusion tested; retracted records cannot be reactivated through correction | Legacy Qdrant/ArcadeDB/cache cleanup and permanent erasure remain |
+| F10 - Payload limits | Actual received bytes counted; bounded total body time; invalid configuration fails closed | Broader multi-worker resource/load qualification remains |
+| F11 - Import/network capabilities | Explicit capability/root/origin grants; symlink-safe bounded file read; HTTPS-only bounded web fetch without redirects/proxies; database source aliases with operator-defined queries; scoped callers denied global imports | Operator database accounts must be read-only; direct upstream-library ingestion is outside the restricted API; arbitrary optional loaders remain unqualified |
+| F12 - Python advisories | Three hashed release/bootstrap locks audit clean; restricted built-image Python scan is clean; unused runtime pip removed; full image retains the version-matched Cognee advisory with tested source backport | High OS advisories remain; full backport applicability/release review, optional-extra union and unchanged developer virtualenv remain separate |
+| F13 - Frontend advisories | Both production dependency audits report zero; both clean production builds pass with type checks | Five high development-tool findings remain through the upstream braces/micromatch ESLint chain; no safe patch currently in those locks; browser E2E outstanding |
+| F14 - Dependency conflicts | Requirements/project declarations reconciled; full hashed installation and image dependency checks pass; built full APIs and 122-tool registry import with production tenant enforcement | Not every optional extra is qualified; scheduling extra is intentionally unavailable |
+| F15 - Packaging omissions | Wheel includes src/bin; full image includes registry/upstream/migrations/config; current wheel/local-store boundary checks and full image path/protocol checks pass; critical runtime source hashes match | Earlier private local images/cache remain excluded from release pending reviewed cleanup |
+| F16 - Schema mismatch | Canonical encrypted/versioned tables; copy-only UUID/TEXT migration; actual old Docker UUID, existing TEXT+tenant and fresh Alembic fixtures pass additive upgrades; invalid large-vector index removed | All legacy helpers still need consolidation; existing private data not migrated |
+| F17 - SDK auth/scope | One maintained Python SDK; correct credential types/TLS/selectors; registry signature checks; Node 9, Rust 9 plus doc compile and Go race suite pass; Go/Rust dependency scans clean | SDK transport tests do not qualify every live backend or provide a native restricted-API client in all languages; custom Node fetch routing remains its caller's responsibility |
+| F18 - Partial writes | Canonical record/version/audit/outbox transaction atomic; retry keys recover after uncertainty; nonessential cache failure cannot turn a committed main-HTTP write into a failure | All legacy multi-store compensation/recovery paths remain |
+| F19 - Throttling | Restricted API uses shared PostgreSQL budget per verified tenant/project/subject; concurrent service-instance test passed | Legacy process-local throttling not fully replaced; wider load/outage checks remain |
+| F20 - Background durability | Canonical mutations emit durable outbox events in the same transaction; legacy automatic scheduler disabled by default | Outbox delivery/index workers unavailable; older task queues not durable and not admitted to Hermes |
+| F21 - Release gate | Network-denying units, real DB/model/provider/migration tests, actual restricted/full builds and protocol/HTTP checks; high/critical image gates added for both image workflows | Remote CI/branch protection not changed or verified; full default-stack qualification and unresolved scan gates remain |
+| F22 - Historical credentials | Values not exposed or tested; existing private triage retained; .dockerignore excludes secret files and archives | Owner must confirm revocation/replacement of real candidates; no history rewrite authorized |
+| F23 - Damaged ancillary source | Originals archived; all eight original parse failures repaired; current source parses; undefined names fixed across src/bin/dashboard/production/testing/integration | Static repair is not operational qualification of retained deployment/recovery/reporting scaffolds |
+| F24 - Readiness | Restricted public readiness checks schema/DB; authenticated status reports exact scope, model, encryption, pending events and unavailable graph/worker capabilities | Legacy health still needs capability-based qualification; no blanket production-readiness claim |
+| F25 - Provenance | Encrypted bounded source ID/URI/hash/span, fact/preference/decision/inference/summary classification and declared confidence; authority explicitly unverified; correction lineage and source re-review; legacy reserved-field and checksum-verification repairs | Source declarations do not prove facts; human verification workflow, broader source quality and all legacy admission paths remain |
+| F26 - Stdio protocol | Actual current full-image MCP v1 initialization, 122-tool listing and readonly mutation denial pass without network access; imports no longer perform tenant lookups; failures are protocol errors | Default-stack connectivity/derived capabilities remain separate; protocol discovery is not storage readiness |
+| F27 - Documentation claims | Current README labels qualification limits; owner decisions explain recommendations/options/actions; implementation and migration trackers added | Historical claims remain in older documentation; broader documentation reconciliation remains |
+
+No row authorizes private-data activation. The restricted service currently
+provides encrypted text and optional local semantic recall. It explicitly reports
+graph reasoning and derived-store workers unavailable. Outbox records alone are
+not evidence of a working graph pipeline.

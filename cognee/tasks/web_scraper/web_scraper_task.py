@@ -124,6 +124,7 @@ async def web_scraper_task(
     soup_crawler_config: DefaultCrawlerConfig = None,
     tavily_config: TavilyConfig = None,
     job_name: str = None,
+    prefetched_content: dict = None,
 ):
     """Scrape URLs and store data points in a Graph database.
 
@@ -192,10 +193,8 @@ async def web_scraper_task(
     webpages = []
 
     # Fetch content
-    results = await fetch_page_content(
-        urls=url,
-        preferred_tool=preferred_tool,
-        tavily_config=tavily_config,
+    results = prefetched_content if prefetched_content is not None else await fetch_page_content(
+        urls=url, preferred_tool=preferred_tool, tavily_config=tavily_config,
         soup_crawler_config=soup_crawler_config,
     )
     for page_url, content in results.items():

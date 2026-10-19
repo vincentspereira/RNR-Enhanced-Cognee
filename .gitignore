@@ -336,3 +336,9 @@ installer/build/_pyinstaller/
 # Local agent instruction files (not published)
 CLAUDE.md
 AGENTS.md
+
+# Local owner instructions and private infrastructure context
+docs/reports/audits/2026-10-19-hermes-security/OWNER-DECISIONS-2026-10-20.md
+
+# Preserve detailed owner annotations locally
+docs/reports/audits/2026-10-19-hermes-security/OWNER-ANNOTATED-PLAN-*.md

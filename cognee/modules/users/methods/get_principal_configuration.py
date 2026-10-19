@@ -4,7 +4,7 @@ from cognee.infrastructure.databases.relational import get_relational_engine
 from cognee.modules.users.models.PrincipalConfiguration import PrincipalConfiguration
 
 
-async def get_principal_configuration(config_id: UUID) -> dict:
+async def get_principal_configuration(config_id: UUID, *, principal_id: UUID) -> dict:
     """
     Retrieves a specific Cognee configuration for a principal by its name.
 
@@ -14,9 +14,14 @@ async def get_principal_configuration(config_id: UUID) -> dict:
     Returns:
         dict: The configuration data if found, or an empty dictionary (or None) if not found.
     """
+    if principal_id is None:
+        raise ValueError("Configuration lookup requires an authenticated owner")
     relational_engine = get_relational_engine()
     async with relational_engine.get_async_session() as session:
-        query = select(PrincipalConfiguration).where(PrincipalConfiguration.id == config_id)
+        query = select(PrincipalConfiguration).where(
+            PrincipalConfiguration.id == config_id,
+            PrincipalConfiguration.owner_id == principal_id,
+        )
 
         result = await session.execute(query)
         config_record = result.scalars().first()

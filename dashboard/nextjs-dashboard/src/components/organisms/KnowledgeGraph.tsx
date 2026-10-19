@@ -16,7 +16,7 @@ const LAYOUT_OPTIONS: Record<
   LayoutType,
   { name: string; displayName: string }
 > = {
-  force: { name: "force", displayName: "Force Directed" },
+  force: { name: "cose", displayName: "Force Directed" },
   hierarchical: { name: "breadthfirst", displayName: "Hierarchical" },
   circle: { name: "circle", displayName: "Circle" },
   concentric: { name: "concentric", displayName: "Concentric" },
@@ -131,7 +131,7 @@ export function KnowledgeGraph({
         animationDuration: 500,
         fit: true,
         padding: 50,
-      },
+      } as cytoscape.LayoutOptions,
       minZoom: 0.1,
       maxZoom: 5,
     });
@@ -164,12 +164,12 @@ export function KnowledgeGraph({
     const cy = cyRef.current;
 
     if (nodeTypeFilter === "all") {
-      cy.nodes().show();
-      cy.edges().show();
+      cy.nodes().style("display", "element");
+      cy.edges().style("display", "element");
     } else {
-      cy.nodes().filter((node) => node.data("type") === nodeTypeFilter).show();
-      cy.nodes().filter((node) => node.data("type") !== nodeTypeFilter).hide();
-      cy.edges().show();
+      cy.nodes().filter((node) => node.data("type") === nodeTypeFilter).style("display", "element");
+      cy.nodes().filter((node) => node.data("type") !== nodeTypeFilter).style("display", "none");
+      cy.edges().style("display", "element");
     }
 
     // Apply search
@@ -179,8 +179,8 @@ export function KnowledgeGraph({
         .filter((node) =>
           node.data("label").toLowerCase().includes(searchQuery.toLowerCase())
         );
-      cy.nodes().difference(matchingNodes).hide();
-      matchingNodes.show();
+      cy.nodes().difference(matchingNodes).style("display", "none");
+      matchingNodes.style("display", "element");
     }
   }, [nodeTypeFilter, searchQuery]);
 
@@ -282,9 +282,9 @@ export function KnowledgeGraph({
 
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 border border-slate-700 rounded-lg p-1">
-            <IconButton onClick={handleZoomIn} size="sm" icon={<ZoomIn className="w-4 h-4" />} />
-            <IconButton onClick={handleZoomOut} size="sm" icon={<ZoomOut className="w-4 h-4" />} />
-            <IconButton onClick={handleFit} size="sm" icon={<Maximize className="w-4 h-4" />} />
+            <IconButton onClick={handleZoomIn} aria-label="Zoom in" size="sm" icon={<ZoomIn className="w-4 h-4" />} />
+            <IconButton onClick={handleZoomOut} aria-label="Zoom out" size="sm" icon={<ZoomOut className="w-4 h-4" />} />
+            <IconButton onClick={handleFit} aria-label="Fit graph" size="sm" icon={<Maximize className="w-4 h-4" />} />
           </div>
 
           {/* Export */}

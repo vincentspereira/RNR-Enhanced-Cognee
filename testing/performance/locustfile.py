@@ -6,6 +6,8 @@ Tests memory operations, agent coordination, and system performance under load.
 """
 
 from locust import HttpUser, task, between, events
+import sys
+
 import json
 import random
 import time

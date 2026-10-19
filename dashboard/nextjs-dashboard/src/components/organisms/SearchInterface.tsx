@@ -7,6 +7,7 @@ import { MemoryCard } from "@/components/molecules";
 import { MemoryListSkeleton } from "@/components/organisms/MemoryListSkeleton";
 import { Search, X, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { searchMemories } from "@/lib/api/memories";
 
 interface SearchInterfaceProps {
   onResultsFound?: (count: number) => void;
@@ -42,13 +43,7 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["search", debouncedQuery],
     queryFn: async () => {
-      if (!debouncedQuery.trim()) return { results: [], total: 0 };
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(`${apiBase}/api/search?query=${encodeURIComponent(debouncedQuery)}&limit=20`);
-      if (!response.ok) {
-        throw new Error("Search failed");
-      }
-      return response.json();
+      return searchMemories({ query: debouncedQuery, limit: 20 });
     },
     enabled: debouncedQuery.length > 0,
   });
@@ -77,9 +72,13 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
 
   // Normalize results: backend returns memory_id, MemoryCard expects id
   const rawResults = data?.results || [];
-  const results = rawResults.map((m: Record<string, unknown>) => ({
+  const results = rawResults.map((m) => ({
     ...m,
-    id: (m.id as string) || (m.memory_id as string),
+    summary: m.summary ?? undefined,
+    memory_type: m.memory_type ?? undefined,
+    memory_concept: m.memory_concept ?? undefined,
+    char_count: m.char_count ?? undefined,
+    estimated_tokens: m.estimated_tokens ?? undefined,
   }));
   const resultCount = data?.result_count ?? results.length;
 

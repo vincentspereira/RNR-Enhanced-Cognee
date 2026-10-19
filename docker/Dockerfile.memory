@@ -1,0 +1,22 @@
+# Restricted Hermes/project memory service. Build from the repository root.
+FROM python:3.12.15-slim-trixie
+WORKDIR /app
+ENV ENHANCED_ENV=production ENHANCED_REQUIRE_TENANT=1
+COPY requirements-build.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock
+COPY requirements-memory.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-memory.lock
+RUN python -m pip check && python -m pip uninstall -y pip
+COPY src/memory_api.py src/memory_service.py src/memory_contracts.py src/memory_keys.py src/memory_key_rotation.py src/legacy_memory_migration.py src/local_embeddings.py src/encryption_manager.py src/multi_tenant.py src/mcp_security.py /app/src/
+COPY src/security/auth.py src/security/enterprise_auth.py src/security/http_boundary.py src/security/request_context.py /app/src/security/
+COPY src/security/memory_admission.py /app/src/security/
+COPY src/memory_library.py src/memory_admin.py /app/src/
+RUN groupadd --system memoryservice \
+    && useradd --system --gid memoryservice --create-home memoryservice
+RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
+USER memoryservice
+ENV PYTHONPATH=/app PYTHONUNBUFFERED=1 COGNEE_TELEMETRY_ENABLED=0 HF_HUB_OFFLINE=1 COGNEE_LOG_FILE=false ENHANCED_LOAD_DOTENV=0
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=3)"]
+CMD ["python", "-m", "uvicorn", "src.memory_api:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log"]

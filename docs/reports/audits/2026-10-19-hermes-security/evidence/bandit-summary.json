@@ -1,0 +1,149 @@
+{
+  "warning": "Raw scanner findings are not confirmed vulnerabilities; tests and non-security hashes included.",
+  "metrics": {
+    "CONFIDENCE.HIGH": 4881,
+    "CONFIDENCE.LOW": 148,
+    "CONFIDENCE.MEDIUM": 117,
+    "CONFIDENCE.UNDEFINED": 0,
+    "SEVERITY.HIGH": 20,
+    "SEVERITY.LOW": 4907,
+    "SEVERITY.MEDIUM": 219,
+    "SEVERITY.UNDEFINED": 0,
+    "loc": 174145,
+    "nosec": 0,
+    "skipped_tests": 1
+  },
+  "errors": [
+    {
+      "filename": "production/deployment/production_deployment_preparation.py",
+      "reason": "syntax error while parsing AST from file"
+    }
+  ],
+  "severity": {
+    "LOW": 4907,
+    "MEDIUM": 219,
+    "HIGH": 20
+  },
+  "high_findings": [
+    {
+      "path": "bin/run_tests.py",
+      "line": 18,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/api/v1/ui/node_setup.py",
+      "line": 46,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/api/v1/ui/node_setup.py",
+      "line": 283,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/api/v1/ui/npm_utils.py",
+      "line": 25,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/api/v1/ui/ui.py",
+      "line": 617,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/eval_framework/modal_eval_dashboard.py",
+      "line": 41,
+      "rule": "B602",
+      "description": "subprocess call with shell=True identified, security issue."
+    },
+    {
+      "path": "cognee/infrastructure/files/utils/get_file_content_hash.py",
+      "line": 11,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/modules/ingestion/data_types/TextData.py",
+      "line": 33,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/modules/ingestion/save_data_to_file.py",
+      "line": 21,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/shared/cache.py",
+      "line": 295,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tasks/ingestion/ingest_dlt_source.py",
+      "line": 213,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tasks/ingestion/ingest_dlt_source.py",
+      "line": 347,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/test_chromadb.py",
+      "line": 25,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/test_deduplication.py",
+      "line": 65,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/test_lancedb.py",
+      "line": 26,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/test_pgvector.py",
+      "line": 24,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/unit/processing/utils/utils_test.py",
+      "line": 41,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "cognee/tests/unit/processing/utils/utils_test.py",
+      "line": 53,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "src/advanced_search_reranking.py",
+      "line": 767,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    },
+    {
+      "path": "src/security/enhanced_security_framework.py",
+      "line": 850,
+      "rule": "B324",
+      "description": "Use of weak MD5 hash for security. Consider usedforsecurity=False"
+    }
+  ]
+}

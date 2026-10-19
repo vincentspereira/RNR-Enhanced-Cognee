@@ -58,8 +58,8 @@ def _label(score: float) -> str:
 
 
 class MemoryConfidenceManager:
-    f"""
-    Read and write confidence scores on {_t_docs()}.
+    """
+    Read and write confidence scores on the request's scoped documents table.
     All methods degrade gracefully when the pool is unavailable.
     """
 
