@@ -15,6 +15,7 @@ from pathlib import Path
 import shutil
 import sys
 from urllib.parse import quote
+from urllib.parse import urlsplit
 
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
@@ -144,10 +145,50 @@ def install(root):
         write_private_json(str(marker), {"synthetic_only": True, "installed_at": datetime.now(timezone.utc).isoformat()})
 
 
+def local_model(model):
+    """Reuse one existing loopback provider in the test profile, never a cloud fallback."""
+    import yaml
+    from dotenv import dotenv_values
+    home = Path.home() / ".hermes"
+    profile = home / "profiles/enhanced-cognee-test"
+    source = yaml.safe_load((home / "config.yaml").read_text()) or {}
+    choices = [p for p in source.get("custom_providers", []) if isinstance(p, dict)
+               and urlsplit(p.get("base_url", "")).hostname in {"localhost", "127.0.0.1", "::1"}]
+    if len(choices) != 1 or not model:
+        raise ValueError("Select an existing unambiguous local provider and model")
+    provider = {k: v for k, v in choices[0].items() if k in {"name", "base_url", "key_env", "models", "api_mode"}}
+    provider["model"] = model
+    variable = provider.get("key_env")
+    key = os.environ.get(variable, "") or dotenv_values(home / ".env").get(variable, "") if variable else ""
+    env_path = profile / ".env"
+    if env_path.is_symlink() or not (profile / "enhanced-cognee-qualification.json").is_file():
+        raise ValueError("Install the dedicated test profile first")
+    old = env_path.read_text()
+    if variable and variable not in old and key:
+        # JSON string syntax is accepted by dotenv and avoids line injection.
+        if not variable.replace("_", "").isalnum():
+            raise ValueError("Invalid local provider credential reference")
+        fd = os.open(env_path, os.O_WRONLY | os.O_APPEND | os.O_NOFOLLOW)
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w") as handle:
+            handle.write("\n" + variable + "=" + json.dumps(key, ensure_ascii=True) + "\n")
+    config_path = profile / "config.yaml"
+    if config_path.is_symlink():
+        raise ValueError("Test configuration must not be a symlink")
+    config = yaml.safe_load(config_path.read_text()) or {}
+    config["custom_providers"] = [provider]
+    config["model"] = {"default": model, "provider": "custom:" + provider["name"],
+                       "base_url": provider["base_url"], "api_mode": provider.get("api_mode", "chat_completions")}
+    config["fallback_providers"] = []
+    with config_path.open("w") as handle:
+        yaml.safe_dump(config, handle, sort_keys=False, allow_unicode=False)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("provision", "serve", "install"))
+    parser.add_argument("command", choices=("provision", "serve", "install", "local-model"))
     parser.add_argument("--runtime-root", required=True)
+    parser.add_argument("--model")
     args = parser.parse_args()
     try:
         root = root_path(args.runtime_root)
@@ -155,6 +196,8 @@ def main():
             asyncio.run(provision(root))
         elif args.command == "serve":
             serve(root)
+        elif args.command == "local-model":
+            local_model(args.model)
         else:
             install(root)
     except Exception:
