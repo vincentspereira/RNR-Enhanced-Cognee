@@ -90,7 +90,7 @@ def serve(root):
         env.update(embedding)
     os.chdir(REPO)
     os.execve(sys.executable, [sys.executable, "-m", "uvicorn", "src.memory_api:app",
-                             "--host", "127.0.0.1", "--port", "28080", "--no-access-log",
+                             "--host", "127.0.0.1", "--port", "28080", "--no-access-log", "--ws", "none",
                              "--limit-concurrency", "20"], env)
 
 

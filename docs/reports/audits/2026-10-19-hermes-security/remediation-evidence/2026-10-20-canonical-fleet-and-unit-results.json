@@ -14,8 +14,8 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "seconds": 40.104,
-    "xml_sha256": "870d4a4430d943258d13ad71899be172b856a3ca7924b4975801a904e384e38f"
+    "seconds": 28.426,
+    "xml_sha256": "5a15e08908713c00bf3458b2801ea1d9e4726d254160381f40cd5d2beae93edd"
   },
   "restored_checks": {
     "adapter_file_tests": 39,
@@ -57,9 +57,16 @@
     "previous_OS_image_security_gate": "failed; no finding suppression"
   },
   "native_distribution": {
-    "wheel_sha256": "5c78ff2eff6e8f0574970e640390ee23f41a567e811c0d5081af331c3b3a68f8",
+    "wheel_sha256": "0840b79b6d377763caad5ebd5751e706a87bba1d108f9cc75769be0baf812d59",
     "packaging_boundary": "passed",
     "clean_outside_checkout_imports": "passed",
     "compatible_packages": 55
+  },
+  "clean_required_canonical_lane": {
+    "passed": 64,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "compatible_locked_packages": 59
   }
 }

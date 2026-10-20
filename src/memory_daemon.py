@@ -75,7 +75,7 @@ def main():
     try:
         env = credential_environment(args.role, os.environ["CREDENTIALS_DIRECTORY"])
         command = [sys.executable, "-m", "src.index_runtime", "run"] if args.role == "worker" else [
-            sys.executable, "-m", "uvicorn", "src.memory_api:app", "--host", "127.0.0.1", "--port", "28080", "--no-access-log"]
+            sys.executable, "-m", "uvicorn", "src.memory_api:app", "--host", "127.0.0.1", "--port", "28080", "--no-access-log", "--ws", "none"]
         if args.role == "backup":
             command = [sys.executable, "-m", "src.memory_backup", "create", "--directory", BACKUP_DIRECTORY,
                        "--recipient", env["ENHANCED_BACKUP_RECIPIENT"]]

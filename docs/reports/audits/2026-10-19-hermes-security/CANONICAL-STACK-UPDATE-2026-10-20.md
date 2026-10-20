@@ -103,6 +103,24 @@ checks pass. Live Windows DPAPI, full real-data backup, remote upload and instal
 Hermes backup permissions/timer remain unqualified; no real backup or cloud
 transfer was triggered by these edits. Private scripts/logs are not published.
 
+## Fresh required-CI compatibility follow-up
+
+Hosted run 39371096947 confirmed the Tenacity repair: full unit, legacy schema
+and upstream settings/security checks passed. It then exposed an unused legacy
+WebSocket import in the stdio-bridge HTTP fixture. The canonical API implements
+HTTP endpoints; its daemon, image, test helper and service fixtures now explicitly
+select Uvicorn's `ws=none` transport. No deprecation filter was added. The complete
+77-check opt-in qualification suite passed again after this change.
+
+Required CI now prepares a separate hashed canonical test environment rather
+than combining the optional index/model stack with the larger Cognee application
+installation. The public small embedding model is prepared before tests and
+used offline during them. This also runs the formerly optional semantic fixture
+in that lane. The exact 64-check required canonical command passes in a fresh
+59-package environment with zero failures/errors/skips. Both unit and canonical
+JUnit reports must contain executed tests and zero skips. Current hosted
+requalification is recorded separately once complete.
+
 ## Evidence from the current local checks
 
 - Full unit lane: 4,285 passed, 0 failed, 0 skipped, with credential environment removed and
@@ -143,6 +161,15 @@ transfer was triggered by these edits. Private scripts/logs are not published.
   figure is attributed to that run. A late Python-process sample recorded
   710,068 kB peak resident memory; that excludes the four storage processes and
   is not whole-stack resource qualification.
+- A later ten-minute real-store exercise passed 1,323 four-project rounds:
+  5,292 corrections, 6,615 semantic queries and 5,292 graph queries, with zero
+  observed scope leaks/failures and no pending events at completion. Measured
+  workload duration was 600.31 seconds; round p95 was 631.91 ms. The adjacent
+  twelve-case English paraphrase set retrieved every expected source at rank
+  one (12/12 top-three hits); median query latency was 47.84 ms and p95 56.67 ms.
+  These are small synthetic Workspace fixtures, not a whole-stack memory/resource
+  qualification, broad accuracy benchmark, long deployed soak or 42 concurrent
+  inference sessions. The exact result is retained in the dated load/retrieval JSON.
 - The dashboard production build passes type checks. The browser qualification
   exercises a real built frontend and service using invented data. It does not
   qualify historical graph/analytics/session screens or every browser/device.

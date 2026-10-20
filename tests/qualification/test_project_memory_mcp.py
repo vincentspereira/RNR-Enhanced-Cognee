@@ -39,7 +39,7 @@ async def test_real_stdio_project_bridge_roundtrip(monkeypatch):
     listener = socket.socket()
     listener.bind(("127.0.0.1", 0))
     port = listener.getsockname()[1]
-    server = uvicorn.Server(uvicorn.Config(create_app(service), lifespan="off", log_level="error", access_log=False))
+    server = uvicorn.Server(uvicorn.Config(create_app(service), lifespan="off", log_level="error", access_log=False, ws="none"))
     running = asyncio.create_task(server.serve(sockets=[listener]))
     try:
         async with asyncio.timeout(5):

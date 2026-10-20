@@ -37,7 +37,7 @@ async def test_built_dashboard_real_browser(monkeypatch):
     # Matches this build's explicitly selected NEXT_PUBLIC_API_URL. Refuse an
     # occupied port; no existing service is stopped or silently reused.
     listener.bind(("127.0.0.1", 8000))
-    server = uvicorn.Server(uvicorn.Config(create_app(service), lifespan="off", log_level="error", access_log=False))
+    server = uvicorn.Server(uvicorn.Config(create_app(service), lifespan="off", log_level="error", access_log=False, ws="none"))
     running = asyncio.create_task(server.serve(sockets=[listener]))
     processes = []
     root = Path(__file__).resolve().parents[2] / "dashboard/nextjs-dashboard"
