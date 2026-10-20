@@ -130,7 +130,7 @@ async def restore(path: str, identity: str, new_database: str, *, restore_comman
     finally:
         await conn.close()
     await asyncio.to_thread(_pipe, ["age", "--decrypt", "--identity", identity, path],
-        restore_command or ["pg_restore", "--no-owner", "--no-acl", "--single-transaction", "--exit-on-error"],
+        restore_command or ["pg_restore", "--dbname", new_database, "--no-owner", "--no-acl", "--single-transaction", "--exit-on-error"],
         right_env=_environment(new_database))
     return {"database": new_database, "restored": True, "existing_databases_changed": False,
             "next_step": "Verify schema, decryption, project denial and retained history before real recovery"}
