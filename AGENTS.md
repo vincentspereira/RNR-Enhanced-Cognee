@@ -132,3 +132,10 @@ scoped credentials, key custody, encrypted backup/recovery and relevant release
 checks before everyday use. Windows backup/DPAPI/Task Scheduler checks must run in
 Windows. Distinguish owner/host tasks from Workspace work. Record sanitized
 revision, test evidence, limitations and exact remaining actions.
+
+## Hermes-local instruction reconciliation
+
+Retain applicable local project exclusions, assigned-repository scope, caller
+runtime/budget limits and human merge review. Historical Windows
+paths and Docker/GPU status do not establish access or installed capabilities.
+Private instruction originals and raw comparisons remain outside this checkout.

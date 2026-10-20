@@ -9,6 +9,14 @@ matrix records the repaired behavior and the remaining limits. "Contained" means
 the restricted Hermes profile avoids the affected legacy path, not that every
 optional provider or old interface has been repaired and qualified.
 
+Latest Ubuntu-Hermes follow-up: [78/78 qualification and local capture](HERMES-QUALIFICATION-FOLLOWUP-2026-10-20.md).
+All four previously skipped real-client/browser checks now pass, with zero skips.
+Local Qwen 27B passes five model-driven scenarios in the separate second synthetic
+profile at a verified 65,536-token context; encrypted history was independently
+checked. CPU-offloaded replies take 196-387 seconds. Earlier model failures below
+remain historical; protected deployment, owner custody and release gates remain
+open.
+
 | Finding | Implemented behavior | Remaining qualification or work |
 |---|---|---|
 | F01 - Tool permissions | Explicit permission/effect manifest for all 122 tools; canonical sixteen-alias allowlist; actual stdio readonly denial; separate human review role | Retained legacy effects conservatively marked unqualified; broader legacy tool/provider coverage remains |
@@ -44,3 +52,11 @@ encrypted records, local semantic recall and optional configured source-linked
 graph recall with actual tested derived delivery. It reports missing/stopped/failed
 workers and lag explicitly. These Workspace and hosted fixtures do not establish
 that the newer stack is installed or privately isolated inside Ubuntu-Hermes.
+## Installed-host continuation - 20 October 2026
+
+See [HERMES-DEPLOYMENT-2026-10-20.md](HERMES-DEPLOYMENT-2026-10-20.md)
+for the actual schema-3/eight-tool/four-store synthetic deployment, instruction
+reconciliation, 73-pass/four-skip qualification, selected-model failures/repair,
+two-profile checks and encrypted restore/index rebuild. Protected OS deployment,
+scheduled backup execution, local selected capture, owner custody and release
+acceptance remain open; historical rows above retain their original scope.
