@@ -1,10 +1,47 @@
 """Credential admission tests; actual OS-user separation needs deployment proof."""
 import json
 import os
+from pathlib import Path
+import stat
+import struct
+from types import SimpleNamespace
 
 import pytest
 
 from src.memory_daemon import credential_environment
+
+
+@pytest.mark.parametrize("violation", [None, "outside_mount", "writable_mount", "file_write",
+    "directory_write", "other_read", "extra_user", "group_read", "wrong_uid", "parent_acl", "missing_acl"])
+def test_root_owned_systemd_credentials_require_private_readonly_service_acl(monkeypatch, violation):
+    from src.memory_daemon import _systemd_private_acl
+    parent = Path("/run/credentials/synthetic.service") if violation != "outside_mount" else Path("/tmp/synthetic.service")
+    original_stat = Path.stat
+    directory = SimpleNamespace(st_uid=0, st_gid=0, st_mode=stat.S_IFDIR | (0o750 if violation == "directory_write" else 0o550))
+    root = SimpleNamespace(st_uid=0, st_gid=0, st_mode=stat.S_IFDIR | 0o755)
+    monkeypatch.setattr(Path, "stat", lambda p, *a, **k: directory if p == parent else root if p == parent.parent else original_stat(p, *a, **k))
+    monkeypatch.setattr(os, "statvfs", lambda p: SimpleNamespace(f_flag=0 if violation == "writable_mount" else os.ST_RDONLY))
+    nobody = 65534
+
+    def acl(permission, directory_acl=False):
+        uid = nobody if violation == "wrong_uid" else os.geteuid()
+        entries = [(1, permission, 0xFFFFFFFF), (2, permission, uid),
+                   (4, 4 if violation == "group_read" else 0, 0xFFFFFFFF),
+                   (16, permission, 0xFFFFFFFF), (32, 0, 0xFFFFFFFF)]
+        if violation == "extra_user" or directory_acl and violation == "parent_acl":
+            entries.insert(2, (2, permission, nobody))
+        return struct.pack("<I", 2) + b"".join(struct.pack("<HHI", *entry) for entry in entries)
+
+    def get_acl(value, name):
+        assert name == "system.posix_acl_access"
+        if violation == "missing_acl":
+            raise OSError("No ACL")
+        return acl(4) if value == 42 else acl(5, directory_acl=True)
+
+    monkeypatch.setattr(os, "getxattr", get_acl)
+    mode = {"file_write": 0o640, "other_read": 0o444}.get(violation, 0o440)
+    info = SimpleNamespace(st_uid=0, st_gid=0, st_mode=stat.S_IFREG | mode)
+    assert _systemd_private_acl(42, info, parent) is (violation is None)
 
 
 def write(path, value):

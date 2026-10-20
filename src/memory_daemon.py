@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import struct
 import sys
 
 
@@ -23,6 +24,35 @@ _BACKUP = frozenset({"ENHANCED_MEMORY_DATABASE_URL", "ENHANCED_BACKUP_SIGNING_KE
 BACKUP_DIRECTORY = "/var/backups/enhanced-cognee"
 
 
+def _systemd_private_acl(fd: int, info, parent: Path) -> bool:
+    """Admit systemd's root-owned, read-only, service-UID ACL credential mount."""
+    try:
+        directory = parent.stat()
+        root = parent.parent.stat()
+        if (parent.parent != Path("/run/credentials")
+                or not parent.name.endswith(".service")
+                or info.st_uid != 0 or info.st_gid != 0
+                or stat.S_IMODE(info.st_mode) != 0o440
+                or directory.st_uid != 0 or directory.st_gid != 0
+                or stat.S_IMODE(directory.st_mode) != 0o550
+                or root.st_uid != 0 or root.st_mode & 0o022
+                or not os.statvfs(parent).f_flag & os.ST_RDONLY):
+            return False
+
+        def acl(permission):
+            entries = ((1, permission, 0xFFFFFFFF), (2, permission, os.geteuid()),
+                       (4, 0, 0xFFFFFFFF), (16, permission, 0xFFFFFFFF),
+                       (32, 0, 0xFFFFFFFF))
+            return struct.pack("<I", 2) + b"".join(struct.pack("<HHI", *entry) for entry in entries)
+
+        # The mode's group read bit is the ACL mask, not a grant to the root
+        # group. Refuse extra users/groups or any write/other access.
+        return (os.getxattr(fd, "system.posix_acl_access") == acl(4)
+                and os.getxattr(parent, "system.posix_acl_access") == acl(5))
+    except (OSError, AttributeError, struct.error):
+        return False
+
+
 def credential_environment(role: str, directory: str) -> dict[str, str]:
     if role not in {"api", "worker", "backup"}:
         raise ValueError("Choose a supported service role")
@@ -32,8 +62,9 @@ def credential_environment(role: str, directory: str) -> dict[str, str]:
     fd = os.open(parent / (role + ".json"), os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK)
     with os.fdopen(fd, "rb") as handle:
         info = os.fstat(handle.fileno())
-        if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077 or info.st_uid != os.geteuid():
-            raise ValueError("Service credential must be a private regular file owned by this service")
+        owned_private = info.st_uid == os.geteuid() and not info.st_mode & 0o077
+        if not stat.S_ISREG(info.st_mode) or not (owned_private or _systemd_private_acl(handle.fileno(), info, parent)):
+            raise ValueError("Service credential must be a private regular file with verified service access")
         raw = handle.read(65537)
     if len(raw) > 65536:
         raise ValueError("Service credential exceeded its size limit")
