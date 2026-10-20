@@ -39,12 +39,14 @@ jobs:
       - name: Install locked memory-service dependencies
         run: |
           python -m pip install --require-hashes -r requirements-build.lock
-          python -m pip install --require-hashes -r requirements-memory.lock
+          python -m pip install --require-hashes -r requirements-index.lock
+          python -m pip install --require-hashes -r requirements-memory-mcp.lock
           python -m pip install pytest==9.1.1 pytest-asyncio==1.4.0 pip-audit==2.9.0
       - name: Audit locked service dependencies
         run: |
           pip-audit -r requirements-build.lock --require-hashes --disable-pip
-          pip-audit -r requirements-memory.lock --require-hashes --disable-pip
+          pip-audit -r requirements-index.lock --require-hashes --disable-pip
+          pip-audit -r requirements-memory-mcp.lock --require-hashes --disable-pip
       - name: Prepare free local search model
         run: |
           python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/bge-small-en-v1.5', cache_dir='/tmp/cognee-model-cache', threads=2)"

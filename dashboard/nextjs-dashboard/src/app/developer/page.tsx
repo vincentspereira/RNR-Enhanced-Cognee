@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/atoms";
 import { Button } from "@/components/atoms";
 import { Input } from "@/components/atoms";
 import { useSSE } from "@/lib/hooks/useSSE";
+import { apiClient } from "@/lib/api/client";
 import {
   ExternalLink,
   Play,
@@ -42,15 +43,15 @@ export default function DeveloperPage() {
     setRequestError(null);
     setResponse(null);
     try {
-      const res = await fetch(url);
-      const text = await res.text();
+      const res = await apiClient.get(path, { responseType: "text", validateStatus: () => true });
+      const text = res.data as string;
       try {
         const json = JSON.parse(text);
         setResponse(JSON.stringify(json, null, 2));
       } catch {
         setResponse(text);
       }
-      if (!res.ok) {
+      if (res.status < 200 || res.status >= 300) {
         setRequestError(`HTTP ${res.status} ${res.statusText}`);
       }
     } catch (err) {

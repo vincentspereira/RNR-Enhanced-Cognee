@@ -451,6 +451,7 @@ _ROUTE_PERMISSIONS: Dict[Tuple[str, str], Permission] = {
     ("GET", "/mcp/list_agents"): Permission.MEMORY_READ,
     ("GET", "/stats"): Permission.SYSTEM_MONITOR,
     ("POST", "/v1/memories/recall"): Permission.MEMORY_READ,
+    ("POST", "/v1/memories/connections"): Permission.MEMORY_READ,
 }
 
 
@@ -477,6 +478,8 @@ def route_required_permission(method: str, path: str) -> Optional[Permission]:
     if method.upper() == "POST" and path.startswith("/tools/"):
         tool_name = path[len("/tools/"):].strip("/")
         return tool_required_permission(tool_name)
+    if method.upper() == "POST" and path.startswith("/mcp/"):
+        return tool_required_permission(path[len("/mcp/"):].strip("/"))
     lowered = path.lower()
     if method.upper() == "DELETE" or "delete" in lowered:
         return Permission.MEMORY_DELETE
@@ -613,6 +616,8 @@ TOOL_PERMISSIONS: Dict[str, Permission] = {
 
 
 def tool_required_permission(tool_name: str) -> Optional[Permission]:
+    from src.security.tool_policy import policy_for
+    policy_for(tool_name)
     try:
         return TOOL_PERMISSIONS[tool_name]
     except KeyError as exc:

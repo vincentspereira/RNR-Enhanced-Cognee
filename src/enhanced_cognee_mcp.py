@@ -39,6 +39,8 @@ logger = logging.getLogger(__name__)
 # Configuration from environment
 class EnhancedConfig:
     def __init__(self):
+        from src.canonical_adapters import canonical_mode
+        self.canonical_mode = canonical_mode()
         # Default to enabled. Set ENHANCED_COGNEE_MODE=false only when you
         # want to import the module without bringing up DB connections
         # (e.g. for unit tests that mock the storage layer entirely).
@@ -49,7 +51,7 @@ class EnhancedConfig:
         self.postgres_port = int(os.getenv("POSTGRES_PORT", "25432"))  # Enhanced port
         self.postgres_db = os.getenv("POSTGRES_DB", "cognee_db")
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
-        self.postgres_password = require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
+        self.postgres_password = "" if self.canonical_mode else require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
 
         self.qdrant_host = os.getenv("QDRANT_HOST", "localhost")
         self.qdrant_port = int(os.getenv("QDRANT_PORT", "26333"))  # Enhanced port
@@ -58,7 +60,7 @@ class EnhancedConfig:
 
         self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:27687")  # Enhanced port
         self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-        self.neo4j_password = require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
+        self.neo4j_password = "" if self.canonical_mode else require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
         self.neo4j_database = os.getenv("NEO4J_DATABASE", "neo4j")
 
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
@@ -1459,6 +1461,11 @@ class EnhancedCogneeMCPServer:
 # include_router wrapper silently dropped all middleware).
 server = EnhancedCogneeMCPServer()
 app = server.app
+if config.canonical_mode:
+    # The historical import path remains usable, but its published app and
+    # lifecycle use the canonical service exclusively. No legacy DB startup.
+    from src.memory_api import app as canonical_app
+    app = canonical_app
 
 if __name__ == "__main__":
     import uvicorn

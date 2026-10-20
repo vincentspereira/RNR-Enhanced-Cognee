@@ -293,7 +293,7 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["cognee", "distributed", "src", "bin"]
+packages = ["cognee", "distributed", "src", "bin", "sdk_pkg/enhanced_cognee_client"]
 
 [tool.ruff]
 line-length = 100

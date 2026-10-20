@@ -81,9 +81,15 @@ of working storage, semantic recall or graph reasoning.
 
 ## Behavior - selected capture policy
 
-The provider offers seven tools: `enhanced_recall`, `enhanced_remember`,
+The newer provider offers eight tools: `enhanced_recall`, `enhanced_remember`,
 `enhanced_get`, `enhanced_correct`, `enhanced_retract`, `enhanced_status`, and
-`enhanced_clarify`.
+`enhanced_clarify`, plus `enhanced_connections` for source-linked graph claims.
+The latter requires a configured, ready index worker. Remember/correct can include
+optional `knowledge_links` grounded in character spans of their summary content;
+these remain unverified claims. The newer eight-tool update requires GitHub-only
+delivery and installed-host requalification; earlier live seven-tool evidence
+does not establish that it is already installed. See
+[the canonical memory/index runbook](../../docs/runbooks/CANONICAL-MEMORY-AND-INDEXES.md).
 Only the primary agent writes. Remember requests require a retry key; use the
 same key after a timeout, because a timed-out request may already have committed.
 Corrections and retractions require the current version to prevent lost updates.

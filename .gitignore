@@ -344,3 +344,7 @@ docs/reports/audits/2026-10-19-hermes-security/OWNER-DECISIONS-2026-10-20.md
 
 # Preserve detailed owner annotations locally
 docs/reports/audits/2026-10-19-hermes-security/OWNER-ANNOTATED-PLAN-*.md
+# Reviewed invented-data evidence; private runtime logs remain ignored.
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-qualification.log
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-graph-recovery.log
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-browser.log

@@ -25,8 +25,30 @@ class SecurityBoundary:
     def __init__(self, app, *, dashboard: bool = False):
         self.app = app
         self.dashboard = dashboard
+        self._active = 0
+        try:
+            self._capacity = int(os.getenv("ENHANCED_MAX_CONCURRENT_REQUESTS", "32"))
+            if not 1 <= self._capacity <= 256:
+                raise ValueError
+        except ValueError as exc:
+            raise ValueError("Concurrent request capacity must be between 1 and 256") from exc
 
     async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope.get("path") == "/health/live":
+            await self.app(scope, receive, send)
+            return
+        # No await between admission check/increment: requests on this ASGI
+        # loop cannot create an unbounded queue of waiting embedding jobs.
+        if self._active >= self._capacity:
+            await JSONResponse({"detail": "Service busy; retry the same request identity"}, status_code=503)(scope, receive, send)
+            return
+        self._active += 1
+        try:
+            await self._handle(scope, receive, send)
+        finally:
+            self._active -= 1
+
+    async def _handle(self, scope, receive, send):
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -40,7 +62,10 @@ class SecurityBoundary:
             return
         try:
             principal = authenticate_request(headers)
-            if principal.claims.get("project_id") and not (path == "/v1/memories" or path.startswith("/v1/memories/")):
+            canonical = bool(getattr(getattr(scope.get("app"), "state", None), "canonical_memory", False))
+            compatible = canonical and (path.startswith(("/api/", "/tools/", "/mcp/"))
+                                         or path in {"/stats", "/memory/add", "/memory/search"})
+            if principal.claims.get("project_id") and not (path == "/v1/memories" or path.startswith("/v1/memories/") or compatible):
                 raise AuthError(403, "Project credentials are restricted to the project-memory API.")
             permission = route_required_permission(scope["method"], path)
             authorize(principal, permission)

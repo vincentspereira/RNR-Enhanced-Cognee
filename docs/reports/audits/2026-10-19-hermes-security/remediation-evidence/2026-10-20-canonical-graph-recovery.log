@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+RNR Enhanced Cognee Test Suite
+Coverage Target: 98%
+Test Requirements: 100% success, 0 warnings, 0 skipped
+rootdir: /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee
+configfile: pytest.ini
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/qualification/test_default_index_stack.py .                        [100%]
+
+----------- generated xml file: /tmp/rnr-20261020-index-recovery.xml -----------
+============================== 1 passed in 3.06s ===============================

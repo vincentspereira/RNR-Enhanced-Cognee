@@ -19,7 +19,7 @@ const memorySchema = z.object({
     .string()
     .min(1, "Content is required")
     .max(10000, "Content must be less than 10,000 characters"),
-  agent_id: z.string().min(1, "Agent ID is required"),
+  agent_id: z.string().optional(),
   memory_type: z.string().optional(),
   memory_concept: z.string().optional(),
   before_state: z.string().optional(),
@@ -117,7 +117,9 @@ export function EditMemoryModal({
 
   const onSubmit = async (data: MemoryFormData) => {
     try {
+      if (!memory) throw new Error("Reload this memory before editing.");
       await updateMemory(memoryId, {
+        expected_version: memory.version,
         content: data.content,
         memory_type: data.memory_type,
         memory_concept: data.memory_concept,
@@ -294,18 +296,11 @@ export function EditMemoryModal({
                 >
                   Memory Type
                 </label>
-                <select
-                  id="memory_type"
-                  {...register("memory_type")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select type...</option>
-                  {MEMORY_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </option>
-                  ))}
-                </select>
+                <Input id="memory_type" {...register("memory_type")} list="memory-category-suggestions"
+                placeholder="Any project category (default: general)" />
+              <datalist id="memory-category-suggestions">
+                {MEMORY_TYPES.map((type) => <option key={type} value={type} />)}
+              </datalist>
               </div>
 
               {/* Memory Concept */}
@@ -336,7 +331,7 @@ export function EditMemoryModal({
               <button
                 type="button"
                 onClick={handleAutoCategorize}
-                disabled={isAutoCategorizing || !content}
+                disabled title="Automatic categorization is not configured"
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isAutoCategorizing ? (
@@ -357,7 +352,7 @@ export function EditMemoryModal({
                 Agent ID <span className="text-red-500">*</span>
               </label>
               <Input
-                id="agent_id"
+                id="agent_id" disabled
                 {...register("agent_id")}
                 error={errors.agent_id?.message}
                 aria-invalid={errors.agent_id ? "true" : "false"}

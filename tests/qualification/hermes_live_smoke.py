@@ -30,7 +30,7 @@ def main():
         status = call("enhanced_status")
         assert status["ready"] and status["capture"] == "selected" and status["retrieval"] == "semantic"
         checks.append("real_provider_semantic_status")
-        assert len(provider.get_tool_schemas()) == 7
+        assert len(provider.get_tool_schemas()) == 8
         checks.append("actual_hermes_abc_and_loader")
         provider.on_turn_start(1, "The invented project uses seven-day review cycles.")
         key = "live-" + uuid.uuid4().hex

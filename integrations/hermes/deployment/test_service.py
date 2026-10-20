@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import shutil
 import sys
+import uuid
 from urllib.parse import quote
 from urllib.parse import urlsplit
 
@@ -37,7 +38,7 @@ def root_path(value):
 
 async def provision(root):
     import asyncpg
-    from src.memory_admin import create_config, grant_runtime, issue_token
+    from src.memory_admin import create_config, grant_runtime, upgrade_runtime, issue_token
     from src.memory_service import MemoryService
 
     secret_dir = root / "secrets"
@@ -64,6 +65,8 @@ async def provision(root):
         runtime_path = secret_dir / "runtime.json"
         if not runtime_path.exists():
             await grant_runtime(pool, role="hermes_memory_runtime", operator_url=prefix + "cognee_hermes_test", output=str(runtime_path))
+        else:
+            await upgrade_runtime(pool, role="hermes_memory_runtime")
         private_json(runtime_path)
     finally:
         await pool.close()
@@ -184,9 +187,62 @@ def local_model(model):
         yaml.safe_dump(config, handle, sort_keys=False, allow_unicode=False)
 
 
+def upgrade_plugin(root):
+    """Archive before updating only the installed synthetic provider's files."""
+    profile = Path.home() / ".hermes/profiles/enhanced-cognee-test"
+    plugin = profile / "plugins/enhanced_cognee"
+    if profile != profile.resolve(strict=True) or plugin != plugin.resolve(strict=True):
+        raise ValueError("Use the installed dedicated test profile without symlinks")
+    if not (profile / "enhanced-cognee-qualification.json").is_file():
+        raise ValueError("Install and qualify the synthetic profile first")
+    source = REPO / "integrations/hermes/enhanced_cognee"
+    files = [p for p in source.iterdir() if p.is_file() and p.suffix != ".pyc"]
+    if any(p.is_symlink() or (plugin / p.name).is_symlink() for p in files):
+        raise ValueError("Provider files must not be symlinks")
+    archive = profile / ("provider-before-upgrade-" + uuid.uuid4().hex)
+    archive.mkdir(mode=0o700)
+    for item in files:
+        target = plugin / item.name
+        if target.exists():
+            shutil.copy2(target, archive / item.name)
+            os.chmod(archive / item.name, 0o600)
+        # Preserve all unrelated files and existing profile settings/tokens.
+        shutil.copy2(item, target)
+
+
+def renew_test_token(root):
+    """Operator-only renewal; signing material never enters the profile."""
+    from src.memory_admin import issue_token
+    profile = Path.home() / ".hermes/profiles/enhanced-cognee-test"
+    path = profile / ".env"
+    if profile != profile.resolve(strict=True) or path.is_symlink() or not (profile / "enhanced-cognee-qualification.json").is_file():
+        raise ValueError("Use the installed dedicated test profile")
+    old = path.read_text()
+    lines = old.splitlines(keepends=True)
+    matches = [i for i, line in enumerate(lines) if line.startswith("ENHANCED_COGNEE_ACCESS_TOKEN=")]
+    if len(matches) != 1:
+        raise ValueError("Expected exactly one installed synthetic profile token")
+    config = private_json(root / "secrets/service.json")
+    os.environ["ENHANCED_JWT_SECRET"] = config["ENHANCED_JWT_SECRET"]
+    output = root / ("secrets/profile-token-" + uuid.uuid4().hex + ".json")
+    issue_token(tenant="qualification", project="hermes_test", subject="hermes_test_operator",
+                agent="hermes_test", output=str(output), expires_hours=24)
+    backup = profile / ("env-before-token-renewal-" + uuid.uuid4().hex)
+    fd = os.open(backup, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "w") as handle:
+        handle.write(old)
+    lines[matches[0]] = "ENHANCED_COGNEE_ACCESS_TOKEN=" + private_json(output)["ENHANCED_COGNEE_ACCESS_TOKEN"] + "\n"
+    # Atomic replacement; the original is retained in the owner-only archive.
+    temporary = profile / ("env-renewal-" + uuid.uuid4().hex)
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "w") as handle:
+        handle.write("".join(lines))
+    os.replace(temporary, path)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("provision", "serve", "install", "local-model"))
+    parser.add_argument("command", choices=("provision", "serve", "install", "local-model", "upgrade-plugin", "renew-test-token"))
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--model")
     args = parser.parse_args()
@@ -198,6 +254,10 @@ def main():
             serve(root)
         elif args.command == "local-model":
             local_model(args.model)
+        elif args.command == "upgrade-plugin":
+            upgrade_plugin(root)
+        elif args.command == "renew-test-token":
+            renew_test_token(root)
         else:
             install(root)
     except Exception:

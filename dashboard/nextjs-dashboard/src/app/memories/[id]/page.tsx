@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, CardContent, Badge } from "@/components/atoms";
-import { MemoryDetailSkeleton } from "@/components/organisms";
+import { MemoryDetailSkeleton, EditMemoryModal } from "@/components/organisms";
 import {
   ArrowLeft,
   Edit,
@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { exportSingleMemoryAsMarkdown } from "@/lib/utils/export";
+import { getMemory, deleteMemory } from "@/lib/api/memories";
+import { queryKeys } from "@/lib/query/queryKeys";
 import { useToast } from "@/hooks/use-toast";
 
 export default function MemoryDetailPage() {
@@ -30,6 +32,7 @@ export default function MemoryDetailPage() {
   const memoryId = params.id as string;
 
   const [copiedId, setCopiedId] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   // Fetch memory detail
   const {
@@ -38,32 +41,21 @@ export default function MemoryDetailPage() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["memory", memoryId],
-    queryFn: async () => {
-      const response = await fetch(`/api/memories/${memoryId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch memory");
-      }
-      return response.json();
-    },
+    queryKey: queryKeys.memories.detail(memoryId),
+    queryFn: () => getMemory(memoryId),
     enabled: !!memoryId,
   });
 
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/memories/${memoryId}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Failed to delete memory");
-      }
-      return response.json();
+      if (!memory?.version) throw new Error("Reload this memory before retracting it.");
+      await deleteMemory(memoryId, memory.version);
     },
     onSuccess: () => {
       toast({
-        title: "Memory deleted",
-        description: "The memory has been deleted successfully.",
+        title: "Memory retracted",
+        description: "The memory is excluded from recall. Its encrypted history is preserved.",
         variant: "default",
       });
       router.push("/memories");
@@ -90,7 +82,7 @@ export default function MemoryDetailPage() {
 
   // Handle delete
   const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this memory? This action cannot be undone.")) {
+    if (confirm("Retract this memory from recall? Its history will be preserved.")) {
       deleteMutation.mutate();
     }
   };
@@ -98,7 +90,9 @@ export default function MemoryDetailPage() {
   // Handle export
   const handleExport = () => {
     if (memory) {
-      exportSingleMemoryAsMarkdown(memory);
+      exportSingleMemoryAsMarkdown({ ...memory, summary: memory.summary ?? undefined,
+        memory_type: memory.memory_type ?? undefined, memory_concept: memory.memory_concept ?? undefined,
+        char_count: memory.char_count ?? undefined, estimated_tokens: memory.estimated_tokens ?? undefined });
     }
   };
 
@@ -164,6 +158,7 @@ export default function MemoryDetailPage() {
 
   return (
     <div className="space-y-6">
+      <EditMemoryModal isOpen={editing} onClose={() => setEditing(false)} memoryId={memoryId} />
       {/* Breadcrumb Navigation */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <button
@@ -187,7 +182,7 @@ export default function MemoryDetailPage() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline" size="sm" onClick={() => router.push(`/memories/${memoryId}/edit`)}>
+          <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
             <Edit className="h-4 w-4 mr-2" />
             Edit
           </Button>
@@ -198,7 +193,7 @@ export default function MemoryDetailPage() {
             disabled={deleteMutation.isPending}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete
+            Retract
           </Button>
         </div>
       </div>

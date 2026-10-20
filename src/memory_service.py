@@ -22,6 +22,8 @@ from src.multi_tenant import validate_tenant_id
 from src.security.auth import Role
 from src.security.enterprise_auth import AuthError, Principal
 from src.security.memory_admission import require_no_credentials, contains_credentials, contains_private_details
+from src.index_contracts import INDEX_SCHEMA, validated_links
+from src.memory_queries import MemoryQueries
 
 
 class MemoryConflict(ValueError):
@@ -107,13 +109,14 @@ INSERT INTO shared_memory.memory_service_schema(version) VALUES(1) ON CONFLICT D
 """
 
 
-class MemoryService(LibraryAccess):
-    SCHEMA_VERSION = 2
+class MemoryService(LibraryAccess, MemoryQueries):
+    SCHEMA_VERSION = 3
     def __init__(self, pool, cipher: EncryptionManager, embedder=None, *, candidate_limit: int = 2000,
-                 candidate_budget_bytes: int = 16 * 1024 * 1024):
+                 candidate_budget_bytes: int = 16 * 1024 * 1024, derived=None):
         if not cipher._enabled:
             raise RuntimeError("The memory service requires authenticated encryption")
         self.pool, self.cipher, self.embedder = pool, cipher, embedder
+        self.derived = derived
         self.candidate_limit = candidate_limit
         if candidate_limit < 1 or candidate_budget_bytes < 1:
             raise ValueError("Recall candidate limits must be positive")
@@ -129,13 +132,14 @@ class MemoryService(LibraryAccess):
             async with conn.transaction():
                 await conn.execute("SELECT pg_advisory_xact_lock(hashtext('enhanced_cognee:memory_schema'))")
                 exists = await conn.fetchval("SELECT to_regclass('shared_memory.memory_service_schema')")
-                if exists and (await conn.fetchval("SELECT max(version) FROM shared_memory.memory_service_schema") or 0) > 2:
+                if exists and (await conn.fetchval("SELECT max(version) FROM shared_memory.memory_service_schema") or 0) > MemoryService.SCHEMA_VERSION:
                     raise RuntimeError("A newer memory schema requires its matching service release")
                 await conn.execute(SCHEMA)
                 await conn.execute(LIBRARY_SCHEMA)
+                await conn.execute(INDEX_SCHEMA)
                 await conn.execute("ALTER TABLE shared_memory.records ADD COLUMN IF NOT EXISTS fact_key TEXT")
                 await conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS records_fact_key ON shared_memory.records(tenant,project,fact_key) WHERE fact_key IS NOT NULL")
-                await conn.execute("INSERT INTO shared_memory.memory_service_schema(version) VALUES(2) ON CONFLICT DO NOTHING")
+                await conn.execute("INSERT INTO shared_memory.memory_service_schema(version) VALUES(3) ON CONFLICT DO NOTHING")
 
     async def check_schema(self) -> None:
         async with self.pool.acquire() as conn:
@@ -149,13 +153,18 @@ class MemoryService(LibraryAccess):
                 AND (expires_at IS NULL OR expires_at > now())""", scope.tenant, scope.project)
             pending = await conn.fetchval("""SELECT count(*) FROM shared_memory.record_outbox
                 WHERE tenant=$1 AND project=$2 AND processed_at IS NULL""", scope.tenant, scope.project)
-        return {"ready": True, "tenant_id": scope.tenant, "project_id": scope.project,
+        status = {"ready": True, "tenant_id": scope.tenant, "project_id": scope.project,
                 "subject": scope.subject, "active_records": count,
                 "pending_change_events": pending, "change_feed_worker": "unavailable",
                 "retrieval": "semantic" if self.embedder else "text",
                 "embedding_model": getattr(self.embedder, "model", None),
                 "graph": "unavailable", "encryption": "AES-256-GCM",
                 "encryption_key_id": getattr(self.cipher, "active", "legacy_unnamed"), "schema_version": self.SCHEMA_VERSION}
+        if self.derived is not None:
+            index = await self.derived.status(self, scope)
+            status.update(index=index, graph=index["graph"], change_feed_worker=index["worker_state"],
+                          pending_change_events=index["pending_change_events"])
+        return status
 
     async def admit_request(self, principal: Principal, per_minute: int) -> None:
         """Atomic shared budget per verified identity, bounded to one row per actor."""
@@ -204,7 +213,8 @@ class MemoryService(LibraryAccess):
     async def remember(self, scope: MemoryScope, content: str, *, idempotency_key: str,
                        category: str = "general", metadata: Optional[dict] = None,
                        expires_at: Optional[datetime] = None,
-                       evidence: Optional[dict] = None, fact_key: Optional[str] = None) -> dict:
+                       evidence: Optional[dict] = None, fact_key: Optional[str] = None,
+                       knowledge_links: Optional[list] = None) -> dict:
         self.admit(content)
         if not 1 <= len(idempotency_key) <= 200 or not 1 <= len(category) <= 100:
             raise ValueError("Invalid retry key or category length")
@@ -215,8 +225,9 @@ class MemoryService(LibraryAccess):
                 raise ValueError("Memory expiry must include a timezone")
             expires_at = expires_at.astimezone(timezone.utc)
         evidence = evidence_declaration(evidence)
+        links = validated_links(content, knowledge_links)
         self.admit(json.dumps(evidence, ensure_ascii=True, allow_nan=False))
-        if scope.selected_capture and contains_private_details(json.dumps([content, metadata, evidence], ensure_ascii=True)):
+        if scope.selected_capture and contains_private_details(json.dumps([content, metadata, evidence, links], ensure_ascii=True)):
             raise MemoryClarificationRequired("Please clarify a sanitized summary before automatic storage of private details")
         if fact_key is not None and (not isinstance(fact_key, str) or not re.fullmatch(r"[a-z][a-z0-9_.:-]{0,159}", fact_key)):
             raise ValueError("Fact keys must be bounded lowercase topic identifiers")
@@ -227,6 +238,8 @@ class MemoryService(LibraryAccess):
             request["evidence"] = evidence
         if fact_key:
             request["fact_key"] = fact_key
+        if links:
+            request["knowledge_links"] = links
         digest = hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest()
         embedding = await self.embedder.embed(content) if self.embedder else None
         payload = dict(request, provenance={"subject": scope.subject, "agent_id": scope.agent,
@@ -289,11 +302,14 @@ class MemoryService(LibraryAccess):
         if row is None:
             raise KeyError("Memory not found in this project")
         result = self._decode(row)
+        if scope.selected_capture and contains_private_details(json.dumps(result, ensure_ascii=True)):
+            raise MemoryClarificationRequired("This record needs a sanitized current summary before selected recall")
         return self.shared_view(result) if row["project"] != scope.project else result
 
     async def correct(self, scope: MemoryScope, record_id: str, *, expected_version: int,
                       content: Optional[str] = None, retract: bool = False,
-                      evidence: Optional[dict] = None) -> dict:
+                      evidence: Optional[dict] = None, knowledge_links: Optional[list] = None,
+                      metadata: Optional[dict] = None, category: Optional[str] = None) -> dict:
         if not retract:
             self.admit(content or "")
             if scope.selected_capture and contains_private_details(content or ""):
@@ -301,8 +317,18 @@ class MemoryService(LibraryAccess):
         replacement_evidence = evidence_declaration(evidence) if evidence is not None else None
         if replacement_evidence:
             self.admit(json.dumps(replacement_evidence, ensure_ascii=True, allow_nan=False))
+        if metadata is not None:
+            if not isinstance(metadata, dict):
+                raise ValueError("Memory metadata must be an object")
+            self.admit(json.dumps(metadata, ensure_ascii=True, allow_nan=False))
+        if category is not None and not 1 <= len(category) <= 100:
+            raise ValueError("Invalid category length")
         async with self.pool.acquire() as conn:
             async with conn.transaction():
+                # Workers take the same record lock before publishing a snapshot.
+                # A late delivery therefore cannot overwrite a newer correction.
+                await conn.execute("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+                                   "index:" + scope.tenant + ":" + scope.project + ":" + record_id)
                 row = await conn.fetchrow("""SELECT * FROM shared_memory.records
                     WHERE tenant=$1 AND project=$2 AND id=$3 FOR UPDATE""",
                     scope.tenant, scope.project, record_id)
@@ -315,7 +341,14 @@ class MemoryService(LibraryAccess):
                 payload = self._payload(row)
                 previous_hash = payload["provenance"]["content_sha256"]
                 if not retract:
+                    old_content = payload["content"]
                     payload["content"] = content
+                    payload["knowledge_links"] = validated_links(content, knowledge_links if knowledge_links is not None
+                        else payload.get("knowledge_links", []) if old_content == content else [])
+                    if metadata is not None:
+                        payload["metadata"] = metadata
+                    if category is not None:
+                        payload["category"] = category
                     payload["embedding"] = await self.embedder.embed(content) if self.embedder else None
                     payload["embedding_model"] = getattr(self.embedder, "model", None)
                     payload["provenance"]["content_sha256"] = hashlib.sha256(content.encode()).hexdigest()
@@ -325,6 +358,10 @@ class MemoryService(LibraryAccess):
                         "prior_evidence_version": row["version"],
                         "source_review_required": True,
                     }
+                    if scope.selected_capture and contains_private_details(json.dumps(
+                            [payload["content"], payload.get("metadata"), payload.get("category"),
+                             payload.get("knowledge_links"), payload["evidence"]], ensure_ascii=True)):
+                        raise MemoryClarificationRequired("Clarify a sanitized current record before storing private details")
                 payload["provenance"]["corrected_by"] = scope.subject
                 payload["provenance"]["corrected_at"] = datetime.now(timezone.utc).isoformat()
                 payload["provenance"]["supersedes_version"] = row["version"]
@@ -399,9 +436,14 @@ class MemoryService(LibraryAccess):
         words = set(re.findall(r"\w+", query.lower()))
         ranked = []
         modes = set()
+        index_scores, index_state = {}, "unconfigured"
+        if vector and self.derived is not None:
+            index_scores, index_state = await self.derived.vector_scores(scope, vector, rows, limit)
         for row in rows:
             raw = self._payload(row)
             if contains_credentials(json.dumps(raw, ensure_ascii=True)):
+                continue
+            if scope.selected_capture and contains_private_details(json.dumps(raw, ensure_ascii=True)):
                 continue
             stored = raw.get("embedding")
             if vector and stored and raw.get("embedding_model") == self.embedder.model:
@@ -409,6 +451,9 @@ class MemoryService(LibraryAccess):
                     raise RuntimeError("Embedding dimensions differ; reindex before semantic recall")
                 denom = math.sqrt(sum(x*x for x in vector) * sum(x*x for x in stored))
                 score = sum(a*b for a,b in zip(vector, stored))/denom if denom else 0
+                # Fresh authorized hits use the configured vector index. Missing
+                # or delayed projections retain their current canonical score.
+                score = index_scores.get(row["id"], score)
                 mode = "semantic"
             else:
                 tokens = set(re.findall(r"\w+", raw["content"].lower()))
@@ -438,5 +483,13 @@ class MemoryService(LibraryAccess):
             response_bytes += size
             selected.append(result)
         return {"results": selected, "retrieval": retrieval,
+                "vector_index": index_state,
                 "response_limit_reached": response_limited,
                 "candidate_limit_reached": truncated, "instructions_are_data": True}
+
+    async def connections(self, scope, entity, *, depth=2, limit=10, include_shared=True):
+        if self.derived is None:
+            raise AuthError(503, "A source-linked graph index is not configured")
+        async with asyncio.timeout(10):
+            return await self.derived.connections(self, scope, entity, depth=depth, limit=limit,
+                                                  include_shared=include_shared)

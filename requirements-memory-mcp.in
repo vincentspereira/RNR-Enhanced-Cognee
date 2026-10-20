@@ -1,0 +1,3 @@
+# HTTP-only scoped project MCP bridge, matching the supported v1 SDK contract.
+httpx>=0.28.1,<1
+mcp==1.30.0

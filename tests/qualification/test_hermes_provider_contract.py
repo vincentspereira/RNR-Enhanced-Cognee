@@ -85,7 +85,7 @@ def test_subagents_cannot_write_or_widen_scope(provider_module):
     provider._client.request = lambda *a: pytest.fail("Forbidden write reached HTTP")
     assert "error" in json.loads(provider.handle_tool_call("enhanced_remember", {"content": "x", "idempotency_key": "x"}))
     assert "error" in json.loads(provider.handle_tool_call("share_memory", {}))
-    assert len(provider.get_tool_schemas()) == 7
+    assert len(provider.get_tool_schemas()) == 8
 
 
 def test_source_declarations_reach_the_service_without_authority_fields(provider_module):

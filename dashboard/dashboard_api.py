@@ -44,7 +44,8 @@ logging.basicConfig(level=logging.INFO)
 try:
     from dotenv import load_dotenv
 
-    load_dotenv()
+    if os.getenv("ENHANCED_LOAD_DOTENV", "0") == "1":
+        load_dotenv()
 except ImportError:  # python-dotenv is optional outside Docker
     pass
 
@@ -1860,6 +1861,12 @@ async def dashboard_root():
     </html>
     """
     return HTMLResponse(content=html_content)
+
+
+from src.canonical_adapters import canonical_mode
+if canonical_mode():
+    from src.memory_api import app as canonical_app
+    app = canonical_app
 
 
 if __name__ == "__main__":

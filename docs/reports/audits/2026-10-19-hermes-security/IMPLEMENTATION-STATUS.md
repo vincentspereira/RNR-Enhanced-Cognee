@@ -1,5 +1,11 @@
 # Remediation implementation status
 
+Latest continuation: [canonical stack update, 20 October 2026](CANONICAL-STACK-UPDATE-2026-10-20.md).
+That report records schema 3, implemented default-stack workers, canonical
+adapters, real cross-language/MCP/browser tests and the exact remaining work.
+The earlier checkpoints below are historical; the new report supersedes statements
+that the graph worker or live Hermes installation is entirely absent.
+
 Latest continuation: [20 October implementation update](IMPLEMENTATION-UPDATE-2026-10-20.md).
 Owner decisions have been received. Selected automatic capture, reviewed library
 groups, schema/runtime permission separation and encrypted backup tooling are now

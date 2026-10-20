@@ -31,6 +31,7 @@ def create_config(path: str) -> None:
     write_private_json(path, {"ENCRYPTION_MASTER_KEY": base64.urlsafe_b64encode(secrets.token_bytes(32)).decode(),
                              "ENHANCED_JWT_SECRET": secrets.token_urlsafe(48),
                              "ENHANCED_BACKUP_SIGNING_KEY": secrets.token_urlsafe(48),
+                             "ENHANCED_INDEX_KEY": secrets.token_urlsafe(48),
                              "ENHANCED_BACKUP_SIGNING_KEY_ID": "backup_v1",
                              "ENHANCED_ENV": "production", "ENHANCED_REQUIRE_TENANT": "1"})
 
@@ -81,8 +82,48 @@ async def grant_runtime(pool, *, role: str, operator_url: str, output: str) -> N
             for table in ("record_shares", "library_members", "library_publications"):
                 await conn.execute(f"GRANT DELETE ON shared_memory.{table} TO {role}")
             await conn.execute(f"GRANT SELECT ON shared_memory.memory_service_schema TO {role}")
+            for table in ("index_deliveries", "index_receipts", "index_workers"):
+                await conn.execute(f"GRANT SELECT ON shared_memory.{table} TO {role}")
             for sequence in ("record_outbox_id_seq", "record_audit_id_seq"):
                 await conn.execute(f"GRANT USAGE ON SEQUENCE shared_memory.{sequence} TO {role}")
+
+
+async def grant_worker(pool, *, role: str, operator_url: str, output: str) -> None:
+    """Separate worker: canonical reads, durable delivery writes, no memory edits."""
+    validate_tenant_id(role)
+    parsed = urlsplit(operator_url)
+    if parsed.scheme not in {"postgres", "postgresql"} or not parsed.hostname:
+        raise ValueError("Use an explicit PostgreSQL operator URL")
+    password = secrets.token_urlsafe(48)
+    host = parsed.netloc.rsplit("@", 1)[-1]
+    options = urlencode([(k, v) for k, v in parse_qsl(parsed.query) if k in {"sslmode", "sslrootcert"}])
+    url = urlunsplit((parsed.scheme, role + ":" + password + "@" + host, parsed.path, options, ""))
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            if await conn.fetchval("SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=$1)", role):
+                raise ValueError("Worker role already exists; credentials were not changed")
+            write_private_json(output, {"ENHANCED_INDEX_DATABASE_URL": url})
+            await conn.execute(f"CREATE ROLE {role} LOGIN PASSWORD '{password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT")
+            await conn.execute(f"GRANT USAGE ON SCHEMA shared_memory TO {role}")
+            for table in ("records", "record_outbox", "memory_service_schema"):
+                await conn.execute(f"GRANT SELECT ON shared_memory.{table} TO {role}")
+            for table in ("index_deliveries", "index_receipts", "index_workers"):
+                await conn.execute(f"GRANT SELECT,INSERT,UPDATE ON shared_memory.{table} TO {role}")
+            await conn.execute(f"GRANT INSERT ON shared_memory.record_outbox TO {role}")
+            await conn.execute(f"GRANT UPDATE(processed_at) ON shared_memory.record_outbox TO {role}")
+            await conn.execute(f"GRANT USAGE ON SEQUENCE shared_memory.record_outbox_id_seq TO {role}")
+
+
+async def upgrade_runtime(pool, *, role: str) -> None:
+    """Add schema-3 read grants without replacing a password/recovery file."""
+    validate_tenant_id(role)
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            exists = await conn.fetchval("SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=$1)", role)
+            if not exists:
+                raise ValueError("Provision the runtime role first")
+            for table in ("index_deliveries", "index_receipts", "index_workers"):
+                await conn.execute(f"GRANT SELECT ON shared_memory.{table} TO {role}")
 
 
 async def _database(args):
@@ -92,6 +133,10 @@ async def _database(args):
     try:
         if args.command == "init-schema":
             await MemoryService.provision(pool)
+        elif args.command == "grant-worker":
+            await grant_worker(pool, role=args.role, operator_url=url, output=args.output)
+        elif args.command == "upgrade-runtime":
+            await upgrade_runtime(pool, role=args.role)
         else:
             await grant_runtime(pool, role=args.role, operator_url=url, output=args.output)
     finally:
@@ -112,10 +157,19 @@ def main():
     role = sub.add_parser("grant-runtime")
     role.add_argument("--role", required=True)
     role.add_argument("--output", required=True)
+    worker = sub.add_parser("grant-worker")
+    worker.add_argument("--role", required=True)
+    worker.add_argument("--output", required=True)
+    upgrade = sub.add_parser("upgrade-runtime")
+    upgrade.add_argument("--role", required=True)
+    index_key = sub.add_parser("create-index-key")
+    index_key.add_argument("--output", required=True)
     args = parser.parse_args()
     try:
         if args.command == "create-config":
             create_config(args.output)
+        elif args.command == "create-index-key":
+            write_private_json(args.output, {"ENHANCED_INDEX_KEY": secrets.token_urlsafe(48)})
         elif args.command == "issue-token":
             issue_token(**{key: value for key, value in vars(args).items() if key != "command"})
         else:

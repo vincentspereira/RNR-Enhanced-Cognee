@@ -1,0 +1,121 @@
+name: Canonical memory stack qualification
+
+on:
+  push:
+    branches: [codex/hermes-memory-hardening]
+    paths:
+      - 'src/**'
+      - 'tests/qualification/**'
+      - 'requirements*.lock'
+      - 'docker/Dockerfile.memory'
+      - '.github/workflows/canonical-memory-stack.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  default-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: synthetic-default-stack-only
+          POSTGRES_DB: qualification
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 5s --health-retries 12
+      qdrant:
+        image: qdrant/qdrant:v1.18.3
+        env:
+          QDRANT__TELEMETRY_DISABLED: 'true'
+        ports: ["6333:6333"]
+      graph:
+        image: arcadedata/arcadedb:26.9.1
+        env:
+          JAVA_OPTS: >-
+            -Darcadedb.server.rootPassword=synthetic-default-graph-only
+            -Darcadedb.server.httpIncomingHost=0.0.0.0
+            -Darcadedb.server.plugins=
+            -Darcadedb.serverMetrics=false
+        ports: ["2480:2480"]
+      cache:
+        image: valkey/valkey:7.2.13
+        ports: ["6379:6379"]
+    env:
+      RNR_QUALIFICATION_DATABASE_URL: postgresql://postgres:synthetic-default-stack-only@127.0.0.1:5432/qualification
+      RNR_QUALIFICATION_MODEL_CACHE: ${{ runner.temp }}/memory-model
+      RNR_QUALIFICATION_INDEX_SETTINGS: ${{ runner.temp }}/memory-index.json
+      COGNEE_TELEMETRY_ENABLED: '0'
+      COGNEE_LOG_FILE: 'false'
+      ENHANCED_LOAD_DOTENV: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install hashed service and bridge dependencies
+        run: |
+          pip install --require-hashes -r requirements-build.lock
+          pip install --require-hashes -r requirements-index.lock
+          pip install --require-hashes -r requirements-memory-mcp.lock
+          pip install 'pytest>=9,<10' 'pytest-asyncio>=1,<2'
+      - name: Build and verify the small native distribution
+        run: |
+          python - <<'PY'
+          import glob, os, pathlib, subprocess, sys
+          output = pathlib.Path(os.environ['RUNNER_TEMP']) / 'native-memory-wheel'
+          subprocess.run([sys.executable, '-m', 'hatchling', 'build', '-t', 'wheel', '-d', str(output)], cwd='packaging/memory', check=True)
+          wheel = glob.glob(str(output / '*.whl'))[0]
+          subprocess.run([sys.executable, 'tests/qualification/check_wheel_boundary.py', wheel], check=True)
+          subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps', wheel], check=True)
+          subprocess.run([sys.executable, '-m', 'pip', 'check'], check=True)
+          subprocess.run([sys.executable, '-c', 'import src.memory_api, src.index_runtime, bin.project_memory_mcp; from enhanced_cognee_client import ProjectMemoryClient'], cwd=os.environ['RUNNER_TEMP'], check=True)
+          PY
+      - name: Prepare public local search model and disposable settings
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, time, urllib.request
+          from fastembed import TextEmbedding
+          # Explicit operator preparation; runtime model downloads remain off.
+          TextEmbedding("BAAI/bge-small-en-v1.5", cache_dir=os.environ["RNR_QUALIFICATION_MODEL_CACHE"], threads=2)
+          for port in (6333, 2480):
+              for attempt in range(60):
+                  try:
+                      with urllib.request.urlopen(f"http://127.0.0.1:{port}", timeout=2):
+                          break
+                  except urllib.error.HTTPError:
+                      break  # A protected HTTP response still proves a listener.
+                  except OSError:
+                      if attempt == 59: raise
+                      time.sleep(1)
+          pathlib.Path(os.environ["RNR_QUALIFICATION_INDEX_SETTINGS"]).write_text(json.dumps({
+              "qdrant_url": "http://127.0.0.1:6333", "arcade_url": "http://127.0.0.1:2480",
+              "arcade_user": "root", "arcade_password": "synthetic-default-graph-only",
+              "cache_url": "redis://127.0.0.1:6379/0"}))
+          PY
+      - name: Exercise real stores, interruption recovery, clients and source paths
+        env:
+          HF_HUB_OFFLINE: '1'
+        run: |
+          pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py -q --override-ini="addopts=" --junitxml=default-stack.xml
+      - name: Build restricted runtime image from the tested source
+        run: docker build -f docker/Dockerfile.memory -t canonical-memory:qualification .
+      - name: Scan exact built image and retain unsuppressed security results
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro -v "$PWD:/report" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --format json --output /report/image-security.json canonical-memory:qualification
+          # Functional success does not close the security gate. No ignore file.
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --severity HIGH,CRITICAL --exit-code 1 canonical-memory:qualification
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: canonical-memory-stack-evidence
+          path: |
+            default-stack.xml
+            image-security.json
+          retention-days: 14

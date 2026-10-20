@@ -117,6 +117,46 @@ export class EnhancedCogneeClient {
   }
 
   /** Add a memory entry. */
+  private async projectRequest(method: string, path: string, body?: unknown): Promise<Record<string, any>> {
+    if (!this.accessToken || this.apiKey || new URL(this.baseUrl).pathname !== "/") {
+      throw new Error("Canonical memory requires an explicit scoped bearer token and service origin");
+    }
+    try { return await this._request(method, "/v1/memories" + path, body); }
+    catch (error) {
+      const status = error instanceof EnhancedCogneeError ? error.status : 503;
+      let clarification = false;
+      if (error instanceof EnhancedCogneeError) {
+        try { clarification = JSON.parse(error.body).clarification_required === true; } catch { /* no source echo */ }
+      }
+      throw new EnhancedCogneeError("Memory request refused or unavailable; no success acknowledged", status,
+        JSON.stringify({ clarification_required: clarification, retry_same_identity: [408,429,500,502,503,504].includes(status) }));
+    }
+  }
+
+  /** Canonical project writes require a stable retry identity; scope comes from the signed token. */
+  async remember(content: string, idempotencyKey: string, declarations: Record<string, unknown> = {}) {
+    return this.projectRequest("POST", "", { ...declarations, content, idempotency_key: idempotencyKey });
+  }
+  async recall(query: string, limit = 5, includeShared = true) {
+    return this.projectRequest("POST", "/recall", { query, limit, include_shared: includeShared });
+  }
+  async getRecord(id: string) { return this.projectRequest("GET", "/" + encodeURIComponent(id)); }
+  async listRecords(limit = 50, offset = 0) {
+    return this.projectRequest("GET", `?limit=${limit}&offset=${offset}`);
+  }
+  async correctRecord(id: string, content: string, expectedVersion: number, declarations: Record<string, unknown> = {}) {
+    return this.projectRequest("PATCH", "/" + encodeURIComponent(id), { ...declarations, content, expected_version: expectedVersion });
+  }
+  async retractRecord(id: string, expectedVersion: number) {
+    return this.projectRequest("POST", "/" + encodeURIComponent(id) + "/retract", { expected_version: expectedVersion });
+  }
+  async recordHistory(id: string) { return this.projectRequest("GET", "/" + encodeURIComponent(id) + "/history"); }
+  async connections(entity: string, depth = 2, limit = 10) {
+    return this.projectRequest("POST", "/connections", { entity, depth, limit });
+  }
+  async memoryStatus() { return this.projectRequest("GET", "/status"); }
+
+  /** Legacy endpoint; use remember() for canonical memory. */
   async addMemory(entry: MemoryEntry): Promise<{ id: string }> {
     return this._post("/memory/add", this._snakeCase(entry));
   }

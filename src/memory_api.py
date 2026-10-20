@@ -6,14 +6,15 @@ from datetime import datetime
 from contextlib import asynccontextmanager
 from typing import Any, Optional
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from src.memory_keys import canonical_cipher_from_environment
 from src.memory_service import MemoryConflict, MemoryClarificationRequired, MemoryScope, MemoryService
 from src.memory_contracts import MemoryEvidence
+from src.index_contracts import KnowledgeLink
 from src.security.enterprise_auth import AuthError
 from src.security.http_boundary import SecurityBoundary
 
@@ -27,6 +28,7 @@ class RememberRequest(BaseModel):
     expires_at: Optional[datetime] = None
     evidence: Optional[MemoryEvidence] = None
     fact_key: Optional[str] = Field(default=None, pattern=r"^[a-z][a-z0-9_.:-]{0,159}$")
+    knowledge_links: list[KnowledgeLink] = Field(default_factory=list, max_length=16)
 
 
 class RecallRequest(BaseModel):
@@ -41,6 +43,17 @@ class CorrectionRequest(BaseModel):
     expected_version: int = Field(ge=1)
     content: str = Field(min_length=1, max_length=65536)
     evidence: Optional[MemoryEvidence] = None
+    knowledge_links: Optional[list[KnowledgeLink]] = Field(default=None, max_length=16)
+    metadata: Optional[dict[str, Any]] = None
+    category: Optional[str] = Field(default=None, min_length=1, max_length=100)
+
+
+class ConnectionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    entity: str = Field(min_length=1, max_length=160)
+    depth: int = Field(default=2, ge=1, le=3)
+    limit: int = Field(default=10, ge=1, le=20)
+    include_shared: bool = True
 
 
 class VersionRequest(BaseModel):
@@ -84,18 +97,40 @@ async def lifespan(app: FastAPI):
             from src.local_embeddings import LocalEmbeddings
             embedder = LocalEmbeddings(os.environ["ENHANCED_EMBEDDING_MODEL"],
                                        os.environ["ENHANCED_MODEL_CACHE"])
-        service = MemoryService(pool, cipher, embedder)
+        derived = None
+        if os.getenv("ENHANCED_INDEX_CONFIG"):
+            from src.index_runtime import configured_sinks
+            from src.recall_service import DerivedRecall
+            derived = DerivedRecall(configured_sinks())
+            if embedder is None or embedder.model != derived.sinks.model:
+                raise ValueError("Configured index recall requires the same prepared local embedding model")
+        service = MemoryService(pool, cipher, embedder, derived=derived)
         # Provisioning belongs to a separate operator, never runtime credentials.
         await service.check_schema()
         app.state.memory_service = service
         yield
     finally:
+        if 'derived' in locals() and derived is not None:
+            await derived.sinks.close()
         await pool.close()
 
 
 def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     app = FastAPI(title="Enhanced Cognee Project Memory", version="1.1.0", lifespan=lifespan)
     app.add_middleware(SecurityBoundary)
+    # Browser dashboards are separate processes. Admit only explicitly named
+    # origins, never a wildcard carrying a private project's token.
+    origins = [value.strip() for value in os.getenv("ENHANCED_DASHBOARD_ORIGINS", "").split(",") if value.strip()]
+    if origins:
+        from src.index_sinks import checked_origin
+        from fastapi.middleware.cors import CORSMiddleware
+        checked = [checked_origin(value) for value in origins]
+        if len(checked) > 8:
+            raise ValueError("Configure at most eight explicit dashboard origins")
+        app.add_middleware(CORSMiddleware, allow_origins=checked, allow_credentials=False,
+            allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Authorization", "Content-Type"],
+            expose_headers=["X-Next-Offset"])
+    app.state.canonical_memory = True
     if service is not None:
         app.state.memory_service = service
 
@@ -126,6 +161,7 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
         return JSONResponse({"detail": str(exc)}, status_code=422)
 
     @app.exception_handler(RequestValidationError)
+    @app.exception_handler(ValidationError)
     async def invalid_fields(request, exc):
         # Validation errors must not echo a submitted password or private field.
         return JSONResponse({"detail": "Invalid memory fields; check the API contract"}, status_code=422)
@@ -140,11 +176,13 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
         return {"status": "alive"}
 
     @app.get("/health/ready")
+    @app.get("/health")
     async def ready():
         try:
             await store().check_schema()
             return {"ready": True, "retrieval": "semantic" if store().embedder else "text",
-                    "encryption": "AES-256-GCM", "graph": "unavailable",
+                    "encryption": "AES-256-GCM", "graph": "configured" if store().derived else "unavailable",
+                    "index_readiness": "see_authenticated_status" if store().derived else "unconfigured",
                     "sharing": "reviewed_projects_and_libraries"}
         except Exception:
             return JSONResponse({"ready": False}, status_code=503)
@@ -156,6 +194,21 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     @app.post("/v1/memories/recall")
     async def recall(body: RecallRequest, request: Request):
         return await store().recall(scope(request), **body.model_dump())
+
+    @app.get("/v1/memories")
+    async def list_records(request: Request, limit: int = Query(50, ge=1, le=200),
+                           offset: int = Query(0, ge=0, le=100000), category: Optional[str] = None,
+                           agent: Optional[str] = None, include_shared: bool = True):
+        return await store().list_records(scope(request), limit=limit, offset=offset, category=category,
+                                          agent=agent, include_shared=include_shared)
+
+    @app.get("/v1/memories/agents")
+    async def agents(request: Request):
+        return await store().agents(scope(request))
+
+    @app.post("/v1/memories/connections")
+    async def connections(body: ConnectionRequest, request: Request):
+        return await store().connections(scope(request), **body.model_dump())
 
     @app.get("/v1/memories/status")
     async def status(request: Request):
@@ -173,6 +226,11 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     async def get(record_id: str, request: Request):
         return await store().get(scope(request), record_id)
 
+    @app.get("/v1/memories/{record_id}/history")
+    async def history(record_id: str, request: Request, limit: int = Query(50, ge=1, le=100),
+                      before_version: Optional[int] = Query(None, ge=1)):
+        return await store().history(scope(request), record_id, limit=limit, before_version=before_version)
+
     @app.patch("/v1/memories/{record_id}")
     async def correct(record_id: str, body: CorrectionRequest, request: Request):
         return await store().correct(scope(request), record_id, **body.model_dump())
@@ -185,6 +243,8 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     async def share(record_id: str, body: ShareRequest, request: Request):
         return await store().share(scope(request), record_id, **body.model_dump())
 
+    from src.canonical_adapters import adapter_router
+    app.include_router(adapter_router())
     return app
 
 
