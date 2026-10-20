@@ -4,6 +4,11 @@ Status: installed and under live qualification in the separate invented-data
 Hermes test profile. The everyday profile is unchanged. See the audit
 implementation tracker for current evidence and outstanding release checks.
 
+The [Ubuntu-Hermes deployment handoff](../../docs/runbooks/UBUNTU-HERMES-DEPLOYMENT-HANDOFF.md)
+provides the exact isolated checkout folder and a full Codex CLI/Hermes Desktop
+task prompt. Use that handoff for the current schema/index/provider deployment;
+older user-space test installation evidence does not establish private isolation.
+
 For multiple bot profiles, use the [fleet memory runbook](../../docs/runbooks/HERMES-BOT-FLEET-MEMORY.md).
 It describes one protected backend with per-profile private spaces/credentials,
 reviewed shared libraries, credential renewal requirements and deployment limits.

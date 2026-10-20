@@ -43,3 +43,11 @@ exact successful hosted image scan (all severities), its source/image identifier
 21 real-store checks, native runtime smoke and actual API/worker recovery logs.
 This supersedes the earlier restricted image's 44-HIGH gate result, not the
 larger legacy image or Ubuntu-Hermes private deployment qualification.
+
+
+Workspace continuation: `2026-10-20-workspace-*` records the 15-minute 42-space
+real-store fixture, measured per-component resources and retained-history growth,
+clean-checkout frontend/browser results, all-severity npm audits, fresh hosted
+4,293-unit results and the restricted image identity/scan summary. The backport
+workflow record distinguishes passing functional/Docker/security-backport steps
+from deliberately failing version-matched upstream development advisory gates.

@@ -1,5 +1,10 @@
 # Remediation implementation status
 
+Latest Workspace checkpoint: [completion and isolated deployment handoff](WORKSPACE-COMPLETION-2026-10-20.md).
+This supersedes earlier counts/status below: 4,293 unit tests with zero skips;
+clean frontend delivery, local advisory backport and measured 42-space load.
+Private installed-host/model/recovery/owner requirements remain open.
+
 Latest continuation: [canonical stack update, 20 October 2026](CANONICAL-STACK-UPDATE-2026-10-20.md).
 That report records schema 3, implemented default-stack workers, canonical
 adapters, real cross-language/MCP/browser tests and the exact remaining work.
@@ -41,7 +46,7 @@ See [the finding matrix](REMEDIATION-MATRIX.md) for each original finding,
 
 ## Verified checkpoints
 
-- Latest full unit lane: **4,290 passed, 0 failed, 0 skipped**, with real credential settings
+- Latest full unit lane: **4,293 passed, 0 failed, 0 skipped**, with real credential settings
   removed and outbound TCP denied. This uses the existing developer environment
   with compatible temporary pytest/MCP/dependency overlays; it is not the installed
   full-image unit suite.

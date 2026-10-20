@@ -4,6 +4,10 @@ Use one maintained codebase and signed project identities. Start in the isolated
 synthetic Hermes profile. This runbook prepares the service; it does not authorize
 mounts, Windows access, private-data migration, backup uploads or production use.
 
+For execution inside Ubuntu-Hermes, use the detailed
+[deployment handoff](UBUNTU-HERMES-DEPLOYMENT-HANDOFF.md), including the source
+checkout folder, already answered owner decisions and ordered verification tasks.
+
 ## What the stores contain
 
 PostgreSQL holds encrypted current records, retained versions, audit entries and

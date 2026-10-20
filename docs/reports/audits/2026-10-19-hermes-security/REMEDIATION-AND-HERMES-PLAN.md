@@ -15,7 +15,7 @@ The [latest canonical stack update](CANONICAL-STACK-UPDATE-2026-10-20.md)
 records implemented schema-3 index workers/adapters, 77 passing qualification
 checks, real graph rollback/rebuild and bounded load evidence, and a phase-by-phase list of
 remaining release, deployment, Hermes and owner-controlled requirements.
-The latest complete unit lane passes 4,290 tests with zero failures or skips;
+The latest complete unit lane passes 4,293 tests with zero failures or skips;
 42-space bot/profile tests and a fleet configuration runbook are also included.
 The hosted Required CI run is now fully passing, including 64 canonical checks
 with no skips. The restricted exact-image HIGH/CRITICAL gate now passes without suppression;
@@ -32,6 +32,14 @@ and named-key rotation. See [the key-rotation runbook](KEY-ROTATION.md). These c
 features do not record approval of private storage, recovery custody or activation;
 the dated implementation update records current policy and evidence separately
 from the original alternatives below.
+
+Additional Workspace implementation and checks are recorded in
+[the completion report](WORKSPACE-COMPLETION-2026-10-20.md), including corrected
+frontend delivery, a tested source backport, enforced upstream advisory findings
+and measured 42-space load. The [Ubuntu-Hermes handoff](../../../runbooks/UBUNTU-HERMES-DEPLOYMENT-HANDOFF.md)
+contains exact checkout/startup instructions and the complete implementation
+prompt for the remaining isolated host work. Windows-native backup checks and
+owner key/recovery custody cannot be certified by that host session.
 
 ## Recommended decision
 

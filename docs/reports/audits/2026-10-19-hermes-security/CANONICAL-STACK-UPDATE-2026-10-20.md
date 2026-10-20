@@ -6,7 +6,13 @@ supersedes earlier statements that graph workers and canonical transport
 consolidation were entirely unimplemented. Earlier evidence remains historical;
 an old image or installed plugin does not qualify a newer source revision.
 
-Latest restricted-image result: [hosted qualification 39387234569](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39387234569)
+Latest continuation: [Workspace completion and deployment handoff](WORKSPACE-COMPLETION-2026-10-20.md).
+That checkpoint records 4,293 zero-skip unit tests, clean frontend delivery/builds,
+a tested local braces source backport with version-matched findings still
+visible, 15-minute 42-space resource measurements and the exact Ubuntu-Hermes
+handoff. The earlier checkpoints below remain historical.
+
+Earlier restricted-image result: [hosted qualification 39387234569](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39387234569)
 is fully passing for runtime source `91a3c467f6af0d8b330536fb1fe9142dd4d06d79`.
 Its exact image
 `sha256:91de18171da94cbb0e72574236bbe36de60293279db1c3db8a0276e6c395de1d`
