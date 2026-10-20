@@ -342,6 +342,9 @@ installer/build/_pyinstaller/
 CLAUDE.md
 AGENTS.md
 
+# Publish only reviewed portable root guidance; personal/nested files stay local.
+!/AGENTS.md
+
 # Local owner instructions and private infrastructure context
 docs/reports/audits/2026-10-19-hermes-security/OWNER-DECISIONS-2026-10-20.md
 

@@ -81,6 +81,11 @@ deployment/code corrections. Keep the tested revision stable while installing.
 Read these files before changes:
 
 1. AGENTS.md and applicable parent/local instructions.
+   The delivery branch now includes a reviewed portable root AGENTS.md. First
+   complete docs/runbooks/AGENT-INSTRUCTION-SYNC.md to compare and update the
+   actual Hermes-local Claude/Codex instruction files, preserving their unique
+   guidance and originals. Workspace could not inspect those files directly.
+   Do not copy private Workspace global configuration or publish local archives.
 2. docs/reports/audits/2026-10-19-hermes-security/REMEDIATION-AND-HERMES-PLAN.md.
 3. The same report folder's CANONICAL-STACK-UPDATE-2026-10-20.md,
    WORKSPACE-COMPLETION-2026-10-20.md if present, REMEDIATION-MATRIX.md,

@@ -4,6 +4,10 @@ Date: 20 October 2026. This is an additional implementation checkpoint, not a
 claim that all phases or private/everyday activation are complete. Source changes
 are published on `codex/hermes-memory-hardening`; main remains unmerged.
 
+The later [instruction reconciliation](AGENT-INSTRUCTION-RECONCILIATION-2026-10-20.md)
+records the Claude/Codex comparison, preserved originals, portable root AGENTS.md
+delivery and the actual Hermes-local instruction checks still required.
+
 ## Completed from this Workspace session
 
 ### Source delivery and frontend behavior
