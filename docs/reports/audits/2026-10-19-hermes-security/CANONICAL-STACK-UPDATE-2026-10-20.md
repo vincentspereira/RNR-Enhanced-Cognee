@@ -59,8 +59,9 @@ an old image or installed plugin does not qualify a newer source revision.
   The larger root Cognee wheel still requires its full dependency set; minimal
   dependency import checks alone are not full-distribution qualification.
 - Required core CI coverage and a separate default-stack/image-security workflow.
-  The workflow retains unsuppressed findings and fails on high/critical matches.
-  Adding a workflow is not proof that its hosted run has passed.
+  The hosted workflow builds the API/worker image and tests both processes with
+  four real stores, worker restart/backlog recovery and fresh restricted database
+  roles. It retains unsuppressed findings and fails on high/critical matches.
 
 ## Evidence from the current local checks
 
@@ -79,6 +80,13 @@ an old image or installed plugin does not qualify a newer source revision.
   observed scope leaks/failures and no pending events at completion. Round p95
   was 700.21 ms. This bounded fixture exercise is not a long soak or a production
   capacity guarantee.
+- A subsequent five-minute four-project real-store exercise also passed (303.93
+  seconds including setup/teardown), repeatedly checking current versions,
+  semantic/graph results, scope denial and cleared indexing checkpoints. Its
+  passing-test XML did not retain per-round stdout, so no throughput or latency
+  figure is attributed to that run. A late Python-process sample recorded
+  710,068 kB peak resident memory; that excludes the four storage processes and
+  is not whole-stack resource qualification.
 - The dashboard production build passes type checks. The browser qualification
   exercises a real built frontend and service using invented data. It does not
   qualify historical graph/analytics/session screens or every browser/device.
@@ -94,6 +102,19 @@ an old image or installed plugin does not qualify a newer source revision.
   security gate failed: 44 HIGH package matches across eight advisories, zero
   CRITICAL and no fixed version listed in that scan. Findings were retained;
   no suppression was added. Newer source changes need their own hosted run.
+- Hosted run [39364795136](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39364795136)
+  qualifies source commit `6eb6114b2a98545d11394a5aa52e295c71d968da`:
+  18 selected real-store tests, clean distribution installation, exact runtime
+  image build and the actual API/worker image restart/recovery tests all pass.
+  Image `sha256:e648f11dc57b3db5a41e1acc2dae5e44cb14a48f12285b7e204a325c3db79cb5`
+  still fails the unsuppressed scan with 44 HIGH matches across eight advisories,
+  zero CRITICAL and no fixed versions listed. The overall workflow therefore
+  correctly remains failed. This is not evidence of installation in Hermes.
+- The refreshed complete dashboard dependency audit retains five HIGH findings
+  in its development ESLint/glob chain. The underlying
+  [braces advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) lists no
+  patched release as checked on 20 October. Production dependencies remain at
+  zero findings. No incompatible framework downgrade or scan suppression was made.
 
 Sanitized logs, XML and the policy inventory are in `remediation-evidence` with
 the `2026-10-20-canonical-` prefix. Fixture data and originals were retained. No
@@ -106,7 +127,7 @@ private owner replies, service keys or profile credentials are release artifacts
 | 0 - Preserve and baseline | Preservation and synthetic baselines established | Owner confirmation of exposed-key revocation and recovery custody |
 | 1 - Access control | Canonical boundaries, manifest, adapters, reviewer role and regression checks implemented; separate service-user assets prepared | Install/verify private service/operator OS separation and deployment-specific index credentials; broader legacy capabilities remain outside canonical admission |
 | 2 - Consistent memory and retrieval | Canonical memory, transport adapters and actual default-stack delivery/recovery implemented | Qualify the deployed configuration and any separately selected legacy/provider paths; no automatic bulk migration or permanent erasure |
-| 3 - Packaging and release | Small native artifact, locks and local checks pass; earlier exact hosted image build passes and scan findings are retained | Newest built API/worker image qualification, unresolved OS/development advisory gates and supported deployment configuration |
+| 3 - Packaging and release | Small native artifact, locks, local checks and latest built API/worker image recovery qualification pass; exact scan findings retained | Unresolved OS/development advisory gates and supported private deployment configuration |
 | 4 - Hermes provider | Earlier native provider installed and model-tested; newer eight-tool update implemented | GitHub-only delivery of this update, schema/grant upgrade, installed-host and model-driven requalification inside Ubuntu-Hermes |
 | 5 - Isolated qualification | Current 73-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
 

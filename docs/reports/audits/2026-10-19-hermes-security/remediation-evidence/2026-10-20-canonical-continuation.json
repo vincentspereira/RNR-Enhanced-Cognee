@@ -23,6 +23,28 @@
     "assets_prepared": true,
     "installed_in_Hermes": false
   },
-  "hosted_newest_images": "pending",
-  "merge": "not_ready"
+  "hosted_newest_images": {
+    "run_id": 39364795136,
+    "source_commit": "6eb6114b2a98545d11394a5aa52e295c71d968da",
+    "functional_checks": "passed",
+    "security_gate": "failed",
+    "high_matches": 44,
+    "critical_matches": 0
+  },
+  "merge": "not_ready",
+  "longer_bounded_workload": {
+    "requested_seconds": 300,
+    "test_seconds": 303.929,
+    "concurrent_projects": 4,
+    "result": "passed",
+    "stores": [
+      "PostgreSQL",
+      "Qdrant",
+      "ArcadeDB",
+      "Valkey"
+    ],
+    "test_assertions": "current-version semantic and graph recall, scope denial, no remaining events at each indexing checkpoint",
+    "per_round_metrics": "Passing-test stdout was not retained in this XML; do not invent latency or throughput",
+    "production_capacity_qualified": false
+  }
 }
