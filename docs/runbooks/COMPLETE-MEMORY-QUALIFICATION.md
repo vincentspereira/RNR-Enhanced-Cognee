@@ -61,8 +61,11 @@ Hermes checkout, `.venv-deployment/bin/python`):
 python tests/qualification/run_complete.py --artifacts /absolute/private/new-run
 ```
 
-The artifact directory must not already exist. It retains the log, JUnit XML,
-summary and fixtures. The exit status is nonzero for any failure, error or skip.
+The artifact directory must not already exist and must be outside the source
+checkout, including paths reached through symlinks. The runner creates it with
+owner-only access, disables dotenv loading and telemetry in its child process,
+and retains the log, JUnit XML, summary and fixtures. The exit status is nonzero
+for any failure, error, skip, missing report or invalid report.
 Only sanitized summaries should be published. Preserve failed runs as evidence.
 
 ## Model-driven capture is a separate check

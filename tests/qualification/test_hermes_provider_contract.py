@@ -222,3 +222,25 @@ def test_invalid_optional_graph_span_is_actionable_and_retry_preserves_identity(
     assert "error" not in json.loads(provider.handle_tool_call("enhanced_remember", body | {
         "idempotency_key": "new-linked-item", "knowledge_links": [valid]}))
     assert calls[-1][2]["knowledge_links"] == [valid]
+
+
+def test_explicit_capture_tools_do_not_instruct_automatic_saving_or_change_other_profiles(provider_module):
+    module, home = provider_module
+    (home / "enhanced_cognee.json").write_text(json.dumps({"capture_policy": "explicit"}))
+    explicit = module.EnhancedCogneeProvider()
+    explicit.initialize("explicit-session", hermes_home=str(home))
+    (home / "enhanced_cognee.json").write_text(json.dumps({"capture_policy": "selected"}))
+    selected = module.EnhancedCogneeProvider()
+    selected.initialize("selected-session", hermes_home=str(home))
+
+    def remember(provider):
+        return next(s for s in provider.get_tool_schemas() if s["name"] == "enhanced_remember")
+
+    assert "only when explicitly requested" in explicit.system_prompt_block()
+    assert "only when explicitly requested" in remember(explicit)["description"]
+    assert "even without an explicit remember request" not in remember(explicit)["description"]
+    assert "even without an explicit remember request" in remember(selected)["description"]
+    # Neither profile may mutate the shared schema or another caller's copy.
+    remember(explicit)["parameters"]["properties"]["content"]["maxLength"] = 1
+    assert "maxLength" not in remember(selected)["parameters"]["properties"]["content"]
+    assert "maxLength" not in remember(explicit)["parameters"]["properties"]["content"]

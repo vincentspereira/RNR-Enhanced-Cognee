@@ -218,7 +218,13 @@ class EnhancedCogneeProvider(MemoryProvider):
             return self._last_recall
 
     def get_tool_schemas(self):
-        return json.loads(json.dumps(SCHEMAS))
+        schemas = json.loads(json.dumps(SCHEMAS))
+        if getattr(self, "_capture_policy", "selected") == "explicit":
+            remember = next(schema for schema in schemas if schema["name"] == "enhanced_remember")
+            remember["description"] = (
+                "Save a selected durable decision, preference or task summary only when explicitly requested. "
+                "Exclude credentials/private details. Recall relevant records first. Reuse the retry key after a timeout.")
+        return schemas
 
     def handle_tool_call(self, tool_name, args, **kwargs):
         try:

@@ -1,5 +1,10 @@
 # Finding-by-finding remediation record
 
+Current reconciliation: [reviewed Hermes results and remaining phases](HERMES-WORKSPACE-RECONCILIATION-2026-10-20.md).
+The completed synthetic deployment branch is incorporated. Its 78-test suite and
+local 27B capture passed; protected OS installation/backups and owner/Windows/
+frontend-release conditions remain open. See that report before older checkpoints.
+
 Updated: 20 October 2026. The implementation branch is published; merge and
 private/everyday activation remain incomplete. See the
 [latest canonical stack evidence](CANONICAL-STACK-UPDATE-2026-10-20.md) for current

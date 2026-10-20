@@ -1,5 +1,10 @@
 # Ubuntu-Hermes deployment handoff
 
+After the completed synthetic qualification, use
+[the protected-service follow-up](UBUNTU-HERMES-PROTECTED-SERVICE-FOLLOWUP.md)
+in the existing checkout. The original task below remains the detailed scope;
+do not blindly rerun its initial clone/install steps.
+
 Prepared 20 October 2026. Use one deployment session at a time. The same task
 prompt works in Codex CLI or Hermes Agent Desktop when running inside
 Ubuntu-Hermes with the owner's already configured GPT-6.1-Sol model. No paid

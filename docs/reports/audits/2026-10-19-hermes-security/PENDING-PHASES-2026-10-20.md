@@ -1,5 +1,10 @@
 # Current phase ledger while Ubuntu-Hermes deployment runs separately
 
+Current continuation: [reconciled results and remaining phases](HERMES-WORKSPACE-RECONCILIATION-2026-10-20.md).
+The CLI synthetic qualification is complete and its branch is incorporated. Use
+the continuation's phase table and follow-up task; earlier running-session
+observations below are retained history.
+
 Later Workspace update: [release safeguards implemented](WORKSPACE-RELEASE-GUARDS-2026-10-20.md).
 Main now requires the five app-bound hosted checks with strict/admin enforcement,
 and an exact-revision review tool has focused regression coverage. The unit-only

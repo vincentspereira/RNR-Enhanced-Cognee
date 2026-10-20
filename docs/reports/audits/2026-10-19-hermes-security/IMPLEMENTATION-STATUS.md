@@ -1,5 +1,11 @@
 # Remediation implementation status
 
+Latest checkpoint: [reconciled Hermes/Workspace results](HERMES-WORKSPACE-RECONCILIATION-2026-10-20.md).
+The published Hermes branch is reviewed and incorporated. Its complete 78-test
+synthetic suite and local 27B capture passed; protected installation/backups,
+owner custody, Windows recovery and frontend release conditions remain open.
+The earlier "session is running" observations below are preserved history.
+
 Latest independent Workspace repair: [release safeguards](WORKSPACE-RELEASE-GUARDS-2026-10-20.md).
 Required main protection now covers unit, real-stack/image, browser and both
 frontend lanes; exact-revision evidence checking refuses stale/missing results.
