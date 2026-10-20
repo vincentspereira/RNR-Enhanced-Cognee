@@ -68,11 +68,17 @@ an old image or installed plugin does not qualify a newer source revision.
 - Full unit lane: 4,245 passed, 2 skipped, with credential environment removed and
   outbound network denied. This is the developer lane with documented compatible
   overlays, not an exact newly built full-image environment.
-- Full opt-in qualification suite: 73 passed, no skipped tests, against an
+- Full opt-in qualification suite: 74 passed, no skipped tests, against an
   explicitly provisioned native PostgreSQL 16.15 fixture, prepared offline BGE
   search model, real Qdrant 1.18.3, ArcadeDB 26.9.1 and Valkey 7.2.13. Includes
   the three actual language clients, actual stdio bridge, encrypted age backup
   and fresh-database recovery, browser flow and operator-update checks.
+- After the backup destination approval, the full suite passed again in 28.19
+  seconds, including backup credential/destination override refusal and actual
+  encrypted dump/fresh-database restore. The native artifact was rebuilt and its
+  installed backup modules and approved path checked outside the checkout.
+  System-unit syntax checks passed with temporary accessible runtime paths;
+  these checks do not establish installed service or filesystem permissions.
 - A subsequent expanded real-store test passed graph transaction rollback and
   rebuilding a fresh index namespace after previous delivery completion.
 - A separate 60-second concurrent real-store exercise passed: four projects,
@@ -129,7 +135,7 @@ private owner replies, service keys or profile credentials are release artifacts
 | 2 - Consistent memory and retrieval | Canonical memory, transport adapters and actual default-stack delivery/recovery implemented | Qualify the deployed configuration and any separately selected legacy/provider paths; no automatic bulk migration or permanent erasure |
 | 3 - Packaging and release | Small native artifact, locks, local checks and latest built API/worker image recovery qualification pass; exact scan findings retained | Unresolved OS/development advisory gates and supported private deployment configuration |
 | 4 - Hermes provider | Earlier native provider installed and model-tested; newer eight-tool update implemented | GitHub-only delivery of this update, schema/grant upgrade, installed-host and model-driven requalification inside Ubuntu-Hermes |
-| 5 - Isolated qualification | Current 73-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
+| 5 - Isolated qualification | Current 74-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
 
 The installed Hermes version previously refused the local chat endpoint's
 8,192-token serving window because it requires at least 64,000. Reusing an
@@ -148,12 +154,19 @@ and indexing-worker images together, including worker restart/backlog recovery.
 
 ## Owner actions before private activation
 
+Backup destination update, 20 October: the owner approved
+`/var/backups/enhanced-cognee` inside Ubuntu-Hermes. The scheduled backup system
+unit and private credential launcher now use that exact destination. They do not
+accept inherited output-directory overrides or recovery/decryption keys. This
+resolves the destination decision; installation, daily scheduling and recovery
+verification inside Ubuntu-Hermes remain pending while WSL control is unavailable.
+
 All nine architectural/policy decisions were already answered; no repeat approval
 is needed to continue the authorized fixes or publish the implementation branch.
 The remaining owner-controlled evidence is specific: confirm real exposed keys
 were revoked/replaced, keep recovery copies of the generated keys in the password
-manager, and name the private daily service-backup destination. Existing whole-WSL
-and cloud backups do not identify that destination or establish service recovery.
+manager, and verify recovery at the approved local daily backup destination.
+Existing whole-WSL and cloud backups do not establish service recovery.
 An operator must apply and verify a service account/credential boundary before
 Hermes handles private memories. Synthetic tests sharing its OS user do not
 provide that boundary.

@@ -125,6 +125,42 @@ the loopback listener; a later central connection has a separate private-network
 and certificate deployment decision. No system accounts, units, mounts, firewall
 rules or everyday profile settings are changed by merely adding these templates.
 
+## Owner-approved daily backup location
+
+On 20 October 2026 the owner selected `/var/backups/enhanced-cognee` inside
+Ubuntu-Hermes. This destination decision is complete. Do not create the directory
+in Ubuntu-Workspace as a substitute, add a mount, or configure a new cloud upload.
+Existing whole-WSL backups can include these encrypted files; they do not replace
+the service recovery test or the separate recovery-key copies.
+
+The backup unit is now a system service using the protected installed runtime
+and a private `LoadCredential=backup.json` copy. The operator prepares the chosen
+directory owned by root with mode `0700`, and a root-only
+`/etc/enhanced-cognee/backup.json`. This JSON contains only the backup PostgreSQL
+URL (`ENHANCED_MEMORY_DATABASE_URL`), persistent manifest signing key
+(`ENHANCED_BACKUP_SIGNING_KEY`), optional signing key ID
+(`ENHANCED_BACKUP_SIGNING_KEY_ID`) and public age recipient
+(`ENHANCED_BACKUP_RECIPIENT`). Use a dedicated database read account capable of
+dumping the selected canonical database. Do not put JWT signing, memory decryption
+keys or an age private recovery identity in this scheduled service configuration.
+The launcher rejects other credential fields and ignores inherited output paths.
+
+Install the matching PostgreSQL client tools and the free age tools in protected
+system locations available under `/usr/bin` or `/usr/local/bin`. The installed
+Python runtime must contain the native memory distribution's backup modules.
+The backup system unit restricts writes to the approved directory and private
+temporary storage. Backup archives and signed completion manifests use mode
+`0600`; incomplete outputs remain for review. The existing timer runs daily with
+up to fifteen minutes of randomized delay and catches up a missed run.
+
+Before enabling `enhanced-cognee-backup.timer`, run the backup service once as an
+operator and restore into a fresh disposable database. Check decryption with the
+separately held memory key, current records, retained history and project denial.
+Keep the age private identity, manifest signing key and memory keys in the owner's
+password manager, outside the backup directory. No automatic retention deletion
+or new upload is configured. The service/timer must be installed and verified
+inside Ubuntu-Hermes; adding these repository assets does not activate a backup.
+
 ## Readiness, interruptions and rebuilding
 
 `/health/live` reports process liveness. `/health/ready` checks the canonical
