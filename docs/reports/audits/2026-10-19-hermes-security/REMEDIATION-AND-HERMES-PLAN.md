@@ -17,6 +17,9 @@ checks, real graph rollback/rebuild and bounded load evidence, and a phase-by-ph
 remaining release, deployment, Hermes and owner-controlled requirements.
 The latest complete unit lane passes 4,285 tests with zero failures or skips;
 42-space bot/profile tests and a fleet configuration runbook are also included.
+The hosted Required CI run is now fully passing, including 64 canonical checks
+with no skips. The separate exact-image security gate still fails; deployment,
+installed Hermes checks and owner recovery/revocation evidence remain open.
 Backup destination decision received, 20 October: use
 `/var/backups/enhanced-cognee` inside Ubuntu-Hermes with encrypted, restricted-access
 files. The destination is no longer an unanswered owner decision. The daily

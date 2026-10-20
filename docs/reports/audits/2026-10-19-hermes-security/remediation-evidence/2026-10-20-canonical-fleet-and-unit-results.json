@@ -48,11 +48,14 @@
   "release": {
     "merge_performed": false,
     "new_hosted_checks": {
-      "source_commit": "bad9c2831f4084dc40880a784e5d897e7a9fcd8f",
-      "functional_tests_passed": 21,
+      "source_commit": "cf9030f02bf71280fc9af553da38e53e9dd4a070",
+      "required_ci": "passed",
+      "unit_tests_passed": 4285,
+      "core_canonical_tests_passed": 64,
+      "functional_store_tests_passed": 21,
       "actual_image_restart_recovery": "passed",
       "security_gate": "failed",
-      "image_id": "sha256:c8b3a4b0b629d9ca90e342adcfa56912eb523cdc17d79cc9793585e8959a2a59"
+      "image_id": "sha256:f2d16586d01917ee3ff5a0db9237569a54d760df47c60c12d71902aeaf39cdec"
     },
     "previous_OS_image_security_gate": "failed; no finding suppression"
   },

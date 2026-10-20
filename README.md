@@ -7,10 +7,13 @@ Read the [implementation tracker](docs/reports/audits/2026-10-19-hermes-security
 for verified checks and open work. The restricted encrypted project-memory API
 and Hermes connector are being qualified locally. Selected automatic summaries,
 reviewed portfolio-library search, restricted database roles and encrypted backup
-tooling have been added. Hermes is not yet activated.
-Legacy memory paths, graph/index workers, migration and provider profiles still
-need further qualification; historical production/coverage claims below do not
-establish current readiness.
+tooling have been added. Default-stack workers, scoped adapters and a 42-space
+bot/controller fixture are tested. Required CI passes all 4,285 unit checks with
+zero skips plus schema, security and canonical-memory checks. A prior synthetic
+Hermes test profile is installed; the newer update and everyday/private activation
+remain pending. The separate image security gate still fails. Broader legacy
+paths/provider profiles and the private deployed configuration need qualification;
+historical production/coverage claims below do not establish current readiness.
 
 ### Enterprise-Grade AI Memory Infrastructure with Multi-Agent Support
 
@@ -18,7 +21,7 @@ establish current readiness.
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-4245%20Unit-brightgreen.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
+  [![Tests](https://img.shields.io/badge/Tests-4285%20Unit-brightgreen.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
   [![Coverage](https://img.shields.io/badge/Coverage-Not%20qualified-orange.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Remediation-orange.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)

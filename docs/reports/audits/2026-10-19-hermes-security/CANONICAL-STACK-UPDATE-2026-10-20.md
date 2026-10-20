@@ -6,6 +6,18 @@ supersedes earlier statements that graph workers and canonical transport
 consolidation were entirely unimplemented. Earlier evidence remains historical;
 an old image or installed plugin does not qualify a newer source revision.
 
+Latest hosted result: [Required CI 39371928694](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371928694)
+is fully passing for functional source `cf9030f02bf71280fc9af553da38e53e9dd4a070`:
+4,285 unit checks, three legacy schema checks, ten settings/security checks and
+64 canonical memory checks, all with zero failures/errors/skips. The separate
+[default-stack/image run 39371903461](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371903461)
+passes its 21 real-store checks, clean package checks and actual API/worker image
+restart/recovery exercise. Its exact image
+`sha256:f2d16586d01917ee3ff5a0db9237569a54d760df47c60c12d71902aeaf39cdec`
+still fails security: 44 HIGH package matches across eight advisories, zero
+CRITICAL and no fixed versions listed in that scan. No suppression or merge was
+performed. These source results do not establish installed Hermes qualification.
+
 ## Implemented and tested in this continuation
 
 - Additive canonical schema 3 and separately restricted worker/API database
@@ -118,8 +130,8 @@ installation. The public small embedding model is prepared before tests and
 used offline during them. This also runs the formerly optional semantic fixture
 in that lane. The exact 64-check required canonical command passes in a fresh
 59-package environment with zero failures/errors/skips. Both unit and canonical
-JUnit reports must contain executed tests and zero skips. Current hosted
-requalification is recorded separately once complete.
+JUnit reports must contain executed tests and zero skips. Hosted Required CI run 39371928694 now confirms
+all 64 checks with zero skips; all preceding required lanes also pass.
 
 ## Evidence from the current local checks
 
@@ -135,7 +147,8 @@ requalification is recorded separately once complete.
   supported `multiplier` keyword with identical configured wait/cap values; the
   root dependency minimum matches the already locked 9.2.1 API. The repaired
   local settings/security suite passes all ten checks. No warning was suppressed
-  to bypass this failure; a fresh hosted run is needed for this repair.
+  to bypass this failure. The latest fully passing Required CI entry above
+  confirms the repair in the fresh hosted environment.
 - Full opt-in qualification suite: 77 passed, no skipped tests, against an
   explicitly provisioned native PostgreSQL 16.15 fixture, prepared offline BGE
   search model, real Qdrant 1.18.3, ArcadeDB 26.9.1 and Valkey 7.2.13. Includes

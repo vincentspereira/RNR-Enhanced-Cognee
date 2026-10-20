@@ -1,9 +1,17 @@
 # Remediation evidence index
 
+Latest 20 October continuation: `2026-10-20-canonical-final-required-ci.json`
+records a fully passing hosted run with 4,285 unit, three schema, ten settings and
+64 canonical checks, zero failures/errors/skips. `2026-10-20-canonical-fleet-qualification.xml`
+records 77 local opt-in checks. Fleet, ten-minute load, native-package and exact
+unsuppressed hosted-image scan evidence use the same dated prefix. The image
+security gate remains failed; these results do not authorize private activation.
+The earlier undated files below are preserved historical checkpoints.
+
 These files describe local checks after implementation. The sibling `../evidence/`
 folder is the original audit baseline and has not been regenerated.
 
-- `unit-suite.xml` and `unit-suite-result.json`: latest credential-scrubbed,
+- `unit-suite.xml` and `unit-suite-result.json`: earlier credential-scrubbed,
   network-denying unit run; 4,245 passed and two skipped.
 - `qualification.xml` and `qualification.log`: 52 real database/model/provider,
   migration, source, key-rotation and capability checks.

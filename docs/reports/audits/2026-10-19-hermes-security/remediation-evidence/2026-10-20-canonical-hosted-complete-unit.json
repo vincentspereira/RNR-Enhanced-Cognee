@@ -21,5 +21,33 @@
     "failures": 0,
     "skipped": 0
   },
-  "repaired_hosted_run": "pending publication"
+  "repaired_hosted_run": {
+    "url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371928694",
+    "source_commit": "cf9030f02bf71280fc9af553da38e53e9dd4a070",
+    "result": "success",
+    "unit": {
+      "tests": 4285,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 37.205,
+      "xml_sha256": "1ba001e9a9fab6872ac8e8788fee3d43ce07dd91ed850af1260b6317432d88fc"
+    },
+    "upstream_settings": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.685,
+      "xml_sha256": "16a335a3f4daf4b27a1d5c609df274c323de823b0fecfdb54afef588545c55be"
+    },
+    "canonical": {
+      "tests": 64,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.758,
+      "xml_sha256": "6e364743363a0cdf795bc34ae203d09c0e996aa9bc9aa08b0344fa96ef473b0e"
+    }
+  }
 }
