@@ -8,10 +8,17 @@ param(
 )
 $ErrorActionPreference='Stop'
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {throw 'Native Windows required.'}
+if ($PSVersionTable.PSEdition -ne 'Desktop' -or $PSVersionTable.PSVersion.Major -ne 5) {
+ throw 'Use native Windows PowerShell 5.1 for this qualification.'
+}
 if ($WhatIfPreference) {
  Write-Host 'Preview only: native synthetic encryption/restore checks, optional encrypted Cognee collection, no full backup or cloud upload.'
  return
 }
+# The desktop launcher can inherit PowerShell 7's module search path. Select
+# only this interpreter's built-in modules for this test process and children.
+# No saved environment variable or user profile is changed.
+$env:PSModulePath=Join-Path $PSHOME 'Modules'
 $run=Join-Path $ArtifactsRoot ('native-'+(Get-Date -Format yyyyMMdd-HHmmss)+'-'+[guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
 $acl=New-Object Security.AccessControl.DirectorySecurity
@@ -105,6 +112,20 @@ try {
  [IO.File]::WriteAllText((Join-Path $mirror older-retained.txt),'old')
  Test-CloudFilesPresent $chain $mirror
  Check 'older_files_retained' (Test-Path (Join-Path $mirror older-retained.txt))
+ # Exercise the actual Windows ProcessStartInfo/WSL binary boundary with
+ # spaces in the destination and all byte values, including NUL and CR/LF.
+ $binary=Join-Path $run 'binary with spaces.bin'
+ Invoke-WslBinaryExport 'import sys; sys.stdout.buffer.write(bytes(range(256)))' $binary root
+ $bytes=[IO.File]::ReadAllBytes($binary)
+ $same=($bytes.Length -eq 256)
+ for ($i=0;$i -lt $bytes.Length;$i++) {if ($bytes[$i] -ne $i) {$same=$false}}
+ Check 'real_wsl_binary_all_byte_values' $same
+ $failed=Join-Path $run failed-export.bin
+ $refused=$false
+ try {Invoke-WslBinaryExport "import sys; sys.stdout.buffer.write(b'partial'); sys.stdout.flush(); sys.exit(7)" $failed root}
+ catch {$refused=$true}
+ Check 'failed_wsl_export_not_promoted' ($refused -and -not (Test-Path -LiteralPath $failed))
+ Check 'failed_wsl_partial_retained' (@(Get-ChildItem -LiteralPath $run -Filter 'failed-export.bin.partial-*').Count -eq 1)
  $collection=$null
  if ($CollectCognee) {
   $BackupRoot=Join-Path $run cognee-collection;$RequireCogneeBackup=$true;$CogneeMaxBackupAgeHours=48

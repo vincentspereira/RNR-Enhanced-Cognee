@@ -1,6 +1,6 @@
 # Current phase ledger while Ubuntu-Hermes deployment runs separately
 
-Additional current work: [Windows recovery and 42-identity protected fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md). The live memory-service fleet check passes; the Windows task targets a missing script and a reviewed correction is prepared. Native execution testing awaits the process-only policy decision.
+Additional current work: [Windows recovery and 42-identity protected fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md). The live memory-service fleet check passes; the Windows task targets a missing script and a reviewed correction is prepared. After owner approval, 32 native Windows recovery/collection checks pass and the v11 WSL quoting issue is fixed. Real password configuration, scheduling and downloaded-cloud recovery remain.
 
 
 Latest installed-host disposition: [protected deployment qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md). Use its final phase table for current host results and remaining owner/release/Windows/bot gates; earlier running-session observations below are historical.

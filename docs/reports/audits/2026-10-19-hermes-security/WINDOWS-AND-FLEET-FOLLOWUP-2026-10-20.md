@@ -37,7 +37,8 @@ Native Windows PowerShell 5.1.26100.9711 is reachable through the existing host
 control route. No mounts, interop settings or firewall rules were changed.
 The maintained C:\Scripts\backup-all-wsl-v11.ps1 parses with zero errors. Its
 new qualification harness and prepared scheduling helper also parse with zero
-errors. 7-Zip is installed.
+errors. 7-Zip 26.03 is installed. After the process-only approval, all 32 native
+Windows checks passed, including DPAPI, archive recovery and real WSL collection.
 
 Read-only inspection of WSL Master Incremental Backup found:
 - Its action refers to backup-all-wsl.ps1, and that target file does not exist.
@@ -77,15 +78,45 @@ matched manifests and older-file preservation. CollectCognee additionally tests
 the actual Windows-to-Hermes pull of completed encrypted backup/manifest pairs
 into an isolated fixture destination, without collecting recovery keys.
 
-The first attempt to run this harness was refused by Windows script execution
-policy before its code started. No persistent user/machine execution policy was
-configured, no Group Policy execution setting was found and no process-only
-policy was supplied. Native parser and read-only inspection results must not be
-represented as successful DPAPI, 7-Zip, collection or scheduled-execution tests.
-A question for process-only RemoteSigned execution is pending; dependent tests
-remain unperformed until approved. No policy workaround was used.
+The first harness launch was refused before execution by Windows policy.
+Vincent then approved RemoteSigned only for this native test process. No saved
+machine/user policy was changed. A separate fresh process afterward verified
+that both saved policies remain unset and no process policy was inherited.
 
-After that approval, the existing test command is:
+Native execution exposed and repaired two environment/implementation issues:
+- Desktop's inherited module path included PowerShell 7 modules before the
+  Windows PowerShell 5.1 modules. Loading the Security module failed with duplicate
+  type data. The test process now selects only its own built-in module directory;
+  no saved environment variable or profile was edited.
+- Actual encrypted-backup inventory failed because the v11 WSL calls invoked an
+  implicit shell. The extra shell parsed Python parentheses and quotes instead
+  of passing the intended argument. All 13 relevant direct/interpreter call
+  sites now use explicit WSL exec, including the binary-export launcher.
+  Original v11 is preserved as
+  C:\Scripts\backup-all-wsl-v11.ps1.before-native-exec-20261020.bak.
+  The corrected script remains C:\Scripts\backup-all-wsl-v11.ps1, SHA256
+  235e44c93e346d88a2d98870cc516a964111518a46973f2ecb23adbb9dbd32da.
+
+The final native run passed 32 checks with zero failures:
+- Windows DPAPI encryption without plaintext in the file, same-account recovery,
+  and unattended unlocking in a separate PowerShell process.
+- Actual 7-Zip encryption and integrity, wrong-password rejection, encrypted
+  filenames, matched base/latest-differential restoration of added/changed/
+  deleted files, restore-manifest hashes and retained older sync-folder files.
+- Actual WSL binary export of every byte value into a destination with spaces.
+  Failed exports retain their partial file and are not promoted as complete.
+- Collection of three real encrypted Cognee backup/manifest pairs from the
+  protected approved Hermes directory into a new private Windows fixture,
+  checking copied lengths and SHA256 hashes. No recovery keys were collected.
+
+Earlier failed fixture runs are retained. The task repair helper's default
+preview also ran successfully without modifying or starting the existing task.
+Vincent approved that exact task correction after real archive-password setup;
+the absent password file is now the prerequisite, not an unanswered approval.
+Additional native probes verified quoted bash/Python ZIP arguments without
+writing host files, and the actual corrected v11 WhatIf preview exited zero.
+
+The repeatable native test command is:
 
 ```powershell
 powershell.exe -NoProfile -NonInteractive -ExecutionPolicy RemoteSigned -File "$env:LOCALAPPDATA\RNR-Backups\qualification-tools\Test-WindowsBackup.ps1" -CollectCognee -TaskName 'WSL Master Incremental Backup'
@@ -93,16 +124,20 @@ powershell.exe -NoProfile -NonInteractive -ExecutionPolicy RemoteSigned -File "$
 
 This generated test password is unrelated to the owner's real archive password.
 Tests retain their small fixture directory. They do not prove password-manager
-custody, an actual scheduled run or a downloaded-cloud recovery.
+custody, an actual scheduled run or a downloaded-cloud recovery. The real Windows
+archive-password file is still absent; the generated test password did not
+configure or replace the owner's real archive password.
 
 ## Remaining independent and owner gates
 
-1. Finish the pending native tests after the process-only policy decision.
+1. Native Windows mechanics are qualified. Complete the owner-password, actual
+   scheduling and real off-machine recovery steps below.
 2. Owner chooses and retains the real archive password, then uses the maintained
    v11 ConfigureArchivePassword operation locally. Never paste it into chat.
    This is separate from the memory database encryption/age/manifest keys.
-3. Review and authorize the prepared task action correction; preserve the existing
-   weekly schedule unless the owner explicitly chooses another frequency.
+3. Apply the already approved task action correction once the real protected
+   archive-password file is configured. Preserve the existing weekly schedule;
+   do not start the task as part of the correction or ask again for approval.
 4. Run a real backup at a convenient time, verify both cloud clients completed
    upload, download a matched base/latest differential generation, and restore
    into a new empty recovery directory using independent recovery material.
@@ -115,11 +150,18 @@ custody, an actual scheduled run or a downloaded-cloud recovery.
    version is available. No lint removal, unsupported replacement, fake version,
    audit suppression or downgrade was introduced.
 
-The previous exact revision e5a02343 passed Required CI, default-stack and
-canonical-browser. Both frontend jobs failed only their enforced full dependency
-audits: five HIGH development-dependency matches each, zero production matches.
-That evidence is historical for later documentation/test commits. Main remains
-protected and unchanged; a new candidate needs exact-revision hosted checks.
+Fresh hosted checks on dac7826f56d876d5282f7210581f114e061ec06d completed:
+- Required CI run 39501940961 passed: 4,344 units, 3 schema, 10 upstream settings/
+  security and 80 canonical checks, with zero failures/errors/skips.
+- Default-stack run 39501944103 passed all 35 checks with zero skips.
+- Dashboard run 39501947497 passed the real browser. Both frontend jobs passed
+  their other steps but failed the enforced full dependency audit: five HIGH
+  development-dependency matches each, zero production findings.
+
+Later native-helper/evidence updates do not silently inherit exact-revision
+release approval from those runs. No application runtime changed in this
+follow-up. Main remains protected and unchanged; unresolved audits and owner/
+private-activation requirements still prevent conditional main merge.
 
 Sanitized additional evidence:
 [evidence/2026-10-20-windows-fleet-followup.json](evidence/2026-10-20-windows-fleet-followup.json).
