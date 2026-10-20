@@ -1,5 +1,8 @@
 # Finish the protected Hermes service after synthetic qualification
 
+Completed continuation: [protected deployment qualification](../reports/audits/2026-10-19-hermes-security/HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md). The authorized systemd/protected-service/test-account tasks below have been executed and the temporary account removed. Do not repeat installation, account creation or distro restart from this historical prompt. Use the report's remaining gates for the next review.
+
+
 Prepared 20 October 2026. Resume the existing isolated deployment; do not repeat
 the initial installation or configure everyday bots. The nine previous memory
 decisions remain accepted.

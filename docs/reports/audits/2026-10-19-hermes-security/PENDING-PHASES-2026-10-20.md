@@ -1,5 +1,8 @@
 # Current phase ledger while Ubuntu-Hermes deployment runs separately
 
+Latest installed-host disposition: [protected deployment qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md). Use its final phase table for current host results and remaining owner/release/Windows/bot gates; earlier running-session observations below are historical.
+
+
 Current continuation: [reconciled results and remaining phases](HERMES-WORKSPACE-RECONCILIATION-2026-10-20.md).
 The CLI synthetic qualification is complete and its branch is incorporated. Use
 the continuation's phase table and follow-up task; earlier running-session

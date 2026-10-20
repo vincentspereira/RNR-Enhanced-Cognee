@@ -1,5 +1,8 @@
 # Remediation and Hermes implementation plan
 
+Current installed-host result: [protected deployment qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md). Protected services, non-admin synthetic/model qualification, encrypted restore, daily timer and approved temporary-account cleanup are complete. Owner custody/revocation, frontend release gates, native Windows recovery and everyday-bot admission remain open. Earlier status paragraphs below are dated checkpoints.
+
+
 Current execution ledger: [remaining phases and parallel work](PENDING-PHASES-2026-10-20.md).
 The owner reports that the isolated Ubuntu-Hermes deployment session is running.
 Its actual results and owner recovery/revocation evidence still need review.
