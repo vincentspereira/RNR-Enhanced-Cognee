@@ -13,7 +13,7 @@ impl Client {
     async fn project_request(&self, method: &str, path: &str, body: Option<&Value>) -> Result<Value> {
         let origin = reqwest::Url::parse(&self.base_url)
             .map_err(|_| Error::InvalidBaseUrl("invalid service origin".into()))?;
-        if self.access_token.as_deref().unwrap_or("").is_empty() || self.api_key.is_some() || origin.path() != "/" {
+        if !self.explicit_base_url || self.access_token.as_deref().unwrap_or("").is_empty() || self.api_key.is_some() || origin.path() != "/" {
             return Err(Error::InvalidBaseUrl("canonical memory requires a scoped bearer token and service origin".into()));
         }
         match self.do_json(method, &format!("/v1/memories{path}"), body).await {

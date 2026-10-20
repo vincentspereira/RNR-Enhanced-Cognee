@@ -11,6 +11,15 @@ an old image or installed plugin does not qualify a newer source revision.
 - Additive canonical schema 3 and separately restricted worker/API database
   permissions. Existing runtime accounts can receive the new read grants without
   credential replacement. Runtime startup validates schema rather than creating it.
+- Prepared two hardened service-manager units with distinct dynamic OS users and
+  private role-specific credentials. Their launcher strips inherited credentials
+  and refuses unsafe credential files. The API receives no cache credential and
+  uses a graph client that admits only its bounded read query. These deployment
+  assets have not been installed in Ubuntu-Hermes.
+- A separately expiring human reviewer role can approve library membership and
+  reviewed sharing without memory-write, retraction or system-management powers.
+  Category, retry and topic identifiers now receive credential screening before
+  storage, in addition to content, metadata and source declarations.
 - Durable leased delivery to actual Qdrant, ArcadeDB and Valkey stores. Delivery
   is repeatable, acknowledges every store before completion, retries partial
   failures, recovers crashed leases and serializes against current corrections.
@@ -58,13 +67,18 @@ an old image or installed plugin does not qualify a newer source revision.
 - Full unit lane: 4,245 passed, 2 skipped, with credential environment removed and
   outbound network denied. This is the developer lane with documented compatible
   overlays, not an exact newly built full-image environment.
-- Full opt-in qualification suite: 68 passed, no skipped tests, against an
+- Full opt-in qualification suite: 73 passed, no skipped tests, against an
   explicitly provisioned native PostgreSQL 16.15 fixture, prepared offline BGE
   search model, real Qdrant 1.18.3, ArcadeDB 26.9.1 and Valkey 7.2.13. Includes
   the three actual language clients, actual stdio bridge, encrypted age backup
   and fresh-database recovery, browser flow and operator-update checks.
 - A subsequent expanded real-store test passed graph transaction rollback and
   rebuilding a fresh index namespace after previous delivery completion.
+- A separate 60-second concurrent real-store exercise passed: four projects,
+  130 rounds, 520 corrections, 650 semantic queries, 520 graph queries, zero
+  observed scope leaks/failures and no pending events at completion. Round p95
+  was 700.21 ms. This bounded fixture exercise is not a long soak or a production
+  capacity guarantee.
 - The dashboard production build passes type checks. The browser qualification
   exercises a real built frontend and service using invented data. It does not
   qualify historical graph/analytics/session screens or every browser/device.
@@ -74,6 +88,12 @@ an old image or installed plugin does not qualify a newer source revision.
 - Root and small native wheels pass the local-data/secret/test-path packaging
   boundary check. Native wheel imports and dependency compatibility pass in a
   fresh Python 3.12 environment outside the checkout.
+- Hosted run [39360080552](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39360080552)
+  at commit `0c374750a87face413e17679e0b93f846601ac3b` passed real-store tests,
+  clean native distribution checks and the image build. Its unsuppressed image
+  security gate failed: 44 HIGH package matches across eight advisories, zero
+  CRITICAL and no fixed version listed in that scan. Findings were retained;
+  no suppression was added. Newer source changes need their own hosted run.
 
 Sanitized logs, XML and the policy inventory are in `remediation-evidence` with
 the `2026-10-20-canonical-` prefix. Fixture data and originals were retained. No
@@ -84,11 +104,11 @@ private owner replies, service keys or profile credentials are release artifacts
 | Phase | Current status | Still required |
 |---|---|---|
 | 0 - Preserve and baseline | Preservation and synthetic baselines established | Owner confirmation of exposed-key revocation and recovery custody |
-| 1 - Access control | Canonical boundaries, manifest, adapters and regression checks implemented | Private service/operator OS separation and deployment-specific index credentials; broader legacy capabilities remain outside canonical admission |
+| 1 - Access control | Canonical boundaries, manifest, adapters, reviewer role and regression checks implemented; separate service-user assets prepared | Install/verify private service/operator OS separation and deployment-specific index credentials; broader legacy capabilities remain outside canonical admission |
 | 2 - Consistent memory and retrieval | Canonical memory, transport adapters and actual default-stack delivery/recovery implemented | Qualify the deployed configuration and any separately selected legacy/provider paths; no automatic bulk migration or permanent erasure |
-| 3 - Packaging and release | Small native artifact, locks, builds and checks prepared/tested locally | Exact hosted image build/scan, known OS/development advisory gates, release automation results and supported deployment configuration |
+| 3 - Packaging and release | Small native artifact, locks and local checks pass; earlier exact hosted image build passes and scan findings are retained | Newest built API/worker image qualification, unresolved OS/development advisory gates and supported deployment configuration |
 | 4 - Hermes provider | Earlier native provider installed and model-tested; newer eight-tool update implemented | GitHub-only delivery of this update, schema/grant upgrade, installed-host and model-driven requalification inside Ubuntu-Hermes |
-| 5 - Isolated qualification | Current 68-test suite, real graph recovery and service/client/browser checks pass | Broader retrieval/load/soak assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
+| 5 - Isolated qualification | Current 73-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
 
 The installed Hermes version previously refused the local chat endpoint's
 8,192-token serving window because it requires at least 64,000. Reusing an
@@ -102,7 +122,8 @@ These are environment limitations, not a missing paid plugin or approval. Native
 Workspace fixtures let independent implementation/tests proceed. WSL mounts,
 firewall, interop configuration and existing services were not changed to bypass
 the limits. Restoring operator access is needed to deliver/recheck the newer
-provider in Ubuntu-Hermes. A hosted image workflow is prepared for the image checks.
+provider in Ubuntu-Hermes. A hosted image workflow also exercises the actual API
+and indexing-worker images together, including worker restart/backlog recovery.
 
 ## Owner actions before private activation
 

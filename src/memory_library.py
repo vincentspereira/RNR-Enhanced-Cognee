@@ -111,6 +111,7 @@ class LibraryAccess:
     @staticmethod
     def shared_view(result: dict) -> dict:
         """Project-internal session/actor metadata does not accompany publication."""
+        result["shared"] = True
         result["metadata"] = {"source_project": result["project_id"]}
         result["provenance"] = {key: value for key, value in result.get("provenance", {}).items()
                                 if key in {"observed_at", "content_sha256", "authority", "corrected_at",

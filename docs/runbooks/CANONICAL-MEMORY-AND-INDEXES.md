@@ -86,6 +86,45 @@ credentials. Keep API, worker and operator accounts separate. The prepared
 restricted Docker image contains the worker modules and dependencies, but still
 requires an exact image build/scan and hardened deployment configuration.
 
+## Prepared private service-account deployment
+
+The `integrations/hermes/deployment/enhanced-cognee-api.service` and
+`enhanced-cognee-index.service` files are system service templates. They use
+separate dynamic OS users, role-specific `LoadCredential` files, read-only system
+and home protection, no additional capabilities, private temporary directories
+and bounded CPU/memory/process counts. They are prepared assets, not installed
+or OS-qualified services. An operator must review paths, resource limits and
+the actual Ubuntu-Hermes service manager before installing/starting them.
+
+Install the small native distribution in a root-owned runtime under
+`/opt/enhanced-cognee-memory`, outside Hermes' writable checkout and home. Its
+Python interpreter must also be accessible there or under the protected system
+tree; a virtual environment pointing into a user's hidden home will not work
+with home protection. Prepare the public offline model cache in a root-owned,
+readable system location, and root-owned non-secret index settings under
+`/etc/enhanced-cognee`. Do not change the existing Hermes profile's file access.
+
+The operator creates separate root-only `api.json` and `worker.json` files in
+`/etc/enhanced-cognee`. The API file contains its restricted PostgreSQL URL,
+encryption configuration, JWT/OIDC verifier, local embedding settings and optional
+read-only index credentials. The worker file contains its separately restricted
+PostgreSQL URL, encryption/index keys, prepared model/config locations and index
+write credentials. Omit backup signing, age recovery and database administrator
+keys from both. `src.memory_daemon` reads only the service manager's private copy,
+checks owner/file permissions, rejects duplicate/oversized/unexpected fields and
+strips inherited operator/provider credentials and loader overrides. Runtime
+security settings are forced rather than read from the agent's environment.
+
+The systemd units and credential loader do not provision PostgreSQL/graph/vector
+accounts, database ownership, root-only storage or network trust by themselves.
+Those stores must also run outside the agent's writable files. Verify that the
+Hermes OS user cannot read the service/operator credentials, rewrite installed
+service code, access database files or obtain administrator/Docker privileges.
+A different service username is insufficient if Hermes can become root. Keep
+the loopback listener; a later central connection has a separate private-network
+and certificate deployment decision. No system accounts, units, mounts, firewall
+rules or everyday profile settings are changed by merely adding these templates.
+
 ## Readiness, interruptions and rebuilding
 
 `/health/live` reports process liveness. `/health/ready` checks the canonical
@@ -119,6 +158,14 @@ Give each project its own expiring signed token and private raw space. Use the
 reviewed library/membership API for approved common guidance and sanitized
 summaries. A library membership does not grant all raw project memories. Do not
 give agents reviewer, operator, database or service-key access.
+
+For a human review console, the operator can issue a separate one-hour
+`memory_admin issue-token --reviewer` credential with explicit tenant/project,
+subject, agent and private output path. This role can review project records,
+approve/revoke library membership and publish sanitized current versions. It
+cannot add, correct or retract memories, rotate keys or create backups. Keep it
+out of agent profiles. The service's signing key remains operator-only; the
+reviewer receives only the expiring signed credential.
 
 The Python `ProjectMemoryClient`, and the Node/Go/Rust canonical methods, use
 `/v1/memories`. Writes require an idempotency key; corrections/retractions require

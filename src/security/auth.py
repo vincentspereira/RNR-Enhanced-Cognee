@@ -29,6 +29,7 @@ class Role(str, Enum):
     USER = "user"            # Standard user access
     READONLY = "readonly"    # Read-only access
     API_CLIENT = "api_client" # API service account
+    MEMORY_REVIEWER = "memory_reviewer" # Review sharing without system or write powers
 
 
 class Permission(str, Enum):
@@ -52,6 +53,7 @@ class Permission(str, Enum):
 
 # Role to permissions mapping
 ROLE_PERMISSIONS = {
+    Role.MEMORY_REVIEWER: [Permission.MEMORY_READ, Permission.MEMORY_ADMIN, Permission.SYSTEM_MONITOR],
     Role.ADMIN: [
         Permission.MEMORY_READ, Permission.MEMORY_WRITE, Permission.MEMORY_DELETE, Permission.MEMORY_ADMIN,
         Permission.SESSION_READ, Permission.SESSION_WRITE, Permission.SESSION_DELETE,

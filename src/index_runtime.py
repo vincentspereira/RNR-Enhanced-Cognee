@@ -25,7 +25,7 @@ class IndexSettings(BaseModel):
     allow_internal_http: bool = False
 
 
-def configured_sinks():
+def configured_sinks(*, readonly: bool = False):
     path = Path(os.environ["ENHANCED_INDEX_CONFIG"])
     if not path.is_absolute() or path.is_symlink() or path.stat().st_size > 16384:
         raise ValueError("Use an explicit bounded index settings file")
@@ -35,7 +35,8 @@ def configured_sinks():
         qdrant_url=settings.qdrant_url, arcade_url=settings.arcade_url,
         arcade_database=settings.arcade_database, allow_internal_http=settings.allow_internal_http,
         arcade_user=os.environ["INDEX_ARCADEDB_USER"], arcade_password=os.environ["INDEX_ARCADEDB_PASSWORD"],
-        cache_url=os.environ["INDEX_VALKEY_URL"], qdrant_key=os.getenv("INDEX_QDRANT_API_KEY", ""))
+        cache_url=None if readonly else os.environ["INDEX_VALKEY_URL"], readonly=readonly,
+        qdrant_key=os.getenv("INDEX_QDRANT_API_KEY", ""))
 
 
 async def _run(args):

@@ -65,11 +65,17 @@ class DerivedRecall:
         status = await self.status(service, scope)
         if not status["worker_available"]:
             raise AuthError(503, "Graph index is not ready; current text/semantic recall remains available")
-        frontier, paths, inspected, limited = [(entity, [], frozenset({normalized(entity)}))], [], 0, False
+        candidate_limit = min(service.candidate_limit, 2000)
+        async with service.pool.acquire() as conn:
+            authorized = await conn.fetch("SELECT r.id FROM shared_memory.records r WHERE " + READ_PREDICATE +
+                " ORDER BY r.updated_at DESC,r.id LIMIT $4", scope.tenant, scope.project, include_shared, candidate_limit+1)
+        identifiers = [row["id"] for row in authorized[:candidate_limit]]
+        frontier, paths, inspected, limited = [(entity, [], frozenset({normalized(entity)}))], [], 0, len(authorized)>candidate_limit
+        response_bytes = 0
         for _ in range(depth):
             following = []
             for current, chain, seen in frontier:
-                neighbors = await self.sinks.neighbors(scope.tenant, current, limit=64)
+                neighbors = await self.sinks.neighbors(scope.tenant, current, identifiers=identifiers, limit=64)
                 limited = limited or len(neighbors) == 64
                 for edge in neighbors:
                     inspected += 1
@@ -107,6 +113,11 @@ class DerivedRecall:
                         "source_project": row["project"], "source_excerpt": record["content"][link["span_start"]:link["span_end"]][:2048],
                         "source_excerpt_truncated": link["span_end"] - link["span_start"] > 2048,
                         "evidence": record.get("evidence"), "authority": "actor_submitted_unverified"}]
+                    size = len(json.dumps(next_chain, ensure_ascii=True).encode())
+                    if response_bytes+size > 128*1024:
+                        limited = True
+                        break
+                    response_bytes += size
                     paths.append(next_chain)
                     following.append((link["object"], next_chain, seen | {target}))
                 if limited and (inspected > 128 or len(paths) >= limit):

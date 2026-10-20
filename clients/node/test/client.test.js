@@ -26,6 +26,20 @@ function mockFetch(responses) {
   return fn;
 }
 
+test("canonical requests refuse an implicit destination before credential I/O", async () => {
+  const previous = process.env.ENHANCED_COGNEE_URL;
+  delete process.env.ENHANCED_COGNEE_URL;
+  try {
+    const network = mockFetch([]);
+    const client = new EnhancedCogneeClient({ accessToken: "synthetic", fetchImpl: network });
+    await assert.rejects(() => client.memoryStatus(), /explicit scoped bearer token and service origin/);
+    assert.equal(network.calls.length, 0);
+  } finally {
+    if (previous === undefined) delete process.env.ENHANCED_COGNEE_URL;
+    else process.env.ENHANCED_COGNEE_URL = previous;
+  }
+});
+
 test("addMemory POSTs to /memory/add with snake_case payload", async () => {
   const m = mockFetch([{ status: 200, body: { id: "abc-123" } }]);
   const cli = new EnhancedCogneeClient({

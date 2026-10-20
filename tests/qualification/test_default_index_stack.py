@@ -4,7 +4,12 @@ Every endpoint/credential is supplied explicitly. A new database/collection is
 created only in the explicitly selected disposable services; fixtures are kept.
 """
 import json
+import asyncio
 import os
+import time
+import math
+import httpx
+import jwt
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 import uuid
@@ -24,7 +29,7 @@ from src.security.enterprise_auth import AuthError
 
 
 @pytest.mark.asyncio
-async def test_real_default_stores_source_paths_correction_retraction_and_recovery(monkeypatch):
+async def test_real_default_stores_source_paths_correction_retraction_and_recovery(monkeypatch, tmp_path):
     url = os.getenv("RNR_QUALIFICATION_DATABASE_URL")
     settings_path = os.getenv("RNR_QUALIFICATION_INDEX_SETTINGS")
     cache = os.getenv("RNR_QUALIFICATION_MODEL_CACHE")
@@ -37,13 +42,15 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
     await operator.execute(f"CREATE DATABASE {name}")
     await operator.close()
     parsed = urlsplit(url)
-    pool = await asyncpg.create_pool(urlunsplit((parsed.scheme, parsed.netloc, "/" + name, parsed.query, "")),
+    fixture_url = urlunsplit((parsed.scheme, parsed.netloc, "/" + name, parsed.query, ""))
+    pool = await asyncpg.create_pool(fixture_url,
                                      min_size=1, max_size=4)
     identity = IndexIdentity("synthetic-default-stack-index-key-32bytes", "q_" + suffix)
     sinks = DefaultIndexSinks(identity, qdrant_url=settings["qdrant_url"], arcade_url=settings["arcade_url"],
         arcade_database="q_" + suffix, arcade_user=settings["arcade_user"], arcade_password=settings["arcade_password"],
         cache_url=settings["cache_url"], dimensions=384, model="BAAI/bge-small-en-v1.5")
-    service = MemoryService(pool, EncryptionManager(master_key=Fernet.generate_key().decode()),
+    encryption_key = Fernet.generate_key().decode()
+    service = MemoryService(pool, EncryptionManager(master_key=encryption_key),
         LocalEmbeddings(sinks.model, cache), derived=DerivedRecall(sinks))
     scope = MemoryScope("stack_fixture", "project_one", "owner", "hermes")
     try:
@@ -63,6 +70,48 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         result = await service.connections(scope, "Cedar", depth=2)
         assert result["paths"][-1][-1]["object"] == "Lisbon" and len(result["paths"][-1]) == 2
         assert {edge["record_id"] for edge in result["paths"][-1]} == {first["id"], second["id"]}
+        reader = DefaultIndexSinks(identity, qdrant_url=settings["qdrant_url"], arcade_url=settings["arcade_url"],
+            arcade_database=sinks.database, arcade_user=settings["arcade_user"], arcade_password=settings["arcade_password"],
+            dimensions=384, model=sinks.model, readonly=True)
+        try:
+            assert reader.cache is None
+            with pytest.raises(PermissionError):
+                await reader.provision()
+            with pytest.raises(PermissionError):
+                await reader.project({}, {}, [], active=True)
+            with pytest.raises(PermissionError):
+                await reader.sql("SELECT FROM ECEntity")
+            assert (await DerivedRecall(reader).connections(service, scope, "Cedar", depth=2))["paths"][-1][-1]["object"] == "Lisbon"
+            assert await reader.search(scope.tenant, await service.embedder.embed("Cedar"), [first["id"]], 1)
+        finally:
+            await reader.close()
+        # Actual API startup must choose a read-only index client and require
+        # no cache credential. Exercise its real authenticated graph route.
+        from src.memory_api import create_app
+        index_path = tmp_path / "index.json"
+        index_path.write_text(json.dumps({"pipeline": identity.pipeline, "model": sinks.model, "dimensions": 384,
+            "qdrant_url": settings["qdrant_url"], "arcade_url": settings["arcade_url"], "arcade_database": sinks.database}))
+        secret = "synthetic-index-api-verifier-key-at-least-32-bytes"
+        environment = {"ENHANCED_ENV": "production", "ENHANCED_REQUIRE_TENANT": "1",
+            "ENHANCED_JWT_SECRET": secret, "ENCRYPTION_MASTER_KEY": encryption_key,
+            "ENHANCED_MEMORY_DATABASE_URL": fixture_url, "ENHANCED_EMBEDDING_MODEL": sinks.model,
+            "ENHANCED_MODEL_CACHE": cache, "ENHANCED_INDEX_CONFIG": str(index_path),
+            "ENHANCED_INDEX_KEY": "synthetic-default-stack-index-key-32bytes",
+            "INDEX_ARCADEDB_USER": settings["arcade_user"], "INDEX_ARCADEDB_PASSWORD": settings["arcade_password"]}
+        for key, value in environment.items():
+            monkeypatch.setenv(key, value)
+        for key in ("INDEX_VALKEY_URL", "ENHANCED_API_KEY", "ENHANCED_OIDC_ISSUER", "ENHANCED_OIDC_JWKS_URI"):
+            monkeypatch.delenv(key, raising=False)
+        app = create_app()
+        token = jwt.encode({"sub": scope.subject, "tenant": scope.tenant, "project_id": scope.project,
+            "agent_id": scope.agent, "roles": ["api_client"], "exp": int(time.time())+300}, secret, algorithm="HS256")
+        async with app.router.lifespan_context(app):
+            assert app.state.memory_service.derived.sinks.readonly
+            assert app.state.memory_service.derived.sinks.cache is None
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://localhost",
+                                         headers={"Authorization": "Bearer "+token}) as http:
+                linked = await http.post("/v1/memories/connections", json={"entity": "Cedar", "depth": 2})
+                assert linked.status_code == 200 and linked.json()["paths"][-1][-1]["object"] == "Lisbon"
         recall = await service.recall(scope, "Where are Birch recovery copies kept?")
         assert recall["vector_index"] == "queried" and recall["results"][0]["id"] == second["id"]
         assert (await service.connections(MemoryScope(scope.tenant, "other", "reader", "agent"), "Cedar"))["paths"] == []
@@ -133,17 +182,93 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         assert (await service.connections(scope, "Cedar"))["paths"] == []
         assert await worker.run_once()
         assert await sinks.cache.get(cache_key) is None
-        assert await sinks.neighbors(scope.tenant, "Cedar") == []
+        assert await sinks.neighbors(scope.tenant, "Cedar", identifiers=[first["id"]]) == []
         points = await sinks._request("POST", sinks.qdrant_url + "/collections/" + sinks.collection + "/points",
                                       json={"ids": [first["id"]], "with_payload": True})
         assert points["result"] == []
         assert (await service.status(scope))["pending_change_events"] == 0
         assert len((await service.history(scope, first["id"]))["versions"]) == 3
+        filtered = MemoryScope(scope.tenant, "filtered_owner", "owner", "hermes")
+        hidden = MemoryScope(scope.tenant, "unapproved_other", "owner", "hermes")
+        filter_records = []
+        for item, target in ((filtered, "Harbor"), (hidden, "Meadow")):
+            content = f"Cedar keeps its archives in {target}."
+            filter_records.append(await service.remember(item, content, idempotency_key="candidate-filter",
+                knowledge_links=[{"subject": "Cedar", "predicate": "archives in", "object": target,
+                                  "span_start": 0, "span_end": len(content)}]))
+        async with asyncio.timeout(15):
+            while True:
+                worked = await worker.run_once()
+                states = await asyncio.gather(*(service.status(item) for item in (filtered, hidden)))
+                if all(item["pending_change_events"] == 0 for item in states):
+                    break
+                if not worked:
+                    await asyncio.sleep(.05)
+        eligible = await sinks.neighbors(scope.tenant, "Cedar", identifiers=[filter_records[0]["id"]])
+        assert len(eligible) == 1 and eligible[0]["record_id"] == filter_records[0]["id"]
+        assert (await service.connections(filtered, "Cedar"))["paths"][0][0]["object"] == "Harbor"
+        assert (await service.connections(scope, "Cedar"))["paths"] == []
+        # Optional bounded concurrent workload on the actual default stores.
+        # This records its exact duration/load, not a production capacity claim.
+        seconds = int(os.getenv("RNR_QUALIFICATION_SOAK_SECONDS", "0"))
+        if not 0 <= seconds <= 600:
+            raise ValueError("Synthetic soak duration must be between zero and 600 seconds")
+        load = {"enabled": bool(seconds)}
+        if seconds:
+            scopes = [MemoryScope(scope.tenant, f"load_{i}", "owner", "hermes") for i in range(4)]
+            records = []
+            for i, item in enumerate(scopes):
+                records.append(await service.remember(item, f"Cedar keeps its recovery copies in Harbor{i}.",
+                                                      idempotency_key="load-one"))
+            started, rounds, times = time.monotonic(), 0, []
+            while time.monotonic()-started < seconds:
+                tick = time.monotonic()
+                generation = rounds+2
+
+                async def change(i):
+                    content = f"Cedar keeps generation {generation} recovery copies in Harbor{i}."
+                    records[i] = await service.correct(scopes[i], records[i]["id"],
+                        expected_version=records[i]["version"], content=content,
+                        knowledge_links=[{"subject": "Cedar", "predicate": "stores in", "object": f"Harbor{i}",
+                                          "span_start": 0, "span_end": len(content)}])
+
+                await asyncio.gather(*(change(i) for i in range(4)))
+                # Quiescent indexing checkpoint for this batch; no new write
+                # is accepted as a graph hit merely because an event exists.
+                async with asyncio.timeout(15):
+                    while True:
+                        worked = await worker.run_once()
+                        states = await asyncio.gather(*(service.status(item) for item in scopes))
+                        if all(item["pending_change_events"] == 0 for item in states):
+                            break
+                        # No currently claimable job does not imply an empty
+                        # queue (leases, retries and wall-clock adjustments).
+                        if not worked:
+                            await asyncio.sleep(.05)
+
+                async def check(i):
+                    found = await service.recall(scopes[i], "Where are the recovery copies stored?")
+                    assert len(found["results"]) == 1 and found["results"][0]["id"] == records[i]["id"]
+                    assert found["results"][0]["version"] == records[i]["version"]
+                    paths = (await service.connections(scopes[i], "Cedar"))["paths"]
+                    assert len(paths) == 1 and paths[0][0]["object"] == f"Harbor{i}"
+                    assert paths[0][0]["version"] == records[i]["version"]
+                    assert (await service.status(scopes[i]))["pending_change_events"] == 0
+
+                await asyncio.gather(*(check(i) for i in range(4)))
+                assert (await service.recall(MemoryScope(scope.tenant, "unapproved", "reader", "agent"), "Cedar"))["results"] == []
+                times.append((time.monotonic()-tick)*1000)
+                rounds += 1
+            load.update(requested_seconds=seconds, actual_seconds=round(time.monotonic()-started, 2),
+                concurrent_projects=4, completed_rounds=rounds, corrected_records=rounds*4,
+                semantic_queries=rounds*5, graph_queries=rounds*4, scope_leaks=0,
+                round_p95_ms=round(sorted(times)[math.ceil(.95*len(times))-1], 2),
+                pending_events=0, retained_history=True, failures=0)
         print(json.dumps({"actual_stores": ["PostgreSQL", "Qdrant", "ArcadeDB", "Valkey"],
             "source_grounded_hops": 2, "partial_delivery_recovered": True,
             "stale_graph_denied": True, "derived_retraction_cleaned": True,
             "graph_transaction_rollback": True, "fresh_namespace_rebuild": True,
-            "history_retained": True, "fixtures_preserved": True}))
+            "history_retained": True, "fixtures_preserved": True, "bounded_load": load}))
     finally:
         await sinks.close()
         await pool.close()

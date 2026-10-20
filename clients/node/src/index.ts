@@ -93,8 +93,10 @@ export class EnhancedCogneeClient {
   private tenantId?: string;
   private fetchImpl: typeof fetch;
   private timeoutMs: number;
+  private explicitBaseUrl: boolean;
 
   constructor(opts: ClientOptions = {}) {
+    this.explicitBaseUrl = Boolean(opts.baseUrl ?? process.env.ENHANCED_COGNEE_URL);
     this.baseUrl = (
       opts.baseUrl
       ?? process.env.ENHANCED_COGNEE_URL
@@ -118,7 +120,7 @@ export class EnhancedCogneeClient {
 
   /** Add a memory entry. */
   private async projectRequest(method: string, path: string, body?: unknown): Promise<Record<string, any>> {
-    if (!this.accessToken || this.apiKey || new URL(this.baseUrl).pathname !== "/") {
+    if (!this.explicitBaseUrl || !this.accessToken || this.apiKey || new URL(this.baseUrl).pathname !== "/") {
       throw new Error("Canonical memory requires an explicit scoped bearer token and service origin");
     }
     try { return await this._request(method, "/v1/memories" + path, body); }

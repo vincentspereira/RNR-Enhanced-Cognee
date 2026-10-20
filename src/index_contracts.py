@@ -80,6 +80,8 @@ CREATE TABLE IF NOT EXISTS shared_memory.index_deliveries (
 );
 CREATE INDEX IF NOT EXISTS index_delivery_pending
  ON shared_memory.index_deliveries(pipeline,retry_at,event_id) WHERE completed_at IS NULL;
+CREATE INDEX IF NOT EXISTS index_delivery_failed
+ ON shared_memory.index_deliveries(pipeline) WHERE completed_at IS NULL AND error_code IS NOT NULL;
 CREATE TABLE IF NOT EXISTS shared_memory.index_receipts (
  tenant TEXT NOT NULL, project TEXT NOT NULL, record_id TEXT NOT NULL,
  pipeline TEXT NOT NULL, version INTEGER NOT NULL, active BOOLEAN NOT NULL,

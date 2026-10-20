@@ -128,6 +128,7 @@ pub struct KnowledgeRelation {
 
 /// Builder for [`Client`].
 pub struct ClientBuilder {
+    explicit_base_url: bool,
     base_url: String,
     api_key: Option<String>,
     access_token: Option<String>,
@@ -138,6 +139,7 @@ pub struct ClientBuilder {
 impl Default for ClientBuilder {
     fn default() -> Self {
         Self {
+            explicit_base_url: std::env::var("ENHANCED_COGNEE_URL").is_ok_and(|value| !value.is_empty()),
             base_url: std::env::var("ENHANCED_COGNEE_URL")
                 .unwrap_or_else(|_| "http://localhost:8080".to_string()),
             api_key: std::env::var("ENHANCED_API_KEY").ok(),
@@ -150,6 +152,7 @@ impl Default for ClientBuilder {
 
 impl ClientBuilder {
     pub fn base_url<S: Into<String>>(mut self, url: S) -> Self {
+        self.explicit_base_url = true;
         self.base_url = url.into();
         self
     }
@@ -213,6 +216,7 @@ impl ClientBuilder {
             .build()
             .map_err(Error::Network)?;
         Ok(Client {
+            explicit_base_url: self.explicit_base_url,
             base_url: base,
             api_key: self.api_key,
             access_token: self.access_token,
@@ -224,6 +228,7 @@ impl ClientBuilder {
 
 /// RNR Enhanced Cognee HTTP client.
 pub struct Client {
+    explicit_base_url: bool,
     base_url: String,
     api_key: Option<String>,
     access_token: Option<String>,

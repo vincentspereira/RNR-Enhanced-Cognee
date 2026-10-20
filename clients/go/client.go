@@ -44,11 +44,12 @@ type Options struct {
 
 // Client is the RNR Enhanced Cognee MCP HTTP client.
 type Client struct {
-	baseURL     string
-	apiKey      string
-	accessToken string
-	tenantID    string
-	hc          *http.Client
+	explicitBaseURL bool
+	baseURL         string
+	apiKey          string
+	accessToken     string
+	tenantID        string
+	hc              *http.Client
 }
 
 // NewClient constructs a Client. Returns an error only if no valid base URL
@@ -58,6 +59,7 @@ func NewClient(opts Options) (*Client, error) {
 	if base == "" {
 		base = os.Getenv("ENHANCED_COGNEE_URL")
 	}
+	explicitBase := base != ""
 	if base == "" {
 		base = "http://localhost:8080"
 	}
@@ -108,11 +110,12 @@ func NewClient(opts Options) (*Client, error) {
 	hc = &clone
 
 	return &Client{
-		baseURL:     base,
-		apiKey:      apiKey,
-		accessToken: accessToken,
-		tenantID:    tenantID,
-		hc:          hc,
+		explicitBaseURL: explicitBase,
+		baseURL:         base,
+		apiKey:          apiKey,
+		accessToken:     accessToken,
+		tenantID:        tenantID,
+		hc:              hc,
 	}, nil
 }
 

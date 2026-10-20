@@ -101,7 +101,7 @@ async def lifespan(app: FastAPI):
         if os.getenv("ENHANCED_INDEX_CONFIG"):
             from src.index_runtime import configured_sinks
             from src.recall_service import DerivedRecall
-            derived = DerivedRecall(configured_sinks())
+            derived = DerivedRecall(configured_sinks(readonly=True))
             if embedder is None or embedder.model != derived.sinks.model:
                 raise ValueError("Configured index recall requires the same prepared local embedding model")
         service = MemoryService(pool, cipher, embedder, derived=derived)

@@ -12,8 +12,8 @@ Read [the audit](README.md) for evidence, conditions, and findings F01-F27.
 Read [implementation status](IMPLEMENTATION-STATUS.md) for completed work,
 verification evidence, limitations and the next repairs.
 The [latest canonical stack update](CANONICAL-STACK-UPDATE-2026-10-20.md)
-records implemented schema-3 index workers/adapters, 68 passing qualification
-checks, real graph rollback/rebuild evidence, and a phase-by-phase list of
+records implemented schema-3 index workers/adapters, 73 passing qualification
+checks, real graph rollback/rebuild and bounded load evidence, and a phase-by-phase list of
 remaining release, deployment, Hermes and owner-controlled requirements.
 The canonical service now includes tested source declarations, correction lineage
 and named-key rotation. See [the key-rotation runbook](KEY-ROTATION.md). These code

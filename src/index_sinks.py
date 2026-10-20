@@ -28,20 +28,25 @@ def checked_origin(value: str, *, allow_internal_http: bool = False) -> str:
 
 
 class DefaultIndexSinks:
+    _NEIGHBORS = ("SELECT project,record_id,version,link_index,source_key,target_key FROM ECLink "
+                  "WHERE tenant=:tenant AND source_key=:source AND record_id IN :identifiers "
+                  "ORDER BY record_id,link_index LIMIT :limit")
+
     def __init__(self, identity: IndexIdentity, *, qdrant_url: str, arcade_url: str,
                  arcade_database: str, arcade_user: str, arcade_password: str,
-                 cache_url: str, dimensions: int, model: str, qdrant_key: str = "",
-                 allow_internal_http: bool = False, http_transport=None):
+                 cache_url: str | None = None, dimensions: int, model: str, qdrant_key: str = "",
+                 allow_internal_http: bool = False, http_transport=None, readonly: bool = False):
         if not re.fullmatch(r"[a-z][a-z0-9_]{0,31}", arcade_database):
             raise ValueError("Use a bounded explicit graph database identifier")
         if not 1 <= dimensions <= 8192 or not model or not arcade_user or not arcade_password:
             raise ValueError("Explicit index model, dimensions and graph credentials are required")
-        cache = urlsplit(cache_url)
-        if (cache.scheme not in {"redis", "rediss"} or not cache.hostname or cache.query or cache.fragment
+        cache = urlsplit(cache_url or "")
+        if not readonly and (cache.scheme not in {"redis", "rediss"} or not cache.hostname or cache.query or cache.fragment
                 or (cache.scheme == "redis" and cache.hostname not in {"127.0.0.1", "localhost", "::1"}
                     and not allow_internal_http)):
             raise ValueError("Use a protected explicit Valkey connection")
         self.identity, self.model, self.dimensions = identity, model, dimensions
+        self.readonly = readonly
         self.collection = "ec_" + identity.pipeline
         self.qdrant_url = checked_origin(qdrant_url, allow_internal_http=allow_internal_http)
         self.arcade_url = checked_origin(arcade_url, allow_internal_http=allow_internal_http)
@@ -50,9 +55,11 @@ class DefaultIndexSinks:
         self._qdrant_headers = {"api-key": qdrant_key} if qdrant_key else {}
         self.http = httpx.AsyncClient(timeout=3, trust_env=False, follow_redirects=False,
                                      transport=http_transport)
-        from redis.asyncio import Redis
-        self.cache = Redis.from_url(cache_url, socket_connect_timeout=3, socket_timeout=3,
-                                    decode_responses=True, max_connections=8)
+        self.cache = None
+        if not readonly:
+            from redis.asyncio import Redis
+            self.cache = Redis.from_url(cache_url, socket_connect_timeout=3, socket_timeout=3,
+                                        decode_responses=True, max_connections=8)
 
     async def _request(self, method, url, **kwargs):
         # Do not buffer an unbounded error/response from a compromised index.
@@ -69,6 +76,8 @@ class DefaultIndexSinks:
         return value
 
     async def sql(self, command: str, params=None, *, script: bool = False, session: str | None = None):
+        if self.readonly and (command != self._NEIGHBORS or script or session is not None):
+            raise PermissionError("API graph clients admit only the fixed bounded neighbor query")
         value = await self._request("POST", self.arcade_url + "/api/v1/command/" + self.database,
             auth=self._arcade_auth, headers={"arcadedb-session-id": session} if session else {},
             json={"language": "sqlscript" if script else "sql",
@@ -100,6 +109,8 @@ class DefaultIndexSinks:
 
     async def provision(self, *, create_graph_database: bool = False):
         """Operator action only. Runtime never creates schemas or chooses a DB."""
+        if self.readonly:
+            raise PermissionError("The API cannot provision derived storage")
         if create_graph_database:
             await self._request("POST", self.arcade_url + "/api/v1/server", auth=self._arcade_auth,
                                 json={"command": "create database " + self.database})
@@ -134,6 +145,8 @@ class DefaultIndexSinks:
         return self.identity.entity(tenant, value)
 
     async def project(self, row, payload: dict, vector: list[float], *, active: bool):
+        if self.readonly:
+            raise PermissionError("The API cannot mutate derived storage")
         tenant, project, ident = row["tenant"], row["project"], row["id"]
         if (len(vector) != self.dimensions or any(not isinstance(x, (int, float)) or not math.isfinite(x) for x in vector)) and active:
             raise ValueError("Index vector violates the configured model/dimension contract")
@@ -178,12 +191,15 @@ class DefaultIndexSinks:
         else:
             await self.cache.delete(cache_key)
 
-    async def neighbors(self, tenant: str, entity: str, *, limit: int = 64):
+    async def neighbors(self, tenant: str, entity: str, *, identifiers: list[str], limit: int = 64):
         if not 1 <= limit <= 64:
             raise ValueError("Graph neighbor limit exceeds the query budget")
-        return await self.sql("SELECT project,record_id,version,link_index,source_key,target_key FROM ECLink "
-                              "WHERE tenant=:tenant AND source_key=:source ORDER BY record_id,link_index LIMIT :limit",
-                              {"tenant": tenant, "source": self.entity(tenant, entity), "limit": limit})
+        if len(identifiers) > 2000 or any(not isinstance(value, str) or len(value) > 200 for value in identifiers):
+            raise ValueError("Graph query exceeds the authorized candidate budget")
+        if not identifiers:
+            return []
+        return await self.sql(self._NEIGHBORS,
+                              {"tenant": tenant, "source": self.entity(tenant, entity), "identifiers": identifiers, "limit": limit})
 
     async def search(self, tenant: str, vector: list[float], identifiers: list[str], limit: int):
         if not identifiers:
@@ -200,4 +216,5 @@ class DefaultIndexSinks:
 
     async def close(self):
         await self.http.aclose()
-        await self.cache.aclose()
+        if self.cache is not None:
+            await self.cache.aclose()

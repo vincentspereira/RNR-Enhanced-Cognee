@@ -64,7 +64,7 @@ class FixtureSinks:
                 target_key=self.entity(row["tenant"], link["object"]))
                 for i, link in enumerate(payload.get("knowledge_links", [])))
 
-    async def neighbors(self, tenant, entity, *, limit):
+    async def neighbors(self, tenant, entity, *, identifiers, limit):
         return [e for e in self.edges if e["source_key"] == self.entity(tenant, entity)][:limit]
 
     async def search(self, tenant, vector, identifiers, limit):
@@ -72,6 +72,25 @@ class FixtureSinks:
         return [{"id": "unowned", "score": .99, "payload": {"tenant": tenant}}] + [
                 {"id": ident, "score": .99, "payload": {"tenant": tenant, "project": "other",
                  "record_id": ident, "version": 999, "model": self.model}} for ident in identifiers]
+
+
+@pytest.mark.asyncio
+async def test_graph_citations_obey_response_budget(pipeline):
+    p = pipeline
+    for subject, targets in (("Root", ["MiddleA", "MiddleB"]),
+                             ("MiddleA", [f"Target{i}" for i in range(16)]),
+                             ("MiddleB", [f"Other{i}" for i in range(16)])):
+        content = " ".join([subject, *targets]) + " " + "x"*2400
+        await p.service.remember(p.scope, content, idempotency_key="budget-"+subject,
+            evidence={"source_id": "synthetic-budget", "source_uri": "https://example.invalid/"+"a"*1800},
+            knowledge_links=[{"subject": subject, "predicate": "links to", "object": target,
+                              "span_start": 0, "span_end": len(content)} for target in targets])
+    while await p.worker.run_once():
+        pass
+    result = await p.service.connections(p.scope, "Root", depth=2, limit=20)
+    assert result["paths"] and result["budget_limit_reached"]
+    assert len(json.dumps(result, ensure_ascii=True).encode()) < 129*1024
+    assert all(edge["source_excerpt_truncated"] for chain in result["paths"] for edge in chain)
 
 
 @pytest_asyncio.fixture
@@ -129,6 +148,10 @@ async def test_retry_partial_delivery_and_worker_restart(pipeline):
         job = await conn.fetchrow("SELECT * FROM shared_memory.index_deliveries")
         assert job["completed_at"] is None and job["error_code"] == "projection_unavailable"
         assert await conn.fetchval("SELECT count(*) FROM shared_memory.index_receipts") == 0
+        await conn.execute("UPDATE shared_memory.index_deliveries SET retry_at=now()+interval '1 minute'")
+    assert not await p.worker.run_once()
+    assert (await p.service.status(p.scope))["change_feed_worker"] == "degraded"
+    async with p.pool.acquire() as conn:
         await conn.execute("UPDATE shared_memory.index_deliveries SET retry_at=now()")
     assert (await p.service.recall(p.scope, "Cedar"))["results"][0]["id"] == record["id"]
     p.sinks.fail = False

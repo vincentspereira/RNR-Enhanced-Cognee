@@ -12,6 +12,7 @@ COPY src/security/auth.py src/security/enterprise_auth.py src/security/http_boun
 COPY src/security/memory_admission.py /app/src/security/
 COPY src/security/tool_policy.py /app/src/security/
 COPY src/memory_library.py src/memory_admin.py /app/src/
+COPY src/memory_daemon.py /app/src/
 COPY src/canonical_adapters.py src/memory_queries.py src/recall_service.py src/index_contracts.py src/index_sinks.py src/index_outbox.py src/index_runtime.py /app/src/
 RUN groupadd --system memoryservice \
     && useradd --system --gid memoryservice --create-home memoryservice

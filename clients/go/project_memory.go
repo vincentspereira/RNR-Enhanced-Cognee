@@ -12,7 +12,7 @@ import (
 // Retraction preserves history. Retry uncertain writes with the same key.
 func (c *Client) projectRequest(ctx context.Context, method, path string, body interface{}) (map[string]interface{}, error) {
 	origin, err := url.Parse(c.baseURL)
-	if err != nil || c.accessToken == "" || c.apiKey != "" || (origin.Path != "" && origin.Path != "/") {
+	if err != nil || !c.explicitBaseURL || c.accessToken == "" || c.apiKey != "" || (origin.Path != "" && origin.Path != "/") {
 		return nil, errors.New("canonical memory requires a scoped bearer token and service origin")
 	}
 	out := map[string]interface{}{}

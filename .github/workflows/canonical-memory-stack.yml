@@ -103,9 +103,34 @@ jobs:
         env:
           HF_HUB_OFFLINE: '1'
         run: |
-          pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py -q --override-ini="addopts=" --junitxml=default-stack.xml
+          pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py tests/qualification/test_memory_daemon.py tests/qualification/test_memory_reviewer.py -q --override-ini="addopts=" --junitxml=default-stack.xml
       - name: Build restricted runtime image from the tested source
         run: docker build -f docker/Dockerfile.memory -t canonical-memory:qualification .
+      - name: Prepare fresh restricted image roles and index namespaces
+        env:
+          RNR_ALLOW_SYNTHETIC_CONTAINERS: '1'
+        run: python tests/qualification/provision_container_stack.py --output "$RUNNER_TEMP/image-fixture"
+      - name: Exercise actual API and worker images with four stores and worker restart
+        env:
+          RNR_ALLOW_SYNTHETIC_CONTAINERS: '1'
+          RNR_QUALIFICATION_SERVICE_URL: http://127.0.0.1:8080
+          RNR_QUALIFICATION_JWT_SECRET: synthetic-ci-container-key-at-least-32-bytes
+        run: |
+          python - <<'PY'
+          import os, pathlib, subprocess
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'image-fixture'
+          shared = ['--network', 'host', '--read-only', '--tmpfs', '/tmp:rw,noexec,nosuid,size=64m',
+              '--label', 'rnr.cognee.qualification=synthetic',
+              '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--memory', '1g',
+              '--mount', 'type=bind,source='+os.environ['RNR_QUALIFICATION_MODEL_CACHE']+',target=/models,readonly',
+              '--mount', 'type=bind,source='+str(root/'index.json')+',target=/config/index.json,readonly']
+          subprocess.run(['docker', 'run', '-d', '--name', 'canonical-memory-index', *shared,
+              '--env-file', str(root/'worker.env'), '--entrypoint', 'python', 'canonical-memory:qualification',
+              '-m', 'src.index_runtime', 'run'], check=True)
+          subprocess.run(['docker', 'run', '-d', '--name', 'canonical-memory-api', *shared,
+              '--env-file', str(root/'api.env'), 'canonical-memory:qualification'], check=True)
+          PY
+          python tests/qualification/default_stack_container_smoke.py > built-default-stack.log 2>&1
       - name: Scan exact built image and retain unsuppressed security results
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro -v "$PWD:/report" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --format json --output /report/image-security.json canonical-memory:qualification
@@ -118,4 +143,5 @@ jobs:
           path: |
             default-stack.xml
             image-security.json
+            built-default-stack.log
           retention-days: 14

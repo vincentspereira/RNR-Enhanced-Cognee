@@ -37,10 +37,12 @@ def create_config(path: str) -> None:
 
 
 def issue_token(*, tenant: str, project: str, subject: str, agent: str,
-                output: str, expires_hours: int = 1, readonly: bool = False) -> None:
+                output: str, expires_hours: int = 1, readonly: bool = False, reviewer: bool = False) -> None:
     import jwt
     validate_tenant_id(tenant)
     validate_tenant_id(project)
+    if reviewer and readonly:
+        raise ValueError("Choose one restricted token role")
     if not 1 <= expires_hours <= 24 or not all(0 < len(value.strip()) <= 200 for value in (subject, agent)):
         raise ValueError("Use bounded actor identifiers and a token lifetime of 1-24 hours")
     secret = os.environ["ENHANCED_JWT_SECRET"]
@@ -48,7 +50,7 @@ def issue_token(*, tenant: str, project: str, subject: str, agent: str,
         raise ValueError("A persistent signing secret of at least 32 bytes is required")
     now = int(time.time())
     token = jwt.encode({"sub": subject, "agent_id": agent, "tenant": tenant,
-                        "project_id": project, "roles": ["readonly" if readonly else "api_client"],
+                        "project_id": project, "roles": ["memory_reviewer" if reviewer else "readonly" if readonly else "api_client"],
                         "capture_policy": "selected", "iat": now, "exp": now + expires_hours * 3600},
                        secret, algorithm="HS256")
     write_private_json(output, {"ENHANCED_COGNEE_ACCESS_TOKEN": token})
@@ -152,7 +154,9 @@ def main():
     for name in ("tenant", "project", "subject", "agent", "output"):
         token.add_argument("--" + name, required=True)
     token.add_argument("--expires-hours", type=int, default=1)
-    token.add_argument("--readonly", action="store_true")
+    roles = token.add_mutually_exclusive_group()
+    roles.add_argument("--readonly", action="store_true")
+    roles.add_argument("--reviewer", action="store_true")
     sub.add_parser("init-schema")
     role = sub.add_parser("grant-runtime")
     role.add_argument("--role", required=True)

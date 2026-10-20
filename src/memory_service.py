@@ -19,7 +19,7 @@ from src.encryption_manager import EncryptionManager
 from src.memory_contracts import evidence_declaration
 from src.memory_library import LibraryAccess, LIBRARY_SCHEMA, READ_PREDICATE
 from src.multi_tenant import validate_tenant_id
-from src.security.auth import Role
+from src.security.auth import Permission
 from src.security.enterprise_auth import AuthError, Principal
 from src.security.memory_admission import require_no_credentials, contains_credentials, contains_private_details
 from src.index_contracts import INDEX_SCHEMA, validated_links
@@ -49,7 +49,7 @@ class MemoryScope:
         project = validate_tenant_id(str(principal.claims.get("project_id") or ""))
         return cls(tenant, project, principal.subject,
                    str(principal.claims.get("agent_id") or principal.subject),
-                   principal.role == Role.ADMIN, principal.claims.get("capture_policy") == "selected")
+                   principal.has_permission(Permission.MEMORY_ADMIN), principal.claims.get("capture_policy") == "selected")
 
 
 SCHEMA = """
@@ -218,6 +218,10 @@ class MemoryService(LibraryAccess, MemoryQueries):
         self.admit(content)
         if not 1 <= len(idempotency_key) <= 200 or not 1 <= len(category) <= 100:
             raise ValueError("Invalid retry key or category length")
+        # Retry/topic identifiers are stored outside the encrypted payload too.
+        # Screen every caller-controlled field before any database or model work.
+        admission_fields = json.dumps([category, idempotency_key, fact_key], ensure_ascii=True)
+        require_no_credentials(admission_fields)
         metadata = metadata or {}
         self.admit(json.dumps(metadata, ensure_ascii=True, allow_nan=False))
         if expires_at is not None:
@@ -227,7 +231,8 @@ class MemoryService(LibraryAccess, MemoryQueries):
         evidence = evidence_declaration(evidence)
         links = validated_links(content, knowledge_links)
         self.admit(json.dumps(evidence, ensure_ascii=True, allow_nan=False))
-        if scope.selected_capture and contains_private_details(json.dumps([content, metadata, evidence, links], ensure_ascii=True)):
+        if scope.selected_capture and contains_private_details(json.dumps(
+                [content, category, idempotency_key, fact_key, metadata, evidence, links], ensure_ascii=True)):
             raise MemoryClarificationRequired("Please clarify a sanitized summary before automatic storage of private details")
         if fact_key is not None and (not isinstance(fact_key, str) or not re.fullmatch(r"[a-z][a-z0-9_.:-]{0,159}", fact_key)):
             raise ValueError("Fact keys must be bounded lowercase topic identifiers")
@@ -323,6 +328,8 @@ class MemoryService(LibraryAccess, MemoryQueries):
             self.admit(json.dumps(metadata, ensure_ascii=True, allow_nan=False))
         if category is not None and not 1 <= len(category) <= 100:
             raise ValueError("Invalid category length")
+        if category is not None:
+            require_no_credentials(category)
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 # Workers take the same record lock before publishing a snapshot.

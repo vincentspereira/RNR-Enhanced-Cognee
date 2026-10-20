@@ -287,12 +287,13 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
 
 # Synonyms for each role, so tokens minted by external IdPs map cleanly.
 _ROLE_SYNONYMS = {
+    Role.MEMORY_REVIEWER: {"memory_reviewer"},
     Role.ADMIN: {"admin", "administrator", "superuser", "owner", "root"},
     Role.USER: {"user", "member", "editor", "write", "writer", "contributor"},
     Role.API_CLIENT: {"api", "api_client", "apiclient", "service", "service_account", "client"},
     Role.READONLY: {"readonly", "read-only", "read_only", "read", "viewer", "reader", "guest"},
 }
-_ROLE_RANK = {Role.ADMIN: 3, Role.USER: 2, Role.API_CLIENT: 1, Role.READONLY: 0}
+_ROLE_RANK = {Role.ADMIN: 4, Role.MEMORY_REVIEWER: 3, Role.USER: 2, Role.API_CLIENT: 1, Role.READONLY: 0}
 
 
 def coerce_role(value: Any) -> Optional[Role]:

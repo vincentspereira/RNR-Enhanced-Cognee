@@ -25,8 +25,12 @@ class IndexWorker:
         self.pipeline = sinks.identity.pipeline
         self.lease_seconds = lease_seconds
 
-    async def heartbeat(self, state="running"):
+    async def heartbeat(self, state=None):
         async with self.pool.acquire() as conn:
+            if state is None:
+                failed = await conn.fetchval("""SELECT EXISTS(SELECT 1 FROM shared_memory.index_deliveries
+                    WHERE pipeline=$1 AND completed_at IS NULL AND error_code IS NOT NULL)""", self.pipeline)
+                state = "degraded" if failed else "running"
             value = await conn.fetchval("""INSERT INTO shared_memory.index_workers
                 (pipeline,state,model,dimensions) VALUES($1,$2,$3,$4)
                 ON CONFLICT(pipeline) DO UPDATE SET heartbeat=now(),state=excluded.state
@@ -69,6 +73,7 @@ class IndexWorker:
         try:
             async with asyncio.timeout(10):
                 await self._deliver(job)
+            await self.heartbeat()
         except asyncio.CancelledError:
             # The lease deliberately survives interruption; a new process can
             # reclaim it after expiry, including a crash after partial delivery.

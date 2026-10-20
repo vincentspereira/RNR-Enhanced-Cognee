@@ -71,7 +71,7 @@ def main():
         assert client.patch(path, json={"expected_version": 3, "content": "Accidental resurrection"}, headers=credential()).status_code == 409
         status = client.get("/v1/memories/status", headers=credential())
         assert status.status_code == 200 and status.json()["active_records"] == 0
-        assert status.json()["graph"] == "unavailable"
+        assert status.json()["graph"] == os.getenv("RNR_EXPECTED_GRAPH_CAPABILITY", "unavailable")
         assert status.json()["encryption_key_id"] == os.getenv("RNR_EXPECTED_MEMORY_KEY_ID", "legacy_unnamed")
     print("Built-image authentication, retry, scope, recall, sharing/revocation, evidence, correction lineage, retraction and key-status checks passed.")
 

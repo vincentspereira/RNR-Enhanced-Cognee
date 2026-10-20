@@ -99,7 +99,7 @@ jobs:
           ENHANCED_LOAD_DOTENV: '0'
           COGNEE_LOG_FILE: 'false'
         run: |
-          pytest tests/qualification/test_memory_service_postgres.py tests/qualification/test_memory_evidence.py tests/qualification/test_memory_key_rotation.py tests/qualification/test_selected_capture_and_library.py tests/qualification/test_hermes_provider_contract.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py -q -p no:cacheprovider --override-ini="addopts=" --junitxml=canonical-qualification.xml
+          pytest tests/qualification/test_memory_service_postgres.py tests/qualification/test_memory_evidence.py tests/qualification/test_memory_key_rotation.py tests/qualification/test_selected_capture_and_library.py tests/qualification/test_hermes_provider_contract.py tests/qualification/test_hermes_operator_upgrade.py tests/qualification/test_memory_daemon.py tests/qualification/test_memory_reviewer.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py -q -p no:cacheprovider --override-ini="addopts=" --junitxml=canonical-qualification.xml
 
       - name: Upload test evidence
         if: always()

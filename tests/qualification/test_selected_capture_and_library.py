@@ -43,9 +43,24 @@ async def test_library_requires_membership_review_current_version_and_no_private
     other = MemoryScope("q_" + uuid.uuid4().hex[:20], "reader", "eve", "reader")
     try:
         await service.initialize()
+        for field in ("category", "idempotency_key", "fact_key"):
+            arguments = {"idempotency_key": "credential-field-" + field,
+                         field: "password: synthetic-fixture-only"}
+            with pytest.raises(ValueError, match="Credential-shaped"):
+                await service.remember(source, "A safe invented decision.", **arguments)
+        for field in ("category", "idempotency_key"):
+            arguments = {"idempotency_key": "private-field-" + field, field: "alice@example.test"}
+            with pytest.raises(MemoryClarificationRequired):
+                await service.remember(source, "A safe invented decision.", **arguments)
+        async with pool.acquire() as connection:
+            assert await connection.fetchval("SELECT count(*) FROM shared_memory.records WHERE tenant=$1", tenant) == 0
         record = await service.remember(source, "The reusable deployment decision uses cedar.",
             fact_key="deployment.storage", idempotency_key="one", metadata={"internal_session": "local-only"},
             evidence={"kind": "decision"})
+        with pytest.raises(ValueError, match="Credential-shaped"):
+            await service.correct(source, record["id"], expected_version=1,
+                content=record["content"], category="password: synthetic-fixture-only")
+        assert (await service.get(source, record["id"]))["version"] == 1
         with pytest.raises(MemoryConflict):
             await service.remember(source, "The deployment decision uses birch.",
                 fact_key="deployment.storage", idempotency_key="contradiction")
