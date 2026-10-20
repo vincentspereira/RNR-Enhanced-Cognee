@@ -1,6 +1,7 @@
 """Always-on credential exclusion for canonical memory, independent of models."""
 from __future__ import annotations
 
+import json
 import re
 
 
@@ -37,3 +38,18 @@ def require_no_credentials(text: str) -> None:
 def contains_private_details(text: str) -> bool:
     """Conservative publication/capture screen, not a complete privacy classifier."""
     return contains_credentials(text) or any(pattern.search(text) for pattern in _PERSONAL)
+
+
+def contains_private_memory_details(record: dict) -> bool:
+    """Screen memory data, excluding service-generated retrieval bookkeeping.
+
+    Internal UUIDs can resemble phone numbers and embedding decimals can resemble
+    payment-card numbers. Neither is caller-provided memory text. Nested metadata,
+    provenance, evidence, categories and links remain screened without exclusions.
+    Use this only for canonical read results; admission still screens every
+    caller-controlled field before storage.
+    """
+    internal = {"id", "version", "project_id", "state", "created_at", "updated_at",
+                "expires_at", "shared", "embedding", "embedding_model"}
+    visible = {key: value for key, value in record.items() if key not in internal}
+    return contains_private_details(json.dumps(visible, ensure_ascii=True))

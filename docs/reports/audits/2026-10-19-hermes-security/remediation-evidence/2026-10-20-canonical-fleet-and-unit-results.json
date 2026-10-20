@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-20",
+  "scope": "Synthetic Workspace qualification; no everyday/private deployment",
+  "unit": {
+    "tests": 4285,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 37.44,
+    "xml_sha256": "121d7a936d4efc41c9cefba31c41116b798e14818666c8a8bedc6774824ea12d"
+  },
+  "full_opt_in_qualification": {
+    "tests": 77,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 40.104,
+    "xml_sha256": "870d4a4430d943258d13ad71899be172b856a3ca7924b4975801a904e384e38f"
+  },
+  "restored_checks": {
+    "adapter_file_tests": 39,
+    "locust_import_subprocess_tests": 1,
+    "locust_timeout_seconds": 30,
+    "dependency_lock": "requirements-unit-optional.lock",
+    "hash_verification": true,
+    "test_only_packages_audited": 38,
+    "known_dependency_findings": 0
+  },
+  "fleet": {
+    "bot_spaces": 41,
+    "controller_spaces": 1,
+    "distinct_profile_contract_instances": 42,
+    "real_postgresql_api": true,
+    "installed_Hermes_fleet": false,
+    "simultaneous_chat_models_qualified": false
+  },
+  "backup_script": {
+    "saved_original_filename": true,
+    "original_copies_preserved": true,
+    "synthetic_powershell_checks": 29,
+    "synthetic_age_inventory_checks": 8,
+    "actual_7zip_encryption_and_restore": true,
+    "Windows_DPAPI_or_live_WSL_cloud_run_qualified": false,
+    "robocopy_cause": "ERROR 433 copying a PostgreSQL Unix socket; replaced workspace mirror with native Linux archive",
+    "approved_service_backup_directory": "/var/backups/enhanced-cognee",
+    "service_backup_installed": false
+  },
+  "release": {
+    "merge_performed": false,
+    "new_hosted_checks": "pending publication",
+    "previous_OS_image_security_gate": "failed; no finding suppression"
+  },
+  "native_distribution": {
+    "wheel_sha256": "5c78ff2eff6e8f0574970e640390ee23f41a567e811c0d5081af331c3b3a68f8",
+    "packaging_boundary": "passed",
+    "clean_outside_checkout_imports": "passed",
+    "compatible_packages": 55
+  }
+}

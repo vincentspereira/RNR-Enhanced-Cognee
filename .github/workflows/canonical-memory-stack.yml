@@ -103,7 +103,7 @@ jobs:
         env:
           HF_HUB_OFFLINE: '1'
         run: |
-          pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py tests/qualification/test_memory_daemon.py tests/qualification/test_memory_reviewer.py -q --override-ini="addopts=" --junitxml=default-stack.xml
+          pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py tests/qualification/test_memory_daemon.py tests/qualification/test_memory_reviewer.py tests/qualification/test_bot_fleet.py tests/qualification/test_selected_recall_bookkeeping.py -q --override-ini="addopts=" --junitxml=default-stack.xml
       - name: Build restricted runtime image from the tested source
         run: docker build -f docker/Dockerfile.memory -t canonical-memory:qualification .
       - name: Prepare fresh restricted image roles and index namespaces

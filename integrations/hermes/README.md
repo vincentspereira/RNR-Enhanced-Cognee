@@ -4,6 +4,10 @@ Status: installed and under live qualification in the separate invented-data
 Hermes test profile. The everyday profile is unchanged. See the audit
 implementation tracker for current evidence and outstanding release checks.
 
+For multiple bot profiles, use the [fleet memory runbook](../../docs/runbooks/HERMES-BOT-FLEET-MEMORY.md).
+It describes one protected backend with per-profile private spaces/credentials,
+reviewed shared libraries, credential renewal requirements and deployment limits.
+
 This is a native Hermes memory-provider plugin, not the upstream Cognee engine.
 It uses the restricted Enhanced Cognee project-memory API and Python's standard
 library. It does not install a second Cognee package into Hermes.

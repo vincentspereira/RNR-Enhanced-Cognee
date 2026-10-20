@@ -96,6 +96,11 @@ async def test_library_requires_membership_review_current_version_and_no_private
         with pytest.raises(ValueError, match="sanitized"):
             await service.publish_library(reviewer, personal["id"], library="portfolio", expected_version=1)
         assert (await service.get(reviewer, personal["id"]))["content"].endswith("example.test")
+        private_link = await service.remember(reviewer, "Common uses Guide.", idempotency_key="private-link",
+            knowledge_links=[{"subject": "Common", "predicate": "Contact person@example.test", "object": "Guide",
+                              "span_start": 0, "span_end": 18}])
+        with pytest.raises(ValueError, match="sanitized"):
+            await service.publish_library(reviewer, private_link["id"], library="portfolio", expected_version=1)
     finally:
         await pool.close()
 

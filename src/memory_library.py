@@ -96,7 +96,7 @@ class LibraryAccess:
                     if member is not True:
                         raise AuthError(403, "Source project has no library publication grant")
                     payload = self._payload(row)
-                    visible = {key: payload.get(key) for key in ("content", "category", "metadata", "evidence")}
+                    visible = {key: payload.get(key) for key in ("content", "category", "metadata", "evidence", "knowledge_links", "fact_key")}
                     if contains_private_details(json.dumps(visible, ensure_ascii=True)):
                         raise ValueError("Private details require a sanitized library summary")
                     await conn.execute("""INSERT INTO shared_memory.library_publications

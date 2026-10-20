@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 
 from src.memory_library import READ_PREDICATE
-from src.security.memory_admission import contains_private_details
+from src.security.memory_admission import contains_private_memory_details
 
 
 class MemoryQueries:
@@ -30,7 +30,7 @@ class MemoryQueries:
                 continue
             if category is not None and record.get("category") != category:
                 continue
-            if scope.selected_capture and contains_private_details(json.dumps(record, ensure_ascii=True)):
+            if scope.selected_capture and contains_private_memory_details(record):
                 continue
             if row["project"] != scope.project:
                 record = self.shared_view(record)
@@ -74,7 +74,7 @@ class MemoryQueries:
             value = self._payload(row)
             try:
                 require_no_credentials(json.dumps(value, ensure_ascii=True))
-                if scope.selected_capture and contains_private_details(json.dumps(value, ensure_ascii=True)):
+                if scope.selected_capture and contains_private_memory_details(value):
                     raise ValueError("Private historical content requires review")
                 value.pop("embedding", None)
             except ValueError:

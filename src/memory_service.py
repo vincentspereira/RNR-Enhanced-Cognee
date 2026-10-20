@@ -21,7 +21,7 @@ from src.memory_library import LibraryAccess, LIBRARY_SCHEMA, READ_PREDICATE
 from src.multi_tenant import validate_tenant_id
 from src.security.auth import Permission
 from src.security.enterprise_auth import AuthError, Principal
-from src.security.memory_admission import require_no_credentials, contains_credentials, contains_private_details
+from src.security.memory_admission import require_no_credentials, contains_credentials, contains_private_details, contains_private_memory_details
 from src.index_contracts import INDEX_SCHEMA, validated_links
 from src.memory_queries import MemoryQueries
 
@@ -307,7 +307,7 @@ class MemoryService(LibraryAccess, MemoryQueries):
         if row is None:
             raise KeyError("Memory not found in this project")
         result = self._decode(row)
-        if scope.selected_capture and contains_private_details(json.dumps(result, ensure_ascii=True)):
+        if scope.selected_capture and contains_private_memory_details(result):
             raise MemoryClarificationRequired("This record needs a sanitized current summary before selected recall")
         return self.shared_view(result) if row["project"] != scope.project else result
 
@@ -450,7 +450,7 @@ class MemoryService(LibraryAccess, MemoryQueries):
             raw = self._payload(row)
             if contains_credentials(json.dumps(raw, ensure_ascii=True)):
                 continue
-            if scope.selected_capture and contains_private_details(json.dumps(raw, ensure_ascii=True)):
+            if scope.selected_capture and contains_private_memory_details(raw):
                 continue
             stored = raw.get("embedding")
             if vector and stored and raw.get("embedding_model") == self.embedder.model:

@@ -7,7 +7,7 @@ import json
 from src.index_contracts import normalized, validated_links
 from src.memory_library import READ_PREDICATE
 from src.security.enterprise_auth import AuthError
-from src.security.memory_admission import contains_private_details
+from src.security.memory_admission import contains_private_memory_details
 
 
 class DerivedRecall:
@@ -92,7 +92,7 @@ class DerivedRecall:
                         continue
                     try:
                         record = service._decode(row)
-                        if scope.selected_capture and contains_private_details(json.dumps(record, ensure_ascii=True)):
+                        if scope.selected_capture and contains_private_memory_details(record):
                             continue
                         links = validated_links(record["content"], record.get("knowledge_links", []))
                         number = edge.get("link_index")

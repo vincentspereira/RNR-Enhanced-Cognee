@@ -63,12 +63,52 @@ an old image or installed plugin does not qualify a newer source revision.
   four real stores, worker restart/backlog recovery and fresh restricted database
   roles. It retains unsuppressed findings and fails on high/critical matches.
 
+## Bot-fleet, privacy and backup continuation
+
+One protected backend can serve the 41 separately configured bots plus the main
+controller, with 42 distinct scoped identities and private spaces. Reviewed
+portfolio/team libraries provide controlled sharing. The [fleet runbook](../../../runbooks/HERMES-BOT-FLEET-MEMORY.md)
+describes per-profile setup, same-user isolation limits, credential renewal and
+capacity requirements. This is not a claim of 42 installed bots or simultaneous
+model capacity. A real PostgreSQL/API fleet test and a separate concurrent
+42-profile provider-contract test pass.
+
+The fleet check exposed a privacy false positive: generated UUIDs and embedding
+decimals could resemble private phone/card details and hide a safe admitted
+memory. Read screening now excludes only root-level service bookkeeping. Caller
+content, nested metadata, provenance, categories and relationship declarations
+remain screened, and admission still rejects credential-shaped fields. A
+regression test covers get/list/semantic/history and continued private-data
+withholding. Library publication now also screens relationship and fact fields.
+
+The two former unit skips were repaired. A module-level dependency skip hid 39
+adapter tests; installing the locked test-only Memcached dependency and removing
+the skip restores them. Locust's actual import/eight workload classes are checked
+in a separate process with a 30-second timeout, keeping gevent state out of
+pytest's asyncio process. Its locked test dependencies audit clean. Required CI
+installs them and rejects any skips in the unit report. The current total is
+4,285 passing unit tests, zero failures/errors/skips. `requirements-test.txt` now
+uses the compatible full/test locks instead of obsolete pytest pins.
+
+Separately, the owner's Windows backup script was saved under its requested
+original filename with earlier copies preserved. The diagnostic log showed
+ERROR 433 on a PostgreSQL Unix socket, rather than a failed database-document
+copy. A native Linux workspace archive replaces the unsuitable NTFS workspace
+mirror; complete encrypted Cognee archive/manifest pairs are collected from the
+approved path. Cloud generations require encrypted archives and preserve matched
+base/differential recovery sets, including tiny deletion records. A private local
+step-by-step password-manager/encryption/recovery guide accompanies the script.
+Twenty-nine synthetic PowerShell/real-7-Zip checks and eight synthetic age inventory
+checks pass. Live Windows DPAPI, full real-data backup, remote upload and installed
+Hermes backup permissions/timer remain unqualified; no real backup or cloud
+transfer was triggered by these edits. Private scripts/logs are not published.
+
 ## Evidence from the current local checks
 
-- Full unit lane: 4,245 passed, 2 skipped, with credential environment removed and
+- Full unit lane: 4,285 passed, 0 failed, 0 skipped, with credential environment removed and
   outbound network denied. This is the developer lane with documented compatible
   overlays, not an exact newly built full-image environment.
-- Full opt-in qualification suite: 74 passed, no skipped tests, against an
+- Full opt-in qualification suite: 77 passed, no skipped tests, against an
   explicitly provisioned native PostgreSQL 16.15 fixture, prepared offline BGE
   search model, real Qdrant 1.18.3, ArcadeDB 26.9.1 and Valkey 7.2.13. Includes
   the three actual language clients, actual stdio bridge, encrypted age backup
@@ -135,7 +175,7 @@ private owner replies, service keys or profile credentials are release artifacts
 | 2 - Consistent memory and retrieval | Canonical memory, transport adapters and actual default-stack delivery/recovery implemented | Qualify the deployed configuration and any separately selected legacy/provider paths; no automatic bulk migration or permanent erasure |
 | 3 - Packaging and release | Small native artifact, locks, local checks and latest built API/worker image recovery qualification pass; exact scan findings retained | Unresolved OS/development advisory gates and supported private deployment configuration |
 | 4 - Hermes provider | Earlier native provider installed and model-tested; newer eight-tool update implemented | GitHub-only delivery of this update, schema/grant upgrade, installed-host and model-driven requalification inside Ubuntu-Hermes |
-| 5 - Isolated qualification | Current 74-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
+| 5 - Isolated qualification | Current 77-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
 
 The installed Hermes version previously refused the local chat endpoint's
 8,192-token serving window because it requires at least 64,000. Reusing an

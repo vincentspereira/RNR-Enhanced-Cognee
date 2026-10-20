@@ -78,6 +78,47 @@ def test_registration_lifecycle_and_profile_separation(provider_module, monkeypa
     provider.shutdown()
 
 
+def test_controller_and_forty_one_providers_bind_independent_profile_contexts(provider_module, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from contextvars import ContextVar
+    import hashlib
+
+    module, root = provider_module
+    active = ContextVar("fleet_test_profile")
+    monkeypatch.setattr(module, "get_hermes_home", active.get)
+    monkeypatch.setattr(module, "get_secret", lambda key: "synthetic.profile."+active.get().name)
+    homes = [root / "controller"]+[root / f"bot_{index:02}" for index in range(41)]
+    for home in homes:
+        home.mkdir()
+        (home / "enhanced_cognee.json").write_text(json.dumps({"base_url": "http://127.0.0.1:28080",
+            "capture_policy": "selected", "include_shared": True}))
+
+    def initialize(home):
+        context = active.set(home)
+        try:
+            provider = module.EnhancedCogneeProvider()
+            provider.initialize("session-"+home.name, hermes_home=str(home), agent_context="primary")
+            identity = provider.identity_signature()
+            assert identity["home"] == str(home)
+            expected = hashlib.sha256(("synthetic.profile."+home.name).encode()).hexdigest()
+            assert identity["credential_revision"] == expected
+            assert provider._home == home and provider._session == "session-"+home.name
+            # A provider created for one profile cannot be used under another
+            # caller's context even when they share a process and service URL.
+            token = active.set(root / "different_caller")
+            try:
+                assert "error" in json.loads(provider.handle_tool_call("enhanced_get", {"record_id": "fixture"}))
+            finally:
+                active.reset(token)
+            return identity["credential_revision"]
+        finally:
+            active.reset(context)
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        revisions = list(executor.map(initialize, homes))
+    assert len(set(revisions)) == 42
+
+
 def test_subagents_cannot_write_or_widen_scope(provider_module):
     module, home = provider_module
     provider = module.EnhancedCogneeProvider()
