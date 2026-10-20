@@ -180,7 +180,7 @@ outside Git and outside ordinary agent access, with a separately protected
 recovery copy. Never paste credentials into instructions or memory content.
 
 Before starting, an operator runs `python -m src.memory_admin init-schema` against
-the dedicated service database. Runtime startup only validates schema version 2.
+the dedicated service database. Runtime startup only validates schema version 3.
 Use `grant-runtime` to create a separate service account with no schema creation,
 canonical/history deletion, or audit/history update permission. `create-config`
 and `issue-token` write generated secrets to new owner-only files and never print
@@ -197,8 +197,10 @@ keys or retire recovery keys.
 For local semantic recall, prepare the selected free FastEmbed model separately,
 then set `ENHANCED_EMBEDDING_MODEL` and `ENHANCED_MODEL_CACHE`. Startup uses only
 the prepared cache. Without a configured model the service reports text retrieval.
-Graph reasoning is currently unavailable on this restricted API. A durable
-outbox is not a qualified Qdrant/ArcadeDB worker pipeline.
+Source-linked graph recall requires a configured Qdrant/ArcadeDB/Valkey pipeline
+and a ready indexing worker. Without that configuration it reports unavailable.
+Use the canonical memory/index runbook to provision and qualify those stores;
+an outbox alone does not establish working index delivery.
 
 Local memory processing does not make the chat model local: retrieved facts may
 be sent to Hermes' configured chat model when they enter the conversation.

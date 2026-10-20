@@ -320,6 +320,7 @@ docs/TASKS-PHASE-*.md
 
 # Enhanced Cognee local config (machine-specific)
 .enhanced-cognee-config.json
+.venv-deployment/
 
 # Transient benchmark run output (baselines are committed under tests/benchmarks/baselines/)
 tests/benchmarks/output/

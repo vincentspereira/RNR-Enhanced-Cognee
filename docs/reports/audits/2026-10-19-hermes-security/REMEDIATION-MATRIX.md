@@ -44,3 +44,11 @@ encrypted records, local semantic recall and optional configured source-linked
 graph recall with actual tested derived delivery. It reports missing/stopped/failed
 workers and lag explicitly. These Workspace and hosted fixtures do not establish
 that the newer stack is installed or privately isolated inside Ubuntu-Hermes.
+## Installed-host continuation - 20 October 2026
+
+See [HERMES-DEPLOYMENT-2026-10-20.md](HERMES-DEPLOYMENT-2026-10-20.md)
+for the actual schema-3/eight-tool/four-store synthetic deployment, instruction
+reconciliation, 73-pass/four-skip qualification, selected-model failures/repair,
+two-profile checks and encrypted restore/index rebuild. Protected OS deployment,
+scheduled backup execution, local selected capture, owner custody and release
+acceptance remain open; historical rows above retain their original scope.

@@ -48,7 +48,8 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
     identity = IndexIdentity("synthetic-default-stack-index-key-32bytes", "q_" + suffix)
     sinks = DefaultIndexSinks(identity, qdrant_url=settings["qdrant_url"], arcade_url=settings["arcade_url"],
         arcade_database="q_" + suffix, arcade_user=settings["arcade_user"], arcade_password=settings["arcade_password"],
-        cache_url=settings["cache_url"], dimensions=384, model="BAAI/bge-small-en-v1.5")
+        cache_url=settings["cache_url"], dimensions=384, model="BAAI/bge-small-en-v1.5",
+        qdrant_key=settings.get("qdrant_api_key", ""))
     encryption_key = Fernet.generate_key().decode()
     service = MemoryService(pool, EncryptionManager(master_key=encryption_key),
         LocalEmbeddings(sinks.model, cache), derived=DerivedRecall(sinks))
@@ -72,7 +73,8 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         assert {edge["record_id"] for edge in result["paths"][-1]} == {first["id"], second["id"]}
         reader = DefaultIndexSinks(identity, qdrant_url=settings["qdrant_url"], arcade_url=settings["arcade_url"],
             arcade_database=sinks.database, arcade_user=settings["arcade_user"], arcade_password=settings["arcade_password"],
-            dimensions=384, model=sinks.model, readonly=True)
+            dimensions=384, model=sinks.model, readonly=True,
+            qdrant_key=settings.get("qdrant_read_api_key", settings.get("qdrant_api_key", "")))
         try:
             assert reader.cache is None
             with pytest.raises(PermissionError):
@@ -97,7 +99,8 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
             "ENHANCED_MEMORY_DATABASE_URL": fixture_url, "ENHANCED_EMBEDDING_MODEL": sinks.model,
             "ENHANCED_MODEL_CACHE": cache, "ENHANCED_INDEX_CONFIG": str(index_path),
             "ENHANCED_INDEX_KEY": "synthetic-default-stack-index-key-32bytes",
-            "INDEX_ARCADEDB_USER": settings["arcade_user"], "INDEX_ARCADEDB_PASSWORD": settings["arcade_password"]}
+            "INDEX_ARCADEDB_USER": settings["arcade_user"], "INDEX_ARCADEDB_PASSWORD": settings["arcade_password"],
+            "INDEX_QDRANT_API_KEY": settings.get("qdrant_read_api_key", settings.get("qdrant_api_key", ""))}
         for key, value in environment.items():
             monkeypatch.setenv(key, value)
         for key in ("INDEX_VALKEY_URL", "ENHANCED_API_KEY", "ENHANCED_OIDC_ISSUER", "ENHANCED_OIDC_JWKS_URI"):
@@ -143,7 +146,8 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         rebuilt = DefaultIndexSinks(IndexIdentity("synthetic-default-stack-index-key-32bytes", "r_" + suffix),
             qdrant_url=settings["qdrant_url"], arcade_url=settings["arcade_url"], arcade_database="r_"+suffix,
             arcade_user=settings["arcade_user"], arcade_password=settings["arcade_password"],
-            cache_url=settings["cache_url"], dimensions=384, model=sinks.model)
+            cache_url=settings["cache_url"], dimensions=384, model=sinks.model,
+            qdrant_key=settings.get("qdrant_api_key", ""))
         try:
             await rebuilt.provision(create_graph_database=True)
             new_worker = IndexWorker(service, rebuilt)
@@ -184,6 +188,7 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         assert await sinks.cache.get(cache_key) is None
         assert await sinks.neighbors(scope.tenant, "Cedar", identifiers=[first["id"]]) == []
         points = await sinks._request("POST", sinks.qdrant_url + "/collections/" + sinks.collection + "/points",
+                                      headers=sinks._qdrant_headers,
                                       json={"ids": [first["id"]], "with_payload": True})
         assert points["result"] == []
         assert (await service.status(scope))["pending_change_events"] == 0
