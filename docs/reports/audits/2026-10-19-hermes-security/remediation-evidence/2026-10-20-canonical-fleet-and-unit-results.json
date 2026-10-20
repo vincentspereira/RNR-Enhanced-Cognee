@@ -6,8 +6,8 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "seconds": 37.44,
-    "xml_sha256": "121d7a936d4efc41c9cefba31c41116b798e14818666c8a8bedc6774824ea12d"
+    "seconds": 44.893,
+    "xml_sha256": "cceb54868627ca027dbf497b1728c8f11beb880e7a77fd89aaac8102491db4d9"
   },
   "full_opt_in_qualification": {
     "tests": 77,
@@ -47,7 +47,13 @@
   },
   "release": {
     "merge_performed": false,
-    "new_hosted_checks": "pending publication",
+    "new_hosted_checks": {
+      "source_commit": "bad9c2831f4084dc40880a784e5d897e7a9fcd8f",
+      "functional_tests_passed": 21,
+      "actual_image_restart_recovery": "passed",
+      "security_gate": "failed",
+      "image_id": "sha256:c8b3a4b0b629d9ca90e342adcfa56912eb523cdc17d79cc9793585e8959a2a59"
+    },
     "previous_OS_image_security_gate": "failed; no finding suppression"
   },
   "native_distribution": {

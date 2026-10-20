@@ -1,0 +1,25 @@
+{
+  "run_url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39370495182",
+  "source_commit": "bad9c2831f4084dc40880a784e5d897e7a9fcd8f",
+  "fresh_hashed_full_application_and_test_environment": true,
+  "unit": {
+    "tests": 4285,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "unit_seconds": 30.5,
+  "unit_xml_sha256": "3070a5004f990f0ac2c46bd434e10bbae051610190f94266131bd5f672f7e4fb",
+  "unit_zero_skip_assertion": "passed",
+  "legacy_install_upgrade_tests": 3,
+  "overall_run": "failed",
+  "later_failure": "upstream-settings test collection: Tenacity 9.2.1 deprecated initial argument; warnings remain errors",
+  "fix": "Current multiplier keyword in all 13 affected model/embedding modules; minimum dependency now 9.2.1; original retry values/caps preserved",
+  "repaired_upstream_settings_local": {
+    "passed": 10,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "repaired_hosted_run": "pending publication"
+}

@@ -62,7 +62,7 @@ dependencies = [
     "uvicorn>=0.34.0,<1.0.0",
     "gunicorn>=20.1.0,<24",
     "websockets>=15.0.1,<16.0.0",
-    "tenacity>=9.0.0",
+    "tenacity>=9.2.1",
     "fakeredis[lua]>=2.32.0",
     "aiolimiter>=1.2.1",
     # New in upstream v1.0.9

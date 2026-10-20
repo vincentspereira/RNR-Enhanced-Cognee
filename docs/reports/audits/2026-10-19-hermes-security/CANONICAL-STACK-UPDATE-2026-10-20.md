@@ -108,6 +108,16 @@ transfer was triggered by these edits. Private scripts/logs are not published.
 - Full unit lane: 4,285 passed, 0 failed, 0 skipped, with credential environment removed and
   outbound network denied. This is the developer lane with documented compatible
   overlays, not an exact newly built full-image environment.
+- The fresh full/test hashed environment in hosted Required CI run
+  [39370495182](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39370495182)
+  also passed all 4,285 unit tests, zero failures/errors/skips, in 30.50 seconds.
+  Its three real legacy install/upgrade fixtures passed. A subsequent upstream
+  settings check caught Tenacity's deprecated `initial` retry parameter at import
+  with warnings-as-errors. All 13 affected model/embedding modules now use the
+  supported `multiplier` keyword with identical configured wait/cap values; the
+  root dependency minimum matches the already locked 9.2.1 API. The repaired
+  local settings/security suite passes all ten checks. No warning was suppressed
+  to bypass this failure; a fresh hosted run is needed for this repair.
 - Full opt-in qualification suite: 77 passed, no skipped tests, against an
   explicitly provisioned native PostgreSQL 16.15 fixture, prepared offline BGE
   search model, real Qdrant 1.18.3, ArcadeDB 26.9.1 and Valkey 7.2.13. Includes
@@ -156,6 +166,14 @@ transfer was triggered by these edits. Private scripts/logs are not published.
   still fails the unsuppressed scan with 44 HIGH matches across eight advisories,
   zero CRITICAL and no fixed versions listed. The overall workflow therefore
   correctly remains failed. This is not evidence of installation in Hermes.
+- Hosted run [39370484297](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39370484297)
+  qualifies functional source commit `bad9c2831f4084dc40880a784e5d897e7a9fcd8f`:
+  21 selected real-store/fleet/privacy tests, native distribution checks and the
+  actual API/worker image restart/recovery checks pass. Exact image
+  `sha256:c8b3a4b0b629d9ca90e342adcfa56912eb523cdc17d79cc9793585e8959a2a59`
+  still has 44 HIGH matches across eight advisories, zero CRITICAL and no fixed
+  versions listed in that scan. The security gate and overall run remain failed;
+  findings are unsuppressed and merge remains withheld.
 - The refreshed complete dashboard dependency audit retains five HIGH findings
   in its development ESLint/glob chain. The underlying
   [braces advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) lists no
