@@ -7,6 +7,11 @@ FROM ${MEMORY_PYTHON_IMAGE} AS build
 ARG MEMORY_PYTHON_IMAGE
 ARG MEMORY_BASE_IMAGE
 WORKDIR /app
+# The pinned Python input predates this available Debian xz security update.
+# Pin the corrected library version; only its library payload/inventory reaches
+# the final image. APT verifies the repository signatures and package hashes.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --only-upgrade liblzma5=5.8.1-1+deb13u2
 COPY requirements-build.lock /app/
 RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock
 COPY requirements-index.lock /app/
