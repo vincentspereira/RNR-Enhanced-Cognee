@@ -15,10 +15,11 @@ The [latest canonical stack update](CANONICAL-STACK-UPDATE-2026-10-20.md)
 records implemented schema-3 index workers/adapters, 77 passing qualification
 checks, real graph rollback/rebuild and bounded load evidence, and a phase-by-phase list of
 remaining release, deployment, Hermes and owner-controlled requirements.
-The latest complete unit lane passes 4,285 tests with zero failures or skips;
+The latest complete unit lane passes 4,290 tests with zero failures or skips;
 42-space bot/profile tests and a fleet configuration runbook are also included.
 The hosted Required CI run is now fully passing, including 64 canonical checks
-with no skips. The separate exact-image security gate still fails; deployment,
+with no skips. The restricted exact-image HIGH/CRITICAL gate now passes without suppression;
+dashboard development advisories, deployment,
 installed Hermes checks and owner recovery/revocation evidence remain open.
 Backup destination decision received, 20 October: use
 `/var/backups/enhanced-cognee` inside Ubuntu-Hermes with encrypted, restricted-access

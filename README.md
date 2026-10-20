@@ -8,10 +8,11 @@ for verified checks and open work. The restricted encrypted project-memory API
 and Hermes connector are being qualified locally. Selected automatic summaries,
 reviewed portfolio-library search, restricted database roles and encrypted backup
 tooling have been added. Default-stack workers, scoped adapters and a 42-space
-bot/controller fixture are tested. Required CI passes all 4,285 unit checks with
+bot/controller fixture are tested. Required CI passes all 4,290 unit checks with
 zero skips plus schema, security and canonical-memory checks. A prior synthetic
 Hermes test profile is installed; the newer update and everyday/private activation
-remain pending. The separate image security gate still fails. Broader legacy
+remain pending. The restricted image passes its unsuppressed HIGH/CRITICAL security gate;
+lower-severity and dashboard development-tool findings remain recorded. Broader legacy
 paths/provider profiles and the private deployed configuration need qualification;
 historical production/coverage claims below do not establish current readiness.
 
@@ -21,13 +22,13 @@ historical production/coverage claims below do not establish current readiness.
   [![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/downloads/)
   [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
   [![MCP](https://img.shields.io/badge/MCP-Compatible-orange.svg)](https://modelcontextprotocol.io/)
-  [![Tests](https://img.shields.io/badge/Tests-4285%20Unit-brightgreen.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
+  [![Tests](https://img.shields.io/badge/Tests-4290%20Unit-brightgreen.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
   [![Coverage](https://img.shields.io/badge/Coverage-Not%20qualified-orange.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-orange.svg)](https://github.com/vincentspereira/RNR-Enhanced-Cognee)
   [![Security](https://img.shields.io/badge/Security-Remediation-orange.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
   [![Production](https://img.shields.io/badge/Status-Under%20qualification-orange.svg)](docs/reports/audits/2026-10-19-hermes-security/IMPLEMENTATION-STATUS.md)
 
-![Tests](https://img.shields.io/badge/tests-4245%20unit-brightgreen)
+![Tests](https://img.shields.io/badge/tests-4290%20unit-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-not%20qualified-orange)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)

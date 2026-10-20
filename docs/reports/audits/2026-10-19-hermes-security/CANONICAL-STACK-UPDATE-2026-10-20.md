@@ -6,17 +6,47 @@ supersedes earlier statements that graph workers and canonical transport
 consolidation were entirely unimplemented. Earlier evidence remains historical;
 an old image or installed plugin does not qualify a newer source revision.
 
-Latest hosted result: [Required CI 39371928694](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371928694)
-is fully passing for functional source `cf9030f02bf71280fc9af553da38e53e9dd4a070`:
-4,285 unit checks, three legacy schema checks, ten settings/security checks and
-64 canonical memory checks, all with zero failures/errors/skips. The separate
-[default-stack/image run 39371903461](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371903461)
-passes its 21 real-store checks, clean package checks and actual API/worker image
-restart/recovery exercise. Its exact image
-`sha256:f2d16586d01917ee3ff5a0db9237569a54d760df47c60c12d71902aeaf39cdec`
-still fails security: 44 HIGH package matches across eight advisories, zero
-CRITICAL and no fixed versions listed in that scan. No suppression or merge was
-performed. These source results do not establish installed Hermes qualification.
+Latest restricted-image result: [hosted qualification 39387234569](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39387234569)
+is fully passing for runtime source `91a3c467f6af0d8b330536fb1fe9142dd4d06d79`.
+Its exact image
+`sha256:91de18171da94cbb0e72574236bbe36de60293279db1c3db8a0276e6c395de1d`
+passes 21 real-store checks, package verification, native runtime smoke and actual
+API/worker restart/recovery. The unsuppressed final-image scan reports zero HIGH,
+zero CRITICAL, 26 MEDIUM, ten LOW and zero UNKNOWN matches, with 21 Debian and 48
+Python package records. This closes the earlier 44-HIGH gate for this restricted
+artifact. It does not qualify the larger legacy image or private deployment.
+The final scan and logs are retained under `remediation-evidence/2026-10-20-minimal-runtime-*`.
+
+The complete local unit lane passes 4,290 tests with zero failures/errors/skips.
+[Required CI 39386830679](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39386830679)
+also passes all 4,290 unit checks, three schema checks, ten settings/security checks
+and 64 canonical checks on `65d78f3cf2ae11ef9b5aecc0ce7954e9a37b41ea`.
+The subsequent Docker-only xz library update also passes the exact-image recheck
+above. No merge or private/everyday activation has been performed.
+
+## Minimal runtime and backup filename follow-up
+
+The restricted API/worker now uses pinned official CPython and distroless Debian
+13 inputs. Unused OS utilities and five optional GUI/terminal/UUID native modules
+are absent from the final artifact; UUID4 continues to use OS randomness. The
+base package inventory and complete control/checksum records of seven additional
+runtime library packages remain present. The build also applies the available signed Debian
+[liblzma5 security update](https://security-tracker.debian.org/tracker/DSA-6549-1)
+at version `5.8.1-1+deb13u2`. No remaining image match lists an available fixed
+version in this scan. The gate contains no advisory ignore or severity exception. Build-only inspection checks retained native dependencies;
+exact-image tests cover TLS, compression, SQLite, dbm, AES, UUID4 and native imports.
+The [operator runbook](../../../runbooks/CANONICAL-MEMORY-AND-INDEXES.md)
+describes scope and diagnosis without an interactive shell. This image does not
+replace the protected native backup/recovery operator runtime.
+
+The owner requested the new backup filename. `C:\Scripts\backup-all-wsl-v11.ps1`
+now exists, preserves the updated v10 backup behavior and archive/password state
+compatibility, and corrects the version banner. The original v10 file remains
+unchanged. The matching private guide is
+`C:\Scripts\BACKUP-ENCRYPTION-AND-RESTORE-v11.md`. PowerShell parsing and the
+no-write preview passed in Linux; native Windows/DPAPI, scheduled-task path changes,
+a real backup and cloud upload have not been verified. These private operator
+files are intentionally outside this published repository.
 
 ## Implemented and tested in this continuation
 
@@ -133,7 +163,7 @@ in that lane. The exact 64-check required canonical command passes in a fresh
 JUnit reports must contain executed tests and zero skips. Hosted Required CI run 39371928694 now confirms
 all 64 checks with zero skips; all preceding required lanes also pass.
 
-## Evidence from the current local checks
+## Earlier local and hosted qualification checkpoints
 
 - Full unit lane: 4,285 passed, 0 failed, 0 skipped, with credential environment removed and
   outbound network denied. This is the developer lane with documented compatible
@@ -231,7 +261,7 @@ private owner replies, service keys or profile credentials are release artifacts
 | 0 - Preserve and baseline | Preservation and synthetic baselines established | Owner confirmation of exposed-key revocation and recovery custody |
 | 1 - Access control | Canonical boundaries, manifest, adapters, reviewer role and regression checks implemented; separate service-user assets prepared | Install/verify private service/operator OS separation and deployment-specific index credentials; broader legacy capabilities remain outside canonical admission |
 | 2 - Consistent memory and retrieval | Canonical memory, transport adapters and actual default-stack delivery/recovery implemented | Qualify the deployed configuration and any separately selected legacy/provider paths; no automatic bulk migration or permanent erasure |
-| 3 - Packaging and release | Small native artifact, locks, local checks and latest built API/worker image recovery qualification pass; exact scan findings retained | Unresolved OS/development advisory gates and supported private deployment configuration |
+| 3 - Packaging and release | Small native artifact, locks and actual minimal API/worker image recovery pass; unsuppressed restricted-image HIGH/CRITICAL gate now passes | Dashboard development advisories, lower-severity image findings, broader legacy-image review and supported private deployment configuration |
 | 4 - Hermes provider | Earlier native provider installed and model-tested; newer eight-tool update implemented | GitHub-only delivery of this update, schema/grant upgrade, installed-host and model-driven requalification inside Ubuntu-Hermes |
 | 5 - Isolated qualification | Current 77-test suite, real graph recovery, bounded concurrent load and service/client/browser checks pass | Longer soak/broader retrieval assessment, selected local chat-model qualification, isolated deployed service checks, owner-managed recovery test and review before everyday/other-project activation |
 

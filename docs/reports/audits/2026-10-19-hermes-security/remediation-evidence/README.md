@@ -36,3 +36,10 @@ All service/database requests used invented records and disposable test stores.
 The earlier local-image packaging exception is recorded in F32; it remains a
 separate privacy/preservation issue. No private Hermes profile was activated.
 No unit or smoke result alone grants production or commercial readiness.
+
+
+Minimal runtime follow-up, 20 October: `2026-10-20-minimal-runtime-*` retains the
+exact successful hosted image scan (all severities), its source/image identifiers,
+21 real-store checks, native runtime smoke and actual API/worker recovery logs.
+This supersedes the earlier restricted image's 44-HIGH gate result, not the
+larger legacy image or Ubuntu-Hermes private deployment qualification.

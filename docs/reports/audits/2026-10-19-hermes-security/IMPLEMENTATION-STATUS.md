@@ -41,7 +41,7 @@ See [the finding matrix](REMEDIATION-MATRIX.md) for each original finding,
 
 ## Verified checkpoints
 
-- Latest full unit lane: **4,285 passed, 0 failed, 0 skipped**, with real credential settings
+- Latest full unit lane: **4,290 passed, 0 failed, 0 skipped**, with real credential settings
   removed and outbound TCP denied. This uses the existing developer environment
   with compatible temporary pytest/MCP/dependency overlays; it is not the installed
   full-image unit suite.

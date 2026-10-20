@@ -92,6 +92,9 @@ requires an exact image build/scan and hardened deployment configuration.
 official distroless Debian 13 C++ base. Both public input images use immutable
 digests. The build retains the base package records and complete Debian control
 and checksum inventories for the seven additional runtime library packages.
+The build applies the signed Debian `liblzma5=5.8.1-1+deb13u2` update for
+[DSA-6549-1](https://security-tracker.debian.org/tracker/DSA-6549-1);
+the retained package record identifies the corrected version.
 `/usr/share/enhanced-cognee/runtime-inventory.json` records input references,
 versions, the interpreter checksum and the five omitted optional extensions.
 The assembler checks native dependencies against both retained layers and
