@@ -211,11 +211,30 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
         # Optional bounded concurrent workload on the actual default stores.
         # This records its exact duration/load, not a production capacity claim.
         seconds = int(os.getenv("RNR_QUALIFICATION_SOAK_SECONDS", "0"))
-        if not 0 <= seconds <= 600:
-            raise ValueError("Synthetic soak duration must be between zero and 600 seconds")
+        if not 0 <= seconds <= 1800:
+            raise ValueError("Synthetic soak duration must be between zero and 1800 seconds")
         load = {"enabled": bool(seconds)}
         if seconds:
-            scopes = [MemoryScope(scope.tenant, f"load_{i}", "owner", "hermes") for i in range(4)]
+            projects = int(os.getenv("RNR_QUALIFICATION_SOAK_PROJECTS", "4"))
+            if not 2 <= projects <= 42:
+                raise ValueError("Select between two and 42 synthetic concurrent spaces")
+            scopes = [MemoryScope(scope.tenant, f"load_{i}", "owner", "hermes") for i in range(projects)]
+            async def storage():
+                async with pool.acquire() as connection:
+                    return dict(await connection.fetchrow("""SELECT
+                        pg_database_size(current_database()) AS database_bytes,
+                        (SELECT count(*) FROM shared_memory.records) AS current_records,
+                        (SELECT count(*) FROM shared_memory.record_versions) AS retained_versions"""))
+            before = await storage()
+            model_calls = 0
+            original_embed = service.embedder.embed
+
+            async def measured_embed(content):
+                nonlocal model_calls
+                model_calls += 1
+                return await original_embed(content)
+
+            monkeypatch.setattr(service.embedder, "embed", measured_embed)
             records = []
             for i, item in enumerate(scopes):
                 records.append(await service.remember(item, f"Cedar keeps its recovery copies in Harbor{i}.",
@@ -232,7 +251,7 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
                         knowledge_links=[{"subject": "Cedar", "predicate": "stores in", "object": f"Harbor{i}",
                                           "span_start": 0, "span_end": len(content)}])
 
-                await asyncio.gather(*(change(i) for i in range(4)))
+                await asyncio.gather(*(change(i) for i in range(projects)))
                 # Quiescent indexing checkpoint for this batch; no new write
                 # is accepted as a graph hit merely because an event exists.
                 async with asyncio.timeout(15):
@@ -255,15 +274,17 @@ async def test_real_default_stores_source_paths_correction_retraction_and_recove
                     assert paths[0][0]["version"] == records[i]["version"]
                     assert (await service.status(scopes[i]))["pending_change_events"] == 0
 
-                await asyncio.gather(*(check(i) for i in range(4)))
+                await asyncio.gather(*(check(i) for i in range(projects)))
                 assert (await service.recall(MemoryScope(scope.tenant, "unapproved", "reader", "agent"), "Cedar"))["results"] == []
                 times.append((time.monotonic()-tick)*1000)
                 rounds += 1
             load.update(requested_seconds=seconds, actual_seconds=round(time.monotonic()-started, 2),
-                concurrent_projects=4, completed_rounds=rounds, corrected_records=rounds*4,
-                semantic_queries=rounds*5, graph_queries=rounds*4, scope_leaks=0,
+                concurrent_projects=projects, completed_rounds=rounds, corrected_records=rounds*projects,
+                semantic_queries=rounds*(projects+1), graph_queries=rounds*projects, scope_leaks=0,
                 round_p95_ms=round(sorted(times)[math.ceil(.95*len(times))-1], 2),
-                pending_events=0, retained_history=True, failures=0)
+                pending_events=0, retained_history=True, failures=0,
+                local_embedding_method_calls=model_calls, chat_model_calls=0,
+                storage_before=before, storage_after=await storage())
         print(json.dumps({"actual_stores": ["PostgreSQL", "Qdrant", "ArcadeDB", "Valkey"],
             "source_grounded_hops": 2, "partial_delivery_recovered": True,
             "stale_graph_denied": True, "derived_retraction_cleaned": True,

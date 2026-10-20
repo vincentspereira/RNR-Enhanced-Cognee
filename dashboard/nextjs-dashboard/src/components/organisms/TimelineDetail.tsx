@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { format, isSameDay, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { MemoryResponse } from "@/lib/api/types";
 
@@ -9,11 +9,6 @@ export interface TimelineDetailProps {
   memories: MemoryResponse[];
   className?: string;
   onMemoryClick?: (memoryId: string) => void;
-}
-
-interface GroupedMemories {
-  date: string;
-  memories: MemoryResponse[];
 }
 
 /**

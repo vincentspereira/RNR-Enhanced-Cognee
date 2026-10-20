@@ -38,7 +38,6 @@ export default function DeveloperPage() {
 
   const handleFetch = async () => {
     const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-    const url = `${API_URL}${path}`;
     setIsLoading(true);
     setRequestError(null);
     setResponse(null);

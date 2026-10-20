@@ -3,12 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import cytoscape, { Core, ElementDefinition } from "cytoscape";
 import { useGraphData, useGraphStats } from "@/lib/hooks/useGraphData";
-import { Search, ZoomIn, ZoomOut, Maximize, Download, Settings } from "lucide-react";
+import { Search, ZoomIn, ZoomOut, Maximize, Download } from "lucide-react";
 import { Input } from "@/components/ui/elements/Input";
 import { Select } from "@/components/ui/elements/Select";
 import { NeutralButton } from "@/components/ui/elements/NeutralButton";
 import { IconButton } from "@/components/ui/elements/IconButton";
-import { exportChartAsPNG } from "@/lib/utils/chart-export";
 
 type LayoutType = "force" | "hierarchical" | "circle" | "concentric";
 
@@ -41,7 +40,7 @@ export function KnowledgeGraph({
   const [layout, setLayout] = useState<LayoutType>("force");
   const [nodeTypeFilter, setNodeTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [, setSelectedNode] = useState<string | null>(null);
 
   // Fetch graph data
   const { data: graphData, isLoading, error } = useGraphData(
@@ -95,8 +94,8 @@ export function KnowledgeGraph({
             label: "data(label)",
             "text-wrap": "wrap",
             "text-max-width": "80px",
-            width: (ele: any) => 20 + (ele.data("importance") || 1) * 10,
-            height: (ele: any) => 20 + (ele.data("importance") || 1) * 10,
+            width: (ele: cytoscape.NodeSingular) => 20 + (ele.data("importance") || 1) * 10,
+            height: (ele: cytoscape.NodeSingular) => 20 + (ele.data("importance") || 1) * 10,
           },
         },
         {
@@ -109,7 +108,7 @@ export function KnowledgeGraph({
         {
           selector: "edge",
           style: {
-            width: (ele: any) => 1 + (ele.data("strength") || 1) * 2,
+            width: (ele: cytoscape.EdgeSingular) => 1 + (ele.data("strength") || 1) * 2,
             "line-color": "#64748b",
             "target-arrow-color": "#64748b",
             "target-arrow-shape": "triangle",
@@ -155,7 +154,7 @@ export function KnowledgeGraph({
     return () => {
       cy.destroy();
     };
-  }, [graphData, layout]);
+  }, [graphData, layout, onNodeClick]);
 
   // Apply filters
   useEffect(() => {

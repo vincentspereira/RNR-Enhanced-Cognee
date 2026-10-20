@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, Loader2, Sparkles } from "lucide-react";
@@ -65,7 +65,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
     reset,
@@ -77,20 +77,11 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
   });
 
   const writeIdentity = useRef<string | null>(null);
-  const content = watch("content") || "";
+  const content = useWatch({ control, name: "content", defaultValue: "" }) || "";
   const contentLength = content.length;
 
   const onSubmit = async (data: MemoryFormData) => {
     try {
-      // Parse files and facts
-      const files = data.files
-        ? data.files.split(",").map((f) => f.trim()).filter(Boolean)
-        : undefined;
-
-      const facts = data.facts
-        ? data.facts.split("\n").map((f) => f.trim()).filter(Boolean)
-        : undefined;
-
       await createMemory({
         content: data.content,
         idempotency_key: writeIdentity.current ?? (writeIdentity.current = crypto.randomUUID()),
@@ -199,7 +190,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+        <form onSubmit={(event) => { void handleSubmit(onSubmit)(event); }} className="p-6 space-y-6">
           {/* Content */}
           <div>
             <label

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button, Card, CardContent, Badge } from "@/components/atoms";
 import { MemoryDetailSkeleton, EditMemoryModal } from "@/components/organisms";
 import {
@@ -27,7 +27,6 @@ import { useToast } from "@/hooks/use-toast";
 export default function MemoryDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const memoryId = params.id as string;
 
@@ -360,11 +359,11 @@ export default function MemoryDetailPage() {
               </h2>
             </div>
             <div className="space-y-3">
-              {memory.related_memories.map((related: any) => (
+              {memory.related_memories.map((related) => (
                 <div
-                  key={related.id}
+                  key={related.memory_id}
                   className="flex items-start justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => router.push(`/memories/${related.id}`)}
+                  onClick={() => router.push(`/memories/${related.memory_id}`)}
                 >
                   <div className="flex-1">
                     <p className="text-sm mb-1">

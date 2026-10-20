@@ -27,6 +27,9 @@ downloads/
 eggs/
 .eggs/
 lib/
+# Dashboard TypeScript libraries are maintained source, not Python build output.
+!dashboard/nextjs-dashboard/src/lib/
+!dashboard/nextjs-dashboard/src/lib/**
 lib64/
 parts/
 sdist/

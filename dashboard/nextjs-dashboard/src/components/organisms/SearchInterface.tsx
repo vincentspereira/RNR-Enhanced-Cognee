@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useStoredPreference, writeStoredPreference } from "@/lib/hooks/useStoredPreference";
 import { useQuery } from "@tanstack/react-query";
 import { Input, Badge } from "@/components/atoms";
 import { MemoryCard } from "@/components/molecules";
@@ -17,19 +18,13 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-
-  // Load recent searches from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("recent-searches");
-    if (saved) {
-      try {
-        setRecentSearches(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse recent searches:", e);
-      }
-    }
-  }, []);
+  const savedSearches = useStoredPreference("recent-searches");
+  const recentSearches = useMemo((): string[] => {
+    try {
+      const saved: unknown = JSON.parse(savedSearches || "[]");
+      return Array.isArray(saved) ? saved.filter((item): item is string => typeof item === "string").slice(0, 5) : [];
+    } catch { return []; }
+  }, [savedSearches]);
 
   // Debounced search (300ms delay)
   useEffect(() => {
@@ -59,8 +54,7 @@ export function SearchInterface({ onResultsFound }: SearchInterfaceProps) {
   const handleSearch = useCallback((searchQuery: string) => {
     if (searchQuery.trim()) {
       const newRecent = [searchQuery, ...recentSearches.filter((s) => s !== searchQuery)].slice(0, 5);
-      setRecentSearches(newRecent);
-      localStorage.setItem("recent-searches", JSON.stringify(newRecent));
+      writeStoredPreference("recent-searches", JSON.stringify(newRecent));
       setQuery(searchQuery);
     }
   }, [recentSearches]);

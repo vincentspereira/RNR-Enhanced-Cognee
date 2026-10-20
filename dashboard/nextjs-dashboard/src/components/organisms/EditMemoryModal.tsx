@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, Loader2, Sparkles } from "lucide-react";
@@ -65,14 +65,13 @@ export function EditMemoryModal({
 }: EditMemoryModalProps) {
   const [isAutoCategorizing, setIsAutoCategorizing] = useState(false);
   const [memory, setMemory] = useState<Memory | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting, isDirty },
     reset,
@@ -80,7 +79,7 @@ export function EditMemoryModal({
     resolver: zodResolver(memorySchema),
   });
 
-  const content = watch("content") || "";
+  const content = useWatch({ control, name: "content", defaultValue: "" }) || "";
   const contentLength = content.length;
 
   // Fetch memory data on open
@@ -94,10 +93,10 @@ export function EditMemoryModal({
             agent_id: data.agent_id || "default",
             memory_type: data.memory_type || "",
             memory_concept: data.memory_concept || "",
-            before_state: (data as any).before_state || "",
-            after_state: (data as any).after_state || "",
-            files: (data as any).files?.join(", ") || "",
-            facts: (data as any).facts?.join("\n") || "",
+            before_state: data.before_state || "",
+            after_state: data.after_state || "",
+            files: data.files?.join(", ") || "",
+            facts: data.facts?.join("\n") || "",
           });
         })
         .catch((error) => {
@@ -109,11 +108,6 @@ export function EditMemoryModal({
         });
     }
   }, [isOpen, memoryId, reset, onClose]);
-
-  // Track unsaved changes
-  useEffect(() => {
-    setHasUnsavedChanges(isDirty);
-  }, [isDirty]);
 
   const onSubmit = async (data: MemoryFormData) => {
     try {
@@ -137,7 +131,7 @@ export function EditMemoryModal({
         queryKey: queryKeys.memories.detail(memoryId),
       });
 
-      setHasUnsavedChanges(false);
+      reset();
       onClose();
     } catch (error) {
       console.error("Failed to update memory:", error);
@@ -180,7 +174,7 @@ export function EditMemoryModal({
   };
 
   const handleClose = () => {
-    if (hasUnsavedChanges) {
+    if (isDirty) {
       setShowConfirmDialog(true);
     } else {
       onClose();
@@ -189,7 +183,7 @@ export function EditMemoryModal({
 
   const handleConfirmClose = () => {
     setShowConfirmDialog(false);
-    setHasUnsavedChanges(false);
+    reset();
     onClose();
   };
 

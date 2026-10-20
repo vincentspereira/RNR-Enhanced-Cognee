@@ -4,7 +4,6 @@ import React from "react";
 import { X } from "lucide-react";
 import { IconButton } from "@/components/ui/elements/IconButton";
 import { useNodeDetails } from "@/lib/hooks/useGraphData";
-import type { GraphNode } from "@/lib/api/neo4j";
 
 export interface GraphNodeDetailsProps {
   nodeId: string | null;
