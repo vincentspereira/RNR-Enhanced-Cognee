@@ -4,6 +4,7 @@ The separate default-stack test exercises the actual Qdrant/ArcadeDB/Valkey
 transports. These tests establish lease/crash/version behavior independently.
 """
 import asyncio
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 import json
 import os
@@ -124,6 +125,47 @@ def link(content, subject, predicate, target):
 async def seed(p, content="Cedar depends on Birch.", subject="Cedar", target="Birch", key="one"):
     return await p.service.remember(p.scope, content, idempotency_key=key,
         knowledge_links=[link(content, subject, "depends on", target)])
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("materialization", ["on", "off"])
+async def test_one_claim_leases_exactly_one_event_for_each_query_plan(pipeline, materialization):
+    p = pipeline
+    for number in range(36):
+        await seed(p, key="burst-" + str(number))
+    async with p.pool.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("SET LOCAL enable_material=" + materialization)
+
+            class TransactionPool:
+                @asynccontextmanager
+                async def acquire(self):
+                    yield conn
+
+            worker = IndexWorker(p.service, p.sinks)
+            worker.pool = TransactionPool()
+            first = await worker._claim()
+            assert first is not None
+            assert await conn.fetchval("""SELECT count(*) FROM shared_memory.index_deliveries
+                WHERE pipeline=$1 AND lease_id=$2""", worker.pipeline, first["lease_id"]) == 1
+            second = await worker._claim()
+            assert second["event_id"] != first["event_id"]
+            assert await conn.fetchval("""SELECT count(*) FROM shared_memory.index_deliveries
+                WHERE pipeline=$1 AND lease_id IS NOT NULL""", worker.pipeline) == 2
+
+
+@pytest.mark.asyncio
+async def test_concurrent_claims_do_not_hide_unreturned_events(pipeline):
+    p = pipeline
+    for number in range(36):
+        await seed(p, key="concurrent-burst-" + str(number))
+    jobs = await asyncio.gather(*(IndexWorker(p.service, p.sinks)._claim() for _ in range(5)))
+    assert all(job is not None for job in jobs)
+    assert len({job["event_id"] for job in jobs}) == len({job["lease_id"] for job in jobs}) == 5
+    async with p.pool.acquire() as conn:
+        leased = await conn.fetchval("""SELECT count(*) FROM shared_memory.index_deliveries
+            WHERE pipeline=$1 AND lease_id IS NOT NULL""", p.worker.pipeline)
+    assert leased == 5
 
 
 def test_graph_declarations_correspond_to_source_and_keys_hide_labels():

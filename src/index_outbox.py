@@ -56,12 +56,17 @@ class IndexWorker:
                     SELECT o.id,$1 FROM shared_memory.record_outbox o WHERE NOT EXISTS(
                       SELECT 1 FROM shared_memory.index_deliveries d WHERE d.event_id=o.id AND d.pipeline=$1)
                     ORDER BY o.id LIMIT 64 ON CONFLICT DO NOTHING""", self.pipeline)
-                return await conn.fetchrow("""UPDATE shared_memory.index_deliveries d
-                    SET lease_id=$2,lease_until=now()+$3::int*interval '1 second',attempts=d.attempts+1
-                    FROM (SELECT event_id FROM shared_memory.index_deliveries
+                # A materialized candidate is selected exactly once. An inline
+                # locking subquery may be rescanned by a nested-loop plan and
+                # lease multiple events while fetchrow returns only one.
+                return await conn.fetchrow("""WITH candidate AS MATERIALIZED (
+                      SELECT event_id FROM shared_memory.index_deliveries
                       WHERE pipeline=$1 AND completed_at IS NULL AND retry_at<=now()
                       AND (lease_until IS NULL OR lease_until<=now())
-                      ORDER BY event_id FOR UPDATE SKIP LOCKED LIMIT 1) candidate
+                      ORDER BY event_id FOR UPDATE SKIP LOCKED LIMIT 1)
+                    UPDATE shared_memory.index_deliveries d
+                    SET lease_id=$2,lease_until=now()+$3::int*interval '1 second',attempts=d.attempts+1
+                    FROM candidate
                     WHERE d.event_id=candidate.event_id AND d.pipeline=$1
                     RETURNING d.*""", self.pipeline, lease, self.lease_seconds)
 
