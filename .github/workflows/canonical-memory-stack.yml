@@ -8,6 +8,7 @@ on:
       - 'tests/qualification/**'
       - 'requirements*.lock'
       - 'docker/Dockerfile.memory'
+      - 'docker/assemble_memory_runtime.py'
       - '.github/workflows/canonical-memory-stack.yml'
   pull_request:
     branches: [main]
@@ -106,6 +107,12 @@ jobs:
           pytest tests/qualification/test_default_index_stack.py tests/qualification/test_index_pipeline.py tests/qualification/test_canonical_adapters.py tests/qualification/test_project_memory_mcp.py tests/qualification/test_retrieval_quality.py tests/qualification/test_memory_daemon.py tests/qualification/test_memory_reviewer.py tests/qualification/test_bot_fleet.py tests/qualification/test_selected_recall_bookkeeping.py -q --override-ini="addopts=" --junitxml=default-stack.xml
       - name: Build restricted runtime image from the tested source
         run: docker build -f docker/Dockerfile.memory -t canonical-memory:qualification .
+      - name: Check the exact reduced runtime and retained package inventories
+        run: |
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges \
+            --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+            --mount type=bind,source="$PWD/tests/qualification/memory_runtime_smoke.py",target=/runtime-check.py,readonly \
+            --entrypoint python canonical-memory:qualification /runtime-check.py > reduced-runtime.log
       - name: Prepare fresh restricted image roles and index namespaces
         env:
           RNR_ALLOW_SYNTHETIC_CONTAINERS: '1'
@@ -144,4 +151,5 @@ jobs:
             default-stack.xml
             image-security.json
             built-default-stack.log
+            reduced-runtime.log
           retention-days: 14
