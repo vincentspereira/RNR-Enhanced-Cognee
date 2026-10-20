@@ -1,8 +1,8 @@
 # Enhanced Cognee for isolated Hermes
 
-Status: provider implementation under qualification. Not installed or activated
-in Vincent's everyday Hermes profile. See the audit implementation tracker for
-current evidence and outstanding release checks.
+Status: installed and under live qualification in the separate invented-data
+Hermes test profile. The everyday profile is unchanged. See the audit
+implementation tracker for current evidence and outstanding release checks.
 
 This is a native Hermes memory-provider plugin, not the upstream Cognee engine.
 It uses the restricted Enhanced Cognee project-memory API and Python's standard
@@ -28,6 +28,16 @@ must be protected from ordinary agent filesystem/administrator access before
 using private information.
 
 ## Profile configuration
+
+For the reviewed Ubuntu-Hermes synthetic setup, the operator helper
+`deployment/test_service.py` provides `provision`, `install`, `local-model` and
+`serve` actions. It accepts only the dedicated test-runtime/profile paths. Obtain
+it through GitHub before execution. The service uses its generated restricted
+database role. The helper never starts Docker, changes mounts/firewall/default
+profile, or installs system services. This user-space test setup shares the OS
+user with Hermes; it is not sufficient filesystem separation for private service
+keys. Install copies the Hermes-local plugin once and refuses to replace
+differing existing plugin files or a token.
 
 Run the selected profile's `hermes memory setup` after installing the plugin and
 choose `enhanced_cognee`. Its setup schema asks for the service origin and a
@@ -95,7 +105,19 @@ task summaries and submit them through the memory tools without waiting for an
 explicit remember request. This reuses Hermes' local Unsloth connection when that
 is the configured conversation model. It needs no access to Windows model files
 and starts no additional hosted extraction job. Agent compliance still needs an
-actual model-driven test; host-shim tests alone establish only the tool contract.
+an actual model-driven test for each selected model/configuration; host-shim tests
+alone establish only the tool contract.
+
+The live test found an additional prerequisite in the installed Hermes version:
+the served chat model must expose at least a 64,000-token context window. The
+configured local Granite endpoint reported 8,192, so Hermes refused the full chat
+after detecting that limit. Do not disguise the provider, lie about its window,
+or disable Hermes' guard. Increase the chosen local model's serving window only
+after checking resource use, or select an already approved compatible provider.
+The model's native advertised maximum does not prove the served window.
+The memory service's small local embedding model is independent of this chat-model
+requirement. A full chat capture test passed with the owner's already configured
+cloud model and invented facts; this does not qualify the local chat configuration.
 
 Raw transcript capture, raw tool-output storage and notebook mirroring remain
 disabled. The inherited sync/end hooks do not archive conversations. Selected

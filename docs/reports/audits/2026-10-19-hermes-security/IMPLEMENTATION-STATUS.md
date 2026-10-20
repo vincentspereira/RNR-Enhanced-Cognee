@@ -4,7 +4,10 @@ Latest continuation: [20 October implementation update](IMPLEMENTATION-UPDATE-20
 Owner decisions have been received. Selected automatic capture, reviewed library
 groups, schema/runtime permission separation and encrypted backup tooling are now
 implemented under qualification. The tables below retain the 19 October checkpoint;
-read the dated update and evidence for the current continuation.
+read the dated update and [live Hermes report](HERMES-LIVE-QUALIFICATION-2026-10-20.md)
+for the current continuation. The branch is published; the native Hermes test
+lane passes 69 checks and the full chat capture/recall/correction/clarification
+scenarios have been exercised. Everyday/private activation and merge remain open.
 
 Date: 19 October 2026
 Branch: codex/hermes-memory-hardening

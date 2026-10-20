@@ -3,6 +3,9 @@
 The owner's decisions have been incorporated. The detailed owner response remains
 local. This document contains the generic implementation policy and qualification
 status suitable for the repository. Full remediation is still in progress.
+See [live Hermes qualification](HERMES-LIVE-QUALIFICATION-2026-10-20.md) for the
+later isolated installation, full-chat results, native recovery fixes and exact
+remaining release requirements.
 
 ## Implemented in this continuation
 
@@ -39,17 +42,23 @@ status suitable for the repository. Full remediation is still in progress.
 ## Qualification and deployment state
 
 The pre-continuation unit run had 4,245 passing tests and two skipped. The current
-real PostgreSQL/model/provider/capture/library/operator/backup lane passes **68
+real PostgreSQL/model/provider/capture/library/operator/backup lane passes **69
 checks**, including actual age-encrypted dump/restore, wrong-key denial, altered
-manifest denial, retained history and project denial. See the dated XML/log evidence. Built-image
-checks and actual isolated Hermes qualification remain separately identified.
+manifest denial, retained history and project denial. This lane also passed in
+Ubuntu-Hermes on the native cluster. See the dated XML/log evidence. Built-image
+checks and actual model-driven Hermes qualification remain separately identified.
 
 Ubuntu-Hermes has the Docker client but its daemon is not running. Starting it can
 change networking, so it has not been started as an automatic workaround. Native
-user-space PostgreSQL/runtime provisioning is being assessed while preserving
-existing isolation. No everyday profile has been switched.
+user-space PostgreSQL/runtime provisioning and the separate test profile now work
+while preserving isolation. Actual automatic capture, new-session recall, clear
+correction and uncertain-change clarification were exercised with the existing
+authorized cloud model. The local Granite serving window is below this Hermes
+version's minimum; its full-chat qualification is still open. No everyday profile
+has been switched.
 
-The public branch may now be published. Merging remains conditional on completion
+The branch has been published and the tested code pulled from GitHub into Hermes.
+Merging remains conditional on completion
 and working checks. Known image advisory gates, full legacy consolidation,
 graph/index workers and wider retrieval/load qualification remain open. New tests
 are evidence for their exact scope; they do not close those remaining phases.

@@ -155,3 +155,43 @@ creation timestamp. A real PostgreSQL fixture with identical IDs in two separate
 tenant tables proves that transformation and copying affect only the selected
 tenant. Other legacy session/undo/compliance paths still require consolidation;
 these repairs do not establish complete legacy isolation or encryption.
+
+## F37 - An inherited ignore rule omitted new recovery code from delivery
+
+The broad `*_backup.*` ignore rule excluded `src/memory_backup.py` and its real
+backup qualification test. Local tests could pass while a GitHub checkout lacked
+both files. An actual Hermes-local import exposed the delivery failure.
+
+Implemented: explicit exceptions admit those two maintained source/test files
+without admitting unrelated backup files or private data. Both were published,
+pulled through GitHub and exercised in Ubuntu-Hermes. The native 69-check lane
+includes the delivered backup test. Local-only test success is not delivery proof.
+
+## F38 - Native restore did not explicitly select its fresh database
+
+The default `pg_restore` command lacked `--dbname`. The connection environment
+alone does not put pg_restore into database restoration mode. Earlier tests used
+an explicit Docker command that already supplied the database and masked this
+native-path omission. The native test failed; it did not acknowledge recovery.
+
+Implemented: the default command explicitly names the newly created database.
+The actual default-command test passed in Ubuntu-Hermes with native PostgreSQL
+clients and age, covering wrong-key and tampered-manifest rejection, refusal to
+overwrite an existing database, retained encrypted history and project denial.
+The incomplete synthetic restore was retained. Existing databases were not
+overwritten. The CI fixture also exercises the default command.
+
+## F39 - Local serving window below the installed Hermes minimum
+
+This is a compatibility prerequisite, not an Enhanced Cognee vulnerability. The
+configured local Granite service reported an 8,192-token window. Installed Hermes
+requires at least 64,000. A first model request exceeded the actual window;
+subsequent initialization refused the detected limit. A reachable local endpoint
+and a model's native maximum do not prove usable Hermes configuration.
+
+Documented: verify the actual served context and resource budget before local
+chat activation. No guard was bypassed and no Unsloth setting was changed. The
+small local embedding model works independently. Full chat automatic capture,
+fresh-session recall, clear correction and uncertain-change clarification were
+exercised with the owner's existing authorized cloud model and invented facts.
+Local chat qualification remains open; the live report records the exact limit.

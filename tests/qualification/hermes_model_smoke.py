@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from urllib.parse import urlsplit
@@ -95,12 +96,16 @@ def main():
     after = client.request("GET", "/v1/memories/" + before["id"])
     if args.scenario == "correct":
         assert "enhanced_correct" in tools and after["version"] == before["version"] + 1
-        assert "nine" in after["content"].lower() and "eleven" not in after["content"].lower()
+        # A historical explanation can legitimately mention the superseded
+        # interval. Check the current decision clause, rather than banning every
+        # occurrence of the old word anywhere in the corrected explanation.
+        assert re.search(r"standing planning decision is (?:a )?nine-day review cycle", after["content"].lower())
     else:
         assert after["version"] == before["version"]
         assert client.request("GET", "/v1/memories/status")["active_records"] == count
         if args.scenario == "recall":
-            assert "eleven" in final.get("text", "").lower()
+            interval = re.search(r"standing planning decision is (?:an? )?([a-z]+)-day review cycle", before["content"].lower())
+            assert interval and interval[1] in final.get("text", "").lower()
         else:
             assert "enhanced_clarify" in tools and "?" in final.get("text", "")
             assert not {"enhanced_remember", "enhanced_correct", "enhanced_retract"}.intersection(tools)

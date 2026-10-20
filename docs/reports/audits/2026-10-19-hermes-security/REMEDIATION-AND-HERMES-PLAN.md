@@ -2,17 +2,20 @@
 
 Date: 19 October 2026
 
-Status: implementation is in progress on a local branch. The architecture and
-acceptance criteria below remain the target; the full remediation and Hermes
-activation are not complete. Owner choices below are recommendations, not recorded
-approvals or claims that the corresponding controls are already implemented.
+Status update, 20 October: implementation is in progress on the published branch
+`codex/hermes-memory-hardening`. All nine owner decisions have been received. A
+separate synthetic service/profile is installed inside Ubuntu-Hermes; everyday
+and private-data activation remain incomplete. Publication is approved, and merge
+is approved once the complete implementation and working checks pass. The original
+options below are retained for reference; they are not unanswered questions.
 Read [the audit](README.md) for evidence, conditions, and findings F01-F27.
 Read [implementation status](IMPLEMENTATION-STATUS.md) for completed work,
 verification evidence, limitations and the next repairs.
 The canonical service now includes tested source declarations, correction lineage
 and named-key rotation. See [the key-rotation runbook](KEY-ROTATION.md). These code
 features do not record approval of private storage, recovery custody or activation;
-the nine owner decisions below still describe those choices.
+the dated implementation update records current policy and evidence separately
+from the original alternatives below.
 
 ## Recommended decision
 
@@ -78,9 +81,10 @@ Actions:
   service placement. Treat documented endpoints as proposals until verified.
 - Owner reviews historical credential candidates in the private summary and
   confirms revocation. Never test old keys to discover whether they work.
-- Use one implementation branch; no commit/push/merge/deployment is implied by
-  this planning document. If Hermes edits code, it obtains its own GitHub checkout
-  inside Ubuntu-Hermes and uses its own branch; merge/conflicts remain Vincent's.
+- Use one implementation branch. Publication and eventual conflict resolution/
+  merge are now expressly authorized by the owner, with merge conditional on
+  completion and working checks. Hermes obtains code through GitHub inside
+  Ubuntu-Hermes; it does not access the Workspace checkout.
 
 Evidence: baseline manifest, sanitized configuration inventory, and backup plan.
 Stop rule: do not point Hermes at existing private memories during remediation.
@@ -207,9 +211,11 @@ Map the documented lifecycle to the service:
 | on_session_end / shutdown           | Flush acknowledged work and expose pending/failing indexing                                                       |
 | get_tool_schemas / handle_tool_call | A small set of scoped remember/recall/correct/status actions                                                      |
 
-Auto-capture should initially be off; use explicit remembers in a disposable
-profile. Later allow selected decisions, preferences, and summaries. Do not
-silently archive every tool output, private chat, credential, or personal document.
+The owner selected automatic capture of useful decisions, preferences and task
+summaries for the synthetic profile. Hermes' main model selects synchronous tool
+writes; raw transcript and notebook mirroring hooks remain disabled. The original
+explicit-only recommendation has been superseded. Do not archive every tool
+output, private chat, credential or personal document.
 
 Suggested initial recall budget: top 5 results and approximately 1,500-2,500
 tokens, adjusted after real retrieval evaluation. These are design starting
@@ -220,8 +226,9 @@ notification sends, administrative consent operations, or all 122 tools to Herme
 
 ## Future configuration sequence
 
-These steps become executable only after a connector release and the service
-acceptance checks exist. They are not instructions to activate a provider today.
+These steps are now implemented for the separate invented-data test profile.
+See `integrations/hermes/README.md` and the dated live qualification report for
+the actual test setup and limits. Private/everyday activation has separate gates.
 
 1. Record Hermes version and the selected profile inside Ubuntu-Hermes.
 
@@ -243,8 +250,8 @@ acceptance checks exist. They are not instructions to activate a provider today.
      provider: enhanced_cognee
    ```
 
-   `enhanced_cognee` is a proposed name, not an installed provider in the audited
-   repository. Other connector settings must be implemented and documented first.
+   `enhanced_cognee` is implemented and installed in the separate test profile.
+   This is not a claim that the everyday profile has been switched.
 
 6. Restart Hermes and check `hermes memory status`; confirm the actual service
    identifies the expected release and memory capability.
