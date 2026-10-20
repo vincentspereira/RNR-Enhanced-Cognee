@@ -1,9 +1,12 @@
 # Finding-by-finding remediation record
 
-Current reconciliation: [reviewed Hermes results and remaining phases](HERMES-WORKSPACE-RECONCILIATION-2026-10-20.md).
-The completed synthetic deployment branch is incorporated. Its 78-test suite and
-local 27B capture passed; protected OS installation/backups and owner/Windows/
-frontend-release conditions remain open. See that report before older checkpoints.
+Current reconciliation: [protected installed-host qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md)
+and [Windows/fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md).
+The protected restricted service, actual non-admin/model checks, encrypted restore,
+daily timer and temporary-account cleanup are complete. Another installed test
+passed 42 synthetic identities and reviewed sharing. Owner custody/revocation,
+frontend release, native Windows recovery and everyday-bot admission remain open.
+Older dated checkpoints below retain historical results.
 
 Updated: 20 October 2026. The implementation branch is published; merge and
 private/everyday activation remain incomplete. See the
@@ -28,12 +31,12 @@ open.
 | F02 - Dashboard protection | Canonical-service dashboard delegation, authenticated requests, protected origins and tab-session tokens; actual built-browser create/list/detail/edit/retract flow passes | Historical analytics/graph/session screens and broader device/browser coverage remain unqualified |
 | F03 - Identity binding | Verified identity binds tenant, user and agent; project credentials confined to restricted API; nested identity conflicts denied | Real 42-space bot/controller and distinct-profile tests pass; installed fleet and wider legacy/provider identity coverage remain |
 | F04 - Unscoped SQL | Scoped SQL and denied global upstream calls; historical HTTP/dashboard entrypoints can delegate to canonical mode; unsupported legacy tools denied | Individually selected legacy/provider paths remain separate qualification work |
-| F05 - Derived scopes | Canonical authorization before derived candidates; real Qdrant/ArcadeDB/Valkey delivery, hashed entities, encrypted cache, version/scope checks and source-limited graph queries pass | Private deployment needs separate restricted index credentials and OS boundary; optional legacy providers remain unqualified |
+| F05 - Derived scopes | Canonical authorization before derived candidates; real Qdrant/ArcadeDB/Valkey delivery, hashed entities, encrypted cache, version/scope checks and source-limited graph queries pass | Protected API/worker/store credentials and synthetic OS denial now pass; real-bot operating boundaries and optional legacy providers remain unqualified |
 | F06 - Tenant aliases | External identifiers must be canonical; no lossy external normalization; migration requires an explicit mapping | Existing noncanonical namespaces need individual reviewed mappings |
 | F07 - Plaintext writes | Restricted service encrypts complete memory payload and internal vectors; real database verification passed | Legacy write paths are not universally encrypted; avoid them for private deployment |
-| F08 - Encryption failure | Persistent key required; protected failures raise; named-key writes and mixed-key reads supported; bounded operator-only current/history rotation rolls back a failed batch | Approved-path backup collection/encrypted cloud-chain script prepared and synthetically tested; owner-controlled custody, installed scheduling/private recovery and all legacy-store rotation remain |
-| F09 - Correction/retraction | Owner/version checks, expiry and immediate canonical exclusion; real derived correction/retraction, stale-edge rejection, graph rollback and retry/rebuild pass; history retained | Private deployed upgrade/requalification remains; permanent erasure requires a separate owner decision |
-| F10 - Payload limits | Received-byte and total-body limits, bounded admission and response/history/graph budgets; 42-space, 15-minute real-store concurrent fixture plus CPU/PSS/storage-growth observations pass | Installed Hermes/model and deployment-specific capacity assessment, longer soak and broader retrieval still remain |
+| F08 - Encryption failure | Persistent key required; protected failures raise; named-key writes and mixed-key reads supported; bounded operator-only current/history rotation rolls back a failed batch | Protected age backups, disposable restore and daily timer/catch-up now pass; owner custody, Windows DPAPI/cloud-chain recovery and selected legacy-store rotation remain |
+| F09 - Correction/retraction | Owner/version checks, expiry and immediate canonical exclusion; real derived correction/retraction, stale-edge rejection, graph rollback and retry/rebuild pass; history retained | Protected synthetic versioned correction/retraction and model clarification now pass; everyday admission remains; permanent erasure requires a separate owner decision |
+| F10 - Payload limits | Received-byte and total-body limits, bounded admission and response/history/graph budgets; 42-space, 15-minute real-store concurrent fixture plus CPU/PSS/storage-growth observations pass | Installed five-scenario model and 42-identity memory-service checks pass; 42 concurrent inference sessions, longer soak and broader retrieval remain unqualified |
 | F11 - Import/network capabilities | Explicit capability/root/origin grants; symlink-safe bounded file read; HTTPS-only bounded web fetch without redirects/proxies; database source aliases with operator-defined queries; scoped callers denied global imports | Operator database accounts must be read-only; direct upstream-library ingestion is outside the restricted API; arbitrary optional loaders remain unqualified |
 | F12 - Python advisories | Three hashed release/bootstrap locks audit clean; restricted built-image Python scan is clean; unused runtime pip removed; full image retains the version-matched Cognee advisory with tested source backport | Restricted minimal-image HIGH/CRITICAL gate passes; lower-severity findings, full legacy-image/backport release review, optional-extra union and unchanged developer virtualenv remain separate |
 | F13 - Frontend advisories | Production audits report zero; clean builds/types/browser flow pass; hash-verified local depth backport rejects the reproduced original exploit | Official version-matched five-HIGH npm findings remain enforced with no patched release; broader UI/device coverage remains |
@@ -43,20 +46,21 @@ open.
 | F17 - SDK auth/scope | Native canonical Python/Node/Go/Rust methods and real-service tests pass; explicit canonical destinations, TLS, structured bounded errors, retries, current-version conflicts and project denial enforced | Optional legacy backend/client combinations and caller-provided Node fetch behavior remain separate |
 | F18 - Partial writes | Canonical record/version/audit/event commit atomic; leased idempotent actual-store delivery, partial-failure/crash recovery and actual image worker restart/backlog tests pass | Retained historical multi-store paths remain outside canonical admission |
 | F19 - Throttling | Restricted API uses shared PostgreSQL budget per verified tenant/project/subject; concurrent service-instance test passed | Legacy process-local throttling not fully replaced; wider load/outage checks remain |
-| F20 - Background durability | Durable leased outbox worker implemented and real-store tested; source-serialized projections, all-store acknowledgement, retry/backoff, preserved degraded status and fresh-namespace replay pass | Schema-3 worker and newer provider not yet installed/requalified inside Ubuntu-Hermes; older queues remain unadmitted |
-| F21 - Release gate | Latest hosted source/package/image/default-stack tests pass, including actual API/worker restart recovery; pinned minimal image passes the unsuppressed HIGH/CRITICAL gate with exact retained evidence | 26 MEDIUM and ten LOW image matches retained, no listed fixed versions; development advisory gate, broader legacy image and private deployment checks remain; branch protection not changed |
+| F20 - Background durability | Durable leased outbox worker implemented and real-store tested; source-serialized projections, all-store acknowledgement, retry/backoff, preserved degraded status and fresh-namespace replay pass | Protected schema-3 worker/provider installed and requalified, including single-event lease repair and backlog recovery; older queues remain unadmitted |
+| F21 - Release gate | Latest hosted source/package/image/default-stack tests pass, including actual API/worker restart recovery; pinned minimal image passes the unsuppressed HIGH/CRITICAL gate with exact retained evidence | 26 MEDIUM and ten LOW image matches retained; development advisory gate, broader legacy image, exact-candidate checks and private acceptance remain; main now enforces five strict trusted-app checks |
 | F22 - Historical credentials | Values not exposed or tested; existing private triage retained; .dockerignore excludes secret files and archives | Owner must confirm revocation/replacement of real candidates; no history rewrite authorized |
 | F23 - Damaged ancillary source | Originals archived; all eight original parse failures repaired; current source parses; undefined names fixed across src/bin/dashboard/production/testing/integration | Static repair is not operational qualification of retained deployment/recovery/reporting scaffolds |
-| F24 - Readiness | Canonical readiness validates schema; authenticated status reports scope/model/encryption, worker heartbeat/state, lag and graph/vector capability; idle polls preserve delivery failure status | Private installed service and retained legacy health/provider paths need their own verification; no blanket production-readiness claim |
+| F24 - Readiness | Canonical readiness validates schema; authenticated status reports scope/model/encryption, worker heartbeat/state, lag and graph/vector capability; idle polls preserve delivery failure status | Protected synthetic readiness and post-restart real vector recall now pass; private acceptance and retained legacy/provider qualification remain separate |
 | F25 - Provenance | Encrypted bounded source ID/URI/hash/span, fact/preference/decision/inference/summary classification and declared confidence; authority explicitly unverified; correction lineage and source re-review; legacy reserved-field and checksum-verification repairs | Source declarations do not prove facts; human verification workflow, broader source quality and all legacy admission paths remain |
-| F26 - Stdio protocol | Actual full-image 122-tool protocol checks pass; canonical nine-tool stdio bridge has real-service qualification; built API/worker default-stack behavior and restart recovery pass | Updated installed Hermes host/model checks remain; protocol discovery alone does not establish private service readiness |
+| F26 - Stdio protocol | Actual full-image 122-tool protocol checks pass; canonical nine-tool stdio bridge has real-service qualification; built API/worker default-stack behavior and restart recovery pass | Protected native eight-tool/provider/model checks now pass; retained legacy transport coverage and private acceptance remain separate |
 | F27 - Documentation claims | Dated phase tracker, canonical operator runbook, current finding matrix and exact unsuppressed local/hosted evidence distinguish implementation from activation | Older dated status tables remain historical; optional-provider documentation is not blanket support |
 
 No row authorizes private-data activation. The canonical service provides
 encrypted records, local semantic recall and optional configured source-linked
 graph recall with actual tested derived delivery. It reports missing/stopped/failed
-workers and lag explicitly. These Workspace and hosted fixtures do not establish
-that the newer stack is installed or privately isolated inside Ubuntu-Hermes.
+workers and lag explicitly. The newer restricted stack now has protected installed
+synthetic evidence in Ubuntu-Hermes; this does not admit the existing everyday
+bots or every retained legacy/provider path.
 ## Installed-host continuation - 20 October 2026
 
 See [HERMES-DEPLOYMENT-2026-10-20.md](HERMES-DEPLOYMENT-2026-10-20.md)

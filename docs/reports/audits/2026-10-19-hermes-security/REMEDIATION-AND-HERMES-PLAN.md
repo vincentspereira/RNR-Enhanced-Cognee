@@ -1,5 +1,8 @@
 # Remediation and Hermes implementation plan
 
+Additional current work: [Windows recovery and 42-identity protected fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md). The live memory-service fleet check passes; the Windows task targets a missing script and a reviewed correction is prepared. Native execution testing awaits the process-only policy decision.
+
+
 Current installed-host result: [protected deployment qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md). Protected services, non-admin synthetic/model qualification, encrypted restore, daily timer and approved temporary-account cleanup are complete. Owner custody/revocation, frontend release gates, native Windows recovery and everyday-bot admission remain open. Earlier status paragraphs below are dated checkpoints.
 
 

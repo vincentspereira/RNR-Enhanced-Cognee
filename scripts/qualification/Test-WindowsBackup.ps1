@@ -1,5 +1,5 @@
 # Native Windows tests. Never runs the full backup, uploads or edits schedules.
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess=$true)]
 param(
  [string]$BackupScript='C:\Scripts\backup-all-wsl-v11.ps1',
  [string]$ArtifactsRoot="$env:LOCALAPPDATA\RNR-Backups\qualification",
@@ -8,6 +8,10 @@ param(
 )
 $ErrorActionPreference='Stop'
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {throw 'Native Windows required.'}
+if ($WhatIfPreference) {
+ Write-Host 'Preview only: native synthetic encryption/restore checks, optional encrypted Cognee collection, no full backup or cloud upload.'
+ return
+}
 $run=Join-Path $ArtifactsRoot ('native-'+(Get-Date -Format yyyyMMdd-HHmmss)+'-'+[guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
 $acl=New-Object Security.AccessControl.DirectorySecurity
@@ -64,9 +68,16 @@ try {
  Invoke-SevenZip $sevenZip @('a','-t7z','-mx=1',("-p"+$secret),'-mhe=on',$base,(Join-Path $source '*'))|Out-File (Join-Path $run create.log)
  Check 'encrypted_base_created' ($LASTEXITCODE -eq 0)
  Check 'encrypted_base_integrity' (Test-SevenZipArchive $sevenZip $base $secret)
- Check 'wrong_password_rejected' (-not (Test-SevenZipArchive $sevenZip $base synthetic-wrong-password 2>$null))
- $headers=& $sevenZip.FullName l $base -psynthetic-wrong-password 2>$null
- Check 'filenames_encrypted' ($LASTEXITCODE -ne 0 -and ($headers -join ' ') -notmatch 'unchanged\.txt')
+ # PowerShell 5.1 can promote native stderr to a terminating error under Stop.
+ # These two deliberately failing native calls must retain their exit codes.
+ $ErrorActionPreference='Continue'
+ try {
+  $denied=-not (Test-SevenZipArchive $sevenZip $base synthetic-wrong-password 2>$null)
+  $headers=& $sevenZip.FullName l $base -psynthetic-wrong-password 2>$null
+  $listingExit=$LASTEXITCODE
+ } finally {$ErrorActionPreference='Stop'}
+ Check 'wrong_password_rejected' $denied
+ Check 'filenames_encrypted' ($listingExit -ne 0 -and ($headers -join ' ') -notmatch 'unchanged\.txt')
  Start-Sleep -Seconds 2
  [IO.File]::WriteAllText((Join-Path $source change.txt),'after-correction')
  # Preserve the fixture outside the input tree to test an archive deletion.
