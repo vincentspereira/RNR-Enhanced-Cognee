@@ -1,5 +1,11 @@
 # Remediation and Hermes implementation plan
 
+Current execution ledger: [remaining phases and parallel work](PENDING-PHASES-2026-10-20.md).
+The owner reports that the isolated Ubuntu-Hermes deployment session is running.
+Its actual results and owner recovery/revocation evidence still need review.
+The [credential/custody runbook](../../../runbooks/CREDENTIAL-REVIEW-AND-RECOVERY-CUSTODY.md)
+explains the distinct owner actions without exposing private values.
+
 Date: 19 October 2026
 
 Status update, 20 October: implementation is in progress on the published branch

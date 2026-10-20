@@ -1,5 +1,11 @@
 # Remediation implementation status
 
+Current phase ledger: [pending phases and parallel work, 20 October](PENDING-PHASES-2026-10-20.md).
+The owner reports the isolated Hermes deployment prompt is running in its own
+Codex CLI session. That host's results remain to be reviewed; the start of a
+session is not evidence of installed-host acceptance. The ledger also separates
+credential ownership/revocation from recovery custody and native Windows checks.
+
 Latest Workspace checkpoint: [completion and isolated deployment handoff](WORKSPACE-COMPLETION-2026-10-20.md).
 This supersedes earlier counts/status below: 4,293 unit tests with zero skips;
 clean frontend delivery, local advisory backport and measured 42-space load.
