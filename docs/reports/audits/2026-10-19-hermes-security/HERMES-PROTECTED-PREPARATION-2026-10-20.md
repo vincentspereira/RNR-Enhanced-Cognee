@@ -97,3 +97,37 @@ provider/model checks with artifacts outside source. Preserve failures. Password
 manager custody, historical credential revocation, enforced frontend audits and
 native Windows recovery remain open. Everyday profiles and all 41 bots are
 unchanged; no private data ingestion or new network exposure occurred.
+
+## Operator execution verified after checkpoint
+
+The owner ran both prepared helpers locally with sudo on 20 October 2026.
+The WSL original was retained at
+/root/cognee-host-preparation-20261020T184328Z/wsl.conf.original.
+Read-only host verification confirms all prior WSL section values unchanged,
+with only [boot] systemd=true added. PID 1 remains WSL init: no restart has
+occurred. Active Hermes processes have not been interrupted by this session.
+
+/opt/enhanced-cognee-memory and its runtime/python directories are root:root
+0755. A complete recursive metadata/link check found no non-root ownership,
+group/other writable regular files/directories or interpreter links outside the
+protected runtime/system paths. /etc/enhanced-cognee and
+/var/backups/enhanced-cognee are root:root 0700. Root-held offline installation
+inputs remain at /root/cognee-runtime-inputs-20261020.
+
+Actual installed Python 3.12.13 and rnr-enhanced-cognee-memory 1.1.0 passed
+pip check, service/worker/backup imports outside source and a bounded offline
+embedding invocation yielding 384 finite dimensions. The source marker is
+674d4de34b4bf8874e917a38b8a2988ba9939eac. Installed memory_daemon.py SHA256:
+ee9cde42100b9a92e98decc35625555eb39a320c97ebc87b8b16e59ccdd3dbe6.
+These are installed-runtime checks, not protected service lifecycle tests.
+
+No service credentials, protected store installation, service activation,
+backup/restore, timer activation or temporary synthetic account have been
+completed. Local sudo still requires authentication in the agent context.
+The next prerequisite is the owner-selected targeted Ubuntu-Hermes restart,
+after saving work in active Hermes/PM2/terminal sessions. From Windows PowerShell
+use wsl --terminate Ubuntu-Hermes, then wsl --distribution Ubuntu-Hermes.
+This interrupts Ubuntu-Hermes processes; do not use all-distro shutdown.
+Resume in enhanced-cognee-protected-20261020 on the deployment branch and verify
+PID 1/systemd before continuing. Keep owner custody, frontend audit and Windows
+recovery gates open. No temporary-account cleanup is due yet: none exists.
