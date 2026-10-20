@@ -4,6 +4,7 @@ Runs with the prepared local model and a disposable PostgreSQL database. Reports
 top-three recall and query latency, and retains all synthetic data for inspection.
 """
 import json
+import math
 import os
 from pathlib import Path
 import statistics
@@ -72,7 +73,7 @@ async def test_english_paraphrase_set_and_scope_boundary():
         ordered = sorted(durations)
         report = {"fixtures": len(CASES), "top_three_hits": hits, "ranks": ranks,
                   "median_query_ms": round(statistics.median(durations), 2),
-                  "p95_query_ms": round(ordered[int(.95 * (len(ordered) - 1))], 2),
+                  "p95_query_ms": round(ordered[math.ceil(.95 * len(ordered)) - 1], 2),
                   "scope_leaks": 0, "language": "English", "graph_reasoning_tested": False}
         print("Retrieval evaluation: " + json.dumps(report, sort_keys=True))
         # Fixed acceptance before running: at least eleven of twelve paraphrases.
