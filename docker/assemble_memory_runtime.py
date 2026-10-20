@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 import shutil
 import subprocess
 import sys
+import sysconfig
 
 
 LIBRARY_PACKAGES = (
@@ -115,16 +116,24 @@ def copy_package(package: str, destination: Path) -> dict:
 
 def check_dependencies(destination: Path, base: Path) -> None:
     """Every dynamically linked library must exist in the final two layers."""
+    architecture = sysconfig.get_config_var("MULTIARCH")
+    environment = dict(os.environ)
+    # Inspect against the retained layers, including C++/OpenMP libraries from
+    # the pinned final base that the slim Python build input need not contain.
+    environment["LD_LIBRARY_PATH"] = ":".join(str(root / directory)
+        for root in (destination, base)
+        for directory in ("usr/local/lib", "usr/lib/" + architecture))
     for path in (destination / "usr/local").rglob("*"):
         if not path.is_file() or path.is_symlink():
             continue
         with path.open("rb") as handle:
             if handle.read(4) != b"\x7fELF":
                 continue
-        result = subprocess.run(["ldd", str(path)], capture_output=True, text=True, check=False)
+        result = subprocess.run(["ldd", str(path)], capture_output=True, text=True,
+                                check=False, env=environment)
         output = result.stdout + result.stderr
         if "not found" in output:
-            raise RuntimeError("Build interpreter has an unresolved native dependency")
+            raise RuntimeError("Unresolved native dependency for " + str(path) + ": " + output.strip())
         if result.returncode and "not a dynamic executable" not in output and "statically linked" not in output:
             raise RuntimeError("Cannot inspect native runtime dependency " + str(path)
                                + ": " + output.strip())
@@ -138,8 +147,10 @@ def check_dependencies(destination: Path, base: Path) -> None:
             # the container resolver still rejects caller-supplied traversal.
             library = str(Path(library).resolve(strict=True))
             # ldd can report the staging path for bundled wheel libraries.
-            if library.startswith(str(destination) + "/"):
-                library = "/" + str(Path(library).relative_to(destination))
+            for root in (destination, base):
+                if library.startswith(str(root) + "/"):
+                    library = "/" + str(Path(library).relative_to(root))
+                    break
             if not rooted(destination, library).is_file() and not rooted(base, library).is_file():
                 raise RuntimeError("A native dependency is absent from the final runtime: " + library)
 
@@ -170,7 +181,6 @@ def main() -> None:
             (destination / name).symlink_to(os.readlink(source))
     # Let the ELF loader find libpython even in a stripped service environment;
     # no inherited LD_LIBRARY_PATH or copied build-host loader cache is needed.
-    import sysconfig
     library_dir = destination / "usr/lib" / sysconfig.get_config_var("MULTIARCH")
     library_dir.mkdir(parents=True, exist_ok=True)
     library = sysconfig.get_config_var("INSTSONAME")
