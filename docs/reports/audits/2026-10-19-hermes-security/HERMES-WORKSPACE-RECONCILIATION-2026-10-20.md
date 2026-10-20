@@ -81,6 +81,14 @@ unchanged. The follow-up now carries that authorization; do not ask again. Actua
 host installation, local authentication and scheduling the interruption remain
 execution work inside Hermes, not actions completed by Workspace.
 
+Vincent subsequently authorized removing the non-required synthetic test account
+after testing. The handoff now requires a recorded temporary UID/home, preservation
+of useful evidence/recovery material and scoped cleanup once the account is no
+longer needed. It forbids deleting shared models, protected services/backups,
+retained outside fixtures or everyday accounts/profiles. No account was created
+or removed by Workspace, and test-account cleanup does not qualify real bots'
+operating-system boundaries.
+
 Fresh hosted checks are requested after publication; record their exact revision
 and results separately. Main's five trusted-app checks and strict protection were
 rechecked. The official braces

@@ -15,6 +15,19 @@ and choosing the actual interruption time still require the human operator.
 This does not authorize migrating everyday profiles, removing existing groups,
 restarting other distros or weakening isolation.
 
+Vincent also explicitly requested removal of the non-required synthetic test
+account after testing. Make it temporary: record its exact newly created name,
+UID, home and dedicated files before use. Reuse protected read-only runtimes and
+existing model access where possible; do not duplicate model weights. After
+testing is complete and no task still needs that account, preserve useful private
+evidence and necessary recovery material in the operator's protected storage,
+stop only its test processes, and remove that newly created account and its
+dedicated test home/files. Check the recorded UID and paths before removal. Do
+not remove shared models, service identities, protected runtime/backups, retained
+fixtures in other locations, the original account or any everyday/bot profiles.
+Record cleanup and retained evidence in the final report. This approval is scoped
+to the temporary synthetic account; it is not general file-deletion permission.
+
 ## What remains and the new host choices
 
 The host reports 78 passing qualification tests, four real stores, two synthetic
@@ -104,6 +117,11 @@ actual current owner authorization and local instructions govern actions.
    frontend audit, protected-host or owner-custody conditions remain open. Keep
    native Windows backup/recovery evidence separate. Report exact revisions,
    counts, permission checks, actual timer/restart/restore and remaining actions.
+8. After its tests are complete and it is no longer required, perform the approved
+   temporary-account cleanup described above and report the exact account removed
+   and evidence retained. Do not leave the 41 everyday bots running as a privileged
+   operator while claiming private agent isolation from a now-removed test account.
+   Admission of real bots still requires their own verified operating boundary.
 
 ## Operator restart and timer details
 
