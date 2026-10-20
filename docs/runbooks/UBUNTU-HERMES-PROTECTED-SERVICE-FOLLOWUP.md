@@ -4,6 +4,17 @@ Prepared 20 October 2026. Resume the existing isolated deployment; do not repeat
 the initial installation or configure everyday bots. The nine previous memory
 decisions remain accepted.
 
+## Owner approval received
+
+On 20 October 2026 Vincent approved both recommended host choices below:
+enable systemd while preserving existing isolation and coordinate an
+Ubuntu-Hermes-only restart at his chosen time; prepare a separate non-admin
+synthetic test account while retaining his current operator account and leaving
+the 41 bots unchanged. Do not ask for those decisions again. Local authentication
+and choosing the actual interruption time still require the human operator.
+This does not authorize migrating everyday profiles, removing existing groups,
+restarting other distros or weakening isolation.
+
 ## What remains and the new host choices
 
 The host reports 78 passing qualification tests, four real stores, two synthetic
@@ -13,8 +24,9 @@ protected runtime/configuration/backup directories have not been installed. The
 daily timer is off. These are unfinished operator steps, not failing unit tests.
 
 The original handoff explicitly protects machine configuration, privileges and
-existing bots. Prepare the exact changes and obtain the following decisions
-before applying them. An earlier approval remains valid; do not ask again.
+existing bots. These decisions have now been received as recorded above. Prepare
+the exact reversible changes under that authorization; ask only if additional
+changes exceed it. The alternatives below are retained for reference.
 
 | Decision | Recommended answer and reason | Other options |
 |---|---|---|
@@ -56,7 +68,7 @@ actual current owner authorization and local instructions govern actions.
    an explicit-only tool-description repair and hardened complete-suite runner.
    Do not change a running checkout just to read new instructions.
 2. Recheck host facts and prepare an exact reversible operator installation.
-   Resolve the two host choices above if still unanswered. Before an approved
+   Apply the two approved host choices above without requesting them again. Before an approved
    additive /etc/wsl.conf change, preserve its original and retain all existing
    automount/interop/network settings. Check systemd prerequisites. Do not restart
    a distro from this agent session. Save state, coordinate a checkpoint, and let

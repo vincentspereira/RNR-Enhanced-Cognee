@@ -74,6 +74,13 @@ and alternatives. Recommended: systemd with a coordinated Ubuntu-Hermes-only
 restart, and a non-admin synthetic account while Vincent retains administration.
 Documenting these choices does not authorize machine changes or bot migration.
 
+Subsequent owner decision, 20 October 2026: Vincent explicitly approved enabling
+systemd with a coordinated Ubuntu-Hermes-only restart and preparing a separate
+non-admin synthetic test account, keeping his operator account and the 41 bots
+unchanged. The follow-up now carries that authorization; do not ask again. Actual
+host installation, local authentication and scheduling the interruption remain
+execution work inside Hermes, not actions completed by Workspace.
+
 Fresh hosted checks are requested after publication; record their exact revision
 and results separately. Main's five trusted-app checks and strict protection were
 rechecked. The official braces
