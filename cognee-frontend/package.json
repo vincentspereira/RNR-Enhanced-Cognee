@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prelint": "node security-backports/apply-braces-depth-backport.mjs",
+    "prebuild": "node security-backports/apply-braces-depth-backport.mjs",
+    "security:backport": "node security-backports/check-braces-depth-backport.mjs"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.32.1",

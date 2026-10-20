@@ -1,6 +1,6 @@
 # RNR Enhanced Cognee Dashboard - Multi-Stage Docker Build
 # Stage 1: Dependencies
-FROM node:20-alpine AS deps
+FROM node:22.23.3-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -8,11 +8,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+RUN npm ci --ignore-scripts
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
+FROM node:22.23.3-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -27,7 +26,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Stage 3: Production Runner
-FROM node:20-alpine AS runner
+FROM node:22.23.3-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

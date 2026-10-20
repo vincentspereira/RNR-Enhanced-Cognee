@@ -7,6 +7,9 @@ on:
       - 'dashboard/nextjs-dashboard/**'
       - 'cognee-frontend/**'
       - '.gitignore'
+      - 'scripts/apply-braces-depth-backport.mjs'
+      - 'scripts/check-braces-depth-backport.mjs'
+      - 'scripts/sync-frontend-backports.mjs'
       - '.github/workflows/canonical-dashboard.yml'
   pull_request:
     branches: [main]
@@ -36,9 +39,14 @@ jobs:
       - name: Install from the committed lock without install hooks
         working-directory: ${{ matrix.directory }}
         run: npm ci --ignore-scripts
+      - name: Check standalone copies match the maintained security backport
+        run: node scripts/sync-frontend-backports.mjs --check
       - name: Lint all delivered application source
         working-directory: ${{ matrix.directory }}
         run: npm run lint
+      - name: Reproduce the original exploit and verify the bounded source backport
+        working-directory: ${{ matrix.directory }}
+        run: timeout 15s npm run security:backport
       - name: Build and check TypeScript from the clean checkout
         working-directory: ${{ matrix.directory }}
         run: npm run build
@@ -46,6 +54,9 @@ jobs:
         if: matrix.directory == 'dashboard/nextjs-dashboard'
         working-directory: ${{ matrix.directory }}
         run: npm run test:run
+      - name: Build the delivered frontend Docker context
+        working-directory: ${{ matrix.directory }}
+        run: docker build -t frontend:qualification .
       - name: Retain audits and enforce unresolved frontend security findings
         if: always()
         working-directory: ${{ matrix.directory }}
