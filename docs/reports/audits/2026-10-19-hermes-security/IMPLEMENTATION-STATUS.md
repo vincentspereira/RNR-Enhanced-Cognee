@@ -1,5 +1,9 @@
 # Remediation implementation status
 
+Latest independent Workspace repair: [release safeguards](WORKSPACE-RELEASE-GUARDS-2026-10-20.md).
+Required main protection now covers unit, real-stack/image, browser and both
+frontend lanes; exact-revision evidence checking refuses stale/missing results.
+
 Current phase ledger: [pending phases and parallel work, 20 October](PENDING-PHASES-2026-10-20.md).
 The owner reports the isolated Hermes deployment prompt is running in its own
 Codex CLI session. That host's results remain to be reviewed; the start of a

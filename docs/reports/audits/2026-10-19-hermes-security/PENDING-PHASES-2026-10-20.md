@@ -1,5 +1,10 @@
 # Current phase ledger while Ubuntu-Hermes deployment runs separately
 
+Later Workspace update: [release safeguards implemented](WORKSPACE-RELEASE-GUARDS-2026-10-20.md).
+Main now requires the five app-bound hosted checks with strict/admin enforcement,
+and an exact-revision review tool has focused regression coverage. The unit-only
+configuration described in the earlier observations below is historical.
+
 Prepared 20 October 2026. The owner reports that the replacement global
 instructions were installed and a Codex CLI session is executing the authorized
 handoff inside Ubuntu-Hermes. This is owner-reported progress, not independently
