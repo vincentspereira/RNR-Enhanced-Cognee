@@ -88,6 +88,21 @@ def test_subagents_cannot_write_or_widen_scope(provider_module):
     assert len(provider.get_tool_schemas()) == 8
 
 
+def test_private_detail_retraction_can_use_current_human_clarification(provider_module):
+    module, home = provider_module
+    provider = module.EnhancedCogneeProvider()
+    provider.initialize("retraction-session", hermes_home=str(home), agent_context="primary")
+    calls = []
+    provider._client.request = lambda *args: calls.append(args) or {"state": "retracted", "version": 2}
+    provider.handle_tool_call("enhanced_clarify", {"record_id": "fixture", "reason": "private_details"})
+    args = {"record_id": "fixture", "expected_version": 1, "user_confirmation_quote": "Retract that private record."}
+    assert "error" in json.loads(provider.handle_tool_call("enhanced_retract", args))
+    assert not calls
+    provider.on_turn_start(2, "Retract that private record.")
+    assert json.loads(provider.handle_tool_call("enhanced_retract", args))["state"] == "retracted"
+    assert calls == [("POST", "/v1/memories/fixture/retract", {"expected_version": 1})]
+
+
 def test_source_declarations_reach_the_service_without_authority_fields(provider_module):
     from src.memory_contracts import MemoryEvidence
     module, home = provider_module

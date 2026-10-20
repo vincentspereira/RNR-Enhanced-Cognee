@@ -49,8 +49,8 @@ jobs:
         ports: ["6379:6379"]
     env:
       RNR_QUALIFICATION_DATABASE_URL: postgresql://postgres:synthetic-default-stack-only@127.0.0.1:5432/qualification
-      RNR_QUALIFICATION_MODEL_CACHE: ${{ runner.temp }}/memory-model
-      RNR_QUALIFICATION_INDEX_SETTINGS: ${{ runner.temp }}/memory-index.json
+      RNR_QUALIFICATION_MODEL_CACHE: /tmp/canonical-memory-model
+      RNR_QUALIFICATION_INDEX_SETTINGS: /tmp/canonical-memory-index.json
       COGNEE_TELEMETRY_ENABLED: '0'
       COGNEE_LOG_FILE: 'false'
       ENHANCED_LOAD_DOTENV: '0'
