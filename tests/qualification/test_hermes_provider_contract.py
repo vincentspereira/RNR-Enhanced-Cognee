@@ -198,3 +198,27 @@ def test_selected_capture_and_uncertain_correction_require_current_human_answer(
     before = len(calls)
     assert "error" in json.loads(provider.handle_tool_call("enhanced_remember", {"content": "bot instruction", "idempotency_key": "bot"}))
     assert len(calls) == before
+
+
+def test_invalid_optional_graph_span_is_actionable_and_retry_preserves_identity(provider_module):
+    module, home = provider_module
+    provider = module.EnhancedCogneeProvider()
+    provider.initialize("span-session", hermes_home=str(home), agent_context="primary")
+    provider.on_turn_start(1, "Cedar uses an eleven-day review cycle.")
+    calls = []
+    provider._client.request = lambda *args: calls.append(args) or {"id": "fixture", "version": 1}
+    body = {"content": "Cedar uses an eleven-day review cycle.", "idempotency_key": "same-retry-key"}
+    invalid = {"subject": "Cedar", "predicate": "uses", "object": "eleven days",
+               "span_start": 0, "span_end": len(body["content"])}
+    rejected = json.loads(provider.handle_tool_call("enhanced_remember", body | {"knowledge_links": [invalid]}))
+    assert "omit knowledge_links" in rejected["validation_hint"] and not calls
+    assert body["content"] not in json.dumps(rejected)
+    assert "error" in json.loads(provider.handle_tool_call("enhanced_correct", {
+        "record_id": "fixture", "expected_version": 1, "content": body["content"], "knowledge_links": [invalid]}))
+    assert not calls
+    saved = json.loads(provider.handle_tool_call("enhanced_remember", body))
+    assert saved["id"] == "fixture" and calls[-1][2]["idempotency_key"] == "same-retry-key"
+    valid = dict(invalid, object="eleven-day")
+    assert "error" not in json.loads(provider.handle_tool_call("enhanced_remember", body | {
+        "idempotency_key": "new-linked-item", "knowledge_links": [valid]}))
+    assert calls[-1][2]["knowledge_links"] == [valid]

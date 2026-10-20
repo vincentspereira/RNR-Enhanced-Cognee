@@ -9,6 +9,14 @@ matrix records the repaired behavior and the remaining limits. "Contained" means
 the restricted Hermes profile avoids the affected legacy path, not that every
 optional provider or old interface has been repaired and qualified.
 
+Latest Ubuntu-Hermes follow-up: [78/78 qualification and local capture](HERMES-QUALIFICATION-FOLLOWUP-2026-10-20.md).
+All four previously skipped real-client/browser checks now pass, with zero skips.
+Local Qwen 27B passes five model-driven scenarios in the separate second synthetic
+profile at a verified 65,536-token context; encrypted history was independently
+checked. CPU-offloaded replies take 196-387 seconds. Earlier model failures below
+remain historical; protected deployment, owner custody and release gates remain
+open.
+
 | Finding | Implemented behavior | Remaining qualification or work |
 |---|---|---|
 | F01 - Tool permissions | Explicit permission/effect manifest for all 122 tools; canonical sixteen-alias allowlist; actual stdio readonly denial; separate human review role | Retained legacy effects conservatively marked unqualified; broader legacy tool/provider coverage remains |
