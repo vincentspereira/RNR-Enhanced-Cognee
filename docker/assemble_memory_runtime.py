@@ -133,6 +133,10 @@ def check_dependencies(destination: Path, base: Path) -> None:
             library = words[2] if len(words) > 2 and words[1] == "=>" else words[0] if words else ""
             if not library.startswith("/"):
                 continue
+            # Wheel RPATHs can contain $ORIGIN-relative parent components. Resolve
+            # the actual build-stage file before mapping it into the final image;
+            # the container resolver still rejects caller-supplied traversal.
+            library = str(Path(library).resolve(strict=True))
             # ldd can report the staging path for bundled wheel libraries.
             if library.startswith(str(destination) + "/"):
                 library = "/" + str(Path(library).relative_to(destination))

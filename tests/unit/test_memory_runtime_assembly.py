@@ -61,3 +61,24 @@ def test_assembler_refuses_use_outside_declared_build_before_creating_output(tmp
         env=env, capture_output=True, text=True, timeout=5, check=False)
     assert result.returncode == 2 and "declared Python build stage" in result.stderr
     assert not output.exists()
+
+
+def test_native_wheel_rpath_parents_map_to_the_actual_staged_library(tmp_path, monkeypatch):
+    destination, base = tmp_path / "runtime", tmp_path / "base"
+    native = destination / "usr/local/lib/python3.12/site-packages/pkg/capi/native.so"
+    native.parent.mkdir(parents=True)
+    native.write_bytes(b"\x7fELFsynthetic fixture")
+    bundled = native.parent.parent.parent / "bundled.libs/library.so"
+    bundled.parent.mkdir()
+    bundled.write_bytes(b"synthetic non-executable library fixture")
+    reported = str(native.parent / "../../bundled.libs/library.so")
+    monkeypatch.setattr(assembly.subprocess, "run", lambda *a, **kw:
+        subprocess.CompletedProcess(a, 0, "library.so => " + reported + " (0x1)\n", ""))
+    assembly.check_dependencies(destination, base)
+    # A real build-host file outside both final layers must still be rejected.
+    outside = tmp_path / "outside.so"
+    outside.write_bytes(b"synthetic excluded library fixture")
+    monkeypatch.setattr(assembly.subprocess, "run", lambda *a, **kw:
+        subprocess.CompletedProcess(a, 0, "library.so => " + str(outside) + " (0x1)\n", ""))
+    with pytest.raises(RuntimeError, match="absent from the final runtime"):
+        assembly.check_dependencies(destination, base)
