@@ -46,9 +46,9 @@ def test_usrmerge_and_relative_library_links_resolve_inside_image(tmp_path):
 
 def test_omissions_do_not_remove_native_api_modules_or_third_party_names():
     names = ["readline.cpython-312.so", "_uuid.cpython-312.so", "_curses.cpython-312.so",
-             "_ssl.cpython-312.so", "_sqlite3.cpython-312.so", "_ctypes.cpython-312.so"]
+             "_tkinter.cpython-312.so", "_ssl.cpython-312.so", "_sqlite3.cpython-312.so", "_ctypes.cpython-312.so"]
     omitted = assembly.excluded_python_files("/usr/local/lib/python3.12/lib-dynload", names)
-    assert omitted == set(names[:3])
+    assert omitted == set(names[:4])
     assert not assembly.excluded_python_files("/usr/local/lib/python3.12/site-packages/lib-dynload", names)
 
 

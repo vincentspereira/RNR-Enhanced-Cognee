@@ -86,6 +86,32 @@ credentials. Keep API, worker and operator accounts separate. The prepared
 restricted Docker image contains the worker modules and dependencies, but still
 requires an exact image build/scan and hardened deployment configuration.
 
+### Noninteractive container runtime
+
+`docker/Dockerfile.memory` assembles the same CPython 3.12 service on a pinned
+official distroless Debian 13 C++ base. Both public input images use immutable
+digests. The build retains the base package records and complete Debian control
+and checksum inventories for the seven additional runtime library packages.
+`/usr/share/enhanced-cognee/runtime-inventory.json` records input references,
+versions, the interpreter checksum and the five omitted optional extensions.
+The assembler checks native dependencies against both retained layers and
+refuses unresolved or absent dependencies. It runs only in the build stage.
+
+This artifact supports the API and indexing worker. It has no interactive shell,
+package manager or runtime pip. `_tkinter`, `_curses`, `_curses_panel`, `readline` and the
+optional `_uuid` native accelerator are omitted; UUID4 uses operating-system
+randomness. It is not a general-purpose image for the larger legacy server or
+operator backup commands. Use the separate protected native operator runtime
+for backup and recovery; do not add recovery keys to the API/worker containers.
+
+Use `docker logs` and the Python health check to diagnose a deployed container.
+An interactive `docker exec ... sh` session is unavailable. The qualification
+workflow checks TLS, compression, SQLite, dbm, encryption, UUID4 and native
+imports inside the exact image, then exercises API/worker recovery with four
+real stores and scans that same image. Source-level tests or an intermediate
+root-filesystem scan do not qualify a final image. Findings are retained and the
+HIGH/CRITICAL gate remains unsuppressed.
+
 ## Prepared private service-account deployment
 
 The `integrations/hermes/deployment/enhanced-cognee-api.service` and

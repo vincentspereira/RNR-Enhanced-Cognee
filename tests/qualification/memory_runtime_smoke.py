@@ -35,7 +35,7 @@ def main():
     assert cipher.decrypt(nonce, cipher.encrypt(nonce, fixture, None), None) == fixture
     assert uuid.uuid4().version == 4
     # Noninteractive server scope, not a general-purpose Python/OS image.
-    for name in ("_curses", "_curses_panel", "readline", "_uuid"):
+    for name in ("_curses", "_curses_panel", "readline", "_uuid", "_tkinter"):
         assert importlib.util.find_spec(name) is None
     for name in ("sh", "bash", "su", "mount", "apt", "dpkg", "pip"):
         assert shutil.which(name) is None

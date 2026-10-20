@@ -2,7 +2,7 @@
 
 The final image retains complete Debian inventories for every copied library
 package. No vulnerability record or package database is filtered. Interactive
-terminal extensions and the optional libuuid accelerator are outside this API's
+GUI/terminal extensions and the optional libuuid accelerator are outside this API's
 contract; UUID4 continues to use Python's operating-system randomness path.
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ LIBRARY_PACKAGES = (
     "libbz2-1.0", "libcrypt1", "libdb5.3t64", "libffi8", "libgdbm6t64",
     "liblzma5", "libsqlite3-0",
 )
-OMITTED_EXTENSIONS = {"_curses", "_curses_panel", "readline", "_uuid"}
+OMITTED_EXTENSIONS = {"_curses", "_curses_panel", "readline", "_uuid", "_tkinter"}
 
 
 def rooted(root: Path, virtual: str) -> Path:
