@@ -1,5 +1,11 @@
 # Remediation and Hermes implementation plan
 
+Latest Windows result: [v11 selected-data backup completed, 21 October](WINDOWS-V11-COMPLETED-2026-10-21.md).
+All 56 native qualification checks passed for the installed file; the manual
+backup exited 0 and copied the encrypted generation into both provider folders.
+Provider upload/downloaded recovery and actual scheduled execution remain open.
+The separate later raw Robocopy diagnostic is not the v11 backup result.
+
 Current phase-by-phase disposition: [release status, 21 October](RELEASE-STATUS-2026-10-21.md).
 The protected deployment is qualified; the full release, everyday rollout and
 main merge remain conditional. Owner custody, Windows/provider recovery and

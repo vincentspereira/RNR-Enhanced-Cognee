@@ -1,5 +1,11 @@
 # Finding-by-finding remediation record
 
+Latest Windows evidence: [successful v11 qualification and full selected-data run](WINDOWS-V11-COMPLETED-2026-10-21.md).
+56 native checks passed for the current installed hash; backup exit 0 and both
+encrypted sync-folder copies confirmed. Remote upload/recovery, scheduled
+execution and separate v12 qualification remain open. Earlier failure and
+building-state observations below retain their original dates/scope.
+
 21 October broader backup review: [v12, fleet coverage and home moves](BACKUP-V12-AND-HOME-REVIEW-2026-10-21.md).
 Prepared encrypted content reuse and resumable local/cloud snapshots, with
 OneDrive originals explicitly excluded by the owner. Workspace moves are

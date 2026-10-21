@@ -54,6 +54,12 @@ is retained, but its prerequisites have not all passed.
 
 ## Windows/backup progress
 
+Superseding result: [v11 completed successfully](WINDOWS-V11-COMPLETED-2026-10-21.md).
+The owner supplied the successful 56-check qualification and manual v11 backup
+exit code 0. The completed encrypted generation and both sync-folder copies are
+confirmed. Provider upload, downloaded recovery and actual scheduled execution
+remain open. The older building-state observation below is historical.
+
 Owner-completed steps now include KeePassXC vault/passphrase recovery, archive
 password setup, Microsoft sign-in entry and correction of the weekly v11 task.
 The downloaded vault copy opened successfully; this does not prove independent
