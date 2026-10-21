@@ -45,7 +45,8 @@ try {
  Check 'native_parser' (@($parseErrors).Count -eq 0)
  # Only named definitions are evaluated. Full-script side effects cannot run.
  $wanted=@('Write-Task','Write-Ok','Write-Bad','Invoke-SevenZip','Test-SevenZipArchive',
- 'Invoke-WslBinaryExport','Backup-EnhancedCognee','Write-RestoreManifest','Test-CloudFilesPresent')
+ 'Invoke-WslBinaryExport','Backup-EnhancedCognee','Write-RestoreManifest','Test-CloudFilesPresent',
+ 'ConvertTo-WslPath','Write-ArchiveLinkCatalog','Write-WslManifests')
  foreach ($name in $wanted) {
   $d=@($ast.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst]},$true)|Where-Object {$_.Name -eq $name})
   Check ('one_definition_'+$name) ($d.Count -eq 1)
@@ -112,6 +113,52 @@ try {
  [IO.File]::WriteAllText((Join-Path $mirror older-retained.txt),'old')
  Test-CloudFilesPresent $chain $mirror
  Check 'older_files_retained' (Test-Path (Join-Path $mirror older-retained.txt))
+ # Actual WSL reparse points reproduce the failed owner backup. Preserve link
+ # metadata and exclude exact paths without losing an ordinary same-name file.
+ $linkSource=Join-Path $run link-source
+ $catalogPath=Join-Path $linkSource '_manifests\archive-links.json'
+ $excludePath=Join-Path $run link-exclusions.txt
+ $linkSource64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes((ConvertTo-WslPath $linkSource)))
+ $fixture="import base64,pathlib; p=pathlib.Path(base64.b64decode('$linkSource64').decode()); p.mkdir(); (p/'nested').mkdir(); (p/'ordinary').mkdir(); (p/'keep.txt').write_text('retained'); (p/'ordinary'/'dangling-link').write_text('ordinary same name'); (p/'dangling-link').symlink_to('/synthetic/no-such-target'); (p/'nested'/'folder-link').symlink_to('/synthetic/no-such-directory'); (p/'loop').symlink_to('.'); (p/'nested'/'space link').symlink_to('../keep.txt'); (p/'outside-link').symlink_to('/etc')"
+ $fixture64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($fixture))
+ & wsl.exe -d Ubuntu-Workspace --exec /usr/bin/python3 -I -c "exec(__import__('base64').b64decode('$fixture64'))"
+ Check 'real_linux_link_fixtures_created' ($LASTEXITCODE -eq 0)
+ $linkCount=Write-ArchiveLinkCatalog $linkSource $catalogPath $excludePath
+ Check 'link_catalog_counts_all_five_links' ($linkCount -eq 5)
+ $catalog=Get-Content -LiteralPath $catalogPath -Raw|ConvertFrom-Json
+ Check 'dangling_target_preserved' (@($catalog.links|Where-Object {$_.path -eq 'dangling-link' -and $_.target -eq '/synthetic/no-such-target'}).Count -eq 1)
+ Check 'loop_recorded_without_traversal' (@($catalog.links|Where-Object {$_.path -eq 'loop' -and $_.target -eq '.'}).Count -eq 1)
+ $linkArchive=Join-Path $run links.7z
+ Invoke-SevenZip $sevenZip @('a','-t7z','-mx=1',("-p"+$secret),'-mhe=on',$linkArchive,(Join-Path $linkSource '*'),('-x@'+$excludePath),'-scsUTF-8')|Out-File (Join-Path $run link-archive.log)
+ Check 'link_safe_archive_created_without_warnings' ($LASTEXITCODE -eq 0)
+ Check 'link_safe_archive_integrity' (Test-SevenZipArchive $sevenZip $linkArchive $secret)
+ $linkRestored=Join-Path $run links-restored
+ Invoke-SevenZip $sevenZip @('x',$linkArchive,("-p"+$secret),("-o"+$linkRestored),'-y')|Out-File (Join-Path $run link-restore.log)
+ Check 'link_safe_archive_extracts' ($LASTEXITCODE -eq 0)
+ Check 'unrelated_same_name_file_retained' ((Get-Content -LiteralPath (Join-Path $linkRestored 'ordinary\dangling-link') -Raw) -ceq 'ordinary same name')
+ Check 'ordinary_payload_retained' ((Get-Content -LiteralPath (Join-Path $linkRestored keep.txt) -Raw) -ceq 'retained')
+ $restoredCatalog=Get-Content -LiteralPath (Join-Path $linkRestored '_manifests\archive-links.json') -Raw|ConvertFrom-Json
+ Check 'all_link_recovery_metadata_restored' (@($restoredCatalog.links).Count -eq 5)
+ Check 'external_link_not_followed' (-not (Test-Path -LiteralPath (Join-Path $linkRestored outside-link)))
+ Check 'original_links_not_removed' ((Get-Item -Force -LiteralPath (Join-Path $linkSource dangling-link)).Attributes -band [IO.FileAttributes]::ReparsePoint)
+ $excluded=Join-Path $linkSource ignored
+ New-Item -ItemType Directory -Path $excluded|Out-Null
+ $countAgain=Write-ArchiveLinkCatalog $linkSource $catalogPath $excludePath @('nested')
+ Check 'existing_directory_exclusions_respected' ($countAgain -eq 3)
+ $script:Errors=[Collections.Generic.List[string]]::new()
+ foreach ($distro in @('Ubuntu-Workspace','Ubuntu-Company')) {
+  $manifestTest=Join-Path $run ('manifests-'+$distro)
+  Write-WslManifests $distro $manifestTest
+  $manifestStatus=Get-Content -LiteralPath (Join-Path $manifestTest status.json) -Raw|ConvertFrom-Json
+  Check ('manifest_five_statuses_'+$distro) ($manifestStatus.Count -eq 5)
+  Check ('manifest_no_hidden_failures_'+$distro) ($script:Errors.Count -eq 0 -and @($manifestStatus|Where-Object {$_.state -eq 'failed'}).Count -eq 0)
+  Check ('manifest_env_names_only_'+$distro) (@(Get-Content -LiteralPath (Join-Path $manifestTest env-names.txt)|Where-Object {$_ -and $_ -notmatch '^[a-zA-Z_][a-zA-Z_0-9]*$'}).Count -eq 0)
+  $npmManifest=@($manifestStatus|Where-Object {$_.name -eq 'npm-global'})[0]
+  Check ('manifest_native_linux_npm_and_node_'+$distro) ($npmManifest.state -eq 'not_installed' -or ($npmManifest.state -eq 'ok' -and
+   $npmManifest.executable -match '^/' -and $npmManifest.node_executable -match '^/' -and
+   $npmManifest.executable -notmatch '^/mnt/[a-zA-Z]/|\.(exe|cmd|bat)$' -and
+   $npmManifest.node_executable -notmatch '^/mnt/[a-zA-Z]/|\.(exe|cmd|bat)$'))
+ }
  # Exercise the actual Windows ProcessStartInfo/WSL binary boundary with
  # spaces in the destination and all byte values, including NUL and CR/LF.
  $binary=Join-Path $run 'binary with spaces.bin'

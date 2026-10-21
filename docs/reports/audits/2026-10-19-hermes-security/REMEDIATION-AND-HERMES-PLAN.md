@@ -1,5 +1,28 @@
 # Remediation and Hermes implementation plan
 
+21 October backup-scope update: [v12 and home-folder review](BACKUP-V12-AND-HOME-REVIEW-2026-10-21.md).
+V12 is prepared at C:\Scripts with encrypted content reuse, resumable cloud
+copies, broader approved sources and explicit gaps. Owner decisions: no custom
+weights; leave OneDrive originals separate. Six Workspace folders were moved
+and verified with compatibility links. The 42-profile archive includes bot
+configs/skills/databases; whole profiles were not excluded. Native v12
+qualification, actual backup/provider recovery, Hermes moves and task switch
+remain pending. V11 is preserved while its encrypted base is being created.
+This does not close custody/revocation, frontend release or everyday admission.
+The dated paragraphs below retain previous checkpoints.
+
+21 October Windows update: [real backup attempts and corrections](WINDOWS-FIRST-BACKUP-FOLLOWUP-2026-10-21.md).
+Password setup, scheduled-task correction and two-entry vault recovery succeeded.
+The first backup failed on staged Linux links; the second correctly blocked
+cloud copying on an npm inventory error after collecting four Cognee pairs.
+Read-only diagnosis found Windows npm selected in a noninteractive Linux shell.
+v11 now selects the existing Linux nvm runtime, verifies npm/Node routes and
+checks inventories before long copies. The corrected Workspace inventory passes;
+the expanded 56-check native run, complete backup, remote upload, archive
+recovery and scheduled execution remain pending. The previous 54-check pass
+applies to the prior script revision. Service-key custody and exposed-credential
+disposition remain separate incomplete owner requirements.
+
 Additional current work: [Windows recovery and 42-identity protected fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md). The live memory-service fleet check passes; the Windows task targets a missing script and a reviewed correction is prepared. After owner approval, 32 native Windows recovery/collection checks pass and the v11 WSL quoting issue is fixed. Real password configuration, scheduling and downloaded-cloud recovery remain.
 
 

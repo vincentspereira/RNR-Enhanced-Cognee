@@ -1,5 +1,22 @@
 # Finding-by-finding remediation record
 
+21 October broader backup review: [v12, fleet coverage and home moves](BACKUP-V12-AND-HOME-REVIEW-2026-10-21.md).
+Prepared encrypted content reuse and resumable local/cloud snapshots, with
+OneDrive originals explicitly excluded by the owner. Workspace moves are
+verified; Hermes moves/native v12 capture/recovery remain unexecuted. Keep
+the Windows worker profile. The current v11 task and generations are retained.
+Portable checks do not replace Windows/VSS/DPAPI/provider recovery evidence.
+
+21 October Windows follow-up: [first real backup and fixes](WINDOWS-FIRST-BACKUP-FOLLOWUP-2026-10-21.md).
+Password setup and task configuration are complete; the owner opened a downloaded
+two-entry KeePassXC recovery copy. The full backup failed closed on staged links
+after collecting four encrypted Cognee pairs. The prior correction passed 54
+native checks, but the next full run found Windows npm selected by a Linux shell.
+Native runtime selection and early inventory checks are corrected; the actual
+Workspace inventory passes. The expanded 56-check native rerun, full backup,
+remote upload, archive recovery and scheduled execution remain pending. This does not complete
+service-key custody, credential revocation, release gates or real-bot admission.
+
 Current reconciliation: [protected installed-host qualification](HERMES-PROTECTED-DEPLOYMENT-2026-10-20.md)
 and [Windows/fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md).
 The protected restricted service, actual non-admin/model checks, encrypted restore,
