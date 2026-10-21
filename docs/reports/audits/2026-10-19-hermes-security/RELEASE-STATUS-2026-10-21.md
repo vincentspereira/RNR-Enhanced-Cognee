@@ -54,6 +54,12 @@ is retained, but its prerequisites have not all passed.
 
 ## Windows/backup progress
 
+22 October follow-up: the first native v12 test stopped with one failed empty
+snapshot-list check after 16 passes. The shared PowerShell compatibility fix is
+installed and passed 38 portable checks; its native Windows rerun is pending.
+V11 remains the scheduled version. See
+[the native qualification and cleanup follow-up](WINDOWS-V12-NATIVE-FOLLOWUP-2026-10-22.md).
+
 Superseding result: [v11 completed successfully](WINDOWS-V11-COMPLETED-2026-10-21.md).
 The owner supplied the successful 56-check qualification and manual v11 backup
 exit code 0. The completed encrypted generation and both sync-folder copies are

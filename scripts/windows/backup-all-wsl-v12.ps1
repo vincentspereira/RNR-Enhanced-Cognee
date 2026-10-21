@@ -52,7 +52,7 @@ function Get-ScopeSnapshots {
  $selection='scope:'+$Scope
  if ($RunTag) {$selection+=',run:'+$RunTag}
  $command=@('snapshots','--json','--tag',$selection)
- return @(ConvertFrom-Json -InputObject (Invoke-BackupRestic $command ('inventory-'+$Scope)))
+ return @(ConvertFrom-V12JsonArray -Json (Invoke-BackupRestic $command ('inventory-'+$Scope)))
 }
 function Save-BackupScope {
  param([string]$Name,[string[]]$Arguments)
@@ -189,7 +189,7 @@ try {
     if (Test-Path -LiteralPath $cachePath) {
      $prior=Get-Content -LiteralPath $cachePath -Raw|ConvertFrom-Json
      if ($prior.fingerprint -eq $fingerprint -and $prior.helper_sha256 -eq $helperHash) {
-      $confirmed=@(ConvertFrom-Json -InputObject (Invoke-BackupRestic @('snapshots','--json',$prior.snapshot) ('reuse-'+$distro)))
+      $confirmed=@(ConvertFrom-V12JsonArray -Json (Invoke-BackupRestic @('snapshots','--json',$prior.snapshot) ('reuse-'+$distro)))
       if ($confirmed.Count -eq 1) {
        $script:run.completed[$distro]=@{snapshot=$prior.snapshot;unchanged_home_reused=$true}
        Save-V12Json $script:run $runPath

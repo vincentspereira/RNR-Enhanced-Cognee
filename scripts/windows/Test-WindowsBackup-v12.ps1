@@ -35,6 +35,11 @@ try {
   Check ('native_parse_'+[IO.Path]::GetFileName($path)) (@($errors).Count -eq 0)
  }
  Check pinned_engine ((Get-FileHash -LiteralPath $restic).Hash -eq 'b0dd1fd21eea5d8fe1325f55f7118213c21f36de8a261e04c0624a5ab9fd7830')
+ Check empty_json_array_is_no_snapshot (@(ConvertFrom-V12JsonArray '[]').Count -eq 0)
+ $one=@(ConvertFrom-V12JsonArray '[{"id":"fixture-one"}]')
+ Check single_json_snapshot_is_one_item ($one.Count -eq 1 -and $one[0].id -eq 'fixture-one')
+ $many=@(ConvertFrom-V12JsonArray '[{"id":"fixture-one"},{"id":"fixture-two"}]')
+ Check multiple_json_snapshots_are_separate_items ($many.Count -eq 2 -and $many[1].id -eq 'fixture-two')
  $random=[byte[]]::new(40);$rng=[Security.Cryptography.RandomNumberGenerator]::Create();$rng.GetBytes($random);$rng.Dispose()
  $secret=[Convert]::ToBase64String($random);$secure=ConvertTo-SecureString $secret -AsPlainText -Force
  $secure|Export-Clixml -LiteralPath $dpapi;$secure.Dispose()
@@ -52,9 +57,9 @@ try {
  Check unchanged_data_reused ($summary.data_added -lt 8192 -and $summary.data_blobs -eq 0)
  $null=Engine @('backup','--tag','scope:fixture','--tag','run:old',$src)
  $r=Engine @('snapshots','--json','--tag','scope:fixture,run:new')
- Check new_run_cannot_reuse_old_tagged_snapshot (@($r.stdout|ConvertFrom-Json).Count -eq 0)
+ Check new_run_cannot_reuse_old_tagged_snapshot (@(ConvertFrom-V12JsonArray $r.stdout).Count -eq 0)
  $r=Engine @('snapshots','--json','--tag','scope:fixture,run:old')
- Check same_run_snapshot_can_resume (@($r.stdout|ConvertFrom-Json).Count -eq 1)
+ Check same_run_snapshot_can_resume (@(ConvertFrom-V12JsonArray $r.stdout).Count -eq 1)
  [IO.File]::WriteAllText((Join-Path $src change.txt),'after-correction')
  Move-Item -LiteralPath (Join-Path $src delete.txt) -Destination (Join-Path $run preserved-delete.txt)
  $r=Engine @('backup','--json',$src)
@@ -68,12 +73,12 @@ try {
  $older=Join-Path $run older
  $null=Engine @('restore',$first,'--target',$older)
  Check older_version_preserved (@(Get-ChildItem -LiteralPath $older -Recurse -File -Filter delete.txt).Count -eq 1)
- $before=@((Engine @('snapshots','--json')).stdout|ConvertFrom-Json)
+ $before=@(ConvertFrom-V12JsonArray (Engine @('snapshots','--json')).stdout)
  $producer=Join-Path $run failing-producer.ps1
  [IO.File]::WriteAllText($producer,"[Console]::Out.Write('partial synthetic output');exit 7")
  $r=Engine @('backup','--stdin-from-command','--stdin-filename','bad.tar','--',"$PSHOME\powershell.exe",'-NoProfile','-ExecutionPolicy','RemoteSigned','-File',$producer) -ExpectFailure
  Check producer_failure_reported ($r.exit -ne 0)
- $after=@((Engine @('snapshots','--json')).stdout|ConvertFrom-Json)
+ $after=@(ConvertFrom-V12JsonArray (Engine @('snapshots','--json')).stdout)
  Check failed_producer_no_snapshot ($before.Count -eq $after.Count)
  $bad=$false;try {Assert-V12SeparatePaths @($src) @((Join-Path $src repo))} catch {$bad=$true};Check recursion_rejected $bad
  $bad=$false;try {Assert-V12SeparatePaths @((Join-Path $src child)) @($src) @($src)} catch {$bad=$true};Check source_inside_destination_rejected_even_if_excluded $bad

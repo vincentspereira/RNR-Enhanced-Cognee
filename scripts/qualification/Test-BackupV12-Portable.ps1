@@ -35,6 +35,32 @@ $definition=@($main.FindAll({param($n) $n -is [Management.Automation.Language.Fu
 . ([scriptblock]::Create($definition.Extent.Text))
 function Invoke-BackupRestic([string[]]$Command,[string]$Label) {return (Engine $Command).stdout}
 $null=Engine @('backup','--tag','scope:fixture','--tag','run:old',$src)
+Check native_empty_snapshot_array (@(ConvertFrom-V12JsonArray '[]').Count -eq 0)
+$one=@(ConvertFrom-V12JsonArray '[{"id":"one"}]')
+Check native_single_snapshot_array ($one.Count -eq 1 -and $one[0].id -eq 'one')
+$many=@(ConvertFrom-V12JsonArray '[{"id":"one"},{"id":"two"}]')
+Check native_multiple_snapshot_array ($many.Count -eq 2 -and $many[1].id -eq 'two')
+& {
+ # Emulate 5.1's non-enumerating JSON cmdlet on PS7. This is a compatibility
+ # regression fixture, not a claim that native Windows qualification passed.
+ function ConvertFrom-Json {
+  [CmdletBinding()]
+  param([Parameter(Mandatory=$true)][string]$InputObject)
+  Microsoft.PowerShell.Utility\ConvertFrom-Json -InputObject $InputObject -NoEnumerate
+ }
+ Check legacy_fixture_emits_empty_array_as_one_object (@(ConvertFrom-Json '[]').Count -eq 1)
+ Check legacy_empty_array_normalized (@(ConvertFrom-V12JsonArray '[]').Count -eq 0)
+ $one=@(ConvertFrom-V12JsonArray '[{"id":"one"}]')
+ Check legacy_single_snapshot_normalized ($one.Count -eq 1 -and $one[0].id -eq 'one')
+ $many=@(ConvertFrom-V12JsonArray '[{"id":"one"},{"id":"two"}]')
+ Check legacy_multiple_snapshots_normalized ($many.Count -eq 2 -and $many[1].id -eq 'two')
+ Check legacy_new_run_has_no_old_snapshot (@(Get-ScopeSnapshots fixture new).Count -eq 0)
+ Check legacy_same_run_has_one_snapshot (@(Get-ScopeSnapshots fixture old).Count -eq 1)
+}
+foreach ($invalid in @('', 'null', '{}', '[null]', '[not-json]')) {
+ $caught=$false;try {ConvertFrom-V12JsonArray $invalid|Out-Null} catch {$caught=$true}
+ Check ('invalid_snapshot_list_rejected_'+$invalid) $caught
+}
 Check new_run_cannot_reuse_old_tagged_snapshot (@(Get-ScopeSnapshots fixture new).Count -eq 0)
 Check same_run_committed_snapshot_can_resume (@(Get-ScopeSnapshots fixture old).Count -eq 1)
 $definition=@($main.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Save-BackupScope'},$true))[0]

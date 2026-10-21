@@ -1,4 +1,20 @@
 # Shared native Windows process and durable-state helpers. No secret arguments.
+function ConvertFrom-V12JsonArray {
+ param([Parameter(Mandatory=$true)][AllowEmptyString()][string]$Json)
+ # Windows PowerShell 5.1 emits a JSON array as one pipeline object; PS7
+ # enumerates it. Explicit iteration gives callers zero/one/many items in
+ # both runtimes, so [] cannot be mistaken for an existing snapshot.
+ $text=$Json.Trim()
+ if (-not $text.StartsWith('[') -or -not $text.EndsWith(']')) {throw 'Expected a JSON array from the backup engine.'}
+ $options=@{InputObject=$text;ErrorAction='Stop'}
+ if ((Get-Command ConvertFrom-Json).Parameters.ContainsKey('NoEnumerate')) {$options.NoEnumerate=$true}
+ $parsed=ConvertFrom-Json @options
+ foreach ($item in $parsed) {
+  if ($null -eq $item) {throw 'Unexpected null item in backup engine JSON array.'}
+  $item
+ }
+}
+
 function ConvertTo-V12Argument {
  param([AllowEmptyString()][string]$Value)
  # CommandLineToArgvW quoting, including quotes and trailing backslashes.
