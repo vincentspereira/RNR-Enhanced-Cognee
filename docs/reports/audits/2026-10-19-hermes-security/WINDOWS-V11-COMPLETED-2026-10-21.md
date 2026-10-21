@@ -3,7 +3,8 @@
 Date: 21 October 2026. Evidence: owner-supplied Windows output, matching local
 transcript, native qualification summary and completed archive/restore manifest.
 This supersedes the earlier statement that the real v11 run was still building
-its encrypted base. Remote upload and downloaded recovery remain unverified.
+its encrypted base. Subsequent owner-reported sync completion and the recovery
+copy check are distinguished below from independently verified remote recovery.
 
 ## Confirmed result
 
@@ -29,8 +30,9 @@ Selected generation:
 The local completed base and restore manifest remain together under its chains
 directory. The recorded base digest is
 `6fbbc9f4e5105d29e9ab7edd44260edb79a014c8a93202a0b03fb09c2b97f5e8`.
-This digest was read from the successful run's manifest; a new independent
-47.5-GB hash/decryption/recovery pass was not performed in Workspace.
+This digest was initially read from the successful run's manifest. The subsequent
+full recovery-copy hash pass is recorded below; decryption and representative
+restoration remain separate checks.
 
 ## Separate manual Robocopy diagnostic
 
@@ -54,6 +56,34 @@ No fixtures, source files, staging history or backup generations were deleted.
 
 ## Warnings and remaining evidence
 
+### Recovery follow-up, 21-22 October 2026
+
+The owner reports that both OneDrive and Google Drive show all files synced.
+The owner also reports seeing the matched archive and manifest on the OneDrive
+website. These are owner-reported upload observations, not a separate server
+integrity check.
+
+The owner subsequently confirmed completion of the transfer into
+`D:\Recovery-Test\WSL-v11-OneDrive-2026-10-21`. The screenshot and local file
+metadata show the expected archive length, 47,503,603,481 bytes: 47.5 decimal GB
+or 44.24 GiB (displayed as about 44.2 GB by Windows). The earlier Explorer
+transfer estimate of about 83 GB has no established explanation and is not the
+archive's measured length. Preallocated size alone was not treated as proof
+that the transfer had finished.
+
+A full SHA256 check of the completed recovery copy passed after the owner
+confirmed transfer completion: 47,503,603,481 bytes read in 471.2 seconds; actual
+digest `6fbbc9f4e5105d29e9ab7edd44260edb79a014c8a93202a0b03fb09c2b97f5e8`
+matches the manifest. Size, modification time and inode were unchanged across
+the read; the check exited 0. No password was used and no files were extracted.
+This proves agreement with the recorded manifest, not independent authenticity
+of that manifest or successful decryption/restoration.
+
+Password/decryption and representative restore remain pending. The transfer screenshot showed
+Explorer copying from a chain folder; it does not establish whether this was a
+fresh website download or a copy through the local sync folder. Qualify that
+provenance separately before calling this independent off-machine recovery.
+
 Files On-Demand configuration could not be confirmed. Google DriveFS total
 logical size was 84.03 GB, including metadata; it is not all disposable cache.
 Neither observation is a recorded backup failure. Do not clear client data or
@@ -62,7 +92,8 @@ verification. This review changed no provider settings or files.
 
 Remaining steps:
 
-1. Confirm OneDrive upload finished with no sync error, then confirm Google.
+1. Owner-reported OneDrive and Google client sync completion has been received;
+   independent provider recovery verification remains pending.
 2. Download the matched complete generation from a provider and recover into a
    new empty private directory using independently retained password material.
    Verify representative restored files and relevant native archive/database
@@ -73,8 +104,8 @@ Remaining steps:
    a separate format with broader coverage; this v11 pass does not qualify it.
 5. Complete separate Cognee key custody/revocation and frontend release gates.
 
-The initial owner step is to read OneDrive's status from its tray icon. No new
-backup, upload, download, restore, account change or task switch was started by
-this review.
+The current owner-guided recovery sequence checks the completed copy's checksum,
+then tests the independently retained archive password before a representative
+restore. No new backup, account change or task switch was started by this review.
 
 Reference: [Microsoft Robocopy return codes](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy#exit-return-codes).

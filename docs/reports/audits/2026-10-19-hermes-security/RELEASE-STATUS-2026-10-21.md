@@ -57,21 +57,25 @@ is retained, but its prerequisites have not all passed.
 Superseding result: [v11 completed successfully](WINDOWS-V11-COMPLETED-2026-10-21.md).
 The owner supplied the successful 56-check qualification and manual v11 backup
 exit code 0. The completed encrypted generation and both sync-folder copies are
-confirmed. Provider upload, downloaded recovery and actual scheduled execution
-remain open. The older building-state observation below is historical.
+confirmed. The owner subsequently reported both cloud clients fully synced and
+the OneDrive recovery transfer complete. A full 47,503,603,481-byte recovery-copy
+SHA256 pass matches the recorded manifest, with no file change during the read.
+Password/representative restore, independent remote provenance and actual
+scheduled execution still require their separate evidence; see the linked
+recovery follow-up.
 
 Owner-completed steps now include KeePassXC vault/passphrase recovery, archive
 password setup, Microsoft sign-in entry and correction of the weekly v11 task.
 The downloaded vault copy opened successfully; this does not prove independent
 custody of the separate Cognee age/signing/encryption/index keys.
 
-The real v11 backup has reached encrypted-base creation. Its current partial
-archive was growing at the last check; it is not yet admitted as a completed
-cloud recovery generation. V12 is separately prepared with broader approved
+The real v11 backup completed encrypted-base creation and both sync-folder
+copies; the earlier growing-partial observation is superseded. V12 is separately
+prepared with broader approved
 coverage, encrypted content reuse, resumable provider copies, explicit OneDrive
 original/model-weight gaps and preserved recovery inventories. Its native test,
 real source capture and downloaded recovery have not yet run. It does not replace
-or interrupt the running v11 backup/task. See the detailed backup review.
+or change the configured v11 task. See the detailed backup review.
 
 ## Work still assigned to the implementation session
 
