@@ -31,8 +31,8 @@ The local completed base and restore manifest remain together under its chains
 directory. The recorded base digest is
 `6fbbc9f4e5105d29e9ab7edd44260edb79a014c8a93202a0b03fb09c2b97f5e8`.
 This digest was initially read from the successful run's manifest. The subsequent
-full recovery-copy hash pass is recorded below; decryption and representative
-restoration remain separate checks.
+full recovery-copy hash pass and owner-run password/integrity test are recorded
+below; representative file/application restoration remains a separate check.
 
 ## Separate manual Robocopy diagnostic
 
@@ -79,7 +79,21 @@ the read; the check exited 0. No password was used and no files were extracted.
 This proves agreement with the recorded manifest, not independent authenticity
 of that manifest or successful decryption/restoration.
 
-Password/decryption and representative restore remain pending. The transfer screenshot showed
+The owner then supplied native PowerShell output from 7-Zip 26.03 testing this
+same recovery path. After its hidden password prompt, the tool reported
+`Everything is Ok`: 70,388 folders, 744,108 files, 89,251,757,979 uncompressed
+bytes and 47,503,603,481 compressed bytes. Method includes `7zAES`. This proves
+that the supplied password unlocked the archive and its contents passed the
+integrity test. No extraction command was run by that test; representative
+restored-file/application recovery remains pending. The output does not include
+an explicit process exit-code printout; do not invent one.
+
+The simple operating/recovery manual is maintained in
+`scripts/windows/BACKUP-AND-RESTORE-SIMPLE-MANUAL.md` and installed at
+`C:\Scripts\BACKUP-AND-RESTORE-SIMPLE-MANUAL.md`. Its full extraction command is
+prepared guidance, not evidence that the owner has performed the extraction.
+
+The transfer screenshot showed
 Explorer copying from a chain folder; it does not establish whether this was a
 fresh website download or a copy through the local sync folder. Qualify that
 provenance separately before calling this independent off-machine recovery.
@@ -104,8 +118,8 @@ Remaining steps:
    a separate format with broader coverage; this v11 pass does not qualify it.
 5. Complete separate Cognee key custody/revocation and frontend release gates.
 
-The current owner-guided recovery sequence checks the completed copy's checksum,
-then tests the independently retained archive password before a representative
-restore. No new backup, account change or task switch was started by this review.
+The completed recovery-copy checksum and owner password/integrity test precede
+the remaining representative restore. No new backup, extraction, account change
+or task switch was started by this review.
 
 Reference: [Microsoft Robocopy return codes](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy#exit-return-codes).

@@ -60,9 +60,11 @@ exit code 0. The completed encrypted generation and both sync-folder copies are
 confirmed. The owner subsequently reported both cloud clients fully synced and
 the OneDrive recovery transfer complete. A full 47,503,603,481-byte recovery-copy
 SHA256 pass matches the recorded manifest, with no file change during the read.
-Password/representative restore, independent remote provenance and actual
-scheduled execution still require their separate evidence; see the linked
-recovery follow-up.
+The owner's subsequent 7-Zip 26.03 password/integrity test reported `Everything
+is Ok` for all 744,108 files. Representative file/application restoration,
+independent remote provenance and actual scheduled execution still require
+their separate evidence; see the linked recovery follow-up and the simple
+manual at `scripts/windows/BACKUP-AND-RESTORE-SIMPLE-MANUAL.md`.
 
 Owner-completed steps now include KeePassXC vault/passphrase recovery, archive
 password setup, Microsoft sign-in entry and correction of the weekly v11 task.

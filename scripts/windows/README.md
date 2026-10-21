@@ -1,5 +1,10 @@
 # Windows backup v12
 
+For the currently qualified **v11** routine and its tested 7-Zip recovery copy,
+use [Vincent's simple backup and restore manual](BACKUP-AND-RESTORE-SIMPLE-MANUAL.md).
+V12 below is prepared and still needs native qualification; its restic restore
+helper does not open the existing v11 `base.7z` archives.
+
 Maintained source for Vincent's Windows/WSL backup. The installed entry point is
 `C:\Scripts\backup-all-wsl-v12.ps1`; its `backup-v12` support folder must travel
 with it. The real Windows DPAPI password file, private state, native reports,
