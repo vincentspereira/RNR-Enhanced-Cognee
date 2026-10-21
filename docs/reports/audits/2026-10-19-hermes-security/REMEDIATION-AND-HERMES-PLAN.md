@@ -1,5 +1,10 @@
 # Remediation and Hermes implementation plan
 
+Current phase-by-phase disposition: [release status, 21 October](RELEASE-STATUS-2026-10-21.md).
+The protected deployment is qualified; the full release, everyday rollout and
+main merge remain conditional. Owner custody, Windows/provider recovery and
+frontend dependency remediation are distinct outstanding gates.
+
 21 October backup-scope update: [v12 and home-folder review](BACKUP-V12-AND-HOME-REVIEW-2026-10-21.md).
 V12 is prepared at C:\Scripts with encrypted content reuse, resumable cloud
 copies, broader approved sources and explicit gaps. Owner decisions: no custom

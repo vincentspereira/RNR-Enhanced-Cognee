@@ -117,7 +117,10 @@ try {
   $savedPolicy=Join-Path $metadata coverage-policy.json
   if (-not (Test-Path -LiteralPath $savedPolicy)) {throw 'Completed run source policy is missing; cloud-only retry cannot verify destination boundaries.'}
   $policy=Get-Content -LiteralPath $savedPolicy -Raw|ConvertFrom-Json
- } else {$policy=Get-V12SourcePolicy $metadata}
+ } else {
+  $policy=Get-V12SourcePolicy $metadata
+  Write-V12WindowsInventory $metadata
+ }
  $clouds=@($OneDriveTarget,$GDriveTarget)
  Assert-V12SeparatePaths $policy.sources (@($Repository)+$clouds) $policy.excluded_subtrees
  Assert-V12SeparatePaths @($Repository) $clouds

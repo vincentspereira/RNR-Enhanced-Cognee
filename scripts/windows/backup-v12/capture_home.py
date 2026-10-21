@@ -11,6 +11,8 @@ import hashlib
 import io
 import json
 import os
+import platform
+import shutil
 import sqlite3
 import stat
 import subprocess
@@ -27,6 +29,65 @@ REBUILDABLE = {'.rustup/toolchains', '.cargo/registry', '.cargo/git',
                '.local/share/rnr-backup-tools/powershell-parser',
                '.local/share/rnr-backup-tools/restic/0.19.1'}
 HERMES_CACHE = {'cache', 'checkpoints'}
+
+
+def recovery_inventory():
+    """Local-only recovery metadata; values enter encrypted tar, never logs."""
+    result = {'python': sys.version, 'kernel': platform.release(), 'commands': {}}
+    environment = dict(os.environ, LC_ALL='C', PIP_DISABLE_PIP_VERSION_CHECK='1',
+                       PIP_NO_INDEX='1', NPM_CONFIG_UPDATE_NOTIFIER='false')
+    environment['PATH'] = ':'.join(p for p in environment.get('PATH', '').split(':')
+                                   if p and not __import__('re').match(r'^/mnt/[a-zA-Z]/', p))
+    commands = {
+        'packages': ['dpkg-query', '-W', '-f=${Package}\t${Version}\n'],
+        'crontab': ['crontab', '-l'],
+    }
+    if __import__('importlib.util').util.find_spec('pip'):
+        commands['pip'] = [sys.executable, '-I', '-m', 'pip', 'list', '--format=json', '--disable-pip-version-check']
+    else:
+        result['commands']['pip'] = {'state': 'not_installed'}
+    for name, arguments in commands.items():
+        if not shutil.which(arguments[0], path=environment['PATH']):
+            result['commands'][name] = {'state': 'not_installed'}
+            continue
+        completed = subprocess.run(arguments, env=environment, capture_output=True, text=True, timeout=180)
+        empty_cron = name == 'crontab' and completed.returncode == 1 and 'no crontab for' in completed.stderr.lower()
+        if completed.returncode and not empty_cron:
+            raise RuntimeError('System recovery inventory failed: ' + name)
+        result['commands'][name] = {'state': 'empty' if empty_cron else 'ok', 'content': completed.stdout,
+                                     'diagnostics': completed.stderr}
+    # Reuse the installed native nvm default; never install/update a runtime.
+    npm_code = r'''
+set -e
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+ . "$NVM_DIR/nvm.sh"
+ nvm use --silent default >/dev/null
+fi
+command -v npm >/dev/null 2>&1 || { printf '{"state":"not_installed"}'; exit 0; }
+npm_path="$(command -v npm)"; node_path="$(command -v node)"
+case "$npm_path:$node_path" in *'/mnt/'*|*'.exe'*|*'.cmd'*|*'.bat'*) exit 7;; esac
+case "$npm_path" in /*) ;; *) exit 8;; esac
+case "$node_path" in /*) ;; *) exit 9;; esac
+printf '%s\n%s\n' "$npm_path" "$node_path"
+npm list --global --json --depth=0
+'''
+    completed = subprocess.run(['/bin/bash', '-lc', npm_code], env=environment,
+                               capture_output=True, text=True, timeout=180)
+    if completed.returncode:
+        raise RuntimeError('Native Linux npm recovery inventory failed')
+    npm_missing = completed.stdout.strip() == '{"state":"not_installed"}'
+    result['commands']['npm'] = {'state': 'not_installed' if npm_missing else 'ok',
+                                 'content': completed.stdout, 'diagnostics': completed.stderr}
+    for path in ('/etc/os-release', '/etc/wsl.conf', '/etc/fstab'):
+        if Path(path).is_file():
+            result[path] = Path(path).read_text()
+    return result
+
+
+def combined_fingerprint(home, inventory):
+    payload = {'home': fingerprint_home(home), 'system': inventory}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=True).encode()).hexdigest()
 
 
 def excluded(relative, is_directory=False):
@@ -134,7 +195,7 @@ def snapshot_database(path, scratch):
     return destination
 
 
-def capture(home, hermes=False, supplied_zip=None):
+def capture(home, hermes=False, supplied_zip=None, inventory=None):
     if not home.is_dir() or home.is_symlink():
         raise RuntimeError('Home root must be a real directory')
     cache = home / '.cache/rnr-backup-v12'
@@ -246,6 +307,10 @@ def capture(home, hermes=False, supplied_zip=None):
                 info = tarfile.TarInfo('.rnr-backup-v12/coverage.json')
                 info.size, info.mode, info.mtime = len(content), 0o600, 0
                 archive.addfile(info, io.BytesIO(content))
+                metadata = json.dumps(inventory, sort_keys=True, ensure_ascii=True).encode()
+                info = tarfile.TarInfo('.rnr-backup-v12/system-recovery.json')
+                info.size, info.mode, info.mtime = len(metadata), 0o600, 0
+                archive.addfile(info, io.BytesIO(metadata))
         sys.stdout.buffer.flush()
     finally:
         if native:
@@ -260,8 +325,10 @@ if __name__ == '__main__':
     parser.add_argument('--root', type=Path, default=Path.home())
     parser.add_argument('--hermes-zip')
     parser.add_argument('--inventory-only', action='store_true')
+    parser.add_argument('--test-no-system-inventory', action='store_true')
     options = parser.parse_args()
+    inventory = {'synthetic_test': True} if options.test_no_system_inventory else recovery_inventory()
     if options.inventory_only:
-        print(json.dumps({'fingerprint': fingerprint_home(options.root)}))
+        print(json.dumps({'fingerprint': combined_fingerprint(options.root, inventory)}))
     else:
-        capture(options.root, options.hermes, options.hermes_zip)
+        capture(options.root, options.hermes, options.hermes_zip, inventory)

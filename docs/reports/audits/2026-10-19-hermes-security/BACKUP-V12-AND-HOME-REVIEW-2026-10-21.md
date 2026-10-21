@@ -51,6 +51,12 @@ is merged into that stream so it is not also stored as a duplicate ZIP/raw
 mirror. Profiles/skills/plugins/custom source and per-profile history survive;
 generated `.hermes/backups` is omitted. Committed SQLite WAL state gets consistent
 database images; fixtures retain original bytes. A home is not globally atomic.
+Local Linux software/cron and OS/isolation recovery metadata is also carried
+inside encrypted home tar members. Its changes invalidate home reuse; collection
+failures are not suppressed. Registered Windows software/OS-build metadata is
+included separately in the encrypted Windows snapshot. The actual Workspace
+inventory succeeded (empty crontab correctly recorded); other hosts remain
+subject to native qualification. Raw inventory contents remain private.
 
 Cognee completed encrypted backups are a required independent scope, with
 freshness, age-envelope and ciphertext hash checks. Signature authenticity and
@@ -106,11 +112,12 @@ checks are prepared but have not run; no account, ACL or firewall was changed.
 
 ## Qualification and remaining gates
 
-- Python/Linux qualification: 12 tests passed, zero failures/skips. Real pinned
+- Python/Linux qualification: 14 tests passed, zero failures/skips. Real pinned
   restic encryption, block reuse, version/deletion recovery, failed-producer
   rejection, native tar/SQLite/profile coverage, fingerprint reuse and atomic
   reorganisation/collision preservation and private-archive Git exclusion are
-  exercised with synthetic data.
+  exercised with synthetic data. Recovery-inventory failure and system-change
+  invalidation are also covered.
 - Portable PowerShell qualification: 24 checks passed, zero failures/skips,
   including all new script parsing, actual scope checkpoint/resume behavior,
   ciphertext reuse/check, verified-prefix resume, corruption/lock refusal and

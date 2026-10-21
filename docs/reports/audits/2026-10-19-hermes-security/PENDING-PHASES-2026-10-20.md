@@ -1,5 +1,13 @@
 # Current phase ledger while Ubuntu-Hermes deployment runs separately
 
+Superseding ledger, 21 October: [current release status](RELEASE-STATUS-2026-10-21.md).
+The protected deployment has completed qualification. Vault/archive-password
+setup and the v11 task correction are complete; the real backup and broader
+v12 follow-up are in progress. Owner service-key custody/revocation, frontend
+advisories, exact-candidate release review and everyday rollout remain open.
+The observations below are dated history, not a claim that the CLI is still
+running or that the password/task work remains undone.
+
 Additional current work: [Windows recovery and 42-identity protected fleet follow-up](WINDOWS-AND-FLEET-FOLLOWUP-2026-10-20.md). The live memory-service fleet check passes; the Windows task targets a missing script and a reviewed correction is prepared. After owner approval, 32 native Windows recovery/collection checks pass and the v11 WSL quoting issue is fixed. Real password configuration, scheduling and downloaded-cloud recovery remain.
 
 

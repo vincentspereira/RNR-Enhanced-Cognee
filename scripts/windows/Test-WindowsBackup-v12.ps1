@@ -1,4 +1,5 @@
-# Native synthetic qualification. Does not back up real sources or upload data.
+# Native synthetic qualification and local policy/recovery inventory checks.
+# Does not back up real source contents, upload data or edit scheduled tasks.
 [CmdletBinding(SupportsShouldProcess=$true)]
 param([string]$ArtifactsRoot="$env:LOCALAPPDATA\RNR-Backups\v12-state\qualification")
 $ErrorActionPreference='Stop'
@@ -92,6 +93,9 @@ try {
  $r=Invoke-V12Process $restic @('-r',$target,'--password-command',$passwordCommand,'check','--read-data') $null
  Check copied_repository_decrypts_and_checks ($r.exit -eq 0)
  $policy=Get-V12SourcePolicy (Join-Path $run recovery-metadata)
+ Write-V12WindowsInventory (Join-Path $run recovery-metadata)
+ $software=Get-Content -LiteralPath (Join-Path $run recovery-metadata\windows-software-recovery.json) -Raw|ConvertFrom-Json
+ Check local_windows_recovery_inventory ([bool]$software.os_version -and $software.is_windows_system_image -eq $false)
  Assert-V12SeparatePaths $policy.sources @('D:\Archive\Snapshots\restic-v12',"$env:USERPROFILE\OneDrive\Vincent\WSL_Backups\restic-v12",'G:\My Drive\WSL_Backups\restic-v12') $policy.excluded_subtrees
  Check real_source_policy_has_no_nested_or_recursive_roots $true
  Check coverage_gaps_explicit ($policy.one_drive_originals_separate -and -not $policy.downloaded_weights_included -and $policy.distro_images_separate)

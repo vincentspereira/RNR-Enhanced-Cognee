@@ -58,6 +58,13 @@ plugins, bot configuration, sessions, selected memory and retained per-profile
 backup history are included. Generated `.hermes/backups` is excluded to prevent
 backing up backups repeatedly. The per-home coverage manifest is inside its tar.
 SQLite snapshots use SQLite's backup mechanism; test fixtures retain exact bytes.
+Linux recovery manifests also retain local package versions, native global npm
+and system-Python pip inventories, owner crontab, OS/isolation and fstab settings.
+These contents go into the encrypted tar, not the console. Inventory failures
+stop capture; an absent optional tool/empty crontab is recorded honestly.
+System-inventory changes also prevent an unchanged-home snapshot from being
+reused. Windows registered-program and OS-build metadata travels with the
+encrypted Windows snapshot; it is not an inventory of every portable/Store app.
 
 Completed encrypted Cognee service backups from `/var/backups/enhanced-cognee`
 are a required separate scope. Ciphertext hashes/freshness are checked. This

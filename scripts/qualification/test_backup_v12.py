@@ -13,6 +13,8 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from unittest import mock
+from types import SimpleNamespace
 import zipfile
 from pathlib import Path
 
@@ -46,7 +48,7 @@ class BackupV12Qualification(unittest.TestCase):
         output = self.root / 'home.tar'
         with output.open('wb') as handle:
             result = subprocess.run([sys.executable, '-I', str(SUPPORT / 'capture_home.py'),
-                                     '--root', str(self.home), *args], stdout=handle, stderr=subprocess.PIPE)
+                                     '--test-no-system-inventory', '--root', str(self.home), *args], stdout=handle, stderr=subprocess.PIPE)
         if good:
             self.assertEqual(result.returncode, 0, result.stderr.decode(errors='replace'))
         else:
@@ -179,7 +181,7 @@ class BackupV12Qualification(unittest.TestCase):
         self.assertEqual(json.loads(self.restic('snapshots', '--json').stdout), [])
         (self.home / 'valuable.txt').write_bytes(b'synthetic-complete')
         self.restic('backup', '--stdin-from-command', '--stdin-filename', 'home.tar', '--',
-                    sys.executable, '-I', str(SUPPORT / 'capture_home.py'), '--root', str(self.home))
+                    sys.executable, '-I', str(SUPPORT / 'capture_home.py'), '--test-no-system-inventory', '--root', str(self.home))
         self.restic('restore', 'latest', '--target', str(self.root / 'recovery'))
         with tarfile.open(self.root / 'recovery/home.tar') as tar:
             self.assertEqual(tar.extractfile('valuable.txt').read(), b'synthetic-complete')
@@ -251,6 +253,32 @@ class BackupV12Qualification(unittest.TestCase):
         self.assertEqual(journal[0]['state'], 'private_archive_requires_destination_outside_git')
         self.assertTrue((source / 'AGENTS.md').is_file())
         self.assertFalse(destination.exists())
+
+    def test_system_inventory_retains_empty_cron_and_invalidates_home_reuse(self):
+        spec = importlib.util.spec_from_file_location('v12inventory', SUPPORT / 'capture_home.py')
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        def fake_run(command, **kwargs):
+            if command[0] == 'crontab':
+                return SimpleNamespace(returncode=1, stdout='', stderr='no crontab for synthetic')
+            return SimpleNamespace(returncode=0, stdout='synthetic-local-inventory', stderr='')
+        with mock.patch.object(helper.subprocess, 'run', side_effect=fake_run), \
+             mock.patch.object(helper.shutil, 'which', return_value='/usr/bin/synthetic'), \
+             mock.patch.object(helper.Path, 'is_file', return_value=False):
+            inventory = helper.recovery_inventory()
+        self.assertEqual(inventory['commands']['crontab']['state'], 'empty')
+        first = helper.combined_fingerprint(self.home, inventory)
+        inventory['commands']['packages']['content'] = 'newer-synthetic-package-version'
+        self.assertNotEqual(first, helper.combined_fingerprint(self.home, inventory))
+
+    def test_system_inventory_failure_is_not_suppressed(self):
+        spec = importlib.util.spec_from_file_location('v12inventory', SUPPORT / 'capture_home.py')
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        with mock.patch.object(helper.subprocess, 'run', return_value=SimpleNamespace(returncode=7, stdout='', stderr='synthetic failure')), \
+             mock.patch.object(helper.shutil, 'which', return_value='/usr/bin/synthetic'):
+            with self.assertRaisesRegex(RuntimeError, 'System recovery inventory failed'):
+                helper.recovery_inventory()
 
 
 if __name__ == '__main__':

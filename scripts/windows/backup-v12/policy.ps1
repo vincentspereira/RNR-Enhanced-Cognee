@@ -1,4 +1,25 @@
 # Native Windows paths only. Outputs/repositories are never source roots.
+function Write-V12WindowsInventory {
+ param([string]$MetadataRoot)
+ $programs=[Collections.Generic.List[object]]::new()
+ foreach ($registryRoot in @('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall',
+   'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall',
+   'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall')) {
+  if (-not (Test-Path -LiteralPath $registryRoot)) {continue}
+  foreach ($key in Get-ChildItem -LiteralPath $registryRoot) {
+   $value=Get-ItemProperty -LiteralPath $key.PSPath
+   $name=$value.PSObject.Properties['DisplayName']
+   if (-not $name -or -not $name.Value) {continue}
+   $version=$value.PSObject.Properties['DisplayVersion'];$publisher=$value.PSObject.Properties['Publisher']
+   $programs.Add(@{name=$name.Value;version=if ($version) {$version.Value} else {''};publisher=if ($publisher) {$publisher.Value} else {''}})
+  }
+ }
+ $os=Get-CimInstance Win32_OperatingSystem
+ $inventory=@{registered_programs=@($programs.ToArray());os_version=$os.Version;build=$os.BuildNumber;architecture=$os.OSArchitecture;
+  is_windows_system_image=$false;does_not_cover_every_store_or_portable_app=$true}
+ Save-V12Json $inventory (Join-Path $MetadataRoot windows-software-recovery.json)
+}
+
 function Get-V12SourcePolicy {
  param([string]$MetadataRoot)
  $sources=[Collections.Generic.List[string]]::new()
