@@ -4,9 +4,12 @@ Prepared 22 October 2026. Scope: Ubuntu-Hermes, existing hermes-runtime account,
 existing enhanced-cognee-pilot profile. The owner subsequently returned a
 successful native installation/loader receipt at
 ab0626632a5f4c271ec6c9c3cac33f099a7d5dee: artifact/link created, version 0.1.0,
-eight tools registered as hermes-runtime. Credentials, active provider selection,
-memory/model connection and full runtime qualification remain false. This is
-not private-data admission. The sections below describe that staged procedure.
+eight tools registered as hermes-runtime. Later native receipts confirm ordinary
+credential issuance and, at 81f20cf6d81f8b127d7c5c4c1c0fd7b269b317c7, provider
+selection, initialization, authenticated status and empty recall with .env
+unchanged. Chat-model calls, memory-record writes and full runtime qualification
+remain false. This is not private-data admission. The sections below preserve
+the staged procedure and its dated checkpoints.
 
 ## Purpose and selected integration
 
@@ -221,3 +224,44 @@ marking this step passed. Empty recall does not qualify saved-memory recall,
 model-selected capture, OS/fleet isolation or private-data admission. The next
 stage must select the existing authorized local chat route and exercise an
 invented decision through actual memory tools and fresh-session retrieval.
+
+## Native provider connection received; local chat route inventory next
+
+The owner returned complete=true at
+81f20cf6d81f8b127d7c5c4c1c0fd7b269b317c7. Both settings files were created under
+hermes-runtime. Actual provider selection, initialization, authenticated status,
+empty recall, selected capture and reviewed-sharing settings passed; the
+credential file was unchanged. chat_model_called, memory_records_written and
+runtime_qualified remain false. This supersedes the pending native configuration
+checkpoint above, while saved-record retrieval/model-selected capture remain
+untested on the new restricted pilot.
+
+Run the hash-verified deployment/inspect_local_model_routes.py as the ordinary
+human operator, never sudo/root. It uses the existing protected tools1 Python
+and no-new-privileges with a clean environment and a 30-second timeout. It reads
+only the main and two earlier synthetic profile config.yaml files. It does not
+open .env, external secret stores, conversation histories, the fleet bundle or
+other environments, and makes no network request or model call. No file changes
+or Hermes startup occur.
+
+Only explicit credential-free loopback origins with an empty or /v1 path,
+allowlisted model IDs, declared context integers, recognized API modes and
+credential-reference/header presence booleans can reach the summary. Other
+configuration and inline key/header values are not printed. YAML parsing can
+encounter inline credential fields in memory; this is not a claim that every
+source byte is non-secret. Origins containing userinfo, queries/fragments,
+non-loopback hosts or unexpected paths are omitted without revealing them.
+Environment-expanded URLs are not resolved. Missing/unsafe/invalid files get
+only a fixed source label/reason; raw errors and private paths are not dumped.
+The inventory is bounded to 32 entries per provider section and 16 model IDs
+per route. No source provider name or credential-variable name is printed.
+
+Treat output as configured declarations only. A context number is not proof of
+the server's real context limit, and a model ID is not proof it is currently
+loaded. A missing/empty local inventory is not proof that no local route exists.
+Reconcile the actual route before connecting/testing the pilot; never start a
+replacement server, reload models during current Desktop work, copy Windows
+model weights or substitute a cloud fallback to fill a missing field. The
+focused suites now pass 262 cases with zero failures/skips and no reported
+warnings, including 28 new inventory/privacy cases. Native inventory remains
+pending; fixture success is not host model-route evidence.

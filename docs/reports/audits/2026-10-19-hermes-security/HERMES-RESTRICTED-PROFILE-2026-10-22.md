@@ -666,3 +666,35 @@ selection and credential-bound status/recall remain pending the owner command.
 Empty recall is not proof of saved-record retrieval or automatic model capture.
 Settings may already be published if a later check fails; retain them, report
 the fixed failure stage, and do not auto-delete/overwrite the profile.
+
+## Native provider selection and authenticated reads passed
+
+The owner returned a successful host receipt at
+81f20cf6d81f8b127d7c5c4c1c0fd7b269b317c7. Effective identity was hermes-runtime
+in the existing enhanced-cognee-pilot. Both previously absent settings files
+were created. provider_selected, native_provider_initialized,
+authenticated_provider_status_passed, empty_scope_recall_passed,
+credential_file_unchanged, selected capture and reviewed-sharing settings passed.
+No new group/library grant is implied by enabling reviewed-sharing searches.
+The receipt explicitly keeps chat_model_called, memory_records_written and
+runtime_qualified false. This is native connector/credential-bound read evidence,
+not proof of saved memory, a chat-model route, automatic capture or full rollout.
+
+The next prepared read-only operator helper is inspect_local_model_routes.py.
+It runs as the human owner with protected Python, reads three fixed config.yaml
+files, and emits only sanitized loopback model declarations. .env files, external
+secret stores and raw chats are not opened; models/network are not called and
+no file is changed. Configs may contain inline key values encountered by the
+YAML parser in memory; those values, credential-variable names, extra-header
+values, source provider names and unrelated config are never output. Unsafe or
+credential-bearing URLs and credential-shaped model strings are omitted.
+Missing/unsafe/invalid sources receive only fixed reason labels. The output is
+bounded and cannot establish the current served model/context or route access.
+See the pilot runbook for exact source scope and limitations. The existing
+Unsloth route must be reconciled rather than copied from old test evidence.
+
+The focused helper suites now pass 262 tests, zero failures/skips and no reported
+warnings, including 28 new route/privacy regressions with invented configurations.
+This does not establish native model-route inventory or network/model success.
+No main merge, service/model restart, bot activation, backup run, key renewal or
+private-data admission was performed by this Workspace preparation.
