@@ -754,3 +754,49 @@ The focused suites pass 468 tests, zero failures/skips and no reported warnings.
 Transport regression uses real HTTPX hooks with a simulated transport; other
 native agent/network/process operations use fixtures. No Workspace test calls
 the model or proves installed recall. Native qualification remains pending.
+
+## 23 October: original fixture recall passed; follow-up capture next
+
+The owner-run d67ce6ca3e27ddb90623dd94c622e57907cfbd1f recall completed as
+hermes-runtime/enhanced-cognee-pilot with gpt-6.1-sol. Both native_agent_turn_passed
+and fresh_session_recall_passed were true: enhanced_get was observed, two model
+requests were guarded, and the native answer/citation matched the saved
+thirteen-day decision. Canonical comparison found one version-1 active fixture
+unchanged. Profile/settings/credential bytes were unchanged; no model defaults
+or canonical memory were written by this recall stage.
+
+selected_capture_passed=false describes the current recall stage, not a failed
+capture. The original capture completion is still unproven. Do not clear the
+existing fixture/receipt to rerun the empty-scope capture. Runtime, private-data,
+everyday-profile and fleet admission are still separate gates.
+
+The next prepared mode is main_memory(stage="capture_followup", approved_test=True).
+Run it once through the next pinned/hash-verified operator command. It requires
+exactly one matching original fixture and no follow-up receipt. It writes one
+new private receipt at /var/lib/hermes-runtime/cognee-pilot-capture-followup.json,
+using O_EXCL/O_NOFOLLOW and 0600 permissions. The original receipt remains at
+/var/lib/hermes-runtime/cognee-pilot-model-test.json. No evidence is replaced,
+deleted or auto-retried, including after a failed/interrupted attempt.
+
+The new prompt describes a different fictional project and a nineteen-day
+decision, asking only for a one-sentence explanation. Native selected-capture
+policy must lead the model to recall and then remember without an explicit
+save request. The agent gets the same temporary subscription model, narrowed
+native tools, guarded request clients and time/request bounds. It can add one
+invented memory to the qualification scope; existing plan usage may be consumed.
+
+Success requires a completed native turn, recall-before-remember tool evidence,
+exactly two active records, a distinct new canonical version-1 record with the
+new interval, session provenance and selected-tool origin, plus an unchanged
+original canonical record and receipt file stamps/content. Profile/settings/
+credential bytes must remain unchanged. The result should report stage
+capture_followup, selected_capture_passed=true, synthetic_active_records=2 and
+original_fixture_and_receipt_preserved=true. fresh_session_recall_passed=false
+is expected for this capture stage. runtime_qualified remains false.
+
+Focused fixtures pass 487 tests, zero failures/skips and no reported warnings.
+They cover separate no-replace receipts, duplicate/replay and scope refusals,
+old-record/receipt drift, wrong new provenance/origin/ID/count/interval, UUID
+collision, canonical GET version/path validation, native call order and failures.
+The new capture is prepared; the owner-run original-fixture recall above is the
+current installed-model evidence. No everyday configuration or bot is activated.

@@ -318,8 +318,14 @@ def verify_provider():
         raise CheckError("provider_link")
 
 
-def read_state(uid):
-    fd = os.open(STATE, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+def state_path(followup=False):
+    if type(followup) is not bool:
+        raise CheckError("unapproved_test_receipt_selection")
+    return HOME / "cognee-pilot-capture-followup.json" if followup else STATE
+
+
+def read_state(uid, *, followup=False):
+    fd = os.open(state_path(followup), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(fd, "rb") as handle:
         info = os.fstat(handle.fileno())
         if (not stat.S_ISREG(info.st_mode) or info.st_uid != uid or stat.S_IMODE(info.st_mode) != 0o600
@@ -334,8 +340,8 @@ def read_state(uid):
     return state
 
 
-def save_state(state):
-    fd = os.open(STATE, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+def save_state(state, *, followup=False):
+    fd = os.open(state_path(followup), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, "w") as handle:
         json.dump(state, handle)
         handle.flush()
@@ -352,15 +358,22 @@ def memory_status(provider):
     return status
 
 
-def verify_saved(provider, fixture):
+def verify_saved(provider, fixture, *, followup=False):
     result = provider._client.request("POST", "/v1/memories/recall", {
-        "query": "Larch qualification " + fixture, "limit": 10, "include_shared": False})
+        "query": ("Cedar" if followup else "Larch") + " qualification " + fixture,
+        "limit": 10, "include_shared": False})
     rows = [row for row in result.get("results", []) if fixture in str(row.get("content", ""))]
     if len(rows) != 1 or rows[0].get("version") != 1:
         raise CheckError("saved_fixture_not_unique_or_version_one")
-    row = provider._client.request("GET", "/v1/memories/" + rows[0]["id"])
+    ident = rows[0].get("id")
+    if not isinstance(ident, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident):
+        raise CheckError("saved_fixture_record_id_shape")
+    row = provider._client.request("GET", "/v1/memories/" + ident)
+    if type(row.get("version")) is not int or row["version"] != 1:
+        raise CheckError("saved_fixture_not_unique_or_version_one")
     content = row.get("content", "").casefold()
-    if fixture not in content or not re.search(r"\b(?:thirteen|13)[ -]+day", content):
+    interval = r"\b(?:nineteen|19)[ -]+day" if followup else r"\b(?:thirteen|13)[ -]+day"
+    if fixture not in content or not re.search(interval, content):
         raise CheckError("saved_fixture_content")
     return row
 
@@ -473,8 +486,10 @@ def main_memory(*, stage, approved_test=False):
     secrets = None
     uid = None
     phase = "restricted_preflight"
+    followup = stage == "capture_followup"
+    capture = stage in {"capture", "capture_followup"}
     try:
-        if stage not in {"capture", "recall"}: raise CheckError("unapproved_stage")
+        if stage not in {"capture", "recall", "capture_followup"}: raise CheckError("unapproved_stage")
         uid, snapshots = preflight(approved_test)
         snapshots[".env"] = read_private(".env", uid)
         import yaml
@@ -508,13 +523,24 @@ def main_memory(*, stage, approved_test=False):
             provider.initialize("pilot_preflight", hermes_home=str(PROFILE), agent_context="primary")
             before = memory_status(provider)
             phase = "fixture_preparation"
-            if stage == "capture":
-                if os.path.lexists(STATE) or before["active_records"] != 0:
+            baseline = None
+            original_receipt = None
+            original_stamp = None
+            if capture:
+                if os.path.lexists(state_path(followup)) or before["active_records"] != (1 if followup else 0):
                     raise CheckError("existing_test_evidence_preserved_review_before_retry")
+                if followup:
+                    original_receipt = read_state(uid)
+                    original_stamp = state_stamp()
+                    baseline = verify_saved(provider, original_receipt["fixture"])
                 fixture = uuid.uuid4().hex
+                if followup and fixture == original_receipt["fixture"]:
+                    raise CheckError("distinct_capture_fixture_required")
                 state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
-                prompt = ("For the entirely fictional Larch qualification project " + fixture
-                    + ", our standing planning decision is a thirteen-day review cycle. Explain this decision in one sentence.")
+                interval = "nineteen" if followup else "thirteen"
+                prompt = ("For the entirely fictional " + ("Cedar" if followup else "Larch") + " qualification project " + fixture
+                    + ", our standing planning decision is a " + interval
+                    + "-day review cycle. Explain this decision in one sentence.")
                 session = state["capture_session"]
                 previous = None
             else:
@@ -525,15 +551,24 @@ def main_memory(*, stage, approved_test=False):
                 prompt = ("For the entirely fictional Larch qualification project " + fixture
                     + ", what standing review interval did we decide on? Use saved evidence and cite its record ID.")
             phase = "native_agent_turn"
-            if stage == "capture": save_state(state)
-            answer, calls, requests = native_memory_turn(stage, token, provider, session, prompt)
+            if capture: save_state(state, followup=followup)
+            answer, calls, requests = native_memory_turn("capture" if capture else "recall", token, provider, session, prompt)
             phase = "saved_memory_verification"
             # agent.close shuts the provider down; reinitialize for authoritative reads.
             provider.initialize("pilot_verification", hermes_home=str(PROFILE), agent_context="primary")
-            row = verify_saved(provider, fixture)
+            row = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
             after = memory_status(provider)
-            if after["active_records"] != 1:
+            if after["active_records"] != (2 if followup else 1):
                 raise CheckError("unexpected_memory_record_count")
+            if followup:
+                if (read_state(uid) != original_receipt or state_stamp() != original_stamp
+                        or verify_saved(provider, original_receipt["fixture"]) != baseline):
+                    raise CheckError("original_capture_evidence_changed_preserve_and_review")
+                if (read_state(uid, followup=True) != state
+                        or row.get("id") == baseline.get("id")
+                        or row.get("provenance", {}).get("session_id") != state["capture_session"]
+                        or row.get("metadata", {}).get("write_origin") != "hermes_selected_tool"):
+                    raise CheckError("followup_capture_provenance_not_verified")
             if stage == "recall" and (row != previous or row["id"] not in answer
                     or not re.search(r"\b(?:thirteen|13)[ -]+day", answer.casefold())):
                 raise CheckError("fresh_session_recall_not_verified")
@@ -541,10 +576,11 @@ def main_memory(*, stage, approved_test=False):
                 raise CheckError("profile_state_changed_preserve_and_review")
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL, "native_agent_turn_passed": True,
-            "selected_capture_passed": stage == "capture", "fresh_session_recall_passed": stage == "recall",
+            "selected_capture_passed": capture, "fresh_session_recall_passed": stage == "recall",
             "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
-            "tool_calls": calls, "model_requests": requests, "synthetic_active_records": 1,
-            "current_version": row["version"], "memory_records_written": stage == "capture",
+            "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],
+            "current_version": row["version"], "memory_records_written": capture,
+            **({"original_fixture_and_receipt_preserved": True} if followup else {}),
             "runtime_qualified": False}, indent=2))
     except Exception as error:
         preserved = None
@@ -554,8 +590,8 @@ def main_memory(*, stage, approved_test=False):
             except Exception:
                 preserved = False
         print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
-            "test_evidence_present_preserve_for_review": os.path.lexists(STATE),
-            "memory_writes_may_have_occurred": stage == "capture" and phase in {"native_agent_turn", "saved_memory_verification"},
+            "test_evidence_present_preserve_for_review": os.path.lexists(state_path(followup)),
+            "memory_writes_may_have_occurred": capture and phase in {"native_agent_turn", "saved_memory_verification"},
             "profile_settings_and_credentials_unchanged": preserved,
             "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None

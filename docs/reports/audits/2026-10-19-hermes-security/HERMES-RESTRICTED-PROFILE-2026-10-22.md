@@ -1047,3 +1047,50 @@ These are fixture tests, not a native SDK/model or installed Hermes result.
 Next run one fresh recall with the corrected helper and retain existing evidence.
 Capture completion, canonical post-turn verification and full runtime/fleet
 qualification remain pending.
+
+## 23 October: fresh-session native recall passed
+
+Vincent returned complete=true/stage=recall from helper revision
+d67ce6ca3e27ddb90623dd94c622e57907cfbd1f, running as hermes-runtime in
+enhanced-cognee-pilot with gpt-6.1-sol. native_agent_turn_passed and
+fresh_session_recall_passed were true. The observed tool was enhanced_get;
+two guarded model requests occurred. Authoritative verification found one
+active synthetic record at version 1, with the expected answer and record-ID
+citation and canonical row unchanged across the native turn. Checked profile
+settings/credentials were unchanged; model_defaults_changed and
+memory_records_written were false.
+
+selected_capture_passed=false is expected for this recall-only stage; it is not
+a failed capture result. Original capture-turn completion remains unproven.
+runtime_qualified=false remains correct: this result does not admit everyday
+profiles, private data or the bot fleet. Native lifecycle adaptation now has
+successful installed-host evidence for this narrow recall path.
+
+## Follow-up selected-capture qualification prepared without clearing evidence
+
+main_memory(stage="capture_followup", approved_test=True) now prepares a second
+distinct fictional decision in the same qualification scope. It requires exactly
+one active original fixture, verifies that fixture through canonical GET, and
+refuses an existing follow-up receipt. It writes a separate no-replace 0600
+receipt at /var/lib/hermes-runtime/cognee-pilot-capture-followup.json before
+the model turn. The original receipt and its file identity/change stamps are
+preserved. No prior record, receipt or generation is deleted/reset.
+
+The new prompt supplies a fresh fictional project identifier and a nineteen-day
+decision, without an explicit remember/save request. The existing native agent
+must select enhanced_recall before enhanced_remember and complete its turn.
+Verification requires exactly two active records, a distinct new record ID at
+canonical version 1 with the new interval, matching session provenance and
+selected-tool origin. The original full canonical row and receipt must remain
+unchanged, as must the checked profile/settings/credential bytes. The same
+protected runtime/provider, temporary model arguments, six-request guard and
+time limits apply. A failure retains all evidence and is not auto-retried.
+
+Saved-record verification now also checks the canonical GET version directly
+and rejects unsafe record-ID path segments before GET. Focused Workspace
+fixtures pass 487 tests with zero failures/skips and no reported warnings,
+including 19 additional receipt/capture/preservation and canonical-verification
+cases. Native model/provider/network operations use fixtures; no new host
+capture has run in Workspace. The next owner step is this follow-up capture,
+not the original empty-scope capture command. Broader correction/conflict,
+isolation/recovery/renewal, owner review, release and fleet gates remain pending.
