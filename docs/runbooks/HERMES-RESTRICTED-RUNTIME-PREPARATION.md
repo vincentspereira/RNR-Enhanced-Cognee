@@ -214,6 +214,20 @@ eight-tool provider, narrow existing model route and explicit profile backup
 coverage. Qualify selected capture, fresh-session recall, correction, ambiguity,
 secret refusal, scope denial and reviewed sharing before private-data admission.
 
+The owner has reported successful publication of the 36797-file snapshot at the
+destination above, with all four launch/profile/memory/qualification flags still
+false. Retain it and the earlier staging generations; do not repeat --apply.
+For the first startup probe, the human operator uses sudo -H -u hermes-runtime
+and /usr/bin/setpriv --no-new-privs before a non-interactive /bin/sh. Change to
+/var/lib/hermes-runtime, print id and only CapEff/CapAmb/NoNewPrivs from proc
+status, then exec the protected bin/hermes --version. The UID-bound launcher
+clears inherited environment/settings before Python loads. This requests version
+information, not a chat, gateway or setup session; the running human Desktop can
+remain open. Fresh restricted state may be initialized in its own home. Report
+the actual exit code and diagnostics; a version success is only a startup check.
+The selected source documents --version in
+[hermes_cli/main.py](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/main.py).
+
 Other managed tools, native SDK/browser/provider/model checks, source revision
 compatibility, remaining credential coverage, advisory/release checks and full
 fleet onboarding remain separate. Do not copy entire private .hermes trees,

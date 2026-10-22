@@ -258,3 +258,29 @@ using this exact helper with --apply through the checked sudo wrapper; it repeat
 validation against the actual committed source copy and retains all original
 installations, profiles and previous staging generations. No code change or
 additional local test result is implied by recording the owner-run receipt.
+
+## Native protected program copy prepared
+
+The owner ran the checked helper from delivery commit 5a0ec3da with --apply and
+supplied complete=true and snapshot_prepared=true. The published snapshot is
+/opt/hermes-runtime/releases/4d04303818b6-1729494fe783, with launcher bin/hermes
+and Hermes source revision 4d04303818b61bf3aa09278af48356315515965b. The receipt
+reports 36797 program files and originals_preserved=true. Import-map counts match
+the earlier preflight: 91 module bindings, 21 retained namespace paths and ten
+omitted namespace paths/entries. This is owner-reported native preparation
+evidence; Workspace cannot independently inspect the isolated installation.
+
+The receipt explicitly states runtime_qualified=false, hermes_launched=false,
+profile_configured=false and memory_connected=false. Do not rerun --apply over
+this published destination, switch existing launchers or remove earlier staging
+generations. Next run only the protected launcher's version command under the
+hermes-runtime identity with no-new-privileges, reporting identity/capability
+metadata and its exit status. Application code must never run as root. The
+launcher clears inherited settings and pins HOME/HERMES_HOME to the restricted
+account; startup may create its own fresh state under /var/lib/hermes-runtime.
+
+A successful version check will establish only basic startup from this copy,
+not complete process/credential isolation or provider/model/memory behavior.
+Protected-file/write denial checks, the fresh profile and scoped credential,
+explicit backup/recovery coverage, Desktop/gateway paths and fleet qualification
+remain pending. Existing human-owned Desktop profiles/bots remain unchanged.
