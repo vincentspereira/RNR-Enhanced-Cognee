@@ -94,6 +94,24 @@ No Ubuntu-Hermes execution or protected runtime installation is claimed here.
 
 ## Next qualification and limitations
 
+The owner executed the read-only inspector successfully: the three startup hooks
+were the Hermes editable finder, _virtualenv and distutils precedence hooks.
+Reported allocation was 420315136 bytes for Python, 860532736 for the environment
+and 231421296 committed-source file bytes; there were 20688 tracked files and
+no submodules. No program files were copied and Hermes was not launched.
+
+The new protected-copy helper and runbook are prepared in Workspace. Twenty-two
+targeted tests passed (20 new snapshot-security cases plus two existing operator
+preservation tests), with zero failures/skips or reported warnings. Tests include
+archive traversal, hardlink detachment, symlink confinement, special-file/mode
+refusal, non-executing AST relocation, changed startup-file denial, unprivileged
+Git export, wrong-user launcher refusal and atomic refusal to replace even an
+empty destination. Syntax/ASCII and CLI/wrong-environment checks also passed.
+These are local helper tests; no native protected snapshot or full-suite/coverage
+result is inferred. Follow HERMES-RESTRICTED-RUNTIME-PREPARATION.md for the next
+already approved operator step. Existing accounts, runtime, profiles, stores,
+keys and backups were not changed by this Workspace preparation.
+
 Inspect the actual Hermes launcher/runtime without executing user-writable code
 as root or granting broad access to the administrator's home. Verify the real
 restricted agent process, sudo policy, administrative sockets, service secrets

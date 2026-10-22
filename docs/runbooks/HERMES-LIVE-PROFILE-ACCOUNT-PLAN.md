@@ -116,6 +116,8 @@ Initially it must use invented data until qualification and review are complete.
    mechanism. Resolve code/dependency/model access without broad home-directory
    ACL grants, copying private global settings, changing shared inode ownership,
    or making agent-writable source authoritative for protected services.
+   Current inspected inputs and the preservation-only protected-copy step are in
+   [the runtime preparation runbook](HERMES-RESTRICTED-RUNTIME-PREPARATION.md).
 4. Prepare only the selected profile and its narrow required model settings.
    Do not copy whole .hermes trees, private notebooks, histories or all bot keys.
    Preserve originals; report any specific selected migration separately.
