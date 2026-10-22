@@ -7,8 +7,9 @@ Save this manual with your recovery information. The same copy is installed at
 PowerShell**, from any folder. PowerShell 7 can launch the `powershell.exe`
 commands below. Do not run them in a Linux terminal.
 
-V12 is prepared but still needs native Windows qualification and a first real
-backup/recovery review. Do not switch scripts or the scheduled task yet.
+V12 passed native Windows qualification on 22 October: 45 checks, zero failures
+or skips, exit code 0. Next is its first real backup and recovery review (section
+10). The scheduled task remains v11 until that review is complete.
 V11 7-Zip archives and v12 restic repositories need different restore procedures;
 `Restore-Backup-v12.ps1` cannot restore your existing `base.7z`.
 
@@ -275,9 +276,29 @@ recovery-copy checksum; owner-run 7-Zip password/integrity test; three selected
 extracted-file hashes and owner-confirmed text readability. Still separate:
 application recovery, independent remote-source
 provenance/provider qualification, the scheduled run, Cognee recovery-key custody
-and credential replacement. V12 native qualification and its broader-coverage
-backup/restore remain pending. OneDrive personal originals remain separate by
+and credential replacement. V12's first real broader-coverage backup/restore
+remains pending. OneDrive personal originals remain separate by
 your choice; do not assume every file on C:, D: or in every distro is covered.
 
 Keep the vault recovery copy independently available. Do not retain its only
 copy inside an archive whose password is stored in that vault.
+
+## 10. First real v12 backup after successful qualification
+
+Use **Administrator PowerShell under your usual Vincent account**. Keep the
+laptop powered and awake, with OneDrive and Google Drive running. Ensure no
+other backup is running. Run:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\backup-all-wsl-v12.ps1" -RequireCogneeBackup
+Write-Host ("Exit code: " + $LASTEXITCODE)
+```
+
+The saved archive password is used automatically; do not put it in the command.
+The encrypted repository is `D:\Archive\Snapshots\restic-v12`, separate from
+retained v11 archives. The first run can take hours and needs a new baseline;
+later v12 runs reuse stored content. Keep both clients running until uploads
+finish. Send the final result or any error for review. This command does not
+switch the scheduled task. Review real scopes and prove selected v12 recovery
+before that transition. For v12 recovery use its operating/recovery guide,
+rather than the v11 7-Zip commands.

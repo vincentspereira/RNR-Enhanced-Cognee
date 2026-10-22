@@ -54,6 +54,12 @@ is retained, but its prerequisites have not all passed.
 
 ## Windows/backup progress
 
+Current result: [v12 native qualification passed](WINDOWS-V12-NATIVE-PASS-2026-10-22.md):
+45 passed, zero failures/skips, exit 0; all 15 receipt hashes match installed
+files. Earlier native-pending/failure observations below are historical. First
+real v12 backup, provider/recovery review and task transition remain pending;
+v11 remains scheduled. Documentation updates leave qualified code unchanged.
+
 22 October follow-up: the first native v12 test stopped with one failed empty
 snapshot-list check after 16 passes. The shared PowerShell compatibility fix is
 installed and passed 38 portable checks; its native Windows rerun is pending.

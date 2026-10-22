@@ -1,8 +1,10 @@
 # Backup v12 - operating and recovery guide
 
-Prepared 21 October 2026. Native Windows qualification and first real v12
-backup are still required. V11 and all earlier generations remain available.
+Updated 22 October 2026. Native Windows qualification passed 45 checks, zero
+failures/skips, exit 0; all 15 receipt hashes match installed files. First real
+v12 backup and recovery review remain required. V11 generations remain available.
 The scheduled task still uses v11; nothing starts or switches it automatically.
+This guide update does not change qualified code.
 
 ## What changed and why
 

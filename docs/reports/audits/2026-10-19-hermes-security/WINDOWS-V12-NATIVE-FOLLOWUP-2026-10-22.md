@@ -1,8 +1,10 @@
 # V12 native qualification follow-up and reversible Scripts cleanup
 
-Date: 22 October 2026. Native Windows qualification remains incomplete. This
-report records a real failure, its correction and portable regression evidence;
-it does not admit v12 for a task switch or declare its Windows checks passed.
+Date: 22 October 2026. Historical failure/correction record. Superseding result:
+[native Windows qualification passed](WINDOWS-V12-NATIVE-PASS-2026-10-22.md), 45
+passed, zero failures/skips, exit 0, all 15 receipt hashes verified. Earlier
+pending statements below describe those attempts. First real backup,
+provider/recovery review and task transition remain separate.
 
 ## Observed Windows result
 
