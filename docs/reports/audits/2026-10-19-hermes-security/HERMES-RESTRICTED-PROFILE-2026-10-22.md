@@ -622,3 +622,47 @@ claiming credential provisioning or authenticated access. The credential expires
 after 24 hours; initial issuance is not an unattended renewal mechanism, and
 provider/model activation, actual memory tests, profile recovery and fleet
 qualification remain pending.
+
+## Native initial pilot credential issued; provider selection prepared
+
+The owner returned a successful initial provisioning receipt at
+44a093fc5eb712670bf7464777d840831d47d564. Effective user was hermes-runtime,
+credential_installed=true. The exact preserved original environment basename
+is .env-before-cognee-pilot-414dafc6ffa24cd58486986bd7091c4e. The signed ordinary
+identity is tenant qualification, project hermes_pilot, subject
+hermes_pilot_runtime, role api_client, capture_policy selected. Its expiry is
+2026-10-23T18:23:15+00:00. Authenticated API status passed; unauthenticated,
+expired and altered credentials were denied. No credential value is recorded.
+The receipt explicitly keeps provider_selected, model_called,
+memory_records_written and runtime_qualified false. This is native initial
+issuance evidence, not unattended renewal or model/fleet/private-data admission.
+
+configure_pilot_provider.py prepares the next restricted-only step. It publishes
+the previously absent enhanced_cognee.json and minimal memory-only config.yaml
+mode 0600 through no-replace atomic publication. Matching interrupted settings
+can resume; differing owner/model edits or unsafe files are preserved/refused.
+No original configuration file is overwritten and .env remains byte-identical.
+The settings select the fixed local API, selected capture and server-reviewed
+sharing. They grant no new shared-library membership or cross-project access.
+
+Before native imports the helper requires the correct restricted identity,
+no-new-privileges/zero capabilities, only its own group, protected tools1 Python,
+private profile and hash-verified protected provider/link. It then uses the
+actual pinned Hermes memory loader and native secret-scope API, binding only the
+ordinary pilot credential from the native profile parser. No fallback class,
+guard bypass or signing/recovery-key access is introduced. It initializes the
+actual provider and calls enhanced_status plus enhanced_recall for an invented
+query in the empty scope. Only the status/scope and empty-result booleans leave
+the process; no raw record, secret or full configuration is printed. Recall can
+use the existing local embedding service; no chat-model route/call, memory-record
+write, gateway or bot activation belongs to this step. Native configuration
+loading can create Hermes' normal local last-known-good settings backup.
+
+The focused Workspace suites pass 234 tests, zero failures/skips and no reported
+warnings. Twenty-six new cases cover fixed non-secret settings, private atomic
+publication/idempotence, conflicting/concurrent file preservation and exact
+status/empty-recall contracts. Provider calls use fixtures; actual native provider
+selection and credential-bound status/recall remain pending the owner command.
+Empty recall is not proof of saved-record retrieval or automatic model capture.
+Settings may already be published if a later check fails; retain them, report
+the fixed failure stage, and do not auto-delete/overwrite the profile.

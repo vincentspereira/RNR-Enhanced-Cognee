@@ -167,3 +167,57 @@ a bearer token already copied elsewhere. On a later failure, retain the private
 backup and stop only the new pilot path; restore the exact saved .env through
 the restricted operator workflow only after checking concurrent changes. Do
 not rotate global keys, erase the pilot or mark owner acceptance automatically.
+
+## Received initial credential and next native provider reads
+
+The owner has now returned complete=true from initial issuance at
+44a093fc5eb712670bf7464777d840831d47d564. The ordinary pilot credential expires
+2026-10-23T18:23:15+00:00. Authenticated status and all three denial controls
+passed under hermes-runtime. The exact environment backup was retained. Provider
+selection, chat/model calls, memory-record writes and full qualification were
+still false in that receipt; do not repeat initial issuance or overwrite the
+installed credential to progress to configuration.
+
+The next hash-verified restricted operator step executes
+deployment/configure_pilot_provider.py directly as hermes-runtime under
+no-new-privileges and the already protected tools1 Python, never root. Use a
+clean environment with HERMES_HOME pointing to the existing pilot and a bounded
+90-second operator timeout. The human Desktop can remain open; do not launch
+the pilot concurrently. No runtime rebuild, service restart or default-profile
+switch is requested.
+
+The helper verifies account/process/profile/provider protection and native source
+paths. It creates only missing mode-0600 enhanced_cognee.json and config.yaml,
+with atomic non-overwrite publication. The JSON selects the local origin,
+10-second transport timeout, selected capture and reviewed sharing; YAML selects
+only memory.provider=enhanced_cognee. No chat model, credentials or gateway
+configuration is stored in these two settings files. Existing matching settings
+allow a retry after interruption; differing settings, links or loose permissions
+stop before either file is overwritten. The credential .env is read/checked for
+unchanged bytes, not edited. Native config loading can also create Hermes' normal
+last-known-good settings backup inside the pilot.
+
+Actual pinned Hermes APIs supply profile identity, profile .env parsing, scoped
+secret binding and memory-provider loading. Bind only the ordinary Cognee token
+to this profile through set_secret_scope; do not copy other model/admin keys or
+load a full environment into the process. Keep the existing plugin isolation
+policy enforced. The provider initializes and performs enhanced_status and an
+empty-scope enhanced_recall. The latter can call the already prepared local
+embedding model and derived indexes. It does not call a chat model or admit a
+memory record. Server-authorized reviewed sharing remains enabled without
+changing membership or grants. Native config/secret-scope APIs are described in
+the pinned [secret-scope source](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/secret_scope.py)
+and the memory-loader reference above; no compatibility shim is substituted.
+
+Expected success includes provider_selected, native_provider_initialized,
+authenticated_provider_status_passed, empty_scope_recall_passed and
+credential_file_unchanged true. chat_model_called, memory_records_written and
+runtime_qualified remain false. created_settings can be empty on a matching
+retry. A failure prints only its stage; files may already be published at a
+later failure, so preserve and reconcile rather than auto-rollback or delete.
+The 234 focused passing cases include 26 new settings/read-contract regressions;
+mocked provider calls are not native evidence. Await the host receipt before
+marking this step passed. Empty recall does not qualify saved-memory recall,
+model-selected capture, OS/fleet isolation or private-data admission. The next
+stage must select the existing authorized local chat route and exercise an
+invented decision through actual memory tools and fresh-session retrieval.
