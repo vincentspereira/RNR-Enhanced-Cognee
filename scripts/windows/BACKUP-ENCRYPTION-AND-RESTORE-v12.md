@@ -1,9 +1,10 @@
 # Backup v12 - operating and recovery guide
 
-Updated 22 October 2026. The earlier candidate passed 45 native checks. The first
-real run then exposed a WSL argument-quoting defect. The launcher correction is
-installed and requires a fresh native pass, including an actual WSL launch probe.
-First real v12 backup/recovery remain required. V11 generations remain available.
+Updated 22 October 2026. The corrected launcher passed 48 native Windows checks,
+with zero failures/skips and exit code 0, including the actual Windows-to-WSL
+launch probe. All 15 qualified file hashes match the installed version.
+The first real v12 backup must now resume and complete, followed by recovery
+review. V11 generations remain available.
 The scheduled task still uses v11; nothing starts or switches it automatically.
 Preserve the incomplete run; the completed Cognee scope can be reused on retry.
 

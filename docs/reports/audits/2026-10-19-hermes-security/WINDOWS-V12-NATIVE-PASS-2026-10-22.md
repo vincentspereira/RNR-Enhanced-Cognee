@@ -3,6 +3,28 @@
 Date: 22 October 2026. This supersedes the earlier native-pending/failure status.
 First real backup, provider/recovery review and task transition remain separate.
 
+## Current result: corrected launcher qualified
+
+The corrected executable/source candidate `8d5fb23f9` passed **48 native Windows
+checks, zero failures, zero skips, exit code 0**. The owner supplied the result,
+and the retained native receipt confirms it. Artifact leaf:
+`native-7769a18e4da14426826359ee609028ac`.
+
+All 15 receipt hashes match the installed files. The three added checks passed:
+actual WSL distro execution, owner/working-directory identity, and a helper-sized
+encoded payload with synthetic argument roundtrips. Portable qualification
+separately passed 52 checks with zero failures/skips. These are separate suites.
+This documentation update changes no qualified runtime files.
+
+The existing real run `20261022T011910Z-65be90bc` remains incomplete: only `cognee`
+is committed, local completion is false and cloud results are empty. Resume the
+normal backup command below **without -NewRun** to reuse that progress. First real
+home/profile/Windows capture, provider upload/recovery review and task transition
+remain pending. The scheduled task remains v11. No backup or upload was started
+by recording this result.
+
+## Historical receipt: earlier 45-check candidate
+
 Later update: this is the prior candidate's pass. The subsequent real run exposed
 a WSL launcher serialization defect, and its correction changes three qualified
 files. A fresh native pass is required; see
@@ -33,15 +55,19 @@ about 1,004.8 GiB free and C: about 487.6 GiB free; these observations do not
 verify cloud quota. G: is not visible in this WSL session, which does not prove
 its availability or absence in Windows.
 
-Next, in Administrator PowerShell as the same Windows owner:
+## Resume the current backup
+
+For the current qualified candidate, resume in Administrator PowerShell as the
+same Windows owner:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\backup-all-wsl-v12.ps1" -RequireCogneeBackup
 Write-Host ("Exit code: " + $LASTEXITCODE)
 ```
 
-This first real backup initializes `D:\Archive\Snapshots\restic-v12`, using the
-saved owner DPAPI archive password. It captures reviewed homes, Windows/D: and
+The first real attempt already initialized `D:\Archive\Snapshots\restic-v12`.
+Its normal retry uses the saved owner DPAPI archive password and retained run.
+It captures reviewed homes, Windows/D: and
 completed encrypted Cognee backups while preserving v11 generations. Initial
 v12 content cannot reuse v11 encrypted 7-Zip blocks; later v12 backups reuse
 stored content. Leave both provider clients running and check actual uploads.

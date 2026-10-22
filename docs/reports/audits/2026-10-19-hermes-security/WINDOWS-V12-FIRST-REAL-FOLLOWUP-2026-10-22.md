@@ -1,9 +1,14 @@
 # First real v12 backup: Workspace inventory follow-up
 
-Date: 22 October 2026. The prior candidate passed 45 native checks. A subsequent
-WSL launcher correction changes qualified files and requires a fresh native
-pass. The first real normal backup stopped with exit 1 at
-`Home inventory failed for Ubuntu-Workspace`. This is not a complete backup.
+Date: 22 October 2026. Current result: the WSL launcher correction passed
+48 native Windows checks, zero failures/skips, exit 0. All 15 installed hashes
+match the receipt. See [current qualification](WINDOWS-V12-NATIVE-PASS-2026-10-22.md).
+Resume the normal backup without -NewRun; no new qualification run is required.
+
+The first real normal backup stopped with exit 1 at
+`Home inventory failed for Ubuntu-Workspace`. Its partial checkpoint remains
+preserved. The investigation and earlier qualification requirements below are
+historical; the first real backup still needs to complete.
 
 ## Confirmed retained progress
 
