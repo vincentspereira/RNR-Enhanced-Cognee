@@ -786,3 +786,23 @@ zero failures/skips and no reported warnings, including 18 new regressions.
 Native failure diagnosis, successful GLM access and Hermes capture/fresh-session
 recall qualification remain pending. No new account/recovery action or rollout
 is inferred from this failure.
+
+## Restricted SDK diagnostic reports DNS failure
+
+Owner receipt at d301ad52f03ea0717c3d315f1967eceb7a203957 reports dns_error at
+coding_plan_request, no HTTP status and no SDK completion or token counts.
+No model defaults, credential files or memory records were written. The
+restricted process reached the request stage and its exception chain contains
+a DNS resolution failure. This is not evidence of a rejected key or exhausted
+model allowance. Successful model access and memory qualification remain open.
+
+The next read-only step compares api.z.ai and a public control hostname under
+vincentspereira and hermes-runtime using the same protected Python, clean
+environment and no-new-privileges. It reports fixed resolver-file readability
+flags and DNS categories, never file contents, resolved IPs or raw errors. It
+uses no credential, model/HTTP call, Git fetch or configuration change. Each
+account has a 20-second bound. See docs/runbooks/HERMES-ZAI-DNS-CHECK.md.
+Host comparison remains pending; do not change resolver, WSL, firewall or
+identity settings, restart services, or retry the cloud request without first
+reconciling that comparison. Existing 343 passing fixture tests do not establish
+native DNS/model success; no additional full-suite claim is made here.
