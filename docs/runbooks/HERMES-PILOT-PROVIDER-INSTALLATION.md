@@ -112,3 +112,58 @@ with signed project scope, configure the approved local model route, test actual
 authenticated invented-memory operations and capture, review account/profile
 isolation and recovery, then consider wider scoped bot onboarding. Existing
 release security gates and owner credential review remain separate requirements.
+
+## Initial pilot access after native loader success
+
+The owner subsequently reported the initial read-only preflight as passed:
+pilot .env is a regular runtime-owned mode-0600 file; enhanced_cognee.json and
+config.yaml are absent; unauthenticated local status returns HTTP 401. Preserve
+the existing environment even though it has no Cognee configuration yet.
+
+Use the exact published blob/hash of deployment/provision_pilot_access.py through
+the guided Ubuntu-Hermes operator command. This one-shot helper is deliberately
+not a general issuer/renewer: it accepts no arbitrary account, path, role,
+namespace, key or lifetime. The fixed token lives for 24 hours, using the same
+HS256 claim format as src/memory_admin.py: tenant qualification, project
+hermes_pilot, subject hermes_pilot_runtime, agent hermes_pilot, role api_client,
+capture_policy selected. It grants no administrator/reviewer role or sharing
+membership. The current signed identity/server policy define its scope.
+
+The hash-verified root stdlib phase only reads the protected operator/API
+signing configurations, checks protection/key agreement and signs ordinary
+tokens. It does not open the agent-owned profile. A clean restricted child
+receives only the ordinary valid/expired/altered test tokens and public claims
+through stdin. The child uses the already protected Hermes interpreter and
+dotenv parser; it does not load unrelated environment settings into its process.
+
+Before writing, it requires the unconfigured pilot, validates private .env
+metadata and syntax, refuses an existing token assignment, checks HTTP 401 for
+missing/expired/altered tokens and HTTP 200 for the exact fresh pilot scope with
+schema 3 and AES-256-GCM. These status probes may update operational request
+counters but write no memory record. No proxy or redirect receives the token.
+
+It saves an exact mode-0600 .env-before-cognee-pilot-* copy, writes/fsyncs a
+private new stage, checks the locked original/name/content for intervening
+changes, atomically publishes and verifies readback. Existing settings remain
+byte-for-byte at the beginning of the new .env. No other profile, service key,
+model configuration or backup generation changes. Failures retain originals
+and prepared files; never delete or retry by overwriting an existing token.
+The account can edit its own files; advisory locking does not make same-account
+processes mutually secure. Use one operator and do not launch the pilot during
+initial provisioning. The human Desktop profile can continue independently.
+
+The public receipt contains scope/expiry, backup basename and status booleans,
+never the credential or key. credential_installed and both API-check flags must
+be true. provider_selected, model_called, memory_records_written and
+runtime_qualified must remain false for this step. Authentication status does
+not establish recall/capture, index freshness, complete isolation or fleet
+admission. The 208 focused passing cases include 52 new access regressions;
+network/process fixtures are mocked and native issuance is still pending.
+
+The ordinary credential expires after 24 hours, without changing any persistent
+service/recovery key. Qualify a protected operator renewal/revocation procedure
+before unattended use. An account lock or disabling the provider does not revoke
+a bearer token already copied elsewhere. On a later failure, retain the private
+backup and stop only the new pilot path; restore the exact saved .env through
+the restricted operator workflow only after checking concurrent changes. Do
+not rotate global keys, erase the pilot or mark owner acceptance automatically.

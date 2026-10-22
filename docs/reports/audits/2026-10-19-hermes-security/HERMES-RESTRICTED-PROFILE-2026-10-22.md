@@ -574,3 +574,51 @@ full process isolation or fleet readiness. The next guided check inventories
 only the pilot's credential/settings file presence and protected metadata, and
 checks unauthenticated local status denial before any credential is issued.
 No existing secret is printed, renewed or replaced by that read-only check.
+
+## Native initial-access preflight passed; issuance prepared
+
+The owner returned complete=true from the next read-only check, effective user
+hermes-runtime. The pilot .env is an existing regular file, owned by that
+account, mode 0600. Neither enhanced_cognee.json nor config.yaml exists. The
+unauthenticated local status request returned HTTP 401. File contents were not
+read and no credential was issued by that preflight. This confirms that initial
+credential preparation can preserve the existing environment without treating
+it as an empty or disposable file.
+
+provision_pilot_access.py now prepares initial 24-hour ordinary access for tenant
+qualification, project hermes_pilot, subject hermes_pilot_runtime and agent
+hermes_pilot, role api_client and capture_policy selected. Root stdlib reads the
+two protected signing configurations through no-follow descriptors and checks
+that their persistent keys match; it changes neither file/key. It produces the
+same HS256 claim contract as memory_admin.issue_token. Only ordinary tokens and
+public claims cross a private process pipe after dropping uid/groups to the
+restricted account with no-new-privileges and a clean environment. No application
+or dotenv parser is imported as root; no token is placed in command arguments,
+the inherited child process environment, logs, source, reports or memories.
+The ordinary credential is deliberately stored only in the selected pilot .env.
+
+The child checks the existing pilot/env privacy, refuses an already configured
+pilot or existing token assignment, parses without loading ambient settings,
+and verifies unauthenticated/expired/altered token HTTP 401 plus the correct
+authenticated schema-3, encrypted, empty pilot scope. Status checks can update
+operational request counters; no memory record is created or changed. It keeps
+an exact private .env-before-cognee-pilot-* copy, creates/fsyncs a private stage,
+checks the original file descriptor/name/content for intervening changes, and
+atomically replaces only the selected pilot .env with preserved original bytes
+plus the ordinary token. Failures retain prepared files. The advisory lock and
+checks coordinate ordinary writers; they are not isolation from a malicious
+process sharing the same account. All other profiles/services/keys are outside
+this change. No model, memory-provider selection or gateway is started.
+
+The expanded focused Workspace suites pass 208 cases, zero failures/skips and
+no reported warnings. Fifty-two new cases cover PyJWT compatibility/signatures,
+fixed destination, negative status controls, scope/freshness refusal, private
+backup/readback, unchanged values including multiline settings, detected
+concurrent changes, permissions/links, privilege selection and sanitized output.
+API and subprocess behavior use mocks; this is not native issuance evidence.
+The guided operator command must verify the exact published helper hash before
+execution in no-site/isolated system Python. Await the native receipt before
+claiming credential provisioning or authenticated access. The credential expires
+after 24 hours; initial issuance is not an unattended renewal mechanism, and
+provider/model activation, actual memory tests, profile recovery and fleet
+qualification remain pending.
