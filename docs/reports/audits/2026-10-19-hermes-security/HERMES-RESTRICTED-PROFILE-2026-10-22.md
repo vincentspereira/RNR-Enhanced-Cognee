@@ -963,3 +963,39 @@ to test model-driven retrieval and citation without revealing the saved interval
 in the prompt. Capture-turn completion and the broader qualification, recovery,
 fleet and release gates remain outstanding. The helper is unchanged; the prior
 450-test fixture result is not a new installed recall result.
+
+## 23 October: native recall incomplete; safe turn diagnostics prepared
+
+The owner ran the pinned 2585bf30 recall helper after fetching 8365b49e.
+It returned complete=false, failure_stage=native_agent_turn and
+category=native_agent_turn_incomplete. No HTTP status/provider code was
+reported. Existing test evidence was retained and runtime_qualified=false.
+This does not establish a model, credential, network or memory-service cause.
+The prior matching-record inspection remains valid as earlier evidence; no
+post-failure record comparison completed in this recall attempt.
+
+The helper previously collapsed an unsuccessful native result, a noncompleted
+turn and a zero-request turn into one category. It now attaches bounded
+native_diagnostics to that failure: completion/error/interruption/partial flags,
+response-presence only, exact allowlisted native reason/exit labels, at most six
+HTTP statuses, guarded request count, fixed guard/exception category and known
+memory-tool names. Unknown reason strings, raw errors/messages/final answers,
+identifiers and credentials are never copied into the summary. Native result
+handling was checked against the pinned public Hermes conversation loop,
+turn_finalizer.py and turn_failure_copy.py at 4d04303818b6.
+
+Failure summaries also compare the checked profile/settings/credential bytes.
+The old memory_writes_may_have_occurred flag was overbroad: it now applies only
+to capture-stage failures after possible execution. Recall offers only native
+recall/get/status tools and no canonical write tool. A false write-possibility
+flag is not a completed post-failure canonical-record preservation check.
+
+Focused Workspace fixture suites pass 464 tests, zero failures/skips and no
+reported warnings, including 14 additional diagnostic, malformed-request and
+failure-preservation cases. One initial test assertion incorrectly expected a
+fixed fixture ID during random capture preparation; it was corrected to compare
+the actual receipt bytes across failure. No installed-host test ran in Workspace.
+The next operator step is one fresh recall attempt with this diagnostic helper,
+using the same restricted account/profile and temporary model arguments. Keep
+the record/receipt, defaults, credentials, service installation and bots intact;
+do not rerun capture or infer that sign-in/renewal is required from this result.

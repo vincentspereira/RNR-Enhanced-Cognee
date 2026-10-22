@@ -273,6 +273,10 @@ def test_agent_surface_is_narrowed_without_replacing_native_handlers(check):
     for _ in range(6): guard(httpx.Request("POST", check.BASE_URL + "/responses", json=body))
     assert requests["count"] == 6
     with pytest.raises(check.CheckError): guard(httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+    assert requests["guard_failure"] == "unexpected_memory_test_request"
+    observer = agent.client._client.event_hooks["response"][-1]
+    for status in [200, 401, 429, 500, 200, 503, 403]: observer(NS(status_code=status))
+    assert requests["http_statuses"] == [200, 401, 429, 500, 200, 503]
 
 
 @pytest.mark.parametrize("mutation", ["other-model", "store", "tool", "tier", "url"])
@@ -296,7 +300,43 @@ def test_agent_missing_memory_or_configured_fallback_is_refused(check):
         check.restrict_agent(agent, {"enhanced_recall"})
 
 
-def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path):
+@pytest.mark.parametrize("payload", [b"PRIVATE_BODY", b"[]", b"null", b'{"tools":[null]}'])
+def test_invalid_request_payloads_have_only_fixed_guard_diagnostics(check, payload):
+    agent = agent_fixture(check)
+    requests = check.restrict_agent(agent, {"enhanced_recall"})
+    with pytest.raises(check.CheckError) as caught:
+        agent.client._client.event_hooks["request"][-1](
+            httpx.Request("POST", check.BASE_URL + "/responses", content=payload))
+    assert requests["count"] == 0
+    assert requests["guard_failure"] in {"invalid_memory_test_payload", "unexpected_memory_test_wire_contract"}
+    assert "PRIVATE_" not in str(caught.value)
+
+
+@pytest.mark.parametrize("reason,exit_reason,expected_reason,expected_exit", [
+    ("format_error", "all_retries_exhausted_no_response", "format_error", "all_retries_exhausted_no_response"),
+    ("session_persistence_failed:PRIVATE_CAUSE", "session_persistence_failed", "session_persistence_failed", "session_persistence_failed"),
+    ("timeout", "max_iterations_reached(5)", "timeout", "max_iterations_reached"),
+    ("PRIVATE_REASON", "PRIVATE_EXIT", None, None),
+    (["PRIVATE_REASON"], {"PRIVATE_EXIT": TOKEN}, None, None),
+])
+def test_native_result_diagnostics_allow_only_fixed_codes_and_bounded_metadata(
+        check, reason, exit_reason, expected_reason, expected_exit):
+    result = {"completed": False, "failed": True, "error": "PRIVATE_ERROR " + TOKEN,
+              "final_response": "PRIVATE_RESPONSE", "messages": ["PRIVATE_HISTORY"],
+              "failure_reason": reason, "turn_exit_reason": exit_reason,
+              "session_id": "PRIVATE_SESSION", "model": "PRIVATE_MODEL"}
+    report = check.failure(check.NativeTurnError(result,
+        {"count": 6, "http_statuses": [200, 400, True, "PRIVATE_STATUS", 429, 401, 503]},
+        ["enhanced_recall", "PRIVATE_TOOL", "enhanced_recall"]))
+    detail = report["native_diagnostics"]
+    assert detail["native_failure_reason"] == expected_reason and detail["native_exit_reason"] == expected_exit
+    assert detail["http_statuses"] == [200, 400, 429, 401] and report["http_status"] == 401
+    assert detail["tool_calls"] == ["enhanced_recall"] and detail["native_response_present"]
+    assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
+
+
+@pytest.mark.parametrize("outcome", ["complete", "incomplete", "exception", "guard-rejected"])
+def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path, outcome):
     import sys
     release = tmp_path / "release"
     (release / "repo").mkdir(parents=True)
@@ -316,12 +356,27 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
             options["tool_progress_callback"]("tool.started", tool_name="enhanced_recall")
             options["tool_progress_callback"]("tool.started", tool_name="enhanced_remember")
             requests["count"] = 3
+            if outcome == "exception": raise TimeoutError("PRIVATE_EXCEPTION_SENTINEL")
+            if outcome != "complete":
+                if outcome == "guard-rejected": requests["guard_failure"] = "unexpected_memory_test_wire_contract"
+                return {"completed": False, "failed": True, "error": "PRIVATE_ERROR_SENTINEL",
+                        "failure_reason": "format_error", "turn_exit_reason": "PRIVATE_EXIT_SENTINEL"}
             return {"completed": True, "final_response": "PRIVATE_SYNTHETIC_REPLY"}
         def close(self): options["closed"] = True
     monkeypatch.setitem(sys.modules, "run_agent", NS(__file__=str(source), AIAgent=Agent))
     monkeypatch.setitem(sys.modules, "agent.memory_manager", NS(MemoryManager=Manager))
-    requests = {"count": 0}
+    requests = {"count": 0, "http_statuses": [400] if outcome == "incomplete" else []}
     monkeypatch.setattr(check, "restrict_agent", lambda agent, allowed: requests)
+    if outcome != "complete":
+        with pytest.raises(check.NativeTurnError) as caught:
+            check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
+        report = check.failure(caught.value)
+        assert options["closed"] and report["category"] == "native_agent_turn_incomplete"
+        assert report["http_status"] == (400 if outcome == "incomplete" else None)
+        assert report["native_diagnostics"]["model_requests"] == 3
+        assert report["native_diagnostics"]["native_exception_category"] == ("timeout" if outcome == "exception" else None)
+        assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
+        return
     answer, calls, count = check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
     assert calls == ["enhanced_recall", "enhanced_remember"] and count == 3 and options["closed"]
     assert options["fallback_model"] == {} and options["credential_pool"] is None
@@ -331,7 +386,8 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
 
 
 @pytest.mark.parametrize("stage", ["capture", "recall"])
-def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage):
+@pytest.mark.parametrize("fails", [False, True])
+def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage, fails):
     import sys
     fixture = "a" * 32
     state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
@@ -364,22 +420,36 @@ def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions
     row = {"id": "synthetic-record-id", "content": fixture + " thirteen days", "version": 1}
     monkeypatch.setattr(check, "verify_saved", lambda p, f: row)
     prompts = []
+    receipts = []
     def turn(stage, token, actual_provider, session, prompt):
         prompts.append(prompt)
+        receipts.append(check.STATE.read_bytes())
         if stage == "recall":
             assert "thirteen" not in prompt and "13" not in prompt
             assert session != state["capture_session"]
         else:
             assert "remember" not in prompt.casefold() and "thirteen-day" in prompt
+        if fails:
+            raise check.NativeTurnError({"completed": False, "error": "PRIVATE_ERROR"}, {"count": 1}, [])
         return "thirteen days, synthetic-record-id", ["enhanced_remember"] if stage == "capture" else ["enhanced_recall"], 3
     monkeypatch.setattr(check, "native_memory_turn", turn)
     if stage == "recall": check.save_state(state)
-    check.main_memory(stage=stage, approved_test=True)
+    if fails:
+        with pytest.raises(SystemExit): check.main_memory(stage=stage, approved_test=True)
+    else:
+        check.main_memory(stage=stage, approved_test=True)
     output = capsys.readouterr().out
     report = json.loads(output)
-    assert report["complete"] and report["native_agent_turn_passed"]
-    assert report["memory_records_written"] == (stage == "capture")
-    assert report["fresh_session_recall_passed"] == (stage == "recall")
+    if fails:
+        assert not report["complete"] and report["failure_stage"] == "native_agent_turn"
+        assert report["memory_writes_may_have_occurred"] == (stage == "capture")
+        assert report["profile_settings_and_credentials_unchanged"] is True
+        assert report["native_diagnostics"]["native_error_present"]
+        assert check.STATE.read_bytes() == receipts[0]
+    else:
+        assert report["complete"] and report["native_agent_turn_passed"]
+        assert report["memory_records_written"] == (stage == "capture")
+        assert report["fresh_session_recall_passed"] == (stage == "recall")
     assert not report["runtime_qualified"] and "PRIVATE_" not in output and TOKEN not in output
     assert resets == ["PRIVATE_BINDING"]
 

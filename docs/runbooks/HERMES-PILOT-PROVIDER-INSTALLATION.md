@@ -670,3 +670,37 @@ The authorized GPT-6.1-Sol subscription route is temporary for this check;
 bounded requests can consume existing-plan usage. Return only the helper's
 sanitized summary, including failures. Successful recall is a separate result
 from original capture-turn completion or full runtime/fleet qualification.
+
+## 23 October: diagnose an incomplete recall turn without raw logs
+
+The owner-run recall at helper revision 2585bf30 stopped at native_agent_turn
+with native_agent_turn_incomplete. The old summary did not identify which
+native completion check failed. It did not establish an authentication, quota,
+DNS or retrieval failure. Preserve the existing fixture receipt and record.
+
+The updated helper retains the same native agent, model route, request/time
+bounds and recall-only tool surface. It adds bounded HTTP response observations
+and fixed diagnostics for incomplete results or propagated exceptions. No raw
+error, final answer, transcript, arbitrary result keys, session/record identifier
+or credential is printed. Unknown native reason/exit labels become null; this
+means unclassified, not a successful turn. A request_guard_failure names a
+locally rejected request, not a provider's verdict. HTTP statuses establish
+observed responses, not successful completion. native_response_present reports
+only whether text was present, never what it said.
+
+The failure summary now checks profile/settings/credential byte preservation.
+Recall failures report memory_writes_may_have_occurred=false because the narrowed
+native tool surface has no canonical memory write tool. This corrects the old
+overbroad flag; canonical record preservation is only verified when the later
+authoritative comparison completes. Existing incomplete-turn refusal remains;
+no completion check or Hermes safety guard was relaxed.
+
+Run one new pinned/hash-verified main_memory(stage="recall", approved_test=True)
+from the ordinary Ubuntu-Hermes operator terminal. Use the existing restricted
+tools1 interpreter/profile and 180-second timeout. Return the sanitized result,
+including native_diagnostics on failure; do not supply private logs or auth
+files. This can make the already authorized synthetic subscription-model
+requests. It does not retry capture, renew credentials, change model defaults,
+install a runtime or activate everyday bots. The focused Workspace fixture
+suites pass 464 tests with zero failures/skips and no reported warnings; the
+diagnostic retry and runtime qualification remain pending installed execution.

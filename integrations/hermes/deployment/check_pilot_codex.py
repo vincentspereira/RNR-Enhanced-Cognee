@@ -36,6 +36,53 @@ class CheckError(RuntimeError):
     """Fixed category; no exception messages or response text in reports."""
 
 
+class NativeTurnError(CheckError):
+    """An incomplete native turn with a bounded, content-free diagnostic."""
+
+    def __init__(self, result, requests, calls, cause=None):
+        super().__init__("native_agent_turn_incomplete")
+        row = result if isinstance(result, dict) else {}
+        reasons = {"context_overflow", "truncated", "invalid_response", "empty_response", "loop_error",
+                   "interpreter_shutdown", "session_busy", "gateway_connection", "host_error",
+                   "rate_limit", "upstream_rate_limit", "overloaded", "server_error", "timeout",
+                   "model_not_found", "format_error", "auth", "billing", "billing_unverified",
+                   "permission_denied", "content_policy_blocked", "connection_error"}
+        exits = {"unknown", "empty_response_exhausted", "all_retries_exhausted_no_response",
+                 "pending_tool_result", "interpreter_shutdown", "local_processing_error",
+                 "repeated_outer_errors", "error_near_max_iterations", "context_compression_timeout",
+                 "context_compression_exhausted", "session_persistence_failed", "run_budget_exhausted"}
+        reason = row.get("failure_reason")
+        exit_reason = row.get("turn_exit_reason")
+        if isinstance(reason, str) and reason.startswith("session_persistence_failed:"):
+            reason = "session_persistence_failed"
+        if isinstance(exit_reason, str) and re.fullmatch(r"max_iterations_reached\([0-9]{1,3}\)", exit_reason):
+            exit_reason = "max_iterations_reached"
+        statuses = requests.get("http_statuses", [])
+        self.diagnostics = {
+            "native_result_is_mapping": isinstance(result, dict),
+            "native_completed": row.get("completed") is True,
+            "native_failed": row.get("failed") is True,
+            "native_error_present": bool(row.get("error")),
+            "native_interrupted": row.get("interrupted") is True,
+            "native_partial": row.get("partial") is True,
+            "native_response_present": isinstance(row.get("final_response"), str) and bool(row["final_response"].strip()),
+            "native_failure_reason": reason if isinstance(reason, str) and reason in reasons | {"session_persistence_failed"} else None,
+            "native_exit_reason": exit_reason if isinstance(exit_reason, str) and exit_reason in exits | {"max_iterations_reached"} else None,
+            "model_requests": requests["count"] if type(requests.get("count")) is int and 0 <= requests["count"] <= 6 else None,
+            "http_statuses": [s for s in statuses[:6] if type(s) is int and 100 <= s <= 599] if isinstance(statuses, list) else [],
+            "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember"})),
+            "request_guard_failure": requests.get("guard_failure") if requests.get("guard_failure") in {
+                "unexpected_memory_test_request", "unexpected_memory_test_wire_contract", "invalid_memory_test_payload"} else None,
+        }
+        safe_categories = {"dns_error", "tls_certificate_error", "timeout", "dependency_missing",
+                           "sdk_or_native_argument_error", "http_error", "connection_error", "provider_stream_error"}
+        detail = failure(cause) if cause is not None else {}
+        self.diagnostics["native_exception_category"] = detail.get("category") if detail.get("category") in safe_categories else None
+        self.http_status = detail.get("http_status")
+        if self.http_status is None:
+            self.http_status = next((s for s in reversed(self.diagnostics["http_statuses"]) if s >= 400), None)
+
+
 def read_private(name, uid):
     if name not in {"config.yaml", "enhanced_cognee.json", "auth.json", ".env"}:
         raise CheckError("unapproved_file")
@@ -198,7 +245,10 @@ def failure(error):
         current = current.__cause__ or current.__context__
     if category == "unclassified" and provider_code is not None:
         category = "provider_stream_error"
-    return {"category": category, "http_status": status, "provider_code": provider_code}
+    result = {"category": category, "http_status": status, "provider_code": provider_code}
+    if isinstance(error, NativeTurnError):
+        result.update(http_status=error.http_status, native_diagnostics=error.diagnostics)
+    return result
 
 
 def main(*, approved_test=False):
@@ -327,21 +377,33 @@ def restrict_agent(agent, allowed):
     client.max_retries = 0
     transport = client._client
     transport.follow_redirects = False
-    requests = {"count": 0}
+    requests = {"count": 0, "http_statuses": [], "guard_failure": None}
     def guard(request):
         if request.method != "POST" or str(request.url) != BASE_URL + "/responses" or requests["count"] >= 6:
+            requests["guard_failure"] = "unexpected_memory_test_request"
             raise CheckError("unexpected_memory_test_request")
-        raw = request.content
-        if request.headers.get("content-encoding") == "zstd":
-            from compression import zstd
-            raw = zstd.decompress(raw)
-        body = json.loads(raw)
+        try:
+            raw = request.content
+            if request.headers.get("content-encoding") == "zstd":
+                from compression import zstd
+                raw = zstd.decompress(raw)
+            body = json.loads(raw)
+            if not isinstance(body, dict): raise ValueError()
+        except Exception:
+            requests["guard_failure"] = "invalid_memory_test_payload"
+            raise CheckError("invalid_memory_test_payload") from None
         if (body.get("model") != MODEL or body.get("store") is not False
                 or body.get("service_tier") or not isinstance(body.get("tools"), list)
-                or any(tool.get("name") not in allowed for tool in body["tools"])):
+                or any(not isinstance(tool, dict) or tool.get("name") not in allowed for tool in body["tools"])):
+            requests["guard_failure"] = "unexpected_memory_test_wire_contract"
             raise CheckError("unexpected_memory_test_wire_contract")
         requests["count"] += 1
+    def observe_response(response):
+        status = response.status_code
+        if type(status) is int and 100 <= status <= 599 and len(requests["http_statuses"]) < 6:
+            requests["http_statuses"].append(status)
     transport.event_hooks["request"].append(guard)
+    transport.event_hooks.setdefault("response", []).append(observe_response)
     return requests
 
 
@@ -368,10 +430,13 @@ def native_memory_turn(stage, token, provider, session, prompt):
         allowed = {"enhanced_recall", "enhanced_get", "enhanced_status"}
         if stage == "capture": allowed.add("enhanced_remember")
         requests = restrict_agent(agent, allowed)
-        result = agent.run_conversation(prompt, conversation_history=[])
+        try:
+            result = agent.run_conversation(prompt, conversation_history=[])
+        except Exception as cause:
+            raise NativeTurnError(None, requests, calls, cause) from None
         if (not isinstance(result, dict) or result.get("completed") is not True
                 or result.get("failed") or result.get("error") or not 0 < requests["count"] <= 6):
-            raise CheckError("native_agent_turn_incomplete")
+            raise NativeTurnError(result, requests, calls)
         if stage == "capture" and ("enhanced_recall" not in calls or "enhanced_remember" not in calls
                 or calls.index("enhanced_recall") > calls.index("enhanced_remember")):
             raise CheckError("model_did_not_recall_then_select_capture")
@@ -463,9 +528,16 @@ def main_memory(*, stage, approved_test=False):
             "current_version": row["version"], "memory_records_written": stage == "capture",
             "runtime_qualified": False}, indent=2))
     except Exception as error:
+        preserved = None
+        if uid is not None and snapshots:
+            try:
+                preserved = all(read_private(name, uid) == raw for name, raw in snapshots.items())
+            except Exception:
+                preserved = False
         print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
             "test_evidence_present_preserve_for_review": os.path.lexists(STATE),
-            "memory_writes_may_have_occurred": phase in {"native_agent_turn", "saved_memory_verification"},
+            "memory_writes_may_have_occurred": stage == "capture" and phase in {"native_agent_turn", "saved_memory_verification"},
+            "profile_settings_and_credentials_unchanged": preserved,
             "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None
     finally:
