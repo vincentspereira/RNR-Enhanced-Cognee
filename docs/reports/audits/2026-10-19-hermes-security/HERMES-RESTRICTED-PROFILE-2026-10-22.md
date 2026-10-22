@@ -398,3 +398,50 @@ Native tool inventory/correction and new pilot provider/model/memory tests remai
 pending; no full-suite/coverage or full-runtime success is inferred. This delta
 supplements, rather than rewrites, the pinned fleet handoff marker. Its review
 bundle remains untouched and conflicting work still yields to Cognee priority.
+
+## Native four-tool inventory received; separate artifact repair prepared
+
+Vincent supplied complete=true/read_only=true from the managed-tools inspector
+at delivery revision 36b6f72f. All four original program entries are directories,
+with present/executable binaries, recorded versions matching the selected
+4d043038 Hermes lock, and no links outside the original store. ffmpeg 9.0.1 has
+458809344 allocated bytes/zero links; node 26.7.0 has 237559808 bytes/two links;
+npm 12.0.2 has 19251200 bytes/eleven links; ripgrep 15.2.0 has 5828608 bytes/zero
+links. Total allocation is 721448960 bytes, about 688 MiB. Protected records are
+absent for each. No binary was executed and runtime_qualified remains false.
+
+The published preparation helper now supports --apply --with-managed-tools to
+build a separate root-owned generation at
+/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1. It retains the old
+protected release and the already-created pilot, recopies committed source and
+the selected Python/dependency trees, and admits only these four tool payloads.
+It verifies complete local source facts against exact committed target/artifact
+identity, checks realized source fingerprints, confines and fingerprints the
+copy, rechecks source bytes/metadata, and records genuine protected fingerprints
+in schema 1 facts. The reviewed program PATH is reconstructed; arbitrary human
+environment values are not copied. Only stdlib helper code runs as root; no
+application/tool binary, updater, package installer or model is executed.
+
+The 28 new security/consistency regressions cover changed identities/versions,
+missing fingerprints/schema, file/link hash ordering, escaping or swapped paths,
+special/privileged files, copy-time drift, private-file exclusion and refusing
+existing payload slots. Combined helper suites: 114 passed, zero failed, zero
+skipped, no reported warnings, Workspace Python 3.12.3. Separate unprivileged
+compatibility checks used the exact public upstream pm/lock.py reader and the
+pm/store.py digest function at 4d043038 against synthetic files: four reader/
+identity/env cases and four digest cases passed. These source compatibility
+checks did not execute real tool binaries or test a live Hermes process. The
+runbook links their primary sources and records the reproduction scope.
+
+The repair requires no downloads beyond the approved public helper delivery and
+does not alter the running human Hermes, profile configuration, fleet review
+bundle, protected Cognee services/credentials, or Windows backups. It requires
+approximately 2.5 GiB additional guest space; the guest-free-space guard remains
+4 GiB and host Windows storage is not inferred. The root runner must hash the
+exact helper stdin bytes before compilation, eliminating a mutable helper-file
+gap. Native publication/tool execution/confinement and warning clearance remain
+pending owner output. Existing local recorded fingerprints are consistency
+evidence, not fresh publisher authentication or advisory clearance. No complete
+runtime/private-data admission or all-bot activation is claimed. This delta
+supplements the existing pinned fleet handoff; no shared maintenance window has
+been scheduled and no fleet input has been deployed or rebased.

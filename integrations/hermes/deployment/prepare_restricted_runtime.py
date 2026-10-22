@@ -34,6 +34,13 @@ ACCOUNT = "hermes-runtime"
 ACCOUNT_HOME = Path("/var/lib/hermes-runtime")
 PARENT = Path("/opt/hermes-runtime")
 RELEASE = PARENT / "releases/4d04303818b6-1729494fe783"
+TOOL_STORE = HOME / ".hermes/tools"
+MANAGED_TOOLS = {
+    "ffmpeg": ("9.0.1", "bin/ffmpeg"),
+    "node": ("26.7.0", "bin/node"),
+    "npm": ("12.0.2", "bin/npm"),
+    "ripgrep": ("15.2.0", "rg"),
+}
 PTH_HASHES = {
     "__editable__.hermes_agent-0.0.0.pth": "a58e1404c760ee958735df264804a620ef9ad7362443d1fb2437731d205a9c5c",
     "_virtualenv.pth": "69ac3d8f27e679c81b94ab30b3b56e9cd138219b1ba94a1fa3606d5a76a1433d",
@@ -140,6 +147,131 @@ def open_directory(path: Path) -> int:
     except BaseException:
         os.close(fd)
         raise
+
+
+def tool_metadata(path: Path) -> bytes:
+    """Read public package metadata through pinned, non-symlink ancestors."""
+    parent = open_directory(path.parent)
+    try:
+        fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+        with os.fdopen(fd, "rb") as stream:
+            info = os.fstat(stream.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_size > 1048576:
+                raise PreparationError("Managed tool metadata has an unsupported type or size.")
+            raw = stream.read(1048577)
+            if len(raw) > 1048576:
+                raise PreparationError("Managed tool metadata exceeded its size limit.")
+            return raw
+    finally:
+        os.close(parent)
+
+
+def tool_digest(root: Path, *, mappings=None, destination=None) -> str:
+    """PM-compatible Linux payload hash, without following source links.
+
+    Match the selected pm/store.py relpath/NUL/content format. Recalculate link
+    text only when predicting the relocated copy. Never execute PM code as root.
+    """
+    paths = []
+
+    def collect(fd, prefix=Path(".")):
+        try:
+            for name in sorted(os.listdir(fd)):
+                info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+                relative = prefix / name
+                if stat.S_ISDIR(info.st_mode):
+                    if name != "__pycache__":
+                        child = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+                        collect(child, relative)
+                elif stat.S_ISREG(info.st_mode) or stat.S_ISLNK(info.st_mode):
+                    paths.append(relative)
+                else:
+                    raise PreparationError("A managed tool contains a special file.")
+        finally:
+            os.close(fd)
+
+    collect(open_directory(root))
+    hasher = hashlib.sha256()
+    for relative in sorted(paths, key=lambda path: path.as_posix()):
+        parent = open_directory(root / relative.parent)
+        try:
+            info = os.stat(relative.name, dir_fd=parent, follow_symlinks=False)
+            hasher.update(relative.as_posix().encode("utf-8") + b"\0")
+            if stat.S_ISLNK(info.st_mode):
+                value = os.readlink(relative.name, dir_fd=parent)
+                if mappings is not None:
+                    original = root / relative
+                    target = Path(value) if os.path.isabs(value) else original.parent / value
+                    value = os.path.relpath(translated(target, mappings),
+                                           (destination / relative).parent)
+                hasher.update(value.encode("utf-8"))
+            else:
+                fd = os.open(relative.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+                with os.fdopen(fd, "rb") as stream:
+                    before = os.fstat(stream.fileno())
+                    if not stat.S_ISREG(before.st_mode) or before.st_mode & 0o6000:
+                        raise PreparationError("A managed tool file has an unsupported type or privilege bit.")
+                    for chunk in iter(lambda: stream.read(1048576), b""):
+                        hasher.update(chunk)
+                    after = os.fstat(stream.fileno())
+                    if (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) != (
+                            after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns):
+                        raise PreparationError("A managed tool changed during fingerprinting.")
+        finally:
+            os.close(parent)
+    return hasher.hexdigest()
+
+
+def selected_tools(lock_raw: bytes, facts_raw: bytes) -> dict:
+    """Admit only the four inspected pins with complete recorded identities."""
+    lock, facts = json.loads(lock_raw), json.loads(facts_raw)
+    if lock.get("schema") != 1 or facts.get("schema") != 1:
+        raise PreparationError("Managed tool metadata needs a schema review.")
+    selected = {}
+    for name, (version, binary) in MANAGED_TOOLS.items():
+        pin = lock["packages"][name]
+        record = facts["packages"][name]
+        entry = name + "-" + version + "-linux-x64"
+        artifacts = pin["artifacts"].get("linux-x64", pin["artifacts"].get("any"))
+        artifacts = artifacts if isinstance(artifacts, list) else [artifacts]
+        hashes = [item["sha256"] for item in artifacts]
+        if (pin["version"] != version or record.get("version") != version
+                or record.get("entry") != entry or record.get("target") != "linux-x64"
+                or record.get("artifacts") != hashes or not hashes
+                or any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)
+                       for value in [*hashes, record.get("digest")])):
+            raise PreparationError("A managed tool identity or payload fingerprint differs from the inspected lock.")
+        # Construct only the reviewed program PATH. Do not import arbitrary
+        # environment keys/values from the human account's package facts.
+        bindir = str(PurePosixPath(entry) / PurePosixPath(binary).parent)
+        selected[name] = {"entry": entry, "version": version, "target": "linux-x64",
+                          "artifacts": hashes, "digest": record["digest"],
+                          "env": {"PATH": ["{{store}}/" + bindir]}}
+    return selected
+
+
+def copy_managed_tools(stage: Path, selected: dict) -> list[dict]:
+    reports = []
+    tool_mappings = [(TOOL_STORE / row["entry"], stage / "python" / row["entry"])
+                     for row in selected.values()]
+    for name, record in selected.items():
+        source = TOOL_STORE / record["entry"]
+        target = stage / "python" / record["entry"]
+        if tool_digest(source) != record["digest"]:
+            raise PreparationError("A managed tool's original payload fingerprint does not match its record.")
+        expected = tool_digest(source, mappings=tool_mappings, destination=target)
+        copy_tree(source, target, tool_mappings)
+        actual = tool_digest(target)
+        if actual != expected or tool_digest(source) != record["digest"]:
+            raise PreparationError("A managed tool changed during protected copying.")
+        binary = target / MANAGED_TOOLS[name][1]
+        if not binary.is_file() or not os.access(binary, os.X_OK):
+            raise PreparationError("A protected tool binary is missing or not executable.")
+        record["digest"] = actual
+        reports.append({"name": name, "version": record["version"],
+                        "source_payload_verified": True, "copy_payload_verified": True,
+                        "tool_version_verified_by_execution": False})
+    return reports
 
 
 def copy_tree(source: Path, destination: Path, mappings, *, directory_fd=None):
@@ -460,7 +592,7 @@ def launcher_bytes(uid: int) -> bytes:
     return launcher.encode()
 
 
-def prepare() -> dict:
+def prepare(*, with_managed_tools=False) -> dict:
     if (os.geteuid() != 0 or os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes"
             or os.environ.get("SUDO_USER") != "vincentspereira"):
         raise PreparationError("Use the approved Ubuntu-Hermes human operator and sudo launcher.")
@@ -487,6 +619,15 @@ def prepare() -> dict:
         raise PreparationError("Insufficient free filesystem space for a protected snapshot.")
     if os.path.lexists(RELEASE):
         raise PreparationError("The proposed snapshot already exists; it will not be overwritten.")
+    tool_facts_raw, tool_records = None, {}
+    if with_managed_tools:
+        tool_facts_raw = tool_metadata(TOOL_STORE / "facts.json")
+        tool_records = selected_tools(git_as_operator(operator, "show", REVISION + ":pm/lock.json"),
+                                      tool_facts_raw)
+        # Fail before the large copy if a cached payload no longer matches.
+        for record in tool_records.values():
+            if tool_digest(TOOL_STORE / record["entry"]) != record["digest"]:
+                raise PreparationError("An original managed tool no longer matches its payload fingerprint.")
     private_parent(RELEASE.parent)
     stage = Path(tempfile.mkdtemp(prefix=".preparing-", dir=RELEASE.parent))
     audit = stage / "operator-evidence"
@@ -548,10 +689,12 @@ def prepare() -> dict:
                 "runtime": {"commands": {"hermes": "bin/hermes"},
                             "storePython": "python/bin/python3"}}
     write_new(stage / "manifest.json", json.dumps(manifest, indent=2).encode())
-    # Only Python is provisioned here. Other managed tools need separate admission.
+    # The optional new generation also admits the four separately inspected tools.
     if (stage / "python/facts.json").exists():
         raise PreparationError("The copied Python contains unexpected installation metadata.")
-    write_new(stage / "python/facts.json", b'{"packages":{"python":{"entry":"."}}}\n')
+    tool_reports = copy_managed_tools(stage, tool_records) if with_managed_tools else []
+    write_new(stage / "python/facts.json", json.dumps({"schema": 1, "packages": {
+        "python": {"entry": "."}, **tool_records}}, sort_keys=True).encode())
     stamp = {"schemaVersion": 2, "commit": REVISION, "commitDate": None,
              "branch": None, "builtAt": datetime.now(timezone.utc).isoformat(),
              "dirty": False, "source": "local", "distribution": "rnr-operator",
@@ -563,7 +706,8 @@ def prepare() -> dict:
     bindir.mkdir(mode=0o755)
     write_new(bindir / "hermes", launcher_bytes(account.pw_uid), 0o755)
     if (small_file(STATE / "facts.json") != facts
-            or git_as_operator(operator, "rev-parse", "HEAD").decode().strip() != REVISION):
+            or git_as_operator(operator, "rev-parse", "HEAD").decode().strip() != REVISION
+            or (with_managed_tools and tool_metadata(TOOL_STORE / "facts.json") != tool_facts_raw)):
         raise PreparationError("The source or dependency selection changed during preparation.")
     files = snapshot_manifest(stage)
     write_new(stage / "snapshot-files.json", json.dumps(files, sort_keys=True).encode())
@@ -573,6 +717,7 @@ def prepare() -> dict:
         "generated_install_metadata_rebased": True,
         "source_export_is_committed_revision": True,
         "editable_imports": import_reports,
+        "managed_tools": tool_reports,
         "profile_configured": False, "memory_connected": False,
     }, indent=2).encode())
     os.chmod(stage, 0o755)
@@ -583,20 +728,29 @@ def prepare() -> dict:
             "program_files": len(files), "runtime_qualified": False,
             "hermes_launched": False, "profile_configured": False,
             "memory_connected": False, "originals_preserved": True,
+            "managed_tools": tool_reports,
+            "tool_binaries_executed": False,
             "editable_imports": import_reports}
 
 
 def main():
+    global RELEASE
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--apply", action="store_true")
     mode.add_argument("--preflight", action="store_true",
                       help="Check import relocation without sudo, copies or launches.")
+    parser.add_argument("--with-managed-tools", action="store_true",
+                        help="Build a separate tools1 release; never replace the earlier release.")
     args = parser.parse_args()
+    if args.with_managed_tools:
+        if not args.apply:
+            parser.error("--with-managed-tools requires --apply")
+        RELEASE = RELEASE.with_name(RELEASE.name + "-tools1")
     retained = (" No files copied; originals unchanged.\n" if args.preflight else
                 " Partial new snapshots are retained; originals unchanged.\n")
     try:
-        report = preflight() if args.preflight else prepare()
+        report = preflight() if args.preflight else prepare(with_managed_tools=args.with_managed_tools)
     except PreparationError as error:
         parser.exit(1, "STOP: " + str(error) + retained)
     except (OSError, ValueError, KeyError, TypeError, RuntimeError, AttributeError,

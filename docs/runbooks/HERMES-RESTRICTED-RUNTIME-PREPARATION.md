@@ -302,3 +302,76 @@ compatibility, remaining credential coverage, advisory/release checks and full
 fleet onboarding remain separate. Do not copy entire private .hermes trees,
 clear release/security gates, modify the default launcher or start paused v12
 backups to make this preparation appear complete.
+
+## Separate generation with the four required tools
+
+The owner has now reported the read-only inventory from delivery revision
+36b6f72f: all four original entries are directories, their binaries are present
+and executable, their recorded versions match the inspected lock, and no links
+leave the original tool store. ffmpeg/node/npm/ripgrep respectively occupy
+458809344/237559808/19251200/5828608 allocated bytes (721448960 total, about
+688 MiB). None of these binaries was executed. These are metadata observations,
+not proof of actual versions, authentic upstream archives or complete runtime
+qualification.
+
+The helper's --apply --with-managed-tools mode prepares a NEW release at:
+
+`/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1`
+
+It exports the same committed source and recopies the selected Python/dependency
+program files with the existing import/ownership/startup guards, then copies only
+the four selected original tool entries. This is a protected local artifact
+rebuild, not a runtime/package download or a modification of the original human
+installation. Allow approximately 2.5 GiB additional guest storage including
+program/evidence files and filesystem overhead; the 4 GiB guest-free guard stays
+enforced. Windows host free space is not measured from this isolated operator
+step. The earlier protected release, pilot profile, original store, partial
+artifacts, backend keys/services and fleet review bundle remain untouched.
+
+Tool admission requires schema 1 records, the exact inspected version/entry,
+linux-x64 target, matching committed lock artifact hashes and a well-formed
+realized payload digest. Existing tool bytes must match that recorded digest
+before preparation. Metadata and tree reads reject symlink ancestors, special
+files and privileged file bits; copying detaches hardlinks. Copy/link confinement
+uses only the four admitted entries. The clone is checked against the predicted
+relocation hash, and source bytes/selection are checked again. No selected tool
+or copied application code executes as root. These checks verify consistency
+with locally recorded program state; they do not independently reauthenticate
+the original publisher or rerun a dependency/advisory audit.
+
+The new schema 1 facts contain real target/artifact identities and fingerprints
+of the actual protected payloads, including relocated link text. Only reviewed
+program PATH entries are constructed; arbitrary environment keys from the human
+facts are not transferred. The selected upstream
+[facts reader](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/pm/lock.py)
+and [payload digest format](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/pm/store.py)
+were checked directly against synthetic directories: four reader/identity/env
+cases and four digest cases passed in Workspace. No real tool was executed in
+those compatibility checks. The external update steward is preserved.
+
+Execute only the exact published helper bytes, verified by SHA256 INSIDE the
+privileged system-Python process before compilation. Use git show through stdin,
+not a mutable checked-out helper imported as root. Root's isolated/no-site
+interpreter runs only this reviewed stdlib helper. Validate the distro/user and
+authenticate sudo first; --with-managed-tools requires --apply. No branch switch,
+checkout overwrite, profile recreation, chat, provider/model call or default
+launcher change is involved. The guided chat supplies the immutable revision and
+helper checksum. A pre-existing tools1 destination is preserved and refused.
+
+Workspace targeted helper suites report 114 passed, zero failures, zero skips
+and no reported warnings under Python 3.12.3. This includes 28 new tool-admission
+cases, alongside the existing 86. Coverage and the full release suite were not
+measured in this delta. Preparation and tool versions are still UNVERIFIED on
+Ubuntu-Hermes until the owner runs the published command and supplies its result.
+Expected tool receipt flags are source_payload_verified/copy_payload_verified;
+tool_version_verified_by_execution, hermes_launched and runtime_qualified remain
+false. The existing pilot directory remains present; profile_configured=false
+means this builder supplies no provider/model configuration.
+
+After publication, use the NEW launcher's absolute path for restricted-account
+startup/version and tool execution checks. Recheck confinement against that new
+generation; the earlier access checker selects the old release and does not
+qualify the new one. Do not assume the four-tool warning is cleared before the
+actual Hermes startup check. Keep the next provider/token/model/selected-memory,
+cross-scope, backup and fleet admission tests separate. No native tool repair,
+model success or complete Cognee integration has been reported by this change.
