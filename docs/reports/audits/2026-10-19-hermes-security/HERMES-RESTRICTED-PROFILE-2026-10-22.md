@@ -765,3 +765,24 @@ zero failures/skips and no reported warnings (42 new connectivity checks and
 one model-name case regression); this is not a full release/coverage result.
 Existing Desktop/bot work, model defaults, service keys/stores, backups and the
 separate fleet review bundle remain untouched by this preparation.
+
+## Native SDK attempt did not pass; cause unresolved
+
+Owner receipt at 01617e5e182090d23a0eb1b54bd531a07db54528: restricted check
+failed at coding_plan_request with no HTTP status, no defaults changed. That
+phase includes dependency/client setup, transport and response validation; no
+successful network/model request or key rejection is established by the terse
+receipt. The initial helper suppressed the failure category too aggressively.
+
+The revised helper adds only reconstructed fixed diagnostic categories, bounded
+usage, completion presence, allowlisted finish reason and content/reasoning
+presence booleans. It never prints raw errors, reply/reasoning text, credential
+values or arbitrary exception names. It keeps the existing exact Coding Plan
+route, synthetic prompt, model, 512-token limit and at-most-one SDK request with
+no retries/fallbacks. Truncation remains a failure, not a passed model check.
+No credential/default/profile file is written by the diagnostic. See the pilot
+runbook for interpretation and limits. Focused fixture suites pass 343 tests,
+zero failures/skips and no reported warnings, including 18 new regressions.
+Native failure diagnosis, successful GLM access and Hermes capture/fresh-session
+recall qualification remain pending. No new account/recovery action or rollout
+is inferred from this failure.

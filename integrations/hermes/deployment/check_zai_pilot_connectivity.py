@@ -15,6 +15,8 @@ import os
 from pathlib import Path
 import pwd
 import re
+import socket
+import ssl
 import stat
 import subprocess
 import sys
@@ -38,6 +40,118 @@ class CheckError(RuntimeError):
 
 class MissingKey(CheckError):
     """Only a missing environment key permits checking the selected pool."""
+
+
+class ResponseCheckError(CheckError):
+    """A response arrived but did not satisfy the fixed acknowledgement contract."""
+
+    def __init__(self, category, details):
+        super().__init__("The bounded synthetic response was not validated.")
+        self.category = category
+        self.details = details
+
+
+class ReportedFailure(CheckError):
+    """Only reconstructed, allowlisted failure fields may reach the operator."""
+
+    def __init__(self, report):
+        super().__init__("The restricted Z.ai check did not pass.")
+        self.report = report
+
+
+FAILURE_CATEGORIES = frozenset({
+    "unclassified", "dependency_missing", "sdk_argument_error", "tls_certificate_error",
+    "tls_error", "dns_error", "connection_error", "timeout", "http_error",
+    "response_parse_error", "no_choices", "completion_limit_reached", "missing_content",
+    "unexpected_content", "unexpected_tool_calls", "returned_model_mismatch",
+})
+FINISH_REASONS = frozenset({"stop", "length", "tool_calls", "content_filter", "function_call"})
+
+
+def token_counts(result):
+    usage = getattr(result, "usage", None)
+    return {field: value if type(value := getattr(usage, field, None)) is int
+            and 0 <= value <= 16777216 else None
+            for field in ("prompt_tokens", "completion_tokens", "total_tokens")}
+
+
+def response_details(result):
+    choices = getattr(result, "choices", None)
+    choice = choices[0] if choices else None
+    message = getattr(choice, "message", None)
+    reason = getattr(choice, "finish_reason", None)
+    return {"completion_received": True, "finish_reason": reason if reason in FINISH_REASONS else None,
+            "content_present": isinstance(getattr(message, "content", None), str)
+                and bool(message.content.strip()),
+            "reasoning_present": bool(getattr(message, "reasoning_content", None)),
+            "tokens": token_counts(result)}
+
+
+def failure_details(error):
+    if isinstance(error, ResponseCheckError):
+        return {"category": error.category, **error.details}
+    category = "unclassified"
+    current = error
+    seen = set()
+    for _ in range(8):
+        if current is None or id(current) in seen:
+            break
+        seen.add(id(current))
+        name = type(current).__name__
+        package = type(current).__module__.split(".")[0]
+        if isinstance(current, ssl.SSLCertVerificationError):
+            category = "tls_certificate_error"
+            break
+        if isinstance(current, ssl.SSLError):
+            category = "tls_error"
+        elif isinstance(current, socket.gaierror):
+            category = "dns_error"
+            break
+        elif isinstance(current, (TimeoutError,)) or (
+                package in {"openai", "httpx", "httpcore"} and name in {
+                    "APITimeoutError", "ConnectTimeout", "ReadTimeout", "WriteTimeout", "PoolTimeout"}):
+            category = "timeout"
+        elif isinstance(current, ModuleNotFoundError):
+            category = "dependency_missing"
+        elif isinstance(current, TypeError):
+            category = "sdk_argument_error"
+        elif package in {"openai", "httpx", "httpcore"} and name in {
+                "APIConnectionError", "ConnectError", "ReadError", "WriteError", "NetworkError"}:
+            category = "connection_error"
+        elif package == "openai" and name == "APIResponseValidationError":
+            category = "response_parse_error"
+        elif type(getattr(current, "status_code", None)) is int:
+            category = "http_error"
+        current = current.__cause__ or current.__context__
+    return {"category": category, "completion_received": False, "finish_reason": None,
+            "content_present": None, "reasoning_present": None,
+            "tokens": {field: None for field in ("prompt_tokens", "completion_tokens", "total_tokens")}}
+
+
+def sanitized_failure(report):
+    category = report.get("category", "unclassified")
+    reason = report.get("finish_reason")
+    if category not in FAILURE_CATEGORIES or (reason is not None and reason not in FINISH_REASONS):
+        raise CheckError("The restricted check returned an unexpected failure receipt.")
+    clean = {"complete": False, "failure_stage": report["failure_stage"], "category": category}
+    status = report.get("http_status")
+    clean["http_status"] = status if type(status) is int and 100 <= status <= 599 else None
+    for field in ("completion_received", "content_present", "reasoning_present"):
+        value = report.get(field)
+        if value is not None and type(value) is not bool:
+            raise CheckError("The restricted check returned an unexpected failure receipt.")
+        clean[field] = value
+    clean["finish_reason"] = reason
+    raw_tokens = report.get("tokens")
+    if raw_tokens is not None and not isinstance(raw_tokens, dict):
+        raise CheckError("The restricted check returned an unexpected failure receipt.")
+    clean["tokens"] = {}
+    for field in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        value = (raw_tokens or {}).get(field)
+        clean["tokens"][field] = value if type(value) is int and 0 <= value <= 16777216 else None
+    clean.update(model_defaults_changed=False, credential_written_to_files=False,
+                 memory_records_written=False, hermes_capture_qualified=False, runtime_qualified=False)
+    return clean
 
 
 def read_owner_file(name, uid, *, secret):
@@ -122,21 +236,24 @@ def invoke_model(key, sdk_factory=None):
             result = client.chat.completions.create(
                 model=MODEL, messages=[{"role": "user", "content": PROMPT}], stream=False,
                 max_tokens=512, reasoning_effort="low", extra_body={"thinking": {"type": "enabled"}})
+    details = response_details(result)
     if not result.choices:
-        raise CheckError("The model returned no choices.")
+        raise ResponseCheckError("no_choices", details)
     message = result.choices[0].message
     returned = getattr(result, "model", None)
     matched = (isinstance(returned, str) and
                (returned.casefold() == MODEL or returned.casefold().startswith(MODEL + "-")))
-    if (not isinstance(message.content, str) or message.content.strip() != ACK
-            or getattr(message, "tool_calls", None) or not matched):
-        raise CheckError("The model response did not match the bounded synthetic check.")
-    usage = getattr(result, "usage", None)
-    counts = {}
-    for field in ("prompt_tokens", "completion_tokens", "total_tokens"):
-        value = getattr(usage, field, None)
-        counts[field] = value if type(value) is int and 0 <= value <= 16777216 else None
-    return {"model_reply_validated": True, "returned_model_matches_requested": True, "tokens": counts}
+    if not matched:
+        raise ResponseCheckError("returned_model_mismatch", details)
+    if getattr(message, "tool_calls", None):
+        raise ResponseCheckError("unexpected_tool_calls", details)
+    if not isinstance(message.content, str) or message.content.strip() != ACK:
+        category = "completion_limit_reached" if details["finish_reason"] == "length" else (
+            "missing_content" if not details["content_present"] else "unexpected_content")
+        raise ResponseCheckError(category, details)
+    if details["finish_reason"] == "length":
+        raise ResponseCheckError("completion_limit_reached", details)
+    return {"model_reply_validated": True, "returned_model_matches_requested": True, "tokens": details["tokens"]}
 
 
 def restricted_check(payload):
@@ -167,6 +284,7 @@ def restricted_check(payload):
         status = getattr(error, "status_code", None)
         print(json.dumps({"complete": False, "failure_stage": phase,
                           "http_status": status if type(status) is int and 100 <= status <= 599 else None,
+                          **failure_details(error),
                           "model_defaults_changed": False, "credential_written_to_files": False}))
         raise SystemExit(1) from None
 
@@ -188,9 +306,7 @@ def run_restricted(source, key):
     if result.returncode:
         if (isinstance(report, dict) and report.get("complete") is False
                 and report.get("failure_stage") in {"restricted_identity", "coding_plan_request"}):
-            status = report.get("http_status")
-            detail = " HTTP " + str(status) if type(status) is int and 100 <= status <= 599 else ""
-            raise CheckError("Restricted Z.ai check failed at " + report["failure_stage"] + detail + "; no defaults changed.")
+            raise ReportedFailure(sanitized_failure(report))
         raise CheckError("Restricted Z.ai check did not complete; verify the operator sudo session.")
     expected = {"complete": True, "effective_user": "hermes-runtime", "model": MODEL, "base_url": BASE_URL,
                 "model_reply_validated": True, "returned_model_matches_requested": True, "maximum_requests": 1,
@@ -242,6 +358,9 @@ def main(source, *, approved_model_test=False):
         unchanged = all(read_owner_file(name, account.pw_uid, secret=private) == raw
                         for name, (raw, private) in snapshots.items())
         report.update(key_source=key_source, owner_source_files_unchanged=unchanged)
+    except ReportedFailure as error:
+        print(json.dumps(error.report, indent=2))
+        raise SystemExit(1) from None
     except CheckError as error:
         raise SystemExit("STOP: " + str(error)) from None
     except Exception:

@@ -176,7 +176,9 @@ def test_parent_never_echoes_untrusted_child_or_provider_details(check, monkeypa
     with pytest.raises(check.CheckError) as error:
         check.run_restricted(b"# source", KEY)
     assert "PRIVATE_RESPONSE_SENTINEL" not in str(error.value)
-    if mutation == "failure-http": assert "HTTP 429" in str(error.value)
+    if mutation == "failure-http":
+        assert isinstance(error.value, check.ReportedFailure)
+        assert error.value.report["http_status"] == 429
 
 
 def test_explicit_test_selection_required_before_any_private_file_read(check, monkeypatch):
@@ -208,3 +210,93 @@ def test_private_yaml_parse_errors_never_reach_operator_output(check, monkeypatc
         check.main(b"# source", approved_model_test=True)
     assert "PRIVATE_CONFIG_SENTINEL" not in str(error.value)
     assert not capsys.readouterr().out
+
+
+def test_reasoning_only_token_exhaustion_is_identifiable_without_reply_text(check):
+    response = model_response(check)
+    response.choices[0].message.content = None
+    response.choices[0].message.reasoning_content = "PRIVATE_REASONING_SENTINEL"
+    response.choices[0].finish_reason = "length"
+    response.usage.completion_tokens = 512
+    with pytest.raises(check.ResponseCheckError) as error:
+        check.invoke_model(KEY, sdk_factory=sdk_stub(check, response, []))
+    public = check.failure_details(error.value)
+    assert public["category"] == "completion_limit_reached"
+    assert public["completion_received"] is True
+    assert public["content_present"] is False and public["reasoning_present"] is True
+    assert public["finish_reason"] == "length" and public["tokens"]["completion_tokens"] == 512
+    assert "PRIVATE_REASONING_SENTINEL" not in json.dumps(public)
+
+
+@pytest.mark.parametrize("kind,category", [
+    ("certificate", "tls_certificate_error"), ("dns", "dns_error"),
+    ("timeout", "timeout"), ("dependency", "dependency_missing"),
+    ("argument", "sdk_argument_error"), ("connection", "connection_error"),
+    ("http", "http_error"), ("unknown", "unclassified")])
+def test_failure_classification_never_copies_exception_messages(check, kind, category):
+    errors = {
+        "certificate": check.ssl.SSLCertVerificationError("PRIVATE_EXCEPTION_SENTINEL"),
+        "dns": check.socket.gaierror("PRIVATE_EXCEPTION_SENTINEL"),
+        "timeout": httpx.ReadTimeout("PRIVATE_EXCEPTION_SENTINEL"),
+        "dependency": ModuleNotFoundError("PRIVATE_EXCEPTION_SENTINEL"),
+        "argument": TypeError("PRIVATE_EXCEPTION_SENTINEL"),
+        "connection": httpx.ConnectError("PRIVATE_EXCEPTION_SENTINEL"),
+        "http": RuntimeError("PRIVATE_EXCEPTION_SENTINEL"),
+        "unknown": RuntimeError("PRIVATE_EXCEPTION_SENTINEL"),
+    }
+    if kind == "http": errors[kind].status_code = 403
+    public = check.failure_details(errors[kind])
+    assert public["category"] == category
+    assert "PRIVATE_EXCEPTION_SENTINEL" not in json.dumps(public)
+
+
+def test_wrapped_certificate_error_preserves_only_fixed_cause_category(check):
+    outer = httpx.ConnectError("PRIVATE_CONNECTION_SENTINEL")
+    outer.__cause__ = check.ssl.SSLCertVerificationError("PRIVATE_CERT_SENTINEL")
+    assert check.failure_details(outer)["category"] == "tls_certificate_error"
+
+
+@pytest.mark.parametrize("field,value", [
+    ("category", "PRIVATE_SENTINEL"), ("finish_reason", "PRIVATE_SENTINEL"),
+    ("content_present", "PRIVATE_SENTINEL"), ("reasoning_present", 1),
+    ("completion_received", {}), ("tokens", "PRIVATE_SENTINEL")])
+def test_untrusted_failure_fields_are_refused_without_echoing_values(check, field, value):
+    report = {"failure_stage": "coding_plan_request", field: value}
+    with pytest.raises(check.CheckError) as error:
+        check.sanitized_failure(report)
+    assert "PRIVATE_SENTINEL" not in str(error.value)
+
+
+def test_failure_reconstruction_discards_extra_provider_fields(check):
+    report = check.sanitized_failure({"failure_stage": "coding_plan_request", "category": "http_error",
+        "http_status": 429, "private_body": "PRIVATE_SENTINEL", "private_key": KEY,
+        "tokens": {"completion_tokens": "PRIVATE_SENTINEL", "extra": KEY}})
+    assert report["http_status"] == 429
+    assert report["tokens"]["completion_tokens"] is None
+    assert "PRIVATE_SENTINEL" not in json.dumps(report) and KEY not in json.dumps(report)
+
+
+def test_parent_displays_only_reconstructed_failure_receipt(check, monkeypatch, capsys):
+    import sys
+    monkeypatch.setattr(check.pwd, "getpwuid", lambda uid: SimpleNamespace(
+        pw_name="vincentspereira", pw_uid=1000, pw_dir=str(check.OWNER_HOME)))
+    monkeypatch.setattr(check, "RELEASE", Path(sys.executable).resolve().parent)
+    monkeypatch.setenv("WSL_DISTRO_NAME", "Ubuntu-Hermes")
+    monkeypatch.setattr(check.os, "chdir", lambda path: None)
+    monkeypatch.setattr(check, "read_owner_file", lambda *a, **kw: b"PRIVATE_CONFIG_SENTINEL")
+    import yaml
+    monkeypatch.setattr(yaml, "safe_load", lambda data: {"model": {"provider": "zai"}})
+    parser = SimpleNamespace(__file__=str(check.RELEASE / "repo/agent/secret_scope.py"),
+        _decode_env_bytes=lambda data: "", _parse_env_text=lambda data: {"GLM_API_KEY": KEY})
+    monkeypatch.setitem(sys.modules, "agent", SimpleNamespace(secret_scope=parser))
+    monkeypatch.setitem(sys.modules, "agent.secret_scope", parser)
+    def fail(*args):
+        raise check.ReportedFailure(check.sanitized_failure({
+            "failure_stage": "coding_plan_request", "category": "completion_limit_reached"}))
+    monkeypatch.setattr(check, "run_restricted", fail)
+    with pytest.raises(SystemExit) as error:
+        check.main(b"# approved source", approved_model_test=True)
+    assert error.value.code == 1
+    output = capsys.readouterr().out
+    assert json.loads(output)["category"] == "completion_limit_reached"
+    assert "PRIVATE_CONFIG_SENTINEL" not in output and KEY not in output

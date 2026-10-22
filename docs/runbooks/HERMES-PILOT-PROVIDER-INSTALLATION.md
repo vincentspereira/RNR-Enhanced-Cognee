@@ -380,3 +380,32 @@ one case-comparison regression to the previous 282. SDK and subprocess calls
 in those tests are fixtures; no native cloud request was made from Workspace.
 Actual restricted SDK access is pending the owner command. Actual Hermes
 model-driven tool/capture and fresh-session recall tests follow separately.
+
+## First restricted SDK attempt failed; sanitized diagnostics added
+
+The owner ran revision 01617e5e182090d23a0eb1b54bd531a07db54528. The helper
+reached coding_plan_request, then failed without an HTTP status. No defaults
+were written. That stage includes SDK import/client setup, network access and
+response validation: it does not prove that a request reached Z.ai, that a key
+was rejected, or that the model returned a completion. The first helper hid
+too much diagnostic information to distinguish those cases. Do not infer a
+network failure or raise the token allowance without further evidence.
+
+The revised helper keeps the exact same endpoint, model, 512-token limit,
+synthetic prompt, credential-selection rules and one-request/no-retry behavior.
+On failure it now prints a reconstructed JSON summary with a fixed category,
+HTTP status if available, completion_received, allowlisted finish_reason,
+content_present, reasoning_present and bounded numeric usage. A category such
+as completion_limit_reached is distinguished from SDK arguments, missing
+dependencies, DNS, TLS/certificate, connection, timeout or HTTP errors. Unknown
+errors remain unclassified; raw exception text, arbitrary class names, response
+content, reasoning text and keys never appear. completion_received describes
+an SDK completion object; HTTP errors can have a status without such an object.
+Diagnostics do not bypass validation or count an incomplete answer as success.
+
+Run the new pinned/hash-verified operator command once and return only its
+public summary. This can make one additional existing-plan request; no automatic
+retry or token-budget increase is introduced. Model-driven memory qualification
+remains pending. The focused fixture suites pass 343 tests, zero failures/skips
+and no reported warnings, including 18 new failure-classification and privacy
+cases. Actual failure cause and native GLM success await the new host receipt.
