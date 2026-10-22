@@ -3,9 +3,12 @@
 22 October profile follow-up: API, worker and backup timer report active.
 The main administrator-owned profile has no Cognee plugin/settings yet. See
 [the restricted live-profile account proposal](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
-Its preparation needs an owner decision; no persistent runtime account or
-everyday activation has been performed. Other privileged bots, credential
-renewal, new-home backup coverage and release checks remain separate gates.
+The owner chose to keep the current setup for invented-data testing only.
+No persistent runtime account will be created under this decision; everyday
+private-memory/bot rollout is deferred. No existing profile, membership or
+service was changed. Other privileged bots, credential renewal and release
+checks remain future private-use prerequisites; new-home backup coverage would
+apply only if a new runtime home is later approved.
 
 22 October owner update: [current recovery custody checked](RECOVERY-CUSTODY-2026-10-22.md).
 The owner recovered the updated KeePassXC vault from the OneDrive website,
@@ -27,7 +30,7 @@ evidence, not six separately completed phases.
 | 1 - Access control | Restricted service/API/worker/operator identities, scoped credentials, actual non-admin denial tests and cross-scope fleet tests qualified | Verify/admit each intended everyday-bot operating boundary; broader retained legacy/provider paths are separate |
 | 2 - Storage/memory | Canonical schema/history, private spaces, reviewed sharing, index worker/rebuild, restart consistency and encrypted service restore qualified | Migrate old/private data only when explicitly selected and qualified; no blanket migration or unrestricted cross-project access |
 | 3 - Packaging/release | Core source/stack/image checks and real browser/SDK evidence passed on recorded source revisions | Resolve enforced frontend development-dependency findings; validate all required checks on the final candidate; then conditional main merge |
-| 4 - Hermes integration | Eight-tool provider, real non-admin qualification and five local-model scenarios passed | Review/admit an everyday profile, credential renewal and resource behavior, then stage the bot fleet; actual profiles are not enabled by synthetic tests |
+| 4 - Hermes integration | Eight-tool provider, real non-admin qualification and five local-model scenarios passed | Owner retains invented-data testing only; everyday/private profile and bot rollout deferred; any later admission needs privilege, renewal and resource qualification |
 | 5 - Operations/private use | Protected daily backup/restore, restart/timer, temporary-account cleanup and current owner key-custody check passed | Credential review/revocation, complete Windows/provider recovery, actual scheduled run and final private-use review |
 
 ## Confirmed evidence and its dates

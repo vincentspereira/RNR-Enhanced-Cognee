@@ -1,5 +1,11 @@
 # Remediation and Hermes implementation plan
 
+22 October runtime decision: the owner selected **keep the current setup for
+invented-data testing only**. Do not create the proposed permanent Hermes
+runtime account or activate private/everyday profiles/bots. Retain protected
+services and authorized source/test work. See
+[the recorded account decision](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
+
 22 October owner update: [current protected recovery custody checked](RECOVERY-CUSTODY-2026-10-22.md).
 The downloaded vault attachment matches the verified 12-file package, and its
 recovered password decrypts it. Exposed-credential ownership/revocation, release

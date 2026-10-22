@@ -144,5 +144,11 @@ authenticated recall or a new provider/model qualification. No profile/account
 was changed. A concrete restricted-runtime account proposal is available in
 [the live-profile account plan](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
 The proposed persistent identity is separate from the already removed temporary
-test account. Owner decision and current host validation are pending; other
-privileged bots and new-home backup coverage require their own review.
+test account. The owner subsequently chose "Keep the current setup for
+invented-data testing only". Do not create the proposed account or activate
+private/everyday memory. Preserve the administrator account, all existing bots,
+protected services and backups. Reuse only verified synthetic profiles for
+invented-data tests; the decision does not revoke separate repository-remediation
+work or authorize deletion. New-home backup coverage is a future requirement
+only if a new home is later approved. Current-profile privilege limitations and
+other private-use prerequisites remain recorded rather than bypassed.

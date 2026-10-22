@@ -4,7 +4,23 @@ Prepared: 22 October 2026. This is a reviewable proposal, not an installed
 account or approval to activate private memory. The original temporary test
 account was removed as requested; do not recreate it or repeat that deployment.
 
-## Recommendation and current evidence
+## Owner decision received - 22 October 2026
+
+The owner selected: "Keep the current setup for invented-data testing only".
+Do not create hermes-runtime, prepare its proposed new home, migrate everyday
+profiles/bots, or enable private-data use on the basis of the proposal below.
+The current administrator account and its memberships remain unchanged. The
+existing protected backend, service keys, backups and recovery custody remain
+in place. Continue authorized source remediation and separate invented-data
+qualification using preserved synthetic profiles after read-only verification.
+Do not rerun the removed temporary account's installation or interpret this
+choice as approval to bypass OS isolation for private data. No further prompt
+for the same account proposal is needed unless the owner revisits the decision.
+
+The proposed permanent-account arrangement below is retained as reference only;
+it is not an instruction to execute it under the current owner choice.
+
+## Original proposal and current evidence
 
 Retain vincentspereira as the human administrator. Prepare one dedicated,
 non-administrator Hermes runtime identity for the selected first profile. Reuse
@@ -112,11 +128,11 @@ work and would need a separate deliberate administrator-recovery plan. Per-bot
 accounts or suitable sandboxes may later be needed for distinct trust boundaries;
 one shared runtime account is not private OS isolation between all bots.
 
-## Decision requested
+## Effective scope
 
-Approve preparation of the hermes-runtime account and its single initial profile,
-or retain the current synthetic-only arrangement. Existing temporary-account
-approval did not approve this persistent runtime account or automatic everyday
-migration. Once received, continue the approved preparation without repeatedly
-requesting the same decision. No account or private profile has been activated
-by publishing this plan.
+The owner chose the current synthetic-only arrangement, not preparation of the
+persistent account. No account or private profile was activated by this plan.
+Any future change to that decision must be explicit. Existing approval for
+reversible repository fixes, publication of the delivery branch and finite
+invented-data tests remains separate; no full-release or private-use completion
+is inferred. The v12 backup pause also remains in effect until revisited.
