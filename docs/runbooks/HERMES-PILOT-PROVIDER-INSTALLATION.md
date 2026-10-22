@@ -465,3 +465,64 @@ Focused Workspace suites pass 376 tests, zero failures/skips and no reported
 warnings, including 33 new login/output/privacy/preservation checks. All OAuth
 and process calls in those tests use fixtures; no live sign-in or model call
 was performed in Workspace. Native pilot sign-in remains pending the owner.
+
+## Native pilot sign-in passed; one Responses completion next
+
+The owner returned complete=true at 42f61235b1ef2228fad08484be94e14b3592b69a:
+hermes-runtime saved fresh pilot OAuth, pilot settings were unchanged and human
+credentials were not copied. Model/default/memory/runtime-qualification flags
+remained false. This supersedes the pending sign-in checkpoint above. Do not
+retain the interactive one-time code in reports, fixtures or Git. Sign-in is
+not model entitlement or completion evidence.
+
+The next reviewed helper, deployment/check_pilot_codex.py, selects only the
+single expected pilot OAuth pool entry at the fixed subscription endpoint.
+It never uses the auth resolver, refresh/import, main account or general API.
+Only the pilot auth.json and two non-secret settings files are read and checked
+for private ownership/mode; their original bytes are compared after the request.
+The memory-token .env and human stores are not opened. No file is written.
+
+The helper uses the native protected Hermes request converter/preflight,
+required identity/account headers, stream assembler and completion normalizer
+from the pinned source: [request/response adapter](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/codex_responses_adapter.py),
+[headers](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/codex_headers.py),
+[stream assembly](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/codex_runtime.py)
+and [normalization](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/auxiliary_codex_response.py).
+No compatibility substitute, chat session, tool registry or memory tool is used.
+
+Exactly one SDK Responses request is permitted at
+https://chatgpt.com/backend-api/codex/responses, for gpt-6.1-sol, low reasoning,
+store=false and a fixed invented acknowledgement prompt. The request guard
+rejects retries, other routes/models, tools, elevated service tiers and altered
+store/stream/reasoning fields. SDK retries, proxies and redirects are disabled;
+TLS verification stays enabled. Native subscription code omits max_output_tokens
+because this endpoint rejects it; there is no promised server token cap. The
+short prompt, 60-second transport timeout, 75-second stream/event guard and
+120-second outer command bound limit the test. It uses the existing plan quota.
+Official [model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+describes supported low reasoning, while [Codex model guidance](https://learn.chatgpt.com/docs/models)
+conditions availability on account/client rollout. Documentation is not the
+pilot's account/model-access evidence.
+
+The check requires an actual response.completed event, matching server-reported
+model metadata, a final stop and the exact acknowledgement without tool calls.
+The assembler's request-model echo alone is not server-model evidence. Only
+booleans and bounded token counts leave the process; raw replies, reasoning,
+headers, OAuth tokens, IDs and exception bodies are suppressed. Failures report
+fixed categories/status/allowlisted provider codes, never a local fallback.
+
+Execute the pinned/hash-verified blob under the same restricted identity and
+clean environment as the sign-in helper, selecting main(approved_test=True).
+Expected success includes native_responses_contract_passed,
+model_reply_validated, server_model_matches_requested and
+profile_settings_and_auth_unchanged true. full_hermes_turn_tested,
+hermes_capture_qualified, memory_records_written and runtime_qualified remain
+false: actual model-selected capture and fresh-session recall follow separately.
+On authentication failure, reconcile only the pilot login rather than importing
+the human store or automatically signing in again.
+
+Focused fixture suites pass 415 tests, zero failures/skips and no reported
+warnings, including 39 new completion/selection/privacy/wire-guard checks. Native
+module/SDK substitutes are fixtures in these tests; the host command supplies
+actual protected native-component/model evidence. No Workspace cloud call,
+installed model completion, context qualification or full release claim is made.

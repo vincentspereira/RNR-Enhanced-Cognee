@@ -858,3 +858,30 @@ including 33 new auth/output/preservation cases. This is not installed sign-in,
 model completion, capture, profile recovery/renewal, fleet or release evidence.
 The owner must complete browser sign-in before the one-off gpt-6.1-sol test.
 No runtime install, service restart, main merge or bot activation was performed.
+
+## Fresh restricted OpenAI login received; completion check prepared
+
+Owner receipt at 42f61235b1ef2228fad08484be94e14b3592b69a confirms complete,
+hermes-runtime, enhanced-cognee-pilot, fresh_pilot_oauth_saved and
+pilot_settings_unchanged true. human_credentials_copied, model_defaults_changed,
+model_called, memory_records_written and runtime_qualified remained false.
+The terminal's one-time device code is intentionally omitted. No further login
+is needed merely to perform the next test; model access is not yet established.
+
+check_pilot_codex.py prepares one synthetic subscription Responses request using
+only that pilot OAuth entry and the protected native Hermes converter, headers,
+stream assembler and normalizer. It fixes gpt-6.1-sol/low reasoning/store=false,
+prohibits retries/fallback/other hosts/elevated tiers/tools and preserves pilot
+settings/auth bytes. It requires a terminal event, server model metadata and
+validated final acknowledgement, not the native assembler's requested-model
+echo. No human store, memory-token .env, auth refresh/import or file write is
+used. The native endpoint has no supported output-token cap in this path;
+transport/stream/outer time limits and a fixed short prompt bound the test.
+Only sanitized flags/usage or fixed failure diagnostics are reported.
+
+Focused fixtures pass 415 tests, zero failures/skips and no reported warnings,
+including 39 new completion/privacy/request-guard cases. See the pilot runbook
+for pinned sources, exact scope and limitations. Actual restricted completion,
+full Hermes turn/capture/fresh-session recall, profile recovery/renewal, fleet
+and release qualification remain separate gates. Existing main/default models,
+bots, service keys/stores, backups and the fleet review bundle are preserved.
