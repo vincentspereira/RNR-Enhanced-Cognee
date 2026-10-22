@@ -53,7 +53,7 @@ def read_private(name, uid):
         return raw
 
 
-def preflight(approved_test):
+def preflight(approved_test, *, include_auth=True):
     account = pwd.getpwuid(os.geteuid())
     if (approved_test is not True or account.pw_name != "hermes-runtime" or account.pw_uid == 0
             or Path(account.pw_dir) != HOME or os.environ.get("HOME") != str(HOME)
@@ -72,8 +72,8 @@ def preflight(approved_test):
     info = PROFILE.stat()
     if info.st_uid != account.pw_uid or stat.S_IMODE(info.st_mode) != 0o700:
         raise CheckError("unsafe_profile_directory")
-    snapshots = {name: read_private(name, account.pw_uid)
-                 for name in ("config.yaml", "enhanced_cognee.json", "auth.json")}
+    names = ("config.yaml", "enhanced_cognee.json") + (("auth.json",) if include_auth else ())
+    snapshots = {name: read_private(name, account.pw_uid) for name in names}
     return account.pw_uid, snapshots
 
 
@@ -381,6 +381,8 @@ def native_memory_turn(stage, token, provider, session, prompt):
 
 
 def main_memory(*, stage, approved_test=False):
+    if stage == "inspect":
+        return main_inspect(approved_test=approved_test)
     snapshots = {}
     provider = None
     binding = None
@@ -465,6 +467,100 @@ def main_memory(*, stage, approved_test=False):
             "test_evidence_present_preserve_for_review": os.path.lexists(STATE),
             "memory_writes_may_have_occurred": phase in {"native_agent_turn", "saved_memory_verification"},
             "runtime_qualified": False}, indent=2))
+        raise SystemExit(1) from None
+    finally:
+        if provider is not None:
+            with contextlib.suppress(Exception), contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                provider.shutdown()
+        if binding is not None:
+            secrets.reset_secret_scope(binding)
+
+
+def inspect_fixture(provider, state):
+    fixture = state["fixture"]
+    result = provider._client.request("POST", "/v1/memories/recall", {
+        "query": "Larch qualification " + fixture, "limit": 20, "include_shared": False})
+    rows = result.get("results")
+    if not isinstance(rows, list) or len(rows) > 20 or any(not isinstance(row, dict) for row in rows):
+        raise CheckError("inspection_recall_shape")
+    matching = [row for row in rows if fixture in str(row.get("content", ""))]
+    report = {"matching_fixture_records": len(matching), "current_version": None,
+              "fixture_content_validated": False, "capture_session_provenance_matches": False,
+              "selected_tool_origin_matches": False}
+    if len(matching) == 1:
+        ident = matching[0].get("id")
+        if not isinstance(ident, str) or len(ident) > 64 or not re.fullmatch(r"[A-Za-z0-9_-]+", ident):
+            raise CheckError("inspection_record_id_shape")
+        row = provider._client.request("GET", "/v1/memories/" + ident)
+        version = row.get("version")
+        content = row.get("content")
+        if not isinstance(content, str) or len(content) > 262144:
+            raise CheckError("inspection_record_shape")
+        report["current_version"] = version if type(version) is int and 0 < version < 1000000 else None
+        report["fixture_content_validated"] = fixture in content and bool(
+            re.search(r"\b(?:thirteen|13)[ -]+day", content.casefold()))
+        metadata, provenance = row.get("metadata", {}), row.get("provenance", {})
+        report["capture_session_provenance_matches"] = (
+            isinstance(provenance, dict) and provenance.get("session_id") == state["capture_session"])
+        report["selected_tool_origin_matches"] = (
+            isinstance(metadata, dict) and metadata.get("write_origin") == "hermes_selected_tool")
+    # Receipt/provenance and canonical data do not prove a completed agent turn.
+    report["capture_agent_turn_qualified"] = False
+    return report
+
+
+def state_stamp():
+    info = STATE.lstat()
+    return info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
+
+
+def main_inspect(*, approved_test=False):
+    phase = "restricted_preflight"
+    provider = None
+    secrets = None
+    binding = None
+    try:
+        uid, snapshots = preflight(approved_test, include_auth=False)
+        snapshots[".env"] = read_private(".env", uid)
+        settings = json.loads(snapshots["enhanced_cognee.json"])
+        if settings != {"base_url": "http://127.0.0.1:28080", "timeout": 10,
+                        "include_shared": True, "capture_policy": "selected"}:
+            raise CheckError("pilot_memory_settings_changed_preserve_and_review")
+        os.chdir(HOME)
+        logging.disable(logging.CRITICAL)
+        verify_provider()
+        phase = "receipt_inspection"
+        receipt_stamp = state_stamp()
+        state = read_state(uid)
+        sys.path.insert(0, str(RELEASE / "repo"))
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            import agent.secret_scope as secrets
+            from plugins import memory as loader
+            if any(not Path(module.__file__).resolve(strict=True).is_relative_to(RELEASE / "repo")
+                   for module in (secrets, loader)):
+                raise CheckError("native_memory_source")
+            memory_token = secrets.load_env_file(PROFILE / ".env").get("ENHANCED_COGNEE_ACCESS_TOKEN")
+            if not isinstance(memory_token, str) or not memory_token:
+                raise CheckError("missing_pilot_memory_token")
+            binding = secrets.set_secret_scope({"ENHANCED_COGNEE_ACCESS_TOKEN": memory_token}, profile_home=str(PROFILE))
+            if loader.find_provider_dir("enhanced_cognee").resolve() != ARTIFACT:
+                raise CheckError("native_memory_discovery")
+            provider = loader.load_memory_provider("enhanced_cognee")
+            provider.initialize("pilot_receipt_inspection", hermes_home=str(PROFILE), agent_context="primary")
+            phase = "authenticated_memory_inspection"
+            status = memory_status(provider)
+            result = inspect_fixture(provider, state)
+            if (any(read_private(name, uid) != raw for name, raw in snapshots.items())
+                    or read_state(uid) != state or state_stamp() != receipt_stamp):
+                raise CheckError("profile_or_receipt_changed_preserve_and_review")
+        print(json.dumps({"complete": True, "stage": "inspect", "effective_user": "hermes-runtime",
+            "profile": "enhanced-cognee-pilot", "scope_active_records": status["active_records"],
+            **result, "checked_profile_files_and_receipt_unchanged": True, "oauth_store_read": False,
+            "model_called": False, "memory_records_written": False, "runtime_qualified": False}, indent=2))
+    except Exception as error:
+        print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
+            "test_evidence_preserved": True, "model_called": False,
+            "memory_records_written": False, "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None
     finally:
         if provider is not None:

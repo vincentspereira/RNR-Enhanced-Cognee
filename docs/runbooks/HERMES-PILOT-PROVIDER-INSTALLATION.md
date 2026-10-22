@@ -600,3 +600,45 @@ The focused fixtures pass 437 tests, zero failures/skips and no reported
 warnings, including 22 new fixture/agent/wire/preservation cases. Native agent,
 model, memory and filesystem calls use fixtures in those tests. Installed-host
 capture and fresh-session recall remain pending the two owner commands.
+
+## Capture refused existing receipt: inspect before retrying
+
+The owner returned a fixture_preparation failure from the prepared capture
+command: existing_test_evidence_preserved_review_before_retry and receipt
+presence true. The current attempt stopped before native agent construction
+or a new chat-model request. Its memory_writes_may_have_occurred=false field
+describes this attempt, not every earlier attempt. The receipt is published
+before native_memory_turn, so its existence alone proves neither a saved record
+nor a completed capture turn. Its creation time/origin was not established by
+the relayed output; do not invent an explanation or delete/reset it.
+
+The new main_memory(stage="inspect", approved_test=True) delegates to a
+read-only native-provider inspection. It uses the same restricted preflight
+without reading auth.json, selecting OAuth, importing AIAgent or calling a chat
+model. The existing private receipt is read/validated, never rewritten. Only
+the pilot settings, ordinary memory-token .env and authenticated qualification
+scope are used. Existing provider hashes and directory/credential protections
+still apply; no root/human store or operator key is read.
+
+Only GET status/current-record and own-scope POST recall are used; recall may
+use the service's existing local embedding/index machinery. No canonical memory
+write, model turn, cloud request, receipt mutation or cleanup belongs to this
+step. It reports scope_active_records, matching_fixture_records, bounded current
+version and booleans for the fixture's invented decision, capture-session
+provenance and selected-tool metadata. No fixture/session/record IDs, content,
+sources, raw exceptions or secrets are printed. Metadata is actor-submitted
+evidence, not proof of completed model-selected capture; the report explicitly
+keeps capture_agent_turn_qualified=false and runtime_qualified=false.
+
+The checked profile files' bytes and receipt's parsed state/inode/size/change
+timestamps are compared after inspection. Auth.json is not opened or claimed
+freshly verified. Empty/duplicate/nonmatching/corrected evidence is reported
+without repairing it. Malformed or unsafe evidence is refused and retained.
+Use the next pinned/hash-verified inspect command once and return its summary;
+choose recall/resume only after reconciling it. No login/key replacement,
+record deletion or repeated capture is needed just to perform this inspection.
+
+Focused fixture suites pass 450 tests, zero failures/skips and no reported
+warnings, including 13 new read-only inspection and output/privacy cases.
+Native receipt/record reconciliation remains pending; test fixtures do not
+establish whether an earlier native capture succeeded or wrote a record.

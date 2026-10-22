@@ -389,3 +389,89 @@ def test_invalid_memory_stage_cannot_read_credentials(check, monkeypatch, capsys
     with pytest.raises(SystemExit): check.main_memory(stage="delete", approved_test=True)
     report = json.loads(capsys.readouterr().out)
     assert not report["complete"] and report["category"] == "unapproved_stage"
+
+
+@pytest.mark.parametrize("mode", ["empty", "one", "duplicates", "wrong-content", "wrong-session", "wrong-origin", "corrected"])
+def test_read_only_fixture_inspection_reports_evidence_without_qualifying_capture(check, mode):
+    fixture = "a" * 32
+    state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
+    row = {"id": "synthetic-record-id", "version": 1,
+        "content": fixture + " thirteen-day review PRIVATE_CONTENT_SENTINEL",
+        "provenance": {"session_id": state["capture_session"], "private": "PRIVATE_PROVENANCE_SENTINEL"},
+        "metadata": {"write_origin": "hermes_selected_tool", "private": "PRIVATE_METADATA_SENTINEL"}}
+    rows = [dict(row)]
+    if mode == "empty": rows = []
+    elif mode == "duplicates": rows.append(dict(row))
+    elif mode == "wrong-content": row["content"] = fixture + " different decision PRIVATE_CONTENT_SENTINEL"
+    elif mode == "wrong-session": row["provenance"]["session_id"] = "PRIVATE_OTHER_SESSION_SENTINEL"
+    elif mode == "wrong-origin": row["metadata"]["write_origin"] = "other"
+    elif mode == "corrected": row["version"] = 2
+    calls = []
+    def request(method, path, body=None):
+        calls.append((method, path, body))
+        assert method == "GET" or (method == "POST" and path == "/v1/memories/recall")
+        if method == "POST":
+            assert body["include_shared"] is False and body["limit"] == 20
+            return {"results": rows}
+        return row
+    result = check.inspect_fixture(NS(_client=NS(request=request)), state)
+    assert result["matching_fixture_records"] == len(rows)
+    assert not result["capture_agent_turn_qualified"]
+    if len(rows) == 1:
+        assert result["fixture_content_validated"] == (mode != "wrong-content")
+        assert result["capture_session_provenance_matches"] == (mode != "wrong-session")
+        assert result["selected_tool_origin_matches"] == (mode != "wrong-origin")
+    else:
+        assert len(calls) == 1 and result["current_version"] is None
+    assert "PRIVATE_" not in json.dumps(result) and fixture not in json.dumps(result)
+
+
+@pytest.mark.parametrize("rows", [None, {}, ["PRIVATE_SENTINEL"], [{}] * 21,
+    [{"content": "a" * 32, "id": "../PRIVATE_SENTINEL"}]])
+def test_malformed_inspection_results_do_not_expand_reads_or_echo_content(check, rows):
+    provider = NS(_client=NS(request=lambda *a, **kw: {"results": rows}))
+    with pytest.raises(check.CheckError) as error:
+        check.inspect_fixture(provider, {"fixture": "a" * 32, "capture_session": "capture"})
+    assert "PRIVATE_SENTINEL" not in str(error.value)
+
+
+def test_inspect_stage_never_reads_oauth_or_constructs_a_model_agent(check, monkeypatch, tmp_path, capsys):
+    import sys
+    snapshots = {"config.yaml": b"memory-only", "enhanced_cognee.json": json.dumps({
+        "base_url": "http://127.0.0.1:28080", "timeout": 10, "include_shared": True, "capture_policy": "selected"}).encode()}
+    def preflight(approved, *, include_auth=True):
+        assert approved and include_auth is False
+        return 1000, snapshots
+    monkeypatch.setattr(check, "preflight", preflight)
+    monkeypatch.setattr(check, "read_private", lambda name, uid:
+        b"PRIVATE_MEMORY_TOKEN" if name == ".env" else snapshots[name])
+    monkeypatch.setattr(check.os, "chdir", lambda path: None)
+    monkeypatch.setattr(check.logging, "disable", lambda value: None)
+    monkeypatch.setattr(check, "verify_provider", lambda: None)
+    monkeypatch.setattr(check, "read_state", lambda uid: {"fixture": "a" * 32, "capture_session": "capture"})
+    monkeypatch.setattr(check, "state_stamp", lambda: (1, 10, 100, 100))
+    monkeypatch.setattr(check, "select_credential", lambda *a: pytest.fail("No OAuth selection during inspection"))
+    monkeypatch.setattr(check, "native_memory_turn", lambda *a: pytest.fail("No model call during inspection"))
+    monkeypatch.setattr(check, "save_state", lambda *a: pytest.fail("No receipt write during inspection"))
+    release = tmp_path / "release"
+    (release / "repo").mkdir(parents=True)
+    source = release / "repo/mock.py"
+    source.touch()
+    monkeypatch.setattr(check, "RELEASE", release)
+    provider = NS(initialize=lambda *a, **kw: None, shutdown=lambda: None)
+    resets = []
+    secrets = NS(__file__=str(source), load_env_file=lambda path: {"ENHANCED_COGNEE_ACCESS_TOKEN": "PRIVATE_MEMORY_TOKEN"},
+        set_secret_scope=lambda *a, **kw: "PRIVATE_BINDING", reset_secret_scope=resets.append)
+    loader = NS(__file__=str(source), find_provider_dir=lambda name: check.ARTIFACT, load_memory_provider=lambda name: provider)
+    monkeypatch.setitem(sys.modules, "agent", NS(secret_scope=secrets))
+    monkeypatch.setitem(sys.modules, "agent.secret_scope", secrets)
+    monkeypatch.setitem(sys.modules, "plugins", NS(memory=loader))
+    monkeypatch.setattr(check, "memory_status", lambda provider: {"active_records": 0})
+    monkeypatch.setattr(check, "inspect_fixture", lambda *a: {"matching_fixture_records": 0, "capture_agent_turn_qualified": False})
+    check.main_memory(stage="inspect", approved_test=True)
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert report["complete"] and report["stage"] == "inspect"
+    assert report["checked_profile_files_and_receipt_unchanged"] and not report["oauth_store_read"]
+    assert not report["model_called"] and not report["memory_records_written"]
+    assert "PRIVATE_" not in output and resets == ["PRIVATE_BINDING"]

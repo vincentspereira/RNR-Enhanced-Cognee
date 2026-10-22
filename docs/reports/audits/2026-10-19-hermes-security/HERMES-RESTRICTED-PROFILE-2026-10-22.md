@@ -917,3 +917,28 @@ limits. Focused fixtures pass 437 tests, zero failures/skips and no reported
 warnings, including 22 new native-agent orchestration/privacy/preservation cases.
 Installed capture/recall evidence, broader correction/conflict/isolation checks,
 profile recovery/renewal, fleet onboarding and release gates remain pending.
+
+## Capture command refused pre-existing test receipt; reconciliation pending
+
+Owner output from the capture operator step at ae96ef76d14d856e1f818a91de868421aef074e8
+stopped at fixture_preparation with existing_test_evidence_preserved_review_before_retry.
+Receipt presence was true. The attempt did not start a native agent/model turn;
+the false may-have-written field applies to this attempt, not historical runs.
+The helper publishes its receipt before calling native_memory_turn. That file
+alone is not evidence of saved content, model-selected capture or an earlier
+successful turn. No origin/history explanation is established by this output.
+
+The inspect stage now reads the existing protected receipt and authenticated
+own-scope memory status/recall/current record, without selecting OAuth, opening
+auth.json, constructing an agent, calling a cloud model or writing anything.
+It emits only counts/version and bounded matching/provenance booleans; raw
+content, identifiers, sources, credentials and exceptions are suppressed.
+Actor-submitted selected-tool/session metadata cannot establish a completed
+agent turn; capture_agent_turn_qualified remains false. Profile file bytes and
+receipt identity/change stamps are compared. No evidence is removed, rewritten
+or automatically retried. See the pilot runbook for source scope and limits.
+
+Focused fixtures pass 450 tests, zero failures/skips and no reported warnings,
+including 13 new read-only reconciliation/privacy cases. Native record/receipt
+inspection is pending. Do not mark capture/recall/fleet/release qualification
+passed or renew/revoke credentials based on receipt presence alone.
