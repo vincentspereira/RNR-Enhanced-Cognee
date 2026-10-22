@@ -554,3 +554,23 @@ Ubuntu-Hermes installation remain separate evidence. See the pilot installation
 runbook for scope, atomic installation, limitations and rollback. A protected
 artifact does not make the agent-owned profile/configuration immutable or prove
 isolation between all bots sharing an operating-system account.
+
+## Native pilot provider installation and registration passed
+
+The owner ran the pinned four-file archive at
+ab0626632a5f4c271ec6c9c3cac33f099a7d5dee and returned a complete native receipt.
+The protected artifact /opt/hermes-runtime/providers/
+enhanced-cognee-0.1.0-29cb9fa3400a was created, and the existing restricted pilot
+received its plugin link. Version 0.1.0 loaded through the actual Hermes loader
+as hermes-runtime; native_loader_passed=true and exactly the eight reviewed tools
+were registered. This is actual native registration evidence, superseding the
+installation-pending checkpoint above. The Workspace session did not directly
+access Ubuntu-Hermes or inspect private host logs.
+
+The receipt explicitly keeps provider_selected, credentials_provisioned,
+memory_connected, model_called and runtime_qualified false. Native registration
+does not prove authenticated recall, automatic selected capture, a model route,
+full process isolation or fleet readiness. The next guided check inventories
+only the pilot's credential/settings file presence and protected metadata, and
+checks unauthenticated local status denial before any credential is issued.
+No existing secret is printed, renewed or replaced by that read-only check.

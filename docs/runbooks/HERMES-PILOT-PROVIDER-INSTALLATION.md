@@ -1,8 +1,12 @@
 # Protected pilot provider installation
 
 Prepared 22 October 2026. Scope: Ubuntu-Hermes, existing hermes-runtime account,
-existing enhanced-cognee-pilot profile. Native installation/loading is pending
-until the owner returns the receipt. This is not private-data admission.
+existing enhanced-cognee-pilot profile. The owner subsequently returned a
+successful native installation/loader receipt at
+ab0626632a5f4c271ec6c9c3cac33f099a7d5dee: artifact/link created, version 0.1.0,
+eight tools registered as hermes-runtime. Credentials, active provider selection,
+memory/model connection and full runtime qualification remain false. This is
+not private-data admission. The sections below describe that staged procedure.
 
 ## Purpose and selected integration
 
@@ -80,8 +84,8 @@ credentials_provisioned, memory_connected, model_called, runtime_qualified.
 A failed child reports only an approved stage label; do not paste raw private
 configuration or credentials into chat to diagnose it.
 
-This proves installed native loading only after a successful host receipt.
-There is no token, model route, service request or saved memory yet. The human
+The received successful host receipt proves installed native loading. No token,
+model route, service request or saved memory was created by this step. The human
 Desktop/default profile, other profiles/bots, backend services, existing keys,
 backup generations and separate fleet review bundle are outside this change.
 The profile owner can change its own plugin link/configuration. Root-owned
