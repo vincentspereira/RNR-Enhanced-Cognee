@@ -642,3 +642,31 @@ Focused fixture suites pass 450 tests, zero failures/skips and no reported
 warnings, including 13 new read-only inspection and output/privacy cases.
 Native receipt/record reconciliation remains pending; test fixtures do not
 establish whether an earlier native capture succeeded or wrote a record.
+
+## Existing native record reconciled; proceed to fresh-session recall
+
+The owner's inspect result at 2585bf30847b17417c36dce80435637dfe3918e4
+passed as hermes-runtime for enhanced-cognee-pilot: scope_active_records=1,
+matching_fixture_records=1, current_version=1, fixture_content_validated=true,
+capture_session_provenance_matches=true and selected_tool_origin_matches=true.
+Checked profile files and the receipt were unchanged. OAuth was not read and
+neither a chat-model call nor a canonical memory write occurred in inspection.
+The matching record does not establish a completed original capture agent turn;
+capture_agent_turn_qualified and runtime_qualified remain false.
+
+Preserve both the existing record and receipt. Run main_memory(stage="recall",
+approved_test=True) in a new process using the same pinned helper blob at
+2585bf30847b17417c36dce80435637dfe3918e4, SHA256
+5d5dc28a38f80d520519444dfaa6ac0110c15d071822a2a4c754f743b1e3c66f.
+Use the existing protected tools1 Python, hermes-runtime identity, pilot HOME,
+clean environment, no-new-privileges and 180-second outer timeout. Do not rerun
+capture, sign in again or change model defaults for this step.
+
+The recall stage supplies only the fictional project identifier and a question
+in a fresh session with empty history. Native Hermes must select recall/get
+tools, answer with the saved interval and cite the record. Canonical content,
+record count/version and profile settings/credentials must remain unchanged.
+The authorized GPT-6.1-Sol subscription route is temporary for this check;
+bounded requests can consume existing-plan usage. Return only the helper's
+sanitized summary, including failures. Successful recall is a separate result
+from original capture-turn completion or full runtime/fleet qualification.

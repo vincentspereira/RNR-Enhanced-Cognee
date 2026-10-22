@@ -942,3 +942,24 @@ Focused fixtures pass 450 tests, zero failures/skips and no reported warnings,
 including 13 new read-only reconciliation/privacy cases. Native record/receipt
 inspection is pending. Do not mark capture/recall/fleet/release qualification
 passed or renew/revoke credentials based on receipt presence alone.
+
+## Native existing-record inspection passed; fresh-session recall next
+
+Vincent returned complete=true/stage=inspect from delivery revision
+2585bf30847b17417c36dce80435637dfe3918e4. The effective account was
+hermes-runtime and the profile was enhanced-cognee-pilot. Authenticated
+own-scope inspection found one active record, exactly one matching fixture and
+current_version=1. Invented fixture content, capture-session provenance and
+selected-tool origin checks all passed. Checked profile files and the receipt
+were unchanged; OAuth was not read, no chat model was called and no canonical
+memory was written by this inspection.
+
+This is owner-relayed installed-host evidence of a matching saved test record,
+not evidence that its original native capture agent turn completed. Both
+capture_agent_turn_qualified and runtime_qualified remain false. Preserve the
+record and receipt; do not repeat capture. Next run the existing helper's recall
+stage in a separate restricted process, using a fresh session and empty history,
+to test model-driven retrieval and citation without revealing the saved interval
+in the prompt. Capture-turn completion and the broader qualification, recovery,
+fleet and release gates remain outstanding. The helper is unchanged; the prior
+450-test fixture result is not a new installed recall result.
