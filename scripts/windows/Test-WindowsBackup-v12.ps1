@@ -10,7 +10,10 @@ $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.Window
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {throw 'Use elevated Windows PowerShell under the backup owner account.'}
 $support=Join-Path $PSScriptRoot backup-v12
 foreach ($file in @('engine.ps1','policy.ps1','sync.ps1')) {. (Join-Path $support $file)}
-$run=Join-Path $ArtifactsRoot ('native-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')+'-'+[guid]::NewGuid().ToString('N'))
+# Restic restores absolute source paths below the target. Keep fixture paths
+# short enough for Windows PowerShell 5.1's own file verification, too.
+$run=Join-Path $ArtifactsRoot ('native-'+[guid]::NewGuid().ToString('N'))
+if (Test-Path -LiteralPath $run) {throw 'Qualification destination already exists; preserved.'}
 Protect-V12Directory $run
 $checks=[Collections.Generic.List[object]]::new()
 function Check([string]$Name,[bool]$Pass) {
@@ -66,13 +69,16 @@ try {
  $summary=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
  $latest=$summary.snapshot_id
  $out=Join-Path $run recovered
- $null=Engine @('restore',$latest,'--target',$out)
- $change=@(Get-ChildItem -LiteralPath $out -Recurse -File -Filter change.txt)
+ $restoredRelative=$src.Substring(0,1)+'\'+$src.Substring(3)
+ $longestFixture=Join-Path $out (Join-Path $restoredRelative unchanged.bin)
+ Check native_fixture_paths_fit_legacy_verifier ($longestFixture.Length -lt 240)
+ $null=Engine @('restore',$latest,'--target',$out,'--verify')
+ $change=@(Get-ChildItem -LiteralPath $out -Recurse -File -Force -Filter change.txt)
  Check corrected_recovery ($change.Count -eq 1 -and (Get-Content -LiteralPath $change[0].FullName -Raw) -eq 'after-correction')
- Check deletion_does_not_reappear (@(Get-ChildItem -LiteralPath $out -Recurse -File -Filter delete.txt).Count -eq 0)
+ Check deletion_does_not_reappear (@(Get-ChildItem -LiteralPath $out -Recurse -File -Force -Filter delete.txt).Count -eq 0)
  $older=Join-Path $run older
- $null=Engine @('restore',$first,'--target',$older)
- Check older_version_preserved (@(Get-ChildItem -LiteralPath $older -Recurse -File -Filter delete.txt).Count -eq 1)
+ $null=Engine @('restore',$first,'--target',$older,'--verify')
+ Check older_version_preserved (@(Get-ChildItem -LiteralPath $older -Recurse -File -Force -Filter delete.txt).Count -eq 1)
  $before=@(ConvertFrom-V12JsonArray (Engine @('snapshots','--json')).stdout)
  $producer=Join-Path $run failing-producer.ps1
  [IO.File]::WriteAllText($producer,"[Console]::Out.Write('partial synthetic output');exit 7")

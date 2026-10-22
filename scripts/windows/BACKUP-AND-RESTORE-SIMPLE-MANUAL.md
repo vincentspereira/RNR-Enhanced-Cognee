@@ -159,7 +159,30 @@ this recovery copy, including all 744,108 archived files. You do not need to
 repeat this large check immediately. A changed/re-downloaded archive or a new
 recovery point needs its own verification.
 
-## 6. Extract the tested base into a NEW private recovery folder
+## 6. First check a few recovered files
+
+For the specific recovery copy above, use **normal PowerShell**:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\Test-V11RecoveredFiles.ps1" -OpenFiles
+```
+
+This installed helper extracts only three named files into a NEW private
+`D:\Recovery-Test\Checked-v11-...` folder. It uses the maintained
+`C:\Scripts\backup-v12\engine.ps1` for private-folder protection and reporting.
+Enter the **archive password** at 7-Zip's hidden prompt. The files are the distro
+inventory, the saved backup command text and the Enhanced Cognee README. Their
+checksums are compared with the retained v11 staging copies; no recovered
+commands are executed. On success, two text files open in Notepad. Confirm that
+they are readable and send the small result, never the password.
+
+Only about 155 KB of selected file contents is written, although 7-Zip may need
+to read/decompress large solid blocks. The helper does not repeat the entire
+archive SHA256 pass. Its report records that application recovery and independent
+remote provenance are separate checks. Keep the test copies until the result and
+readability confirmation have been reviewed.
+
+## 7. Extract the tested base into a NEW private recovery folder
 
 This is the **full file-extraction command for the specific base above**, for
 reference. It can write about 89.3 GB of files and take considerable time. A
@@ -201,7 +224,7 @@ same isolated folder. That overlay can replace files and apply deletions inside
 the recovery folder. Obtain a path-specific command/review before doing this;
 do not adapt the base-only command to overwrite your working data.
 
-## 7. Restoring working systems is a separate step
+## 8. Restoring working systems is a separate step
 
 - Windows documents/source files: compare the recovered copies, then copy back
   only what is needed. Preserve the current versions before replacement.
@@ -219,7 +242,7 @@ do not adapt the base-only command to overwrite your working data.
 - A whole Windows/WSL operating-system recovery needs its own image/export and
   recovery procedure. These selected-data backups do not prove that coverage.
 
-## 8. Schedule, interruptions and what remains
+## 9. Schedule, interruptions and what remains
 
 The existing **WSL Master Incremental Backup** task is configured for v11 with
 required Cognee coverage, under your account, on its preserved weekly Friday

@@ -75,6 +75,15 @@ Check retry_reuses_completed_scope ($script:run.completed.fixture.snapshot -eq $
 $script:run=@{id='later';completed=@{}}
 Save-BackupScope fixture @($src)
 Check following_run_captures_later_correction ($script:run.completed.fixture.snapshot -ne $beforeId -and @(Get-ScopeSnapshots fixture later).Count -eq 1)
+$recovered=Join-Path $root corrected-recovered
+$null=Engine @('restore',$script:run.completed.fixture.snapshot,'--target',$recovered,'--verify')
+$files=@(Get-ChildItem -LiteralPath $recovered -Recurse -Force -File -Filter original.txt)
+Check corrected_snapshot_extracts_expected_contents ($files.Count -eq 1 -and (Get-Content -LiteralPath $files[0].FullName -Raw) -ceq 'later correction after completed scope')
+$older=Join-Path $root older-recovered
+$oldSnapshot=@(Get-ScopeSnapshots fixture old)[0].id
+$null=Engine @('restore',$oldSnapshot,'--target',$older,'--verify')
+$files=@(Get-ChildItem -LiteralPath $older -Recurse -Force -File -Filter original.txt)
+Check older_snapshot_extracts_original_contents ($files.Count -eq 1 -and (Get-Content -LiteralPath $files[0].FullName -Raw) -ceq 'synthetic valuable data')
 $target=Join-Path $root sync-folder;$receipts=Join-Path $root receipts
 $first=Sync-V12Repository $repo $target $receipts
 Check first_copy ($first.copied -gt 0 -and $first.reused -eq 0)

@@ -67,6 +67,51 @@ is unavailable; no isolation/interop change was made to bypass that boundary.
 Review the native result before the first real v12 backup. Required real-scope
 backup, cloud/recovery checks and task-switch prerequisites remain separate.
 
+### Second native attempt: recovered-file verifier
+
+The subsequent owner-run test exited 1 at `corrected_recovery`, after 21 passed
+checks. The two run/scope selection checks now passed. Inspection of the retained
+synthetic recovered file established that `change.txt` actually contains
+`after-correction` and has the exact same 16-byte length and SHA256 as the source:
+`c6da33132deeddc5fd76d700005759c7045724a4eec26dfb1e384e3a9b7f8948`.
+The recovered unchanged binary also matches its source hash.
+
+The Windows restored `change.txt` path is 270 characters long. This exceeds the
+legacy 260-character API boundary and is a likely reason the PowerShell 5.1
+enumeration missed it; the exact native enumeration result was not captured.
+Hidden ancestor traversal is also made explicit by the correction. See
+[Microsoft's path-length documentation](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation).
+Do not call this evidence of failed ciphertext restoration: the actual restored
+contents were independently inspected successfully.
+
+The native fixture now uses a shorter GUID-only leaf while retaining uniqueness,
+checks that derived recovery paths fit the older verifier, traverses with
+`-Force` and requests restic's `--verify` on both recovery passes. No registry,
+global path policy, mount, live repository or scheduled task was changed. The
+previous installed native test was preserved under
+`C:\Scripts\archive\2026-10-22-native-recovery-verifier` before replacement.
+Native Windows rerun remains required; shorter paths do not qualify every
+possible long filename or application recovery.
+
+Following this correction, portable qualification passed **40 checks, zero
+failures and zero skips**, including two added real restic restore/verify tests
+for corrected and older file contents. The selective v11 helper passed
+PowerShell parsing and read-only preview; its real Windows extraction remains
+an owner-run check because it needs the privately retained archive password.
+
+### Selected-file v11 drill prepared
+
+`C:\Scripts\Test-V11RecoveredFiles.ps1 -OpenFiles` is prepared for normal Windows
+PowerShell. It targets only the previously checked base and three explicit small
+members: distro inventory, backup command text and the Cognee README. Expected
+hashes were read from the retained local v11 staging copies. It creates a new
+owner/SYSTEM-protected destination, performs selective extraction, checks all
+three hashes, writes a private report and opens only two text files in Notepad.
+It never runs recovered code or restores into live projects. Existing recovery
+copies remain untouched. Owner-run extraction and readability evidence are
+pending; script parsing/preview is not that evidence. No real password is read
+or stored by the helper; 7-Zip obtains it through its own hidden prompt.
+
 ## C:\Scripts cleanup
 
 Fourteen superseded rollback copies were moved, preserving their bytes, into:
