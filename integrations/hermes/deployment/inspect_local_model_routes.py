@@ -129,7 +129,7 @@ def summarize_zai(config):
     provider = selected.get("provider")
     builtin = isinstance(provider, str) and provider.lower() in {"zai", "glm", "z-ai", "z.ai", "zhipu"}
     return {"source": "main", "current_default_model": current,
-            "current_default_matches_requested_test_model": current == "glm-5.3-flash",
+            "current_default_matches_requested_test_model": isinstance(current, str) and current.casefold() == "glm-5.3-flash",
             "selected_provider_is_builtin_zai": builtin,
             "selected_explicit_zai_endpoint_kind": selected_route[1] if selected_route else None,
             "zai_routes": routes}

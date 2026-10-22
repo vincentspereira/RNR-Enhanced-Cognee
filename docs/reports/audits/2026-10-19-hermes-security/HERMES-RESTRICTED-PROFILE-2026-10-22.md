@@ -734,3 +734,34 @@ Focused Workspace suites pass 282 tests, zero failures/skips and no reported
 warnings, including 20 new main-only Z.ai privacy/endpoint regressions. Native
 Z.ai inventory and GLM test/capture evidence remain pending. Current defaults,
 live Desktop work, bots, service keys/stores and backup generations are preserved.
+
+## Received Z.ai inspection; bounded SDK test prepared
+
+Native receipt at 681247e71554e80c91df5de1de7c168ceff69908 reports the current
+main default GLM-5.3-Flash, builtin Z.ai selected, no explicit endpoint and no
+additional Z.ai routes. No network/model request, secret-store read or file
+change occurred. The false model-match flag was a case-sensitive comparison
+bug; it is corrected without editing any model defaults. An implicit builtin
+route is still not proof of Coding Plan routing, account entitlement or quota.
+
+check_zai_pilot_connectivity.py prepares one authorized invented-data request
+using the existing ordinary Z.ai client key, selected by the human owner from
+fixed protected-permission main files. Only that selected key crosses stdin to
+hermes-runtime. The SDK request runs under that restricted identity, existing
+protected tools1 Python, no-new-privileges and zero capabilities. No application
+code runs as root. Main/profile model settings and secret files are not written.
+The helper bypasses native auto-detection/auth migration and fixes the exact
+Coding Plan Chat Completions URL, glm-5.3-flash, low reasoning effort, enabled
+thinking and 512 maximum completion tokens. TLS stays verified; proxy discovery,
+redirects, automatic retries and general/local fallbacks are disabled. See the
+pilot runbook for source scope, official references and output limits.
+
+No reply text, reasoning or credentials are printed. A successful receipt proves
+only the bounded restricted SDK request and acknowledgement; it does not start
+Hermes chat, qualify context, exercise automatic memory capture or admit private
+data. Runtime/capture qualification and memory_records_written remain false.
+Native SDK evidence is pending. The focused fixture suites pass 325 tests,
+zero failures/skips and no reported warnings (42 new connectivity checks and
+one model-name case regression); this is not a full release/coverage result.
+Existing Desktop/bot work, model defaults, service keys/stores, backups and the
+separate fleet review bundle remain untouched by this preparation.

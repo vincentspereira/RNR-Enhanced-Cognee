@@ -141,6 +141,12 @@ def test_builtin_zai_aliases_do_not_invent_endpoint_or_credential_access(invento
     assert result["selected_explicit_zai_endpoint_kind"] is None and result["zai_routes"] == []
 
 
+def test_display_case_does_not_falsely_report_a_different_model(inventory):
+    result = inventory.summarize_zai({"model": {"provider": "zai", "default": "GLM-5.3-Flash"}})
+    assert result["current_default_model"] == "GLM-5.3-Flash"
+    assert result["current_default_matches_requested_test_model"] is True
+
+
 def test_zai_provider_map_camel_fields_unknown_context_and_unsafe_origins(inventory):
     result = inventory.summarize_zai({"model": {"default": "glm-5.3-flash", "base_url": "https://api.z.ai/api/v1"},
         "providers": {"PRIVATE_PROVIDER_NAME": {"baseUrl": "https://api.z.ai/api/coding/paas/v4",

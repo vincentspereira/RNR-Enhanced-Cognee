@@ -321,3 +321,62 @@ GLM test overrides; do not request keys in chat or copy the whole owner .env.
 Native Z.ai inventory, authenticated account access and cloud model/memory
 capture remain pending. No additional cloud subscription or paid app is needed
 for this read-only configuration inspection.
+
+## Native Z.ai declarations received; one synthetic Coding Plan request next
+
+The owner returned the main-only receipt at
+681247e71554e80c91df5de1de7c168ceff69908. The current default identifier was
+GLM-5.3-Flash and the selected provider was builtin Z.ai. No explicit endpoint
+or additional Z.ai route was declared. The false requested-model comparison was
+a case-sensitive diagnostic bug: the inspector now compares case-insensitively.
+No model configuration was changed. The implicit endpoint remains unresolved
+by that receipt; no credential, quota or model access was tested.
+
+Use deployment/check_zai_pilot_connectivity.py only through the pinned,
+hash-verified operator command supplied with its delivery. Run as the normal
+Ubuntu-Hermes owner with the existing protected tools1 Python. The parent must
+retain the ability to use sudo for the UID switch; do not apply no-new-privileges
+to the parent. An outer sudo -v authenticates the operator; application code is
+never executed as root. The child is hermes-runtime with no-new-privileges,
+zero effective/ambient capabilities and only its primary group.
+
+Unlike the previous metadata inspection, this explicitly authorized model test
+reads the owner's fixed main config.yaml and private .env; if no selected Z.ai
+key is found, it reads auth.json for one unambiguous Z.ai pool credential.
+Sources must satisfy the helper's ownership, permissions, no-link and size
+checks. It uses the pinned pure environment parser, not the native provider
+resolver, auth-store loader or endpoint detection. Those higher-level paths can
+probe endpoints or migrate/cache settings. Other provider credentials are never
+passed to the child. Only the selected ordinary model key crosses a private
+stdin pipe, not command arguments, environment variables, files or reports.
+No signing/recovery key or root service configuration is read. Source bytes
+are compared after the test; a concurrent change is reported, never restored.
+
+The child makes at most one SDK Chat Completions request to exactly
+https://api.z.ai/api/coding/paas/v4/chat/completions using glm-5.3-flash, a fixed
+invented acknowledgement prompt, max_tokens=512 and reasoning_effort=low.
+Thinking is enabled: the current official
+[GLM-5.3-Flash guide](https://docs.z.ai/guides/vlm/glm-5.3-flash) documents that
+it cannot be disabled. The
+[Chat Completions contract](https://docs.z.ai/api-reference/llm/chat-completion)
+documents the request fields. No automatic retries, endpoint/model fallback,
+proxy discovery or redirects are allowed. TLS verification remains enabled.
+The request uses the existing plan allowance; account availability is determined
+by the actual response, not inferred from documentation. No new subscription,
+general API route, local fallback or model-default edit is introduced.
+
+Only a validated acknowledgement/model-match flag and bounded token counts are
+reported; response content, reasoning, key and exception bodies are suppressed.
+This does not start Hermes chat, call memory tools, write a memory or qualify
+automatic capture/context limits. Expected success includes complete,
+model_reply_validated, model_called and owner_source_files_unchanged true;
+model_defaults_changed, credential_written_to_files, memory_records_written,
+hermes_capture_qualified and runtime_qualified remain false. On failure, retain
+the fixed public stage/status only and reconcile before another request.
+
+The focused Workspace suites pass 325 tests with zero failures/skips and no
+reported warnings. These add 42 connectivity/privacy/identity regressions and
+one case-comparison regression to the previous 282. SDK and subprocess calls
+in those tests are fixtures; no native cloud request was made from Workspace.
+Actual restricted SDK access is pending the owner command. Actual Hermes
+model-driven tool/capture and fresh-session recall tests follow separately.
