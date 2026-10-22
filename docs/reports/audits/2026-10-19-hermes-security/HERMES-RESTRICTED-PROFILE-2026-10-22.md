@@ -43,6 +43,19 @@ identities and reviewed sharing. See the live-profile account and fleet runbooks
 - The owner reports Hermes Desktop is running for current work. Continue these
   read-only checks without interrupting it; coordinate any later changes to a
   shared runtime, active launch path or model before applying them.
+- The next static inspection reported source revision
+  4d04303818b61bf3aa09278af48356315515965b and declared project version 0.0.0.
+  Treat this as source metadata, not an independently verified release version.
+  The published inner launcher references the private store interpreter
+  ~/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3, resolving to
+  python3.14. The discovered tools/facts.json is tool metadata, not by itself
+  the dependency generation selected for this source installation.
+- Source at this newly reported revision differs from the older d923a5eb487a
+  qualification. Read-only upstream review of pm/environments.py and
+  hermes_cli/_launchers.py confirms per-install selection metadata. Locate the
+  actual committed dependency environment before preparing a protected runtime;
+  do not silently substitute the older in-tree venv, copy all private .hermes
+  state or run a shared launcher under a new home merely to discover its runtime.
 
 ## Project folder recommendation
 
