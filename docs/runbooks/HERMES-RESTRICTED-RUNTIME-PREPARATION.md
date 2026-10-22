@@ -427,3 +427,10 @@ as root. The focused helper suites now pass 130 with zero failures/skips and no
 reported warnings; the new mode still awaits native results. No installation,
 credential generation, profile recreation, service restart or private-data
 activation belongs to this access-only operator step.
+
+The owner has subsequently reported that the tools1 selected-access check
+passed: all 14 secret read/write probes, 14 program write/metadata probes and
+all selected ancestors passed under the restricted identity. Full runtime and
+memory connection qualification remain incomplete. Continue with
+[pilot provider installation](HERMES-PILOT-PROVIDER-INSTALLATION.md), reusing
+tools1 and the existing pilot. Do not rebuild the runtime or recreate profiles.

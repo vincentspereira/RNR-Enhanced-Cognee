@@ -522,3 +522,35 @@ rejection. No full-suite/coverage or native access pass is claimed. Run the
 published helper under hermes-runtime/no-new-privileges with checksum verification
 before compilation; sudo only selects this non-admin identity. Keep the pilot,
 original/new program generations, protected service and owner keys unchanged.
+
+## Native tools1 selected access passed; pilot connector prepared
+
+The owner's next native result, fetched at ea783b618f530c6dce7ca1d2190c29f17d050ebf,
+reports complete=true and selected_access_checks_passed=true for tools1 under
+hermes-runtime uid 993. Only the primary group was present, with no-new-privileges,
+zero effective/ambient capabilities and a private home. All 14 selected secret
+paths denied both read and write; all 14 selected program paths denied write
+and passed protected regular-file metadata checks. Every selected ancestor
+passed. No secret/program contents were read or written. This receipt still
+explicitly reports runtime_qualified=false and memory_connection_tested=false;
+it does not establish broader live-tool, socket or peer-profile isolation.
+
+The next prepared step is install_pilot_provider.py. It stages only the three
+hash-pinned version 0.1.0 provider files under root-owned /opt/hermes-runtime/
+providers/enhanced-cognee-0.1.0-29cb9fa3400a. It drops all supplementary groups,
+uid/gid to hermes-runtime and enables no-new-privileges before touching the pilot
+or importing Hermes. The child links the existing pilot's plugin directory to
+that artifact and checks the actual pinned Hermes MemoryProvider loader and
+eight schemas. Application code never runs as root. No model/API request,
+token provisioning, active provider selection or existing profile/configuration
+rewrite belongs to this step. Native loader success has not yet been received.
+
+The focused helper suites now pass 156 tests, zero failures/skips and no reported
+warnings in the separate Workspace test runtime. The 26 new cases cover payload
+drift, preserved conflicting artifacts, symlinks/hardlinks/permissions, atomic
+non-overwrite publication, process privilege selection and bounded sanitized
+receipts. Child execution is mocked in these tests; native Hermes loading and
+Ubuntu-Hermes installation remain separate evidence. See the pilot installation
+runbook for scope, atomic installation, limitations and rollback. A protected
+artifact does not make the agent-owned profile/configuration immutable or prove
+isolation between all bots sharing an operating-system account.
