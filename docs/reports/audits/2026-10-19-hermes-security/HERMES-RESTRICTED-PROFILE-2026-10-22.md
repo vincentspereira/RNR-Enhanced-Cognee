@@ -885,3 +885,35 @@ for pinned sources, exact scope and limitations. Actual restricted completion,
 full Hermes turn/capture/fresh-session recall, profile recovery/renewal, fleet
 and release qualification remain separate gates. Existing main/default models,
 bots, service keys/stores, backups and the fleet review bundle are preserved.
+
+## Restricted native completion passed; model-selected capture prepared
+
+The owner returned complete=true at
+6546a972a4a47d0d249c2d3b34e0b33a0056ffbc: effective hermes-runtime, pilot
+enhanced-cognee-pilot, gpt-6.1-sol and exact subscription endpoint. Native
+Responses contract, acknowledgement and server-model validation passed, with
+38 prompt/12 completion/50 total tokens and one request. Settings/auth stayed
+unchanged; no human credential copy, default edit or memory write occurred.
+Full Hermes-turn, capture and runtime flags remained false. No further sign-in
+is required merely because that earlier checkpoint was pending in the document.
+
+The extended check_pilot_codex.py now prepares two separate-process native
+AIAgent/MemoryManager/provider tests. Capture uses a fixed invented decision
+without an explicit save request; model-selected enhanced_recall then
+enhanced_remember plus authoritative version-1 content/count checks are required.
+Fresh recall uses another session/empty history and only the fixture identity
+in its prompt, then validates the answer/citation and unchanged record/version.
+Each stage narrows only the test instance's tool surface, uses temporary explicit
+model arguments and no fallback, and preserves config/settings/auth/.env bytes.
+It does not launch a persistent gateway or change everyday profiles/bots.
+
+The capture stage writes a private no-replace fixture receipt under the runtime
+home and can create one invented canonical memory; both are retained, never
+auto-deleted or overwritten after failure. Native startup can create ordinary
+local cache/config/session scaffolding. Wire calls are limited to six exact
+subscription requests and native turn/outer process bounds. Raw model/tool output
+and secrets do not enter reports. See the pilot runbook for exact source and
+limits. Focused fixtures pass 437 tests, zero failures/skips and no reported
+warnings, including 22 new native-agent orchestration/privacy/preservation cases.
+Installed capture/recall evidence, broader correction/conflict/isolation checks,
+profile recovery/renewal, fleet onboarding and release gates remain pending.

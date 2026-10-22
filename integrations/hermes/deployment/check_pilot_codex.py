@@ -7,17 +7,20 @@ No auth resolver, refresh/import, fallback, memory call or settings write.
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import io
 import json
 import logging
 import os
 from pathlib import Path
 import pwd
+import re
 import socket
 import ssl
 import stat
 import sys
 import time
+import uuid
 
 
 HOME = Path("/var/lib/hermes-runtime")
@@ -34,7 +37,7 @@ class CheckError(RuntimeError):
 
 
 def read_private(name, uid):
-    if name not in {"config.yaml", "enhanced_cognee.json", "auth.json"}:
+    if name not in {"config.yaml", "enhanced_cognee.json", "auth.json", ".env"}:
         raise CheckError("unapproved_file")
     fd = os.open(PROFILE / name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(fd, "rb") as handle:
@@ -232,6 +235,243 @@ def main(*, approved_test=False):
             "profile_settings_and_auth_unchanged": unchanged,
             "memory_records_written": False, "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None
+
+
+STATE = HOME / "cognee-pilot-model-test.json"
+ARTIFACT = Path("/opt/hermes-runtime/providers/enhanced-cognee-0.1.0-29cb9fa3400a")
+PROVIDER_HASHES = {
+    "__init__.py": "b221c38baab2c2915f42683e0b8e764be0a42bc3d160f9ab786fd8ea64da6a0a",
+    "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64",
+    "plugin.yaml": "c23230082be650ae142c4e3d8e30350ea5f3d18af5b879996328caf59d4dca48",
+}
+
+
+def verify_provider():
+    for path in (ARTIFACT, *ARTIFACT.parents):
+        info = path.lstat()
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+            raise CheckError("provider_directory_protection")
+    if set(os.listdir(ARTIFACT)) != set(PROVIDER_HASHES):
+        raise CheckError("provider_payload")
+    for name, expected in PROVIDER_HASHES.items():
+        fd = os.open(ARTIFACT / name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, "rb") as handle:
+            info = os.fstat(handle.fileno())
+            if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o6022
+                    or info.st_nlink != 1 or info.st_size > 65536
+                    or hashlib.sha256(handle.read(65537)).hexdigest() != expected):
+                raise CheckError("provider_payload")
+    link = PROFILE / "plugins/enhanced_cognee"
+    info = link.lstat()
+    if not stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or link.resolve(strict=True) != ARTIFACT:
+        raise CheckError("provider_link")
+
+
+def read_state(uid):
+    fd = os.open(STATE, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as handle:
+        info = os.fstat(handle.fileno())
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != uid or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_nlink != 1 or info.st_size > 4096):
+            raise CheckError("unsafe_test_receipt")
+        state = json.loads(handle.read(4097))
+    if (not isinstance(state, dict) or set(state) != {"fixture", "capture_session"}
+            or not isinstance(state["fixture"], str) or len(state["fixture"]) != 32
+            or any(c not in "0123456789abcdef" for c in state["fixture"])
+            or state["capture_session"] != "cognee_capture_" + state["fixture"]):
+        raise CheckError("test_receipt_shape")
+    return state
+
+
+def save_state(state):
+    fd = os.open(STATE, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "w") as handle:
+        json.dump(state, handle)
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+def memory_status(provider):
+    status = json.loads(provider.handle_tool_call("enhanced_status", {}))
+    if (status.get("ready") is not True or status.get("tenant_id") != "qualification"
+            or status.get("project_id") != "hermes_pilot" or status.get("subject") != "hermes_pilot_runtime"
+            or status.get("capture") != "selected" or status.get("schema_version") != 3
+            or status.get("encryption") != "AES-256-GCM" or type(status.get("active_records")) is not int):
+        raise CheckError("pilot_memory_scope_or_credential")
+    return status
+
+
+def verify_saved(provider, fixture):
+    result = provider._client.request("POST", "/v1/memories/recall", {
+        "query": "Larch qualification " + fixture, "limit": 10, "include_shared": False})
+    rows = [row for row in result.get("results", []) if fixture in str(row.get("content", ""))]
+    if len(rows) != 1 or rows[0].get("version") != 1:
+        raise CheckError("saved_fixture_not_unique_or_version_one")
+    row = provider._client.request("GET", "/v1/memories/" + rows[0]["id"])
+    content = row.get("content", "").casefold()
+    if fixture not in content or not re.search(r"\b(?:thirteen|13)[ -]+day", content):
+        raise CheckError("saved_fixture_content")
+    return row
+
+
+def restrict_agent(agent, allowed):
+    names = {tool.get("function", {}).get("name") for tool in agent.tools}
+    if not allowed.issubset(names) or agent._memory_manager is None:
+        raise CheckError("native_memory_tools_missing")
+    # Narrow only this qualification instance; native handlers remain untouched.
+    agent.tools = [tool for tool in agent.tools if tool.get("function", {}).get("name") in allowed]
+    agent.valid_tool_names = set(allowed)
+    if agent._fallback_chain or agent._fallback_activated:
+        raise CheckError("unexpected_model_fallback")
+    client = agent.client
+    client.max_retries = 0
+    transport = client._client
+    transport.follow_redirects = False
+    requests = {"count": 0}
+    def guard(request):
+        if request.method != "POST" or str(request.url) != BASE_URL + "/responses" or requests["count"] >= 6:
+            raise CheckError("unexpected_memory_test_request")
+        raw = request.content
+        if request.headers.get("content-encoding") == "zstd":
+            from compression import zstd
+            raw = zstd.decompress(raw)
+        body = json.loads(raw)
+        if (body.get("model") != MODEL or body.get("store") is not False
+                or body.get("service_tier") or not isinstance(body.get("tools"), list)
+                or any(tool.get("name") not in allowed for tool in body["tools"])):
+            raise CheckError("unexpected_memory_test_wire_contract")
+        requests["count"] += 1
+    transport.event_hooks["request"].append(guard)
+    return requests
+
+
+def native_memory_turn(stage, token, provider, session, prompt):
+    import run_agent
+    from agent.memory_manager import MemoryManager
+    if not Path(run_agent.__file__).resolve(strict=True).is_relative_to(RELEASE / "repo"):
+        raise CheckError("native_agent_source")
+    manager = MemoryManager()
+    manager.add_provider(provider)
+    manager.initialize_all(session, hermes_home=str(PROFILE), agent_context="primary", platform="cli")
+    calls = []
+    def progress(event_type, tool_name=None, **kwargs):
+        if event_type == "tool.started" and tool_name in {
+                "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status"}:
+            calls.append(tool_name)
+    agent = run_agent.AIAgent(model=MODEL, provider="openai-codex", api_mode="codex_responses",
+        api_key=token, base_url=BASE_URL, enabled_toolsets=["memory"], max_iterations=5,
+        run_budget_seconds=100, fallback_model={}, credential_pool=None,
+        reasoning_config={"enabled": True, "effort": "low"}, save_trajectories=False,
+        quiet_mode=True, skip_background_review=True, session_id=session,
+        memory_manager=manager, tool_progress_callback=progress, cwd=str(HOME))
+    try:
+        allowed = {"enhanced_recall", "enhanced_get", "enhanced_status"}
+        if stage == "capture": allowed.add("enhanced_remember")
+        requests = restrict_agent(agent, allowed)
+        result = agent.run_conversation(prompt, conversation_history=[])
+        if (not isinstance(result, dict) or result.get("completed") is not True
+                or result.get("failed") or result.get("error") or not 0 < requests["count"] <= 6):
+            raise CheckError("native_agent_turn_incomplete")
+        if stage == "capture" and ("enhanced_recall" not in calls or "enhanced_remember" not in calls
+                or calls.index("enhanced_recall") > calls.index("enhanced_remember")):
+            raise CheckError("model_did_not_recall_then_select_capture")
+        return result.get("final_response", ""), sorted(set(calls)), requests["count"]
+    finally:
+        agent.close()
+
+
+def main_memory(*, stage, approved_test=False):
+    snapshots = {}
+    provider = None
+    binding = None
+    secrets = None
+    uid = None
+    phase = "restricted_preflight"
+    try:
+        if stage not in {"capture", "recall"}: raise CheckError("unapproved_stage")
+        uid, snapshots = preflight(approved_test)
+        snapshots[".env"] = read_private(".env", uid)
+        import yaml
+        config = yaml.safe_load(snapshots["config.yaml"])
+        settings = json.loads(snapshots["enhanced_cognee.json"])
+        if (not isinstance(config, dict) or config.get("memory", {}).get("provider") != "enhanced_cognee"
+                or settings != {"base_url": "http://127.0.0.1:28080", "timeout": 10,
+                               "include_shared": True, "capture_policy": "selected"}):
+            raise CheckError("pilot_memory_settings_changed_preserve_and_review")
+        os.chdir(HOME)
+        os.umask(0o077)
+        logging.disable(logging.CRITICAL)
+        token = select_credential(snapshots["auth.json"])
+        verify_provider()
+        sys.path.insert(0, str(RELEASE / "repo"))
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            import agent.secret_scope as secrets
+            from plugins import memory as loader
+            if any(not Path(module.__file__).resolve(strict=True).is_relative_to(RELEASE / "repo")
+                   for module in (secrets, loader)):
+                raise CheckError("native_memory_source")
+            values = secrets.load_env_file(PROFILE / ".env")
+            memory_token = values.get("ENHANCED_COGNEE_ACCESS_TOKEN")
+            if not isinstance(memory_token, str) or not memory_token:
+                raise CheckError("missing_pilot_memory_token")
+            binding = secrets.set_secret_scope({"ENHANCED_COGNEE_ACCESS_TOKEN": memory_token}, profile_home=str(PROFILE))
+            phase = "memory_provider_preflight"
+            if loader.find_provider_dir("enhanced_cognee").resolve() != ARTIFACT:
+                raise CheckError("native_memory_discovery")
+            provider = loader.load_memory_provider("enhanced_cognee")
+            provider.initialize("pilot_preflight", hermes_home=str(PROFILE), agent_context="primary")
+            before = memory_status(provider)
+            phase = "fixture_preparation"
+            if stage == "capture":
+                if os.path.lexists(STATE) or before["active_records"] != 0:
+                    raise CheckError("existing_test_evidence_preserved_review_before_retry")
+                fixture = uuid.uuid4().hex
+                state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
+                prompt = ("For the entirely fictional Larch qualification project " + fixture
+                    + ", our standing planning decision is a thirteen-day review cycle. Explain this decision in one sentence.")
+                session = state["capture_session"]
+                previous = None
+            else:
+                state = read_state(uid)
+                fixture = state["fixture"]
+                previous = verify_saved(provider, fixture)
+                session = "cognee_recall_" + uuid.uuid4().hex
+                prompt = ("For the entirely fictional Larch qualification project " + fixture
+                    + ", what standing review interval did we decide on? Use saved evidence and cite its record ID.")
+            phase = "native_agent_turn"
+            if stage == "capture": save_state(state)
+            answer, calls, requests = native_memory_turn(stage, token, provider, session, prompt)
+            phase = "saved_memory_verification"
+            # agent.close shuts the provider down; reinitialize for authoritative reads.
+            provider.initialize("pilot_verification", hermes_home=str(PROFILE), agent_context="primary")
+            row = verify_saved(provider, fixture)
+            after = memory_status(provider)
+            if after["active_records"] != 1:
+                raise CheckError("unexpected_memory_record_count")
+            if stage == "recall" and (row != previous or row["id"] not in answer
+                    or not re.search(r"\b(?:thirteen|13)[ -]+day", answer.casefold())):
+                raise CheckError("fresh_session_recall_not_verified")
+            if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
+                raise CheckError("profile_state_changed_preserve_and_review")
+        print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
+            "profile": "enhanced-cognee-pilot", "model": MODEL, "native_agent_turn_passed": True,
+            "selected_capture_passed": stage == "capture", "fresh_session_recall_passed": stage == "recall",
+            "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
+            "tool_calls": calls, "model_requests": requests, "synthetic_active_records": 1,
+            "current_version": row["version"], "memory_records_written": stage == "capture",
+            "runtime_qualified": False}, indent=2))
+    except Exception as error:
+        print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
+            "test_evidence_present_preserve_for_review": os.path.lexists(STATE),
+            "memory_writes_may_have_occurred": phase in {"native_agent_turn", "saved_memory_verification"},
+            "runtime_qualified": False}, indent=2))
+        raise SystemExit(1) from None
+    finally:
+        if provider is not None:
+            with contextlib.suppress(Exception), contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                provider.shutdown()
+        if binding is not None:
+            secrets.reset_secret_scope(binding)
 
 
 if __name__ == "__main__":

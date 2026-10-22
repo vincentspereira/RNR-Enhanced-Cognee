@@ -201,3 +201,191 @@ def test_native_failure_is_sanitized_and_original_auth_not_replaced(check, monke
     report = json.loads(output)
     assert not report["complete"] and report["profile_settings_and_auth_unchanged"]
     assert "PRIVATE_" not in output and TOKEN not in output and snapshots == original
+
+
+def test_fixture_receipt_is_private_and_never_overwritten(check, tmp_path, monkeypatch):
+    monkeypatch.setattr(check, "STATE", tmp_path / "receipt.json")
+    fixture = "a" * 32
+    state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
+    check.save_state(state)
+    import os
+    assert check.read_state(os.geteuid()) == state
+    assert check.STATE.stat().st_mode & 0o777 == 0o600
+    with pytest.raises(FileExistsError): check.save_state({"fixture": "b" * 32})
+    assert check.read_state(os.geteuid()) == state
+
+
+@pytest.mark.parametrize("mutation", ["path", "session", "extra", "public", "link"])
+def test_unsafe_or_changed_fixture_receipts_are_refused(check, tmp_path, monkeypatch, mutation):
+    monkeypatch.setattr(check, "STATE", tmp_path / "receipt.json")
+    state = {"fixture": "a" * 32, "capture_session": "cognee_capture_" + "a" * 32}
+    if mutation == "path": state["fixture"] = "../PRIVATE_SENTINEL"
+    elif mutation == "session": state["capture_session"] = "PRIVATE_SENTINEL"
+    elif mutation == "extra": state["private"] = "PRIVATE_SENTINEL"
+    check.save_state(state)
+    if mutation == "public": check.STATE.chmod(0o644)
+    elif mutation == "link":
+        target = tmp_path / "original"
+        check.STATE.rename(target)
+        check.STATE.symlink_to(target)
+    import os
+    with pytest.raises((check.CheckError, OSError)) as error: check.read_state(os.geteuid())
+    assert "PRIVATE_SENTINEL" not in str(error.value)
+
+
+def test_scope_readiness_is_required_before_model_memory_calls(check):
+    provider = NS(handle_tool_call=lambda *a: json.dumps({"ready": True, "tenant_id": "other",
+        "project_id": "hermes_pilot", "subject": "hermes_pilot_runtime", "capture": "selected", "active_records": 0}))
+    with pytest.raises(check.CheckError, match="pilot_memory_scope_or_credential"):
+        check.memory_status(provider)
+
+
+@pytest.mark.parametrize("mutation", ["empty", "duplicate", "version", "content"])
+def test_saved_evidence_requires_one_current_matching_record(check, mutation):
+    fixture = "a" * 32
+    row = {"id": "synthetic-id", "version": 1, "content": "Larch " + fixture + " thirteen-day review"}
+    rows = [dict(row)]
+    if mutation == "empty": rows = []
+    elif mutation == "duplicate": rows.append(dict(row))
+    elif mutation == "version": rows[0]["version"] = 2
+    else: row["content"] = fixture + " unrelated PRIVATE_SENTINEL"
+    client = NS(request=lambda method, path, body=None: {"results": rows} if method == "POST" else row)
+    with pytest.raises(check.CheckError) as error: check.verify_saved(NS(_client=client), fixture)
+    assert "PRIVATE_SENTINEL" not in str(error.value)
+
+
+def agent_fixture(check):
+    names = ["enhanced_recall", "enhanced_remember", "enhanced_get", "enhanced_status", "terminal"]
+    transport = NS(follow_redirects=True, event_hooks={"request": []})
+    return NS(tools=[{"function": {"name": name}} for name in names], _memory_manager=object(),
+              _fallback_chain=[], _fallback_activated=False, client=NS(_client=transport, max_retries=2))
+
+
+def test_agent_surface_is_narrowed_without_replacing_native_handlers(check):
+    agent = agent_fixture(check)
+    allowed = {"enhanced_recall", "enhanced_remember"}
+    requests = check.restrict_agent(agent, allowed)
+    assert {t["function"]["name"] for t in agent.tools} == allowed
+    assert agent.valid_tool_names == allowed and agent.client.max_retries == 0
+    assert not agent.client._client.follow_redirects
+    guard = agent.client._client.event_hooks["request"][-1]
+    body = {"model": check.MODEL, "store": False, "tools": [{"name": name} for name in allowed]}
+    for _ in range(6): guard(httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+    assert requests["count"] == 6
+    with pytest.raises(check.CheckError): guard(httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+
+
+@pytest.mark.parametrize("mutation", ["other-model", "store", "tool", "tier", "url"])
+def test_agent_request_guard_refuses_model_fallback_and_nonmemory_tools(check, mutation):
+    agent = agent_fixture(check)
+    check.restrict_agent(agent, {"enhanced_recall"})
+    body = {"model": check.MODEL, "store": False, "tools": [{"name": "enhanced_recall"}]}
+    if mutation == "other-model": body["model"] = "other-model"
+    elif mutation == "store": body["store"] = True
+    elif mutation == "tool": body["tools"] = [{"name": "terminal"}]
+    elif mutation == "tier": body["service_tier"] = "ultrafast"
+    url = "https://api.openai.com/v1/responses" if mutation == "url" else check.BASE_URL + "/responses"
+    with pytest.raises(check.CheckError):
+        agent.client._client.event_hooks["request"][-1](httpx.Request("POST", url, json=body))
+
+
+def test_agent_missing_memory_or_configured_fallback_is_refused(check):
+    agent = agent_fixture(check)
+    agent._fallback_chain = [{"provider": "other"}]
+    with pytest.raises(check.CheckError, match="unexpected_model_fallback"):
+        check.restrict_agent(agent, {"enhanced_recall"})
+
+
+def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path):
+    import sys
+    release = tmp_path / "release"
+    (release / "repo").mkdir(parents=True)
+    source = release / "repo/run_agent.py"
+    source.touch()
+    monkeypatch.setattr(check, "RELEASE", release)
+    options = {}
+    class Manager:
+        def add_provider(self, provider): pass
+        def initialize_all(self, session, **kwargs):
+            assert session == "synthetic-session" and kwargs["hermes_home"] == str(check.PROFILE)
+    class Agent:
+        def __init__(self, **kwargs):
+            options.update(kwargs)
+        def run_conversation(self, prompt, conversation_history):
+            assert conversation_history == [] and prompt == "synthetic user decision"
+            options["tool_progress_callback"]("tool.started", tool_name="enhanced_recall")
+            options["tool_progress_callback"]("tool.started", tool_name="enhanced_remember")
+            requests["count"] = 3
+            return {"completed": True, "final_response": "PRIVATE_SYNTHETIC_REPLY"}
+        def close(self): options["closed"] = True
+    monkeypatch.setitem(sys.modules, "run_agent", NS(__file__=str(source), AIAgent=Agent))
+    monkeypatch.setitem(sys.modules, "agent.memory_manager", NS(MemoryManager=Manager))
+    requests = {"count": 0}
+    monkeypatch.setattr(check, "restrict_agent", lambda agent, allowed: requests)
+    answer, calls, count = check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
+    assert calls == ["enhanced_recall", "enhanced_remember"] and count == 3 and options["closed"]
+    assert options["fallback_model"] == {} and options["credential_pool"] is None
+    assert options["model"] == check.MODEL and options["provider"] == "openai-codex"
+    assert options["skip_background_review"] and options["save_trajectories"] is False
+    assert options["reasoning_config"] == {"enabled": True, "effort": "low"}
+
+
+@pytest.mark.parametrize("stage", ["capture", "recall"])
+def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage):
+    import sys
+    fixture = "a" * 32
+    state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
+    snapshots = {"auth.json": json.dumps(credential(check)).encode(),
+        "config.yaml": b"memory:\n  provider: enhanced_cognee\n",
+        "enhanced_cognee.json": json.dumps({"base_url": "http://127.0.0.1:28080", "timeout": 10,
+            "include_shared": True, "capture_policy": "selected"}).encode()}
+    monkeypatch.setattr(check, "preflight", lambda approved: (1000, snapshots))
+    monkeypatch.setattr(check.os, "chdir", lambda path: None)
+    monkeypatch.setattr(check.os, "umask", lambda mask: None)
+    monkeypatch.setattr(check.logging, "disable", lambda value: None)
+    monkeypatch.setattr(check, "read_private", lambda name, uid: b"PRIVATE_MEMORY_TOKEN" if name == ".env" else snapshots[name])
+    monkeypatch.setattr(check, "verify_provider", lambda: None)
+    monkeypatch.setattr(check, "STATE", tmp_path / "fixture.json")
+    release = tmp_path / "release"
+    (release / "repo").mkdir(parents=True)
+    monkeypatch.setattr(check, "RELEASE", release)
+    source = release / "repo/mock.py"
+    source.touch()
+    provider = NS(initialize=lambda *a, **kw: None, shutdown=lambda: None)
+    resets = []
+    secrets = NS(__file__=str(source), load_env_file=lambda path: {"ENHANCED_COGNEE_ACCESS_TOKEN": "PRIVATE_MEMORY_TOKEN"},
+        set_secret_scope=lambda values, **kw: "PRIVATE_BINDING", reset_secret_scope=resets.append)
+    loader = NS(__file__=str(source), find_provider_dir=lambda name: check.ARTIFACT,
+        load_memory_provider=lambda name: provider)
+    monkeypatch.setitem(sys.modules, "agent", NS(secret_scope=secrets))
+    monkeypatch.setitem(sys.modules, "agent.secret_scope", secrets)
+    monkeypatch.setitem(sys.modules, "plugins", NS(memory=loader))
+    monkeypatch.setattr(check, "memory_status", lambda p: {"active_records": (0 if not check.STATE.exists() else 1)})
+    row = {"id": "synthetic-record-id", "content": fixture + " thirteen days", "version": 1}
+    monkeypatch.setattr(check, "verify_saved", lambda p, f: row)
+    prompts = []
+    def turn(stage, token, actual_provider, session, prompt):
+        prompts.append(prompt)
+        if stage == "recall":
+            assert "thirteen" not in prompt and "13" not in prompt
+            assert session != state["capture_session"]
+        else:
+            assert "remember" not in prompt.casefold() and "thirteen-day" in prompt
+        return "thirteen days, synthetic-record-id", ["enhanced_remember"] if stage == "capture" else ["enhanced_recall"], 3
+    monkeypatch.setattr(check, "native_memory_turn", turn)
+    if stage == "recall": check.save_state(state)
+    check.main_memory(stage=stage, approved_test=True)
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert report["complete"] and report["native_agent_turn_passed"]
+    assert report["memory_records_written"] == (stage == "capture")
+    assert report["fresh_session_recall_passed"] == (stage == "recall")
+    assert not report["runtime_qualified"] and "PRIVATE_" not in output and TOKEN not in output
+    assert resets == ["PRIVATE_BINDING"]
+
+
+def test_invalid_memory_stage_cannot_read_credentials(check, monkeypatch, capsys):
+    monkeypatch.setattr(check, "preflight", lambda *a: pytest.fail("Invalid stage must not read auth"))
+    with pytest.raises(SystemExit): check.main_memory(stage="delete", approved_test=True)
+    report = json.loads(capsys.readouterr().out)
+    assert not report["complete"] and report["category"] == "unapproved_stage"

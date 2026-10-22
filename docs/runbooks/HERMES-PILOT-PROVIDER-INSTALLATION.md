@@ -526,3 +526,77 @@ warnings, including 39 new completion/selection/privacy/wire-guard checks. Nativ
 module/SDK substitutes are fixtures in these tests; the host command supplies
 actual protected native-component/model evidence. No Workspace cloud call,
 installed model completion, context qualification or full release claim is made.
+
+## Native model completion passed; selected capture and fresh recall prepared
+
+Owner receipt at 6546a972a4a47d0d249c2d3b34e0b33a0056ffbc confirms the actual
+restricted gpt-6.1-sol completion: native contract, server model and reply
+validation passed, with 38 prompt and 12 completion tokens (50 total). Pilot
+settings/auth remained unchanged; no memory was written. This supersedes the
+pending completion checkpoint, not the remaining full-turn/capture/fleet gates.
+
+check_pilot_codex.py now also provides main_memory(stage="capture"|"recall",
+approved_test=True). Use the exact pinned/hash-verified operator command for
+each stage in a separate process. Ordinary main() remains the single-completion
+check. The memory stages use the actual protected run_agent.AIAgent interface,
+native MemoryManager, provider loader, secret scope and installed provider;
+there is no replacement tool loop, gateway launch or guard bypass. The pinned
+[AIAgent interface](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/run_agent.py)
+and [native initializer](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/agent_init.py)
+define the runtime arguments. The gateway CLI was deliberately avoided because
+its authority can outlive a timed-out client; its older --run-budget argument
+is refused on that path. No gateway/default-profile change is needed here.
+
+Both stages require the same restricted identity, protected Python, current
+private settings/auth, hash-verified protected provider and exact local memory
+endpoint. The helper binds only ENHANCED_COGNEE_ACCESS_TOKEN from the private
+pilot .env to the native secret scope; it reads no human configuration or keys.
+Authenticated status must match qualification/hermes_pilot/hermes_pilot_runtime,
+selected capture, schema 3 and AES-256-GCM before any agent turn. Missing/expired
+memory access fails before testing; do not reissue signing keys or expose them.
+
+The capture stage requires an empty pilot namespace and no prior test receipt.
+It creates a private mode-0600 /var/lib/hermes-runtime/cognee-pilot-model-test.json
+receipt with an invented fixture identifier and capture session, never keys.
+It is no-replace: preserve it and any saved evidence after a failure instead of
+blindly repeating capture or deleting/overwriting records. The user's fixed
+invented Larch planning decision asks only for an explanation, not a remember
+action. Native selected-capture policy must lead the model to enhanced_recall
+then enhanced_remember. Authoritative own-scope recall plus GET must confirm
+exactly one current version-1 record containing the fixture and thirteen-day
+decision. No existing memory is corrected, retracted or permanently deleted.
+
+Only the qualification agent's in-memory tool surface is narrowed to native
+recall/get/status/remember handlers (recall stage omits remember). Other tools,
+including terminal/browser/session-search and correction/retraction, are absent
+from this test. The provider/plugin/settings are unchanged. Explicit per-instance
+gpt-6.1-sol/openai-codex/Responses/low-reasoning arguments use the pilot's own
+OAuth without a credential pool or fallback. SDK retries/redirects are disabled.
+A wire guard permits at most six exact subscription Responses requests, checks
+model/store/tools/tier, and rejects other routes/tools/models. There is a
+100-second native turn budget and five iterations, with a 180-second outer
+process bound. This can use several existing-plan requests, unlike the earlier
+single-completion test. Native startup may perform standard metadata lookup and
+create local config/cache/session scaffolding; only invented task data is used.
+This is not a claim that all native initialization egress was independently
+audited or that Desktop/gateway delivery was tested.
+
+The recall stage must run in a new process with a different session and empty
+conversation history. Its prompt includes only the fixture identity and the
+question, never the decision interval. It must answer thirteen days and cite
+the saved record ID, with identical current record content/version and count.
+All original config/settings/auth/.env bytes must remain unchanged. The synthetic
+record and test receipt are retained as evidence. Raw replies, reasoning, tool
+arguments/results, credentials and full configs are captured privately in memory
+and never printed by the helper; only fixed booleans/counts/allowlisted tool
+names leave it. Canonical encrypted memory contains the selected invented
+summary, not raw chat output. Native Hermes runtime scaffolding is separate.
+
+Success reports native_agent_turn_passed and the appropriate stage's capture or
+fresh-session recall flag; runtime_qualified remains false pending the remaining
+qualification/recovery/rollout gates. On failure, a fixed stage/category and
+test-evidence/may-have-written flags prevent false success or unsafe retries.
+The focused fixtures pass 437 tests, zero failures/skips and no reported
+warnings, including 22 new fixture/agent/wire/preservation cases. Native agent,
+model, memory and filesystem calls use fixtures in those tests. Installed-host
+capture and fresh-session recall remain pending the two owner commands.
