@@ -56,6 +56,12 @@ identities and reviewed sharing. See the live-profile account and fleet runbooks
   actual committed dependency environment before preparing a protected runtime;
   do not silently substitute the older in-tree venv, copy all private .hermes
   state or run a shared launcher under a new home merely to discover its runtime.
+- The owner located the committed dependency environment at
+  ~/.hermes/installs/cec419d56f3c6da1/environments/1729494fe7834770ba4afd450a636baa/venv.
+  Its pyvenv.cfg reports version_info 3.14.7; its site-packages contains 134
+  distribution metadata directories and three .pth startup files. Its Python
+  symlink resolves to the previously identified managed Python. Startup-file
+  inspection and protected-copy preparation remain pending.
 
 ## Project folder recommendation
 
@@ -67,6 +73,24 @@ No folder move is approved or performed by this recommendation. The restricted
 account's profile/workspace lives under /var/lib/hermes-runtime; selected project
 access and explicit backup coverage require their own verification. Do not grant
 whole-home access merely to reuse the administrator's source/runtime.
+
+Also retain agent-workspace at its existing location rather than moving it
+under Projects. It holds the active Hermes source and deployment checkouts.
+Hermes' current per-install selection key depends on the resolved source path;
+moving the active installation can invalidate dependency selection and embedded
+launcher paths. No move or compatibility-symlink creation was requested or
+performed. The two existing source locations were already reported to resolve
+to one installation; they do not establish duplicate maintained source copies.
+
+## Prepared read-only inspector
+
+integrations/hermes/deployment/inspect_restricted_runtime.py inspects only
+installation metadata, the selected .pth startup files and program-tree sizes.
+It parses startup code without executing it, reports bounded metadata rather
+than raw source/settings, and refuses the wrong distro, root execution or a
+changed source revision. It checks source/dependency-selection stability across
+inspection. Local syntax/ASCII, help and wrong-distro refusal checks passed.
+No Ubuntu-Hermes execution or protected runtime installation is claimed here.
 
 ## Next qualification and limitations
 
