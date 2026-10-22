@@ -109,3 +109,109 @@ def test_wrong_account_is_refused_before_any_file_probe(probe, monkeypatch):
     monkeypatch.setattr(probe, "open_permission", forbidden)
     with pytest.raises(RuntimeError, match="restricted account"):
         probe.check()
+
+
+def test_tools_generation_selects_only_fixed_paths_without_inspection(probe, monkeypatch):
+    original = probe.RELEASE
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Selecting a fixed generation must not inspect or open files")
+    monkeypatch.setattr(probe, "open_permission", forbidden)
+    probe.use_tools_generation()
+    assert probe.RELEASE == original.with_name(original.name + "-tools1")
+    assert probe.TOOLS_SELECTED is True
+    assert all(path.is_relative_to(probe.RELEASE) for path in probe.PROGRAM_FILES)
+    assert all(not path.is_relative_to(original) for path in probe.PROGRAM_DIRECTORIES)
+    probe.use_tools_generation()
+    assert probe.RELEASE == probe.TOOLS_RELEASE
+
+
+@pytest.fixture
+def tool_paths(probe, monkeypatch, tmp_path):
+    release = tmp_path / "protected"
+    monkeypatch.setattr(probe, "RELEASE", release)
+    for relative in probe.TOOL_BINARIES:
+        path = release / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"SYNTHETIC_PUBLIC_PROGRAM")
+    (release / "python/facts.json").write_text('{"schema":1}')
+    npm = release / probe.TOOL_BINARIES[2]
+    npm.rename(npm.parent / "npm-cli.js")
+    npm.symlink_to("npm-cli.js")
+    return release
+
+
+def test_selected_tool_paths_include_link_target_facts_and_ancestors(probe, tool_paths):
+    files, directories = probe.selected_tool_paths()
+    assert len(files) == 5
+    assert tool_paths / "python/facts.json" in files
+    npm = tool_paths / probe.TOOL_BINARIES[2]
+    assert npm not in files and npm.resolve() in files
+    for binary in (tool_paths / relative for relative in probe.TOOL_BINARIES):
+        assert set(binary.parents) <= set(directories)
+    assert Path("/") in directories
+
+
+@pytest.mark.parametrize("mutation", ["outside-link", "broken-link", "missing"])
+def test_unconfined_or_missing_tool_is_refused_before_any_permission_open(probe, tool_paths, monkeypatch, mutation):
+    npm = tool_paths / probe.TOOL_BINARIES[2]
+    if mutation == "outside-link":
+        outside = tool_paths.parent / "PRIVATE_TARGET_DO_NOT_OPEN"
+        outside.write_bytes(b"SYNTHETIC_PRIVATE_DATA")
+        npm.unlink()  # Disposable fixture only.
+        npm.symlink_to(outside)
+    elif mutation == "broken-link":
+        npm.unlink()
+        npm.symlink_to("not-present")
+    else:
+        npm.rename(npm.parent / "original-preserved")
+    monkeypatch.setattr(probe, "open_permission", lambda *a, **kw: pytest.fail("No permission opening allowed yet"))
+    with pytest.raises((RuntimeError, OSError)) as error:
+        probe.selected_tool_paths()
+    assert "PRIVATE_TARGET" not in str(error.value)
+
+
+@pytest.mark.parametrize("mode,owner,links,writable,expected", [
+    (stat.S_IFREG | 0o755, 0, 1, False, True),
+    (stat.S_IFREG | 0o755, 1000, 1, False, False),
+    (stat.S_IFREG | 0o775, 0, 1, False, False),
+    (stat.S_IFREG | 0o4755, 0, 1, False, False),
+    (stat.S_IFREG | 0o755, 0, 2, False, False),
+    (stat.S_IFREG | 0o755, 0, 1, True, False),
+    (stat.S_IFLNK | 0o777, 0, 1, False, False),
+])
+def test_file_metadata_and_effective_acl_must_both_protect_program(probe, monkeypatch, mode, owner, links, writable, expected):
+    monkeypatch.setattr(Path, "lstat", lambda self: SimpleNamespace(st_mode=mode, st_uid=owner, st_nlink=links))
+    monkeypatch.setattr(os, "access", lambda *args, **kwargs: writable)
+    assert probe.file_protected(Path("/selected-public-program")) is expected
+
+
+def test_bad_tool_metadata_cannot_pass_an_otherwise_denied_summary(probe, tool_paths, monkeypatch, tmp_path):
+    home = tmp_path / "runtime-home"
+    home.mkdir(mode=0o700)
+    monkeypatch.chdir(home)
+    monkeypatch.setattr(probe, "ACCOUNT_HOME", home)
+    monkeypatch.setattr(probe, "TOOLS_SELECTED", True)
+    identity = SimpleNamespace(pw_name="hermes-runtime", pw_uid=os.geteuid(), pw_gid=os.getegid(), pw_dir=str(home))
+    monkeypatch.setattr(probe.pwd, "getpwuid", lambda uid: identity)
+    monkeypatch.setattr(os, "getgroups", lambda: [identity.pw_gid])
+    monkeypatch.setattr(probe, "PROGRAM_FILES", (tool_paths / "python/facts.json",))
+    monkeypatch.setattr(probe, "PROGRAM_DIRECTORIES", (tool_paths,))
+    monkeypatch.setattr(probe, "SECRETS", (tmp_path / "secret",))
+    monkeypatch.setattr(probe, "process_confined", lambda: True)
+    monkeypatch.setattr(probe, "open_permission", lambda *a, **kw: "DENIED")
+    monkeypatch.setattr(probe, "directory_protected", lambda path: True)
+    monkeypatch.setattr(probe, "file_protected", lambda path: False)
+    result = probe.check()
+    assert result["tools_generation_selected"] is True
+    assert result["selected_access_checks_passed"] is False
+    assert result["runtime_qualified"] is False and result["memory_connection_tested"] is False
+    monkeypatch.setattr(probe, "file_protected", lambda path: True)
+    assert probe.check()["selected_access_checks_passed"] is True
+
+
+@pytest.mark.parametrize("argument", ["--release=/etc", "--tools-generation-extra", "--tools-generation --apply"])
+def test_cli_refuses_arbitrary_generation_or_extra_flags(probe, monkeypatch, argument):
+    monkeypatch.setattr(probe.sys, "argv", ["probe", *argument.split()])
+    monkeypatch.setattr(probe, "check", lambda: pytest.fail("Invalid arguments must not probe files"))
+    with pytest.raises(SystemExit, match="only --tools-generation"):
+        probe.main()

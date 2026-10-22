@@ -466,3 +466,59 @@ The owner also asked to consolidate the GitHub branches into main. Both older
 deployment tips are already ancestors of the delivery branch. See
 BRANCH-CONSOLIDATION-AND-RELEASE-REVIEW-2026-10-22.md for the remote ancestry,
 required security checks and the separate pull-request/merge disposition.
+
+## Native tools1 startup passed
+
+Vincent subsequently reported successful --version execution from the new
+tools1 launcher. Effective identity was uid 993/gid 985 hermes-runtime with only
+its primary group, CapEff/CapAmb zero and NoNewPrivs=1. The application identified
+vgit.4d04303/upstream 4d043038, install directory under the new tools1/repo,
+Python 3.14.7 and OpenAI SDK 2.24.0; startup exit was zero. Install method was
+again unknown, retained for the separate external-update-policy check. This
+qualifies the reported startup only. Four tool executables, new-generation
+selected access checks, actual provider/model connection and all-bot admission
+remain pending. Do not repeat preparation, recreate the pilot or restart WSL.
+
+PR 85 now consolidates delivery to main. On candidate
+68beb6803d6ffad4310be2cfe865a8b84dd0b8d6, required unit CI and canonical-browser
+passed; default-stack and both frontend checks failed their security gates.
+The additional memory/full-runtime workflows also failed audit/image security
+steps. The broader legacy pipeline has separate unit/coverage, auth type-check
+and audit failures; these are not cleared by the required unit lane's success.
+Its downstream administrative/job skips are not qualification-test successes.
+The PR is draft, mergeable without source conflicts, and blocked by checks.
+No branch protection, source branch or installed runtime was changed by this
+status review. These live results supersede the earlier queued-run status.
+
+## Native copied-tool execution passed; tools1 access probe prepared
+
+The owner reported version execution exit 0 for all four protected tools under
+the previously guided restricted identity/empty-environment command: ffmpeg
+n9.0.1-11-ge47273f4d9-20260831, Node v26.7.0, npm 12.0.2 and ripgrep 15.2.0
+(e89fff89ac). FFmpeg and ripgrep also emitted ordinary build/CPU-feature metadata.
+These are actual tool executions, not recorded facts versions. They do not
+qualify codec operations, application package-manager recognition, browser/model
+routes, the Cognee connection or fleet capacity. No model/gateway/installer was
+started by this probe. Historical preparation flags remain preparation receipts.
+
+The selected-access helper now accepts exactly --tools-generation to select the
+fixed tools1 release. Its original no-argument release selection is preserved;
+no arbitrary path or extra flag is accepted. The new mode repeats the 14 secret
+read/write probes and selected original program checks against the new release,
+adds its package facts and four resolved tool targets, checks every selected
+logical/target ancestor and checks regular-file ownership, hardlink count,
+privilege/write bits and effective write ACL. npm's program link must resolve
+inside the protected release; outside targets are not opened or printed. It
+still never reads/writes secret or program-file contents and uses no create,
+truncate or append flags. Only self-process status is read. Selected probes are
+not a complete live-tool, socket, peer-profile or OS security qualification.
+
+The expanded focused helper suites pass 130 cases, zero failures/skips and no
+reported warnings in the separate Workspace Python 3.12.3 certificate-corrected
+test runtime. Sixteen new regressions cover fixed/idempotent generation
+selection, npm link/facts/ancestor coverage, outside/broken/missing tools,
+ownership/modes/hardlink/ACL failures, false-summary prevention and CLI argument
+rejection. No full-suite/coverage or native access pass is claimed. Run the
+published helper under hermes-runtime/no-new-privileges with checksum verification
+before compilation; sudo only selects this non-admin identity. Keep the pilot,
+original/new program generations, protected service and owner keys unchanged.

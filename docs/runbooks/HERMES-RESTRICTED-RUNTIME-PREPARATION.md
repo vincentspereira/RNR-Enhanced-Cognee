@@ -386,3 +386,44 @@ three self-process confinement fields. After reviewing actual startup output,
 check tool versions/confinement and then configure the selected provider/model
 route. Source branch consolidation does not require changing this deployed
 Hermes source revision, running the original updater or restarting the distro.
+
+The owner has now reported tools1 startup exit 0 under uid 993/gid 985 with
+only its primary group, zero effective/ambient capabilities and NoNewPrivs=1.
+The displayed application source, Python 3.14.7 and SDK 2.24.0 agree with the
+selected inputs. Record install method unknown rather than inventing a packaged
+release identity. Next run just the four copied executables' version flags as
+hermes-runtime under no-new-privileges and an empty inherited environment.
+Use absolute paths for every executable, especially npm: Node's bin directory
+also contains its bundled npm, which is not the separately selected npm 12.0.2.
+Put only the selected protected Node directory and /usr/bin:/bin on PATH so the
+npm shebang selects the copied Node. Ignore ambient user/global npm config and
+disable its network/update/audit/scripts settings for this version-only probe.
+ffmpeg takes -version; Node/npm/ripgrep take --version. Do not invoke npm install,
+npx, the original human updater, a gateway or a model. Inspect actual output and
+exit status before claiming tool versions, PM readiness or complete runtime
+qualification. Ordinary version output is public program/build metadata; no
+profile file, credential, shell history or full environment dump is requested.
+
+The owner has now reported all four copied executables' version commands exit
+zero: ffmpeg n9.0.1-11-ge47273f4d9-20260831, Node v26.7.0, npm 12.0.2 and
+ripgrep 15.2.0 (e89fff89ac). Preserve these actual results without modifying the
+historical preparation receipt's flags. This proves version-command execution,
+not package-manager readiness or a connected model/provider.
+
+Continue with check_restricted_access.py --tools-generation. The mode selects
+only the fixed tools1 release, checks the original protected secret paths and
+selected new program paths, and adds package facts plus the four resolved tool
+targets and all selected ancestors. It refuses escaping or missing links and
+checks leaf ownership, privilege/write modes, detached hardlinks and effective
+write ACL alongside permission-open denials. The no-argument earlier-generation
+behavior remains available; it does not qualify tools1. Neither mode accepts an
+arbitrary release path. No secret or program content is read/written and no
+create/truncate/append flags are used. Verify the exact published blob's SHA256
+in isolated/no-site system Python as the restricted account before compilation;
+use cwd /var/lib/hermes-runtime, a clean environment and no-new-privileges.
+The guided command fetches public source through the operator checkout, without
+switching branches, importing that checkout or running probe/application code
+as root. The focused helper suites now pass 130 with zero failures/skips and no
+reported warnings; the new mode still awaits native results. No installation,
+credential generation, profile recreation, service restart or private-data
+activation belongs to this access-only operator step.
