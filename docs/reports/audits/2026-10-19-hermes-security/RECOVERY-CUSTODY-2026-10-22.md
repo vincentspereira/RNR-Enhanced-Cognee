@@ -74,10 +74,10 @@ are a selected subset of the historical scanner findings, not a claim that all
 | Google Maps/Places | No key created or received | No owned key reported; not marked revoked |
 | Pinecone | No key created or received | No owned key reported; not marked revoked |
 | Replicate | Created a key for RNR Spatial Engine, not Enhanced Cognee | Local configured-token comparison differs from the inherited Cognee candidate; no revocation justified by this match check |
-| SerpAPI | Not yet reviewed | Pending owner response |
-| Zapier NLA | Not yet reviewed | Pending owner response |
-| Weaviate | Not yet reviewed | Pending owner response |
-| Qdrant credential in historical DLT settings | Not yet reviewed | Pending owner response; distinguish any hosted account from newly generated local service keys |
+| SerpAPI | No key created or received | No owned key reported; not marked revoked |
+| Zapier NLA | No key created or received | No owned key reported; not marked revoked |
+| Weaviate | No key created or received | No owned key reported; not marked revoked |
+| Qdrant credential in historical DLT settings | Created a key for Enhanced Cognee and another whose project is not remembered | Workspace Cognee QDRANT_API_KEY differs from the upstream candidate; cloud/local origin and the second consumer remain unresolved; protected Hermes keys are separate |
 
 The Replicate comparison read only the REPLICATE_API_TOKEN assignment from
 Spatial's documented local secret source, ~/.config/rnr/env.sh. The literal
@@ -88,8 +88,18 @@ changed, and no provider request was made. This comparison does not inspect all
 Spatial deployments, old tokens or every other possible exposure. It does not
 prove a currently running process uses that file's present value.
 
-Next, review SerpAPI ownership. Continue classifying candidates and actual
-consumers privately. Compare any owned/current credentials through an approved
+A subsequent value-free local check compared the historical Qdrant candidate
+against the QDRANT_API_KEY literal in the Workspace Cognee .env: DIFFERENT.
+None of the eight selected historical candidate strings appeared in that .env
+or the documented shared Spatial provider file. Other enumerated root-local
+.env variants and .dlt/secrets.toml were absent. These checks read files only;
+there were no provider requests, credential changes or value disclosures. They
+do not inspect the protected Hermes configuration, every deployed process,
+unknown second Qdrant consumer, or all other configurations/history findings.
+
+Next, clarify whether the owner's older Qdrant key was issued by Qdrant Cloud
+or configured for a local server; keep the unidentified second use unresolved.
+Continue classifying candidates and actual consumers privately. Compare any owned/current credentials through an approved
 local process without exposing values. Revoke exposed owned credentials;
 replace only those needed by current consumers. An inherited/not-owned finding
 must not be marked revoked or tested. Unknown ownership remains unresolved. If
