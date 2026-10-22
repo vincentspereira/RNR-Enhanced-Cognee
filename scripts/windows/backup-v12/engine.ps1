@@ -80,6 +80,9 @@ function Protect-V12Directory {
 }
 function Get-V12PythonCommand {
  param([string]$Helper,[string[]]$Options=@())
+ # An empty conditional emits no pipeline output, so an assigned options
+ # variable can be null. Appending null adds an empty argv item to the child.
+ if ($null -eq $Options) {$Options=@()}
  $encoded=[Convert]::ToBase64String([IO.File]::ReadAllBytes($Helper))
  return @('/usr/bin/python3','-I','-c',"exec(__import__('base64').b64decode('$encoded'))")+$Options
 }

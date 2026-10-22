@@ -61,6 +61,21 @@ try {
  $secure|Export-Clixml -LiteralPath $dpapi;$secure.Dispose()
  Check dpapi_ciphertext (-not (Get-Content -LiteralPath $dpapi -Raw).Contains($secret))
  $r=Engine @('init');Check password_command_child_pipe ($r.exit -eq 0 -and -not $r.stdout.Contains($secret) -and -not $r.stderr.Contains($secret))
+ # Exercise restic's WSL producer launch separately from direct inventory
+ # invocation. The no-option case previously introduced an empty argv item.
+ foreach ($distro in @('Ubuntu-Workspace','Ubuntu-Hermes')) {
+  $options=if ($distro -eq 'Ubuntu-Hermes') {@('--hermes')} else {@()}
+  $native=Get-V12PythonCommand $probe $options
+  $r=Engine (@('backup','--json','--stdin-from-command','--stdin-filename',($distro+'-probe.json'),'--',
+    (Join-Path $env:SystemRoot 'System32\wsl.exe'),'-d','Ubuntu-Workspace','-u','vincentspereira','--cd','/','--exec')+$native)
+  $result=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+  Check ('native_stream_producer_'+$distro) ([bool]$result.snapshot_id)
+  $dump=Engine @('dump',$result.snapshot_id,('/'+$distro+'-probe.json'))
+  $data=$dump.stdout|ConvertFrom-Json
+  $expected=@(if ($distro -eq 'Ubuntu-Hermes') {'--hermes'})
+  Check ('native_stream_arguments_'+$distro) ($data.user_ok -eq $true -and $data.cwd_ok -eq $true -and
+    (ConvertTo-Json -InputObject @($data.args) -Compress) -ceq (ConvertTo-Json -InputObject $expected -Compress))
+ }
  $src=Join-Path $run source;[IO.Directory]::CreateDirectory($src)|Out-Null
  [IO.File]::WriteAllBytes((Join-Path $src unchanged.bin),$random*32768)
  [IO.File]::WriteAllText((Join-Path $src change.txt),'before')

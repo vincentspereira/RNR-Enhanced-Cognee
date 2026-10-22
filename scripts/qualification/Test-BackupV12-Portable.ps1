@@ -45,6 +45,24 @@ function Engine([string[]]$Arguments) {
  return $r
 }
 $null=Engine @('init')
+# Run the actual home producer through restic, rather than testing only the
+# inventory command (which always supplies a nonempty option). Keep all source
+# data synthetic and disable only the test's system inventory.
+$homeHelper=Join-Path $Support capture_home.py
+$noOptions=if ($false) {@('--hermes')} else {@()}
+$homeCommand=Get-V12PythonCommand $homeHelper $noOptions
+Check null_home_options_add_no_argument ($homeCommand.Count -eq 4)
+Check omitted_home_options_add_no_argument (@(Get-V12PythonCommand $homeHelper).Count -eq 4)
+$fixtureHome=Join-Path $root synthetic-home
+[IO.Directory]::CreateDirectory($fixtureHome)|Out-Null
+[IO.File]::WriteAllText((Join-Path $fixtureHome durable.txt),'synthetic recoverable home content')
+$r=Engine (@('backup','--json','--stdin-from-command','--stdin-filename','synthetic-home.tar','--')+$homeCommand+@('--root',$fixtureHome,'--test-no-system-inventory'))
+$homeSummary=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+$homeRestore=Join-Path $root home-restored
+$null=Engine @('restore',$homeSummary.snapshot_id,'--target',$homeRestore,'--verify')
+$verifyCode='import sys,tarfile; t=tarfile.open(sys.argv[1]); assert any(m.isfile() and t.extractfile(m).read()==b"synthetic recoverable home content" for m in t.getmembers())'
+$verified=Invoke-V12Process '/usr/bin/python3' @('-I','-c',$verifyCode,(Join-Path $homeRestore synthetic-home.tar)) $null
+Check streamed_home_recovers_original_file ($verified.exit -eq 0)
 $src=Join-Path $root source;[IO.Directory]::CreateDirectory($src)|Out-Null
 [IO.File]::WriteAllText((Join-Path $src original.txt),'synthetic valuable data')
 $null=Engine @('backup',$src)

@@ -1,5 +1,14 @@
 # Backup v12 - operating and recovery guide
 
+Current follow-up, 22 October: the real run passed inventory but stopped at
+home capture because a null options array became an empty command argument.
+The correction is installed and passes 55 portable checks, zero failures/skips.
+The earlier 48-check native pass applies to the prior files. A fresh native
+pass is required for the correction, including restic-to-WSL producer checks.
+The owner has paused v12 while completing Cognee recovery-key custody and
+credential review. Do not start a backup or switch the task from this update.
+The older qualification and resume instructions below are historical.
+
 Updated 22 October 2026. The corrected launcher passed 48 native Windows checks,
 with zero failures/skips and exit code 0, including the actual Windows-to-WSL
 launch probe. All 15 qualified file hashes match the installed version.

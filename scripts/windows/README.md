@@ -1,5 +1,14 @@
 # Windows backup v12
 
+Current follow-up, 22 October: the real run passed inventory but stopped at
+home capture because a null options array became an empty command argument.
+The correction is installed and passes 55 portable checks, zero failures/skips.
+The earlier 48-check native pass applies to the prior files. A fresh native
+pass is required for the correction, including restic-to-WSL producer checks.
+The owner has paused v12 while completing Cognee recovery-key custody and
+credential review. Do not start a backup or switch the task from this update.
+The older qualification and resume instructions below are historical.
+
 For the currently qualified **v11** routine and its tested 7-Zip recovery copy,
 use [Vincent's simple backup and restore manual](BACKUP-AND-RESTORE-SIMPLE-MANUAL.md).
 The corrected v12 launcher passed native qualification on 22 October: 48 passed,

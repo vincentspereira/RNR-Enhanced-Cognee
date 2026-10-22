@@ -177,7 +177,7 @@ try {
   Save-BackupScope cognee (@('--stdin-from-command','--stdin-filename','enhanced-cognee-encrypted.tar','--',$wsl,'-d','Ubuntu-Hermes','-u','root','--cd','/','--exec')+$native)
   foreach ($distro in $Distros) {
    if ($distro -notin @('Ubuntu-Workspace','Ubuntu-Hermes','Ubuntu-Company')) {throw 'Unreviewed distro; use one of the three reviewed names.'}
-   $options=if ($distro -eq 'Ubuntu-Hermes') {@('--hermes')} else {@()}
+   $options=@(if ($distro -eq 'Ubuntu-Hermes') {'--hermes'})
    if (-not $script:run.completed.ContainsKey($distro)) {
     $helper=Join-Path $support capture_home.py
     $helperHash=(Get-FileHash -LiteralPath $helper).Hash

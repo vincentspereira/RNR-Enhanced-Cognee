@@ -54,6 +54,14 @@ is retained, but its prerequisites have not all passed.
 
 ## Windows/backup progress
 
+Latest 22 October update: [home capture correction](WINDOWS-V12-HOME-CAPTURE-2026-10-22.md).
+The resumed run passed inventory but stopped on an unwanted empty Python
+argument. The installed correction passes 55 portable checks; changed files
+require fresh native qualification. V12 is paused at the owner's request while
+guiding Cognee recovery custody and exposed-credential review. Its incomplete
+checkpoint retains only Cognee. The native pass and resume directions below
+describe the earlier candidate. V11 remains scheduled.
+
 Current result: [v12 native qualification passed](WINDOWS-V12-NATIVE-PASS-2026-10-22.md):
 the corrected WSL launcher passed 48 checks, zero failures/skips, exit 0.
 All 15 qualified installed hashes match; the actual Windows-to-WSL launch probe

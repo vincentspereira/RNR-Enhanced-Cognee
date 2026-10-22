@@ -1,5 +1,11 @@
 # V12 native Windows qualification passed
 
+Superseding follow-up: [home capture correction](WINDOWS-V12-HOME-CAPTURE-2026-10-22.md).
+The 48-check pass remains historical after the next real run exposed null
+capture options. The installed correction passes 55 portable checks and needs
+fresh native qualification. V12 is paused for guided owner custody/credential
+review; do not execute the older resume command below yet.
+
 Date: 22 October 2026. This supersedes the earlier native-pending/failure status.
 First real backup, provider/recovery review and task transition remain separate.
 

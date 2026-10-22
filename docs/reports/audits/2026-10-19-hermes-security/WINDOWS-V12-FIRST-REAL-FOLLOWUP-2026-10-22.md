@@ -1,5 +1,11 @@
 # First real v12 backup: Workspace inventory follow-up
 
+Superseding follow-up: [home capture correction](WINDOWS-V12-HOME-CAPTURE-2026-10-22.md).
+The 48-check pass remains historical after the next real run exposed null
+capture options. The installed correction passes 55 portable checks and needs
+fresh native qualification. V12 is paused for guided owner custody/credential
+review; do not execute the older resume command below yet.
+
 Date: 22 October 2026. Current result: the WSL launcher correction passed
 48 native Windows checks, zero failures/skips, exit 0. All 15 installed hashes
 match the receipt. See [current qualification](WINDOWS-V12-NATIVE-PASS-2026-10-22.md).
