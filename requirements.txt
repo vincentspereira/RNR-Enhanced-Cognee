@@ -25,6 +25,7 @@ python-multipart>=0.0.31,<1         # Form data parsing, current security floor
 cryptography>=50.0.0,<51             # Authenticated encryption, current security floor
 
 # HTTP and Networking
+certifi>=2026.10.19                 # Corrected trust bundle, GHSA-6q48-6c7w-9gw2
 httpx==0.28.1                      # Async HTTP client
 aiofiles==23.2.1                   # Async file operations
 requests==2.34.2                   # HTTP requests (for some integrations)

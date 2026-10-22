@@ -445,3 +445,24 @@ evidence, not fresh publisher authentication or advisory clearance. No complete
 runtime/private-data admission or all-bot activation is claimed. This delta
 supplements the existing pinned fleet handoff; no shared maintenance window has
 been scheduled and no fleet input has been deployed or rebased.
+
+## Native tools1 generation prepared successfully
+
+Vincent ran the pinned bbfa0eea94664d46afa381107b244df59c632465 helper and
+reported complete=true/snapshot_prepared=true at
+/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1, with 43574 program
+files and originals_preserved=true. All four tool source/copy payload checks
+passed at the selected versions. The editable import receipt remains 91 module
+bindings, 21 retained namespace paths, ten omitted namespace paths/entries.
+tool_binaries_executed, hermes_launched, runtime_qualified, profile_configured
+and memory_connected are still false in this preparation receipt. The pilot
+already exists in its separate restricted home; this builder configures no
+provider/model route. The new generation has not yet passed a native version,
+tool execution, access or actual memory test. Continue those checks before
+private-data admission. No existing profile, bot, backend or review bundle was
+reported changed by this step.
+
+The owner also asked to consolidate the GitHub branches into main. Both older
+deployment tips are already ancestors of the delivery branch. See
+BRANCH-CONSOLIDATION-AND-RELEASE-REVIEW-2026-10-22.md for the remote ancestry,
+required security checks and the separate pull-request/merge disposition.

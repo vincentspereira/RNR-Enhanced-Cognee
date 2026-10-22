@@ -375,3 +375,14 @@ qualify the new one. Do not assume the four-tool warning is cleared before the
 actual Hermes startup check. Keep the next provider/token/model/selected-memory,
 cross-scope, backup and fleet admission tests separate. No native tool repair,
 model success or complete Cognee integration has been reported by this change.
+
+Native follow-up: the owner has now successfully prepared the tools1 generation
+from the pinned bbfa0eea helper, reporting 43574 program files, all four source/
+copy fingerprints verified and originals preserved. The other execution and
+integration flags remain false. Do not repeat preparation or recreate the pilot.
+The next operator step uses the new generation's absolute bin/hermes path under
+hermes-runtime/no-new-privileges for --version, printing only identity and the
+three self-process confinement fields. After reviewing actual startup output,
+check tool versions/confinement and then configure the selected provider/model
+route. Source branch consolidation does not require changing this deployed
+Hermes source revision, running the original updater or restarting the distro.

@@ -98,10 +98,11 @@ asyncpg==0.32.0 \
     --hash=sha256:fd5adfb01cea16908d617af55b00a84c9e581964b77d4301c29fd735bb7850c3 \
     --hash=sha256:fe3036fb6e7b61159f554af153824786999142b69fea081acf8cb0958603ea26
     # via -r requirements-memory.in
-certifi==2026.10.18 \
-    --hash=sha256:73191c47aaa79da394e8fee2dbc2ec827432cab56311122c9e47abf79e390f62 \
-    --hash=sha256:b9995d97b64d0431a5af837d8ca8cd6238104d1f319f04bd93ea43124d6c861e
+certifi==2026.10.19 \
+    --hash=sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae \
+    --hash=sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b
     # via
+    #   -r requirements-memory.in
     #   httpcore
     #   httpx
     #   requests

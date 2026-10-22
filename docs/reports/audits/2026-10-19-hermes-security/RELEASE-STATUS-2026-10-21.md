@@ -1,5 +1,23 @@
 # Enhanced Cognee release status - 21 October 2026
 
+Latest review, 22 October: the owner subsequently approved a restricted runtime
+account and initial pilot, followed by wider bot/profile rollout after testing.
+The tools1 protected Hermes program generation is now prepared (43574 files,
+four tool payloads verified); native startup/tool execution and the pilot memory
+connection remain pending. This supersedes the earlier account-deferral decision
+below. The real profiles/bots have not been connected by preparing this release.
+See [the current native receipt](HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+
+The owner requested main-branch consolidation. Both deployment branches are
+already included in the delivery branch; main has no divergent newer commits.
+The [current consolidation/release review](BRANCH-CONSOLIDATION-AND-RELEASE-REVIEW-2026-10-22.md)
+records the enforced frontend findings and newly failed container scan. A
+corrected certifi bundle is pinned in the five pip deployment/test locks; Pillow
+and the current FastEmbed dependency ceiling still prevent a clean security
+gate. Main merge remains conditional and is not a private-data activation step.
+
+Earlier 22 October checkpoints follow; they are historical where superseded.
+
 22 October profile follow-up: API, worker and backup timer report active.
 The main administrator-owned profile has no Cognee plugin/settings yet. See
 [the restricted live-profile account proposal](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
