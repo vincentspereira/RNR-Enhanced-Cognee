@@ -13,7 +13,11 @@ should apply to all 40-plus bots and every other Hermes profile. This supersedes
 the earlier account-preparation deferral below. Do not ask for the same account
 approval again. Prepare the permanent hermes-runtime account and initial profile
 through the verified Ubuntu-Hermes operator workflow; begin with invented data.
-No account has been created by this document or by the Workspace session.
+The owner has now reported successful guarded creation of hermes-runtime with
+home /var/lib/hermes-runtime, mode 0700, only its own group and a locked password.
+No Hermes profile is configured yet. The Workspace session did not create or
+directly inspect the host account. See
+[the operator checkpoint](../reports/audits/2026-10-19-hermes-security/HERMES-RESTRICTED-PROFILE-2026-10-22.md).
 
 The initial profile is a rollout stage, not the final coverage limit. Use the
 same protected backend for the main assistant and the entire actual fleet,
