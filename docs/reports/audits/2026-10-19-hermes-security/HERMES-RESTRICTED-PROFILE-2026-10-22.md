@@ -237,3 +237,24 @@ results: 65 passed, zero failures, zero skips and no reported warnings under
 Workspace Python 3.12.3. Full-suite/coverage results and native corrected
 preflight/preparation success remain unclaimed. Protected runtime, initial
 profile/provider/model tests and fleet rollout remain pending.
+
+## Native corrected import preflight passed
+
+The owner ran the checked helper from delivery commit
+5a0ec3da21d3c802269d770ffeeb4e0cc460127b with --preflight inside Ubuntu-Hermes.
+The supplied receipt reports complete=true, read_only=true and
+import_preflight_passed=true against Hermes source
+4d04303818b61bf3aa09278af48356315515965b. The generated finder validated 91 module
+bindings, retained 21 namespace paths and omitted ten namespace paths/entries
+absent from the selected committed layout. These totals cover the earlier 122
+path references. No files were copied and Hermes was not launched.
+
+This resolves the import-table compatibility blocker at the no-copy preflight
+stage. The receipt explicitly reports snapshot_prepared=false and
+runtime_qualified=false. It does not prove successful protected copying, final
+link confinement, program startup, restricted profile/provider/model behavior,
+backup coverage or fleet deployment. Continue the approved protected preparation
+using this exact helper with --apply through the checked sudo wrapper; it repeats
+validation against the actual committed source copy and retains all original
+installations, profiles and previous staging generations. No code change or
+additional local test result is implied by recording the owner-run receipt.
