@@ -698,3 +698,39 @@ warnings, including 28 new route/privacy regressions with invented configuration
 This does not establish native model-route inventory or network/model success.
 No main merge, service/model restart, bot activation, backup run, key renewal or
 private-data admission was performed by this Workspace preparation.
+
+## Received local declarations; owner selected Z.ai for tests only
+
+The owner ran the pinned local inventory at
+de771c38d7838c699c865ca0611a7cb78b237505. Main config read successfully: custom_1
+and provider_2 both declare http://localhost:8888/v1 with the expected seven
+local model names, without configured context sizes. No request/model call or
+file change occurred. Neither row establishes the active default or current
+served model. The two earlier test config files returned the fixed
+unreadable_unsafe_or_invalid label; no reason was invented and no permissions,
+old profiles or credentials were changed to read them.
+
+The owner subsequently authorized GLM-5.3-Flash from the existing Z.ai GLM Pro
+Coding Plan for tests/checks, with local chat reserved for offline/cloud-failure
+use. Their latest explicit clarification is to preserve the default models
+setup in Hermes. It supersedes their prior conditional default-change request.
+Use test-run overrides only; leave main/default and existing bot/profile model
+settings intact. This delivery has changed no model defaults or called a chat
+model. The already configured local embedding/index service remains separate
+from the chat-model choice. No global provider policy, private-data admission
+or hosted extraction is inferred.
+
+The next prepared inspector mode reads only main config and reports sanitized
+Z.ai declaration metadata, including distinct Coding Plan/general API endpoint
+kinds. No .env, credential values, pool/secret stores, model calls or network
+requests are involved. Builtin provider names without an explicit URL remain
+unresolved; no quota/entitlement/access claim is made. The official Z.ai tool
+guide lists Hermes support and the Coding Plan Chat Completions endpoint, and
+the model guide documents glm-5.3-flash. See the runbook for direct sources and
+the guarded operator scope. General pay-as-you-go routing is not the requested
+plan route and must not be substituted during testing.
+
+Focused Workspace suites pass 282 tests, zero failures/skips and no reported
+warnings, including 20 new main-only Z.ai privacy/endpoint regressions. Native
+Z.ai inventory and GLM test/capture evidence remain pending. Current defaults,
+live Desktop work, bots, service keys/stores and backup generations are preserved.

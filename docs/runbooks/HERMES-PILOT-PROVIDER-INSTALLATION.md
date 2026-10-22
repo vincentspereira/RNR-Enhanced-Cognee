@@ -11,6 +11,11 @@ unchanged. Chat-model calls, memory-record writes and full runtime qualification
 remain false. This is not private-data admission. The sections below preserve
 the staged procedure and its dated checkpoints.
 
+Current test-model direction: use glm-5.3-flash through the existing Z.ai GLM
+Pro Coding Plan with temporary test overrides only. Preserve all existing
+Hermes default/fallback model settings. See the latest owner correction below;
+older local-model next-step wording is historical.
+
 ## Purpose and selected integration
 
 Install the version 0.1.0 Enhanced Cognee native MemoryProvider with eight callable
@@ -265,3 +270,54 @@ model weights or substitute a cloud fallback to fill a missing field. The
 focused suites now pass 262 cases with zero failures/skips and no reported
 warnings, including 28 new inventory/privacy cases. Native inventory remains
 pending; fixture success is not host model-route evidence.
+
+## Owner model correction: Z.ai for tests; preserve existing defaults
+
+The owner returned the local inventory at
+de771c38d7838c699c865ca0611a7cb78b237505. The main config was readable and has
+two declarations for http://localhost:8888/v1 and the seven expected local model
+IDs, without declared context sizes. That is not network/model evidence or a
+statement that either declaration is the active default. The two earlier test
+configurations returned unreadable_unsafe_or_invalid; the bounded reader did
+not distinguish ownership, permissions, links or parse errors. Do not infer
+data loss or change permissions just to make that inventory green. The current
+restricted pilot already passed its independent native connector checks.
+
+The owner then directed GLM-5.3-Flash from the existing Z.ai GLM Pro Coding Plan
+for testing, reserving local chat models for offline work/cloud unavailability.
+Their latest clarification supersedes the intervening conditional permission
+to change defaults: "Do not change the default models setup done in Hermes
+Agent. Just use GLM-5.3-Flash for your tests and checks." Preserve main/default,
+bot and profile model settings. Use temporary test-run overrides rather than
+changing configured defaults or fallback/router behavior. No model settings have been changed by these
+inspection steps. A local fallback cannot be reported as a passed GLM test.
+This chat-model choice does not replace the existing local embedding/index
+component or authorize hosted extraction/private-data admission.
+
+Official Z.ai [supported-tool and endpoint documentation](https://docs.z.ai/devpack/tool/others)
+lists Hermes as a supported general-purpose agent and gives the Coding Plan
+OpenAI Chat Completions endpoint https://api.z.ai/api/coding/paas/v4. The
+[model-switch guide](https://docs.z.ai/devpack/latest-model) documents the model
+ID glm-5.3-flash. Do not substitute the general pay-as-you-go endpoint
+https://api.z.ai/api/paas/v4. Documentation is not proof of account entitlement,
+quota, credential availability or actual successful model calls. Preserve
+existing context/safety guards and verify the chosen runtime capabilities.
+
+The inspector now has an explicit main-only mode, main(zai_only=True), still
+read-only as the ordinary operator. It reports the allowlisted current model
+identifier, builtin Z.ai selection flag, exact public Z.ai endpoint kind,
+declared GLM models and presence booleans for credential fields/references and
+extra headers. No key values, reference names, source provider names, .env file,
+secret store, model/network request or configuration write belongs to this step.
+It distinguishes dedicated Coding Plan endpoints from the general API, without
+assuming that a builtin provider name proves which endpoint will be used.
+Current defaults may be reported for reconciliation but are never modified.
+
+The focused suites pass 282 cases, zero failures/skips and no reported warnings,
+including 20 new Z.ai endpoint/privacy/main-only regressions. The original local
+inspection mode is preserved. Execute the exact published hash-verified blob in
+the main-only Z.ai mode before arranging narrow credential use and temporary
+GLM test overrides; do not request keys in chat or copy the whole owner .env.
+Native Z.ai inventory, authenticated account access and cloud model/memory
+capture remain pending. No additional cloud subscription or paid app is needed
+for this read-only configuration inspection.
