@@ -239,7 +239,167 @@ def test_unrelated_home_path_is_not_admitted_by_reconstructed_imports(builder, t
         builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
 
 
+def test_plugin_namespaces_and_stale_entries_are_handled_in_new_map_only(builder, tmp_path):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    (source / "plugins/hermes-achievements/docs").mkdir(parents=True)
+    raw = (
+        "MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+        "NAMESPACES = {'plugins.hermes-achievements': ['/old/root/plugins/hermes-achievements'], "
+        "'plugins.hermes-achievements.docs': ['/old/root/plugins/hermes-achievements/docs'], "
+        "'plugins.hermes-achievements.__pycache__': ['/old/root/plugins/hermes-achievements/__pycache__'], "
+        "'private_generated': ['/old/root/private_generated']}\n"
+    ).encode()
+    original = tmp_path / "original-finder.py"
+    original.write_bytes(raw)
+    catalog = (set(), {"hermes_cli", "plugins", "plugins/hermes-achievements", "plugins/hermes-achievements/docs"})
+    mappings = [(builder.SOURCE, tmp_path / "protected/repo")]
+    counts, no_copy_counts = {}, {}
+    updated = builder.rebase_finder(raw, mappings, source_tree=source, catalog=catalog, report=counts)
+    assert updated == builder.rebase_finder(raw, mappings, catalog=catalog, report=no_copy_counts)
+    assert counts == no_copy_counts == {
+        "module_bindings": 1, "namespace_paths_retained": 2,
+        "namespace_paths_omitted": 2, "namespace_entries_omitted": 2}
+    namespaces = ast.literal_eval(ast.parse(updated).body[1].value)
+    assert set(namespaces) == {"plugins.hermes-achievements", "plugins.hermes-achievements.docs"}
+    assert b"private_generated" not in updated
+    assert original.read_bytes() == raw
+
+
+@pytest.mark.parametrize("key,path", [
+    ("plugins...escape", "/old/root/plugins/escape"),
+    ("plugins/escape", "/old/root/plugins/escape"),
+    ("plugins.escape", "/old/root/plugins/../escape"),
+    ("plugins.escape", "/different/root/plugins/escape"),
+])
+def test_omitted_namespaces_cannot_bypass_name_path_or_source_root_guards(builder, tmp_path, key, path):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    raw = ("MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+           f"NAMESPACES = {{{key!r}: [{path!r}]}}\n").encode()
+    with pytest.raises(builder.PreparationError):
+        builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
+
+
+def test_uncommitted_namespace_directory_is_omitted_even_if_present_in_working_tree(builder, tmp_path):
+    source = tmp_path / "dirty-working-tree"
+    (source / "hermes_cli").mkdir(parents=True)
+    (source / "plugins/extra-local").mkdir(parents=True)
+    marker = source / "plugins/extra-local/keep.txt"
+    marker.write_text("owner work, never removed")
+    raw = ("MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+           "NAMESPACES = {'plugins.extra-local': ['/old/root/plugins/extra-local']}\n").encode()
+    catalog = (set(), {"hermes_cli"})
+    result = builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source, catalog=catalog)
+    assert ast.literal_eval(ast.parse(result).body[1].value) == {}
+    assert marker.read_text() == "owner work, never removed"
+
+
+def test_missing_module_binding_is_never_treated_as_disposable_namespace_metadata(builder, tmp_path):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    raw = ("MAPPING = {'hermes_cli': '/old/root/hermes_cli', 'missing': '/old/root/missing'}\n"
+           "NAMESPACES = {}\n").encode()
+    with pytest.raises(builder.PreparationError, match="module is missing"):
+        builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
+
+
+def test_normal_user_git_needs_no_setgroups_and_other_users_are_refused(builder, monkeypatch):
+    monkeypatch.setattr(os, "geteuid", lambda: 1234)
+    calls = []
+    def capture(args, **kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(returncode=0, stdout=b"public metadata")
+    monkeypatch.setattr(subprocess, "run", capture)
+    operator = SimpleNamespace(pw_uid=1234, pw_gid=1234)
+    builder.git_as_operator(operator, "rev-parse", "HEAD")
+    assert not {"user", "group", "extra_groups"}.intersection(calls[0])
+    assert calls[0]["env"]["GIT_CONFIG_GLOBAL"] == "/dev/null"
+    monkeypatch.setattr(os, "geteuid", lambda: 9876)
+    with pytest.raises(builder.PreparationError, match="human operator"):
+        builder.git_as_operator(operator, "rev-parse", "HEAD")
+    assert len(calls) == 1
+
+
+@pytest.fixture
+def preflight_fixture(builder, monkeypatch, tmp_path):
+    monkeypatch.setenv("WSL_DISTRO_NAME", "Ubuntu-Hermes")
+    monkeypatch.setattr(os, "geteuid", lambda: 1234)
+    monkeypatch.setattr(builder.pwd, "getpwuid", lambda uid: SimpleNamespace(pw_uid=1234, pw_name="vincentspereira"))
+    state, environment = tmp_path / "state", tmp_path / "environment"
+    monkeypatch.setattr(builder, "STATE", state)
+    monkeypatch.setattr(builder, "ENVIRONMENT", environment)
+    state.mkdir()
+    facts = state / "facts.json"
+    facts.write_text(json.dumps({"packages": {"venv": {"environment": str(environment)}}}))
+    site = environment / "lib/python3.14/site-packages"
+    site.mkdir(parents=True)
+    hook = b"import must_not_execute\n"
+    (site / "fixture.pth").write_bytes(hook)
+    monkeypatch.setattr(builder, "PTH_HASHES", {"fixture.pth": builder.digest(hook)})
+    finder = site / "__editable__fixture_finder.py"
+    finder.write_text("MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+                      "NAMESPACES = {'plugins.local-only': ['/old/root/plugins/local-only']}\n")
+    calls = []
+    def git(operator, *args, **kwargs):
+        calls.append(args)
+        if args == ("rev-parse", "HEAD"):
+            return builder.REVISION.encode()
+        assert args == ("ls-tree", "-r", "-z", builder.REVISION)
+        return b"100644 blob " + b"a" * 40 + b"\thermes_cli/__init__.py\0"
+    monkeypatch.setattr(builder, "git_as_operator", git)
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Preflight must never mutate files, copy or launch Hermes")
+    for name in ("write_new", "copy_tree", "unpack_source", "publish", "private_parent", "prepare"):
+        monkeypatch.setattr(builder, name, forbidden)
+    return builder, calls, facts, finder
+
+
+def test_no_copy_preflight_checks_committed_catalog_and_reports_omissions(preflight_fixture):
+    builder, calls, facts, finder = preflight_fixture
+    before = facts.read_bytes(), finder.read_bytes()
+    result = builder.preflight()
+    assert result["complete"] is True and result["import_preflight_passed"] is True
+    assert result["snapshot_prepared"] is False and result["files_copied"] == 0
+    assert result["hermes_launched"] is False and result["runtime_qualified"] is False
+    assert result["finders"][0]["namespace_entries_omitted"] == 1
+    assert (facts.read_bytes(), finder.read_bytes()) == before
+    assert len(calls) == 3
+
+
+@pytest.mark.parametrize("changed", ["facts", "finder", "startup"])
+def test_no_copy_preflight_rejects_changes_during_inspection(preflight_fixture, monkeypatch, changed):
+    builder, calls, facts, finder = preflight_fixture
+    original = builder.git_as_operator
+    def mutate(operator, *args, **kwargs):
+        raw = original(operator, *args, **kwargs)
+        if len(calls) == 3:
+            if changed == "facts":
+                facts.write_text("{}")
+            elif changed == "finder":
+                finder.write_text("MAPPING = {}\n")
+            else:
+                (finder.parent / "fixture.pth").write_bytes(b"import changed_hook\n")
+        return raw
+    # Alter at catalog read, after initial facts/hooks read and before rebase.
+    def at_catalog(operator, *args, **kwargs):
+        raw = original(operator, *args, **kwargs)
+        if args[0] == "ls-tree":
+            if changed == "facts":
+                facts.write_text("{}")
+            elif changed == "finder":
+                # Mutate during the final revision check, after finder capture.
+                monkeypatch.setattr(builder, "git_as_operator", mutate)
+            else:
+                (finder.parent / "fixture.pth").write_bytes(b"import changed_hook\n")
+        return raw
+    monkeypatch.setattr(builder, "git_as_operator", at_catalog)
+    with pytest.raises(builder.PreparationError):
+        builder.preflight()
+
+
 def test_git_export_drops_root_and_excludes_operator_environment(builder, monkeypatch):
+    monkeypatch.setattr(os, "geteuid", lambda: 0)
     calls = []
     def capture(args, **kwargs):
         calls.append((args, kwargs))

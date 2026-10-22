@@ -202,3 +202,38 @@ and non-execution. The combined targeted suite reports 53 passed, zero failures,
 zero skips and no reported warnings under Workspace Python 3.12.3. This is not a
 full-suite/coverage or native diagnostic/preparation success receipt. Runtime,
 profile, model/provider and fleet qualification remain pending.
+
+## Received full table audit and namespace correction
+
+The owner supplied a completed --editable-tables receipt from delivery commit
+ed0a530d: 122 entries/paths checked, one source root, no unbound home-path
+constants, 17 reported problems and no truncation. All reported problems were in
+NAMESPACES. Seven corresponded to committed plugin directories containing
+hyphens; ten had no corresponding committed path (two also had nonstandard
+names). Unknown names and old mapped source locations stayed redacted. No
+MAPPING binding problem was reported. No files were copied or Hermes launched.
+
+The corrected preparer accepts safe hyphenated namespace labels backed by the
+selected commit and omits namespace references absent from that copy. It never
+omits missing required module bindings. Even omitted namespace targets must
+match declared suffixes, normalized paths and the single source root. It records
+counts, preserves the original copied finder in restricted evidence, and never
+modifies original source/profile files. The omitted references are not proof
+that any original folder is unnecessary; no deletion is performed or implied.
+
+A normal-user --preflight checks the same binding logic/catalog directly from
+Git metadata with no staging files, copies, root identity or application startup.
+It checks startup hashes, selected generation and source/finder stability. The
+actual privileged preparation additionally checks the copied source paths and
+uses the same catalog/exclusions. Root Git still drops identity/groups; normal
+operator Git no longer attempts a privileged supplementary-group change.
+
+Twelve added regression cases cover namespace retention and count reporting,
+no-copy/copied validation parity, original-file preservation, name/traversal/
+mixed-root denial even for omitted namespaces, strict missing-module denial,
+uncommitted working-tree preservation, normal-user Git behavior, no-write
+preflight and source-metadata/finder/startup mutation refusal. Combined targeted
+results: 65 passed, zero failures, zero skips and no reported warnings under
+Workspace Python 3.12.3. Full-suite/coverage results and native corrected
+preflight/preparation success remain unclaimed. Protected runtime, initial
+profile/provider/model tests and fleet rollout remain pending.

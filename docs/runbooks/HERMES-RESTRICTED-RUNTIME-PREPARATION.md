@@ -45,6 +45,13 @@ integrations/hermes/deployment/prepare_restricted_runtime.py:
   escape links and unrelated home references still stop preparation. This
   preflight runs after source export, before the larger Python/venv copy.
   Copied finder bytes and the finder set must match the preflight originals.
+- Generated namespace labels may include hyphens in committed plugin folder
+  names. Preserve those entries when backed by committed source directories.
+  Omit only namespace references absent from the selected committed copy and
+  report counts; do not omit required module bindings or change original files.
+  Every old namespace target, including omitted entries, must still match its
+  declared suffix, normalized path and single source root. Unknown expressions,
+  duplicate keys, traversal and unrelated private references remain errors.
 - Uses the source's supported payload/environment metadata and external-update
   steward. The code identity is the actual commit, displayed as git.4d04303;
   no release version or advisory clearance is invented. This is a local operator
@@ -160,6 +167,40 @@ the diagnostic reports both interpretations without choosing a relocation rule.
 
 Do not relax the privileged validator until the actual native entry/layout is
 known. This diagnostic is additional evidence, not a successful preparation.
+
+### Received namespace layout and no-copy preflight
+
+The completed table audit checked all 122 entries/paths without truncation. It
+reported one source root, no unbound home-path constants, and 17 problem entries,
+all in NAMESPACES. Seven were backed by committed plugin folders whose names
+contain hyphens, such as plugins/hermes-achievements and plugins/model-providers.
+Ten had no corresponding path in the selected commit; their identities/origins
+remain private and unverified. The audit does not establish that those original
+folders are disposable or authorize deleting them.
+
+The corrected helper separates strict Python module names from safe namespace
+folder labels. It retains committed namespaces and omits uncommitted namespace
+references only from the new generated map. It reports module/namespace counts
+and preserves copied originals in restricted operator evidence on preparation.
+Missing required modules still fail. A single committed-file catalog, with the
+same exclusions, drives both no-copy checks and actual-copy validation; actual
+copied paths must also remain confined inside the protected source tree.
+
+Run the exact published prepare_restricted_runtime.py blob with --preflight as
+the normal Ubuntu-Hermes operator WITHOUT sudo. This uses system Python in
+isolated/no-site mode. It reads Git tree and selected install metadata, parses
+finders without executing them, checks startup hashes and source/selection/finder
+stability, and creates no files/staging copies. Root execution is refused.
+Git under this mode needs no group-changing privileges. It returns sanitized
+counts and import_preflight_passed=true only when every binding passes. A changed
+revision, selected generation, startup hook or finder fails the check.
+
+This result means only that the corrected import-map logic accepts the current
+committed layout. It does not check every copied dependency/link, prove host
+permissions or prepare/launch Hermes. snapshot_prepared and runtime_qualified
+remain false. After reviewing the native preflight result, use the same checked
+helper with --apply through the approved sudo wrapper. Retain earlier partial
+copies; no cleanup, existing profile change or private memory activation occurs.
 
 A successful preparation returns snapshot_prepared=true, runtime_qualified=false,
 hermes_launched=false, profile_configured=false and memory_connected=false.

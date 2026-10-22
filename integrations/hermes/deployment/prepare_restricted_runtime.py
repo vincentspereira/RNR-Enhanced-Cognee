@@ -197,16 +197,35 @@ def unpack_source(archive: Path, destination: Path, mappings):
         make_link(original, target, out, mappings)
 
 
-def verified_import_bindings(tree, source_tree: Path, mappings) -> dict[int, str]:
+def verified_import_bindings(tree, source_tree: Path | None, mappings, *, catalog=None,
+                             report=None) -> dict[int, str]:
     """Reconstruct generated imports from committed files, never old build trees.
 
-    Setuptools finders can refer to a build-source mirror outside SOURCE. Only
-    literal MAPPING/NAMESPACES values whose module suffix exists in the exported
-    commit may be relocated. All bindings must describe one source root.
+    Setuptools finders can refer to a build-source mirror outside SOURCE.
+    Missing derived namespace entries are omitted from the NEW import map, never
+    from the original installation. Module bindings must always exist. Every
+    path, including omitted namespace paths, must describe the same source root.
     """
     replacements, roots, tables = {}, set(), set()
     final_source = translated(SOURCE, mappings)
     module_name = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*")
+    namespace_name = re.compile(r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*")
+    counts = {"module_bindings": 0, "namespace_paths_retained": 0,
+              "namespace_paths_omitted": 0, "namespace_entries_omitted": 0}
+
+    def source_types(relative):
+        expected = None
+        if catalog is not None:
+            files, directories = catalog
+            expected = relative.as_posix() in directories, relative.as_posix() in files
+            if source_tree is None:
+                return expected
+        candidate = source_tree / relative
+        if not candidate.resolve().is_relative_to(source_tree.resolve()):
+            raise PreparationError("An editable import escapes the committed source copy.")
+        actual = candidate.is_dir(), candidate.is_file()
+        return tuple(left and right for left, right in zip(actual, expected)) if expected is not None else actual
+
     for statement in tree.body:
         if isinstance(statement, ast.AnnAssign):
             targets, value = [statement.target], statement.value
@@ -223,9 +242,11 @@ def verified_import_bindings(tree, source_tree: Path, mappings) -> dict[int, str
         table = named[0]
         tables.add(table)
         seen = set()
+        retained_keys, retained_values = [], []
         for key, entry in zip(value.keys, value.values):
+            name_rule = namespace_name if table == "NAMESPACES" else module_name
             if (not isinstance(key, ast.Constant) or not isinstance(key.value, str)
-                    or len(key.value) > 256 or not module_name.fullmatch(key.value)
+                    or len(key.value) > 256 or not name_rule.fullmatch(key.value)
                     or key.value in seen):
                 raise PreparationError("An editable import table has an unsupported module name.")
             seen.add(key.value)
@@ -236,6 +257,7 @@ def verified_import_bindings(tree, source_tree: Path, mappings) -> dict[int, str
                 entries = entry.elts
             else:
                 entries = [entry]
+            retained_nodes = []
             for node in entries:
                 if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
                     raise PreparationError("An editable import path is not a literal string.")
@@ -250,27 +272,39 @@ def verified_import_bindings(tree, source_tree: Path, mappings) -> dict[int, str
                 for _ in suffix.parts:
                     root = root.parent
                 roots.add(root)
-                candidate = source_tree / suffix
-                resolved = candidate.resolve()
-                if not resolved.is_relative_to(source_tree.resolve()):
-                    raise PreparationError("An editable import escapes the committed source copy.")
-                module_file = candidate if suffix.suffix == ".py" else candidate.with_suffix(".py")
-                if not module_file.resolve().is_relative_to(source_tree.resolve()):
-                    raise PreparationError("An editable module file escapes the committed source copy.")
-                valid = candidate.is_dir() or module_file.is_file()
+                is_directory, is_file = source_types(suffix)
                 if table == "NAMESPACES":
-                    valid = candidate.is_dir()
-                if not valid:
-                    raise PreparationError("An editable module is missing from the committed source copy.")
+                    if not is_directory:
+                        counts["namespace_paths_omitted"] += 1
+                        continue
+                    counts["namespace_paths_retained"] += 1
+                else:
+                    _unused, has_python_file = source_types(suffix.with_suffix(".py"))
+                    if not (is_directory or (is_file if suffix.suffix == ".py" else has_python_file)):
+                        raise PreparationError("An editable module is missing from the committed source copy.")
+                    counts["module_bindings"] += 1
                 replacements[id(node)] = str(final_source / suffix)
+                retained_nodes.append(node)
+            if table == "NAMESPACES":
+                if entries and not retained_nodes:
+                    counts["namespace_entries_omitted"] += 1
+                    continue
+                entry.elts = retained_nodes
+            retained_keys.append(key)
+            retained_values.append(entry)
+        value.keys, value.values = retained_keys, retained_values
     if "MAPPING" not in tables or not replacements or len(roots) != 1:
         raise PreparationError("Editable imports do not describe one supported committed source layout.")
+    if report is not None:
+        report.update(counts)
     return replacements
 
 
-def rebase_finder(raw: bytes, mappings, *, source_tree: Path | None = None) -> bytes:
+def rebase_finder(raw: bytes, mappings, *, source_tree: Path | None = None,
+                  catalog=None, report=None) -> bytes:
     tree = ast.parse(raw.decode("utf-8"))
-    replacements = verified_import_bindings(tree, source_tree, mappings) if source_tree is not None else {}
+    replacements = (verified_import_bindings(tree, source_tree, mappings, catalog=catalog, report=report)
+                    if source_tree is not None or catalog is not None else {})
     class Rebase(ast.NodeTransformer):
         def visit_Constant(self, node):
             if id(node) in replacements:
@@ -296,10 +330,15 @@ def rewrite_generated(path: Path, raw: bytes, audit: Path):
 
 
 def git_as_operator(operator, *args, stdout=subprocess.PIPE):
+    credentials = {}
+    if os.geteuid() == 0:
+        credentials = {"user": operator.pw_uid, "group": operator.pw_gid, "extra_groups": ()}
+    elif os.geteuid() != operator.pw_uid:
+        raise PreparationError("Git inspection must run as the human operator.")
     result = subprocess.run(
         ["/usr/bin/git", "--no-replace-objects", "-c", "core.fsmonitor=false",
          "-c", "core.hooksPath=/dev/null", "-C", str(SOURCE), *args],
-        user=operator.pw_uid, group=operator.pw_gid, extra_groups=(), cwd="/tmp",
+        **credentials, cwd="/tmp",
         env={"PATH": "/usr/bin:/bin", "HOME": str(HOME), "LC_ALL": "C",
              "GIT_OPTIONAL_LOCKS": "0", "GIT_CONFIG_GLOBAL": "/dev/null",
              "GIT_CONFIG_SYSTEM": "/dev/null"},
@@ -308,6 +347,65 @@ def git_as_operator(operator, *args, stdout=subprocess.PIPE):
     if result.returncode:
         raise PreparationError("The unprivileged source export failed; originals were retained.")
     return result.stdout
+
+
+def committed_catalog(operator):
+    """The same public source layout drives no-copy and copied-source checks."""
+    files, directories = set(), set()
+    for item in git_as_operator(operator, "ls-tree", "-r", "-z", REVISION).split(b"\0"):
+        if not item:
+            continue
+        header, raw_name = item.split(b"\t", 1)
+        mode, kind, _oid = header.split()
+        relative = PurePosixPath(raw_name.decode("utf-8"))
+        if (relative.is_absolute() or ".." in relative.parts or "\\" in str(relative)
+                or relative.parts[0] in {".git", ".hermes"}):
+            raise PreparationError("Committed source metadata has an unsafe path.")
+        if mode == b"160000" or mode == b"120000":
+            raise PreparationError("Source links/submodules need a separate native preflight review.")
+        if kind != b"blob" or any(ignored(part) for part in relative.parts):
+            continue
+        files.add(relative.as_posix())
+        directories.update(parent.as_posix() for parent in relative.parents if parent != PurePosixPath("."))
+    return files, directories
+
+
+def preflight() -> dict:
+    """Validate import relocation from committed tree metadata, with no copies."""
+    if (os.geteuid() == 0 or os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes"
+            or pwd.getpwuid(os.geteuid()).pw_name != "vincentspereira"):
+        raise PreparationError("Run preflight as the normal Ubuntu-Hermes human operator without sudo.")
+    operator = pwd.getpwuid(os.geteuid())
+    revision = git_as_operator(operator, "rev-parse", "HEAD").decode().strip()
+    if revision != REVISION:
+        raise PreparationError("The Hermes source revision changed; inspect it before preflight.")
+    facts = small_file(STATE / "facts.json")
+    if json.loads(facts)["packages"]["venv"]["environment"] != str(ENVIRONMENT):
+        raise PreparationError("The selected dependency generation changed.")
+    site = ENVIRONMENT / "lib/python3.14/site-packages"
+    check_startup(site)
+    files, directories = committed_catalog(operator)
+    finders = []
+    mappings = [(SOURCE, RELEASE / "repo"), (PYTHON, RELEASE / "python"),
+                (ENVIRONMENT, RELEASE / "venv")]
+    originals = {}
+    for path in sorted(site.glob("__editable__*_finder.py")):
+        raw = small_file(path, 4194304)
+        counts = {}
+        rebase_finder(raw, mappings, catalog=(files, directories), report=counts)
+        originals[path] = raw
+        finders.append({"file": path.name, **counts})
+    if not finders:
+        raise PreparationError("The inspected editable import finder is missing.")
+    if (small_file(STATE / "facts.json") != facts
+            or git_as_operator(operator, "rev-parse", "HEAD").decode().strip() != REVISION
+            or any(small_file(path, 4194304) != raw for path, raw in originals.items())
+            or {path.name for path in site.glob("__editable__*_finder.py")} != {path.name for path in originals}):
+        raise PreparationError("Source, selection or editable imports changed during preflight.")
+    check_startup(site)
+    return {"complete": True, "read_only": True, "import_preflight_passed": True,
+            "source_revision": REVISION, "finders": finders, "files_copied": 0,
+            "snapshot_prepared": False, "hermes_launched": False, "runtime_qualified": False}
 
 
 def snapshot_manifest(root: Path) -> dict:
@@ -406,9 +504,14 @@ def prepare() -> dict:
     # Validate/reconstruct import maps before the large interpreter/dependency
     # copy. Do not follow the old build-source references or execute the finder.
     finders = {}
+    import_reports = []
+    catalog = committed_catalog(operator)
     for finder in old_site.glob("__editable__*_finder.py"):
         raw = small_file(finder, 4194304)
-        finders[finder.name] = (raw, rebase_finder(raw, final_mappings, source_tree=stage / "repo"))
+        counts = {}
+        updated = rebase_finder(raw, final_mappings, source_tree=stage / "repo", catalog=catalog, report=counts)
+        finders[finder.name] = (raw, updated)
+        import_reports.append({"file": finder.name, **counts})
     if not finders:
         raise PreparationError("The inspected editable import finder is missing.")
     copy_tree(PYTHON, stage / "python", mappings)
@@ -469,6 +572,7 @@ def prepare() -> dict:
         "program_files": len(files), "runtime_qualified": False,
         "generated_install_metadata_rebased": True,
         "source_export_is_committed_revision": True,
+        "editable_imports": import_reports,
         "profile_configured": False, "memory_connected": False,
     }, indent=2).encode())
     os.chmod(stage, 0o755)
@@ -478,20 +582,26 @@ def prepare() -> dict:
             "launcher": str(RELEASE / "bin/hermes"), "source_revision": REVISION,
             "program_files": len(files), "runtime_qualified": False,
             "hermes_launched": False, "profile_configured": False,
-            "memory_connected": False, "originals_preserved": True}
+            "memory_connected": False, "originals_preserved": True,
+            "editable_imports": import_reports}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--apply", action="store_true", required=True)
-    parser.parse_args()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--apply", action="store_true")
+    mode.add_argument("--preflight", action="store_true",
+                      help="Check import relocation without sudo, copies or launches.")
+    args = parser.parse_args()
+    retained = (" No files copied; originals unchanged.\n" if args.preflight else
+                " Partial new snapshots are retained; originals unchanged.\n")
     try:
-        report = prepare()
+        report = preflight() if args.preflight else prepare()
     except PreparationError as error:
-        parser.exit(1, "STOP: " + str(error) + " Partial new snapshots are retained; originals unchanged.\n")
+        parser.exit(1, "STOP: " + str(error) + retained)
     except (OSError, ValueError, KeyError, TypeError, RuntimeError, AttributeError,
-            subprocess.SubprocessError):
-        parser.exit(1, "STOP: preparation did not complete. Partial new snapshots are retained; originals unchanged.\n")
+            SyntaxError, subprocess.SubprocessError):
+        parser.exit(1, "STOP: runtime preparation/check did not complete." + retained)
     print(json.dumps(report, indent=2))
 
 
