@@ -302,3 +302,17 @@ finish. Send the final result or any error for review. This command does not
 switch the scheduled task. Review real scopes and prove selected v12 recovery
 before that transition. For v12 recovery use its operating/recovery guide,
 rather than the v11 7-Zip commands.
+
+If a run stops at `Home inventory failed`, keep its checkpoint and repository.
+Do not choose NewRun or delete data. A read-only diagnostic is available in
+normal PowerShell as the same owner:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\Diagnose-V12HomeInventory.ps1" -Distro "Ubuntu-Workspace"
+Write-Host ("Exit code: " + $LASTEXITCODE)
+```
+
+Send the small result and exit code. Detailed stdout/stderr stays in its private
+evidence folder; do not paste those raw files into chat. This does not start a
+backup or change the task. The diagnostic preserves the existing qualification
+hashes, so adding it does not require another qualification test.

@@ -60,6 +60,13 @@ files. Earlier native-pending/failure observations below are historical. First
 real v12 backup, provider/recovery review and task transition remain pending;
 v11 remains scheduled. Documentation updates leave qualified code unchanged.
 
+First real v12 run stopped at Ubuntu-Workspace home inventory (exit 1), after
+committing the Cognee scope. Its incomplete checkpoint and repository are
+preserved, with no cloud results. Local exact inventory passes; the Windows
+cause is not yet established. A separate private diagnostic is installed,
+preserving all 15 qualified hashes. See
+[first real backup follow-up](WINDOWS-V12-FIRST-REAL-FOLLOWUP-2026-10-22.md).
+
 22 October follow-up: the first native v12 test stopped with one failed empty
 snapshot-list check after 16 passes. The shared PowerShell compatibility fix is
 installed and passed 38 portable checks; its native Windows rerun is pending.
