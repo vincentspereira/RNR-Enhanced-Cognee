@@ -284,3 +284,34 @@ not complete process/credential isolation or provider/model/memory behavior.
 Protected-file/write denial checks, the fresh profile and scoped credential,
 explicit backup/recovery coverage, Desktop/gateway paths and fleet qualification
 remain pending. Existing human-owned Desktop profiles/bots remain unchanged.
+
+## Restricted native version startup passed
+
+The owner supplied a successful protected-launcher version probe. The pre-exec
+identity was uid 993 (hermes-runtime), gid 985 and only group 985. CapEff/CapAmb
+were zero and NoNewPrivs was 1. The launcher returned exit 0, reporting
+Hermes vgit.4d04303, upstream 4d043038, Python 3.14.7, OpenAI SDK 2.24.0 and
+install directory /opt/hermes-runtime/releases/4d04303818b6-1729494fe783/repo.
+It displayed build/version metadata 2026.9.24 and install method unknown. Do not
+interpret these as an independently verified release tag or advisory clearance;
+external-update handling remains a separate check. The startup has now occurred;
+the earlier preparation receipt's hermes_launched=false describes its own stage.
+
+This proves basic CLI startup from the prepared copy under the selected identity
+and inherited privilege restrictions. It does not prove full application-process,
+Desktop/gateway, peer-profile, provider/model, memory or fleet qualification.
+No connected profile/scoped token or private-data activation is established by
+the version output. Retain the published copy and previous partial generations.
+
+The next prepared helper, check_restricted_access.py, runs only as the restricted
+account with no-new-privileges and zero effective/ambient capabilities. It probes
+14 selected protected service/recovery and administrator-profile paths for read
+and write opening, nine program files for write opening, eleven root-owned
+program directories for ownership/mode/effective write denial and home privacy.
+It reads no secret/program data and never writes/truncates/creates a target.
+Missing paths, special types and inconclusive errors cannot pass as denials.
+Self-process status is read as metadata. This is a system-Python probe, not proof
+of every operation of a live Hermes process, all keys or all 40+ bots. Fourteen
+new regressions plus earlier targeted suites report 79 passed, zero failures,
+zero skips and no reported warnings under Workspace Python 3.12.3. Native access
+results, full-suite/coverage and the remaining qualification are still pending.

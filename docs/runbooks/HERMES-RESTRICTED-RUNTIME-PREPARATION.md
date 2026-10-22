@@ -228,6 +228,28 @@ the actual exit code and diagnostics; a version success is only a startup check.
 The selected source documents --version in
 [hermes_cli/main.py](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/main.py).
 
+The owner has since reported version exit 0 from this protected directory under
+uid 993/gid 985, only its primary group, zero CapEff/CapAmb and NoNewPrivs=1.
+Python was 3.14.7 and OpenAI SDK 2.24.0. Install method was displayed as unknown;
+retain this metadata for the separate external-update-policy check. Basic CLI
+startup has passed; no connected profile or complete runtime qualification is
+implied. Preparation flags are historical receipts, not live status files.
+
+Next run the exact published check_restricted_access.py blob using system Python
+in isolated/no-site mode under sudo -H -u hermes-runtime, setpriv --no-new-privs
+and a clean environment, with cwd /var/lib/hermes-runtime. The guided command
+checks the blob hash before executing. The human's sudo authentication only
+selects the restricted identity; application/probe code never runs as root.
+The helper opens selected secret paths with O_RDONLY or O_WRONLY plus
+O_NOFOLLOW/O_NONBLOCK and immediately closes any successful descriptor without
+reading/writing data. It never uses create/truncate/append flags. It similarly
+checks selected program write openings, protected directory metadata/effective
+write access and restricted home permissions. Only self-process status data is
+read. It emits known paths and status labels, never secret contents. An allowed,
+missing or inconclusive result fails the selected checks; retain that evidence.
+Even selected_access_checks_passed=true is only selected file-access evidence,
+not full live-Hermes, all-profile, admin-socket, model or memory qualification.
+
 Other managed tools, native SDK/browser/provider/model checks, source revision
 compatibility, remaining credential coverage, advisory/release checks and full
 fleet onboarding remain separate. Do not copy entire private .hermes trees,
