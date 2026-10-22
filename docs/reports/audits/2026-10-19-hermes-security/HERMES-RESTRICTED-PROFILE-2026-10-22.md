@@ -22,6 +22,33 @@ identities and reviewed sharing. See the live-profile account and fleet runbooks
 - The owner then ran the guarded account-creation step and reported
   hermes-runtime created, home /var/lib/hermes-runtime, home permissions 0700,
   sole group hermes-runtime and password login locked. No profile was configured.
+- Further owner-run metadata resolved both ~/.hermes/hermes-agent and
+  ~/agent-workspace/hermes-agent to the same directory under agent-workspace.
+  Each reported venv/bin/python present; neither interpreter nor the actual
+  restricted Hermes tool process has been executed by these checks.
+- A fresh probe reported effective_user hermes-runtime and open denial for the
+  five selected protected operator/API/worker/backup/age files, the main Hermes
+  .env and both preserved synthetic profiles' .env files. It did not read contents.
+- The four probed Docker/Podman/LXD/Incus socket paths were MISSING. This is not
+  denial evidence for a socket if it appears later or for other socket paths.
+- sudo_policy_explicit_denial was false. This is inconclusive: the earlier
+  predicate combined an exit code and exact text from a caller-side listing.
+  It does not establish either sudo permission or denial. Obtain a sanitized,
+  root-issued policy listing before admitting the restricted runtime.
+- The owner reports Hermes Desktop is running for current work. Continue these
+  read-only checks without interrupting it; coordinate any later changes to a
+  shared runtime, active launch path or model before applying them.
+
+## Project folder recommendation
+
+Retain the owner's existing /home/vincentspereira/Projects directory for projects.
+agent-workspace is a naming/layout convention, not a requirement for Hermes or
+a memory authorization boundary. Moving projects solely to nest them there can
+invalidate bot settings, paths and automation without providing isolation.
+No folder move is approved or performed by this recommendation. The restricted
+account's profile/workspace lives under /var/lib/hermes-runtime; selected project
+access and explicit backup coverage require their own verification. Do not grant
+whole-home access merely to reuse the administrator's source/runtime.
 
 ## Next qualification and limitations
 
