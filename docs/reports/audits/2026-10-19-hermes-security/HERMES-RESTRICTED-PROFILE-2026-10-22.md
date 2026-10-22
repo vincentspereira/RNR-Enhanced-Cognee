@@ -35,6 +35,11 @@ identities and reviewed sharing. See the live-profile account and fleet runbooks
   predicate combined an exit code and exact text from a caller-side listing.
   It does not establish either sudo permission or denial. Obtain a sanitized,
   root-issued policy listing before admitting the restricted runtime.
+- The subsequent root-issued listing reported exit 0, an explicit denial for
+  hermes-runtime, no allowed-commands section and no authentication requirement;
+  no_sudo_permission_confirmed was true. This resolves the earlier inconclusive
+  sudo result for the policy at this checkpoint. Exit 0 alone was not permission.
+  Actual Hermes process confinement and other elevation paths remain separate.
 - The owner reports Hermes Desktop is running for current work. Continue these
   read-only checks without interrupting it; coordinate any later changes to a
   shared runtime, active launch path or model before applying them.
