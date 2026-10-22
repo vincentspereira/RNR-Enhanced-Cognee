@@ -71,6 +71,13 @@ passed a fresh full SHA256 check. Owner-approved temporary-copy cleanup complete
 small recovery evidence outside the test folder. Native v12 qualification is
 still pending; the scheduled backup remains v11.
 
+Latest native attempt stopped at the positive geometry-retention check after 41
+passes: its fixtures were inside the qualification subtree excluded by the real
+backup policy. The test now uses a separate private fixture root and an
+unfiltered control, retaining the full production policy unchanged. The fix is
+installed; portable qualification passes 48 checks, zero failures/skips. Native
+Windows rerun is still pending.
+
 Superseding result: [v11 completed successfully](WINDOWS-V11-COMPLETED-2026-10-21.md).
 The owner supplied the successful 56-check qualification and manual v11 backup
 exit code 0. The completed encrypted generation and both sync-folder copies are

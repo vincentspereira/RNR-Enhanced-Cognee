@@ -184,3 +184,36 @@ restore manifest, owner-readability review, original-archive verification and
 cleanup journal. The manual's general local restore commands now use the
 retained original, so recovery does not require retaining the temporary duplicate.
 The specific selective-drill command is marked historical after cleanup.
+
+## Further native attempt: policy-fixture location
+
+The next native run exited 1 at `original_geometry_binary_kept`, with 41 preceding
+checks passed. Inspection of its retained summary and full exclusion file
+identified that its sample files lived under
+`RNR-Backups\v12-state\qualification`, an explicitly excluded subtree. Restic
+therefore excluded the test root itself. The preceding negative checks for
+missing weights/Entertainment were vacuous in this attempt: an empty selected
+tree cannot prove that valuable originals are retained. The positive geometry
+check correctly prevented qualification from passing.
+
+The production source/exclusion policy was not changed. The native fixture now
+lives in a separate owner/SYSTEM-protected
+`%LOCALAPPDATA%\RNR-Backups\policy-fixtures\native-<unique-id>` directory outside
+that exclusion. Its location is recorded in the private native-run evidence.
+It contains only the five tiny synthetic files, not real model weights or work.
+A control backup must list all five files before the full production exclusions
+are applied. Positive geometry/archive/log checks then precede the negative
+model/Entertainment checks. A filtered listing is retained privately for
+diagnosis; qualification does not suppress or remove an exclusion to pass.
+
+Portable tests execute the native fixture factory with the actual production
+policy and real pinned restic: they reproduce the excluded old fixture root,
+confirm all five unfiltered control files, retain mesh/archive/log and exclude
+weights/Entertainment in the corrected test location. Latest portable result:
+**48 passed, zero failures, zero skips**. This is not native Windows evidence.
+
+The corrected `C:\Scripts\Test-WindowsBackup-v12.ps1` matches maintained source;
+its prior version was preserved under
+`C:\Scripts\archive\2026-10-22-policy-fixture-fix`. A fresh owner-run native
+qualification is required. No real v12 backup, task switch or recreation of
+`D:\Recovery-Test` occurred. V11 remains scheduled.

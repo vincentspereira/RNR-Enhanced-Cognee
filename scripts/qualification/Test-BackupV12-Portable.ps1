@@ -98,6 +98,33 @@ $oldSnapshot=@(Get-ScopeSnapshots fixture old)[0].id
 $null=Engine @('restore',$oldSnapshot,'--target',$older,'--verify')
 $files=@(Get-ChildItem -LiteralPath $older -Recurse -Force -File -Filter original.txt)
 Check older_snapshot_extracts_original_contents ($files.Count -eq 1 -and (Get-Content -LiteralPath $files[0].FullName -Raw) -ceq 'synthetic valuable data')
+# Exercise the actual production exclusions and native fixture factory. The
+# old fixture root was itself excluded; negative-only checks could pass vacuously.
+$tokens=$null;$errors=$null
+$native=[Management.Automation.Language.Parser]::ParseFile((Join-Path $WindowsScriptRoot Test-WindowsBackup-v12.ps1),[ref]$tokens,[ref]$errors)
+$factory=@($native.FindAll({param($node) $node -is [Management.Automation.Language.ForEachStatementAst] -and
+ $node.Variable.VariablePath.UserPath -eq 'relative' -and $node.Extent.Text.Contains('weights.gguf')},$true))
+if ($factory.Count -ne 1) {throw 'Expected the native policy fixture factory.'}
+$policy=Get-V12SourcePolicy (Join-Path $root policy-metadata)
+$excludeFile=Join-Path $root production-excludes.txt
+[IO.File]::WriteAllLines($excludeFile,[string[]]$policy.excludes,[Text.UTF8Encoding]::new($false))
+$filterRoot=Join-Path $root 'RNR-Backups/v12-state/qualification/native-fixture/filter-fixtures'
+. ([scriptblock]::Create($factory[0].Extent.Text))
+$r=Engine @('backup','--json','--exclude-file',$excludeFile,$filterRoot)
+$result=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+$listing=(Engine @('ls','--json',$result.snapshot_id)).stdout
+Check real_policy_excludes_old_qualification_fixture_root (-not $listing.Contains('mesh.bin') -and -not $listing.Contains('keep.7z') -and -not $listing.Contains('evidence.log'))
+$filterRoot=Join-Path $root 'RNR-Backups/policy-fixtures/native-fixture'
+. ([scriptblock]::Create($factory[0].Extent.Text))
+$r=Engine @('backup','--json',$filterRoot)
+$result=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+$listing=(Engine @('ls','--json',$result.snapshot_id)).stdout
+Check policy_control_lists_all_five_files ($listing.Contains('mesh.bin') -and $listing.Contains('keep.7z') -and $listing.Contains('evidence.log') -and $listing.Contains('weights.gguf') -and $listing.Contains('entertainment-only.txt'))
+$r=Engine @('backup','--json','--exclude-file',$excludeFile,$filterRoot)
+$result=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+$listing=(Engine @('ls','--json',$result.snapshot_id)).stdout
+Check real_policy_preserves_geometry_archive_and_log ($listing.Contains('mesh.bin') -and $listing.Contains('keep.7z') -and $listing.Contains('evidence.log'))
+Check real_policy_excludes_downloaded_weights_and_entertainment (-not $listing.Contains('weights.gguf') -and -not $listing.Contains('entertainment-only.txt'))
 $target=Join-Path $root sync-folder;$receipts=Join-Path $root receipts
 $first=Sync-V12Repository $repo $target $receipts
 Check first_copy ($first.copied -gt 0 -and $first.reused -eq 0)

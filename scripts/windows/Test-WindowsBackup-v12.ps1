@@ -110,20 +110,31 @@ try {
  Assert-V12SeparatePaths $policy.sources @('D:\Archive\Snapshots\restic-v12',"$env:USERPROFILE\OneDrive\Vincent\WSL_Backups\restic-v12",'G:\My Drive\WSL_Backups\restic-v12') $policy.excluded_subtrees
  Check real_source_policy_has_no_nested_or_recursive_roots $true
  Check coverage_gaps_explicit ($policy.one_drive_originals_separate -and -not $policy.downloaded_weights_included -and $policy.distro_images_separate)
- $filterRoot=Join-Path $run filter-fixtures
+ # The real policy intentionally excludes v12-state/qualification, including
+ # all descendants. Test that unchanged policy against a separate private root.
+ $filterRoot=Join-Path $env:LOCALAPPDATA ('RNR-Backups\policy-fixtures\'+(Split-Path $run -Leaf))
+ if (Test-Path -LiteralPath $filterRoot) {throw 'Policy fixture destination already exists; preserved.'}
+ Protect-V12Directory $filterRoot
+ Save-V12Json @{synthetic_only=$true;fixture_root=$filterRoot} (Join-Path $run policy-fixture-location.json)
  foreach ($relative in @('AI-Models\studio\weights.gguf','AI-Models\studio\mesh.bin','AI-Models\studio\keep.7z','AI-Models\studio\evidence.log','Vincent\Personal-Workspace\Entertainment\entertainment-only.txt')) {
   $file=Join-Path $filterRoot $relative;[IO.Directory]::CreateDirectory((Split-Path $file -Parent))|Out-Null
   [IO.File]::WriteAllText($file,'synthetic fixture')
  }
  $excludeFile=Join-Path $run reviewed-excludes.txt
  [IO.File]::WriteAllLines($excludeFile,[string[]]$policy.excludes,[Text.UTF8Encoding]::new($false))
+ $r=Engine @('backup','--json',$filterRoot)
+ $summary=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
+ $control=(Engine @('ls','--json',$summary.snapshot_id)).stdout
+ Check unfiltered_policy_fixture_has_all_five_files ($control.Contains('weights.gguf') -and $control.Contains('entertainment-only.txt') -and
+  $control.Contains('mesh.bin') -and $control.Contains('keep.7z') -and $control.Contains('evidence.log'))
  $r=Engine @('backup','--json','--exclude-file',$excludeFile,$filterRoot)
  $summary=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
  $listing=(Engine @('ls','--json',$summary.snapshot_id)).stdout
- Check downloaded_weight_excluded (-not $listing.Contains('weights.gguf'))
- Check entertainment_excluded (-not $listing.Contains('entertainment-only.txt'))
+ [IO.File]::WriteAllText((Join-Path $run filtered-policy-listing.jsonl),$listing,[Text.UTF8Encoding]::new($false))
  Check original_geometry_binary_kept ($listing.Contains('mesh.bin'))
  Check work_product_archive_and_log_kept ($listing.Contains('keep.7z') -and $listing.Contains('evidence.log'))
+ Check downloaded_weight_excluded (-not $listing.Contains('weights.gguf'))
+ Check entertainment_excluded (-not $listing.Contains('entertainment-only.txt'))
  $r=Invoke-V12Process "$PSHOME\powershell.exe" @('-NoProfile','-ExecutionPolicy','RemoteSigned','-File',(Join-Path $PSScriptRoot backup-all-wsl-v12.ps1),'-WhatIf') $null
  Check main_read_only_preview ($r.exit -eq 0 -and $r.stdout.Contains('PREVIEW ONLY'))
  $hashes=@{}
