@@ -182,8 +182,9 @@ try {
     $helper=Join-Path $support capture_home.py
     $helperHash=(Get-FileHash -LiteralPath $helper).Hash
     $inventory=Get-V12PythonCommand $helper @('--inventory-only')
-    $before=Invoke-V12Process $wsl (@('-d',$distro,'-u','vincentspereira','--cd','/','--exec')+$inventory) $null
-    if ($before.exit -ne 0) {throw ('Home inventory failed for '+$distro)}
+    $beforeLog=Join-Path $script:runDirectory ('home-inventory-'+$distro+'-'+[guid]::NewGuid().ToString('N'))
+    $before=Invoke-V12Process $wsl (@('-d',$distro,'-u','vincentspereira','--cd','/','--exec')+$inventory) $beforeLog
+    if ($before.exit -ne 0) {throw ('Home inventory failed for '+$distro+'; private diagnostics retained in the run evidence')}
     $fingerprint=($before.stdout|ConvertFrom-Json).fingerprint
     $cachePath=Join-Path $StateRoot ($distro+'-last-home.json')
     if (Test-Path -LiteralPath $cachePath) {
@@ -199,7 +200,8 @@ try {
     }
     $native=Get-V12PythonCommand $helper $options
     Save-BackupScope $distro (@('--stdin-from-command','--stdin-filename',($distro+'-home.tar'),'--',$wsl,'-d',$distro,'-u','vincentspereira','--cd','/','--exec')+$native)
-    $after=Invoke-V12Process $wsl (@('-d',$distro,'-u','vincentspereira','--cd','/','--exec')+$inventory) $null
+    $afterLog=Join-Path $script:runDirectory ('post-capture-inventory-'+$distro+'-'+[guid]::NewGuid().ToString('N'))
+    $after=Invoke-V12Process $wsl (@('-d',$distro,'-u','vincentspereira','--cd','/','--exec')+$inventory) $afterLog
     if ($after.exit -ne 0) {throw ('Post-capture home inventory failed for '+$distro)}
     if (($after.stdout|ConvertFrom-Json).fingerprint -eq $fingerprint) {
      Save-V12Json @{snapshot=$script:run.completed[$distro].snapshot;fingerprint=$fingerprint;helper_sha256=$helperHash} $cachePath

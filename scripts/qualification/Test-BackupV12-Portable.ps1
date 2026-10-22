@@ -12,6 +12,11 @@ $root=Join-Path ([IO.Path]::GetTempPath()) ('rnr-v12-portable-'+[guid]::NewGuid(
 [IO.Directory]::CreateDirectory($root)|Out-Null
 $passed=0
 function Check([string]$Name,[bool]$Value) {if (-not $Value) {throw "Failed: $Name"};$script:passed++;Write-Host "OK: $Name"}
+$wslLine=Join-V12ProcessArguments 'C:\Windows\System32\wsl.exe' @('-d','Ubuntu-Workspace','-u','vincentspereira','--cd','/','--exec','/usr/bin/python3','-I','-c',"print('a value')")
+Check wsl_launcher_options_are_not_quoted ($wslLine.StartsWith('-d Ubuntu-Workspace -u vincentspereira --cd / --exec /usr/bin/python3 -I -c '))
+Check wsl_python_payload_is_still_quoted ($wslLine.EndsWith('"'+"print('a value')"+'"'))
+$ordinary=Join-V12ProcessArguments 'C:\tools\restic.exe' @('-r','C:\repo','value with spaces')
+Check other_program_quoting_unchanged ($ordinary -ceq ((@('-r','C:\repo','value with spaces')|ForEach-Object {ConvertTo-V12Argument $_}) -join ' '))
 $scriptFiles=@('backup-all-wsl-v12.ps1','Test-WindowsBackup-v12.ps1','Restore-Backup-v12.ps1','Review-HermesFolders-v12.ps1',
  'Review-WindowsWorkerProfile-v12.ps1','Update-WSLBackupTask-v12.ps1','Install-BackupV12Tools.ps1')|ForEach-Object {Get-Item -LiteralPath (Join-Path $WindowsScriptRoot $_)}
 foreach ($file in @(Get-ChildItem -LiteralPath $Support -File -Filter '*.ps1')+@($scriptFiles)) {
@@ -153,4 +158,12 @@ $program='/usr/bin/python3';$code='import json,sys;print(json.dumps(sys.argv[1:]
 $r=Invoke-V12Process $program (@('-c',$code)+$quoteValues) $null
 $actual=@($r.stdout|ConvertFrom-Json)
 Check native_process_argument_roundtrip ($r.exit -eq 0 -and ($actual|ConvertTo-Json -Compress) -ceq ($quoteValues|ConvertTo-Json -Compress))
+# Exercise the WSL-specific serialization branch with a real subprocess on
+# Linux. This does not emulate WSL's raw option parser or replace its native test.
+$proxy=Join-Path $root wsl.exe
+$null=New-Item -ItemType SymbolicLink -Path $proxy -Target /usr/bin/python3
+$r=Invoke-V12Process $proxy (@('-c',$code)+$quoteValues+@('plain-token','/absolute/path','')) $null
+$actual=@($r.stdout|ConvertFrom-Json)
+$expected=@($quoteValues)+@('plain-token','/absolute/path','')
+Check wsl_branch_process_argument_roundtrip ($r.exit -eq 0 -and ($actual|ConvertTo-Json -Compress) -ceq ($expected|ConvertTo-Json -Compress))
 @{passed=$passed;failed=0;skipped=0;portable_only=$true;artifacts=$root}|ConvertTo-Json -Compress

@@ -55,16 +55,18 @@ is retained, but its prerequisites have not all passed.
 ## Windows/backup progress
 
 Current result: [v12 native qualification passed](WINDOWS-V12-NATIVE-PASS-2026-10-22.md):
-45 passed, zero failures/skips, exit 0; all 15 receipt hashes match installed
-files. Earlier native-pending/failure observations below are historical. First
-real v12 backup, provider/recovery review and task transition remain pending;
-v11 remains scheduled. Documentation updates leave qualified code unchanged.
+the prior candidate passed 45 checks, zero failures/skips, exit 0. The later
+first-real-run investigation required a WSL launcher code correction, so its
+three changed qualified hashes now require a new native pass. Portable checks
+pass 52 with zero failures/skips. First real v12 backup, provider/recovery
+review and task transition remain pending; v11 remains scheduled.
 
 First real v12 run stopped at Ubuntu-Workspace home inventory (exit 1), after
 committing the Cognee scope. Its incomplete checkpoint and repository are
-preserved, with no cloud results. Local exact inventory passes; the Windows
-cause is not yet established. A separate private diagnostic is installed,
-preserving all 15 qualified hashes. See
+preserved, with no cloud results. The private diagnostic identified exit 127:
+quoted WSL options were treated as a Linux command. The corrected launcher and
+private inventory logging are installed; native testing now probes the actual
+Windows-to-WSL path. See
 [first real backup follow-up](WINDOWS-V12-FIRST-REAL-FOLLOWUP-2026-10-22.md).
 
 22 October follow-up: the first native v12 test stopped with one failed empty

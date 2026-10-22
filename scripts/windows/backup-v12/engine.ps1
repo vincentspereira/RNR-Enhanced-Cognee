@@ -20,10 +20,22 @@ function ConvertTo-V12Argument {
  # CommandLineToArgvW quoting, including quotes and trailing backslashes.
  return '"'+([regex]::Replace([regex]::Replace($Value,'(\\*)"','$1$1\"'),'(\\+)$','$1$1'))+'"'
 }
+function Join-V12ProcessArguments {
+ param([string]$Program,[string[]]$Arguments)
+ # WSL parses launcher options from the raw command line. Quoting every
+ # token makes it treat "-d" as a Linux command instead of a distro option.
+ # Preserve ordinary executable/password-command quoting; only WSL gets
+ # bare safe tokens. Payloads, spaces, empty values and quotes stay escaped.
+ $isWsl=[IO.Path]::GetFileName($Program.Replace('\','/')) -ieq 'wsl.exe'
+ return (($Arguments|ForEach-Object {
+  if ($isWsl -and $_ -cmatch '^[A-Za-z0-9_./:\\=@%+,-]+$') {$_}
+  else {ConvertTo-V12Argument $_}
+ }) -join ' ')
+}
 function Invoke-V12Process {
  param([string]$Program,[string[]]$Arguments,[string]$LogPrefix)
  $p=[Diagnostics.Process]::new();$p.StartInfo.FileName=$Program
- $p.StartInfo.Arguments=($Arguments|ForEach-Object {ConvertTo-V12Argument $_}) -join ' '
+ $p.StartInfo.Arguments=Join-V12ProcessArguments $Program $Arguments
  $p.StartInfo.UseShellExecute=$false;$p.StartInfo.CreateNoWindow=$true
  $p.StartInfo.RedirectStandardOutput=$true;$p.StartInfo.RedirectStandardError=$true
  $started=$false

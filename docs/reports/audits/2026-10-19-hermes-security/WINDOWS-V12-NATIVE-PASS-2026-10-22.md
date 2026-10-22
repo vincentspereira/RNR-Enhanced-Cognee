@@ -3,6 +3,12 @@
 Date: 22 October 2026. This supersedes the earlier native-pending/failure status.
 First real backup, provider/recovery review and task transition remain separate.
 
+Later update: this is the prior candidate's pass. The subsequent real run exposed
+a WSL launcher serialization defect, and its correction changes three qualified
+files. A fresh native pass is required; see
+[the first-real follow-up](WINDOWS-V12-FIRST-REAL-FOLLOWUP-2026-10-22.md).
+The historical receipt below was preserved, not relabeled as a pass for new code.
+
 The owner supplied: complete true, **45 passed, zero failed, zero skipped,
 exit code 0**. The retained `latest-pass.json` and matching native run report
 confirm all 45 checks. Artifact leaf:

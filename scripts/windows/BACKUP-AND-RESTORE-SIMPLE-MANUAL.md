@@ -7,9 +7,10 @@ Save this manual with your recovery information. The same copy is installed at
 PowerShell**, from any folder. PowerShell 7 can launch the `powershell.exe`
 commands below. Do not run them in a Linux terminal.
 
-V12 passed native Windows qualification on 22 October: 45 checks, zero failures
-or skips, exit code 0. Next is its first real backup and recovery review (section
-10). The scheduled task remains v11 until that review is complete.
+The earlier v12 candidate passed 45 native checks. A Windows-to-WSL launcher
+defect found during the real run is now corrected; that changed code requires
+a fresh native pass before retrying section 10. Run Test-WindowsBackup-v12.ps1
+in Administrator PowerShell first. The scheduled task remains v11.
 V11 7-Zip archives and v12 restic repositories need different restore procedures;
 `Restore-Backup-v12.ps1` cannot restore your existing `base.7z`.
 

@@ -38,6 +38,19 @@ try {
   Check ('native_parse_'+[IO.Path]::GetFileName($path)) (@($errors).Count -eq 0)
  }
  Check pinned_engine ((Get-FileHash -LiteralPath $restic).Hash -eq 'b0dd1fd21eea5d8fe1325f55f7118213c21f36de8a261e04c0624a5ab9fd7830')
+ # Test the Windows WSL launch path itself, including a helper-sized encoded
+ # payload. This reads only identity/cwd and synthetic argv, not home data.
+ $probe=Join-Path $run wsl-launch-probe.py
+ $probeCode="import json,os,pwd,sys;print(json.dumps({'user_ok':pwd.getpwuid(os.getuid()).pw_name=='vincentspereira','cwd_ok':os.getcwd()=='/','args':sys.argv[1:]}))`n"
+ $helperLength=(Get-Item -LiteralPath (Join-Path $support capture_home.py)).Length
+ [IO.File]::WriteAllText($probe,($probeCode+'#'+('x'*[int]$helperLength)),[Text.UTF8Encoding]::new($false))
+ $probeValues=@('--inventory-only','space in argument','contains " quote','ends-with-slash\')
+ $probeArgs=@('-d','Ubuntu-Workspace','-u','vincentspereira','--cd','/','--exec')+(Get-V12PythonCommand $probe $probeValues)
+ $probeResult=Invoke-V12Process (Join-Path $env:SystemRoot 'System32\wsl.exe') $probeArgs (Join-Path $run wsl-launch-probe)
+ Check native_wsl_explicit_distro_exec ($probeResult.exit -eq 0)
+ $probeData=$probeResult.stdout|ConvertFrom-Json
+ Check native_wsl_identity_and_working_directory ($probeData.user_ok -eq $true -and $probeData.cwd_ok -eq $true)
+ Check native_wsl_encoded_payload_and_arguments (($probeData.args|ConvertTo-Json -Compress) -ceq ($probeValues|ConvertTo-Json -Compress))
  Check empty_json_array_is_no_snapshot (@(ConvertFrom-V12JsonArray '[]').Count -eq 0)
  $one=@(ConvertFrom-V12JsonArray '[{"id":"fixture-one"}]')
  Check single_json_snapshot_is_one_item ($one.Count -eq 1 -and $one[0].id -eq 'fixture-one')

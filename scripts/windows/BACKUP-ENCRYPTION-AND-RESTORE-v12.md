@@ -1,10 +1,11 @@
 # Backup v12 - operating and recovery guide
 
-Updated 22 October 2026. Native Windows qualification passed 45 checks, zero
-failures/skips, exit 0; all 15 receipt hashes match installed files. First real
-v12 backup and recovery review remain required. V11 generations remain available.
+Updated 22 October 2026. The earlier candidate passed 45 native checks. The first
+real run then exposed a WSL argument-quoting defect. The launcher correction is
+installed and requires a fresh native pass, including an actual WSL launch probe.
+First real v12 backup/recovery remain required. V11 generations remain available.
 The scheduled task still uses v11; nothing starts or switches it automatically.
-This guide update does not change qualified code.
+Preserve the incomplete run; the completed Cognee scope can be reused on retry.
 
 ## What changed and why
 

@@ -1,7 +1,8 @@
 # First real v12 backup: Workspace inventory follow-up
 
-Date: 22 October 2026. Native synthetic qualification passed 45 checks and
-remains valid. The first real normal backup stopped with exit 1 at
+Date: 22 October 2026. The prior candidate passed 45 native checks. A subsequent
+WSL launcher correction changes qualified files and requires a fresh native
+pass. The first real normal backup stopped with exit 1 at
 `Home inventory failed for Ubuntu-Workspace`. This is not a complete backup.
 
 ## Confirmed retained progress
@@ -52,3 +53,48 @@ new diagnostic is a separate tool, not a modification to the qualified runtime;
 no native qualification rerun is required for this addition. The scheduled task
 remains v11. Do not reset the repository/checkpoint, use NewRun, weaken inventory
 failures or claim the real backup passed while investigating.
+
+## Captured Windows error and launcher correction
+
+The owner-run diagnostic returned `inventory_exit=127`; its protected stderr
+contains `/bin/bash: line 1: -d: command not found`. Python never reached the
+inventory: the WSL launcher treated the quoted distro-selection flag as a Linux
+command. The direct process serializer quoted every token, including `-d`,
+while the working Cognee stream is launched by restic's own process handling.
+This explains why the separate Linux inventory succeeded and the Cognee scope
+could complete. [Microsoft documents the WSL launcher's command-line parsing
+role](https://github.com/microsoft/WSL/blob/master/doc/docs/technical-documentation/wsl.exe.md).
+
+The shared process helper now leaves only a conservative set of safe WSL
+tokens bare. Python payloads, spaces, quotes and empty values remain escaped;
+ordinary executables and password-command construction retain their previous
+quoting. Before/after home-inventory stdout/stderr now have private run-log
+prefixes, so a later failure retains diagnostics without console disclosure.
+No restart, mount, interop setting, package install or permissions change was
+used to address the launcher defect.
+
+Portable verification passed **52 checks, zero failures, zero skips**, including
+WSL command-line serialization and a real subprocess argument roundtrip through
+the WSL-specific branch. That Linux proxy is not a native WSL parser test. The
+native suite now includes an actual Windows-to-Ubuntu-Workspace Python probe,
+with a helper-sized encoded payload, owner/cwd checks and synthetic arguments.
+It starts no backup/model and reads no home contents. A fresh native pass must
+validate this path before the real retry.
+
+Three corrected installed files (engine, main backup and native test) match
+maintained source; their originals are under
+`C:\Scripts\archive\2026-10-22-wsl-launcher-fix`. The prior native receipt was
+preserved as historical evidence. Its three changed file hashes correctly
+prevent reuse until the new native suite passes. The completed Cognee checkpoint
+is byte-for-byte unchanged; no repository or backup generation was removed.
+
+Next action in Administrator PowerShell as the same owner:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\Test-WindowsBackup-v12.ps1"
+Write-Host ("Exit code: " + $LASTEXITCODE)
+```
+
+After a verified native pass, retry the normal v12 command without NewRun so it
+can reuse the completed Cognee scope. First real home/Windows capture, provider
+upload/recovery and task transition remain pending.

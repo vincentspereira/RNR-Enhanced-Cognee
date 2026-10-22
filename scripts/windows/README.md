@@ -3,7 +3,8 @@
 For the currently qualified **v11** routine and its tested 7-Zip recovery copy,
 use [Vincent's simple backup and restore manual](BACKUP-AND-RESTORE-SIMPLE-MANUAL.md).
 V12 passed native qualification on 22 October (45 passed, zero failures/skips),
-and still needs its first real backup/recovery review before a task switch. Its
+for the earlier candidate. The subsequent WSL launcher correction requires a
+fresh native pass, followed by real backup/recovery review before a task switch. Its
 restic restore helper does not open the existing v11 `base.7z` archives.
 
 Maintained source for Vincent's Windows/WSL backup. The installed entry point is
