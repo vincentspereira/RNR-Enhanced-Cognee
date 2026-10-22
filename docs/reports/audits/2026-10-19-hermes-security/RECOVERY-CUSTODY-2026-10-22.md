@@ -77,7 +77,7 @@ are a selected subset of the historical scanner findings, not a claim that all
 | SerpAPI | No key created or received | No owned key reported; not marked revoked |
 | Zapier NLA | No key created or received | No owned key reported; not marked revoked |
 | Weaviate | No key created or received | No owned key reported; not marked revoked |
-| Qdrant credential in historical DLT settings | Created a key for Enhanced Cognee and another whose project is not remembered | Workspace Cognee QDRANT_API_KEY differs from the upstream candidate; cloud/local origin and the second consumer remain unresolved; protected Hermes keys are separate |
+| Qdrant credential in historical DLT settings | Both prior services were local: Enhanced Cognee at localhost:26333, another project at localhost:6333 | Workspace Cognee QDRANT_API_KEY differs from the upstream candidate; second project/key not identified or compared; no Qdrant Cloud revocation step identified; protected Hermes keys are separate |
 
 The Replicate comparison read only the REPLICATE_API_TOKEN assignment from
 Spatial's documented local secret source, ~/.config/rnr/env.sh. The literal
@@ -97,10 +97,27 @@ there were no provider requests, credential changes or value disclosures. They
 do not inspect the protected Hermes configuration, every deployed process,
 unknown second Qdrant consumer, or all other configurations/history findings.
 
-Next, clarify whether the owner's older Qdrant key was issued by Qdrant Cloud
-or configured for a local server; keep the unidentified second use unresolved.
-Continue classifying candidates and actual consumers privately. Compare any owned/current credentials through an approved
-local process without exposing values. Revoke exposed owned credentials;
+The owner clarified that both older Qdrant services were local: Cognee used
+localhost:26333 and the other project localhost:6333. A read-only Workspace
+configuration check confirms the Cognee .env selects a loopback host and port
+26333. Neither port was visible as listening in this implementation session,
+and Docker metadata was unavailable. That observation is not proof that a host
+service is stopped, nor permission to start/stop/reconfigure it. No service,
+key, mount or network setting was changed.
+
+No owner-key exposure has been confirmed from the selected candidates and
+comparisons so far; the known owned configured Replicate and Workspace Cognee
+Qdrant credentials differ from their respective inherited candidates. This does
+not clear all credentials, the unidentified second local Qdrant key, or every
+historical scanner match. Do not revoke unrelated working keys to satisfy an
+inherited-history finding or claim a Qdrant Cloud revocation was performed.
+Local rotation, if evidence warrants it later, needs a coordinated server/client
+cutover rather than an unrelated provider dashboard.
+
+Next, continue read-only readiness checks for the already installed protected
+Hermes service while keeping remaining credential/configuration coverage
+explicit. Compare any owned/current credentials through an approved local
+process without exposing values. Revoke exposed owned credentials;
 replace only those needed by current consumers. An inherited/not-owned finding
 must not be marked revoked or tested. Unknown ownership remains unresolved. If
 an inherited key was copied into a current config, remove that dependency through
