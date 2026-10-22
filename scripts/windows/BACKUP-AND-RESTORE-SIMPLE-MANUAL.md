@@ -132,12 +132,18 @@ D:\Recovery-Test\WSL-v11-OneDrive-2026-10-21\base.7z
 Its manifest names only the base. There is no differential for this recovery
 point. The archive is 47,503,603,481 bytes (47.5 decimal GB / about 44.2 GiB).
 
+This temporary recovery copy has completed its selected-file drill and the owner
+approved its cleanup. It is not the original backup. After cleanup, use the
+retained original below for local recovery, or obtain a fresh provider copy to
+test remote recovery. The following archive commands use the retained original,
+so they do not require keeping another 47.5 GB test copy.
+
 ## 5. Verify a recovered archive before extraction
 
 In **normal PowerShell**, compare the checksum with the selected manifest:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath "D:\Recovery-Test\WSL-v11-OneDrive-2026-10-21\base.7z"
+Get-FileHash -Algorithm SHA256 -LiteralPath "D:\Archive\Snapshots\chains\chain-20261021T140518Z-dc96519cf8914871abf4eed7be7ef35e\base.7z"
 ```
 
 The expected SHA256 for this particular base is:
@@ -149,7 +155,7 @@ The expected SHA256 for this particular base is:
 Then test password/decryption and archive integrity:
 
 ```powershell
-& "C:\Program Files\7-Zip\7z.exe" t "D:\Recovery-Test\WSL-v11-OneDrive-2026-10-21\base.7z"
+& "C:\Program Files\7-Zip\7z.exe" t "D:\Archive\Snapshots\chains\chain-20261021T140518Z-dc96519cf8914871abf4eed7be7ef35e\base.7z"
 ```
 
 At the hidden password prompt, enter the KeePassXC **archive password**. The
@@ -161,7 +167,7 @@ recovery point needs its own verification.
 
 ## 6. First check a few recovered files
 
-For the specific recovery copy above, use **normal PowerShell**:
+The specific temporary recovery copy above was checked in **normal PowerShell**:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File "C:\Scripts\Test-V11RecoveredFiles.ps1" -OpenFiles
@@ -182,6 +188,12 @@ archive SHA256 pass. Its report records that application recovery and independen
 remote provenance are separate checks. Keep the test copies until the result and
 readability confirmation have been reviewed.
 
+Completed result: all three files matched their reference checksums and the
+owner confirmed both opened text files were readable. No repeat is needed.
+The helper requires the temporary archive at the documented recovery-copy path;
+after cleanup it is a historical drill command, not the normal restore command.
+Use section 7 with the retained original for a future local restore.
+
 ## 7. Extract the tested base into a NEW private recovery folder
 
 This is the **full file-extraction command for the specific base above**, for
@@ -197,7 +209,7 @@ restore into Windows, WSL, Hermes or a live project.
 ```powershell
 & {
     $ErrorActionPreference = 'Stop'
-    $archive = 'D:\Recovery-Test\WSL-v11-OneDrive-2026-10-21\base.7z'
+    $archive = 'D:\Archive\Snapshots\chains\chain-20261021T140518Z-dc96519cf8914871abf4eed7be7ef35e\base.7z'
     $restore = 'D:\Recovery-Test\Restored-v11-' + [guid]::NewGuid().ToString('N')
     if (Test-Path -LiteralPath $restore) { throw 'Choose a new recovery folder.' }
     New-Item -ItemType Directory -Path $restore -ErrorAction Stop | Out-Null
@@ -259,8 +271,9 @@ completed base, but resuming every operation without rework is not guaranteed.
 Do not delete `.partial` files, older archives or provider data as a repair.
 
 Checks completed: real v11 backup; both sync clients reported up to date; full
-recovery-copy checksum; owner-run 7-Zip password/integrity test. Still separate:
-representative extracted-file/application recovery, independent remote-source
+recovery-copy checksum; owner-run 7-Zip password/integrity test; three selected
+extracted-file hashes and owner-confirmed text readability. Still separate:
+application recovery, independent remote-source
 provenance/provider qualification, the scheduled run, Cognee recovery-key custody
 and credential replacement. V12 native qualification and its broader-coverage
 backup/restore remain pending. OneDrive personal originals remain separate by

@@ -54,12 +54,17 @@ $after=Get-Item -LiteralPath $archive
 if ($after.Length -ne $before.Length -or $after.LastWriteTimeUtc.Ticks -ne $before.LastWriteTimeUtc.Ticks) {
  throw 'The recovery archive changed during the drill; do not record a pass.'
 }
+$written=@(Get-ChildItem -LiteralPath $destination -Recurse -Force -File)
+if ($written.Count -ne $references.Count) {throw 'Extraction wrote an unexpected number of files; preserve the private output for review.'}
+$writtenBytes=($written|Measure-Object -Property Length -Sum).Sum
 $report=@{complete=$true;passed=$checks.Count;failed=0;folder=$destination;checks=$checks;
+ extracted_files=$written.Count;extracted_bytes=$writtenBytes;only_selected_files_written=$true;
  archive_full_sha256_rechecked=$false;previously_verified_manifest_sha256=$expectedArchiveHash;
  application_restore_qualified=$false;independent_remote_provenance_verified=$false;
  automated_file_checks_passed=$true;human_readability_confirmation_pending=$true}
 Save-V12Json $report (Join-Path $destination recovery-check.json)
-$report|Select-Object complete,passed,failed,folder|ConvertTo-Json -Compress
+Write-Host ('Actual extracted files: '+$written.Count+'; file-content bytes written: '+$writtenBytes+'. 7-Zip solid-block processing figures can be larger.')
+[pscustomobject]$report|Select-Object complete,passed,failed,folder|ConvertTo-Json -Compress
 if ($OpenFiles) {
  $notepad=Join-Path $env:SystemRoot 'System32\notepad.exe'
  foreach ($member in @($references[1].member,$references[2].member)) {

@@ -62,8 +62,14 @@ V11 remains the scheduled version. See
 The second native attempt passed run/scope selection and stopped at the restored
 file verifier after 21 passes. The actual corrected file matches its source;
 the shorter-path/hidden-traversal verifier correction is installed, with native
-rerun pending. A selective v11 file-extraction/readability helper is prepared
-for owner execution; it has not yet demonstrated a pass.
+rerun pending. The owner's selective v11 extraction passed three file hashes,
+and both text files opened readably. The blank console-summary projection is
+corrected; the saved report was valid. Latest portable qualification passes 44
+checks, with zero failures/skips. The retained original archive subsequently
+passed a fresh full SHA256 check. Owner-approved temporary-copy cleanup completed:
+`D:\Recovery-Test` was removed, preserving the original, provider copies and
+small recovery evidence outside the test folder. Native v12 qualification is
+still pending; the scheduled backup remains v11.
 
 Superseding result: [v11 completed successfully](WINDOWS-V11-COMPLETED-2026-10-21.md).
 The owner supplied the successful 56-check qualification and manual v11 backup
@@ -72,9 +78,10 @@ confirmed. The owner subsequently reported both cloud clients fully synced and
 the OneDrive recovery transfer complete. A full 47,503,603,481-byte recovery-copy
 SHA256 pass matches the recorded manifest, with no file change during the read.
 The owner's subsequent 7-Zip 26.03 password/integrity test reported `Everything
-is Ok` for all 744,108 files. Representative file/application restoration,
-independent remote provenance and actual scheduled execution still require
-their separate evidence; see the linked recovery follow-up and the simple
+is Ok` for all 744,108 files. Representative text-file extraction/hash/readability
+is now confirmed. Application restoration, independent remote provenance and
+actual scheduled execution still require their separate evidence; see the
+linked recovery follow-up and the simple
 manual at `scripts/windows/BACKUP-AND-RESTORE-SIMPLE-MANUAL.md`.
 
 Owner-completed steps now include KeePassXC vault/passphrase recovery, archive

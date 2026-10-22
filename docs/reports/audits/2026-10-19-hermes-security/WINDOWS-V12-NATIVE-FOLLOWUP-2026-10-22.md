@@ -112,6 +112,34 @@ copies remain untouched. Owner-run extraction and readability evidence are
 pending; script parsing/preview is not that evidence. No real password is read
 or stored by the helper; 7-Zip obtains it through its own hidden prompt.
 
+### Selected-file drill completed; console summary corrected
+
+The owner subsequently ran the drill successfully (exit 0) and confirmed that
+both Notepad files opened and were readable. The private saved report contains
+`complete=true`, `passed=3`, `failed=0`. Independent inspection confirmed exactly
+three selected files plus that report: 154,324 bytes of selected file contents,
+155,797 bytes including the original report. Each selected file's SHA256 matches
+its retained reference. The larger 7-Zip display figures (121,603 files and
+9,089,007,814 bytes) are not the files written in this selective run; the folder
+inventory was checked directly. The initial commentary concern about excess
+extraction was corrected after that inspection.
+
+The blank console fields came from applying Select-Object to a hashtable
+without converting it to PSCustomObject. The saved JSON report was unaffected.
+The projection is corrected in both the v11 drill and the v12 native test, with
+regression tests executing each actual summary projection. The drill now also
+checks the actual extracted file count before saving a pass and prints actual
+written bytes. Portable qualification passes **44 checks, zero failures and
+zero skips**. Native v12 rerun remains required.
+
+Evidence is retained independently under
+`%LOCALAPPDATA%\RNR-Backups\recovery-evidence\v11-2026-10-22`, including the raw
+report, matched restore manifest and review recording the owner's readability
+confirmation. It does not contain the archive password or recovered documents.
+The owner explicitly approved deleting the temporary recovery folder. A fresh
+checksum check of the retained original base precedes that cleanup; final
+cleanup disposition is recorded below after execution.
+
 ## C:\Scripts cleanup
 
 Fourteen superseded rollback copies were moved, preserving their bytes, into:
@@ -131,12 +159,28 @@ Task Scheduler enumeration was unavailable in this session.
 
 ## D:\Recovery-Test disposition
 
-This directory currently contains the copied v11 encrypted archive and manifest.
-Full checksum and owner-run password/integrity tests passed; representative
-extraction and application recovery have not been demonstrated. It was left
-unchanged. Finish a small recovered-file check before removing the redundant
-test copy. Removing it later would reclaim about 47.5 decimal GB / 44.2 GiB;
+Full checksum, owner-run password/integrity, three selected-file hashes and both
+text-file readability checks have passed. Application/database recovery remains
+separate. The owner approved removal of the redundant test copy after preserving
+the evidence and verifying the retained original archive. Removing it would
+reclaim about 47.5 decimal GB / 44.2 GiB;
 it must not remove the original generation under `D:\Archive\Snapshots\chains`
 or the provider copies. Keep the small verification evidence independently of
 any eventual test-copy cleanup. This cleanup does not waive independent
 provider-recovery or separate Cognee key-custody requirements.
+
+Final disposition: the full retained original was re-read (47,503,603,481 bytes,
+481.8 seconds); its SHA256 matches
+`6fbbc9f4e5105d29e9ab7edd44260edb79a014c8a93202a0b03fb09c2b97f5e8`,
+and its size, modification time and inode remained unchanged during the check.
+Only the six pre-inventoried temporary files were then removed, followed by
+their empty directories and `D:\Recovery-Test` itself. No unexpected files or
+links were allowed by the cleanup preflight. Removed logical file bytes total
+47,503,759,847 (about 47.5 decimal GB / 44.2 GiB). Cleanup completed successfully;
+the original archive still exists and no cloud copy was changed.
+
+The independent evidence directory contains the raw selected-file report,
+restore manifest, owner-readability review, original-archive verification and
+cleanup journal. The manual's general local restore commands now use the
+retained original, so recovery does not require retaining the temporary duplicate.
+The specific selective-drill command is marked historical after cleanup.

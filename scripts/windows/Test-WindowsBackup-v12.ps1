@@ -134,7 +134,7 @@ try {
   native_windows=$true;actual_homes_and_profiles_qualified=$false;real_cloud_upload_verified=$false;offline_wsl_restore_verified=$false}
  Save-V12Json $summary (Join-Path $run summary.json)
  Save-V12Json $summary (Join-Path $ArtifactsRoot latest-pass.json)
- $summary|Select-Object complete,passed,failed,skipped,artifacts|ConvertTo-Json -Compress
+ [pscustomobject]$summary|Select-Object complete,passed,failed,skipped,artifacts|ConvertTo-Json -Compress
  exit 0
 } catch {
  Save-V12Json @{complete=$false;checks=@($checks.ToArray());error=$_.Exception.Message;artifacts=$run} (Join-Path $run summary.json)

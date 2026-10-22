@@ -88,6 +88,15 @@ integrity test. No extraction command was run by that test; representative
 restored-file/application recovery remains pending. The output does not include
 an explicit process exit-code printout; do not invent one.
 
+Subsequently, the owner ran `Test-V11RecoveredFiles.ps1 -OpenFiles` (exit 0).
+Its saved report and independent folder/hash inspection confirm three selected
+files, totaling 154,324 bytes, with matching reference hashes. The owner confirms
+both opened text files were readable. Only those three files and the small JSON
+report were written. A console-summary formatting bug displayed null values
+despite the valid saved pass report; it is corrected and regression-tested.
+Selected-file restoration is now demonstrated; application/database recovery,
+independent provider provenance and service-key custody remain separate.
+
 The simple operating/recovery manual is maintained in
 `scripts/windows/BACKUP-AND-RESTORE-SIMPLE-MANUAL.md` and installed at
 `C:\Scripts\BACKUP-AND-RESTORE-SIMPLE-MANUAL.md`. Its full extraction command is
@@ -118,8 +127,11 @@ Remaining steps:
    a separate format with broader coverage; this v11 pass does not qualify it.
 5. Complete separate Cognee key custody/revocation and frontend release gates.
 
-The completed recovery-copy checksum and owner password/integrity test precede
-the remaining representative restore. No new backup, extraction, account change
-or task switch was started by this review.
+The recovery-copy checksum, owner password/integrity and selected-file
+restoration/readability checks have passed. Small evidence copies are retained
+outside the owner-approved temporary-copy cleanup. A fresh full hash of the
+retained original matched before all six temporary files and the empty
+`D:\Recovery-Test` tree were removed. No original/cloud backup, task/account
+setting or new real backup was changed or started by this review.
 
 Reference: [Microsoft Robocopy return codes](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy#exit-return-codes).

@@ -18,6 +18,20 @@ foreach ($file in @(Get-ChildItem -LiteralPath $Support -File -Filter '*.ps1')+@
  $tokens=$null;$errors=$null;$null=[Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors)
  Check ('parser_'+$file.Name) ($errors.Count -eq 0)
 }
+# Execute each actual console-summary projection with a hashtable fixture.
+# Select-Object cannot select hashtable keys without the PSCustomObject cast.
+$summary=@{complete=$true;passed=3;failed=0;skipped=0;artifacts='synthetic'}
+$report=@{complete=$true;passed=3;failed=0;folder='synthetic'}
+foreach ($name in @('Test-WindowsBackup-v12.ps1','Test-V11RecoveredFiles.ps1')) {
+ $tokens=$null;$errors=$null
+ $ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $WindowsScriptRoot $name),[ref]$tokens,[ref]$errors)
+ Check ('parser_'+$name+'_summary_fixture') ($errors.Count -eq 0)
+ $pipelines=@($ast.FindAll({param($node) $node -is [Management.Automation.Language.PipelineAst] -and
+  $node.Extent.Text -match 'Select-Object complete,passed,failed,' -and $node.Extent.Text -match 'ConvertTo-Json -Compress$'},$true))
+ if ($pipelines.Count -ne 1) {throw 'Expected one actual console-summary projection.'}
+ $actual=(& ([scriptblock]::Create($pipelines[0].Extent.Text)))|ConvertFrom-Json
+ Check ('console_summary_preserves_hashtable_values_'+$name) ($actual.complete -eq $true -and $actual.passed -eq 3 -and $actual.failed -eq 0)
+}
 $repo=Join-Path $root repository;$pw=Join-Path $root synthetic-password
 [IO.File]::WriteAllText($pw,'synthetic-only-not-a-real-password')
 function Engine([string[]]$Arguments) {
