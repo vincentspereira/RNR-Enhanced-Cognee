@@ -132,3 +132,17 @@ do not revoke another owner's key. The selected review remains incomplete.
 - V12 corrected-runtime native rerun, first complete normal backup, provider
   recovery review and actual scheduled execution. V12 remains paused and v11
   remains scheduled; this checkpoint starts no backup or profile activation.
+
+## Current host/profile readiness checkpoint
+
+The owner-run systemctl query reports the API, indexing worker and backup timer
+active. Main-profile path checks report ~/.hermes exists and its Cognee plugin
+and settings file are absent. The current account includes sudo and docker;
+the filtered ordinary/hermes-named account inventory returned only
+vincentspereira. These checks do not establish a restricted everyday runtime,
+authenticated recall or a new provider/model qualification. No profile/account
+was changed. A concrete restricted-runtime account proposal is available in
+[the live-profile account plan](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
+The proposed persistent identity is separate from the already removed temporary
+test account. Owner decision and current host validation are pending; other
+privileged bots and new-home backup coverage require their own review.

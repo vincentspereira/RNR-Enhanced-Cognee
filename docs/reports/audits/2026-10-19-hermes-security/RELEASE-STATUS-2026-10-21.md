@@ -1,5 +1,12 @@
 # Enhanced Cognee release status - 21 October 2026
 
+22 October profile follow-up: API, worker and backup timer report active.
+The main administrator-owned profile has no Cognee plugin/settings yet. See
+[the restricted live-profile account proposal](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
+Its preparation needs an owner decision; no persistent runtime account or
+everyday activation has been performed. Other privileged bots, credential
+renewal, new-home backup coverage and release checks remain separate gates.
+
 22 October owner update: [current recovery custody checked](RECOVERY-CUSTODY-2026-10-22.md).
 The owner recovered the updated KeePassXC vault from the OneDrive website,
 exported a checksum-matching 12-file recovery attachment and used the downloaded
