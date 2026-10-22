@@ -1,5 +1,10 @@
 # Remediation and Hermes implementation plan
 
+22 October owner update: [current protected recovery custody checked](RECOVERY-CUSTODY-2026-10-22.md).
+The downloaded vault attachment matches the verified 12-file package, and its
+recovered password decrypts it. Exposed-credential ownership/revocation, release
+checks and everyday-profile admission remain separate unfinished work.
+
 Latest Windows result: [v11 selected-data backup completed, 21 October](WINDOWS-V11-COMPLETED-2026-10-21.md).
 All 56 native qualification checks passed for the installed file; the manual
 backup exited 0 and copied the encrypted generation into both provider folders.

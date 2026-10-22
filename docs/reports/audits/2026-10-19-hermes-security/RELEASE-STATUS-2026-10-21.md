@@ -1,5 +1,14 @@
 # Enhanced Cognee release status - 21 October 2026
 
+22 October owner update: [current recovery custody checked](RECOVERY-CUSTODY-2026-10-22.md).
+The owner recovered the updated KeePassXC vault from the OneDrive website,
+exported a checksum-matching 12-file recovery attachment and used the downloaded
+entry password to decrypt it. Current selected configuration custody is
+confirmed through this mixed owner-reported/direct-check evidence. Credential
+ownership/revocation and everyday activation remain pending. Earlier unconfirmed
+custody statements below are historical for these files; unknown legacy keys
+and whole-machine recovery are outside this confirmation.
+
 The protected Hermes test deployment is qualified. The full remediation release,
 main merge, everyday-bot rollout and other-project onboarding are not complete.
 This table reconciles the plan's six phases; earlier reports remain historical
@@ -7,12 +16,12 @@ evidence, not six separately completed phases.
 
 | Plan phase | Current disposition | Remaining work |
 |---|---|---|
-| 0 - Preserve/baseline | Originals, older stores/history and instruction/source evidence preserved | Owner disposition of real exposed credentials and independent service-key recovery custody |
+| 0 - Preserve/baseline | Originals/history preserved; owner recovery custody checked for the selected 12 current protected files | Disposition of real exposed credentials; any separately selected unknown legacy-key custody |
 | 1 - Access control | Restricted service/API/worker/operator identities, scoped credentials, actual non-admin denial tests and cross-scope fleet tests qualified | Verify/admit each intended everyday-bot operating boundary; broader retained legacy/provider paths are separate |
 | 2 - Storage/memory | Canonical schema/history, private spaces, reviewed sharing, index worker/rebuild, restart consistency and encrypted service restore qualified | Migrate old/private data only when explicitly selected and qualified; no blanket migration or unrestricted cross-project access |
 | 3 - Packaging/release | Core source/stack/image checks and real browser/SDK evidence passed on recorded source revisions | Resolve enforced frontend development-dependency findings; validate all required checks on the final candidate; then conditional main merge |
 | 4 - Hermes integration | Eight-tool provider, real non-admin qualification and five local-model scenarios passed | Review/admit an everyday profile, credential renewal and resource behavior, then stage the bot fleet; actual profiles are not enabled by synthetic tests |
-| 5 - Operations/private use | Protected daily encrypted backup, disposable restore, restart/timer catch-up and temporary-account cleanup passed | Owner recovery/revocation, complete Windows/provider recovery, actual scheduled run and final private-use review |
+| 5 - Operations/private use | Protected daily backup/restore, restart/timer, temporary-account cleanup and current owner key-custody check passed | Credential review/revocation, complete Windows/provider recovery, actual scheduled run and final private-use review |
 
 ## Confirmed evidence and its dates
 
