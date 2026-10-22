@@ -704,3 +704,53 @@ requests. It does not retry capture, renew credentials, change model defaults,
 install a runtime or activate everyday bots. The focused Workspace fixture
 suites pass 464 tests with zero failures/skips and no reported warnings; the
 diagnostic retry and runtime qualification remain pending installed execution.
+
+## 23 October: guard request-scoped clients and accept native callback arguments
+
+The c3fde7cb operator result shows native_completed=true, a nonempty native
+response and no native failure/error/interruption/partial flag, but zero observed
+requests/statuses/tool calls. Checked profile/settings/credential bytes were
+unchanged. The helper refused qualification; the saved-answer/citation and
+canonical-record comparison were not reached. Do not treat zero observations
+as proof of no model calls or classify this as an authentication failure.
+
+Two mismatches were found against public Hermes source at the installed pinned
+revision 4d04303818b61bf3aa09278af48356315515965b:
+
+- agent/client_lifecycle.py creates separate request clients through the native
+  instance's _create_openai_client factory. agent/agent_runtime_helpers.py copies
+  client kwargs and creates a fresh HTTP wrapper. Hooks on agent.client alone
+  do not cover these calls.
+- agent/tool_executor.py passes event, tool name, preview and display arguments
+  positionally. The old two-positional-argument callback raised TypeError,
+  which the native safe callback swallowed. The new callback discards the extra
+  arguments and records only known event/tool names.
+
+The correction decorates the ephemeral qualification agent's native factory;
+it returns the native client after installing request/response hooks, SDK retry
+and redirect restrictions. It also handles initial/cached clients. One lock
+protects the shared six-request budget across request/recovery clients. Reused
+transports receive each hook once. Provider handlers, native turn execution and
+cleanup remain; installed program files, defaults and profile configuration are
+not rewritten. This is a qualification-instance adaptation, not a Hermes release
+upgrade or a change to everyday profiles/bots.
+
+Earlier shared-client-only instrumentation did not establish request-scoped wire
+coverage or reliable request counts. Earlier zero counts do not establish zero
+subscription usage, and the physical-request guard must not be described as
+enforced on those unobserved clients. The separate basic completion helper
+guarded its actual transport and is unaffected by this lifecycle correction.
+
+Run the next pinned/hash-verified recall command once in the normal Ubuntu-Hermes
+operator terminal. Its SHA256 is
+f5473ff5f02791b8801d8c44ec39911418b918e20f5e2f72bf8f7200c7932363.
+Use main_memory(stage="recall", approved_test=True), the same tools1 interpreter,
+restricted pilot, clean environment and 180-second outer timeout. Do not repeat
+capture, clear the fixture, copy credentials or change defaults. Return only the
+sanitized result. Successful native completion plus request observation must
+still pass the answer/citation and canonical version/content/count checks.
+
+The focused suites pass 468 tests, zero failures/skips and no reported warnings.
+Transport regression uses real HTTPX hooks with a simulated transport; other
+native agent/network/process operations use fixtures. No Workspace test calls
+the model or proves installed recall. Native qualification remains pending.

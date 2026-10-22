@@ -1,8 +1,8 @@
-"""One synthetic Responses completion using the pilot's own OAuth credential.
+"""Restricted synthetic Responses connectivity and native memory qualification.
 
-Native Hermes request conversion, headers, stream assembly and completion
-normalization are exercised; this is not a full Hermes chat/capture test.
-No auth resolver, refresh/import, fallback, memory call or settings write.
+The basic main checks one native-contract completion. main_memory separately
+checks native agent capture/recall; inspect uses no OAuth or chat model.
+Use only the pilot's own scoped credentials; preserve settings and test evidence.
 """
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ import socket
 import ssl
 import stat
 import sys
+import threading
 import time
 import uuid
 
@@ -373,37 +374,55 @@ def restrict_agent(agent, allowed):
     agent.valid_tool_names = set(allowed)
     if agent._fallback_chain or agent._fallback_activated:
         raise CheckError("unexpected_model_fallback")
-    client = agent.client
-    client.max_retries = 0
-    transport = client._client
-    transport.follow_redirects = False
     requests = {"count": 0, "http_statuses": [], "guard_failure": None}
+    lock = threading.RLock()
     def guard(request):
-        if request.method != "POST" or str(request.url) != BASE_URL + "/responses" or requests["count"] >= 6:
-            requests["guard_failure"] = "unexpected_memory_test_request"
-            raise CheckError("unexpected_memory_test_request")
-        try:
-            raw = request.content
-            if request.headers.get("content-encoding") == "zstd":
-                from compression import zstd
-                raw = zstd.decompress(raw)
-            body = json.loads(raw)
-            if not isinstance(body, dict): raise ValueError()
-        except Exception:
-            requests["guard_failure"] = "invalid_memory_test_payload"
-            raise CheckError("invalid_memory_test_payload") from None
-        if (body.get("model") != MODEL or body.get("store") is not False
-                or body.get("service_tier") or not isinstance(body.get("tools"), list)
-                or any(not isinstance(tool, dict) or tool.get("name") not in allowed for tool in body["tools"])):
-            requests["guard_failure"] = "unexpected_memory_test_wire_contract"
-            raise CheckError("unexpected_memory_test_wire_contract")
-        requests["count"] += 1
+        # Request-scoped clients and retries share one physical-request budget.
+        with lock:
+            if request.method != "POST" or str(request.url) != BASE_URL + "/responses" or requests["count"] >= 6:
+                requests["guard_failure"] = "unexpected_memory_test_request"
+                raise CheckError("unexpected_memory_test_request")
+            try:
+                raw = request.content
+                if request.headers.get("content-encoding") == "zstd":
+                    from compression import zstd
+                    raw = zstd.decompress(raw)
+                body = json.loads(raw)
+                if not isinstance(body, dict): raise ValueError()
+            except Exception:
+                requests["guard_failure"] = "invalid_memory_test_payload"
+                raise CheckError("invalid_memory_test_payload") from None
+            if (body.get("model") != MODEL or body.get("store") is not False
+                    or body.get("service_tier") or not isinstance(body.get("tools"), list)
+                    or any(not isinstance(tool, dict) or tool.get("name") not in allowed for tool in body["tools"])):
+                requests["guard_failure"] = "unexpected_memory_test_wire_contract"
+                raise CheckError("unexpected_memory_test_wire_contract")
+            requests["count"] += 1
     def observe_response(response):
         status = response.status_code
-        if type(status) is int and 100 <= status <= 599 and len(requests["http_statuses"]) < 6:
-            requests["http_statuses"].append(status)
-    transport.event_hooks["request"].append(guard)
-    transport.event_hooks.setdefault("response", []).append(observe_response)
+        with lock:
+            if type(status) is int and 100 <= status <= 599 and len(requests["http_statuses"]) < 6:
+                requests["http_statuses"].append(status)
+    def install(client):
+        client.max_retries = 0
+        transport = client._client
+        transport.follow_redirects = False
+        with lock:
+            for kind, hook in (("request", guard), ("response", observe_response)):
+                hooks = transport.event_hooks.setdefault(kind, [])
+                if hook not in hooks:
+                    hooks.append(hook)
+        return client
+    # Hermes builds independent request clients from _client_kwargs; hooking
+    # agent.client alone leaves those clients unobserved and unguarded.
+    factory = agent._create_openai_client
+    def guarded_factory(*args, **kwargs):
+        return install(factory(*args, **kwargs))
+    agent._create_openai_client = guarded_factory
+    install(agent.client)
+    cache = getattr(agent, "_request_client_cache", None)
+    if isinstance(cache, dict) and cache.get("client") is not None:
+        install(cache["client"])
     return requests
 
 
@@ -416,7 +435,7 @@ def native_memory_turn(stage, token, provider, session, prompt):
     manager.add_provider(provider)
     manager.initialize_all(session, hermes_home=str(PROFILE), agent_context="primary", platform="cli")
     calls = []
-    def progress(event_type, tool_name=None, **kwargs):
+    def progress(event_type, tool_name=None, *unused, **kwargs):
         if event_type == "tool.started" and tool_name in {
                 "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status"}:
             calls.append(tool_name)

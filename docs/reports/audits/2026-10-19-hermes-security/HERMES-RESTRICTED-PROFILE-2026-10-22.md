@@ -999,3 +999,51 @@ The next operator step is one fresh recall attempt with this diagnostic helper,
 using the same restricted account/profile and temporary model arguments. Keep
 the record/receipt, defaults, credentials, service installation and bots intact;
 do not rerun capture or infer that sign-in/renewal is required from this result.
+
+## 23 October: native completion exposed client/callback observation gaps
+
+The owner returned the c3fde7cb diagnostic recall result. The native result was
+a mapping with completed=true, failed=false, no error/interruption/partial flag
+and response text present. The helper observed zero model requests, zero HTTP
+statuses and zero tool events, with no request-guard failure. Checked profile
+settings/credential bytes were unchanged and no memory write was enabled.
+The helper refused qualification because its observed-request requirement failed.
+This is not evidence that the native model received no requests, or that recall
+succeeded. The post-turn canonical content/citation check did not run.
+
+Inspection of the exact pinned public Hermes source identified two test-helper
+mismatches. ClientLifecycleMixin._create_request_openai_client builds a distinct
+client via _create_openai_client; create_openai_client copies kwargs and supplies
+a fresh HTTP wrapper. Guarding only agent.client misses this request client.
+Also tool_executor._begin_tool_execution invokes tool_progress_callback with
+four positional arguments, while the helper accepted only two. _safe_callback
+catches callback TypeError, hiding those events. These mechanisms explain the
+observation gaps; the relayed output alone does not prove which tools ran.
+
+The helper now decorates only the qualification instance's native client factory
+to install the same guard/observers on each newly created client before use.
+Initial and any existing cached request client are covered too. Native clients,
+headers, handlers, turn loop and cleanup remain; no source/profile files change.
+All observed clients share one lock-protected six-physical-request allowance,
+exact endpoint/model/tool restrictions, disabled SDK retries and redirects, with
+hooks installed once per transport. The callback accepts and discards extra
+preview/argument values, retaining only known event/tool names.
+
+Correction to earlier limits: the initial shared-client hook did not establish
+wire-guard coverage or reliable request counts for request-scoped native calls.
+Prior attempts may have consumed subscription usage despite zero observations;
+do not claim they made no model requests or that six physical requests were
+enforced by that hook. This correction does not affect the separately passed
+one-completion check, which owns and guards its actual SDK transport directly.
+
+Focused Workspace fixtures pass 468 tests, zero failures/skips and no reported
+warnings. Four new regressions cover request/recovery/cached clients, a real
+HTTPX client with a simulated transport, concurrent shared-limit enforcement
+and reused-transport hook deduplication; callback tests use the pinned positional
+shape with private preview/argument sentinels. An initial draft of the transport
+test required an absent optional OpenAI SDK; it was changed to exercise the
+actual HTTPX event-hook boundary without adding a dependency or skipping a test.
+These are fixture tests, not a native SDK/model or installed Hermes result.
+Next run one fresh recall with the corrected helper and retain existing evidence.
+Capture completion, canonical post-turn verification and full runtime/fleet
+qualification remain pending.

@@ -256,9 +256,99 @@ def test_saved_evidence_requires_one_current_matching_record(check, mutation):
 
 def agent_fixture(check):
     names = ["enhanced_recall", "enhanced_remember", "enhanced_get", "enhanced_status", "terminal"]
-    transport = NS(follow_redirects=True, event_hooks={"request": []})
+    def factory(*args, **kwargs):
+        transport = NS(follow_redirects=True, event_hooks={"request": []})
+        return NS(_client=transport, max_retries=2)
     return NS(tools=[{"function": {"name": name}} for name in names], _memory_manager=object(),
-              _fallback_chain=[], _fallback_activated=False, client=NS(_client=transport, max_retries=2))
+              _fallback_chain=[], _fallback_activated=False, client=factory(), _create_openai_client=factory)
+
+
+def test_request_scoped_and_rebuilt_clients_share_guards_without_mutating_factory_inputs(check):
+    agent = agent_fixture(check)
+    cached = agent._create_openai_client({}, reason="cached", shared=False)
+    agent._request_client_cache = {"client": cached}
+    options = {"api_key": TOKEN, "base_url": check.BASE_URL, "default_headers": {"private": "PRIVATE_HEADER"}}
+    original = json.loads(json.dumps(options))
+    seen = []
+    factory = agent._create_openai_client
+    def native_factory(kwargs, **metadata):
+        seen.append(metadata)
+        return factory(kwargs, **metadata)
+    agent._create_openai_client = native_factory
+    requests = check.restrict_agent(agent, {"enhanced_recall"})
+    clients = [agent.client, cached]
+    clients.extend(agent._create_openai_client(options, reason="request", shared=False) for _ in range(3))
+    clients.append(agent._create_openai_client(options, reason="recovery", shared=True))
+    for client in clients:
+        assert client.max_retries == 0 and not client._client.follow_redirects
+        body = {"model": check.MODEL, "store": False, "tools": [{"name": "enhanced_recall"}]}
+        client._client.event_hooks["request"][-1](httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+        client._client.event_hooks["response"][-1](NS(status_code=200))
+    assert requests["count"] == 6 and requests["http_statuses"] == [200] * 6
+    replacement = agent._create_openai_client(options, reason="another_request", shared=False)
+    with pytest.raises(check.CheckError, match="unexpected_memory_test_request"):
+        replacement._client.event_hooks["request"][-1](httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+    assert options == original and seen[-1] == {"reason": "another_request", "shared": False}
+
+
+def test_real_httpx_request_client_guard_runs_before_transport_and_has_one_global_limit(check):
+    sent = []
+    def respond(request):
+        sent.append(request)
+        return httpx.Response(200, json={"id": "synthetic-response", "object": "response", "status": "completed"})
+    clients = []
+    def factory(*args, **kwargs):
+        client = NS(max_retries=2, _client=httpx.Client(transport=httpx.MockTransport(respond)))
+        clients.append(client)
+        return client
+    agent = agent_fixture(check)
+    agent.client = factory()
+    agent._create_openai_client = factory
+    counts = check.restrict_agent(agent, {"enhanced_recall"})
+    payload = {"model": check.MODEL, "store": False,
+               "input": "Synthetic request", "tools": [{"type": "function", "name": "enhanced_recall",
+               "parameters": {"type": "object", "properties": {}}}]}
+    try:
+        for _ in range(6):
+            request_client = agent._create_openai_client({}, reason="request", shared=False)
+            request_client._client.post(check.BASE_URL + "/responses", json=payload)
+        assert len(sent) == counts["count"] == 6 and counts["http_statuses"] == [200] * 6
+        with pytest.raises(check.CheckError, match="unexpected_memory_test_request"):
+            agent._create_openai_client({}, reason="request", shared=False)._client.post(
+                check.BASE_URL + "/responses", json=payload)
+        assert len(sent) == 6 and counts["guard_failure"] == "unexpected_memory_test_request"
+    finally:
+        for client in clients: client._client.close()
+
+
+def test_concurrent_request_clients_cannot_exceed_the_shared_physical_limit(check):
+    from concurrent.futures import ThreadPoolExecutor
+    agent = agent_fixture(check)
+    requests = check.restrict_agent(agent, {"enhanced_recall"})
+    def attempt(_):
+        client = agent._create_openai_client({}, reason="request", shared=False)
+        body = {"model": check.MODEL, "store": False, "tools": [{"name": "enhanced_recall"}]}
+        try:
+            client._client.event_hooks["request"][-1](httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+            return True
+        except check.CheckError:
+            return False
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        assert sum(pool.map(attempt, range(20))) == 6
+    assert requests["count"] == 6
+
+
+def test_reused_client_transport_does_not_get_duplicate_counting_hooks(check):
+    agent = agent_fixture(check)
+    client = agent.client
+    agent._create_openai_client = lambda *args, **kwargs: client
+    counts = check.restrict_agent(agent, {"enhanced_recall"})
+    for _ in range(3):
+        assert agent._create_openai_client({}, reason="reuse", shared=False) is client
+    assert len(client._client.event_hooks["request"]) == len(client._client.event_hooks["response"]) == 1
+    body = {"model": check.MODEL, "store": False, "tools": [{"name": "enhanced_recall"}]}
+    client._client.event_hooks["request"][-1](httpx.Request("POST", check.BASE_URL + "/responses", json=body))
+    assert counts["count"] == 1
 
 
 def test_agent_surface_is_narrowed_without_replacing_native_handlers(check):
@@ -353,8 +443,9 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
             options.update(kwargs)
         def run_conversation(self, prompt, conversation_history):
             assert conversation_history == [] and prompt == "synthetic user decision"
-            options["tool_progress_callback"]("tool.started", tool_name="enhanced_recall")
-            options["tool_progress_callback"]("tool.started", tool_name="enhanced_remember")
+            # Pinned Hermes tool_executor passes preview and display args positionally.
+            options["tool_progress_callback"]("tool.started", "enhanced_recall", "PRIVATE_PREVIEW", {"query": "PRIVATE_QUERY"})
+            options["tool_progress_callback"]("tool.started", "enhanced_remember", "PRIVATE_PREVIEW", {"content": "PRIVATE_CONTENT"})
             requests["count"] = 3
             if outcome == "exception": raise TimeoutError("PRIVATE_EXCEPTION_SENTINEL")
             if outcome != "complete":
