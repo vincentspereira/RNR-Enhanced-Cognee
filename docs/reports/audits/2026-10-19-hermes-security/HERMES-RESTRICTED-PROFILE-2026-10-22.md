@@ -806,3 +806,30 @@ Host comparison remains pending; do not change resolver, WSL, firewall or
 identity settings, restart services, or retry the cloud request without first
 reconciling that comparison. Existing 343 passing fixture tests do not establish
 native DNS/model success; no additional full-suite claim is made here.
+
+## Owner relayed normal-account DNS results and OpenAI fallback request
+
+Two relayed Hermes reports show EAI_AGAIN for api.z.ai under vincentspereira
+while GitHub resolved; the second also resolved api.openai.com and chatgpt.com.
+Resolver-file readability passed under that account. Restricted checks were
+NOT_RUN_OPERATOR_AUTH_REQUIRED, not DNS failures. A normal-account failure means
+the observed issue is not established as specific to hermes-runtime; it does
+not prove a provider outage or identify the local resolver cause. Actual
+restricted comparison still requires the authorized human operator terminal.
+
+The reported current chat uses gpt-6.1-sol via openai-codex. Treat that as
+reported human-profile context, not restricted-pilot completion evidence. The
+owner requested a fallback check without copying normal-user credentials or
+weakening permissions. Read-only pinned source review confirms a distinct
+OAuth/codex_responses path; ordinary auth resolution can refresh/import/persist
+grants. A simple model-name/API-endpoint substitution is insufficient. No
+OpenAI credential store was read, token copied, new login/broker activated,
+model request made or default changed in Workspace. Official OpenAI auth and
+App Server sources and the pinned Hermes references are recorded in the DNS
+runbook; account/model access remains unverified for hermes-runtime.
+
+The inline operator comparison now includes both OpenAI hostnames before Z.ai,
+retaining non-root identities, no-new-privileges, clean environments, fixed
+public output and 20-second bounds. No download/model call or configuration
+change is required. Do not switch the installed checkout just to match helper
+revisions: previous steps executed pinned fetched blobs without changing HEAD.
