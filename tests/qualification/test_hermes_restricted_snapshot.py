@@ -1,5 +1,6 @@
 """Security regressions for the privileged, preservation-only snapshot builder."""
 import importlib.util
+import ast
 import io
 import json
 import os
@@ -160,6 +161,82 @@ def test_rewrite_preserves_copied_original_in_private_evidence(builder, tmp_path
     assert generated.read_bytes() == b"rebased"
     assert (audit / "finder.py.original").read_bytes() == b"original"
     assert (audit / "finder.py.original").stat().st_mode & 0o077 == 0
+
+
+def test_build_mirror_imports_bind_only_to_committed_source_without_reading_mirror(builder, tmp_path):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    (source / "hermes_cli/__init__.py").write_text("# committed package\n")
+    (source / "hermes_bootstrap.py").write_text("# committed module\n")
+    (source / "agent/extensions").mkdir(parents=True)
+    # The original build-source mirror need not exist, and is never read.
+    mirror = builder.HOME / ".hermes/build-source-mirror"
+    sentinel = tmp_path / "never-execute"
+    raw = (
+        f"MAPPING: dict[str, str] = {{'hermes_cli': {str(mirror / 'hermes_cli')!r}, "
+        f"'hermes_bootstrap': {str(mirror / 'hermes_bootstrap')!r}}}\n"
+        f"NAMESPACES: dict[str, list[str]] = {{'agent.extensions': [{str(mirror / 'agent/extensions')!r}], "
+        "'agent': []}\n"
+        f"__import__('pathlib').Path({str(sentinel)!r}).touch()\n"
+    ).encode()
+    destination = tmp_path / "protected/repo"
+    updated = builder.rebase_finder(raw, [(builder.SOURCE, destination)], source_tree=source)
+    tree = ast.parse(updated)
+    assert ast.literal_eval(tree.body[0].value) == {
+        "hermes_cli": str(destination / "hermes_cli"),
+        "hermes_bootstrap": str(destination / "hermes_bootstrap")}
+    assert ast.literal_eval(tree.body[1].value)["agent.extensions"] == [str(destination / "agent/extensions")]
+    assert str(builder.HOME).encode() not in updated
+    assert not sentinel.exists()
+    assert (source / "hermes_bootstrap.py").read_text() == "# committed module\n"
+
+
+@pytest.mark.parametrize("mapping", [
+    "{'missing': '/old/root/missing'}",
+    "{'hermes_cli': '/old/root/unrelated'}",
+    "{'../escape': '/old/root/../escape'}",
+    "{'hermes_cli': 'relative/hermes_cli'}",
+    "{'hermes_cli': '/old/root/../root/hermes_cli'}",
+    "{'hermes_cli': '/old/root/hermes_cli', 'agent': '/different/root/agent'}",
+    "{'hermes_cli': '/old/root/hermes_cli', 'hermes_cli': '/old/root/hermes_cli'}",
+    "{'hermes_cli': __import__('os').getcwd()}",
+    "dict(hermes_cli='/old/root/hermes_cli')",
+    "{}",
+])
+def test_reconstructed_imports_reject_unverified_layouts(builder, tmp_path, mapping):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    (source / "agent").mkdir()
+    raw = ("MAPPING = " + mapping + "\nNAMESPACES = {}\n").encode()
+    with pytest.raises(builder.PreparationError):
+        builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
+
+
+@pytest.mark.parametrize("linked_directory", [False, True])
+def test_committed_module_binding_cannot_follow_a_link_to_outside_files(builder, tmp_path, linked_directory):
+    source = tmp_path / "committed"
+    source.mkdir()
+    outside = tmp_path / "not-a-program-file"
+    if linked_directory:
+        outside.mkdir()
+        (source / "hermes_cli").symlink_to(outside, target_is_directory=True)
+    else:
+        outside.write_text("SYNTHETIC_PRIVATE_DO_NOT_READ")
+        (source / "hermes_cli.py").symlink_to(outside)
+    raw = b"MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+    with pytest.raises(builder.PreparationError, match="escapes"):
+        builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
+
+
+def test_unrelated_home_path_is_not_admitted_by_reconstructed_imports(builder, tmp_path):
+    source = tmp_path / "committed"
+    (source / "hermes_cli").mkdir(parents=True)
+    raw = (
+        "MAPPING = {'hermes_cli': '/old/root/hermes_cli'}\n"
+        f"UNRELATED = {str(builder.HOME / 'private-config')!r}\n"
+    ).encode()
+    with pytest.raises(builder.PreparationError, match="outside the selected runtime"):
+        builder.rebase_finder(raw, [(builder.SOURCE, tmp_path / "final")], source_tree=source)
 
 
 def test_git_export_drops_root_and_excludes_operator_environment(builder, monkeypatch):

@@ -145,3 +145,33 @@ checks, 29 targeted tests passed under Workspace Python 3.12.3, with zero failur
 zero skips and no reported warnings. Full-suite, coverage and native diagnostic
 results are not inferred from this test run. No guard relaxation or change to the
 privileged builder was made. Partial native snapshots remain retained.
+
+## Received link diagnosis and corrected import-map preparation
+
+The owner ran the exact inspector from delivery commit 33d64135 and supplied
+its completed output. It inspected zero source links, 1047 managed-Python links
+and four environment links; external_link_count was zero. The generated finder
+__editable___hermes_agent_0_0_0_finder.py contained 122 editable path references.
+The first 40 displayed were outside the selected runtime under another operator
+home area, on line 9; the editable list was explicitly truncated. Do not infer
+classifications of the undisplayed references or the hidden source-directory
+name. No files were copied and Hermes was not launched by this diagnosis.
+
+This resolves the earlier ambiguity in favor of editable-path rebasing. The
+preparer now reconstructs literal MAPPING/NAMESPACES bindings only when their
+declared module suffix matches and a corresponding source module/directory is
+present and confined inside the exported commit. All bindings must describe
+one source layout. It does not read or copy the old mapped source location,
+broaden home-directory access or change existing runtime files. Validation runs
+before the large interpreter/dependency copy; the copied finder set and bytes
+must subsequently equal preflight originals. Original copied finders remain in
+private evidence and failed staging generations remain preserved.
+
+Fourteen additional regressions cover source-mirror reconstruction without code
+execution, root modules and nested/empty namespaces, unsupported/missing/relative/
+traversing/duplicate/mixed-root mappings, symlink escapes and unrelated home paths.
+The combined targeted suite reports 43 passed, zero failures, zero skips and no
+reported warnings under Workspace Python 3.12.3. Full-suite/coverage results and
+native success are not inferred. Native preparation and all subsequent restricted
+runtime/profile/provider/model qualifications remain pending. No existing Hermes
+installation, profile, service key, backup, launch path or bot was changed here.

@@ -15,6 +15,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import pwd
+import re
 import shlex
 import shutil
 import stat
@@ -196,13 +197,87 @@ def unpack_source(archive: Path, destination: Path, mappings):
         make_link(original, target, out, mappings)
 
 
-def rebase_finder(raw: bytes, mappings) -> bytes:
+def verified_import_bindings(tree, source_tree: Path, mappings) -> dict[int, str]:
+    """Reconstruct generated imports from committed files, never old build trees.
+
+    Setuptools finders can refer to a build-source mirror outside SOURCE. Only
+    literal MAPPING/NAMESPACES values whose module suffix exists in the exported
+    commit may be relocated. All bindings must describe one source root.
+    """
+    replacements, roots, tables = {}, set(), set()
+    final_source = translated(SOURCE, mappings)
+    module_name = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*")
+    for statement in tree.body:
+        if isinstance(statement, ast.AnnAssign):
+            targets, value = [statement.target], statement.value
+        elif isinstance(statement, ast.Assign):
+            targets, value = statement.targets, statement.value
+        else:
+            continue
+        named = [target.id for target in targets if isinstance(target, ast.Name)
+                 and target.id in {"MAPPING", "NAMESPACES"}]
+        if not named:
+            continue
+        if len(targets) != 1 or len(named) != 1 or named[0] in tables or not isinstance(value, ast.Dict):
+            raise PreparationError("An editable import table has an unsupported structure.")
+        table = named[0]
+        tables.add(table)
+        seen = set()
+        for key, entry in zip(value.keys, value.values):
+            if (not isinstance(key, ast.Constant) or not isinstance(key.value, str)
+                    or len(key.value) > 256 or not module_name.fullmatch(key.value)
+                    or key.value in seen):
+                raise PreparationError("An editable import table has an unsupported module name.")
+            seen.add(key.value)
+            relative = Path(*key.value.split("."))
+            if table == "NAMESPACES":
+                if not isinstance(entry, ast.List):
+                    raise PreparationError("An editable namespace has an unsupported path list.")
+                entries = entry.elts
+            else:
+                entries = [entry]
+            for node in entries:
+                if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
+                    raise PreparationError("An editable import path is not a literal string.")
+                old = Path(node.value)
+                if not old.is_absolute() or str(old) != os.path.normpath(node.value):
+                    raise PreparationError("An editable import path is not a normalized absolute path.")
+                # A module's generated finder target can omit its .py suffix.
+                suffix = relative.with_suffix(".py") if old.suffix == ".py" else relative
+                if old.parts[-len(suffix.parts):] != suffix.parts:
+                    raise PreparationError("An editable import does not match its declared module path.")
+                root = old
+                for _ in suffix.parts:
+                    root = root.parent
+                roots.add(root)
+                candidate = source_tree / suffix
+                resolved = candidate.resolve()
+                if not resolved.is_relative_to(source_tree.resolve()):
+                    raise PreparationError("An editable import escapes the committed source copy.")
+                module_file = candidate if suffix.suffix == ".py" else candidate.with_suffix(".py")
+                if not module_file.resolve().is_relative_to(source_tree.resolve()):
+                    raise PreparationError("An editable module file escapes the committed source copy.")
+                valid = candidate.is_dir() or module_file.is_file()
+                if table == "NAMESPACES":
+                    valid = candidate.is_dir()
+                if not valid:
+                    raise PreparationError("An editable module is missing from the committed source copy.")
+                replacements[id(node)] = str(final_source / suffix)
+    if "MAPPING" not in tables or not replacements or len(roots) != 1:
+        raise PreparationError("Editable imports do not describe one supported committed source layout.")
+    return replacements
+
+
+def rebase_finder(raw: bytes, mappings, *, source_tree: Path | None = None) -> bytes:
+    tree = ast.parse(raw.decode("utf-8"))
+    replacements = verified_import_bindings(tree, source_tree, mappings) if source_tree is not None else {}
     class Rebase(ast.NodeTransformer):
         def visit_Constant(self, node):
-            if isinstance(node.value, str) and node.value.startswith(str(HOME) + "/"):
+            if id(node) in replacements:
+                node.value = replacements[id(node)]
+            elif isinstance(node.value, str) and node.value.startswith(str(HOME) + "/"):
                 node.value = str(translated(Path(node.value), mappings))
             return node
-    tree = ast.parse(raw.decode("utf-8"))
     tree = ast.fix_missing_locations(Rebase().visit(tree))
     result = (ast.unparse(tree) + "\n").encode()
     if str(HOME).encode() in result:
@@ -328,12 +403,25 @@ def prepare() -> dict:
         os.chmod(archive, 0o600)
         git_as_operator(operator, "archive", "--format=tar", REVISION, stdout=stream)
     unpack_source(archive, stage / "repo", mappings)
+    # Validate/reconstruct import maps before the large interpreter/dependency
+    # copy. Do not follow the old build-source references or execute the finder.
+    finders = {}
+    for finder in old_site.glob("__editable__*_finder.py"):
+        raw = small_file(finder, 4194304)
+        finders[finder.name] = (raw, rebase_finder(raw, final_mappings, source_tree=stage / "repo"))
+    if not finders:
+        raise PreparationError("The inspected editable import finder is missing.")
     copy_tree(PYTHON, stage / "python", mappings)
     copy_tree(ENVIRONMENT, stage / "venv", mappings)
     site = stage / "venv/lib/python3.14/site-packages"
     check_startup(site)
-    for finder in site.glob("__editable__*_finder.py"):
-        rewrite_generated(finder, rebase_finder(small_file(finder, 4194304), final_mappings), audit)
+    if {path.name for path in site.glob("__editable__*_finder.py")} != set(finders):
+        raise PreparationError("The editable import finder set changed during the copy.")
+    for name, (original, updated) in finders.items():
+        finder = site / name
+        if small_file(finder, 4194304) != original:
+            raise PreparationError("An editable import finder changed during the copy.")
+        rewrite_generated(finder, updated, audit)
     for path in (stage / "venv/bin").iterdir():
         if path.is_symlink() or not path.is_file():
             continue

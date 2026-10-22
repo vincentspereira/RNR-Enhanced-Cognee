@@ -37,6 +37,14 @@ integrations/hermes/deployment/prepare_restricted_runtime.py:
   literals and generated launcher paths into the new snapshot. Startup code is
   never executed by the root preparer. Original user files remain unchanged;
   copied originals of changed generated files are retained in private evidence.
+- Editable imports can reference a source mirror outside the three inspected
+  roots. The corrected helper reconstructs only literal MAPPING/NAMESPACES
+  bindings: module names and path suffixes must agree, resolve to files or
+  directories inside the exported commit, and describe one source layout.
+  It never copies or opens the old mirror. Unexpected tables, missing modules,
+  escape links and unrelated home references still stop preparation. This
+  preflight runs after source export, before the larger Python/venv copy.
+  Copied finder bytes and the finder set must match the preflight originals.
 - Uses the source's supported payload/environment metadata and external-update
   steward. The code identity is the actual commit, displayed as git.4d04303;
   no release version or advisory clearance is invented. This is a local operator
@@ -107,6 +115,26 @@ reported program reference before changing copy/relocation rules; do not blindly
 rerun preparation, follow external links into private files, or replace missing
 program files with administrator home access. A completed read-only diagnosis
 is not successful snapshot preparation or runtime qualification.
+
+The owner subsequently reported complete=true: zero committed source links,
+1047 managed-Python links, four environment links and zero external links.
+There were 122 editable path references; the first 40 displayed were all outside
+the selected runtime in another operator-home area, with truncation explicitly
+reported. Do not assert the unseen 82 paths have the same classification or
+publish guesses about the hidden original source location. This identifies
+editable-path rebasing as the diagnosed blocker rather than symlink relocation.
+
+The corrected preparer uses the exported source layout to reconstruct verified
+import bindings instead of adding that other home area to the copy allowlist.
+All other copy/publication guards and preservation rules remain. The next native
+preparation attempt is still required; local tests do not confirm that every
+native binding satisfies the supported layout or that Hermes runs afterward.
+
+Reference: [Hermes packaging at the selected commit](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/setup.py)
+derives root Python modules from the source tree. The
+[Setuptools editable finder](https://github.com/pypa/setuptools/blob/main/setuptools/command/editable_wheel.py)
+uses MAPPING/NAMESPACES to locate modules; that moving upstream template is
+structural context, not proof of the exact installed Setuptools version.
 
 A successful preparation returns snapshot_prepared=true, runtime_qualified=false,
 hermes_launched=false, profile_configured=false and memory_connected=false.
