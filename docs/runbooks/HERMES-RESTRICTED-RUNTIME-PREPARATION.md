@@ -250,6 +250,33 @@ missing or inconclusive result fails the selected checks; retain that evidence.
 Even selected_access_checks_passed=true is only selected file-access evidence,
 not full live-Hermes, all-profile, admin-socket, model or memory qualification.
 
+The owner subsequently reported selected_access_checks_passed=true for all 14
+secret read/write probes, nine program write probes and eleven protected
+directory checks. Private home, primary group and confinement checks also passed.
+Continue with one fresh profile enhanced-cognee-pilot in the restricted account.
+Use the protected launcher as hermes-runtime under no-new-privileges and umask
+077. Before invoking profile create, refuse the full target path if it exists
+or is a symlink, preserving any collision. Use --no-alias --no-skills and no
+clone options. No profile-use/default switch, setup/chat/gateway or provider key
+copy is part of this command. The normal upstream profile bootstrap may seed
+essential built-in files/skills; do not describe --no-skills as executing no
+initialization code. Its result needs native review before provider provisioning.
+
+The selected commit's
+[profile parser](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/subcommands/profile.py)
+and [profile implementation](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/profiles.py)
+provide these flags and fresh-profile behavior. Keep the existing sticky default
+and human Desktop sessions unchanged. The pilot's ordinary credential and model
+route will be configured separately; one pilot is not the final fleet limit.
+
+Vincent has relayed a separate review-only fleet worker/isolation bundle and
+directed this Cognee work to continue with priority on conflicts. Keep that
+bundle untouched. Use HERMES-FLEET-COORDINATION-HANDOFF-2026-10-22.md for pins,
+scope and proposed shared-input reconciliation; no maintenance window has yet
+been scheduled. Disjoint pilot preparation remains authorised. Do not deploy,
+rebase or overwrite shared fleet integration inputs on the strength of a
+review-only bundle or a mere detected hash difference.
+
 Other managed tools, native SDK/browser/provider/model checks, source revision
 compatibility, remaining credential coverage, advisory/release checks and full
 fleet onboarding remain separate. Do not copy entire private .hermes trees,

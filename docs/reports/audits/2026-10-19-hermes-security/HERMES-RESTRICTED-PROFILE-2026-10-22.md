@@ -315,3 +315,48 @@ of every operation of a live Hermes process, all keys or all 40+ bots. Fourteen
 new regressions plus earlier targeted suites report 79 passed, zero failures,
 zero skips and no reported warnings under Workspace Python 3.12.3. Native access
 results, full-suite/coverage and the remaining qualification are still pending.
+
+## Native selected file-access checks passed
+
+The owner executed the checked access helper from delivery commit 12896a8e and
+supplied complete=true and selected_access_checks_passed=true under uid 993
+(hermes-runtime). Only the primary group was present; no-new-privileges and zero
+effective/ambient capabilities passed, as did private home permissions. All 14
+selected service/recovery/administrator-profile paths denied both read and write
+opening. All nine selected protected program files denied write opening, and
+all eleven tested program directories passed root ownership/mode/effective
+write checks. The helper read/wrote no secret or program data. Its explicit
+runtime_qualified=false and memory_connection_tested=false remain applicable.
+
+This resolves the selected native file-access probe, not every file, socket,
+live agent tool process or bot trust boundary. The next approved step is a fresh
+profile named enhanced-cognee-pilot under
+/var/lib/hermes-runtime/.hermes/profiles/enhanced-cognee-pilot. Use the protected
+launcher as hermes-runtime with no-new-privileges and umask 077, through Hermes'
+profile create command with --no-alias --no-skills and without clone options.
+Refuse any existing target, including a symlink; do not replace or delete it.
+This creates the initial profile structure only. No default-profile switch,
+provider/token installation, model call, gateway or memory write is established.
+The owner has not yet reported profile creation. Existing human profiles/bots,
+protected services, keys and backup/staging generations remain preserved.
+
+After creation, prepare the selected provider and a fresh ordinary scoped
+credential in this profile. No operator/API/worker/recovery key may enter it.
+Token expiry/renewal, narrow existing model configuration, actual provider/model
+and cross-scope behavior, recovery coverage and fleet onboarding remain pending.
+This is a documentation update; it adds no new local test or full-suite result.
+
+## Fleet review coordination and owner priority
+
+Vincent relayed a review-only Hermes Phase A bundle notice and then directly
+instructed this implementation to continue, taking priority if shared work
+conflicts. No direct agent message, bundle access or bundle execution occurred.
+The sanitised six-part coordination handoff is
+docs/runbooks/HERMES-FLEET-COORDINATION-HANDOFF-2026-10-22.md, marker
+EC-HERMES-COORD-20261022T154452Z, with integration code anchor 12896a8e.
+It pins the public plugin files and native snapshot, states exact profile and
+capture limits, separates current/historical tests and proposes a ten-minute
+shared-input no-write window before a fleet image/config deployment or rebase.
+No window is scheduled and no fleet activation is implied. Disjoint authorised
+Cognee/pilot work continues; conflicting fleet writes should hold for
+reconciliation through Vincent, preserving both versions and original data.
