@@ -66,14 +66,36 @@ or tested for validity. Values/prefixes were not displayed. The eight candidates
 are a selected subset of the historical scanner findings, not a claim that all
 61 matches are real credentials or that the entire review is closed.
 
-Next, ask the owner about their accounts and use in Enhanced Cognee, starting
-with OpenAI. Classify candidates and actual consumers privately. Compare any
-owned/current credentials through an approved local process without exposing
-values. Revoke exposed owned credentials; replace only those needed by current
-consumers. An inherited/not-owned finding must not be marked revoked or tested.
-Unknown ownership remains unresolved. If an inherited key was copied into a
-current config, remove that dependency through a coordinated replacement using
-an owned credential or approved local route; do not revoke another owner's key.
+## Guided owner review: current checkpoint
+
+| Provider | Owner report | Disposition so far |
+|---|---|---|
+| OpenAI | Has not personally created an OpenAI API key | No owner-created key reported; inherited candidate is not marked revoked; current reuse remains to be checked |
+| Google Maps/Places | No key created or received | No owned key reported; not marked revoked |
+| Pinecone | No key created or received | No owned key reported; not marked revoked |
+| Replicate | Created a key for RNR Spatial Engine, not Enhanced Cognee | Local configured-token comparison differs from the inherited Cognee candidate; no revocation justified by this match check |
+| SerpAPI | Not yet reviewed | Pending owner response |
+| Zapier NLA | Not yet reviewed | Pending owner response |
+| Weaviate | Not yet reviewed | Pending owner response |
+| Qdrant credential in historical DLT settings | Not yet reviewed | Pending owner response; distinguish any hosted account from newly generated local service keys |
+
+The Replicate comparison read only the REPLICATE_API_TOKEN assignment from
+Spatial's documented local secret source, ~/.config/rnr/env.sh. The literal
+value was compared locally against the REPLICATE_API_TOKEN assignment at
+81b6cc192041b71b7c4b0a14121831d52cc3ce83:level_2/.env. Result: DIFFERENT.
+No values/prefixes/digests were displayed or added here, no configuration was
+changed, and no provider request was made. This comparison does not inspect all
+Spatial deployments, old tokens or every other possible exposure. It does not
+prove a currently running process uses that file's present value.
+
+Next, review SerpAPI ownership. Continue classifying candidates and actual
+consumers privately. Compare any owned/current credentials through an approved
+local process without exposing values. Revoke exposed owned credentials;
+replace only those needed by current consumers. An inherited/not-owned finding
+must not be marked revoked or tested. Unknown ownership remains unresolved. If
+an inherited key was copied into a current config, remove that dependency through
+a coordinated replacement using an owned credential or approved local route;
+do not revoke another owner's key. The selected review remains incomplete.
 
 ## Work still separate
 
