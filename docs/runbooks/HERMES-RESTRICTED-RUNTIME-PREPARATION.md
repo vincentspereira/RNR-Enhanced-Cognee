@@ -136,6 +136,31 @@ derives root Python modules from the source tree. The
 uses MAPPING/NAMESPACES to locate modules; that moving upstream template is
 structural context, not proof of the exact installed Setuptools version.
 
+### Import-name validation stop
+
+The next native attempt using delivery commit 162beb416 stopped with "An editable
+import table has an unsupported module name." This guard includes nonliteral,
+nonstandard, duplicate and overlong keys. The message alone does not identify
+which case occurred. The committed-source export precedes this check; the large
+Python/dependency copy follows it. Retain earlier/new staging artifacts and do
+not repeat preparation simply to obtain another ambiguous failure.
+
+Use inspect_restricted_runtime.py --editable-tables without sudo as the normal
+Ubuntu-Hermes operator. It parses every generated import-table entry and compares
+names to the selected committed Git tree, without executing the finder or
+reading its original mapped source locations. It reports name-validation issues,
+missing committed modules, suffix mismatches, malformed paths/tables, duplicate
+keys, the count of declared source roots and unrelated home-path constants.
+Issues display names only when a corresponding path occurs in the committed
+source; unknown names and original source roots/paths remain redacted. Counts
+include every inspected entry, with detailed issues capped at 40 per finder and
+an explicit truncation flag. A root filename containing dots can be public even
+when treating the dots as a package hierarchy would produce a suffix mismatch;
+the diagnostic reports both interpretations without choosing a relocation rule.
+
+Do not relax the privileged validator until the actual native entry/layout is
+known. This diagnostic is additional evidence, not a successful preparation.
+
 A successful preparation returns snapshot_prepared=true, runtime_qualified=false,
 hermes_launched=false, profile_configured=false and memory_connected=false.
 Do not change those interpretations to a successful live deployment.

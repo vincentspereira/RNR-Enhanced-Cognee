@@ -207,10 +207,137 @@ def link_audit(environment: Path) -> dict:
             "editable_paths_truncated": len(finders) > 40}
 
 
-def inspect(links_only=False) -> dict:
+def editable_table_audit(environment: Path) -> dict:
+    """Explain all binding failures using only names present in the Git commit.
+
+    Never execute a finder or read its mapped source paths. Unknown keys and
+    all old source roots remain redacted; public source names come from Git.
+    """
+    files, directories = set(), set()
+    for entry in git("ls-tree", "-r", "-z", EXPECTED_REVISION).split(b"\0"):
+        if not entry:
+            continue
+        header, relative = entry.split(b"\t", 1)
+        mode, kind, _oid = header.split()
+        if kind != b"blob":
+            continue
+        name = relative.decode("utf-8")
+        files.add(name)
+        directories.update(parent.as_posix() for parent in Path(name).parents
+                           if parent != Path("."))
+    conventional = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*")
+    findings = []
+    site = environment / "lib/python3.14/site-packages"
+    for finder in sorted(site.glob("__editable__*_finder.py")):
+        if finder.is_symlink():
+            raise InspectionError("An editable finder is a link; inspect it separately.")
+        tree = ast.parse(bounded(finder).decode("utf-8"))
+        issues, roots, seen_tables, bound_nodes = [], set(), set(), set()
+        entries = paths = empty_namespaces = 0
+        for statement in tree.body:
+            if isinstance(statement, ast.AnnAssign):
+                targets, value = [statement.target], statement.value
+            elif isinstance(statement, ast.Assign):
+                targets, value = statement.targets, statement.value
+            else:
+                continue
+            names = [target.id for target in targets if isinstance(target, ast.Name)
+                     and target.id in {"MAPPING", "NAMESPACES"}]
+            if not names:
+                continue
+            table = names[0]
+            if (len(targets) != 1 or len(names) != 1 or table in seen_tables
+                    or not isinstance(value, ast.Dict)):
+                issues.append({"table": table, "problem": "unsupported_or_duplicate_table"})
+                continue
+            seen_tables.add(table)
+            seen_keys = set()
+            for index, (key, entry) in enumerate(zip(value.keys, value.values)):
+                entries += 1
+                row = {"table": table, "entry": index, "line": getattr(key, "lineno", statement.lineno)}
+                problems = []
+                literal_key = isinstance(key, ast.Constant) and isinstance(key.value, str)
+                name = key.value if literal_key else None
+                public_paths = []
+                if name is not None:
+                    relative = "/".join(name.split("."))
+                    for candidate in (name + ".py", relative, relative + ".py"):
+                        if candidate in files or candidate in directories:
+                            public_paths.append(candidate)
+                    if public_paths:
+                        row["public_module"] = name
+                        row["committed_paths"] = sorted(set(public_paths))
+                    else:
+                        row["module"] = "redacted_not_in_commit"
+                        problems.append("no_corresponding_committed_module")
+                    if not conventional.fullmatch(name):
+                        problems.append("nonstandard_module_name")
+                    if len(name) > 256:
+                        problems.append("module_name_too_long")
+                    if name in seen_keys:
+                        problems.append("duplicate_module_name")
+                    seen_keys.add(name)
+                else:
+                    problems.append("nonliteral_module_name")
+                if table == "NAMESPACES":
+                    if isinstance(entry, ast.List):
+                        nodes = entry.elts
+                        empty_namespaces += int(not nodes)
+                    else:
+                        nodes = []
+                        problems.append("unsupported_namespace_paths")
+                else:
+                    nodes = [entry]
+                for node in nodes:
+                    paths += 1
+                    bound_nodes.add(id(node))
+                    if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
+                        problems.append("nonliteral_import_path")
+                        continue
+                    old = Path(node.value)
+                    if not old.is_absolute() or str(old) != os.path.normpath(node.value):
+                        problems.append("non_normalized_absolute_import_path")
+                    if name is None or not name or "/" in name or "\\" in name:
+                        continue
+                    suffix = Path(*name.split("."))
+                    if not suffix.parts or not suffix.name:
+                        problems.append("declared_module_suffix_mismatch")
+                        continue
+                    if old.suffix == ".py":
+                        suffix = suffix.with_suffix(".py")
+                    matches = bool(suffix.parts) and old.parts[-len(suffix.parts):] == suffix.parts
+                    if matches:
+                        root = old
+                        for _ in suffix.parts:
+                            root = root.parent
+                        roots.add(str(root))
+                    else:
+                        problems.append("declared_module_suffix_mismatch")
+                    if name + ".py" in files:
+                        row["target_matches_flat_root_module"] = old.name in {name, name + ".py"}
+                    # Only output a classification, never the old target/root.
+                    row["target_area"] = lexical_location(old, environment)["kind"]
+                if problems:
+                    row["problems"] = sorted(set(problems))
+                    issues.append(row)
+        unbound = sum(1 for node in ast.walk(tree)
+                      if isinstance(node, ast.Constant) and isinstance(node.value, str)
+                      and node.value.startswith(str(HOME) + "/") and id(node) not in bound_nodes)
+        findings.append({"file": finder.name, "tables": sorted(seen_tables),
+                         "entries_checked": entries, "paths_checked": paths,
+                         "empty_namespace_lists": empty_namespaces,
+                         "declared_source_root_count": len(roots),
+                         "unbound_home_path_count": unbound, "problem_entry_count": len(issues),
+                         "problem_entries": issues[:40], "problems_truncated": len(issues) > 40})
+    if not findings:
+        raise InspectionError("The editable finder is missing; no preparation was attempted.")
+    return {"editable_tables": findings}
+
+
+def inspect(links_only=False, editable_tables=False) -> dict:
     environment, state, facts = selected_environment()
-    if links_only:
-        findings = link_audit(environment)
+    if links_only or editable_tables:
+        findings = editable_table_audit(environment) if editable_tables else link_audit(environment)
         if facts != bounded(state / "facts.json") or git("rev-parse", "HEAD").decode().strip() != EXPECTED_REVISION:
             raise InspectionError("The source or selection changed during link inspection.")
         return {"complete": True, "read_only": True, "source_revision": EXPECTED_REVISION,
@@ -242,11 +369,14 @@ def inspect(links_only=False) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--links-only", action="store_true",
-                        help="Inspect program link metadata and editable paths without copying.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--links-only", action="store_true",
+                      help="Inspect program link metadata and editable paths without copying.")
+    mode.add_argument("--editable-tables", action="store_true",
+                      help="Explain generated import-table validation failures without copying.")
     args = parser.parse_args()
     try:
-        result = inspect(links_only=args.links_only)
+        result = inspect(links_only=args.links_only, editable_tables=args.editable_tables)
     except InspectionError as error:
         parser.exit(1, "STOP: " + str(error) + "\n")
     except (OSError, ValueError, KeyError, TypeError, SyntaxError, subprocess.SubprocessError):

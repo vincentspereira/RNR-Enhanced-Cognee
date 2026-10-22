@@ -175,3 +175,30 @@ reported warnings under Workspace Python 3.12.3. Full-suite/coverage results and
 native success are not inferred. Native preparation and all subsequent restricted
 runtime/profile/provider/model qualifications remain pending. No existing Hermes
 installation, profile, service key, backup, launch path or bot was changed here.
+
+## Native import-name stop; preparation remains incomplete
+
+The owner fetched delivery commit 162beb416 and reported the preparation stop
+"An editable import table has an unsupported module name." This message combines
+nonliteral, nonstandard, duplicate and overlong-key conditions. The exact native
+entry is not yet known. No protected publication or Hermes launch is inferred.
+The helper reaches this check after committed-source export but before its large
+Python/dependency copy. Failed staging generations remain retained; originals
+were reported unchanged. The previous local fixture result did not qualify the
+installed import-table layout and the repair remains incomplete.
+
+The normal-user inspector now offers --editable-tables to diagnose all table
+entries against Git tree metadata without reading mapped source targets or
+executing startup code. It discloses module names only when backed by committed
+source paths; unknown keys and original home roots remain redacted. It reports
+name/shape/path problems, root counts, unbound home-path counts and explicit
+truncation instead of silently showing only successful entries. The privileged
+builder and its name/copy guards remain unchanged pending this native evidence.
+
+Ten additional diagnostic test cases cover committed nonstandard/flat filenames,
+duplicate keys, nonliteral expressions, hidden keys/targets, unrelated private
+paths, malformed names, complete issue counts/truncation, linked/missing finders
+and non-execution. The combined targeted suite reports 53 passed, zero failures,
+zero skips and no reported warnings under Workspace Python 3.12.3. This is not a
+full-suite/coverage or native diagnostic/preparation success receipt. Runtime,
+profile, model/provider and fleet qualification remain pending.
