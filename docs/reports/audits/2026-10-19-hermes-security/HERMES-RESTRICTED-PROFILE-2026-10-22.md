@@ -833,3 +833,28 @@ retaining non-root identities, no-new-privileges, clean environments, fixed
 public output and 20-second bounds. No download/model call or configuration
 change is required. Do not switch the installed checkout just to match helper
 revisions: previous steps executed pinned fetched blobs without changing HEAD.
+
+## Direct DNS comparison complete; independent pilot OAuth prepared
+
+The direct operator receipt confirms all three resolver files readable under
+both accounts. Both resolved github.com, api.openai.com and chatgpt.com; both
+returned EAI_AGAIN for api.z.ai. The restricted-comparison prerequisite is now
+met. Do not loosen identity/isolation settings or attribute this to restricted
+file access. Actual OpenAI TLS/auth/model access remains separate and untested.
+
+login_pilot_codex.py prepares native fresh device-code OAuth using the existing
+protected Hermes credential-add handler, scoped to enhanced-cognee-pilot under
+hermes-runtime. It refuses existing auth stores/unsafe profile files, verifies
+auth.openai.com DNS before login and preserves original settings bytes. Only
+the fixed sign-in URL and bounded device code are displayed interactively;
+tokens/native diagnostics are suppressed. No human credentials are copied,
+read or passed to the restricted process. Successful login creates a private
+pilot OAuth pool entry and can set its auth-store active_provider; it does not
+rewrite model configuration or touch the normal account's login/defaults.
+See the pilot runbook for pinned source references and exact state/limits.
+
+Focused fixtures pass 376 tests, zero failures/skips and no reported warnings,
+including 33 new auth/output/preservation cases. This is not installed sign-in,
+model completion, capture, profile recovery/renewal, fleet or release evidence.
+The owner must complete browser sign-in before the one-off gpt-6.1-sol test.
+No runtime install, service restart, main merge or bot activation was performed.

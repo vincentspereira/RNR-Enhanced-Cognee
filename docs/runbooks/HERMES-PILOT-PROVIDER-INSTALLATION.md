@@ -409,3 +409,59 @@ retry or token-budget increase is introduced. Model-driven memory qualification
 remains pending. The focused fixture suites pass 343 tests, zero failures/skips
 and no reported warnings, including 18 new failure-classification and privacy
 cases. Actual failure cause and native GLM success await the new host receipt.
+
+## OpenAI fallback: independent restricted pilot sign-in
+
+The owner returned the direct DNS comparison: both normal and restricted
+accounts resolve GitHub and the OpenAI API/ChatGPT hosts, while api.z.ai gives
+EAI_AGAIN under both. No account-specific DNS denial is established. See
+HERMES-ZAI-DNS-CHECK.md. Authentication/model access is a separate gate.
+
+The reviewed deployment/login_pilot_codex.py starts the native pinned Hermes
+auth_add_command for openai-codex with type oauth, no browser launch and a fixed
+pilot label. It deliberately avoids the older model/login handler that calls
+_update_config_for_provider. The native
+[credential-add handler](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/auth_commands.py)
+and [device-flow selector](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/hermes_cli/auth_codex_browser.py)
+perform a fresh login, not a human CLI-token import. Source review is not native
+login evidence. Official [OpenAI authentication guidance](https://learn.chatgpt.com/docs/auth)
+describes device sign-in and the possible account/workspace enablement
+requirement; it does not establish eligibility for this host/account/model.
+
+Execute only the pinned/hash-verified operator command as hermes-runtime using
+the protected tools1 Python, no-new-privileges, zero capabilities, only its own
+group and a clean environment. HOME is /var/lib/hermes-runtime; HERMES_HOME is
+the existing enhanced-cognee-pilot. Never run application code as root. The
+operator authenticates sudo outside the restricted process. Existing auth stores
+are refused/preserved. The helper also refuses changed/unsafe pilot settings
+or a readable human auth store. It compares config.yaml, enhanced_cognee.json
+and .env bytes before/after, without printing them or modifying their contents.
+
+Before login, a bounded 12-second subprocess checks auth.openai.com resolution.
+No credentials are read from the human account, passed through stdin/environment
+or copied from its .hermes/.codex. The terminal displays only the fixed OpenAI
+device URL and a validated one-time code; the code belongs only in the owner's
+browser, never chat/screenshots/reports. Native stderr/other stdout and raw
+exceptions are suppressed. Complete sign-in using the existing eligible account.
+This creates a NEW private pilot auth.json credential pool entry and native
+auth lock/config-backup scaffolding as needed. The first credential may set
+active_provider inside this new pilot auth store. It does not change persistent
+model configuration or the normal account's authentication/defaults. Existing
+runtime/global/CLI auth state is not imported or overwritten. Do not delete a
+partial auth store or repeat sign-in blindly after a failure.
+
+The helper verifies private file ownership/mode and exactly one expected native
+OAuth pool entry without printing tokens/account identity. Success reports
+fresh_pilot_oauth_saved and pilot_settings_unchanged true; model_called,
+model_defaults_changed, human_credentials_copied, memory_records_written and
+runtime_qualified false. This is sign-in only, not a model/context/capture test.
+Subsequent gpt-6.1-sol tests must use explicit temporary runtime selection and
+prove actual account/model access. Profile backup/recovery and renewal remain
+separate gates. Stop on existing auth state and reconcile; no rollback/deletion
+is automatic. To leave the fallback unused, do not start pilot model calls;
+credential revocation/removal requires its own deliberate operator step.
+
+Focused Workspace suites pass 376 tests, zero failures/skips and no reported
+warnings, including 33 new login/output/privacy/preservation checks. All OAuth
+and process calls in those tests use fixtures; no live sign-in or model call
+was performed in Workspace. Native pilot sign-in remains pending the owner.

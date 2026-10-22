@@ -124,3 +124,13 @@ implemented/qualified path; neither is established by the relayed report.
 Do not create a new login, broker or credential store during this DNS-only step.
 Continue the authorized fallback review after the operator comparison, and
 report an authentication boundary as such rather than claiming OpenAI failed.
+
+## Direct operator comparison received
+
+Both accounts resolved github.com, api.openai.com and chatgpt.com, and both
+returned EAI_AGAIN for api.z.ai. All three resolver files were readable under
+both identities. This supersedes the pending restricted comparison above.
+It provides no reason to relax account permissions. It does not establish TLS,
+OpenAI authentication/model access or the cause of the selective DNS failure.
+Proceed with the authorized OpenAI fallback using independent pilot sign-in;
+do not retry Z.ai or change DNS/isolation to bypass the observed failure.
