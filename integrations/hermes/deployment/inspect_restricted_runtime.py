@@ -334,10 +334,78 @@ def editable_table_audit(environment: Path) -> dict:
     return {"editable_tables": findings}
 
 
-def inspect(links_only=False, editable_tables=False) -> dict:
+def managed_tool_audit() -> dict:
+    """Read only four tool records/paths; no execution, installation or secrets."""
+    root = HOME / ".hermes/tools"
+    facts_raw = bounded(root / "facts.json")
+    packages = json.loads(facts_raw).get("packages", {})
+    lock_raw = git("show", EXPECTED_REVISION + ":pm/lock.json")
+    if len(lock_raw) > 1048576 or not isinstance(packages, dict):
+        raise InspectionError("Managed tool metadata has an unsupported shape or size.")
+    locked = json.loads(lock_raw)["packages"]
+    snapshot = Path("/opt/hermes-runtime/releases/4d04303818b6-1729494fe783/python")
+    snapshot_packages = json.loads(bounded(snapshot / "facts.json")).get("packages", {})
+    if not isinstance(snapshot_packages, dict):
+        raise InspectionError("Protected tool metadata has an unsupported shape.")
+    binaries = {"ffmpeg": "bin/ffmpeg", "node": "bin/node", "npm": "bin/npm", "ripgrep": "rg"}
+    version_pattern = re.compile(r"[A-Za-z0-9_.+\-]{1,120}")
+    tools = []
+    for name, binary in binaries.items():
+        pin = locked[name]["version"]
+        if not isinstance(pin, str) or not version_pattern.fullmatch(pin):
+            raise InspectionError("A managed tool pin has an unsupported format.")
+        record = packages.get(name)
+        row = {"name": name, "locked_version": pin,
+               "protected_record_present": name in snapshot_packages,
+               "original_record_present": record is not None}
+        if record is None:
+            tools.append(row)
+            continue
+        if not isinstance(record, dict):
+            raise InspectionError("A selected tool record has an unsupported format.")
+        version, entry = record.get("version"), record.get("entry")
+        if (not isinstance(version, str) or not version_pattern.fullmatch(version)
+                or not isinstance(entry, str) or not entry or len(entry) > 512):
+            raise InspectionError("A selected tool entry/version needs a format review.")
+        row.update(recorded_version=version, recorded_version_matches_lock=version == pin)
+        original = root / entry
+        lexical = Path(os.path.normpath(original))
+        if not lexical.is_relative_to(root) or lexical == root:
+            row["entry_state"] = "outside_tool_store_redacted"
+            tools.append(row)
+            continue
+        row["entry"] = lexical.relative_to(root).as_posix()
+        if lexical.is_symlink() or not lexical.resolve().is_relative_to(root.resolve()):
+            row["entry_state"] = "linked_entry_requires_review"
+        elif not lexical.exists():
+            row["entry_state"] = "missing"
+        elif lexical.is_dir():
+            candidate = lexical / binary
+            links = list(runtime_links(lexical))
+            outside = 0
+            for relative, target in links:
+                link = lexical / relative
+                destination = Path(target) if os.path.isabs(target) else link.parent / target
+                outside += int(not Path(os.path.normpath(destination)).is_relative_to(root))
+            row.update(entry_state="directory", allocated_bytes=allocated_bytes(lexical),
+                       expected_binary=binary, binary_present=candidate.is_file(),
+                       binary_executable=os.access(candidate, os.X_OK),
+                       binary_resolves_inside_tool_store=candidate.resolve().is_relative_to(root.resolve()),
+                       link_count=len(links), links_outside_tool_store=outside)
+        else:
+            row["entry_state"] = "not_a_directory_requires_review"
+        tools.append(row)
+    if facts_raw != bounded(root / "facts.json"):
+        raise InspectionError("Managed tool selection changed during inspection.")
+    return {"managed_tools": tools, "tool_binaries_executed": False,
+            "tool_versions_verified_by_execution": False, "runtime_qualified": False}
+
+
+def inspect(links_only=False, editable_tables=False, managed_tools=False) -> dict:
     environment, state, facts = selected_environment()
-    if links_only or editable_tables:
-        findings = editable_table_audit(environment) if editable_tables else link_audit(environment)
+    if links_only or editable_tables or managed_tools:
+        findings = (managed_tool_audit() if managed_tools else
+                    editable_table_audit(environment) if editable_tables else link_audit(environment))
         if facts != bounded(state / "facts.json") or git("rev-parse", "HEAD").decode().strip() != EXPECTED_REVISION:
             raise InspectionError("The source or selection changed during link inspection.")
         return {"complete": True, "read_only": True, "source_revision": EXPECTED_REVISION,
@@ -374,12 +442,16 @@ def main() -> None:
                       help="Inspect program link metadata and editable paths without copying.")
     mode.add_argument("--editable-tables", action="store_true",
                       help="Explain generated import-table validation failures without copying.")
+    mode.add_argument("--managed-tools", action="store_true",
+                      help="Inspect four selected tool records/paths without executing or copying tools.")
     args = parser.parse_args()
     try:
-        result = inspect(links_only=args.links_only, editable_tables=args.editable_tables)
+        result = inspect(links_only=args.links_only, editable_tables=args.editable_tables,
+                         managed_tools=args.managed_tools)
     except InspectionError as error:
         parser.exit(1, "STOP: " + str(error) + "\n")
-    except (OSError, ValueError, KeyError, TypeError, SyntaxError, subprocess.SubprocessError):
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, RuntimeError,
+            SyntaxError, subprocess.SubprocessError):
         parser.exit(1, "STOP: runtime inspection did not complete; no changes were made.\n")
     print(json.dumps(result, indent=2))
 

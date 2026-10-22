@@ -277,6 +277,26 @@ been scheduled. Disjoint pilot preparation remains authorised. Do not deploy,
 rebase or overwrite shared fleet integration inputs on the strength of a
 review-only bundle or a mere detected hash difference.
 
+The owner has now reported successful enhanced-cognee-pilot creation. Hermes also
+reported ffmpeg/node/npm/ripgrep missing or outdated in the protected tool store.
+This warning is unresolved; profile creation and Python startup do not qualify
+those tools. Use inspect_restricted_runtime.py --managed-tools WITHOUT sudo as
+the normal vincentspereira operator to inspect the original four program/tool
+records, committed lock pins, entry/bin metadata, links and allocated bytes. It
+does not execute tools, inspect profile settings, copy/install files or change
+the live human store. Treat matching recorded versions as metadata only. The
+snapshot's existing Python facts entry is intentionally incomplete for the
+other required tools; do not hide the warning or falsify extra facts entries.
+Review the inventory before protected artifact correction and version/permission
+qualification. Preserve the already-created pilot; do not repeat profile create.
+
+The fresh profile's generic missing-keys warning is expected before provisioning.
+The reviewed launcher clears inherited environment variables and pins the
+restricted home; do not transfer all administrator keys to remove that warning.
+Configure only a fresh ordinary scoped memory token and the narrow authorised
+model route in later steps. Printed setup/chat/gateway shortcuts are not the
+protected launcher path and do not supersede --no-alias or the staged workflow.
+
 Other managed tools, native SDK/browser/provider/model checks, source revision
 compatibility, remaining credential coverage, advisory/release checks and full
 fleet onboarding remain separate. Do not copy entire private .hermes trees,

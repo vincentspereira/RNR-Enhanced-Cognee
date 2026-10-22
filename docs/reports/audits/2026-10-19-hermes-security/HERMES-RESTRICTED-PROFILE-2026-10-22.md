@@ -360,3 +360,41 @@ shared-input no-write window before a fleet image/config deployment or rebase.
 No window is scheduled and no fleet activation is implied. Disjoint authorised
 Cognee/pilot work continues; conflicting fleet writes should hold for
 reconciliation through Vincent, preserving both versions and original data.
+
+## Native pilot profile created; managed tools remain incomplete
+
+The owner ran the guarded profile create command and supplied successful
+creation at /var/lib/hermes-runtime/.hermes/profiles/enhanced-cognee-pilot.
+The command reported no bundled skill seeding with --no-skills and no API keys
+in the fresh profile. There was no clone, default switch, provider/token install,
+model call or gateway activation in this step. The printed shortcut examples do
+not establish an alias; --no-alias was requested. Continue using the protected
+launcher under the restricted account rather than a human-shell shortcut.
+
+Before success output, Hermes reported install out of sync for ffmpeg, node,
+npm and ripgrep, with the external rnr-operator steward requiring an artifact
+rebuild. The prepared snapshot intentionally contains only the copied Python
+entry in its managed tool facts; this is an outstanding tool-packaging issue,
+not a completed full-runtime qualification. Do not suppress the warning, change
+the steward to permit agent writes, fake tool versions, or invoke the original
+human installation's updater while it is in use. Preserve the new profile and
+published/partial copies.
+
+At the selected public Hermes source commit, pm/lock.json pins ffmpeg 9.0.1,
+node 26.7.0, npm 12.0.2 and ripgrep 15.2.0. These are required source metadata,
+not proof of available local binaries or advisory clearance. A normal-operator
+--managed-tools inspector now reads just these four original tool records and
+their entry/binary/link/allocation metadata against that committed lock and the
+protected snapshot facts. It never executes a tool, downloads, installs, changes
+facts, reads profile credentials or follows a root entry outside the tool store.
+Outside targets are redacted; recorded version matches are not execution proof.
+Original tool selection/source stability is checked across the inspection.
+
+Seven new regression cases cover non-execution/non-disclosure, absent records,
+version and binary drift, outside/linked root rejection, malformed records and
+changing metadata. Combined targeted helper suites report 86 passed, zero
+failures, zero skips and no reported warnings under Workspace Python 3.12.3.
+Native tool inventory/correction and new pilot provider/model/memory tests remain
+pending; no full-suite/coverage or full-runtime success is inferred. This delta
+supplements, rather than rewrites, the pinned fleet handoff marker. Its review
+bundle remains untouched and conflicting work still yields to Cognee priority.
