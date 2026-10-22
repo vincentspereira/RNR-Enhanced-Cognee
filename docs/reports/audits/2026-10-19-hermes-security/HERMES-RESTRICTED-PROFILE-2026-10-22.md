@@ -125,3 +125,23 @@ or main-profile rollout, private-data admission, runtime reinstallation, restart
 or backup run is established by the received account result. Existing service
 keys, profiles, bots, history and backup generations remain subject to the
 preservation requirements; the paused v12 backup workflow remains separate.
+
+## Native preparation stop and read-only follow-up
+
+The owner fetched delivery commit 1fdfe868 and ran the checked preparation helper
+inside Ubuntu-Hermes. It reported a reference outside the selected runtime and
+stopped, retaining partial new snapshots and leaving originals unchanged. No
+snapshot publication, restricted Hermes launch or profile integration success
+has been received. The common diagnostic can come from either symlink relocation
+or editable-finder AST rebasing; the exact native reference is still unknown.
+
+The inspector now offers --links-only to distinguish these candidates without
+root execution, copying, following external targets or importing Hermes/.pth
+code. Outside paths are classified instead of printed. Seven new diagnostic
+regressions cover non-execution and target redaction, no directory-link traversal,
+dangling links, lexical escape normalization, malformed Git object rejection and
+missing-tree refusal. Combined with the earlier snapshot/operator preservation
+checks, 29 targeted tests passed under Workspace Python 3.12.3, with zero failures,
+zero skips and no reported warnings. Full-suite, coverage and native diagnostic
+results are not inferred from this test run. No guard relaxation or change to the
+privileged builder was made. Partial native snapshots remain retained.

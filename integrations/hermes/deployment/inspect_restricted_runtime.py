@@ -22,7 +22,8 @@ SOURCE = HOME / "agent-workspace/hermes-agent"
 PYTHON = HOME / ".hermes/tools/python-3.14.7+20260901-linux-x64"
 EXPECTED_REVISION = "4d04303818b61bf3aa09278af48356315515965b"
 MODULE = re.compile(r"[A-Za-z_][A-Za-z0-9_.]*")
-CHILD_ENV = {"PATH": "/usr/bin:/bin", "LC_ALL": "C", "GIT_OPTIONAL_LOCKS": "0"}
+CHILD_ENV = {"PATH": "/usr/bin:/bin", "LC_ALL": "C", "GIT_OPTIONAL_LOCKS": "0",
+             "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"}
 
 
 class InspectionError(RuntimeError):
@@ -39,7 +40,8 @@ def bounded(path: Path, limit: int = 1048576) -> bytes:
 
 def git(*args: str) -> bytes:
     result = subprocess.run(
-        ["/usr/bin/git", "-c", "core.fsmonitor=false", "-C", str(SOURCE), *args],
+        ["/usr/bin/git", "--no-replace-objects", "-c", "core.fsmonitor=false",
+         "-c", "core.hooksPath=/dev/null", "-C", str(SOURCE), *args],
         env=CHILD_ENV, capture_output=True, timeout=30,
     )
     if result.returncode:
@@ -105,7 +107,7 @@ def allocated_bytes(path: Path) -> int:
     return int(result.stdout.split(None, 1)[0])
 
 
-def inspect() -> dict:
+def selected_environment() -> tuple[Path, Path, bytes]:
     if os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes":
         raise InspectionError("Run this inside Ubuntu-Hermes, not Workspace or Windows.")
     if os.geteuid() == 0 or pwd.getpwuid(os.geteuid()).pw_name != "vincentspereira":
@@ -124,6 +126,96 @@ def inspect() -> dict:
     site = environment / "lib/python3.14/site-packages"
     if not (environment / "pyvenv.cfg").is_file() or not site.is_dir():
         raise InspectionError("The selected Python 3.14 environment is incomplete.")
+    return environment, state, facts
+
+
+def lexical_location(path: Path, environment: Path) -> dict:
+    """Match the preparer's lexical guard without following external targets."""
+    normalized = Path(os.path.normpath(path))
+    for kind, base in (("hermes_source", SOURCE), ("selected_environment", environment),
+                       ("managed_python", PYTHON)):
+        if normalized.is_relative_to(base):
+            return {"kind": kind, "relative_path": normalized.relative_to(base).as_posix()}
+    # Do not publish arbitrary outside paths or read their contents.
+    for kind, base in (("other_operator_home", HOME), ("system_usr", Path("/usr")),
+                       ("system_lib", Path("/lib")), ("system_lib64", Path("/lib64")),
+                       ("system_bin", Path("/bin")), ("system_etc", Path("/etc")),
+                       ("temporary", Path("/tmp"))):
+        if normalized.is_relative_to(base):
+            return {"kind": "outside_selected_runtime", "area": kind}
+    if normalized == Path("/dev/null"):
+        return {"kind": "outside_selected_runtime", "area": "dev_null"}
+    return {"kind": "outside_selected_runtime", "area": "other_redacted"}
+
+
+def runtime_links(root: Path):
+    """Read link metadata only; never walk a linked directory."""
+    def fail(_error):
+        raise InspectionError("A selected program directory could not be inspected.")
+    for directory, dirs, files in os.walk(root, followlinks=False, onerror=fail):
+        dirs[:] = sorted(name for name in dirs if name != "__pycache__")
+        for name in sorted(dirs + files):
+            item = Path(directory) / name
+            if item.is_symlink():
+                yield item.relative_to(root).as_posix(), os.readlink(item)
+
+
+def link_audit(environment: Path) -> dict:
+    """Inspect both failure sources, without copying or executing program code."""
+    counts = {"hermes_source": 0, "managed_python": 0, "selected_environment": 0}
+    external = []
+    def record(kind, root, relative, target):
+        counts[kind] += 1
+        original = root / relative
+        target_path = Path(target) if os.path.isabs(target) else original.parent / target
+        classified = lexical_location(target_path, environment)
+        if classified["kind"] == "outside_selected_runtime":
+            external.append({"tree": kind, "link": relative, "target": classified})
+
+    # Inspect committed link blobs, not potentially modified working-tree links.
+    for entry in git("ls-tree", "-r", "-z", EXPECTED_REVISION).split(b"\0"):
+        if not entry:
+            continue
+        header, relative = entry.split(b"\t", 1)
+        mode, kind, oid = header.split()
+        if mode != b"120000":
+            continue
+        if kind != b"blob" or not re.fullmatch(b"[0-9a-f]{40,64}", oid):
+            raise InspectionError("A committed link has unexpected metadata.")
+        target = git("cat-file", "blob", oid.decode("ascii"))
+        if len(target) > 4096:
+            raise InspectionError("A committed link exceeded its size limit.")
+        record("hermes_source", SOURCE, relative.decode("utf-8"), target.decode("utf-8"))
+    for kind, root in (("managed_python", PYTHON), ("selected_environment", environment)):
+        for relative, target in runtime_links(root):
+            record(kind, root, relative, target)
+
+    finders = []
+    site = environment / "lib/python3.14/site-packages"
+    for path in sorted(site.glob("__editable__*_finder.py")):
+        if path.is_symlink():
+            raise InspectionError("An editable finder is a link; inspect it separately.")
+        tree = ast.parse(bounded(path).decode("utf-8"))
+        for node in ast.walk(tree):
+            if (isinstance(node, ast.Constant) and isinstance(node.value, str)
+                    and node.value.startswith(str(HOME) + "/")):
+                finders.append({"file": path.name, "line": node.lineno,
+                                "reference": lexical_location(Path(node.value), environment)})
+    return {"links_inspected": counts, "external_link_count": len(external),
+            "external_links": external[:40], "external_links_truncated": len(external) > 40,
+            "editable_path_count": len(finders), "editable_paths": finders[:40],
+            "editable_paths_truncated": len(finders) > 40}
+
+
+def inspect(links_only=False) -> dict:
+    environment, state, facts = selected_environment()
+    if links_only:
+        findings = link_audit(environment)
+        if facts != bounded(state / "facts.json") or git("rev-parse", "HEAD").decode().strip() != EXPECTED_REVISION:
+            raise InspectionError("The source or selection changed during link inspection.")
+        return {"complete": True, "read_only": True, "source_revision": EXPECTED_REVISION,
+                "files_copied": 0, "hermes_launched": False, **findings}
+    site = environment / "lib/python3.14/site-packages"
     startup = [pth_details(path, site, environment) for path in sorted(site.glob("*.pth"))]
     entries = git("ls-tree", "-r", "-l", "-z", "HEAD").split(b"\0")
     source_bytes = submodules = source_files = 0
@@ -150,12 +242,14 @@ def inspect() -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.parse_args()
+    parser.add_argument("--links-only", action="store_true",
+                        help="Inspect program link metadata and editable paths without copying.")
+    args = parser.parse_args()
     try:
-        result = inspect()
+        result = inspect(links_only=args.links_only)
     except InspectionError as error:
         parser.exit(1, "STOP: " + str(error) + "\n")
-    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+    except (OSError, ValueError, KeyError, TypeError, SyntaxError, subprocess.SubprocessError):
         parser.exit(1, "STOP: runtime inspection did not complete; no changes were made.\n")
     print(json.dumps(result, indent=2))
 

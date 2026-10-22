@@ -82,6 +82,32 @@ package download, OS restart, existing profile switch or Windows backup is made.
 
 ## Result and remaining qualification
 
+### Read-only diagnosis after a link guard stop
+
+The owner reported that preparation stopped with "A program link references
+files outside the selected runtime." The snapshot was not reported published;
+the helper retains partial staging files and leaves original installations
+unchanged. This message can originate from source/Python/environment symlink
+relocation or from rebasing an editable-finder path literal. It does not identify
+the failing phase, and does not yet establish which reference needs correction.
+
+Run inspect_restricted_runtime.py --links-only as the normal human operator
+without sudo, using the exact published blob supplied by the guided chat. This
+inspects committed source link blobs, link metadata in the two selected program
+trees, and editable-finder AST path literals without executing them. It does not
+read external link targets or profiles, copy files, inspect root-only staging,
+launch Hermes, call providers, or change the active deployment. External target
+paths are classified rather than printed; relative names inside the program
+trees are reported. Output is capped at 40 external links and 40 editable paths,
+with total counts and explicit truncation flags. Classification follows the
+preparer's lexical mapping, not a proof of ultimate link-chain confinement.
+
+Retain the partial staging artifacts and the escaping-link guard. Diagnose the
+reported program reference before changing copy/relocation rules; do not blindly
+rerun preparation, follow external links into private files, or replace missing
+program files with administrator home access. A completed read-only diagnosis
+is not successful snapshot preparation or runtime qualification.
+
 A successful preparation returns snapshot_prepared=true, runtime_qualified=false,
 hermes_launched=false, profile_configured=false and memory_connected=false.
 Do not change those interpretations to a successful live deployment.
