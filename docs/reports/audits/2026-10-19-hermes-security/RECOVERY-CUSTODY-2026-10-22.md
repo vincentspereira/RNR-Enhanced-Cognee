@@ -135,6 +135,15 @@ do not revoke another owner's key. The selected review remains incomplete.
 
 ## Current host/profile readiness checkpoint
 
+Latest owner update: the owner explicitly approved the restricted account and
+initial profile and required eventual coverage of all 40-plus bots and every
+other Hermes profile after testing. This supersedes the earlier deferral quoted
+below for account/profile preparation. The updated live-profile account plan
+records the received approval and staged fleet objective. This Workspace update
+did not create an Ubuntu-Hermes account, change a running profile or prove
+private readiness. Initial qualification still uses invented data; existing
+profiles, service/recovery keys and backup generations remain preserved.
+
 The owner-run systemctl query reports the API, indexing worker and backup timer
 active. Main-profile path checks report ~/.hermes exists and its Cognee plugin
 and settings file are absent. The current account includes sudo and docker;
@@ -144,11 +153,12 @@ authenticated recall or a new provider/model qualification. No profile/account
 was changed. A concrete restricted-runtime account proposal is available in
 [the live-profile account plan](../../../runbooks/HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md).
 The proposed persistent identity is separate from the already removed temporary
-test account. The owner subsequently chose "Keep the current setup for
-invented-data testing only". Do not create the proposed account or activate
-private/everyday memory. Preserve the administrator account, all existing bots,
-protected services and backups. Reuse only verified synthetic profiles for
-invented-data tests; the decision does not revoke separate repository-remediation
-work or authorize deletion. New-home backup coverage is a future requirement
-only if a new home is later approved. Current-profile privilege limitations and
-other private-use prerequisites remain recorded rather than bypassed.
+test account. At the earlier checkpoint the owner chose "Keep the current setup
+for invented-data testing only". That earlier choice deferred account creation
+and private/everyday activation. It has now been superseded for account/profile
+preparation as stated above; it never established private-use qualification.
+Preserve the administrator account, existing bots, protected services and backups
+while preparing the newly approved account and initial invented-data profile.
+With the new account approval, explicit new-home backup coverage is required
+before private use. Current-profile privilege limitations and other private-use
+prerequisites remain recorded rather than bypassed.

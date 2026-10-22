@@ -1,5 +1,29 @@
 # Enhanced Cognee for a Hermes bot fleet
 
+## Approved rollout scope - 22 October 2026
+
+The owner approved the permanent restricted account and initial profile in
+[the account plan](HERMES-LIVE-PROFILE-ACCOUNT-PLAN.md), with the explicit final
+objective of connecting the main Hermes assistant, all 40-plus bots and all
+other Hermes profiles after qualification. The pilot does not limit that scope.
+Inventory the actual current fleet; 41 bots plus a controller below is the
+previously tested example, not a fixed maximum or proof of installed coverage.
+
+Start with the new restricted profile and invented facts. Once it passes,
+connect existing profiles in bounded batches with individual mappings, access
+checks, renewable credentials, explicit profile-backup coverage and a preserved
+way to reopen each previous configuration. Record every actual profile as
+pending, qualified or connected; do not report the fleet complete while any
+profile is unaccounted for. Future profiles use the same onboarding process.
+Approved common knowledge remains reviewed and permission controlled.
+
+One runtime account separates agents from the human administrator; it does not
+separate all bots from each other. Inspect filesystem/process access for each
+trust boundary before choosing whether profiles can share an account or need
+separate restricted identities/sandboxes. Preserve the existing bots during the
+initial setup. Source tests and the owner's approval are not installed-fleet
+evidence or automatic private-data admission.
+
 ## Recommended arrangement
 
 Use one maintained Enhanced Cognee codebase and one protected memory service for

@@ -1,24 +1,50 @@
 # Restricted account for the first live Hermes profile
 
-Prepared: 22 October 2026. This is a reviewable proposal, not an installed
-account or approval to activate private memory. The original temporary test
-account was removed as requested; do not recreate it or repeat that deployment.
+Prepared: 22 October 2026. Account/profile preparation is now approved; installed
+qualification and private-memory activation remain distinct. The original
+temporary test account was removed as requested; do not recreate it or repeat
+that deployment.
 
-## Owner decision received - 22 October 2026
+## Current owner approval - 22 October 2026
+
+The owner subsequently stated: "Approve the restricted account and initial
+profile", with the explicit objective that, after testing, Enhanced Cognee
+should apply to all 40-plus bots and every other Hermes profile. This supersedes
+the earlier account-preparation deferral below. Do not ask for the same account
+approval again. Prepare the permanent hermes-runtime account and initial profile
+through the verified Ubuntu-Hermes operator workflow; begin with invented data.
+No account has been created by this document or by the Workspace session.
+
+The initial profile is a rollout stage, not the final coverage limit. Use the
+same protected backend for the main assistant and the entire actual fleet,
+inventorying its current count rather than assuming exactly 42 identities.
+Each standalone profile needs an explicitly mapped ordinary credential and
+private memory space; reviewed common knowledge is shared through server policy.
+Future profiles need the same onboarding and checks before they are admitted.
+
+After initial qualification, implement the already requested fleet rollout in
+bounded batches, preserving existing bot identities, settings and histories.
+Verify the actual CLI/Desktop/gateway execution identity for each launch path.
+One OS account for all bots does not isolate their files or credentials from one
+another; use separate restricted processes/accounts or suitable sandboxes where
+the trust boundaries require them. Account layouts affecting existing bots must
+be made concrete before applying changes outside this initial approved scope.
+Do not remove the permanent runtime account after its tests: it will host the
+connected profile. It is separate from the removed disposable test account.
+
+Private-use admission still requires the documented credential coverage,
+protected execution, renewal, backup/recovery and relevant release checks. The
+approval is not evidence that those checks passed. V12 remains paused; no distro
+restart, memory-runtime reinstallation or additional backend is needed merely
+to create the account. Keep the human administrator and existing profiles intact.
+
+## Earlier owner decision - superseded for account preparation
 
 The owner selected: "Keep the current setup for invented-data testing only".
-Do not create hermes-runtime, prepare its proposed new home, migrate everyday
-profiles/bots, or enable private-data use on the basis of the proposal below.
-The current administrator account and its memberships remain unchanged. The
-existing protected backend, service keys, backups and recovery custody remain
-in place. Continue authorized source remediation and separate invented-data
-qualification using preserved synthetic profiles after read-only verification.
-Do not rerun the removed temporary account's installation or interpret this
-choice as approval to bypass OS isolation for private data. No further prompt
-for the same account proposal is needed unless the owner revisits the decision.
-
-The proposed permanent-account arrangement below is retained as reference only;
-it is not an instruction to execute it under the current owner choice.
+That earlier choice deferred the new account/home and everyday profile changes.
+No account or private profile was activated at that checkpoint. The current
+approval above supersedes the account deferral and defines the next stage;
+preservation of the administrator, bots, backend, keys and backups still applies.
 
 ## Original proposal and current evidence
 
@@ -77,7 +103,7 @@ Initially it must use invented data until qualification and review are complete.
    /home/vincentspereira/agent-workspace/enhanced-cognee-protected-20261020.
    Verify host identity, revision, dirty/concurrent work and current processes.
    Obtain changes through GitHub; do not blindly pull/reset a running checkout.
-2. After the owner's decision on this proposal, check collisions, existing
+2. Under the received account/profile approval, check collisions, existing
    access paths, default sudo rules and administrative sockets. Prepare exactly
    the selected account/home, without changing existing user memberships,
    mounts, interop, firewall, memory services or the default WSL user. No distro
@@ -130,9 +156,9 @@ one shared runtime account is not private OS isolation between all bots.
 
 ## Effective scope
 
-The owner chose the current synthetic-only arrangement, not preparation of the
-persistent account. No account or private profile was activated by this plan.
-Any future change to that decision must be explicit. Existing approval for
-reversible repository fixes, publication of the delivery branch and finite
-invented-data tests remains separate; no full-release or private-use completion
-is inferred. The v12 backup pause also remains in effect until revisited.
+The latest explicit approval covers the restricted account and initial profile,
+followed by the requested full-fleet integration after qualification. It
+supersedes the earlier account deferral. No account or private profile was
+activated by editing this plan. Existing approval for repository fixes and
+delivery-branch publication remains separate from installed evidence and the
+conditional main merge. The v12 backup pause remains in effect until revisited.
