@@ -231,6 +231,82 @@ def test_followup_receipt_is_separate_private_and_never_replaces_original(check,
     with pytest.raises(check.CheckError): check.state_path("PRIVATE_PATH")
 
 
+def test_correction_receipt_is_private_no_replace_and_separate_from_capture(check, tmp_path, monkeypatch):
+    monkeypatch.setattr(check, "HOME", tmp_path)
+    monkeypatch.setattr(check, "STATE", tmp_path / "old.json")
+    state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
+    check.save_state(state)
+    check.save_state(state, followup=True)
+    before = [p.read_bytes() for p in (check.STATE, check.state_path(True))]
+    check.save_correction_receipt(state, "cognee_correct_synthetic", {"id": "synthetic-record"})
+    path = check.correction_path()
+    raw = path.read_bytes()
+    assert path.stat().st_mode & 0o777 == 0o600
+    assert json.loads(raw)["expected_version"] == 1 and TOKEN.encode() not in raw
+    with pytest.raises(FileExistsError): check.save_correction_receipt(state, "another", {"id": "synthetic-record"})
+    assert path.read_bytes() == raw and [p.read_bytes() for p in (check.STATE, check.state_path(True))] == before
+
+
+@pytest.mark.parametrize("mutation", [None, "version", "content", "lineage", "old-history", "new-history",
+                                     "missing-history", "duplicate-history", "unsafe-id", "wrong-id", "retracted"])
+def test_correction_requires_current_version_lineage_and_preserved_prior_history(check, mutation):
+    fixture = "b" * 32
+    previous = {"id": "synthetic-cedar", "version": 1, "content": fixture + " nineteen-day review"}
+    row = {"id": previous["id"], "version": 2, "state": "active", "content": fixture + " twenty-three-day review",
+           "provenance": {"supersedes_version": 1, "corrected_by": "hermes_pilot_runtime",
+                          "previous_content_sha256": check.hashlib.sha256(previous["content"].encode()).hexdigest()}}
+    versions = [dict(previous), {"id": row["id"], "version": 2, "content": row["content"]}]
+    if mutation == "version": row["version"] = 3
+    if mutation == "content": row["content"] = "PRIVATE_WRONG_CONTENT"
+    if mutation == "lineage": row["provenance"]["previous_content_sha256"] = "PRIVATE_WRONG_HASH"
+    if mutation == "old-history": versions[0]["content"] = "PRIVATE_OLD_CONTENT_CHANGED"
+    if mutation == "new-history": versions[1]["content"] = "PRIVATE_NEW_CONTENT_CHANGED"
+    if mutation == "missing-history": versions.pop()
+    if mutation == "duplicate-history": versions[1]["version"] = 1
+    if mutation == "unsafe-id": previous["id"] = "../PRIVATE_PATH"
+    if mutation == "wrong-id": row["id"] = "PRIVATE_WRONG_ID"
+    if mutation == "retracted": row["state"] = "retracted"
+    calls = []
+    def request(method, path):
+        calls.append(path)
+        assert method == "GET" and path.startswith("/v1/memories/synthetic-cedar")
+        return {"versions": versions, "record_state": "active"} if "/history?limit=3" in path else row
+    provider = NS(_client=NS(request=request))
+    if mutation is None:
+        assert check.verify_correction(provider, previous, fixture) == row
+        assert len(calls) == 2
+    else:
+        with pytest.raises(check.CheckError) as caught: check.verify_correction(provider, previous, fixture)
+        assert "PRIVATE_" not in str(caught.value)
+        if mutation == "unsafe-id": assert not calls
+
+
+@pytest.mark.parametrize("mutation", [None, "other-record", "version", "interval", "fixture", "remember", "retract", "repeat"])
+def test_correction_transport_allows_only_one_expected_cedar_patch(check, mutation):
+    fixture = "b" * 32
+    requests = []
+    client = NS(request=lambda method, path, body=None: requests.append((method, path, body)) or {"ok": True})
+    counts = check.guard_correction_client(NS(_client=client), {"id": "cedar", "version": 1}, fixture)
+    client.request("GET", "/v1/memories/status")
+    client.request("POST", "/v1/memories/recall", {"query": "Cedar"})
+    body = {"expected_version": 1, "content": fixture + " twenty-three-day review"}
+    method, path = "PATCH", "/v1/memories/cedar"
+    if mutation == "other-record": path = "/v1/memories/larch"
+    if mutation == "version": body["expected_version"] = 2
+    if mutation == "interval": body["content"] = fixture + " nineteen-day review"
+    if mutation == "fixture": body["content"] = "Another project twenty-three-day review"
+    if mutation == "remember": method, path = "POST", "/v1/memories"
+    if mutation == "retract": method, path = "POST", "/v1/memories/cedar/retract"
+    if mutation == "repeat": client.request(method, path, body)
+    if mutation is None:
+        client.request(method, path, body)
+    else:
+        before = list(requests)
+        with pytest.raises(ValueError): client.request(method, path, body)
+        assert requests == before
+    assert counts["writes"] == int(mutation in {None, "repeat"})
+
+
 @pytest.mark.parametrize("interval,valid", [("thirteen", False), ("nineteen", True)])
 def test_followup_record_verification_requires_the_distinct_new_interval(check, interval, valid):
     fixture = "b" * 32
@@ -291,7 +367,7 @@ def test_saved_evidence_requires_one_current_matching_record(check, mutation):
 
 
 def agent_fixture(check):
-    names = ["enhanced_recall", "enhanced_remember", "enhanced_get", "enhanced_status", "terminal"]
+    names = ["enhanced_recall", "enhanced_remember", "enhanced_correct", "enhanced_get", "enhanced_status", "terminal"]
     def factory(*args, **kwargs):
         transport = NS(follow_redirects=True, event_hooks={"request": []})
         return NS(_client=transport, max_retries=2)
@@ -462,7 +538,8 @@ def test_native_result_diagnostics_allow_only_fixed_codes_and_bounded_metadata(
 
 
 @pytest.mark.parametrize("outcome", ["complete", "incomplete", "exception", "guard-rejected", "no-recall", "no-save", "wrong-order"])
-def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path, outcome):
+@pytest.mark.parametrize("action", ["capture", "correct"])
+def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path, outcome, action):
     import sys
     release = tmp_path / "release"
     (release / "repo").mkdir(parents=True)
@@ -480,8 +557,9 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
         def run_conversation(self, prompt, conversation_history):
             assert conversation_history == [] and prompt == "synthetic user decision"
             # Pinned Hermes tool_executor passes preview and display args positionally.
-            sequence = ["enhanced_recall", "enhanced_remember"]
-            if outcome == "no-recall": sequence = ["enhanced_remember"]
+            writer = "enhanced_correct" if action == "correct" else "enhanced_remember"
+            sequence = ["enhanced_recall", writer]
+            if outcome == "no-recall": sequence = [writer]
             if outcome == "no-save": sequence = ["enhanced_recall"]
             if outcome == "wrong-order": sequence.reverse()
             for name in sequence:
@@ -498,14 +576,19 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
     monkeypatch.setitem(sys.modules, "agent.memory_manager", NS(MemoryManager=Manager))
     requests = {"count": 0, "http_statuses": [400] if outcome == "incomplete" else []}
     monkeypatch.setattr(check, "restrict_agent", lambda agent, allowed: requests)
+    target = ({"id": "synthetic-cedar", "version": 1}, "b" * 32)
+    kwargs = {"correction_target": target} if action == "correct" else {}
+    guards = []
+    monkeypatch.setattr(check, "guard_correction_client", lambda provider, *args: guards.append(args))
     if outcome in {"no-recall", "no-save", "wrong-order"}:
-        with pytest.raises(check.CheckError, match="model_did_not_recall_then_select_capture"):
-            check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
+        category = "model_did_not_recall_then_correct" if action == "correct" else "model_did_not_recall_then_select_capture"
+        with pytest.raises(check.CheckError, match=category):
+            check.native_memory_turn(action, TOKEN, object(), "synthetic-session", "synthetic user decision", **kwargs)
         assert options["closed"]
         return
     if outcome != "complete":
         with pytest.raises(check.NativeTurnError) as caught:
-            check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
+            check.native_memory_turn(action, TOKEN, object(), "synthetic-session", "synthetic user decision", **kwargs)
         report = check.failure(caught.value)
         assert options["closed"] and report["category"] == "native_agent_turn_incomplete"
         assert report["http_status"] == (400 if outcome == "incomplete" else None)
@@ -513,15 +596,17 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
         assert report["native_diagnostics"]["native_exception_category"] == ("timeout" if outcome == "exception" else None)
         assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
         return
-    answer, calls, count = check.native_memory_turn("capture", TOKEN, object(), "synthetic-session", "synthetic user decision")
-    assert calls == ["enhanced_recall", "enhanced_remember"] and count == 3 and options["closed"]
+    answer, calls, count = check.native_memory_turn(action, TOKEN, object(), "synthetic-session", "synthetic user decision", **kwargs)
+    assert calls == sorted(["enhanced_recall", "enhanced_correct" if action == "correct" else "enhanced_remember"])
+    assert count == 3 and options["closed"]
     assert options["fallback_model"] == {} and options["credential_pool"] is None
     assert options["model"] == check.MODEL and options["provider"] == "openai-codex"
     assert options["skip_background_review"] and options["save_trajectories"] is False
     assert options["reasoning_config"] == {"enabled": True, "effort": "low"}
+    assert guards == ([target] if action == "correct" else [])
 
 
-@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup", "recall_followup"])
+@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup", "recall_followup", "correct_followup"])
 @pytest.mark.parametrize("fails", [False, True])
 def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage, fails):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails)
@@ -537,6 +622,11 @@ def test_followup_capture_refuses_replay_or_changed_evidence(check, monkeypatch,
                                      "post-count", "same-id", "answer-interval", "answer-citation", "new-receipt", "missing-receipt"])
 def test_followup_recall_requires_saved_answer_and_both_preserved_fixtures(check, monkeypatch, tmp_path, capsys, mutation):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_followup", False, mutation)
+
+
+@pytest.mark.parametrize("mutation", ["existing-correction", "correction-receipt", "old-record", "old-receipt", "new-receipt"])
+def test_correction_refuses_replay_and_preserves_capture_evidence(check, monkeypatch, tmp_path, capsys, mutation):
+    exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "correct_followup", False, mutation)
 
 
 def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None):
@@ -555,7 +645,8 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     monkeypatch.setattr(check, "verify_provider", lambda: None)
     monkeypatch.setattr(check, "HOME", tmp_path)
     monkeypatch.setattr(check, "STATE", tmp_path / "fixture.json")
-    followup = stage in {"capture_followup", "recall_followup"}
+    correction = stage == "correct_followup"
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup"}
     capture = stage in {"capture", "capture_followup"}
     new_state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
     receipt_path = check.state_path(followup)
@@ -591,10 +682,16 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
                 "provenance": {"session_id": "PRIVATE_SESSION" if mutation == "provenance" else "cognee_capture_" + f},
                 "metadata": {"write_origin": "PRIVATE_ORIGIN" if mutation == "origin" else "hermes_selected_tool"}}
     monkeypatch.setattr(check, "verify_saved", saved)
+    def corrected(p, previous, f):
+        assert previous["id"] == "synthetic-followup-id" and f == new_state["fixture"]
+        value = saved(p, f, followup=True)
+        value.update(version=2, content=f + " twenty-three days", state="active")
+        return value
+    monkeypatch.setattr(check, "verify_correction", corrected)
     prompts = []
     receipts = []
-    def turn(stage, token, actual_provider, session, prompt):
-        if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt"}:
+    def turn(stage, token, actual_provider, session, prompt, **kwargs):
+        if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt", "existing-correction"}:
             pytest.fail("Refused followup must not call a model")
         prompts.append(prompt)
         receipts.append(receipt_path.read_bytes())
@@ -605,6 +702,12 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
                 assert "nineteen" not in prompt and "19" not in prompt
                 assert "Cedar" in prompt and new_state["fixture"] in prompt
                 assert session != new_state["capture_session"]
+        elif stage == "correct":
+            assert correction and "twenty-three-day" in prompt and "Cedar" in prompt
+            assert new_state["fixture"] in prompt and "remember" not in prompt.casefold()
+            assert check.correction_path().exists()
+            assert kwargs["correction_target"][0]["version"] == 1
+            assert kwargs["correction_target"][1] == new_state["fixture"]
         else:
             assert "remember" not in prompt.casefold()
             assert ("nineteen-day" if followup else "thirteen-day") in prompt
@@ -614,17 +717,19 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         if mutation == "old-receipt":
             check.STATE.write_bytes(check.STATE.read_bytes())
         if mutation == "new-receipt": receipt_path.write_bytes(receipt_path.read_bytes())
+        if mutation == "correction-receipt": check.correction_path().write_bytes(check.correction_path().read_bytes())
         answer = "nineteen days, synthetic-followup-id" if followup else "thirteen days, synthetic-record-id"
         if mutation == "answer-interval": answer = "thirteen days, synthetic-followup-id"
         if mutation == "answer-citation": answer = "nineteen days, no citation"
         return answer, ["enhanced_remember"] if stage == "capture" else ["enhanced_get"], 3
     monkeypatch.setattr(check, "native_memory_turn", turn)
-    if stage in {"recall", "capture_followup", "recall_followup"}: check.save_state(state)
-    if stage == "recall_followup" and mutation != "missing-receipt": check.save_state(new_state, followup=True)
+    if stage in {"recall", "capture_followup", "recall_followup", "correct_followup"}: check.save_state(state)
+    if (stage == "recall_followup" or correction) and mutation != "missing-receipt": check.save_state(new_state, followup=True)
     baseline_receipt = check.STATE.read_bytes() if followup else None
-    followup_receipt = receipt_path.read_bytes() if stage == "recall_followup" and receipt_path.exists() else None
-    if stage == "recall_followup":
+    followup_receipt = receipt_path.read_bytes() if (stage == "recall_followup" or correction) and receipt_path.exists() else None
+    if stage == "recall_followup" or correction:
         monkeypatch.setattr(check, "save_state", lambda *a, **kw: pytest.fail("Recall must never save a receipt"))
+    if mutation == "existing-correction": check.save_correction_receipt(new_state, "prior-session", {"id": "synthetic-followup-id"})
     if mutation == "existing-receipt":
         check.save_state(state, followup=True)
     if mutation == "fixture-collision":
@@ -637,16 +742,18 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     report = json.loads(output)
     if fails or mutation:
         expected_phase = "native_agent_turn" if fails else (
-            "fixture_preparation" if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt"} else "saved_memory_verification")
+            "fixture_preparation" if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt", "existing-correction"} else "saved_memory_verification")
         assert not report["complete"] and report["failure_stage"] == expected_phase
-        assert report["memory_writes_may_have_occurred"] == (capture and expected_phase != "fixture_preparation")
+        assert report["memory_writes_may_have_occurred"] == ((capture or correction) and expected_phase != "fixture_preparation")
         assert report["profile_settings_and_credentials_unchanged"] is True
         if fails: assert report["native_diagnostics"]["native_error_present"]
         if receipts: assert receipt_path.read_bytes() == receipts[0]
     else:
         assert report["complete"] and report["native_agent_turn_passed"]
-        assert report["memory_records_written"] == capture
-        assert report["fresh_session_recall_passed"] == (not capture)
+        assert report["memory_records_written"] == (capture or correction)
+        assert report["fresh_session_recall_passed"] == (not capture and not correction)
+        if correction:
+            assert report["clear_correction_passed"] and report["previous_version_preserved"] and report["current_version"] == 2
         if followup:
             assert report["original_fixture_and_receipt_preserved"] and report["synthetic_active_records"] == 2
         if stage == "recall_followup": assert report["followup_receipt_preserved"]

@@ -1,5 +1,13 @@
 # Finding-by-finding remediation record
 
+23 October restricted-pilot evidence: [native save/retrieve cycle](HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+The permanent non-admin pilot now passes native GPT-6.1-Sol selected capture and
+fresh-process recall of the same invented decision, preserving the original
+fixture/receipts and checked settings/credentials. This is narrow pilot evidence;
+clear correction in this runtime, privacy/conflict, renewal/recovery/isolation,
+release and everyday/fleet admission remain separate gates. Earlier protected
+synthetic results below retain their original identity/model/revision scope.
+
 Latest Windows evidence: [successful v11 qualification and full selected-data run](WINDOWS-V11-COMPLETED-2026-10-21.md).
 56 native checks passed for the current installed hash; backup exit 0 and both
 encrypted sync-folder copies confirmed. Remote upload/recovery, scheduled

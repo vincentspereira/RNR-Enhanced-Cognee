@@ -71,7 +71,7 @@ class NativeTurnError(CheckError):
             "native_exit_reason": exit_reason if isinstance(exit_reason, str) and exit_reason in exits | {"max_iterations_reached"} else None,
             "model_requests": requests["count"] if type(requests.get("count")) is int and 0 <= requests["count"] <= 6 else None,
             "http_statuses": [s for s in statuses[:6] if type(s) is int and 100 <= s <= 599] if isinstance(statuses, list) else [],
-            "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember"})),
+            "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember", "enhanced_correct"})),
             "request_guard_failure": requests.get("guard_failure") if requests.get("guard_failure") in {
                 "unexpected_memory_test_request", "unexpected_memory_test_wire_contract", "invalid_memory_test_payload"} else None,
         }
@@ -378,6 +378,72 @@ def verify_saved(provider, fixture, *, followup=False):
     return row
 
 
+def correction_path():
+    return HOME / "cognee-pilot-correction.json"
+
+
+def save_correction_receipt(state, session, previous):
+    raw = json.dumps({"fixture": state["fixture"], "correction_session": session,
+                      "record_id": previous["id"], "expected_version": 1}, ensure_ascii=True).encode()
+    fd = os.open(correction_path(), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "wb") as handle:
+        handle.write(raw)
+        handle.flush()
+        os.fsync(handle.fileno())
+        info = os.fstat(handle.fileno())
+    return info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
+
+
+def verify_correction(provider, previous, fixture):
+    ident = previous.get("id")
+    if not isinstance(ident, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident):
+        raise CheckError("saved_fixture_record_id_shape")
+    row = provider._client.request("GET", "/v1/memories/" + ident)
+    content = row.get("content", "")
+    lineage = row.get("provenance", {})
+    if (row.get("id") != ident or type(row.get("version")) is not int or row["version"] != 2
+            or row.get("state") != "active" or not isinstance(content, str) or fixture not in content
+            or not re.search(r"\b(?:twenty[ -]three|23)[ -]+day", content.casefold())
+            or not isinstance(lineage, dict) or lineage.get("supersedes_version") != 1
+            or lineage.get("corrected_by") != "hermes_pilot_runtime"
+            or lineage.get("previous_content_sha256") != hashlib.sha256(previous["content"].encode()).hexdigest()):
+        raise CheckError("corrected_fixture_or_lineage_not_verified")
+    history = provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=3")
+    versions = history.get("versions")
+    if (history.get("record_state") != "active" or not isinstance(versions, list) or len(versions) != 2
+            or any(not isinstance(v, dict) or type(v.get("version")) is not int or v.get("id") != ident for v in versions)
+            or sorted(v["version"] for v in versions) != [1, 2]
+            or next(v for v in versions if v["version"] == 1).get("content") != previous["content"]
+            or next(v for v in versions if v["version"] == 2).get("content") != content):
+        raise CheckError("correction_history_not_verified")
+    return row
+
+
+def guard_correction_client(provider, previous, fixture):
+    """Confine this synthetic agent's writes to one version-checked correction."""
+    ident = previous.get("id")
+    if (not isinstance(ident, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident)
+            or previous.get("version") != 1 or not re.fullmatch(r"[a-f0-9]{32}", fixture)):
+        raise CheckError("correction_target_shape")
+    request = provider._client.request
+    attempted = {"writes": 0}
+    lock = threading.Lock()
+    def guarded(method, path, body=None):
+        if method == "GET" or method == "POST" and path == "/v1/memories/recall":
+            return request(method, path, body)
+        with lock:
+            content = body.get("content") if isinstance(body, dict) else None
+            if (method != "PATCH" or path != "/v1/memories/" + ident or attempted["writes"]
+                    or not isinstance(body, dict) or type(body.get("expected_version")) is not int
+                    or body["expected_version"] != 1 or not isinstance(content, str) or fixture not in content
+                    or not re.search(r"\b(?:twenty[ -]three|23)[ -]+day", content.casefold())):
+                raise ValueError("Qualification permits one version-checked Cedar correction; other writes are refused.")
+            attempted["writes"] += 1
+        return request(method, path, body)
+    provider._client.request = guarded
+    return attempted
+
+
 def restrict_agent(agent, allowed):
     names = {tool.get("function", {}).get("name") for tool in agent.tools}
     if not allowed.issubset(names) or agent._memory_manager is None:
@@ -439,7 +505,7 @@ def restrict_agent(agent, allowed):
     return requests
 
 
-def native_memory_turn(stage, token, provider, session, prompt):
+def native_memory_turn(stage, token, provider, session, prompt, *, correction_target=None):
     import run_agent
     from agent.memory_manager import MemoryManager
     if not Path(run_agent.__file__).resolve(strict=True).is_relative_to(RELEASE / "repo"):
@@ -447,10 +513,14 @@ def native_memory_turn(stage, token, provider, session, prompt):
     manager = MemoryManager()
     manager.add_provider(provider)
     manager.initialize_all(session, hermes_home=str(PROFILE), agent_context="primary", platform="cli")
+    if stage == "correct":
+        if not isinstance(correction_target, tuple) or len(correction_target) != 2:
+            raise CheckError("missing_correction_target")
+        guard_correction_client(provider, *correction_target)
     calls = []
     def progress(event_type, tool_name=None, *unused, **kwargs):
         if event_type == "tool.started" and tool_name in {
-                "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status"}:
+                "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_correct"}:
             calls.append(tool_name)
     agent = run_agent.AIAgent(model=MODEL, provider="openai-codex", api_mode="codex_responses",
         api_key=token, base_url=BASE_URL, enabled_toolsets=["memory"], max_iterations=5,
@@ -461,6 +531,7 @@ def native_memory_turn(stage, token, provider, session, prompt):
     try:
         allowed = {"enhanced_recall", "enhanced_get", "enhanced_status"}
         if stage == "capture": allowed.add("enhanced_remember")
+        if stage == "correct": allowed.add("enhanced_correct")
         requests = restrict_agent(agent, allowed)
         try:
             result = agent.run_conversation(prompt, conversation_history=[])
@@ -472,6 +543,9 @@ def native_memory_turn(stage, token, provider, session, prompt):
         if stage == "capture" and ("enhanced_recall" not in calls or "enhanced_remember" not in calls
                 or calls.index("enhanced_recall") > calls.index("enhanced_remember")):
             raise CheckError("model_did_not_recall_then_select_capture")
+        if stage == "correct" and ("enhanced_recall" not in calls or "enhanced_correct" not in calls
+                or calls.index("enhanced_recall") > calls.index("enhanced_correct")):
+            raise CheckError("model_did_not_recall_then_correct")
         return result.get("final_response", ""), sorted(set(calls)), requests["count"]
     finally:
         agent.close()
@@ -486,10 +560,11 @@ def main_memory(*, stage, approved_test=False):
     secrets = None
     uid = None
     phase = "restricted_preflight"
-    followup = stage in {"capture_followup", "recall_followup"}
+    correction = stage == "correct_followup"
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup"}
     capture = stage in {"capture", "capture_followup"}
     try:
-        if stage not in {"capture", "recall", "capture_followup", "recall_followup"}: raise CheckError("unapproved_stage")
+        if stage not in {"capture", "recall", "capture_followup", "recall_followup", "correct_followup"}: raise CheckError("unapproved_stage")
         uid, snapshots = preflight(approved_test)
         snapshots[".env"] = read_private(".env", uid)
         import yaml
@@ -527,6 +602,7 @@ def main_memory(*, stage, approved_test=False):
             original_receipt = None
             original_stamp = None
             followup_stamp = None
+            correction_stamp = None
             if capture:
                 if os.path.lexists(state_path(followup)) or before["active_records"] != (1 if followup else 0):
                     raise CheckError("existing_test_evidence_preserved_review_before_retry")
@@ -545,6 +621,8 @@ def main_memory(*, stage, approved_test=False):
                 session = state["capture_session"]
                 previous = None
             else:
+                if correction and os.path.lexists(correction_path()):
+                    raise CheckError("existing_correction_evidence_preserved_review_before_retry")
                 if followup:
                     if before["active_records"] != 2:
                         raise CheckError("unexpected_memory_record_count")
@@ -557,18 +635,30 @@ def main_memory(*, stage, approved_test=False):
                     state = read_state(uid)
                 fixture = state["fixture"]
                 previous = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
-                session = "cognee_recall_" + uuid.uuid4().hex
+                session = ("cognee_correct_" if correction else "cognee_recall_") + uuid.uuid4().hex
                 if session == state["capture_session"]:
                     raise CheckError("distinct_recall_session_required")
                 prompt = ("For the entirely fictional " + ("Cedar" if followup else "Larch") + " qualification project " + fixture
                     + ", what standing review interval did we decide on? Use saved evidence and cite its record ID.")
+                if correction:
+                    prompt = ("For the entirely fictional Cedar qualification project " + fixture
+                        + ", the earlier review interval was incorrect. Our confirmed current decision is a twenty-three-day review cycle. "
+                        + "Explain the corrected decision in one sentence.")
             phase = "native_agent_turn"
             if capture: save_state(state, followup=followup)
-            answer, calls, requests = native_memory_turn("capture" if capture else "recall", token, provider, session, prompt)
+            if correction: correction_stamp = save_correction_receipt(state, session, previous)
+            extra = {"correction_target": (previous, fixture)} if correction else {}
+            answer, calls, requests = native_memory_turn("capture" if capture else "correct" if correction else "recall", token, provider, session, prompt, **extra)
             phase = "saved_memory_verification"
             # agent.close shuts the provider down; reinitialize for authoritative reads.
             provider.initialize("pilot_verification", hermes_home=str(PROFILE), agent_context="primary")
-            row = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
+            if correction:
+                row = verify_correction(provider, previous, fixture)
+                info = correction_path().lstat()
+                if (info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns) != correction_stamp:
+                    raise CheckError("correction_receipt_changed_preserve_and_review")
+            else:
+                row = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
             after = memory_status(provider)
             if after["active_records"] != (2 if followup else 1):
                 raise CheckError("unexpected_memory_record_count")
@@ -584,17 +674,18 @@ def main_memory(*, stage, approved_test=False):
                 if not capture and state_stamp(followup=True) != followup_stamp:
                     raise CheckError("followup_receipt_changed_preserve_and_review")
             interval_pattern = r"\b(?:nineteen|19)[ -]+day" if followup else r"\b(?:thirteen|13)[ -]+day"
-            if not capture and (row != previous or row["id"] not in answer
+            if not capture and not correction and (row != previous or row["id"] not in answer
                     or not re.search(interval_pattern, answer.casefold())):
                 raise CheckError("fresh_session_recall_not_verified")
             if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
                 raise CheckError("profile_state_changed_preserve_and_review")
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL, "native_agent_turn_passed": True,
-            "selected_capture_passed": capture, "fresh_session_recall_passed": not capture,
+            "selected_capture_passed": capture, "fresh_session_recall_passed": not capture and not correction,
             "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
             "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],
-            "current_version": row["version"], "memory_records_written": capture,
+            "current_version": row["version"], "memory_records_written": capture or correction,
+            **({"clear_correction_passed": True, "previous_version_preserved": True} if correction else {}),
             **({"original_fixture_and_receipt_preserved": True} if followup else {}),
             **({"followup_receipt_preserved": True} if followup and not capture else {}),
             "runtime_qualified": False}, indent=2))
@@ -606,8 +697,8 @@ def main_memory(*, stage, approved_test=False):
             except Exception:
                 preserved = False
         print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
-            "test_evidence_present_preserve_for_review": os.path.lexists(state_path(followup)),
-            "memory_writes_may_have_occurred": capture and phase in {"native_agent_turn", "saved_memory_verification"},
+            "test_evidence_present_preserve_for_review": os.path.lexists(correction_path() if correction else state_path(followup)),
+            "memory_writes_may_have_occurred": (capture or correction) and phase in {"native_agent_turn", "saved_memory_verification"},
             "profile_settings_and_credentials_unchanged": preserved,
             "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None

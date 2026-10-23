@@ -1136,3 +1136,57 @@ cases. Agent/provider/network operations use fixtures; installed Cedar recall
 remains pending the next owner command. Correction/conflict/privacy checks,
 isolation/recovery/renewal, owner/release gates and staged fleet admission remain
 separate from this synthetic capture result.
+
+## 23 October: Cedar save-and-fresh-recall cycle passed
+
+Vincent returned complete=true/stage=recall_followup from helper revision
+ca500986c99e1dec3f77e373c3d42fb722785cca. It ran as hermes-runtime in
+enhanced-cognee-pilot with gpt-6.1-sol. Native turn completion and fresh-session
+recall passed, with enhanced_get and two guarded model requests observed.
+Both active synthetic records remained at version 1; both canonical comparisons
+and original/follow-up receipt preservation checks passed. Checked settings/
+credentials were unchanged; model defaults were not changed and no canonical
+memory was written in this recall. selected_capture_passed=false describes the
+recall-only stage and does not undo the prior completed Cedar capture.
+
+Together with 005bcf10b's native capture receipt, this verifies one narrow
+restricted-account automatic-save and separate-process retrieval cycle using
+invented Cedar data. It does not establish every conversation's behavior,
+Desktop/gateway activation, credential renewal, all-bot isolation or private-data
+admission. runtime_qualified correctly remains false.
+
+## Next: clear correction with retained history prepared
+
+main_memory(stage="correct_followup", approved_test=True) prepares a synthetic
+clear-error correction of the Cedar interval from nineteen to twenty-three
+days. It requires both original receipts and version-1 canonical fixtures,
+exactly two active records, and no existing correction receipt. A separate
+0600 O_EXCL/O_NOFOLLOW receipt at /var/lib/hermes-runtime/cognee-pilot-correction.json
+is retained before model execution. An interrupted attempt is not replayed.
+
+The native agent receives an unambiguous fictional user correction, not a
+fabricated clarification of an uncertain private fact. Only recall/get/status/
+correct tools are offered. It must recall before enhanced_correct and complete
+the turn. An additional guard on this provider instance's transport allows one
+PATCH of the known Cedar ID at expected_version=1 with the expected fictional
+identifier/new interval; all other writes and repeat PATCH attempts are refused
+before HTTP. Native handlers and server authorization/version checks remain.
+The pinned native constructor preserves the supplied initialized MemoryManager,
+so the transport guard remains bound through the turn.
+
+Qualification requires Cedar's same record ID at active canonical version 2,
+the new interval, expected correction subject, superseded version and prior
+content hash. Bounded own-record history must contain both versions 1 and 2
+with the exact old/new content. Larch's full canonical row and both capture
+receipts/stamps must remain unchanged, as must checked profile/settings/
+credentials. The correction receipt must remain unchanged too. No deletion,
+new memory record, sharing or everyday-bot activation is performed.
+
+Focused Workspace fixture suites pass 534 tests, zero failures/skips and no
+reported warnings. Thirty-four added cases cover correction tool order,
+one-write transport boundaries, replay refusal, private receipt preservation,
+current version/lineage and retained history. Native model/provider/network
+calls use fixtures; the clear-correction native run remains pending the next
+operator command. This prepares only clear-error correction; ambiguous conflict,
+credential/private-detail handling and operational/fleet/release gates remain
+separate qualification work.

@@ -842,3 +842,49 @@ origin/record ID, wrong answer/citation and new-receipt modification. Native
 agent/provider/network calls use fixtures; fresh installed Cedar recall remains
 pending. Existing defaults, everyday profiles/bots and the installation remain
 unchanged by this preparation.
+
+## 23 October: new decision retrieved; clear-error correction next
+
+Owner output at ca500986c99e1dec3f77e373c3d42fb722785cca passed
+recall_followup: completed native gpt-6.1-sol turn as hermes-runtime in the
+pilot, enhanced_get observed and two guarded model requests. Both active
+version-1 canonical fixtures and both receipts were preserved, with unchanged
+checked settings/credentials and no default edit or canonical write. Together
+with the prior completed Cedar capture, the invented-data save/retrieve cycle
+now has native evidence. The stage's selected_capture_passed=false is expected.
+This narrow success does not qualify everyday profiles, gateways or the fleet.
+
+The next prepared stage is main_memory(stage="correct_followup", approved_test=True).
+It intentionally changes only the invented Cedar decision from nineteen to
+twenty-three days. It requires the current version-1 Cedar/Larch fixtures,
+exactly two active records and both existing private capture receipts. A new
+private no-replace cognee-pilot-correction.json receipt under the runtime home
+is written before the native turn. If it exists already, stop and reconcile;
+do not remove it or repeat the correction automatically.
+
+The new session receives a clear fictional user correction and asks for a
+one-sentence explanation. It offers only native recall/get/status/correct tools,
+requires recall-before-correct and preserves the usual model/request/time
+bounds. The supplied MemoryManager stays initialized in the pinned constructor.
+A test-instance memory transport guard permits one version-checked PATCH of
+the known Cedar record with its identifier/new interval, refusing other records,
+new records, retraction and duplicate PATCH attempts before HTTP. This adds a
+qualification boundary; it neither replaces handlers nor bypasses native guards.
+
+Success requires Cedar's same ID at version 2 with correction lineage and the
+new interval, plus exact old/new content in the bounded retained history.
+Larch and both capture receipts must remain unchanged, together with checked
+profile/settings/credentials and the correction receipt. Expect
+clear_correction_passed=true, previous_version_preserved=true, current_version=2,
+synthetic_active_records=2 and memory_records_written=true. No additional record
+or permanent deletion is expected. The capture/recall flags describe this
+correction-only stage and remain false; runtime_qualified remains false.
+
+Run the next pinned/hash-verified command once in the normal Ubuntu-Hermes
+operator terminal using the same restricted pilot/tools1 interpreter and clean
+environment. Existing subscription usage may be consumed. Send only the
+sanitized result; on failure retain all receipts/records for review. Defaults,
+everyday profiles, bots, program files and service keys remain unchanged.
+Focused fixtures pass 534 tests, zero failures/skips and no reported warnings;
+native correction is still pending. Ambiguous clarification/privacy behavior,
+renewal/recovery/isolation and release/fleet checks remain separate.
