@@ -18,8 +18,10 @@ OAuth, with new expiry 2026-10-24T09:15:06+00:00 and API refusal controls passin
 Restricted-HOME inventory also passes at 61c272a7 (60 files, no detected database
 or problematic entries). Owner-run b53b3232 created an encrypted profile
 generation but stopped during disposable restore; preserve both backup and
-recovery destination. Read-only retained-evidence inspection and a protected
-ancestor traversal correction are prepared; installed profile recovery is open.
+recovery destination. Owner-run 6a7c5ee4 authenticated/validated the backup and
+confirmed it matches live source; retained recovered membership failed before
+settings/API checks. A fresh restore from that existing encrypted generation is
+prepared, preserving the failed destination; installed profile recovery is open.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

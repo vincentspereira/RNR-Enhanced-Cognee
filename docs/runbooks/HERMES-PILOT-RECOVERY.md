@@ -212,3 +212,40 @@ Send only the JSON, including a failure report. Inspection success still is not
 a fresh restore, recurring backup, Windows collection or full runtime admission.
 If the retained copy is incomplete, the next step will use the authenticated
 existing archive and a fresh private destination, preserving the failed one.
+
+## Retained inspection result and fresh restore from the existing generation
+
+The owner ran 6a7c5ee4ee936a4913700d2d659c11ef4e551067. Signed ciphertext
+verification passed; restricted archive validation and exact comparison with the
+live source both passed. Existing recovered membership did not match the archive
+(`restore_verify` / `restored_membership_mismatch`). This does not identify which
+entries are missing or extra. Recovered settings and API status were not reached.
+The inspection reported no file or memory writes and no model call. Preserve
+that report and both original paths; installed profile recovery is still open.
+
+The next bundle calls `main(..., restore_existing=True)`. It reauthenticates and
+decrypts ONLY the existing fixed generation. It creates one new random check-*
+leaf under the existing protected recovery parent; it never reuses the failed
+leaf, replaces files, changes source settings or writes a new backup/manifest.
+Root-only signing/recovery keys remain outside the restricted process. The
+restricted child validates the archive and current source equality before
+extracting, checks every copied file and its private permissions, validates the
+protected provider binding/settings, checks recovered ordinary API access, and
+compares the live source again. Unknown/changed source state, archive problems,
+collisions and wrong parent permissions stop the command without cleanup.
+
+Keep the restricted pilot idle. Run the published pinned/hash-verified command
+in a normal Ubuntu-Hermes terminal as vincentspereira, starting at ~ if preferred.
+Only the Linux sudo password may be requested privately. No OAuth login, model
+call, credential renewal, memory write, service restart, upload, timer change or
+cleanup occurs. Restored private credential files remain only under the new
+0700 generation; they are not activated as a live profile. An expired restored
+token remains refused; the test does not bypass or silently renew its expiry.
+
+Expect stage `profile_restore_existing`, reused_existing_encrypted_backup=true,
+encrypted_backup_created=false and verified copied-file/provider/scoped-access
+flags. A failure report retains the attempted new path and sanitized child
+phase/checks when available. Relay either JSON result before another attempt.
+A pass qualifies this manual file-only generation restore; it does not establish
+recurring backup/collection, a PostgreSQL restore, native restored Hermes startup,
+fresh-machine program rebuild, full release qualification or fleet admission.

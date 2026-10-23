@@ -1710,3 +1710,34 @@ compilation, fixed-generation read-only selection and sanitized failure-channel
 checks pass. This is source evidence, not installed recovery or full release
 qualification. The exact three-file bundle and operator bootstrap are verified
 before publication; no Ubuntu-Hermes command runs in this Workspace session.
+
+## 23 October: retained inspection validates backup; fresh restore prepared
+
+Owner-run 6a7c5ee4ee936a4913700d2d659c11ef4e551067 authenticated the existing
+signed ciphertext, validated the decrypted archive and confirmed exact agreement
+with the live restricted HOME. The retained destination failed exact recovered
+membership at restore_verify; its settings/API checks did not run. Missing versus
+extra entries are not distinguished by this report. No files/memories were
+written and no model was called. This narrows the failure to the retained copy;
+it does not yet qualify a successful installed extraction or prove the original
+permission defect was its only cause.
+
+A fixed-generation restore-only entry point now reuses that authenticated
+ciphertext and makes a fresh private random destination under the already
+protected recovery parent. It preserves the old destination, backup/manifest,
+source HOME and all generations. Root handles only protected keys and ciphertext;
+reviewed restricted code validates/compares the archive, extracts into the empty
+new leaf, verifies copied content/permissions/provider/scoped access, and rechecks
+the live source. No backup/manifest is regenerated; no credential renewal, OAuth,
+model/default change, memory write, upload, timer change or cleanup is performed.
+Installed restore result remains pending. See HERMES-PILOT-RECOVERY.md.
+
+Workspace validation: 959 focused checks pass, zero failures/skips and no
+reported warnings, including 113 profile-backup/recovery cases. New tests cover
+fixed-generation authentication/decryption ordering, preservation of retained
+evidence, new private destination selection, collision/parent/type refusal,
+mode validation and no backup/manifest regeneration. Host root metadata and
+account switching/API calls remain simulated in Workspace; actual age/file
+round trips and the permission regression remain real synthetic checks. The
+published bundle/bootstrap is verified without invoking its operator entry point.
+These results do not qualify installed recovery or clear other release gates.

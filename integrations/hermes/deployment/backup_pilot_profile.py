@@ -559,10 +559,42 @@ def age(arguments, *, data, output=subprocess.PIPE):
     return result.stdout
 
 
-def main(*, core, inspector, sources, inspect_existing=False):
+def new_recovery_destination(core, account, generation, *, create_parent=True):
+    """Create one new private leaf; never reuse a retained recovery directory."""
+    if not re.fullmatch(r"[0-9a-f]{32}", generation):
+        raise BackupError("unapproved_restore_destination")
+    created_parent = False
+    if create_parent:
+        parent = core["open_directory"](RECOVERY.parent, {0})
+        try:
+            try:
+                os.mkdir(RECOVERY.name, 0o711, dir_fd=parent)
+                created_parent = True
+            except FileExistsError: pass
+        finally: os.close(parent)
+    parent = core["open_directory"](RECOVERY, {0})
+    try:
+        if created_parent: os.fchmod(parent, 0o711)
+        if stat.S_IMODE(os.fstat(parent).st_mode) != 0o711:
+            raise BackupError("recovery_parent_protection")
+        leaf = "check-" + generation
+        os.mkdir(leaf, 0o700, dir_fd=parent)
+        leaf_fd = os.open(leaf, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+        try:
+            os.fchmod(leaf_fd, 0o700)
+            os.fchown(leaf_fd, account.pw_uid, account.pw_gid)
+        finally: os.close(leaf_fd)
+        os.fsync(parent)
+    finally: os.close(parent)
+    return RECOVERY / leaf
+
+
+def main(*, core, inspector, sources, inspect_existing=False, restore_existing=False):
     phase, completed = "operator_preflight", False
     backup_path = recovery_path = None
     try:
+        if type(inspect_existing) is not bool or type(restore_existing) is not bool or inspect_existing and restore_existing:
+            raise BackupError("unapproved_backup_mode")
         if os.geteuid() != 0 or os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes" or os.environ.get("SUDO_USER") != "vincentspereira":
             raise BackupError("approved_human_operator_required")
         account = pwd.getpwnam("hermes-runtime")
@@ -586,16 +618,37 @@ def main(*, core, inspector, sources, inspect_existing=False):
         directory = core["open_directory"](DESTINATION, {0})
         try:
             if stat.S_IMODE(os.fstat(directory).st_mode) != 0o700: raise BackupError("backup_directory_protection")
-            if inspect_existing is True:
+            if inspect_existing or restore_existing:
                 # Fixed failed generation only. Authenticate before decrypting;
                 # do not recreate an archive or write into retained evidence.
                 backup_path = str(DESTINATION / FAILED_BACKUP)
-                recovery_path = str(RECOVERY / FAILED_RESTORE)
+                recovery_path = None if restore_existing else str(RECOVERY / FAILED_RESTORE)
                 phase = "existing_backup_authentication"
                 ciphertext = verify_completed(core, directory, FAILED_BACKUP, key, key_id)
                 completed = True
                 phase = "existing_backup_decryption"
                 recovered = age(["--decrypt", "--identity", str(IDENTITY)], data=ciphertext)
+                if restore_existing:
+                    # Reuse authenticated ciphertext, not the failed destination.
+                    # The restricted child rechecks source equality before writes.
+                    phase = "fresh_disposable_destination"
+                    generation = uuid.uuid4().hex
+                    recovery_path = str(RECOVERY / ("check-" + generation))
+                    destination = new_recovery_destination(core, account, generation, create_parent=False)
+                    phase = "fresh_disposable_restore"
+                    _, restored = run_child(core, inspector, sources, account, "restore", recovered, destination)
+                    print(json.dumps({"complete": True, "stage": "profile_restore_existing",
+                        "profile": "enhanced-cognee-pilot", "encrypted_backup": backup_path,
+                        "disposable_restore": recovery_path, "reused_existing_encrypted_backup": True,
+                        "encrypted_backup_created": False, "signed_ciphertext_verified": True,
+                        "decryption_passed": True, "files_verified": restored["files"],
+                        "source_bytes": restored["source_bytes"], "restored_files_and_private_permissions_verified": True,
+                        "restored_provider_binding_verified": True, "restored_scope_status_passed": True,
+                        "live_source_preserved": True, "previous_recovery_destination_reused": False,
+                        "plaintext_archive_written": False, "model_called": False, "memory_records_written": False,
+                        "native_restored_hermes_launched": False, "recurring_profile_backup_installed": False,
+                        "windows_collection_qualified": False, "runtime_qualified": False}, indent=2))
+                    return
                 phase = "retained_parent_protection"
                 parent = core["open_directory"](RECOVERY, {0})
                 try:
@@ -641,28 +694,7 @@ def main(*, core, inspector, sources, inspect_existing=False):
             if recovered != plaintext: raise BackupError("encrypted_roundtrip_mismatch")
         finally: os.close(directory)
         phase = "disposable_restore"
-        parent = core["open_directory"](RECOVERY.parent, {0})
-        created_parent = False
-        try:
-            try:
-                os.mkdir(RECOVERY.name, 0o711, dir_fd=parent)
-                created_parent = True
-            except FileExistsError: pass
-        finally: os.close(parent)
-        parent = core["open_directory"](RECOVERY, {0})
-        try:
-            if created_parent: os.fchmod(parent, 0o711)
-            if stat.S_IMODE(os.fstat(parent).st_mode) != 0o711: raise BackupError("recovery_parent_protection")
-            leaf = "check-" + generation
-            os.mkdir(leaf, 0o700, dir_fd=parent)
-            leaf_fd = os.open(leaf, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
-            try:
-                os.fchmod(leaf_fd, 0o700)
-                os.fchown(leaf_fd, account.pw_uid, account.pw_gid)
-            finally: os.close(leaf_fd)
-            os.fsync(parent)
-        finally: os.close(parent)
-        recovery_path = str(RECOVERY / leaf)
+        recovery_path = str(new_recovery_destination(core, account, generation))
         _, restored = run_child(core, inspector, sources, account, "restore", recovered, Path(recovery_path))
         if any(restored[k] != receipt[k] for k in ("files", "source_bytes", "entries")):
             raise BackupError("restored_inventory_mismatch")
@@ -676,17 +708,18 @@ def main(*, core, inspector, sources, inspect_existing=False):
             "native_restored_hermes_launched": False, "recurring_profile_backup_installed": False,
             "windows_collection_qualified": False, "runtime_qualified": False}, indent=2))
     except Exception as error:
-        report = {"complete": False, "stage": "profile_recovery_inspection" if inspect_existing else "profile_backup_restore", "failure_stage": phase,
+        stage = "profile_recovery_inspection" if inspect_existing else "profile_restore_existing" if restore_existing else "profile_backup_restore"
+        report = {"complete": False, "stage": stage, "failure_stage": phase,
             "category": "profile_backup_or_restore_incomplete_preserve_evidence", "encrypted_backup_created": completed,
             "encrypted_backup": backup_path, "disposable_restore": recovery_path,
             "model_called": False, "runtime_qualified": False}
         if isinstance(error, BackupError) and error.diagnostics is not None:
             report["restricted_diagnostics"] = error.diagnostics
-        if inspect_existing:
+        if inspect_existing or restore_existing:
             report["encrypted_backup_created"] = False
             report["existing_signed_ciphertext_verified"] = completed
-            report["files_written"] = False
             report["memory_records_written"] = False
+        if inspect_existing: report["files_written"] = False
         print(json.dumps(report, indent=2))
         raise SystemExit(1) from None
 
