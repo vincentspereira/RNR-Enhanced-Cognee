@@ -26,8 +26,10 @@ and scoped access passed; live source and failed copy preserved. Daily profile
 job files were installed at owner-run d7c7880c but its first run exited 1;
 timer enable did not complete. Owner-run 3bd4bf8f confirmed exact public files
 and protections; the retained report fails at restricted_snapshot before
-creating ciphertext. A temporary protected launch probe is prepared; recurring
-operation/collection remain unqualified.
+creating ciphertext. Owner-run 058b71da observed Python launch PermissionError
+(errno 1), with no child result. A scheduled external identity-launch candidate
+and same-policy transient qualification are prepared; installed repair and
+recurring operation/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

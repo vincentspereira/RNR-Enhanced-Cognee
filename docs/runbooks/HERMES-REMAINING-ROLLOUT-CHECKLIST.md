@@ -101,8 +101,9 @@ ca2682c6af3d0c40855e795a1dca9c778629184e: signed ciphertext/decryption,
 access, with live source and the failed destination preserved. No repeat of
 that restore is needed. Owner-run d7c7880c installed the separate daily job
 files, but its first run exited 1 and timer enable did not complete. Owner-run 3bd4bf8f verified public artifacts/protections and found the retained
-restricted_snapshot failure with no backup created. Next use the bounded
-temporary launch probe before any installed-service retry or policy correction.
+restricted_snapshot failure with no backup created. Owner-run 058b71da then observed PermissionError/errno 1 before a child
+result. Next qualify the scheduled external identity-launch candidate with the
+updated same-policy transient probe before any installed service replacement.
 It performs encryption-only snapshots with no model/API, memory write or
 recovery-identity read. Keep the pilot idle for its first run. See
 HERMES-PILOT-RECOVERY.md. Windows collection, current canonical database

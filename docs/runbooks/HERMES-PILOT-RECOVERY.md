@@ -385,3 +385,33 @@ can continue. Authenticate sudo privately and relay only its JSON. A completed
 diagnostic can describe a failed launch; it does not qualify recurring backups
 or authorize weakening the installed service. Preserve the disabled timer and
 existing manual recovery evidence until the concrete cause is reconciled.
+
+## Launch probe result: EPERM; external identity launcher candidate
+
+Owner-run 058b71da8b6542ee528d6d24fd1ea3cf24f410f1 returned an observed
+PermissionError with errno 1 during the Python subprocess launch. The launch
+attempt did not return a child result or child stderr/receipt. No snapshot or
+backup completed, root signing/recovery keys were not read and original units/
+timer remained unchanged. This establishes a refused launch, not the exact
+failed kernel call; errno 1 alone does not prove which policy caused it.
+
+The candidate scheduled launcher delegates the same positive non-root UID/GID,
+empty supplementary groups and no-new-privileges transition to /usr/bin/setpriv.
+Python creates the process without pre-exec user/group arguments; the external
+launcher changes identity before executing the same clean restricted program.
+All original child identity/capability/provider/source guards stay enforced.
+Manual operator recovery paths retain their previously tested launcher. No
+additional capability, group, namespace access, writable path or relaxed service
+setting is introduced. Source bundle serialization is also made deterministic
+across dictionary insertion order for stable future protected runner identities.
+
+The next pinned probe verifies the same old public runner/source table and tests
+this external transition inside a fresh collected transient unit with the same
+selected protections and no backup write exception. It reports parent identity-
+switch capability/no-new-privileges flags, bounded launch errors and an allowlisted
+setpriv failure operation if present. A successful ordinary profile snapshot
+stays in RAM and is discarded. It reads no service signing/recovery configuration,
+creates no backup and does not replace/rerun the installed service or enable its
+timer. Keep the pilot idle and relay only its JSON. The installed job remains
+failed/disabled until this candidate passes and a separately guarded upgrade
+qualifies an actual backup run. Do not repeat the initial installer.

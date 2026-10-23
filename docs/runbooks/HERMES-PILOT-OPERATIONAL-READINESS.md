@@ -169,7 +169,9 @@ enrollment/local-status step, not the remaining gates below.
    source preserved. Owner-run d7c7880c installed the daily job files, but its
    first run exited 1 and timer enable did not complete. Read-only inspection of
    the retained failure at 3bd4bf8f now confirms restricted_snapshot failure before
-   any encrypted backup. A temporary launch probe is next; recurring operation
+   any encrypted backup. Owner-run 058b71da observed launch EPERM; next qualify
+   the external identity-launch candidate with the same-policy transient probe.
+   Recurring operation
    and collector coverage
    and current canonical database recovery remain separate.
    Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.

@@ -427,7 +427,8 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
     monkeypatch.setitem(core, "read_private_at", private)
     calls = []
     receipt = {"complete": True, "files": 60, "entries": 104, "source_bytes": 205571}
-    def child(core, inspector, sources, account, mode, data=b"", destination=None):
+    def child(core, inspector, sources, account, mode, data=b"", destination=None, **options):
+        assert options == ({'external_identity': True} if mutation == 'scheduled' else {})
         calls.append(mode)
         if mode == "snapshot": return b"PRIVATE_SYNTHETIC_ARCHIVE_CANARY", dict(receipt)
         if mutation == "restore": raise backup.BackupError("restricted_snapshot_or_restore_incomplete_preserve_evidence")
@@ -827,3 +828,38 @@ def test_scheduled_mode_cannot_invoke_restore_or_accept_non_boolean_mode(modules
     with pytest.raises(SystemExit): backup.main(core=vars(core), inspector=vars(inspector), sources={},
         backup_only=backup_only, scheduled_backup=scheduled)
     assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
+
+
+def test_scheduled_identity_launcher_avoids_python_preexec_identity_calls_without_adding_privilege(home, monkeypatch):
+    core, inspector, backup, _, _, _, _, _ = home
+    receipt = dict(complete=True, files=60, entries=104, source_bytes=205571)
+    def run(argv, **kwargs):
+        if 'user' in kwargs: raise PermissionError(1, 'synthetic blocked pre-exec transition')
+        assert argv[:6] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups', '--no-new-privs', '--']
+        assert argv[6:9] == ['/usr/bin/setpriv', '--no-new-privs', '--']
+        assert not {'user', 'group', 'extra_groups'}.intersection(kwargs)
+        assert kwargs['close_fds'] and kwargs['cwd'] == '/tmp'
+        assert kwargs['env'] == {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}
+        assert kwargs['input'] == b''
+        compile(argv[-1], '<unchanged-restricted-child-guards>', 'exec')
+        return NS(returncode=0, stdout=b'PRIVATE_SYNTHETIC_SNAPSHOT', stderr=json.dumps(receipt).encode())
+    monkeypatch.setattr(backup.subprocess, 'run', run)
+    sources = {name: Path(name).read_bytes() for name in backup.NAMES}
+    account = NS(pw_uid=993, pw_gid=985)
+    with pytest.raises(PermissionError): backup.run_child(core, inspector, sources, account, 'snapshot')
+    raw, report = backup.run_child(core, inspector, sources, account, 'snapshot', external_identity=True)
+    assert raw == b'PRIVATE_SYNTHETIC_SNAPSHOT' and report == receipt
+
+
+@pytest.mark.parametrize('uid,gid', [(0, 985), (993, 0), (True, 985), (993, '985')])
+def test_scheduled_launcher_rejects_root_or_malformed_identity_before_any_launch(home, monkeypatch, uid, gid):
+    core, inspector, backup, *_ = home
+    monkeypatch.setattr(backup.subprocess, 'run', lambda *a, **kw: pytest.fail('No launch for an invalid restricted identity'))
+    with pytest.raises(backup.BackupError): backup.run_child(core, inspector,
+        {name: Path(name).read_bytes() for name in backup.NAMES}, NS(pw_uid=uid, pw_gid=gid), 'snapshot', external_identity=True)
+
+
+def test_schedule_payload_is_stable_across_source_dictionary_insertion_order(modules):
+    *_, backup = modules
+    sources = {name: Path(name).read_bytes() for name in sorted(backup.NAMES)}
+    assert backup.schedule_payloads(sources) == backup.schedule_payloads(dict(reversed(list(sources.items()))))

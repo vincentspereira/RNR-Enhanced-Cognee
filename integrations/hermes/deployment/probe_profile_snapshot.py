@@ -38,9 +38,11 @@ PROPERTIES = [
 ]
 EXCEPTIONS = {'PermissionError', 'FileNotFoundError', 'OSError', 'TimeoutExpired', 'ValueError',
               'RuntimeError', 'ImportError', 'ModuleNotFoundError', 'SyntaxError', 'TypeError', 'BackupError'}
-FLAGS = {'launch_attempted', 'launch_returned', 'stderr_present', 'snapshot_completed'}
+FLAGS = {'launch_attempted', 'launch_returned', 'stderr_present', 'snapshot_completed',
+         'parent_setuid_capability', 'parent_setgid_capability', 'parent_no_new_privileges', 'launch_error_has_filename'}
 COUNTS = {'child_exit_status', 'popen_errno', 'stderr_errno'}
-FIELDS = FLAGS | COUNTS | {'exception_type', 'stderr_exception_type', 'failure_category', 'child_phase', 'child_category'}
+FIELDS = FLAGS | COUNTS | {'exception_type', 'stderr_exception_type', 'failure_category', 'child_phase', 'child_category', 'setpriv_failure_stage'}
+SWITCH_STAGES = {'setgroups', 'setresgid', 'setresuid', 'setregid', 'setreuid', 'execute', None}
 CATEGORIES = {'launch_exception', 'child_program_budget', 'restricted_child_refused', 'unexpected_snapshot_failure', None}
 CHILD_PHASES = {'identity', 'provider', 'profile_lock', 'source_snapshot', 'source_contract',
     'archive_decode', 'source_comparison', 'restore_write', 'restore_verify', 'restored_settings', 'restored_api_status', 'source_recheck'}
@@ -104,15 +106,28 @@ import json, pwd, re, subprocess
 from types import SimpleNamespace
 stats = dict(launch_attempted=False, launch_returned=False, stderr_present=False,
     snapshot_completed=False, child_exit_status=None, popen_errno=None,
-    stderr_errno=None, exception_type=None, stderr_exception_type=None, failure_category=None, child_phase=None, child_category=None)
+    stderr_errno=None, exception_type=None, stderr_exception_type=None, failure_category=None, child_phase=None, child_category=None, setpriv_failure_stage=None,
+    parent_setuid_capability=False, parent_setgid_capability=False, parent_no_new_privileges=False, launch_error_has_filename=False)
+with open('/proc/self/status') as handle:
+    process_fields = dict(line.split(':', 1) for line in handle.read().splitlines())
+effective = int(process_fields.get('CapEff', '0').strip(), 16)
+stats['parent_setuid_capability'] = bool(effective & (1 << 7))
+stats['parent_setgid_capability'] = bool(effective & (1 << 6))
+stats['parent_no_new_privileges'] = process_fields.get('NoNewPrivs', '').strip() == '1'
 original_run = subprocess.run
 allowed_errors = {'PermissionError','FileNotFoundError','OSError','TimeoutExpired','ValueError',
     'RuntimeError','ImportError','ModuleNotFoundError','SyntaxError','TypeError','BackupError'}
 def observed(argv, **kwargs):
     stats['launch_attempted'] = True
+    uid, gid, groups = kwargs.pop('user'), kwargs.pop('group'), kwargs.pop('extra_groups')
+    if type(uid) is not int or uid <= 0 or type(gid) is not int or gid <= 0 or groups != ():
+        raise RuntimeError('restricted_identity_required')
+    argv = ['/usr/bin/setpriv', '--reuid=' + str(uid), '--regid=' + str(gid),
+            '--clear-groups', '--no-new-privs', '--', *argv]
     try:
         result = original_run(argv, **kwargs)
     except Exception as error:
+        stats['launch_error_has_filename'] = getattr(error, 'filename', None) is not None
         stats['exception_type'] = type(error).__name__ if type(error).__name__ in allowed_errors else None
         number = getattr(error, 'errno', None)
         stats['popen_errno'] = number if type(number) is int and 0 < number < 4096 else None
@@ -123,6 +138,10 @@ def observed(argv, **kwargs):
     stats['stderr_present'] = bool(result.stderr)
     if len(result.stderr) <= 4096:
         text = result.stderr.decode('utf-8', errors='replace')
+        if text.startswith('setpriv:'):
+            for operation in ('setgroups', 'setresgid', 'setresuid', 'setregid', 'setreuid'):
+                if operation in text: stats['setpriv_failure_stage'] = operation
+            if 'failed to execute' in text: stats['setpriv_failure_stage'] = 'execute'
         try: child = json.loads(text)
         except ValueError: child = None
         if (isinstance(child, dict) and child.get('complete') is False
@@ -176,6 +195,7 @@ def safe_result(raw):
     if value['failure_category'] is not None and (not isinstance(value['failure_category'], str) or value['failure_category'] not in CATEGORIES): return None
     for key, allowed in (('child_phase', CHILD_PHASES), ('child_category', CHILD_CATEGORIES)):
         if value[key] is not None and (not isinstance(value[key], str) or value[key] not in allowed): return None
+    if value['setpriv_failure_stage'] is not None and (not isinstance(value['setpriv_failure_stage'], str) or value['setpriv_failure_stage'] not in SWITCH_STAGES): return None
     return value
 
 
@@ -197,6 +217,7 @@ def main():
             env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}, close_fds=True, timeout=135)
         report = safe_result(result.stdout)
         print(json.dumps({'complete': report is not None, 'stage': 'profile_snapshot_launch_probe',
+            'identity_launcher': 'setpriv_clear_groups',
             'probe_report_found': report is not None, 'launch_diagnostics': report,
             'transient_command_exit_status': result.returncode if -255 <= result.returncode <= 255 else None,
             'installed_job_rerun': False, 'installed_units_changed': False, 'timer_changed': False,

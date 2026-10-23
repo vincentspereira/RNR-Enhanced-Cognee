@@ -476,18 +476,28 @@ def valid_checks(value):
                  and 100 <= value["api_http_status"] <= 599))
 
 
-def run_child(core, inspector, sources, account, mode, data=b"", destination=None):
+def run_child(core, inspector, sources, account, mode, data=b"", destination=None, *, external_identity=False):
     code = "import sys\n"
     for variable, name in (("core", "provision_pilot_access.py"), ("inspector", "inspect_pilot_recovery.py"), ("backup", "backup_pilot_profile.py")):
         code += variable + "={'__name__':'reviewed_definitions'}\nexec(compile(" + repr(sources[BASE + name]) + ",'reviewed-source','exec')," + variable + ")\n"
     code += "backup['child'](core,inspector," + repr(mode) + "," + ("None" if destination is None else "__import__('pathlib').Path(" + repr(str(destination)) + ")") + ")\n"
     if len(code.encode()) > 120000: raise BackupError("child_program_budget")
-    result = subprocess.run(["/usr/bin/setpriv", "--no-new-privs", "--", "/usr/bin/env", "-i",
+    arguments = ["/usr/bin/setpriv", "--no-new-privs", "--", "/usr/bin/env", "-i",
         "HOME=" + str(inspector["HOME"]), "USER=hermes-runtime", "LOGNAME=hermes-runtime",
         "HERMES_HOME=" + str(inspector["HOME"] / inspector["PROFILE_RELATIVE"]),
         "PATH=/usr/bin:/bin", "LANG=C.UTF-8", "PYTHONDONTWRITEBYTECODE=1",
-        str(inspector["RELEASE"] / "venv/bin/python"), "-I", "-B", "-c", code],
-        input=data, user=account.pw_uid, group=account.pw_gid, extra_groups=(), cwd="/tmp",
+        str(inspector["RELEASE"] / "venv/bin/python"), "-I", "-B", "-c", code]
+    identity = dict(user=account.pw_uid, group=account.pw_gid, extra_groups=())
+    if external_identity:
+        if type(account.pw_uid) is not int or account.pw_uid <= 0 or type(account.pw_gid) is not int or account.pw_gid <= 0:
+            raise BackupError("restricted_account_protection")
+        # Keep the same clear-groups/UID/GID/no-new-privileges boundary. Avoid
+        # Python's pre-exec identity calls only for the scheduled service path.
+        arguments = ["/usr/bin/setpriv", "--reuid=" + str(account.pw_uid), "--regid=" + str(account.pw_gid),
+                     "--clear-groups", "--no-new-privs", "--", *arguments]
+        identity = {}
+    result = subprocess.run(arguments,
+        input=data, **identity, cwd="/tmp",
         env={"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8"}, close_fds=True,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)
     if len(result.stderr) > 4096 or len(result.stdout) > MAX_ARCHIVE:
@@ -669,7 +679,10 @@ def main(*, core, inspector, sources, inspect_existing=False, restore_existing=F
                     "memory_records_written": False, "runtime_qualified": False}, indent=2))
                 return
             phase = "restricted_snapshot"
-            plaintext, receipt = run_child(core, inspector, sources, account, "snapshot")
+            if scheduled_backup:
+                plaintext, receipt = run_child(core, inspector, sources, account, "snapshot", external_identity=True)
+            else:
+                plaintext, receipt = run_child(core, inspector, sources, account, "snapshot")
             generation = uuid.uuid4().hex
             name = "hermes_profile_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ_") + generation[:8] + ".tar.age"
             partial = "." + name + ".partial"
@@ -750,6 +763,7 @@ def schedule_payloads(sources):
     """Only already hash-verified public definitions enter the protected runner."""
     if set(sources) != NAMES:
         raise BackupError('unapproved_backup_bundle')
+    sources = {name: sources[name] for name in sorted(NAMES)}
     code = b'# Reviewed public definitions; no writable-checkout imports.\n'
     for variable, filename in (('core', 'provision_pilot_access.py'), ('inspector', 'inspect_pilot_recovery.py'), ('backup', 'backup_pilot_profile.py')):
         raw = sources[BASE + filename]

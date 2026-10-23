@@ -52,24 +52,27 @@ def test_unknown_runner_rejected_before_ast_or_execution(probe, published, mutat
     with pytest.raises(probe.ProbeError): probe.verified_sources(raw)
 
 
-@pytest.mark.parametrize('mutation', [None, 'permission', 'missing', 'too-long', 'timeout', 'stderr', 'budget', 'child-report'])
+@pytest.mark.parametrize('mutation', [None, 'permission', 'missing', 'too-long', 'timeout', 'stderr', 'budget', 'child-report', 'setgroups'])
 def test_instrument_records_errno_and_exception_type_without_secret_values(probe, monkeypatch, capsys, mutation):
     class BackupError(RuntimeError): pass
     def original(argv, **kwargs):
+        assert argv[:6] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups', '--no-new-privs', '--']
+        assert not {'user', 'group', 'extra_groups'}.intersection(kwargs)
         if mutation == 'permission': raise PermissionError(13, 'PRIVATE_SECRET', '/private/filename')
         if mutation == 'missing': raise FileNotFoundError(2, 'PRIVATE_SECRET')
         if mutation == 'too-long': raise OSError(7, 'PRIVATE_SECRET')
         if mutation == 'timeout': raise subprocess.TimeoutExpired('PRIVATE_COMMAND', 90, output=b'PRIVATE')
-        return NS(returncode=1 if mutation in {'stderr', 'child-report'} else 0,
+        return NS(returncode=1 if mutation in {'stderr', 'child-report', 'setgroups'} else 0,
             stderr=b'PermissionError: [Errno 13] PRIVATE_KEY_AND_PATH\n' if mutation == 'stderr'
-                else json.dumps(dict(complete=False, phase='source_snapshot', category='permission_denied', PRIVATE='SECRET')).encode() if mutation == 'child-report' else b'',
+                else json.dumps(dict(complete=False, phase='source_snapshot', category='permission_denied', PRIVATE='SECRET')).encode() if mutation == 'child-report'
+                else b'setpriv: setgroups failed: PRIVATE_SECRET\n' if mutation == 'setgroups' else b'',
             stdout=b'PRIVATE_PROFILE_BYTES_NEVER_PRINTED')
     monkeypatch.setattr(subprocess, 'run', original)
     monkeypatch.setattr(probe.pwd, 'getpwnam', lambda *a: NS(pw_uid=993, pw_dir='/var/lib/hermes-runtime'))
     def run_child(core, inspector, sources, account, mode):
         assert mode == 'snapshot'
         if mutation == 'budget': raise BackupError('child_program_budget')
-        result = backup['subprocess'].run(['/public/child'])
+        result = backup['subprocess'].run(['/public/child'], user=993, group=985, extra_groups=())
         if result.returncode: raise BackupError('restricted_child_refused')
         return result.stdout, dict(complete=True)
     backup = {'BackupError': BackupError, 'run_child': run_child, 'CHILD_PHASES': probe.CHILD_PHASES,
@@ -86,6 +89,7 @@ def test_instrument_records_errno_and_exception_type_without_secret_values(probe
     if mutation == 'stderr': assert report['stderr_errno'] == 13 and report['stderr_exception_type'] == 'PermissionError'
     if mutation == 'budget': assert report['failure_category'] == 'child_program_budget' and not report['launch_attempted']
     if mutation == 'child-report': assert report['child_phase'] == 'source_snapshot' and report['child_category'] == 'permission_denied'
+    if mutation == 'setgroups': assert report['setpriv_failure_stage'] == 'setgroups'
 
 
 @pytest.mark.parametrize('mutation', ['extra', 'private-exception', 'private-category', 'numeric-bool', 'range', 'raw', 'size'])

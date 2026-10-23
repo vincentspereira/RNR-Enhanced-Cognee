@@ -1852,3 +1852,40 @@ privileged launch effects are simulated; the original public child program is
 systemd-run help confirms the selected CLI options; no transient job is launched
 from Workspace. Installed failure cause/repair and recurring qualification remain
 pending. Earlier manual recovery and privacy/capture passes are not replayed.
+
+## 23 October: observed EPERM before snapshot; candidate external transition
+
+Owner-run 058b71da8b6542ee528d6d24fd1ea3cf24f410f1 completed the launch probe:
+launch_attempted=true, launch_returned=false, PermissionError/errno 1, no child
+status/stderr/receipt and snapshot_completed=false. There was no backup, root
+service-key read, installed-job rerun, policy/timer change, model or memory write.
+This establishes the refused Python launch, not the exact failed syscall or a
+proven policy defect. Keep the manual recovery pass and disabled daily job.
+
+A scheduled-only launcher candidate now uses setpriv for the identical non-root
+UID/GID, cleared extra groups and no-new-privileges transition, avoiding Python's
+pre-exec credential arguments. Existing restricted-process/source checks remain
+unchanged; no added capability/group or relaxed filesystem/network policy is
+introduced. Manual recovery launch behavior is retained. Protected runner source
+serialization is deterministic for future upgrades; the installed old artifact
+is not overwritten by publishing source.
+
+A new temporary candidate probe verifies the same exact old root runner/source
+table, applies that external-launch argument transformation, and observes the
+snapshot with no backup write exception or service keys. It returns known error
+operations/types/numbers and parent capability/no-new-privileges booleans only;
+ordinary snapshot bytes are discarded in RAM. Installed files and timer remain
+unchanged. Candidate success and guarded service upgrade are still pending.
+The selected API matches local setpriv help. CPython 3.12.3's primary source
+shows the original pre-exec group/user calls, without proving which one failed:
+https://github.com/python/cpython/blob/v3.12.3/Modules/_posixsubprocess.c#L647-L661
+
+Workspace validation: 1036 focused checks pass, zero failures/skips and no
+reported pytest warnings. New candidate tests simulate the old EPERM path and
+verify an external clear-groups/positive-UID/GID launcher with unchanged clean
+environment, descriptor closing and restricted child guards; root/malformed
+identities are refused. Probe tests verify sanitized setpriv-operation errors
+and parent capability/no-new-privileges flags. Stable runner serialization also
+passes reversed-source-order tests. Native new-unit verification still passes.
+Privileged account transitions/systemd effects remain simulated here; candidate
+installed success and the eventual guarded service replacement are not claimed.
