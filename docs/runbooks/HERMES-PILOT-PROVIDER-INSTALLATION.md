@@ -1145,3 +1145,54 @@ other rollout groups. No installed provider upgrade or settings change is needed
 Workspace suites pass 698 tests, zero failures/skips and no reported warnings,
 including 26 new evidence/delivery/order/guard cases. This adds source regression
 coverage, not 26 operator/model runs. Installed delivery qualification is pending.
+
+## 23 October: uncertainty passed; batch local API privacy without a chat model
+
+The owner-run 0768a43e0d3e429327b23e108ab5ad4eafe56e30 check passed with
+verified native prefetch before enhanced_clarify, two model requests, current
+version 2, no edit/write attempt and preserved prior history/receipts/profile.
+This completes the narrow single-turn uncertainty gate. Keep runtime_qualified
+false for the other work; do not replay completed capture/correction/recall.
+
+The next operator check uses a two-file Git archive: the unchanged reviewed
+check_pilot_codex.py core and the new check_pilot_privacy.py extension. Use the
+new pinned revision, hashes and restricted tools1 Python in the supplied command.
+The bootstrap caps the archive at 256 KiB and verifies the privacy source before
+executing its definitions. Its tested validator then checks exactly both allowed
+regular source files, their sizes/hashes and allowed parent directory entries,
+refusing extras, duplicates and links before executing the core. No file is
+extracted to the host filesystem and the adjacent checkout is never imported.
+This reuses checked account/provider/receipt logic without extending a single
+qualification source beyond the existing 64 KiB per-file budget.
+
+Call main(core=reviewed_core_namespace, approved_test=True) on the extension.
+It permits only the existing private memory-only pilot settings and root-protected
+provider, and uses the ordinary memory token through native secret scope. It
+reads no OAuth store or operator key and constructs no chat agent/model. Normal
+authoritative fixture recall may use the existing local embedding/index path.
+There is no OpenAI request/quota, installation, settings/default edit, token
+renewal, backup, fleet activation or automatic permanent deletion.
+
+The eleven cases expect credential-shaped content, metadata, evidence, category,
+retry key and a credential-bearing correction to receive HTTP 422. Selected
+personal details in content/metadata/evidence must receive HTTP 409 with the
+clarification flag. Every example is synthetic and nonfunctional; never substitute
+a real password/key or personal detail. The helper stops at the first unexpected
+response. Preserve any unexpected synthetic state and the sanitized report;
+do not delete/reset fixtures or relax expected refusals to make the check pass.
+
+Before/after comparisons cover the two existing canonical records, returned
+version histories, count, all three receipts/stamps and checked profile files.
+Successful reporting includes cases_passed=11, credential_rejection_passed=true,
+selected_private_detail_clarification_passed=true, preservation flags true,
+model_called=false, oauth_store_read=false and memory_records_written=false.
+native_model_privacy_qualified=false is intentional: model-selected privacy,
+later human clarification, renewal/recovery and fleet boundaries remain open.
+Refusal patterns are finite, not a complete personal-data classifier. Ordinary
+request-budget accounting may occur even when memory admission is refused.
+
+Workspace suites pass 741 tests, zero failures/skips and no reported warnings,
+including 43 new API/admission/source/scope/bundle/preservation cases. The actual
+ASGI/auth/schema/admission code is exercised with request-budget persistence
+substituted and canonical-database access forbidden; other host operations use
+fixtures. Installed privacy behavior remains pending the next owner-run batch.

@@ -1449,3 +1449,47 @@ matching authenticated reads, real HTTPX request/response correlation, failed
 HTTP statuses, late/undelivered prefetch and edit/pending-target refusals after
 prefetch. Native/model paths use fixtures and simulated transport; installed
 automatic-recall delivery remains unqualified pending the next owner result.
+
+## 23 October: native ambiguity passed; local admission privacy prepared
+
+The owner returned complete=true/stage clarify_followup at helper revision
+0768a43e0d3e429327b23e108ab5ad4eafe56e30. The restricted pilot used the explicit
+secondary GPT-6.1-Sol account, enhanced_clarify and two model requests. Both
+memory_evidence_verified and verified_prefetch_before_clarify were true. The
+standing decision stayed at version 2 with two active records, prior version
+and all three receipts preserved, zero write attempts and no memory writes or
+checked profile/credential/default change. This qualifies that single-turn
+uncertainty case. Capture/recall per-stage flags are correctly false; their
+earlier passes remain valid. runtime_qualified remains false.
+
+The next prepared check is check_pilot_privacy.py, a local API batch composed in
+memory with the unchanged hash-reviewed pilot core. Two source files are carried
+in a bounded Git archive. Bootstrap verifies the privacy module before it runs,
+then the tested validator verifies both files, exact allowed membership, hashes,
+types and size limits before executing the core. No archive member is written
+to disk, no adjacent checkout code is imported and no package is installed.
+The existing account, protected source/provider and ordinary memory scope remain.
+
+The eleven cases cover invented password/access-key/private-key text; credentials
+in metadata, evidence, category and retry key; selected personal detail in content,
+metadata and evidence; and a credential-bearing correction to current version 2.
+Expected credential refusal is HTTP 422; personal-detail refusal must be HTTP 409
+with clarification_required=true. All payloads are deliberately nonfunctional
+synthetic fixtures. No real credential is used as data. Stop at the first
+unexpected response and preserve any unexpected synthetic state, without cleanup.
+
+Before/after checks compare the two known canonical records and their complete
+returned histories, active count, three receipts/stamps and checked profile files.
+The ordinary API token is needed; no OAuth store, chat model, privileged key or
+permanent deletion is used. Normal local memory retrieval may use its configured
+embedding/index path. Request-budget accounting can run; unchanged memory state
+does not mean no service accounting occurred. This is finite pattern coverage,
+not a complete privacy classifier or native model-selected privacy qualification.
+
+Workspace focused suites pass 741 tests, zero failures/skips and no reported
+warnings. Forty-three new cases cover actual API admission with normal JWT/auth
+and schema handling, native source/scope cleanup, bounded archive validation,
+fail-stop responses and preservation/privacy reports. Request-budget persistence
+is substituted in the no-database admission cases; touching canonical storage
+fails those tests. Native/provider/network host operations use fixtures. No
+installed privacy pass, token renewal, new backup or fleet activation is claimed.

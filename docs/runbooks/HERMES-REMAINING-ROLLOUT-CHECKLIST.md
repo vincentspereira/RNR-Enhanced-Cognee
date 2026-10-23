@@ -39,7 +39,7 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 
 | Group | Required result | Current status |
 |---|---|---|
-| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall pass; ambiguity just failed, other current-runtime privacy/follow-up evidence remains open |
+| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall and the single-turn uncertainty case now pass; local API privacy batch is prepared, native privacy/human follow-up remain open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
 | 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Current 24-hour credential works at last check; renewal mechanism/qualification remains open |
 | 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody passed; earlier service restore exists; later /var/lib/hermes-runtime coverage and current recovery evidence remain open |
@@ -64,6 +64,14 @@ the already completed KeePassXC/key-package recovery evidence; do not restart
 that process or claim unknown historical credentials were revoked.
 
 ## Immediate next step
+
+Latest owner-run update: clarify_followup passed at
+0768a43e0d3e429327b23e108ab5ad4eafe56e30. Verified native prefetch delivery
+preceded enhanced_clarify; the record/history/receipts/profile were preserved,
+with no edit/write attempt. This closes the single-turn uncertainty gate and
+supersedes the diagnostic retry below. It does not qualify a later human answer
+or pending-state durability. Next run the local eleven-case API privacy batch,
+which uses no chat model/OAuth store and retains all previous evidence.
 
 The clarification helper now returns only bounded diagnostic flags/counts and
 known tool names for a completed turn missing a clarification condition. No
