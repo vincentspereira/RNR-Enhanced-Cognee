@@ -1190,3 +1190,51 @@ calls use fixtures; the clear-correction native run remains pending the next
 operator command. This prepares only clear-error correction; ambiguous conflict,
 credential/private-detail handling and operational/fleet/release gates remain
 separate qualification work.
+
+## 23 October: clear native correction and retained history passed
+
+Vincent returned complete=true/stage=correct_followup from helper revision
+2f297dd2c52938db860008bcc9958e825ebb6961 as hermes-runtime in the restricted
+enhanced-cognee-pilot with gpt-6.1-sol. Native turn completion and
+clear_correction_passed were true, with enhanced_correct/get/recall observed and
+five guarded model requests. The helper required chronological recall-before-
+correct internally; the printed sorted tool list does not encode event order.
+
+Cedar's same record reached active canonical version 2 with its twenty-three-day
+decision, verified correction subject/hash lineage, and both original/new content
+in versions 1 and 2 of retained history. Two active records remained. The Larch
+record, both capture receipts and the correction receipt were preserved, with
+unchanged checked profile/settings/credentials and no model-default changes.
+memory_records_written=true describes the intentional versioned correction,
+not an additional record. Stage capture/recall flags were false as expected.
+runtime_qualified remained false; this is narrow clear-error evidence, not an
+ambiguous-conflict, privacy, operational or fleet admission result.
+
+## Next: fresh recall of the corrected current version prepared
+
+main_memory(stage="recall_corrected", approved_test=True) reads the existing
+private correction receipt using bounded no-follow/nonblocking regular-file
+checks, runtime ownership, 0600 mode, one link, exact shape and stable file
+stamps. The receipt must match the Cedar fixture and expected prior version;
+its ID/session shapes are validated before any receipt-selected API path.
+It derives version-1 content from bounded own-record history and verifies
+canonical version 2 and correction lineage before calling the model.
+
+A new process/session with empty history receives only the Cedar identifier and
+a request for the current interval plus record citation, without either interval
+or the record ID supplied in the prompt. Only native recall/get/status tools
+are enabled. Success requires the twenty-three-day current answer/citation and
+rejects returning the old nineteen-day interval. The full current canonical
+row must stay unchanged; old/new history content, Larch, all three receipts and
+checked settings/credentials must remain preserved. No correction, capture,
+receipt write, sharing or deletion belongs to this mode. Native ordinary local
+cache/session scaffolding may still be created by agent startup.
+
+Focused Workspace fixtures pass 561 tests, zero failures/skips and no reported
+warnings, with 27 added receipt/history/current-recall/preservation cases.
+An initial invalid-ID fixture used an allowed identifier; the test was corrected
+to use an unsafe path segment. No installed model was called by these fixtures.
+Native corrected recall remains pending the next operator command. The clear
+correction above is now verified; do not rerun it to obtain recall evidence.
+Ambiguous clarification/privacy, renewable credentials, protected-profile
+recovery, peer isolation, release and fleet qualification remain separate gates.

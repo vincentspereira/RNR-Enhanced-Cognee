@@ -888,3 +888,44 @@ everyday profiles, bots, program files and service keys remain unchanged.
 Focused fixtures pass 534 tests, zero failures/skips and no reported warnings;
 native correction is still pending. Ambiguous clarification/privacy behavior,
 renewal/recovery/isolation and release/fleet checks remain separate.
+
+## 23 October: clear correction passed; retrieve the current version next
+
+Owner output from 2f297dd2c52938db860008bcc9958e825ebb6961 passed native
+correct_followup as hermes-runtime/enhanced-cognee-pilot with gpt-6.1-sol.
+The helper observed enhanced_correct/get/recall and five guarded model requests,
+then validated the same Cedar record at version 2, its new interval/hash lineage
+and exact prior/current content in retained history. Two active records remained,
+with Larch, both capture receipts, the correction receipt and checked settings/
+credentials preserved. No default edit occurred. This is a versioned correction,
+not a new memory record or permanent deletion. The stage's capture/recall flags
+are expected to be false. Full runtime/fleet admission remains open.
+
+The next prepared mode is main_memory(stage="recall_corrected", approved_test=True).
+Run the next pinned/hash-verified command once using the same restricted pilot,
+tools1 interpreter, clean environment and 180-second outer timeout. It securely
+reads the existing correction receipt and capture receipts, verifies current
+version 2 against retained version-1 history and then starts a new native session
+with empty history. The prompt supplies only the fictional Cedar identifier and
+a question/citation request; neither review interval nor record ID is supplied.
+
+Only recall/get/status tools are enabled. The answer must give the corrected
+current interval and cite the record; returning the superseded interval fails
+this current-only question. Canonical Cedar content/version must be unchanged,
+and both history versions, Larch, all receipts and checked settings/credentials
+must remain preserved. There is no canonical write or receipt creation; native
+startup may still create its ordinary local cache/session scaffolding.
+
+Expect fresh_session_recall_passed=true, corrected_recall_passed=true,
+previous_version_preserved=true, correction_receipt_preserved=true,
+current_version=2, synthetic_active_records=2 and memory_records_written=false.
+Stage capture flags remain false; they do not undo the earlier capture/correction
+passes. runtime_qualified remains false pending the other gates. Do not rerun
+correct_followup or reset any receipt if this read-only check fails.
+
+Focused fixtures pass 561 tests with zero failures/skips and no reported warnings.
+The 27 added cases cover safe receipt parsing, prior-history selection, fresh
+current-answer/citation, stale answers and canonical/receipt preservation. Native
+agent/provider/network calls use fixtures; installed corrected recall is pending.
+This step can consume existing subscription usage, with defaults and everyday
+profiles/bots unchanged.

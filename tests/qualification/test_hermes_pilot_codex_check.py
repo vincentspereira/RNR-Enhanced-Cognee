@@ -247,6 +247,52 @@ def test_correction_receipt_is_private_no_replace_and_separate_from_capture(chec
     assert path.read_bytes() == raw and [p.read_bytes() for p in (check.STATE, check.state_path(True))] == before
 
 
+@pytest.mark.parametrize("mutation", [None, "fixture", "session", "id", "version", "extra", "public", "link", "hardlink", "owner", "oversize"])
+def test_corrected_recall_reads_only_a_private_matching_correction_receipt(check, tmp_path, monkeypatch, mutation):
+    import os
+    monkeypatch.setattr(check, "HOME", tmp_path)
+    state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
+    check.save_correction_receipt(state, "cognee_correct_" + "c" * 32, {"id": "synthetic-cedar"})
+    path = check.correction_path()
+    data = json.loads(path.read_text())
+    if mutation in {"fixture", "session", "id", "version", "extra"}:
+        key = {"fixture": "fixture", "session": "correction_session", "id": "record_id",
+               "version": "expected_version", "extra": "PRIVATE_EXTRA"}[mutation]
+        data[key] = True if mutation == "version" else "PRIVATE_SENTINEL"
+        if mutation == "id": data[key] = "../PRIVATE_SENTINEL"
+        path.write_text(json.dumps(data))
+    if mutation == "public": path.chmod(0o644)
+    if mutation == "link":
+        target = tmp_path / "original"
+        path.rename(target)
+        path.symlink_to(target)
+    if mutation == "hardlink": os.link(path, tmp_path / "alias")
+    if mutation == "oversize": path.write_bytes(b"x" * 4097)
+    if mutation is None:
+        receipt, stamp = check.read_correction_receipt(os.geteuid(), state)
+        assert receipt == data and stamp[0] == path.stat().st_ino
+    else:
+        with pytest.raises((check.CheckError, OSError)) as caught:
+            check.read_correction_receipt(os.geteuid() + int(mutation == "owner"), state)
+        assert "PRIVATE_" not in str(caught.value)
+
+
+@pytest.mark.parametrize("mutation", [None, "empty", "duplicate", "id", "content"])
+def test_corrected_recall_requires_the_known_original_history_version(check, mutation):
+    fixture = "b" * 32
+    receipt = {"fixture": fixture, "record_id": "synthetic-cedar"}
+    prior = {"id": "synthetic-cedar", "version": 1, "content": fixture + " nineteen-day review"}
+    versions = [prior, {"id": "synthetic-cedar", "version": 2}]
+    if mutation == "empty": versions = []
+    if mutation == "duplicate": versions = [prior, prior]
+    if mutation == "id": prior["id"] = "PRIVATE_WRONG_ID"
+    if mutation == "content": prior["content"] = "PRIVATE_WRONG_CONTENT"
+    provider = NS(_client=NS(request=lambda method, path: {"versions": versions}))
+    if mutation is None: assert check.prior_correction_version(provider, receipt) == prior
+    else:
+        with pytest.raises(check.CheckError): check.prior_correction_version(provider, receipt)
+
+
 @pytest.mark.parametrize("mutation", [None, "version", "content", "lineage", "old-history", "new-history",
                                      "missing-history", "duplicate-history", "unsafe-id", "wrong-id", "retracted"])
 def test_correction_requires_current_version_lineage_and_preserved_prior_history(check, mutation):
@@ -606,7 +652,7 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
     assert guards == ([target] if action == "correct" else [])
 
 
-@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup", "recall_followup", "correct_followup"])
+@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected"])
 @pytest.mark.parametrize("fails", [False, True])
 def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage, fails):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails)
@@ -629,6 +675,12 @@ def test_correction_refuses_replay_and_preserves_capture_evidence(check, monkeyp
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "correct_followup", False, mutation)
 
 
+@pytest.mark.parametrize("mutation", ["scope", "old-record", "old-receipt", "new-receipt", "correction-receipt",
+                                     "answer-interval", "answer-citation", "superseded-answer", "changed-current"])
+def test_corrected_recall_refuses_stale_answers_and_changed_evidence(check, monkeypatch, tmp_path, capsys, mutation):
+    exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_corrected", False, mutation)
+
+
 def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None):
     import sys
     fixture = "a" * 32
@@ -646,7 +698,8 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     monkeypatch.setattr(check, "HOME", tmp_path)
     monkeypatch.setattr(check, "STATE", tmp_path / "fixture.json")
     correction = stage == "correct_followup"
-    followup = stage in {"capture_followup", "recall_followup", "correct_followup"}
+    corrected_recall = stage == "recall_corrected"
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected"}
     capture = stage in {"capture", "capture_followup"}
     new_state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
     receipt_path = check.state_path(followup)
@@ -686,8 +739,13 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         assert previous["id"] == "synthetic-followup-id" and f == new_state["fixture"]
         value = saved(p, f, followup=True)
         value.update(version=2, content=f + " twenty-three days", state="active")
+        if mutation == "changed-current" and prompts: value["category"] = "changed"
         return value
     monkeypatch.setattr(check, "verify_correction", corrected)
+    monkeypatch.setattr(check, "prior_correction_version", lambda p, r: saved(p, new_state["fixture"], followup=True))
+    monkeypatch.setattr(check, "read_correction_receipt", lambda uid, state: (
+        {"fixture": new_state["fixture"], "record_id": "synthetic-followup-id", "correction_session": "cognee_correct_" + "c" * 32},
+        (lambda info: (info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns))(check.correction_path().stat())))
     prompts = []
     receipts = []
     def turn(stage, token, actual_provider, session, prompt, **kwargs):
@@ -702,6 +760,10 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
                 assert "nineteen" not in prompt and "19" not in prompt
                 assert "Cedar" in prompt and new_state["fixture"] in prompt
                 assert session != new_state["capture_session"]
+            if corrected_recall:
+                assert "twenty-three" not in prompt and "23" not in prompt
+                assert "synthetic-followup-id" not in prompt
+                assert "historical alternatives" in prompt
         elif stage == "correct":
             assert correction and "twenty-three-day" in prompt and "Cedar" in prompt
             assert new_state["fixture"] in prompt and "remember" not in prompt.casefold()
@@ -719,15 +781,20 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         if mutation == "new-receipt": receipt_path.write_bytes(receipt_path.read_bytes())
         if mutation == "correction-receipt": check.correction_path().write_bytes(check.correction_path().read_bytes())
         answer = "nineteen days, synthetic-followup-id" if followup else "thirteen days, synthetic-record-id"
+        if corrected_recall: answer = "twenty-three days, synthetic-followup-id"
         if mutation == "answer-interval": answer = "thirteen days, synthetic-followup-id"
-        if mutation == "answer-citation": answer = "nineteen days, no citation"
+        if mutation == "answer-citation": answer = ("twenty-three" if corrected_recall else "nineteen") + " days, no citation"
+        if mutation == "superseded-answer": answer = "twenty-three days; formerly nineteen days, synthetic-followup-id"
         return answer, ["enhanced_remember"] if stage == "capture" else ["enhanced_get"], 3
     monkeypatch.setattr(check, "native_memory_turn", turn)
-    if stage in {"recall", "capture_followup", "recall_followup", "correct_followup"}: check.save_state(state)
-    if (stage == "recall_followup" or correction) and mutation != "missing-receipt": check.save_state(new_state, followup=True)
+    if stage in {"recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected"}: check.save_state(state)
+    if (stage == "recall_followup" or correction or corrected_recall) and mutation != "missing-receipt": check.save_state(new_state, followup=True)
     baseline_receipt = check.STATE.read_bytes() if followup else None
-    followup_receipt = receipt_path.read_bytes() if (stage == "recall_followup" or correction) and receipt_path.exists() else None
-    if stage == "recall_followup" or correction:
+    followup_receipt = receipt_path.read_bytes() if (stage == "recall_followup" or correction or corrected_recall) and receipt_path.exists() else None
+    if corrected_recall:
+        check.save_correction_receipt(new_state, "cognee_correct_" + "c" * 32, {"id": "synthetic-followup-id"})
+        monkeypatch.setattr(check, "save_correction_receipt", lambda *a: pytest.fail("Corrected recall must never write a receipt"))
+    if stage == "recall_followup" or correction or corrected_recall:
         monkeypatch.setattr(check, "save_state", lambda *a, **kw: pytest.fail("Recall must never save a receipt"))
     if mutation == "existing-correction": check.save_correction_receipt(new_state, "prior-session", {"id": "synthetic-followup-id"})
     if mutation == "existing-receipt":
@@ -754,6 +821,8 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         assert report["fresh_session_recall_passed"] == (not capture and not correction)
         if correction:
             assert report["clear_correction_passed"] and report["previous_version_preserved"] and report["current_version"] == 2
+        if corrected_recall:
+            assert report["corrected_recall_passed"] and report["correction_receipt_preserved"] and report["current_version"] == 2
         if followup:
             assert report["original_fixture_and_receipt_preserved"] and report["synthetic_active_records"] == 2
         if stage == "recall_followup": assert report["followup_receipt_preserved"]

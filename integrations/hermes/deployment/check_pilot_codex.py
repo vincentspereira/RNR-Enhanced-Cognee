@@ -394,6 +394,42 @@ def save_correction_receipt(state, session, previous):
     return info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
+def read_correction_receipt(uid, state):
+    fd = os.open(correction_path(), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as handle:
+        info = os.fstat(handle.fileno())
+        stamp = (info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != uid or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_nlink != 1 or info.st_size > 4096):
+            raise CheckError("unsafe_correction_receipt")
+        raw = handle.read(4097)
+        after = os.fstat(handle.fileno())
+        if len(raw) != info.st_size or stamp != (after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns):
+            raise CheckError("correction_receipt_changed_preserve_and_review")
+    value = json.loads(raw)
+    if (not isinstance(value, dict) or set(value) != {"fixture", "correction_session", "record_id", "expected_version"}
+            or value.get("fixture") != state["fixture"] or type(value.get("expected_version")) is not int
+            or value["expected_version"] != 1 or not isinstance(value.get("record_id"), str)
+            or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", value["record_id"])
+            or not isinstance(value.get("correction_session"), str)
+            or not re.fullmatch(r"cognee_correct_[a-f0-9]{32}", value["correction_session"])):
+        raise CheckError("correction_receipt_shape")
+    return value, stamp
+
+
+def prior_correction_version(provider, receipt):
+    history = provider._client.request("GET", "/v1/memories/" + receipt["record_id"] + "/history?limit=3")
+    versions = history.get("versions")
+    if not isinstance(versions, list) or len(versions) != 2 or any(not isinstance(v, dict) for v in versions):
+        raise CheckError("correction_history_not_verified")
+    prior = [v for v in versions if type(v.get("version")) is int and v["version"] == 1]
+    if (len(prior) != 1 or prior[0].get("id") != receipt["record_id"]
+            or not isinstance(prior[0].get("content"), str) or receipt["fixture"] not in prior[0]["content"]
+            or not re.search(r"\b(?:nineteen|19)[ -]+day", prior[0]["content"].casefold())):
+        raise CheckError("correction_history_not_verified")
+    return prior[0]
+
+
 def verify_correction(provider, previous, fixture):
     ident = previous.get("id")
     if not isinstance(ident, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident):
@@ -561,10 +597,11 @@ def main_memory(*, stage, approved_test=False):
     uid = None
     phase = "restricted_preflight"
     correction = stage == "correct_followup"
-    followup = stage in {"capture_followup", "recall_followup", "correct_followup"}
+    corrected_recall = stage == "recall_corrected"
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected"}
     capture = stage in {"capture", "capture_followup"}
     try:
-        if stage not in {"capture", "recall", "capture_followup", "recall_followup", "correct_followup"}: raise CheckError("unapproved_stage")
+        if stage not in {"capture", "recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected"}: raise CheckError("unapproved_stage")
         uid, snapshots = preflight(approved_test)
         snapshots[".env"] = read_private(".env", uid)
         import yaml
@@ -603,6 +640,8 @@ def main_memory(*, stage, approved_test=False):
             original_stamp = None
             followup_stamp = None
             correction_stamp = None
+            correction_receipt = None
+            prior_version = None
             if capture:
                 if os.path.lexists(state_path(followup)) or before["active_records"] != (1 if followup else 0):
                     raise CheckError("existing_test_evidence_preserved_review_before_retry")
@@ -634,9 +673,16 @@ def main_memory(*, stage, approved_test=False):
                 else:
                     state = read_state(uid)
                 fixture = state["fixture"]
-                previous = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
+                if corrected_recall:
+                    correction_receipt, correction_stamp = read_correction_receipt(uid, state)
+                    prior_version = prior_correction_version(provider, correction_receipt)
+                    previous = verify_correction(provider, prior_version, fixture)
+                else:
+                    previous = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
                 session = ("cognee_correct_" if correction else "cognee_recall_") + uuid.uuid4().hex
                 if session == state["capture_session"]:
+                    raise CheckError("distinct_recall_session_required")
+                if corrected_recall and session == correction_receipt["correction_session"]:
                     raise CheckError("distinct_recall_session_required")
                 prompt = ("For the entirely fictional " + ("Cedar" if followup else "Larch") + " qualification project " + fixture
                     + ", what standing review interval did we decide on? Use saved evidence and cite its record ID.")
@@ -644,6 +690,8 @@ def main_memory(*, stage, approved_test=False):
                     prompt = ("For the entirely fictional Cedar qualification project " + fixture
                         + ", the earlier review interval was incorrect. Our confirmed current decision is a twenty-three-day review cycle. "
                         + "Explain the corrected decision in one sentence.")
+                if corrected_recall:
+                    prompt += " Answer with only the current interval and its record ID; do not include historical alternatives."
             phase = "native_agent_turn"
             if capture: save_state(state, followup=followup)
             if correction: correction_stamp = save_correction_receipt(state, session, previous)
@@ -656,6 +704,10 @@ def main_memory(*, stage, approved_test=False):
                 row = verify_correction(provider, previous, fixture)
                 info = correction_path().lstat()
                 if (info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns) != correction_stamp:
+                    raise CheckError("correction_receipt_changed_preserve_and_review")
+            elif corrected_recall:
+                row = verify_correction(provider, prior_version, fixture)
+                if read_correction_receipt(uid, state) != (correction_receipt, correction_stamp):
                     raise CheckError("correction_receipt_changed_preserve_and_review")
             else:
                 row = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
@@ -674,6 +726,10 @@ def main_memory(*, stage, approved_test=False):
                 if not capture and state_stamp(followup=True) != followup_stamp:
                     raise CheckError("followup_receipt_changed_preserve_and_review")
             interval_pattern = r"\b(?:nineteen|19)[ -]+day" if followup else r"\b(?:thirteen|13)[ -]+day"
+            if corrected_recall:
+                interval_pattern = r"\b(?:twenty[ -]three|23)[ -]+day"
+                if re.search(r"\b(?:nineteen|19)[ -]+day", answer.casefold()):
+                    raise CheckError("superseded_interval_returned_as_current")
             if not capture and not correction and (row != previous or row["id"] not in answer
                     or not re.search(interval_pattern, answer.casefold())):
                 raise CheckError("fresh_session_recall_not_verified")
@@ -686,6 +742,8 @@ def main_memory(*, stage, approved_test=False):
             "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],
             "current_version": row["version"], "memory_records_written": capture or correction,
             **({"clear_correction_passed": True, "previous_version_preserved": True} if correction else {}),
+            **({"corrected_recall_passed": True, "previous_version_preserved": True,
+                "correction_receipt_preserved": True} if corrected_recall else {}),
             **({"original_fixture_and_receipt_preserved": True} if followup else {}),
             **({"followup_receipt_preserved": True} if followup and not capture else {}),
             "runtime_qualified": False}, indent=2))
@@ -697,7 +755,7 @@ def main_memory(*, stage, approved_test=False):
             except Exception:
                 preserved = False
         print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
-            "test_evidence_present_preserve_for_review": os.path.lexists(correction_path() if correction else state_path(followup)),
+            "test_evidence_present_preserve_for_review": os.path.lexists(correction_path() if correction or corrected_recall else state_path(followup)),
             "memory_writes_may_have_occurred": (capture or correction) and phase in {"native_agent_turn", "saved_memory_verification"},
             "profile_settings_and_credentials_unchanged": preserved,
             "runtime_qualified": False}, indent=2))
