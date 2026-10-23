@@ -188,3 +188,12 @@ enrollment/local-status step, not the remaining gates below.
 
 These are implementation/qualification tasks already within the requested plan;
 this document adds no new activation, restart, deployment or sharing permission.
+
+Latest 23 October owner evidence supersedes the failed snapshot candidate:
+47b20e4d passed the corrected RAM-only restricted snapshot with child exit 0 and
+both intended parent identity-switch capabilities effective. Installed units and
+timer remained unchanged. A pinned exact-old-artifact guarded upgrade is now
+prepared; the next owner action qualifies a real encrypted service run, verifies
+its signed ciphertext and only then enables/verifies the daily timer. No model
+call, key-custody replay or manual restore replay is needed. Actual recurring
+operation and Windows collection are not yet claimed; see HERMES-PILOT-RECOVERY.md.

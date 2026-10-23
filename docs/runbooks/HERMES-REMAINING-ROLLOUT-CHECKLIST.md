@@ -139,3 +139,12 @@ observed 429; do not rotate accounts automatically or reset statuses.
 This single-turn diagnostic does not establish durable clarification across
 restarts or a later human-answer turn. Fix the observed condition first, then
 complete the remaining group 1 cases and the other groups above.
+
+Latest backup update, 23 October: owner-run 47b20e4d passes the corrected
+restricted snapshot (exit 0, snapshot discarded in RAM, no installed change).
+Do not repeat it. The next step is the pinned exact-artifact guarded upgrade:
+preserve old runner/units, publish the reviewed protected runner and corrected
+service, verify one actual signed encrypted backup and then enable/verify the
+daily timer. This step is prepared, not owner-run complete. Failed/partial
+updates preserve evidence and require review before any retry. Other readiness
+and fleet gates above remain open.

@@ -1949,3 +1949,41 @@ before profile inspection. Existing manual recovery and source preservation
 tests remain passing. Root/systemd/UID-transition effects still require the
 owner-run transient candidate; no installed success or coverage percentage is
 claimed from this suite.
+
+## 23 October: corrected transient snapshot passed; guarded update prepared
+
+Owner-run 47b20e4d72df368f41e11f38a6741dcf2464a303 confirms child exit 0,
+snapshot_completed=true, both parent identity-switch capabilities effective and
+no-new-privileges. The actual restricted snapshot's identity/capability/source
+checks passed. Ordinary snapshot data was discarded in RAM. No signing/recovery
+key, installed job rerun/change, timer change, backup creation, model request or
+memory write occurred. This supersedes the failed launcher candidates; preserve
+manual encrypted recovery evidence and do not repeat either successful check.
+
+The new upgrade_profile_schedule.py accepts only the exact qualified public
+three-source bundle. It refuses unknown old runner/units, drop-ins, wrong unit
+paths, active jobs or an active/enabled timer. It serializes operator updates,
+creates a protected runner edition, validates units, preserves old public files
+privately and atomically replaces only the service after rechecking originals.
+It leaves all profiles, old runners/generations and the database schedule intact.
+An interrupted/conflicting run is preserved for review, never automatically
+retried, cleaned or rolled back.
+
+Actual service start must yield a new successful invocation, whose bounded
+journal contains one valid encryption-only completed report. Root independently
+verifies that generation's ciphertext, signed manifest and counts using only
+backup.json. The recovery identity is never opened and no decryption occurs.
+Only then can timer enable occur; active/enabled/next-run checks are required.
+A later enable-stage failure can leave partial timer state, which is reported
+without a false rollback claim. Persistent timers can run catch-up generations.
+The operator command remains unexecuted here; installed success, Windows
+collection, full runtime qualification and fleet activation remain unclaimed.
+
+Workspace validation: 1078 focused tests pass, zero failures/skips and no
+reported pytest warnings. The 37 new upgrade cases cover exact historical and
+qualified-candidate hashes, source tampering, active/enabled/overridden jobs,
+file drift, validation/start/result/report/signature failures, fresh invocation
+binding, staged file preservation, real HMAC/ciphertext tampering and permission/
+symlink/hardlink guards. Native age recovery and systemd unit syntax tests in
+the existing suite still pass. Root metadata/host systemctl actions are simulated
+here; the actual installed upgrade/backup/timer result must come from the owner.

@@ -8,8 +8,13 @@ relayed by the owner; this session has no direct access to that isolated host.
 The owner-run fresh restore at ca2682c6 passed on 23 October: 60 files,
 205571 bytes, private permissions, provider binding and scoped access verified,
 with live source preserved. Retain both failed and successful destinations.
-Recurring profile backup installation/operation and Windows collection remain
-separate pending gates; the earlier failure/inspection steps below are history.
+Daily job files are installed, but the original job failed and its timer remains
+disabled. Owner-run 47b20e4d now passes the corrected transient snapshot: child
+exit 0, both required parent capabilities present, restricted reader guards
+enforced, ordinary snapshot discarded in RAM. No installed job/timer changed.
+The exact-artifact guarded upgrade is prepared; actual encrypted job execution,
+timer verification and Windows collection remain pending. Earlier failed
+diagnostics below remain historical evidence, not instructions to repeat them.
 
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
@@ -452,3 +457,53 @@ recovery key is read, no backup is created, no API/model is called and no memory
 is written. The old timer remains disabled. A successful candidate must precede
 an exact-old-artifact guarded upgrade, an actual signed encrypted backup run and
 timer verification. Do not repeat the original installer.
+
+## Corrected snapshot passed; guarded daily-job upgrade prepared
+
+Owner-run 47b20e4d72df368f41e11f38a6741dcf2464a303 confirms snapshot_completed=true,
+child exit 0, effective parent CAP_SETUID/CAP_SETGID and no-new-privileges. All
+restricted reader guards passed. The ordinary snapshot was discarded in RAM;
+no keys/backup/model/memory write, installed unit change or timer change occurred.
+Do not repeat this successful transient test or the earlier manual restore.
+
+The pinned upgrade_profile_schedule.py operator bundle accepts only the exact
+three source hashes from that qualified candidate. It first verifies the
+installed old runner/service/timer hashes, canonical unit locations, no drop-ins,
+no active jobs, inactive/failed service and disabled/inactive timer. Any drift
+stops for review. A root-private update lock prevents two updater runs together.
+The helper creates a new protected runner edition, validates the generated units
+with native systemd, preserves the old public runner and both unit files in a
+unique root-private before-upgrade directory, then atomically replaces only the
+service after another exact-byte check. The timer file is not replaced; neither
+are the database timer, existing backups or profiles. No deletions occur.
+
+After daemon reload, the helper rechecks unit locations/overrides and the
+corrected capability policy. One real service run must exit successfully with a
+new invocation ID. Only that invocation's bounded journal entries can supply a
+completed encryption-only backup report. The operator independently authenticates
+the report's root-private ciphertext and signed manifest using backup.json and
+checks file/byte counts. It never opens the age recovery identity or decrypts a
+backup. Only after these checks does it enable/start the daily timer and require
+active/enabled status and a next run. Persistent=true can cause a catch-up run;
+each run creates a new encrypted generation and preserves previous generations.
+
+Run the newly published pinned/hash-verified bundle in the normal Ubuntu-Hermes
+operator terminal as vincentspereira, starting in ~ if desired. Keep only the
+restricted pilot idle until it returns; everyday profiles/bots can continue.
+Enter sudo privately, relay only JSON. complete=true here means actual service,
+ciphertext authentication and timer checks passed, rather than full runtime or
+fleet qualification. Windows collection, fresh-machine rebuild and the other
+rollout gates remain separate. The signing key is used inside the root operator
+process, never printed; no recovery key, browser sign-in or model call is needed.
+
+If any stage fails, preserve files/state and relay the sanitized result. Do not
+repeat the updater, original installer or transient test automatically. The
+updater refuses an already replaced service or pre-existing new runner edition;
+interrupted attempts need inspection. A failure before timer enable leaves it
+disabled. A failure during/after enable can leave it enabled; the report states
+whether the enable command completed and does not claim automatic rollback.
+For an operator-requested pause use sudo systemctl disable --now
+enhanced-cognee-profile-backup.timer. This does not stop a job already running.
+Restoring a preserved unit requires a reviewed exact-current-file comparison and
+daemon reload; the preserved original is the known failed version, so restoring
+it would not repair daily backups. No automatic unit rollback is performed.

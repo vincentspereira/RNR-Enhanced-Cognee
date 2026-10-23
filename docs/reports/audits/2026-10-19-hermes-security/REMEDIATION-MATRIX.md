@@ -33,8 +33,12 @@ missing, while CAP_SETGID and no-new-privileges are present. The next temporary
 candidate retains ambient CAP_SETUID for the root backup service and explicitly
 clears ambient/inheritable sets before the non-root snapshot reader, whose
 zero-effective/ambient guard remains enforced. Other selected restrictions and
-the two-capability bounding set remain. No installed unit/timer is changed by
-this probe; installed repair and recurring operation/collection remain unqualified.
+the two-capability bounding set remain. Owner-run 47b20e4d now confirms this
+corrected restricted snapshot passes
+with child exit 0; data was discarded in RAM and installed units/timer remained
+unchanged. The exact-artifact guarded upgrade is prepared to preserve originals,
+qualify a real signed encrypted job and then enable/verify its timer. Installed
+repair and recurring operation/collection remain unqualified until that result.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
