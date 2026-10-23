@@ -2103,3 +2103,58 @@ enable ordering. Resume tests assert no service start/restart/reload or file
 replacement. Existing actual HMAC/ciphertext tamper checks and native age/unit
 syntax checks pass. Privileged root metadata, journal and systemctl effects in
 the new continuation are simulated; installed-host confirmation remains pending.
+
+## 23 October: protected profile ciphertext/timer qualification passed
+
+Owner-run df79510b51b913826886aad61149054f4e972bf8 returns complete=true:
+trusted journal binding to exact /opt runner a1ffd4c258238847 and independent
+signed ciphertext verification passed for
+/var/backups/enhanced-cognee/hermes_profile_20261023T200722Z_93a199ce.tar.age,
+60 files/205571 bytes. Daily timer enabled/active/next run passed. No manual
+backup, recovery identity read, decryption, model or memory write occurred;
+old generations and the database schedule were preserved. Normal persistent
+scheduled catch-up is possible. Preserve this pass; no updater/restore replay.
+
+This closes the bounded pilot's installed encrypted-profile-job/timer gate.
+It does not establish every future unattended firing, new-generation decryption,
+current canonical database generation restore, future full-fleet/SQLite homes,
+Windows/remote collection, full runtime or private fleet admission. The prior
+manual restore retains its exact tested generation and identity.
+
+Independent source work now extends v12 collection to both recent encrypted
+families with strict manifest shape, owner/mode/link/ancestor guards, descriptor
+stability, hash/envelope verification and mutation rejection while streaming.
+Only ciphertext/sidecars plus explicit aggregate coverage schema 2 are exported;
+key/config files are never selected. Signature/decryption remain explicitly
+unverified by collection. Read-only verify-only mode returns aggregate JSON.
+Unchanged input produces identical tar bytes; no duplicate family entries or
+recursive collection occur. A versioned cognee-v2-profiles scope prevents reuse
+of old interrupted database-only checkpoints; completed old online runs cannot
+be cloud-retried as new coverage. Originals/repositories/generations are kept.
+
+These Windows source changes have not been installed or activated. V12 remains
+paused, the existing v11 scheduled task is unchanged and no cloud upload/full
+backup was initiated. The next prepared source-side verify-only operator check
+is not native Windows admission, real service recovery or remote collection.
+
+Validation for collection source work: 1174 focused checks pass, zero failures/
+skips and no reported pytest warnings; 14 real portable Python backup checks
+and 59 portable PowerShell checks pass separately with zero failures/skips.
+Thirty new collection cases use real age-encrypted fixtures and tar
+recovery, deterministic repeated output, required-family freshness/refusal,
+strict manifest/private path/link/mode guards and stream mutation rejection.
+A real restic producer test commits no snapshot when the profile family is
+missing, then restores both families and passes read-data checking once present.
+Synthetic ownership is simulated, not evidence of host root permissions. Four
+PowerShell coverage cases verify the old-run/cloud-retry gate; PS7 execution/
+parsing does not qualify native Windows 5.1, DPAPI, VSS, ACLs or real cloud.
+No installed Windows or scheduled-task hashes were changed. The public original
+collector is preserved locally under .archive/2026-10-23_profile_collector.
+
+CI source support is also prepared: memory-qualification fetches full history
+for existing exact historical artifact tests and obtains restic 0.19.1 using the
+existing provenance file's compressed/binary SHA256 pins before collection
+producer tests. RNR_RESTIC selects that reviewed executable; a missing tool is
+not converted into a skip. The workflow YAML/embedded bootstrap parses and the
+local pinned binary hash matches provenance. The explicit engine route passes
+all 30 collection tests. This is preparation, not a hosted CI success claim.

@@ -5,33 +5,27 @@ relayed by the owner; this session has no direct access to that isolated host.
 
 ## Current position
 
-The owner-run fresh restore at ca2682c6 passed on 23 October: 60 files,
-205571 bytes, private permissions, provider binding and scoped access verified,
-with live source preserved. Retain both failed and successful destinations.
-Daily job files are installed. Owner-run 47b20e4d passes the corrected transient snapshot: child
-exit 0, both required parent capabilities present, restricted reader guards
-enforced, ordinary snapshot discarded in RAM. No installed job/timer changed.
-Owner-run ab8c990b replaced the service and preserved originals, then stopped at
-real_encrypted_backup_qualification before any timer-enable command completed.
-That phase includes service execution, completion-report admission and signed
-ciphertext verification; the returned summary does not identify which failed
-or establish whether ciphertext was created. Inspect retained state without
-rerunning the updater. Actual encrypted job qualification, timer verification
-and Windows collection remain pending. Earlier failed
-diagnostics below remain historical evidence, not instructions to repeat them.
+Owner-run df79510b51b913826886aad61149054f4e972bf8 completes the guarded
+continuation: exact upgraded-runner journal binding and independent signed
+ciphertext verification passed for hermes_profile_20261023T200722Z_93a199ce.tar.age
+(60 files/205571 bytes). The daily profile timer is enabled, active and has a
+next run. No manual backup/decryption/recovery-key/model/memory write occurred;
+old generations and the database schedule were preserved. Persistent scheduled
+catch-up may run normally. Do not repeat the updater, continuation or restore.
 
-The subsequent owner-run 6b4453bf read-only inspector stopped in service_state
-without returning state or a retained report. It made no writes/restarts/key
-reads. Its broad catch does not distinguish command, decoding or missing-ID
-failure. Use the revised detailed inspector below; do not rerun the updater.
+The earlier manual restore at ca2682c6 passed for its recorded generation:
+60 files/205571 bytes, private permissions, provider binding and scoped access,
+with live source and both recovery destinations preserved. These separate
+passes close bounded pilot recovery and installed encrypted-profile-job/timer
+qualification. They do not qualify future unattended firing, decryption of every
+new generation, full-fleet/SQLite homes or Windows/cloud collection.
 
-Owner-run 3b456aeb now completes that inspection: all new artifact hashes and
-selected protections match; state reports success/0/inactive; one retained
-completed encryption-only report describes 60 files/205571 bytes. The report was
-found through latest retained journal metadata, not a current unit identifier,
-so it does not yet prove a fresh upgraded run or independently authenticate the
-ciphertext. The timer is confirmed inactive/disabled. The guarded continuation
-below reuses that generation; do not repeat the passing inspection/restore.
+The next prepared step is the no-export encrypted-family inventory described
+below: require recent database and profile generations and report only counts/
+hash checks, without keys or backup execution. The dual-family Windows v12
+collector/checkpoint changes are source-only and require native admission;
+v12 stays paused and the v11 task is unchanged. Earlier diagnostic failures and
+operator steps below are dated history, not requests to replay completed work.
 
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
@@ -639,3 +633,40 @@ continuation automatically. Failure during/after timer enable can leave partial
 timer state; the report explicitly states whether the enable command completed.
 Windows collection, private-use/fleet admission and other release gates remain
 separate; this step does not replay manual recovery or change model defaults.
+
+## Daily profile schedule qualified; collection remains separate
+
+The df79510b owner result closes the guarded retained-backup/timer step described
+above. Keep the existing /opt runner, preserved originals, /var backups, keys,
+manual restore copies and receipts. No new signing key, password-manager cycle,
+service restart or manual backup is needed. This is a bounded current pilot
+HOME job (2048 entries/16 MiB and no live SQLite accepted), not qualification of
+future full-fleet homes or every future scheduled run.
+
+Source follow-up: scripts/windows/backup-v12/capture_cognee.py now requires both
+recent completed postgres-custom+age database dumps and hermes-home-tar+age
+restricted-profile generations. The descriptor-based collector refuses symlinks,
+hardlinks, wrong ownership/private modes, manifest extras/mismatched family,
+wrong hashes/envelopes, missing/stale families and source mutation during stream.
+It emits only encrypted generations/sidecars and aggregate coverage schema 2;
+no service key/config/plaintext file is selected. Collection verifies hashes and
+manifest shape, not cryptographic signature authenticity/decryption, and says so.
+A no-export verify-only mode returns just aggregate counts/flags.
+
+The v12 scope is versioned cognee-v2-profiles, preventing the interrupted old
+cognee database-only checkpoint from bypassing new coverage. A fully completed
+old online run must be preserved and followed by a NewRun after native admission;
+RetryCloudOnly cannot silently promote it. Unchanged ciphertext bytes remain
+deduplicable and unchanged collector output is deterministic. These are source
+changes only: no C:\Scripts installation, Windows task change, full backup,
+cloud upload or v12 resume has occurred. Scheduled v11 remains unchanged and
+its existing evidence does not prove collection of these profile generations.
+
+The next finite operator step may run the pinned collector's verify-only mode
+inside Ubuntu-Hermes. It reads only protected encrypted generations/sidecars,
+hashes them, requires each family recent and returns aggregate JSON; no file,
+backup, model, memory, credential read, decryption or network action occurs.
+A pass is source-side collection readiness, not native Windows/remote recovery.
+Later Windows qualification must cover the updated exact script/helper hashes,
+producer/restore path, private ACLs and actual downloaded recovery before any
+scheduled-task switch. V12 stays paused and existing generations are preserved.

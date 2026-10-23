@@ -250,3 +250,24 @@ The portable Windows binary and official ZIP SHA256 are pinned in the installer.
 Restic is BSD-2-Clause software. No account subscription, paid application, cloud
 API credential or machine-wide installation is required. Cloud storage quota
 and your existing provider account costs are separate.
+
+## 23 October source change: encrypted profile collection
+
+The separate Cognee scope now includes BOTH memory_*.dump.age database and
+hermes_profile_*.tar.age restricted-profile generations, with their completion
+manifests. Each family must have a recent valid encrypted generation. Partial,
+unsafe, stale or hash-mismatched families stop the producer before a successful
+snapshot can be admitted. The collector never selects keys or plaintext; it
+does not claim to authenticate signatures or decrypt the inner age files.
+
+Scope cognee-v2-profiles intentionally differs from old scope cognee. An
+interrupted older online run can collect the new scope without reusing its old
+database-only checkpoint. A completed old online run remains historical; use a
+NewRun only after native qualification, preserving earlier snapshots. Retrying
+cloud copies cannot retroactively add the missing coverage. Unchanged ciphertext
+remains deduplicable; no repository pruning/deletion or automatic task switch is
+introduced. --verify-only checks source-side aggregate coverage without export.
+
+These changes are repository source only. V12 remains paused and the qualified
+v11 task is unchanged. Requalify the updated Windows hashes/ACL/producer/restore
+and actual cloud recovery before using v12 as the scheduled replacement.

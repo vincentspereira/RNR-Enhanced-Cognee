@@ -52,3 +52,22 @@ Do not remove a worker account/profile as a folder cleanup. The read-only
 Review-WindowsWorkerProfile helper reports its Windows-managed role. The Hermes
 reorganisation helper defaults to inventory, refuses active sources/collisions
 and preserves original bytes/metadata plus compatibility links on applied moves.
+
+23 October source update: the Cognee collector now requires both recent signed-
+manifest-shaped encrypted database and restricted-Hermes-profile generations.
+It checks ciphertext hashes, private owner/mode/link/path guards and source
+stability; signature authenticity and decryption remain separate key-based
+recovery checks. --verify-only is a no-export aggregate inventory. The versioned
+cognee-v2-profiles scope prevents an old database-only checkpoint satisfying new
+coverage. A completed old online run requires a preserved new run after native
+admission; RetryCloudOnly does not add the missing profile generation. No
+installed Windows file/task or cloud destination was changed by this source
+update. V12 remains paused; native qualification of the updated hashes and
+actual collection/downloaded recovery remain pending.
+
+This source revision passes 1174 focused repository checks, 14 portable Python
+backup checks and 59 portable PowerShell checks, with zero failures/skips and no
+pytest warnings. The new collector has actual age/tar recovery and a real restic
+producer refusal/restore test. Root ownership is simulated in these fixtures;
+portable PS7 is not native Windows 5.1/DPAPI/VSS/ACL/cloud qualification. Earlier
+native hashes/results above remain historical and do not admit these changes.

@@ -49,7 +49,10 @@ report and inactive/disabled timer. A prepared continuation must bind trusted ro
 journal metadata to the exact post-publication runner and authenticate its
 ciphertext/signature/counts/time before timer enable. No manual backup replay or
 unit replacement is requested; persistent enable can run a scheduled catch-up.
-Actual authenticated continuation/timer/collection remain unqualified.
+Owner-run df79510b now authenticates the retained upgraded profile generation
+(60 files/205571 bytes) and confirms the daily timer enabled/active with next run.
+Future scheduled firing and Windows/remote collection remain unqualified. Source
+v12 dual-family collection/checkpoint protection is prepared, not installed.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
@@ -112,7 +115,7 @@ open.
 | F05 - Derived scopes | Canonical authorization before derived candidates; real Qdrant/ArcadeDB/Valkey delivery, hashed entities, encrypted cache, version/scope checks and source-limited graph queries pass | Protected API/worker/store credentials and synthetic OS denial now pass; real-bot operating boundaries and optional legacy providers remain unqualified |
 | F06 - Tenant aliases | External identifiers must be canonical; no lossy external normalization; migration requires an explicit mapping | Existing noncanonical namespaces need individual reviewed mappings |
 | F07 - Plaintext writes | Restricted service encrypts complete memory payload and internal vectors; real database verification passed | Legacy write paths are not universally encrypted; avoid them for private deployment |
-| F08 - Encryption failure | Persistent key required; protected failures raise; named-key writes and mixed-key reads supported; bounded operator-only current/history rotation rolls back a failed batch | Protected age backups, disposable restore and daily timer/catch-up now pass; owner custody, real Windows scheduling/off-machine recovery and selected legacy-store rotation remain |
+| F08 - Encryption failure | Persistent key required; protected failures raise; named-key writes and mixed-key reads supported; bounded operator-only current/history rotation rolls back a failed batch | Owner key-package custody and bounded profile recovery/timer have separate passes; future scheduled firing, real Windows profile collection/off-machine recovery and selected legacy-store rotation remain; historical credential review is tracked in F22 |
 | F09 - Correction/retraction | Owner/version checks, expiry and immediate canonical exclusion; real derived correction/retraction, stale-edge rejection, graph rollback and retry/rebuild pass; history retained | Protected synthetic versioned correction/retraction and model clarification now pass; everyday admission remains; permanent erasure requires a separate owner decision |
 | F10 - Payload limits | Received-byte and total-body limits, bounded admission and response/history/graph budgets; 42-space, 15-minute real-store concurrent fixture plus CPU/PSS/storage-growth observations pass | Installed five-scenario model and 42-identity memory-service checks pass; 42 concurrent inference sessions, longer soak and broader retrieval remain unqualified |
 | F11 - Import/network capabilities | Explicit capability/root/origin grants; symlink-safe bounded file read; HTTPS-only bounded web fetch without redirects/proxies; database source aliases with operator-defined queries; scoped callers denied global imports | Operator database accounts must be read-only; direct upstream-library ingestion is outside the restricted API; arbitrary optional loaders remain unqualified |

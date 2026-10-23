@@ -86,6 +86,23 @@ try {
  $r=Engine @('backup','--json',$src)
  $summary=@($r.stdout -split "`r?`n"|Where-Object {$_}|ForEach-Object {$_|ConvertFrom-Json}|Where-Object {$_.message_type -eq 'summary'})[-1]
  Check unchanged_data_reused ($summary.data_added -lt 8192 -and $summary.data_blobs -eq 0)
+
+ $main=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot backup-all-wsl-v12.ps1),[ref]$tokens,[ref]$errors)
+
+ $coverageDefinition=@($main.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Assert-CompletedCogneeCoverage'},$true))[0]
+ . ([scriptblock]::Create($coverageDefinition.Extent.Text))
+ foreach ($case in @(
+  @{name='incomplete_old_run_can_collect_new_scope';done=$false;offline=$false;profiles=$false;blocked=$false},
+  @{name='completed_database_only_run_cannot_claim_profiles';done=$true;offline=$false;profiles=$false;blocked=$true},
+  @{name='completed_profile_scope_can_retry_cloud';done=$true;offline=$false;profiles=$true;blocked=$false},
+  @{name='offline_completed_run_has_distinct_coverage';done=$true;offline=$true;profiles=$false;blocked=$false}
+ )) {
+  $fixture=@{local_complete=$case.done;export_distros=$case.offline;completed=@{}}
+  if ($case.profiles) {$fixture.completed['cognee-v2-profiles']=@{snapshot='synthetic'}}
+  $caught=$false;try {Assert-CompletedCogneeCoverage $fixture} catch {$caught=$true}
+  Check $case.name ($caught -eq $case.blocked)
+ }
+
  $null=Engine @('backup','--tag','scope:fixture','--tag','run:old',$src)
  $r=Engine @('snapshots','--json','--tag','scope:fixture,run:new')
  Check new_run_cannot_reuse_old_tagged_snapshot (@(ConvertFrom-V12JsonArray $r.stdout).Count -eq 0)

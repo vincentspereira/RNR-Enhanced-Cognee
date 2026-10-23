@@ -224,3 +224,11 @@ ciphertext/HMAC/counts/signed time, rechecks candidate and idle schedule, then
 enables/verifies the timer. It does not manually start a backup or replace files.
 A persistent timer may perform a scheduled catch-up; keep the pilot idle for
 this final step. Actual authenticated continuation/timer success remains pending.
+
+Owner-run df79510b completes retained upgraded-runner binding, independent signed
+ciphertext authentication and daily timer enabled/active/next-run verification
+for the 60-file/205571-byte pilot profile generation. No repeat of backup/restore
+or key custody is required. Future scheduled firing, current database generation,
+full-fleet homes and Windows/remote collection remain separate. Source v12 now
+requires both encrypted database/profile families with versioned checkpoint
+coverage, but it has not been installed or resumed; scheduled v11 is unchanged.

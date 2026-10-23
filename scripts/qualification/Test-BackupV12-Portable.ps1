@@ -70,6 +70,21 @@ $tokens=$null;$errors=$null
 $main=[Management.Automation.Language.Parser]::ParseFile((Join-Path $WindowsScriptRoot backup-all-wsl-v12.ps1),[ref]$tokens,[ref]$errors)
 $definition=@($main.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Get-ScopeSnapshots'},$true))[0]
 . ([scriptblock]::Create($definition.Extent.Text))
+
+$coverageDefinition=@($main.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Assert-CompletedCogneeCoverage'},$true))[0]
+. ([scriptblock]::Create($coverageDefinition.Extent.Text))
+foreach ($case in @(
+ @{name='incomplete_old_run_can_collect_new_scope';done=$false;offline=$false;profiles=$false;blocked=$false},
+ @{name='completed_database_only_run_cannot_claim_profiles';done=$true;offline=$false;profiles=$false;blocked=$true},
+ @{name='completed_profile_scope_can_retry_cloud';done=$true;offline=$false;profiles=$true;blocked=$false},
+ @{name='offline_completed_run_has_distinct_coverage';done=$true;offline=$true;profiles=$false;blocked=$false}
+)) {
+ $fixture=@{local_complete=$case.done;export_distros=$case.offline;completed=@{}}
+ if ($case.profiles) {$fixture.completed['cognee-v2-profiles']=@{snapshot='synthetic'}}
+ $caught=$false;try {Assert-CompletedCogneeCoverage $fixture} catch {$caught=$true}
+ Check $case.name ($caught -eq $case.blocked)
+}
+
 function Invoke-BackupRestic([string[]]$Command,[string]$Label) {return (Engine $Command).stdout}
 $null=Engine @('backup','--tag','scope:fixture','--tag','run:old',$src)
 Check native_empty_snapshot_array (@(ConvertFrom-V12JsonArray '[]').Count -eq 0)

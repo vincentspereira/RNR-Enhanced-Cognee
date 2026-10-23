@@ -1,5 +1,28 @@
 # Remediation and Hermes implementation plan
 
+23 October current checkpoint: the subsequently authorized permanent
+hermes-runtime account and restricted pilot are installed. The owner-run
+df79510b continuation verifies the protected runner's completed encrypted
+profile generation and signed ciphertext, with its daily timer enabled/active
+and next run scheduled. Manual profile restore and owner recovery-key custody
+already have separate passes. Do not replay those steps. Earlier initial
+account restrictions below are dated history superseded by the later approval;
+private/everyday fleet activation remains unadmitted. Hermes model defaults
+remain unchanged; approved cloud-model arguments were limited to tests.
+
+The next prepared backup action is a no-export encrypted-family inventory in
+Ubuntu-Hermes. Source v12 now collects both database/profile families with
+versioned checkpoint coverage and strict private-path/hash/stream guards, but
+has not been installed or resumed; the v11 Windows task is unchanged. Current
+database-generation recovery, Windows/remote coverage, later human-answer/
+history safeguards, actual peer/fleet sharing/isolation, unattended credential
+lifecycle, credential revocation/review and release/main-merge gates remain.
+See [the current rollout checklist](../../../runbooks/HERMES-REMAINING-ROLLOUT-CHECKLIST.md)
+and [dated restricted-profile evidence](HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+
+Historical decisions and checkpoints follow; they do not override the current
+owner approval and verified milestones above.
+
 22 October runtime decision: the owner selected **keep the current setup for
 invented-data testing only**. Do not create the proposed permanent Hermes
 runtime account or activate private/everyday profiles/bots. Retain protected
@@ -373,8 +396,10 @@ for uncertain conflicts, reviewed portfolio-library search with private source
 spaces, reuse of Hermes' configured local-model connection, and a separate
 synthetic test profile/service inside Ubuntu-Hermes. Branch publication is approved;
 merge approval is conditional on the full implementation and checks being complete.
-Credential revocation, recovery custody and the selected backup destination still
-need operational evidence. The original recommended choices below remain a record
+Credential revocation/review remains unfinished. Recovery custody, the selected
+backup destination and bounded profile backup/restore/timer have since received
+operational evidence; native Windows/remote coverage remains separate. The
+original recommended choices below remain a record
 of the alternatives; use the latest implementation update for current behavior.
 
 Vincent: each item starts with the recommended answer you can give. You can accept

@@ -79,6 +79,13 @@ function Save-BackupScope {
  Save-V12Json $script:run $runPath
 }
 
+function Assert-CompletedCogneeCoverage {
+ param([hashtable]$Run)
+ if ($Run.local_complete -and -not $Run.export_distros -and -not $Run.completed.ContainsKey('cognee-v2-profiles')) {
+  throw 'This completed run predates required encrypted Cognee profile coverage. Preserve it and use NewRun after native qualification; RetryCloudOnly cannot upgrade its coverage.'
+ }
+}
+
 try {
  if ($WhatIfPreference) {
   Write-Host 'PREVIEW ONLY: no files, passwords, snapshots, distros or scheduled tasks changed.'
@@ -158,6 +165,7 @@ try {
   # locks only. Never use --remove-all or bypass an active repository lock.
   $null=Invoke-BackupRestic @('unlock') operator-stale-lock-recovery
  }
+ Assert-CompletedCogneeCoverage $script:run
  if ($RetryCloudOnly -and -not $script:run.local_complete) {throw 'Local run is incomplete; resume without RetryCloudOnly.'}
  if (-not $RetryCloudOnly -and -not $script:run.local_complete) {
   if (-not $RequireCogneeBackup) {Write-Warning 'Cognee service backup coverage is mandatory in v12; RequireCogneeBackup is retained for task compatibility.'}
@@ -174,7 +182,9 @@ try {
    }
   } else {
   $native=Get-V12PythonCommand (Join-Path $support capture_cognee.py) @('--max-age-hours',[string]$CogneeMaxBackupAgeHours)
-  Save-BackupScope cognee (@('--stdin-from-command','--stdin-filename','enhanced-cognee-encrypted.tar','--',$wsl,'-d','Ubuntu-Hermes','-u','root','--cd','/','--exec')+$native)
+  # A versioned scope prevents interrupted old database-only checkpoints from
+  # satisfying the new database AND restricted-profile collection requirement.
+  Save-BackupScope cognee-v2-profiles (@('--stdin-from-command','--stdin-filename','enhanced-cognee-encrypted.tar','--',$wsl,'-d','Ubuntu-Hermes','-u','root','--cd','/','--exec')+$native)
   foreach ($distro in $Distros) {
    if ($distro -notin @('Ubuntu-Workspace','Ubuntu-Hermes','Ubuntu-Company')) {throw 'Unreviewed distro; use one of the three reviewed names.'}
    $options=@(if ($distro -eq 'Ubuntu-Hermes') {'--hermes'})
