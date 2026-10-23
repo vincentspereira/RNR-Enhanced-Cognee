@@ -521,7 +521,7 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
     assert options["reasoning_config"] == {"enabled": True, "effort": "low"}
 
 
-@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup"])
+@pytest.mark.parametrize("stage", ["capture", "recall", "capture_followup", "recall_followup"])
 @pytest.mark.parametrize("fails", [False, True])
 def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions(check, monkeypatch, tmp_path, capsys, stage, fails):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails)
@@ -531,6 +531,12 @@ def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions
                                      "provenance", "origin", "post-count", "fixture-collision", "same-id"])
 def test_followup_capture_refuses_replay_or_changed_evidence(check, monkeypatch, tmp_path, capsys, mutation):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "capture_followup", False, mutation)
+
+
+@pytest.mark.parametrize("mutation", ["scope", "old-record", "old-receipt", "provenance", "origin",
+                                     "post-count", "same-id", "answer-interval", "answer-citation", "new-receipt", "missing-receipt"])
+def test_followup_recall_requires_saved_answer_and_both_preserved_fixtures(check, monkeypatch, tmp_path, capsys, mutation):
+    exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_followup", False, mutation)
 
 
 def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None):
@@ -549,7 +555,9 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     monkeypatch.setattr(check, "verify_provider", lambda: None)
     monkeypatch.setattr(check, "HOME", tmp_path)
     monkeypatch.setattr(check, "STATE", tmp_path / "fixture.json")
-    followup = stage == "capture_followup"
+    followup = stage in {"capture_followup", "recall_followup"}
+    capture = stage in {"capture", "capture_followup"}
+    new_state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
     receipt_path = check.state_path(followup)
     release = tmp_path / "release"
     (release / "repo").mkdir(parents=True)
@@ -567,8 +575,9 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     monkeypatch.setitem(sys.modules, "plugins", NS(memory=loader))
     def status(p):
         count = (1 + int(receipt_path.exists())) if followup else int(check.STATE.exists())
-        if mutation == "scope": count = 2
-        if mutation == "post-count" and receipt_path.exists(): count = 3
+        if mutation == "scope": count = 2 if capture else 1
+        if mutation == "missing-receipt": count = 2
+        if mutation == "post-count" and prompts: count = 3
         return {"active_records": count}
     monkeypatch.setattr(check, "memory_status", status)
     row = {"id": "synthetic-record-id", "content": fixture + " thirteen days", "version": 1}
@@ -585,13 +594,17 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     prompts = []
     receipts = []
     def turn(stage, token, actual_provider, session, prompt):
-        if mutation in {"existing-receipt", "scope", "fixture-collision"}:
+        if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt"}:
             pytest.fail("Refused followup must not call a model")
         prompts.append(prompt)
         receipts.append(receipt_path.read_bytes())
         if stage == "recall":
             assert "thirteen" not in prompt and "13" not in prompt
             assert session != state["capture_session"]
+            if followup:
+                assert "nineteen" not in prompt and "19" not in prompt
+                assert "Cedar" in prompt and new_state["fixture"] in prompt
+                assert session != new_state["capture_session"]
         else:
             assert "remember" not in prompt.casefold()
             assert ("nineteen-day" if followup else "thirteen-day") in prompt
@@ -600,10 +613,18 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
             raise check.NativeTurnError({"completed": False, "error": "PRIVATE_ERROR"}, {"count": 1}, [])
         if mutation == "old-receipt":
             check.STATE.write_bytes(check.STATE.read_bytes())
-        return "thirteen days, synthetic-record-id", ["enhanced_remember"] if stage == "capture" else ["enhanced_recall"], 3
+        if mutation == "new-receipt": receipt_path.write_bytes(receipt_path.read_bytes())
+        answer = "nineteen days, synthetic-followup-id" if followup else "thirteen days, synthetic-record-id"
+        if mutation == "answer-interval": answer = "thirteen days, synthetic-followup-id"
+        if mutation == "answer-citation": answer = "nineteen days, no citation"
+        return answer, ["enhanced_remember"] if stage == "capture" else ["enhanced_get"], 3
     monkeypatch.setattr(check, "native_memory_turn", turn)
-    if stage in {"recall", "capture_followup"}: check.save_state(state)
+    if stage in {"recall", "capture_followup", "recall_followup"}: check.save_state(state)
+    if stage == "recall_followup" and mutation != "missing-receipt": check.save_state(new_state, followup=True)
     baseline_receipt = check.STATE.read_bytes() if followup else None
+    followup_receipt = receipt_path.read_bytes() if stage == "recall_followup" and receipt_path.exists() else None
+    if stage == "recall_followup":
+        monkeypatch.setattr(check, "save_state", lambda *a, **kw: pytest.fail("Recall must never save a receipt"))
     if mutation == "existing-receipt":
         check.save_state(state, followup=True)
     if mutation == "fixture-collision":
@@ -616,19 +637,21 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     report = json.loads(output)
     if fails or mutation:
         expected_phase = "native_agent_turn" if fails else (
-            "fixture_preparation" if mutation in {"existing-receipt", "scope", "fixture-collision"} else "saved_memory_verification")
+            "fixture_preparation" if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt"} else "saved_memory_verification")
         assert not report["complete"] and report["failure_stage"] == expected_phase
-        assert report["memory_writes_may_have_occurred"] == (stage != "recall" and expected_phase != "fixture_preparation")
+        assert report["memory_writes_may_have_occurred"] == (capture and expected_phase != "fixture_preparation")
         assert report["profile_settings_and_credentials_unchanged"] is True
         if fails: assert report["native_diagnostics"]["native_error_present"]
         if receipts: assert receipt_path.read_bytes() == receipts[0]
     else:
         assert report["complete"] and report["native_agent_turn_passed"]
-        assert report["memory_records_written"] == (stage != "recall")
-        assert report["fresh_session_recall_passed"] == (stage == "recall")
+        assert report["memory_records_written"] == capture
+        assert report["fresh_session_recall_passed"] == (not capture)
         if followup:
             assert report["original_fixture_and_receipt_preserved"] and report["synthetic_active_records"] == 2
+        if stage == "recall_followup": assert report["followup_receipt_preserved"]
     if followup: assert check.STATE.read_bytes() == baseline_receipt
+    if followup_receipt is not None: assert receipt_path.read_bytes() == followup_receipt
     assert not report["runtime_qualified"] and "PRIVATE_" not in output and TOKEN not in output
     assert resets == ["PRIVATE_BINDING"]
 

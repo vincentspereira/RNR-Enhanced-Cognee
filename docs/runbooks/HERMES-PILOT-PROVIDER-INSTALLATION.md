@@ -800,3 +800,45 @@ old-record/receipt drift, wrong new provenance/origin/ID/count/interval, UUID
 collision, canonical GET version/path validation, native call order and failures.
 The new capture is prepared; the owner-run original-fixture recall above is the
 current installed-model evidence. No everyday configuration or bot is activated.
+
+## 23 October: automatic Cedar capture passed; fresh Cedar recall next
+
+The owner-run 005bcf10b7a570624fdcb4a61dd1acdf4325bafc capture_followup
+passed as hermes-runtime/enhanced-cognee-pilot with gpt-6.1-sol. Both native
+agent completion and selected_capture_passed were true. The helper observed
+enhanced_get, enhanced_recall and enhanced_remember, and four guarded model
+requests. It verified recall-before-remember order internally, a new version-1
+Cedar memory with the expected decision/provenance/origin, exactly two active
+records and preservation of the original Larch fixture and receipt. Checked
+settings/credentials were unchanged and model defaults were not edited.
+
+fresh_session_recall_passed=false is expected in this capture stage. The new
+record is invented qualification data. This is completed native selected-capture
+evidence; do not replay the historically unqualified original Larch capture or
+infer fleet/private-data admission. runtime_qualified correctly remains false.
+
+The next prepared mode is main_memory(stage="recall_followup", approved_test=True).
+Use a new process with the same restricted pilot/tools1 interpreter, clean
+environment, hash verification and 180-second outer timeout. It reads the
+existing Cedar and Larch receipts and verifies two active version-1 canonical
+records before calling the native agent. The new session has empty history;
+the prompt contains only the fictional Cedar identifier and a question, not
+its interval or saved record ID. Only native recall/get/status tools are enabled.
+
+Success requires a completed native turn, guarded model requests, the correct
+saved interval and citation, unchanged Cedar content/version, unchanged Larch
+canonical row and both receipts' states/file stamps, plus unchanged checked
+profile/settings/credentials. It writes no receipt or canonical memory. Return
+the sanitized summary, including failures; do not rerun capture or clear files.
+Expect fresh_session_recall_passed=true, original_fixture_and_receipt_preserved=true,
+followup_receipt_preserved=true, synthetic_active_records=2, current_version=1 and
+memory_records_written=false. selected_capture_passed=false describes this new
+recall-only stage and does not undo the preceding capture result.
+
+Focused Workspace fixtures pass 500 tests, zero failures/skips and no reported
+warnings. Thirteen additional cases cover successful/failed Cedar recall,
+missing receipt, scope/count drift, old-record/receipt drift, wrong provenance/
+origin/record ID, wrong answer/citation and new-receipt modification. Native
+agent/provider/network calls use fixtures; fresh installed Cedar recall remains
+pending. Existing defaults, everyday profiles/bots and the installation remain
+unchanged by this preparation.

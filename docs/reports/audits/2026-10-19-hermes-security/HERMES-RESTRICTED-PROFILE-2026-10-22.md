@@ -1094,3 +1094,45 @@ cases. Native model/provider/network operations use fixtures; no new host
 capture has run in Workspace. The next owner step is this follow-up capture,
 not the original empty-scope capture command. Broader correction/conflict,
 isolation/recovery/renewal, owner review, release and fleet gates remain pending.
+
+## 23 October: native selected capture passed; Cedar recall prepared
+
+Vincent returned complete=true/stage=capture_followup from helper revision
+005bcf10b7a570624fdcb4a61dd1acdf4325bafc, as hermes-runtime in the restricted
+enhanced-cognee-pilot with gpt-6.1-sol. native_agent_turn_passed and
+selected_capture_passed were true. enhanced_get, enhanced_recall and
+enhanced_remember were observed, with four guarded model requests. The helper
+required chronological recall-before-remember and a completed native turn;
+the printed sorted tool list itself is not chronological evidence.
+
+Authoritative verification found two active synthetic records, with the new
+Cedar record at canonical version 1, its nineteen-day decision and expected
+session provenance/selected-tool origin. The original Larch fixture and receipt
+were preserved. Checked profile/settings/credentials were unchanged and model
+defaults were not edited. memory_records_written=true accurately describes the
+new invented record. fresh_session_recall_passed=false is expected for this
+capture-only stage, not a failed recall. runtime_qualified remained false.
+
+This establishes narrow native model-selected capture without an explicit save
+request. The original Larch capture turn remains historically unproven, but is
+not a reason to replay it: new completed-turn capture evidence now exists.
+The earlier Larch fresh recall also passed; the next step is fresh-process
+recall of the newly captured Cedar decision to connect both parts of that cycle.
+
+main_memory(stage="recall_followup", approved_test=True) reads both existing
+receipts, requires exactly two active records and snapshots both canonical
+fixtures before execution. A new native session with empty history receives
+only the Cedar project identifier and a question, not the saved interval or
+record ID. Only native recall/get/status tools are available. Success requires
+the nineteen-day answer and citation, unchanged Cedar canonical content/version,
+unchanged Larch canonical row, unchanged receipt states/file stamps and unchanged
+checked profile/settings/credentials. The mode creates no fixture receipt or
+canonical memory and preserves all existing evidence on failure. Native model
+arguments remain temporary, with the same six-request and time bounds.
+
+Focused Workspace fixtures pass 500 tests with zero failures/skips and no
+reported warnings, including 13 new follow-up-recall success/failure/preservation
+cases. Agent/provider/network operations use fixtures; installed Cedar recall
+remains pending the next owner command. Correction/conflict/privacy checks,
+isolation/recovery/renewal, owner/release gates and staged fleet admission remain
+separate from this synthetic capture result.

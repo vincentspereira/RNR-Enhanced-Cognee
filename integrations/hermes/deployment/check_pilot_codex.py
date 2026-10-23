@@ -486,10 +486,10 @@ def main_memory(*, stage, approved_test=False):
     secrets = None
     uid = None
     phase = "restricted_preflight"
-    followup = stage == "capture_followup"
+    followup = stage in {"capture_followup", "recall_followup"}
     capture = stage in {"capture", "capture_followup"}
     try:
-        if stage not in {"capture", "recall", "capture_followup"}: raise CheckError("unapproved_stage")
+        if stage not in {"capture", "recall", "capture_followup", "recall_followup"}: raise CheckError("unapproved_stage")
         uid, snapshots = preflight(approved_test)
         snapshots[".env"] = read_private(".env", uid)
         import yaml
@@ -526,6 +526,7 @@ def main_memory(*, stage, approved_test=False):
             baseline = None
             original_receipt = None
             original_stamp = None
+            followup_stamp = None
             if capture:
                 if os.path.lexists(state_path(followup)) or before["active_records"] != (1 if followup else 0):
                     raise CheckError("existing_test_evidence_preserved_review_before_retry")
@@ -544,11 +545,22 @@ def main_memory(*, stage, approved_test=False):
                 session = state["capture_session"]
                 previous = None
             else:
-                state = read_state(uid)
+                if followup:
+                    if before["active_records"] != 2:
+                        raise CheckError("unexpected_memory_record_count")
+                    original_receipt = read_state(uid)
+                    original_stamp = state_stamp()
+                    baseline = verify_saved(provider, original_receipt["fixture"])
+                    state = read_state(uid, followup=True)
+                    followup_stamp = state_stamp(followup=True)
+                else:
+                    state = read_state(uid)
                 fixture = state["fixture"]
-                previous = verify_saved(provider, fixture)
+                previous = verify_saved(provider, fixture, followup=True) if followup else verify_saved(provider, fixture)
                 session = "cognee_recall_" + uuid.uuid4().hex
-                prompt = ("For the entirely fictional Larch qualification project " + fixture
+                if session == state["capture_session"]:
+                    raise CheckError("distinct_recall_session_required")
+                prompt = ("For the entirely fictional " + ("Cedar" if followup else "Larch") + " qualification project " + fixture
                     + ", what standing review interval did we decide on? Use saved evidence and cite its record ID.")
             phase = "native_agent_turn"
             if capture: save_state(state, followup=followup)
@@ -569,18 +581,22 @@ def main_memory(*, stage, approved_test=False):
                         or row.get("provenance", {}).get("session_id") != state["capture_session"]
                         or row.get("metadata", {}).get("write_origin") != "hermes_selected_tool"):
                     raise CheckError("followup_capture_provenance_not_verified")
-            if stage == "recall" and (row != previous or row["id"] not in answer
-                    or not re.search(r"\b(?:thirteen|13)[ -]+day", answer.casefold())):
+                if not capture and state_stamp(followup=True) != followup_stamp:
+                    raise CheckError("followup_receipt_changed_preserve_and_review")
+            interval_pattern = r"\b(?:nineteen|19)[ -]+day" if followup else r"\b(?:thirteen|13)[ -]+day"
+            if not capture and (row != previous or row["id"] not in answer
+                    or not re.search(interval_pattern, answer.casefold())):
                 raise CheckError("fresh_session_recall_not_verified")
             if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
                 raise CheckError("profile_state_changed_preserve_and_review")
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL, "native_agent_turn_passed": True,
-            "selected_capture_passed": capture, "fresh_session_recall_passed": stage == "recall",
+            "selected_capture_passed": capture, "fresh_session_recall_passed": not capture,
             "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
             "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],
             "current_version": row["version"], "memory_records_written": capture,
             **({"original_fixture_and_receipt_preserved": True} if followup else {}),
+            **({"followup_receipt_preserved": True} if followup and not capture else {}),
             "runtime_qualified": False}, indent=2))
     except Exception as error:
         preserved = None
@@ -636,8 +652,8 @@ def inspect_fixture(provider, state):
     return report
 
 
-def state_stamp():
-    info = STATE.lstat()
+def state_stamp(*, followup=False):
+    info = state_path(followup).lstat()
     return info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
