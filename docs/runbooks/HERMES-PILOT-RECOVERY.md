@@ -5,6 +5,10 @@ relayed by the owner; this session has no direct access to that isolated host.
 
 ## Current position
 
+The 23 October manual profile run created an encrypted generation but stopped
+during disposable restore. Preserve both outputs; use the fixed-generation
+read-only inspection described at the end of this runbook before retrying.
+
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
 valid only for its recorded generation, source, identity and scope. Preserve it.
@@ -75,7 +79,7 @@ recovery as separate checks. Preserve all existing backup generations.
 
 Recurring profile backup and completion collection still need implementation/
 installed evidence. A manual snapshot/restore is now prepared as described below;
-its installed result is pending. This inventory installs no service,
+its installed restore stopped and needs retained-evidence inspection. This inventory installs no service,
 creates no archive/restored directory and performs no cleanup. Full fleet
 inventory and staged admission remain in HERMES-REMAINING-ROLLOUT-CHECKLIST.md.
 
@@ -155,3 +159,56 @@ recurring profile backup, update Windows collection, upload a cloud copy, restor
 a PostgreSQL generation, prove a fresh-machine program rebuild or admit the
 fleet. The existing database timer, v11 task and paused v12 remain unchanged.
 Owner recovery custody is reused; no new password or key rotation is needed.
+
+## 23 October restore stop: preserve and inspect existing evidence
+
+The owner ran b53b32326f0376171946c983211dde3682da1f78. It reported an
+encrypted generation at:
+
+```text
+/var/backups/enhanced-cognee/hermes_profile_20261023T104510Z_419749ed.tar.age
+/var/lib/hermes-runtime-recovery/check-419749ed55f9406785961263f74b1304
+```
+
+The second path is the retained disposable destination. The report stopped at
+`disposable_restore`; it does not establish successful extraction, restored
+file integrity or recovered access. Preserve both paths and the signed sidecar.
+Do not rerun the original full backup command or overwrite the destination.
+
+Workspace reproduced a defect in the recovery path checker: O_RDONLY on every
+ancestor requires directory listing permission, but the intentionally protected
+root-owned 0711 recovery parent grants the runtime only traversal permission.
+The old checker fails on an equivalent real traversal-only parent. The corrected
+checker uses O_PATH for pinned ancestors, still checks ownership, rejects
+writable ancestors, symlinks and traversal, and opens only the final directory
+for reading. Parent permissions are not relaxed. A real filesystem regression
+also restores and verifies synthetic files through that unlistable parent.
+This is a reproduced possible cause, not yet the installed failure diagnosis.
+
+The next published operator bundle calls `main(..., inspect_existing=True)`.
+It selects ONLY the fixed generation/destination above. Root revalidates the
+signed manifest, ciphertext hash and protected recovery identity, decrypts in
+memory, and sends only the authenticated archive to the clean restricted child.
+It creates no directory, archive or manifest and never re-extracts or repairs
+retained files. The restricted child validates archive paths/membership/hashes,
+compares the current live snapshot, and reads the existing recovery copy. A
+partial/empty copy stops with a fixed membership category. If all recovered
+files pass it checks settings/provider binding and recovered ordinary scoped
+API access. No model, OAuth login/refresh, memory write, upload, cleanup, timer
+change or live profile activation occurs. Filesystem reads may update access
+times according to host mount policy; contents and permissions are not changed.
+
+Failure details are an allowlisted phase/category and boolean/null checks,
+with an optional numeric HTTP status. Arbitrary exception text, filenames,
+content, credentials and private hashes are suppressed. A missing/expired
+recovered token is not silently renewed. A live-source mismatch is reported
+without overwriting either historical backup or newer live state; preservation
+checks still compare the live source before/after this inspection.
+
+Run the new pinned/hash-verified bundle in a normal Ubuntu-Hermes terminal as
+vincentspereira, starting in ~ if preferred. Keep only the restricted pilot idle;
+main Hermes and other bots can continue. Authenticate sudo privately if asked.
+Send only the JSON, including a failure report. Inspection success still is not
+a fresh restore, recurring backup, Windows collection or full runtime admission.
+If the retained copy is incomplete, the next step will use the authenticated
+existing archive and a fresh private destination, preserving the failed one.

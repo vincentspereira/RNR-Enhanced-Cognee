@@ -11,6 +11,7 @@ import stat
 import subprocess
 import sys
 import tarfile
+import tempfile
 from types import SimpleNamespace as NS
 
 import pytest
@@ -42,6 +43,7 @@ def home(modules, tmp_path, monkeypatch):
         return os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     monkeypatch.setitem(inspector, "directory", directory)
     monkeypatch.setitem(core, "open_directory", directory)
+    monkeypatch.setattr(backup, "open_recovery_directory", directory)
     monkeypatch.setitem(inspector, "preflight", lambda approved: os.geteuid())
     monkeypatch.setitem(inspector, "protected_file", lambda *a, **kw: True)
     files = {name: b"PRIVATE_RECEIPT_OR_ORIGINAL_WORK" for name in inspector["RECEIPTS"]}
@@ -175,6 +177,7 @@ def test_restore_refuses_nonempty_destination_without_touching_it(home):
     _, inspector, backup, _, recovery, _, _, _ = home
     manifest, blobs = backup.source_snapshot(inspector, os.geteuid())
     (recovery / "retained").write_bytes(b"PRIVATE_EXISTING")
+    recovery.chmod(0o700)
     with pytest.raises(backup.BackupError, match="not_empty"): backup.restore_files(inspector, recovery, manifest, blobs)
     assert (recovery / "retained").read_bytes() == b"PRIVATE_EXISTING" and len(list(recovery.iterdir())) == 1
 
@@ -341,13 +344,15 @@ def test_exact_three_public_sources_are_verified_before_execution(modules, mutat
             assert callable(scope["main"])
 
 
-@pytest.mark.parametrize("mode", ["snapshot", "restore"])
+@pytest.mark.parametrize("mode", ["snapshot", "restore", "inspect"])
 @pytest.mark.parametrize("mutation", [None, "failed", "extra", "flag", "count", "empty", "oversize"])
 def test_child_drop_identity_clean_environment_and_private_output_validation(home, monkeypatch, mode, mutation):
     core, inspector, backup, _, recovery, _, _, _ = home
     report = {"complete": True, "files": 60, "source_bytes": 205571, "entries": 104}
-    if mode == "restore": report.update(restored_files_verified=True, restored_provider_binding_verified=True,
+    if mode in {"restore", "inspect"}: report.update(restored_files_verified=True, restored_provider_binding_verified=True,
         restored_scope_status_passed=True, live_source_preserved=True)
+    if mode == "inspect": report.update(files_written=False,
+        checks=dict.fromkeys(backup.CHECK_FLAGS, True) | {"api_http_status": 200})
     if mutation == "extra": report["PRIVATE"] = "SECRET"
     if mutation == "flag": report["complete"] = 1
     if mutation == "count": report["files"] = True
@@ -458,3 +463,176 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
     else:
         assert report["encrypted_backup_created"] == (mutation != "encrypt")
         if mutation == "existing-parent-mode": assert stat.S_IMODE(recovery.stat().st_mode) == 0o700
+
+
+def test_real_traversal_only_parent_reproduces_old_failure_and_preserves_protection(modules):
+    _, inspector, backup = modules
+    # Use a protected ancestor chain, not /tmp (which the guard must refuse).
+    with tempfile.TemporaryDirectory(prefix='.cognee-permission-test-', dir=Path.home()) as raw:
+        parent = Path(raw)
+        leaf = parent / 'private-copy'
+        leaf.mkdir(mode=0o700)
+        parent.chmod(0o111)  # Same effective access as another user's root:root 0711.
+        try:
+            with pytest.raises(PermissionError):
+                inspector.directory(leaf, {0, os.geteuid()})
+            fd = backup.open_recovery_directory(leaf, {0, os.geteuid()})
+            try:
+                assert os.listdir(fd) == []
+                assert stat.S_IMODE(os.fstat(fd).st_mode) == 0o700
+            finally: os.close(fd)
+            value = b'synthetic recovered settings'
+            manifest = {'entries': [{'path': 'config', 'kind': 'file', 'mode': 0o600,
+                                     'size': len(value), 'sha256': backup.digest(value)}]}
+            backup.restore_files(vars(inspector), leaf, manifest, {'config': value})
+            backup.verify_restore(vars(inspector), leaf, manifest, {'config': value})
+            assert (leaf / 'home/config').read_bytes() == value
+            assert stat.S_IMODE(parent.stat().st_mode) == 0o111
+            assert stat.S_IMODE(leaf.stat().st_mode) == 0o700
+            with pytest.raises(PermissionError): os.listdir(parent)
+        finally: parent.chmod(0o700)
+
+
+@pytest.mark.parametrize('mutation', ['writable', 'symlink', 'owner', 'relative', 'traversal'])
+def test_path_only_traversal_keeps_ancestor_guards(modules, mutation):
+    *_, backup = modules
+    with tempfile.TemporaryDirectory(prefix='.cognee-permission-test-', dir=Path.home()) as raw:
+        parent = Path(raw)
+        leaf = parent / 'copy'
+        leaf.mkdir(mode=0o700)
+        selected = leaf
+        owners = {0, os.geteuid()}
+        if mutation == 'writable': parent.chmod(0o777)
+        if mutation == 'symlink':
+            selected = parent / 'redirect'
+            selected.symlink_to(leaf, target_is_directory=True)
+        if mutation == 'owner': owners = set()
+        if mutation == 'relative': selected = Path('relative')
+        if mutation == 'traversal': selected = parent / '..' / parent.name / 'copy'
+        try:
+            with pytest.raises((backup.BackupError, OSError)):
+                backup.open_recovery_directory(selected, owners)
+        finally: parent.chmod(0o700)
+
+
+@pytest.mark.parametrize('mutation', [None, 'empty', 'partial', 'extra', 'file-mode', 'expired', 'live-drift', 'private-error'])
+def test_retained_inspection_reads_without_reextracting_or_changing_source(home, monkeypatch, capsys, mutation):
+    core, inspector, backup, root, recovery, files, calls, status = home
+    manifest, blobs = backup.source_snapshot(inspector, os.geteuid())
+    archive = backup.make_archive(manifest, blobs)
+    destination = recovery / ('check-' + 'c' * 32)
+    destination.mkdir(mode=0o700)
+    if mutation != 'empty': backup.restore_files(inspector, destination, manifest, blobs)
+    recovered = destination / 'home/workspace/original.txt'
+    if mutation == 'partial': recovered.unlink()  # Disposable synthetic fixture only.
+    if mutation == 'extra': (destination / 'unexpected').write_bytes(b'PRIVATE_EXTRA')
+    if mutation == 'file-mode': recovered.chmod(0o644)
+    if mutation == 'expired': core['api_status'] = lambda token: (401, {})
+    if mutation == 'private-error':
+        def private_error(token): raise PermissionError('PRIVATE_RAW_SECRET_AND_FILENAME')
+        core['api_status'] = private_error
+    if mutation == 'live-drift': (root / 'workspace/original.txt').write_bytes(b'PRIVATE_NEW_LIVE_WORK')
+    before = backup.source_snapshot(inspector, os.geteuid())
+    def no_restore(*a, **kw): pytest.fail('Inspection must not write or re-extract')
+    monkeypatch.setattr(backup, 'restore_files', no_restore)
+    monkeypatch.setattr(sys, 'stdin', NS(buffer=io.BytesIO(archive)))
+    failure = mutation not in {None, 'live-drift'}
+    if failure:
+        with pytest.raises(SystemExit): backup.child(core, inspector, 'inspect', destination)
+    else: backup.child(core, inspector, 'inspect', destination)
+    output = capsys.readouterr()
+    assert 'PRIVATE' not in output.out + output.err and 'synthetic-ordinary-token' not in output.out + output.err
+    result = json.loads(output.err if failure else output.out)
+    assert result['complete'] is not failure
+    checks = result['checks']
+    assert checks['archive_validated'] is True
+    assert checks['archive_matches_live_source'] is (mutation != 'live-drift')
+    if mutation in {'empty', 'partial', 'extra'}:
+        assert result['phase'] == 'restore_verify' and result['category'] == 'restored_membership_mismatch'
+        assert checks['recovered_files_verified'] is False
+    if mutation == 'expired':
+        assert result['phase'] == 'restored_api_status' and checks['api_http_status'] == 401
+        assert checks['recovered_files_verified'] and checks['recovered_settings_verified']
+    if mutation == 'private-error':
+        assert result['phase'] == 'restored_api_status' and result['category'] == 'permission_denied'
+    assert backup.source_snapshot(inspector, os.geteuid()) == before
+    if not failure: assert result['files_written'] is False
+
+
+@pytest.mark.parametrize('mutation', [None, 'extra-field', 'private-phase', 'private-category', 'private-check', 'numeric-bool', 'raw-error'])
+def test_parent_returns_only_allowlisted_child_failure_details(home, monkeypatch, mutation):
+    core, inspector, backup, _, recovery, _, _, _ = home
+    checks = dict.fromkeys(backup.CHECK_FLAGS | {'api_http_status'})
+    report = dict(complete=False, phase='restore_verify', category='entry_missing', checks=checks)
+    if mutation == 'extra-field': report['PRIVATE'] = 'SECRET'
+    if mutation == 'private-phase': report['phase'] = 'PRIVATE_PATH'
+    if mutation == 'private-category': report['category'] = 'PRIVATE_VALUE'
+    if mutation == 'private-check': checks['PRIVATE'] = 'SECRET'
+    if mutation == 'numeric-bool': checks['archive_validated'] = 1
+    raw = b'PRIVATE_EXCEPTION_AND_KEY' if mutation == 'raw-error' else json.dumps(report).encode()
+    monkeypatch.setattr(backup.subprocess, 'run', lambda *a, **kw: NS(returncode=1, stdout=b'', stderr=raw))
+    with pytest.raises(backup.BackupError) as failure:
+        backup.run_child(core, inspector, {name: Path(name).read_bytes() for name in backup.NAMES},
+                         NS(pw_uid=993, pw_gid=985), 'inspect', b'opaque', recovery)
+    assert failure.value.diagnostics == (report if mutation is None else None)
+    assert 'PRIVATE' not in str(failure.value)
+
+
+@pytest.mark.parametrize('mutation', [None, 'authentication', 'decrypt', 'child-failure', 'parent-mode'])
+def test_operator_inspects_fixed_generation_without_encrypting_creating_or_reextracting(home, monkeypatch, capsys, mutation):
+    core, inspector, backup, _, recovery, _, _, _ = home
+    real_uid = os.geteuid()
+    release = recovery.parent / 'public-test-release'
+    (release / 'venv/bin').mkdir(parents=True)
+    (release / 'venv/bin/python').write_bytes(b'PUBLIC_TEST_INTERPRETER')
+    monkeypatch.setitem(inspector, 'RELEASE', release)
+    recovery.chmod(0o711 if mutation != 'parent-mode' else 0o700)
+    monkeypatch.setattr(backup.os, 'geteuid', lambda: 0)
+    monkeypatch.setenv('WSL_DISTRO_NAME', 'Ubuntu-Hermes')
+    monkeypatch.setenv('SUDO_USER', 'vincentspereira')
+    monkeypatch.setattr(backup.pwd, 'getpwnam', lambda name: NS(pw_name='hermes-runtime', pw_uid=real_uid,
+        pw_gid=os.getegid(), pw_dir=str(inspector['HOME'])))
+    monkeypatch.setattr(backup.os, 'getgrouplist', lambda *a: [os.getegid()])
+    config = {'ENHANCED_BACKUP_RECIPIENT': 'age1' + 'x' * 30, 'ENHANCED_BACKUP_SIGNING_KEY': 'x' * 32,
+              'ENHANCED_BACKUP_SIGNING_KEY_ID': 'synthetic'}
+    monkeypatch.setitem(core, 'read_private_at', lambda fd, name, uid: (json.dumps(config).encode(), None))
+    def open_dir(path, owners):
+        # These host-root metadata checks are simulated; path traversal is
+        # exercised independently by the real permission regression above.
+        return os.open(recovery if path == backup.RECOVERY else inspector['HOME'], os.O_RDONLY | os.O_DIRECTORY)
+    monkeypatch.setitem(core, 'open_directory', open_dir)
+    paths = []
+    def verify(core, fd, name, key, kid):
+        paths.append(name)
+        assert name == backup.FAILED_BACKUP
+        if mutation == 'authentication': raise backup.BackupError('profile_manifest_authentication_failed')
+        return b'authenticated-ciphertext'
+    monkeypatch.setattr(backup, 'verify_completed', verify)
+    def crypto(args, *, data, **kwargs):
+        assert args == ['--decrypt', '--identity', str(backup.IDENTITY)]
+        assert data == b'authenticated-ciphertext'
+        if mutation == 'decrypt': raise backup.BackupError('age_operation_failed_private_details_suppressed')
+        return b'PRIVATE_ARCHIVE_ONLY_IN_RAM'
+    monkeypatch.setattr(backup, 'age', crypto)
+    checks = dict.fromkeys(backup.CHECK_FLAGS, True) | {'api_http_status': 200}
+    def inspect(core, inspector, sources, account, mode, data, destination):
+        assert mode == 'inspect' and destination == backup.RECOVERY / backup.FAILED_RESTORE
+        assert data == b'PRIVATE_ARCHIVE_ONLY_IN_RAM'
+        if mutation == 'child-failure':
+            raise backup.BackupError('restricted_failure', diagnostics=dict(complete=False,
+                phase='restore_verify', category='restored_membership_mismatch', checks=checks))
+        return b'', dict(checks=checks)
+    monkeypatch.setattr(backup, 'run_child', inspect)
+    monkeypatch.setattr(backup.os, 'mkdir', lambda *a, **kw: pytest.fail('Read-only inspector must not create folders'))
+    monkeypatch.setattr(backup, 'restore_files', lambda *a, **kw: pytest.fail('Must not re-extract'))
+    monkeypatch.setitem(core, 'create_private_at', lambda *a, **kw: pytest.fail('Must not create archives/manifests'))
+    if mutation:
+        with pytest.raises(SystemExit): backup.main(core=core, inspector=inspector, sources={}, inspect_existing=True)
+    else: backup.main(core=core, inspector=inspector, sources={}, inspect_existing=True)
+    output = capsys.readouterr().out
+    result = json.loads(output)
+    assert 'PRIVATE' not in output
+    assert result['complete'] is (mutation is None)
+    assert result['files_written'] is False and result['memory_records_written'] is False
+    assert paths == [backup.FAILED_BACKUP]
+    if mutation == 'child-failure': assert result['restricted_diagnostics']['phase'] == 'restore_verify'

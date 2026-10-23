@@ -38,6 +38,54 @@ FORMAT = "hermes-home-tar+age"
 class BackupError(RuntimeError):
     """Fixed public category; no private filenames, response bodies or values."""
 
+    def __init__(self, category, *, diagnostics=None):
+        super().__init__(category)
+        self.diagnostics = diagnostics
+
+
+CHILD_PHASES = {"identity", "provider", "profile_lock", "source_snapshot", "source_contract",
+                "archive_decode", "source_comparison", "restore_write", "restore_verify",
+                "restored_settings", "restored_api_status", "source_recheck"}
+CHILD_CATEGORIES = {"permission_denied", "entry_missing", "path_type_refused", "parse_failed",
+    "protected_guard_refused", "unexpected_check_failure", "protected_provider_mismatch",
+    "required_source_file_missing", "required_source_file_permissions", "required_provider_link_missing",
+    "live_source_changed_since_snapshot", "live_source_changed_during_restore",
+    "restore_destination_not_empty", "recovery_directory_protection", "restored_owner_mismatch",
+    "restored_file_mismatch", "restored_directory_mismatch", "restored_provider_link_mismatch",
+    "restored_provider_settings_mismatch", "restored_credential_assignment",
+    "restored_scoped_access_not_accepted", "restored_membership_mismatch"}
+CHECK_FLAGS = {"archive_validated", "archive_matches_live_source", "recovered_files_verified",
+               "recovered_settings_verified", "recovered_api_status_passed"}
+FAILED_BACKUP = "hermes_profile_20261023T104510Z_419749ed.tar.age"
+FAILED_RESTORE = "check-419749ed55f9406785961263f74b1304"
+
+
+def open_recovery_directory(path, owners):
+    """Validate pinned ancestors without requiring their directory-list permission.
+
+    O_PATH retains no read/write authority. Only the final directory is opened
+    for reading. Root-owned 0711 recovery parents therefore remain unlistable.
+    """
+    if not path.is_absolute() or ".." in path.parts:
+        raise BackupError("recovery_directory_protection")
+    fd = os.open("/", os.O_PATH | os.O_DIRECTORY)
+    try:
+        for name in (None, *path.parts[1:]):
+            if name is not None:
+                child_fd = os.open(name, os.O_PATH | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+                os.close(fd)
+                fd = child_fd
+            info = os.fstat(fd)
+            if info.st_uid not in owners or info.st_mode & 0o022:
+                raise BackupError("recovery_directory_protection")
+        readable = os.open(".", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+        if os.fstat(readable).st_ino != info.st_ino or os.fstat(readable).st_dev != info.st_dev:
+            os.close(readable)
+            raise BackupError("recovery_directory_protection")
+        return readable
+    finally:
+        os.close(fd)
+
 
 def verified_sources(raw, expected):
     if set(expected) != NAMES or not isinstance(raw, bytes) or len(raw) > 262144:
@@ -228,9 +276,12 @@ def decode_archive(inspector, raw):
 
 
 def restore_files(inspector, destination, manifest, blobs):
-    root = inspector["directory"](destination, {0, os.geteuid()})
+    root = open_recovery_directory(destination, {0, os.geteuid()})
     old_mask = os.umask(0o077)
     try:
+        info = os.fstat(root)
+        if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
+            raise BackupError("recovery_directory_protection")
         if os.listdir(root): raise BackupError("restore_destination_not_empty")
         os.mkdir("home", 0o700, dir_fd=root)
         for row in sorted(manifest["entries"], key=lambda value: (value["path"].count("/"), value["kind"] != "directory", value["path"])):
@@ -252,7 +303,41 @@ def restore_files(inspector, destination, manifest, blobs):
                         os.fsync(handle.fileno())
                 os.fsync(fd)
             finally: os.close(fd)
-        # Re-read every recovered file, without importing or executing it.
+    finally:
+        os.close(root)
+        os.umask(old_mask)
+    verify_restore(inspector, destination, manifest, blobs)
+
+
+def verify_restore(inspector, destination, manifest, blobs):
+    """Read an existing copy only; never create, repair or execute recovered files."""
+    root = open_recovery_directory(destination, {0, os.geteuid()})
+    try:
+        info = os.fstat(root)
+        if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
+            raise BackupError("recovery_directory_protection")
+        if os.listdir(root) != ["home"]:
+            raise BackupError("restored_membership_mismatch")
+        # Check exact membership and all parent types before reading any leaf.
+        expected = {"home"} | {"home/" + row["path"] for row in manifest["entries"]}
+        observed = set()
+        def walk(fd, relative="", depth=0):
+            if depth > 34: raise BackupError("restored_membership_mismatch")
+            with os.scandir(fd) as listing:
+                for entry in listing:
+                    path = relative + "/" + entry.name if relative else entry.name
+                    if path not in expected or path in observed:
+                        raise BackupError("restored_membership_mismatch")
+                    observed.add(path)
+                    info = os.stat(entry.name, dir_fd=fd, follow_symlinks=False)
+                    if stat.S_ISDIR(info.st_mode):
+                        if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
+                            raise BackupError("restored_directory_mismatch")
+                        opened = os.open(entry.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+                        try: walk(opened, path, depth + 1)
+                        finally: os.close(opened)
+        walk(root)
+        if observed != expected: raise BackupError("restored_membership_mismatch")
         for row in manifest["entries"]:
             parts = PurePosixPath("home/" + row["path"]).parts
             fd = os.dup(root)
@@ -268,7 +353,11 @@ def restore_files(inspector, destination, manifest, blobs):
                         raise BackupError("restored_file_mismatch")
                     opened = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
                     with os.fdopen(opened, "rb") as handle:
-                        if handle.read(MAX_DATA + 1) != blobs[row["path"]]: raise BackupError("restored_file_mismatch")
+                        before = os.fstat(handle.fileno())
+                        if (inspector["stamp"](before) != inspector["stamp"](info)
+                                or handle.read(MAX_DATA + 1) != blobs[row["path"]]
+                                or inspector["stamp"](os.fstat(handle.fileno())) != inspector["stamp"](before)):
+                            raise BackupError("restored_file_mismatch")
                 elif row["kind"] == "directory":
                     if not stat.S_ISDIR(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o700: raise BackupError("restored_directory_mismatch")
                 elif not stat.S_ISLNK(info.st_mode) or os.readlink(parts[-1], dir_fd=fd) != str(inspector["ARTIFACT"]):
@@ -276,21 +365,27 @@ def restore_files(inspector, destination, manifest, blobs):
             finally: os.close(fd)
     finally:
         os.close(root)
-        os.umask(old_mask)
 
 
 def child(core, inspector, mode, destination):
+    phase = "identity"
+    checks = dict.fromkeys(CHECK_FLAGS)
+    checks["api_http_status"] = None
     try:
         uid = inspector["preflight"](True)
+        phase = "provider"
         if not all(inspector["protected_file"](inspector["ARTIFACT"] / name, expected=value) for name, value in inspector["HASHES"].items()):
             raise BackupError("protected_provider_mismatch")
+        phase = "profile_lock"
         directory = core["open_directory"](core["PROFILE"], {0, uid})
         try:
             lock = os.open(".cognee-renewal.lock", os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
             try:
                 core["read_private_fd"](lock, uid)
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                phase = "source_snapshot"
                 manifest, blobs = source_snapshot(inspector, uid)
+                phase = "source_contract"
                 if not set(inspector["PRIVATE"] | inspector["RECEIPTS"]).issubset(blobs):
                     raise BackupError("required_source_file_missing")
                 for name in inspector["PRIVATE"] | inspector["RECEIPTS"]:
@@ -305,15 +400,29 @@ def child(core, inspector, mode, destination):
                     sys.stdout.buffer.write(raw)
                     sys.stdout.buffer.flush()
                     print(json.dumps(dict(complete=True, **counts)), file=sys.stderr)
-                elif mode == "restore":
+                elif mode in {"restore", "inspect"}:
                     if not re.fullmatch(re.escape(str(RECOVERY)) + r"/check-[0-9a-f]{32}", str(destination)):
                         raise BackupError("unapproved_restore_destination")
+                    phase = "archive_decode"
                     raw = sys.stdin.buffer.read(MAX_ARCHIVE + 1)
+                    checks["archive_validated"] = False
                     saved, saved_blobs = decode_archive(inspector, raw)
-                    if saved != manifest or saved_blobs != blobs: raise BackupError("live_source_changed_since_snapshot")
-                    restore_files(inspector, destination, saved, saved_blobs)
+                    checks["archive_validated"] = True
+                    phase = "source_comparison"
+                    matches = saved == manifest and saved_blobs == blobs
+                    checks["archive_matches_live_source"] = matches
+                    if mode == "restore":
+                        if not matches: raise BackupError("live_source_changed_since_snapshot")
+                        phase = "restore_write"
+                        restore_files(inspector, destination, saved, saved_blobs)
+                    phase = "restore_verify"
+                    checks["recovered_files_verified"] = False
+                    verify_restore(inspector, destination, saved, saved_blobs)
+                    checks["recovered_files_verified"] = True
+                    phase = "restored_settings"
+                    checks["recovered_settings_verified"] = False
                     profile = destination / "home" / inspector["PROFILE_RELATIVE"]
-                    profile_fd = core["open_directory"](profile, {0, uid})
+                    profile_fd = open_recovery_directory(profile, {0, uid})
                     try:
                         restored_settings = {name: core["read_private_at"](profile_fd, name, uid)[0]
                                              for name in ("config.yaml", "enhanced_cognee.json", ".env")}
@@ -327,23 +436,44 @@ def child(core, inspector, mode, destination):
                     rows = list(parse_stream(io.StringIO(restored_settings[".env"].decode("utf-8"))))
                     tokens = [row.value for row in rows if row.key == core["TOKEN_NAME"]]
                     if any(row.error for row in rows) or len(tokens) != 1: raise BackupError("restored_credential_assignment")
+                    checks["recovered_settings_verified"] = True
+                    phase = "restored_api_status"
+                    checks["recovered_api_status_passed"] = False
                     code, status = core["api_status"](tokens[0])
+                    checks["api_http_status"] = code if type(code) is int and 100 <= code <= 599 else None
                     if (code != 200 or not isinstance(status, dict) or status.get("ready") is not True
                             or any(status.get(field) != core["IDENTITY"][claim] for field, claim in (
                                 ("tenant_id", "tenant"), ("project_id", "project_id"), ("subject", "sub")))
                             or status.get("schema_version") != 3 or status.get("encryption") != "AES-256-GCM"
                             or type(status.get("active_records")) is not int or status["active_records"] != 2):
                         raise BackupError("restored_scoped_access_not_accepted")
+                    checks["recovered_api_status_passed"] = True
+                    phase = "source_recheck"
                     if source_snapshot(inspector, uid) != (manifest, blobs): raise BackupError("live_source_changed_during_restore")
-                    print(json.dumps(dict(complete=True, restored_files_verified=True,
+                    receipt = dict(complete=True, restored_files_verified=True,
                         restored_provider_binding_verified=True, restored_scope_status_passed=True,
-                        live_source_preserved=True, **counts)))
+                        live_source_preserved=True, **counts)
+                    if mode == "inspect": receipt.update(checks=checks, files_written=False)
+                    print(json.dumps(receipt))
                 else: raise BackupError("unapproved_child_mode")
             finally: os.close(lock)
         finally: os.close(directory)
-    except Exception:
-        print(json.dumps({"complete": False, "category": "restricted_profile_snapshot_or_restore_incomplete"}), file=sys.stderr)
+    except Exception as error:
+        category = str(error) if isinstance(error, BackupError) and str(error) in CHILD_CATEGORIES else "unexpected_check_failure"
+        if isinstance(error, PermissionError): category = "permission_denied"
+        elif isinstance(error, FileNotFoundError): category = "entry_missing"
+        elif isinstance(error, NotADirectoryError): category = "path_type_refused"
+        elif isinstance(error, (ValueError, tarfile.TarError)): category = "parse_failed"
+        elif isinstance(error, (core["ProvisionError"], inspector["InspectionError"])): category = "protected_guard_refused"
+        print(json.dumps({"complete": False, "phase": phase, "category": category, "checks": checks}), file=sys.stderr)
         raise SystemExit(1) from None
+
+
+def valid_checks(value):
+    return (isinstance(value, dict) and set(value) == CHECK_FLAGS | {"api_http_status"}
+            and all(value[k] is None or type(value[k]) is bool for k in CHECK_FLAGS)
+            and (value["api_http_status"] is None or type(value["api_http_status"]) is int
+                 and 100 <= value["api_http_status"] <= 599))
 
 
 def run_child(core, inspector, sources, account, mode, data=b"", destination=None):
@@ -360,15 +490,28 @@ def run_child(core, inspector, sources, account, mode, data=b"", destination=Non
         input=data, user=account.pw_uid, group=account.pw_gid, extra_groups=(), cwd="/tmp",
         env={"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8"}, close_fds=True,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)
-    if result.returncode or len(result.stderr) > 4096 or len(result.stdout) > MAX_ARCHIVE:
+    if len(result.stderr) > 4096 or len(result.stdout) > MAX_ARCHIVE:
         raise BackupError("restricted_snapshot_or_restore_incomplete_preserve_evidence")
+    if result.returncode:
+        diagnostics = None
+        try:
+            report = json.loads(result.stderr)
+            if (isinstance(report, dict) and set(report) == {"complete", "phase", "category", "checks"}
+                    and report["complete"] is False and report["phase"] in CHILD_PHASES
+                    and report["category"] in CHILD_CATEGORIES and valid_checks(report["checks"])):
+                diagnostics = report
+        except (ValueError, TypeError): pass
+        raise BackupError("restricted_snapshot_or_restore_incomplete_preserve_evidence", diagnostics=diagnostics)
     report = json.loads(result.stderr if mode == "snapshot" else result.stdout)
     keys = {"complete", "files", "source_bytes", "entries"}
-    if mode == "restore": keys |= {"restored_files_verified", "restored_provider_binding_verified", "restored_scope_status_passed", "live_source_preserved"}
+    if mode in {"restore", "inspect"}: keys |= {"restored_files_verified", "restored_provider_binding_verified", "restored_scope_status_passed", "live_source_preserved"}
+    if mode == "inspect": keys |= {"checks", "files_written"}
     if (not isinstance(report, dict) or set(report) != keys or report.get("complete") is not True
             or any(type(report.get(k)) is not int or not 0 <= report[k] <= limit for k, limit in (
                 ("files", MAX_ENTRIES), ("source_bytes", MAX_DATA), ("entries", MAX_ENTRIES)))
-            or mode == "restore" and any(report.get(k) is not True for k in keys - {"files", "source_bytes", "entries"})):
+            or mode in {"restore", "inspect"} and any(report.get(k) is not True for k in
+                keys - {"files", "source_bytes", "entries", "checks", "files_written"})
+            or mode == "inspect" and (report.get("files_written") is not False or not valid_checks(report.get("checks")))):
         raise BackupError("unexpected_child_receipt_private_output_suppressed")
     if report["files"] < len(inspector["PRIVATE"]) + len(inspector["RECEIPTS"]) or report["entries"] <= report["files"]:
         raise BackupError("unexpected_child_receipt_private_output_suppressed")
@@ -416,7 +559,7 @@ def age(arguments, *, data, output=subprocess.PIPE):
     return result.stdout
 
 
-def main(*, core, inspector, sources):
+def main(*, core, inspector, sources, inspect_existing=False):
     phase, completed = "operator_preflight", False
     backup_path = recovery_path = None
     try:
@@ -443,6 +586,30 @@ def main(*, core, inspector, sources):
         directory = core["open_directory"](DESTINATION, {0})
         try:
             if stat.S_IMODE(os.fstat(directory).st_mode) != 0o700: raise BackupError("backup_directory_protection")
+            if inspect_existing is True:
+                # Fixed failed generation only. Authenticate before decrypting;
+                # do not recreate an archive or write into retained evidence.
+                backup_path = str(DESTINATION / FAILED_BACKUP)
+                recovery_path = str(RECOVERY / FAILED_RESTORE)
+                phase = "existing_backup_authentication"
+                ciphertext = verify_completed(core, directory, FAILED_BACKUP, key, key_id)
+                completed = True
+                phase = "existing_backup_decryption"
+                recovered = age(["--decrypt", "--identity", str(IDENTITY)], data=ciphertext)
+                phase = "retained_parent_protection"
+                parent = core["open_directory"](RECOVERY, {0})
+                try:
+                    if stat.S_IMODE(os.fstat(parent).st_mode) != 0o711:
+                        raise BackupError("recovery_parent_protection")
+                finally: os.close(parent)
+                phase = "retained_restore_inspection"
+                _, restored = run_child(core, inspector, sources, account, "inspect", recovered, Path(recovery_path))
+                print(json.dumps({"complete": True, "stage": "profile_recovery_inspection",
+                    "signed_ciphertext_verified": True, "decryption_passed": True,
+                    "checks": restored["checks"], "files_written": False,
+                    "live_source_preserved": True, "model_called": False,
+                    "memory_records_written": False, "runtime_qualified": False}, indent=2))
+                return
             phase = "restricted_snapshot"
             plaintext, receipt = run_child(core, inspector, sources, account, "snapshot")
             generation = uuid.uuid4().hex
@@ -508,11 +675,19 @@ def main(*, core, inspector, sources):
             "plaintext_archive_written": False, "model_called": False, "memory_records_written": False,
             "native_restored_hermes_launched": False, "recurring_profile_backup_installed": False,
             "windows_collection_qualified": False, "runtime_qualified": False}, indent=2))
-    except Exception:
-        print(json.dumps({"complete": False, "stage": "profile_backup_restore", "failure_stage": phase,
+    except Exception as error:
+        report = {"complete": False, "stage": "profile_recovery_inspection" if inspect_existing else "profile_backup_restore", "failure_stage": phase,
             "category": "profile_backup_or_restore_incomplete_preserve_evidence", "encrypted_backup_created": completed,
             "encrypted_backup": backup_path, "disposable_restore": recovery_path,
-            "model_called": False, "runtime_qualified": False}, indent=2))
+            "model_called": False, "runtime_qualified": False}
+        if isinstance(error, BackupError) and error.diagnostics is not None:
+            report["restricted_diagnostics"] = error.diagnostics
+        if inspect_existing:
+            report["encrypted_backup_created"] = False
+            report["existing_signed_ciphertext_verified"] = completed
+            report["files_written"] = False
+            report["memory_records_written"] = False
+        print(json.dumps(report, indent=2))
         raise SystemExit(1) from None
 
 

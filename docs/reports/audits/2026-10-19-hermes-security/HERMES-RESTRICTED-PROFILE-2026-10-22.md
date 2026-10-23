@@ -1673,3 +1673,40 @@ backup/archive exclusions intact. Installed profile recovery is pending the
 next owner command. Recurring profile backup, Windows collection/cloud recovery,
 current PostgreSQL generation restore, trusted-program rebuild, later human-
 answer/retraction, sharing/isolation and fleet/release gates remain open.
+
+## 23 October: encrypted profile generation created; disposable restore failed
+
+Owner-run helper b53b32326f0376171946c983211dde3682da1f78 returned complete=false
+at disposable_restore, encrypted_backup_created=true. Preserve generation
+hermes_profile_20261023T104510Z_419749ed.tar.age and its signed sidecar under
+/var/backups/enhanced-cognee, and destination
+/var/lib/hermes-runtime-recovery/check-419749ed55f9406785961263f74b1304.
+No successful installed extraction or profile recovery is claimed.
+
+The Workspace reproduction found that the read-only directory opener needs
+listing permission on every ancestor, conflicting with the intentionally
+root-owned 0711 recovery parent. Corrected recovery traversal uses O_PATH on
+validated pinned ancestors, without changing permissions or following links.
+The installed failure remains unconfirmed until the retained evidence check.
+The next operator entry point authenticates/decrypts that fixed backup in RAM
+and inspects the existing destination without creating/re-extracting files.
+Allowlisted phases/categories/flags now survive child failure; private output
+and arbitrary exception text remain suppressed. See HERMES-PILOT-RECOVERY.md.
+
+No account login/renewal, model call, memory write, upload, service/timer change,
+cleanup, main model-default change or fleet activation is part of this step.
+The previously successful custody, capture, recall, correction, ambiguity,
+privacy and manual-renewal results retain their original scope. Profile restore,
+recurring collection, other lifecycle/isolation/release gates and fleet rollout
+remain incomplete.
+
+Workspace validation: 947 focused checks pass, zero failures/skips and no
+reported warnings, including 101 profile-backup/recovery cases. Real filesystem
+cases reproduce the listing-permission failure, restore/read files through a
+traversal-only ancestor and retain ancestor/link/owner/write protections. Real
+age round trips still use disposable synthetic keys; root/operator metadata,
+account switching and local API results remain simulated here. Child program
+compilation, fixed-generation read-only selection and sanitized failure-channel
+checks pass. This is source evidence, not installed recovery or full release
+qualification. The exact three-file bundle and operator bootstrap are verified
+before publication; no Ubuntu-Hermes command runs in this Workspace session.

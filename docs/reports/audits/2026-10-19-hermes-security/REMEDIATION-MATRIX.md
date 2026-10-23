@@ -16,7 +16,10 @@ human follow-up and retraction/history remain open. Manual fixed-scope pilot
 renewal also passes at owner-run 8fb6fca9, preserving old environment/settings/
 OAuth, with new expiry 2026-10-24T09:15:06+00:00 and API refusal controls passing.
 Restricted-HOME inventory also passes at 61c272a7 (60 files, no detected database
-or problematic entries); manual encrypted snapshot/disposable restore is prepared.
+or problematic entries). Owner-run b53b3232 created an encrypted profile
+generation but stopped during disposable restore; preserve both backup and
+recovery destination. Read-only retained-evidence inspection and a protected
+ancestor traversal correction are prepared; installed profile recovery is open.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
