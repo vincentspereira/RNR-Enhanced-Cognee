@@ -20,6 +20,52 @@ def check():
 TOKEN = "synthetic-pilot-access-token-never-a-real-account"
 
 
+@pytest.mark.parametrize("choice", ["read", "none", "remember", "correct", "retract", "hidden-write", "429"])
+def test_native_privacy_exposes_edits_but_blocks_and_reports_every_attempt(check, monkeypatch, tmp_path, choice):
+    import sys
+    source = tmp_path / "repo/run_agent.py"
+    source.parent.mkdir()
+    source.touch()
+    monkeypatch.setattr(check, "RELEASE", tmp_path)
+    options, transported = {}, []
+    provider = NS(_client=NS(request=lambda *args: transported.append(args) or {}))
+    class Manager:
+        def add_provider(self, p): assert p is provider
+        def initialize_all(self, *a, **kw): pass
+    class Agent:
+        def __init__(self, **kw): options.update(kw)
+        def run_conversation(self, prompt, conversation_history):
+            assert conversation_history == []
+            if choice in {"remember", "correct", "retract", "read"}:
+                tool = "enhanced_get" if choice == "read" else "enhanced_" + choice
+                options["tool_progress_callback"]("tool.started", tool, "PRIVATE_PREVIEW", {})
+            if choice == "read": provider._client.request("GET", "/v1/memories/cedar")
+            if choice == "hidden-write":
+                with pytest.raises(ValueError): provider._client.request("POST", "/v1/memories", {})
+            return {"completed": True, "final_response": "Sensitive details should stay in a vault."}
+        def close(self): options["closed"] = True
+    monkeypatch.setitem(sys.modules, "run_agent", NS(__file__=str(source), AIAgent=Agent))
+    monkeypatch.setitem(sys.modules, "agent.memory_manager", NS(MemoryManager=Manager))
+    def restrict(agent, allowed):
+        assert allowed == {"enhanced_get", "enhanced_recall", "enhanced_status", "enhanced_clarify",
+            "enhanced_remember", "enhanced_correct", "enhanced_retract"}
+        return {"count": 1, "rate_limited": choice == "429"}
+    monkeypatch.setattr(check, "restrict_agent", restrict)
+    if choice in {"read", "none"}:
+        _, calls, count = check.native_memory_turn("privacy", TOKEN, provider, "fresh", "synthetic")
+        assert calls == (["enhanced_get"] if choice == "read" else []) and count == 1
+    else:
+        with pytest.raises(check.NativeTurnError) as caught:
+            check.native_memory_turn("privacy", TOKEN, provider, "fresh", "synthetic")
+        report = check.failure(caught.value)
+        if choice != "429":
+            assert report["category"] == "selected_sensitive_capture_attempted"
+            assert report["privacy_diagnostics"] == {"editing_tool_called": choice != "hidden-write",
+                "canonical_write_attempts": int(choice == "hidden-write")}
+        assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
+    assert options["closed"] and len(transported) == int(choice == "read")
+
+
 def credential(check):
     return {"credential_pool": {"openai-codex": [{"auth_type": "oauth", "label": "cognee-pilot-codex",
         "source": "manual:device_code", "base_url": check.BASE_URL, "access_token": TOKEN}]}}

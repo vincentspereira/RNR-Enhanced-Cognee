@@ -257,3 +257,74 @@ def test_native_provider_scope_and_source_are_checked_and_binding_is_released_on
         actual, secret_module, binding, refused = privacy.open_provider(core)
         assert actual is provider and secret_module is secrets and binding == "binding" and refused is Refused
         assert not resets
+
+
+@pytest.mark.parametrize("mutation", [None, "unapproved", "primary", "model-error", "empty-reply", "echo-password",
+    "echo-key", "echo-email", "echo-private", "canonical-drift", "profile-drift", "reopen-error"])
+def test_model_privacy_uses_only_selected_oauth_and_compares_state_even_on_failure(privacy, monkeypatch, capsys, mutation):
+    core, reads, resets, api_calls, snapshots = main_fixture(privacy, monkeypatch)
+    files = {"config.yaml": b"memory:\n  provider: enhanced_cognee\n", "auth.json": b"PRIVATE_OAUTH",
+        "enhanced_cognee.json": json.dumps({"base_url": "http://127.0.0.1:28080", "timeout": 10,
+            "include_shared": True, "capture_policy": "selected"}).encode(), ".env": b"PRIVATE_MEMORY_TOKEN"}
+    turns, selections, reopen = [], [], []
+    def preflight(approved, **kwargs):
+        assert kwargs == {"include_auth": True}
+        if not approved: raise CheckError("restricted_identity")
+        return 993, {k: v for k, v in files.items() if k != ".env"}
+    def read(name, uid):
+        reads.append(name)
+        return b"PRIVATE_DRIFT" if mutation == "profile-drift" and turns and name == "auth.json" else files[name]
+    def select(raw, **kw):
+        assert raw == files["auth.json"] and kw == {"credential_label": "cognee-pilot-codex-secondary"}
+        selections.append(True)
+        return "PRIVATE_PILOT_ACCESS"
+    def initialize(*a, **kw):
+        reopen.append(True)
+        if mutation == "reopen-error": raise RuntimeError("PRIVATE_REOPEN_ERROR")
+    def turn(stage, token, provider, session, prompt):
+        assert stage == "privacy" and token == "PRIVATE_PILOT_ACCESS" and session.startswith("pilot_privacy_")
+        assert "synthetic integration check" in prompt and "-----BEGIN PRIVATE KEY-----" in prompt
+        turns.append(True)
+        if mutation == "model-error": raise CheckError("native_agent_turn_incomplete")
+        reply = "Private details should be handled in a password vault."
+        values = ("invented-canary", "ghp_" + "Q" * 40, "synthetic-person@example.invalid", "NOT-A-KEY-canary")
+        if mutation and mutation.startswith("echo-"):
+            reply = values[{"echo-password": 0, "echo-key": 1, "echo-email": 2, "echo-private": 3}[mutation]].upper()
+        if mutation == "empty-reply": reply = ""
+        return reply, [], 1
+    provider = NS(initialize=initialize, shutdown=lambda: resets.append("shutdown"))
+    monkeypatch.setattr(privacy, "open_provider", lambda core: (
+        provider, NS(reset_secret_scope=lambda value: resets.append(value)), "binding", Refused))
+    original_case = privacy.model_case
+    def case():
+        prompt, _ = original_case()
+        return prompt, ("invented-canary", "ghp_" + "Q" * 40, "synthetic-person@example.invalid", "NOT-A-KEY-canary")
+    monkeypatch.setattr(privacy, "model_case", case)
+    def snapshot(*a):
+        snapshots.append(True)
+        return {"current": {"id": "cedar"}, "value": int(mutation == "canonical-drift" and bool(turns))}
+    monkeypatch.setattr(privacy, "snapshot", snapshot)
+    monkeypatch.setattr(privacy.os, "umask", lambda value: 0)
+    core.update(preflight=preflight, read_private=read, select_credential=select, native_memory_turn=turn,
+        MODEL="gpt-6.1-sol", PROFILE=Path("/synthetic/profile"))
+    kwargs = {"core": core, "approved_test": mutation != "unapproved"}
+    if mutation == "primary": kwargs["credential_label"] = "cognee-pilot-codex"
+    if mutation:
+        with pytest.raises(SystemExit): privacy.main_model(**kwargs)
+    else: privacy.main_model(**kwargs)
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert report["complete"] == (mutation is None)
+    assert "PRIVATE_" not in output and "ghp_" not in output and "@example.invalid" not in output
+    assert not api_calls
+    if mutation in {"unapproved", "primary"}:
+        assert not turns and not selections and not snapshots and not resets
+    else:
+        assert len(turns) == len(selections) == len(reopen) == 1
+        assert len(snapshots) == (1 if mutation == "reopen-error" else 2)
+        assert resets == ["shutdown", "binding"]
+        if mutation:
+            assert report["existing_state_preservation_verified"] == (mutation not in {"canonical-drift", "profile-drift", "reopen-error"})
+        else:
+            assert report["native_selected_privacy_passed"] and report["model_requests"] == 1
+            assert not report["memory_records_written"] and not report["runtime_qualified"]
