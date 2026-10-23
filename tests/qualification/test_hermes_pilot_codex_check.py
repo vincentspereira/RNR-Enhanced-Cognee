@@ -51,6 +51,43 @@ def test_ambiguous_unsafe_or_general_api_credentials_are_refused(check, mutation
     assert "PRIVATE_" not in str(error.value) and TOKEN not in str(error.value)
 
 
+def secondary_credential(check):
+    auth = credential(check)
+    row = dict(auth["credential_pool"]["openai-codex"][0])
+    row.update(label="cognee-pilot-codex-secondary", access_token=TOKEN + "-secondary")
+    auth["credential_pool"]["openai-codex"].append(row)
+    return auth
+
+
+def test_second_account_is_selected_only_by_explicit_pilot_label(check):
+    raw = json.dumps(secondary_credential(check)).encode()
+    with pytest.raises(check.CheckError): check.select_credential(raw)
+    assert check.select_credential(raw, credential_label="cognee-pilot-codex-secondary") == TOKEN + "-secondary"
+
+
+@pytest.mark.parametrize("mutation", ["missing", "duplicate", "same-token", "disabled", "wrong-url", "api-key", "wrong-source", "other-label"])
+def test_secondary_selection_refuses_ambiguity_and_never_falls_back(check, mutation):
+    auth = secondary_credential(check)
+    rows = auth["credential_pool"]["openai-codex"]
+    secondary = rows[1]
+    if mutation == "missing": rows.pop()
+    elif mutation == "duplicate": rows.append(dict(secondary))
+    elif mutation == "same-token": secondary["access_token"] = TOKEN
+    elif mutation == "disabled": secondary["disabled"] = True
+    elif mutation == "wrong-url": secondary["base_url"] = "https://api.openai.com/v1"
+    elif mutation == "api-key": secondary["auth_type"] = "api_key"
+    elif mutation == "wrong-source": secondary["source"] = "device_code"
+    else: rows[0]["label"] = "PRIVATE_LABEL_SENTINEL"
+    with pytest.raises(check.CheckError) as error:
+        check.select_credential(json.dumps(auth).encode(), credential_label="cognee-pilot-codex-secondary")
+    assert TOKEN not in str(error.value) and "PRIVATE_" not in str(error.value)
+
+
+def test_arbitrary_account_label_is_refused_before_parsing_auth(check):
+    with pytest.raises(check.CheckError):
+        check.select_credential(b"not-json", credential_label="PRIVATE_LABEL_SENTINEL")
+
+
 def fixture_components(check, *, model="gpt-6.1-sol", terminal=True, text=None, finish="stop", tool_calls=None):
     def headers(kwargs, **options):
         assert options == {"access_token": TOKEN, "base_url": check.BASE_URL}
@@ -691,6 +728,11 @@ def test_memory_stage_orchestration_preserves_credentials_and_separates_sessions
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails)
 
 
+def test_corrected_recall_uses_explicit_second_account_without_changing_pilot_auth(check, monkeypatch, tmp_path, capsys):
+    exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_corrected", False,
+                          secondary=True)
+
+
 @pytest.mark.parametrize("mutation", ["existing-receipt", "scope", "old-record", "old-receipt",
                                      "provenance", "origin", "post-count", "fixture-collision", "same-id"])
 def test_followup_capture_refuses_replay_or_changed_evidence(check, monkeypatch, tmp_path, capsys, mutation):
@@ -714,11 +756,11 @@ def test_corrected_recall_refuses_stale_answers_and_changed_evidence(check, monk
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_corrected", False, mutation)
 
 
-def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None):
+def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None, *, secondary=False):
     import sys
     fixture = "a" * 32
     state = {"fixture": fixture, "capture_session": "cognee_capture_" + fixture}
-    snapshots = {"auth.json": json.dumps(credential(check)).encode(),
+    snapshots = {"auth.json": json.dumps(secondary_credential(check) if secondary else credential(check)).encode(),
         "config.yaml": b"memory:\n  provider: enhanced_cognee\n",
         "enhanced_cognee.json": json.dumps({"base_url": "http://127.0.0.1:28080", "timeout": 10,
             "include_shared": True, "capture_policy": "selected"}).encode()}
@@ -782,6 +824,7 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     prompts = []
     receipts = []
     def turn(stage, token, actual_provider, session, prompt, **kwargs):
+        assert token == TOKEN + "-secondary" if secondary else token == TOKEN
         if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt", "existing-correction"}:
             pytest.fail("Refused followup must not call a model")
         prompts.append(prompt)
@@ -837,7 +880,8 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     if fails or mutation:
         with pytest.raises(SystemExit): check.main_memory(stage=stage, approved_test=True)
     else:
-        check.main_memory(stage=stage, approved_test=True)
+        check.main_memory(stage=stage, approved_test=True, **(
+            {"credential_label": "cognee-pilot-codex-secondary"} if secondary else {}))
     output = capsys.readouterr().out
     report = json.loads(output)
     if fails or mutation:

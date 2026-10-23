@@ -129,19 +129,29 @@ def preflight(approved_test, *, include_auth=True):
     return account.pw_uid, snapshots
 
 
-def select_credential(raw):
+def select_credential(raw, *, credential_label="cognee-pilot-codex"):
+    primary = "cognee-pilot-codex"
+    secondary = "cognee-pilot-codex-secondary"
+    if credential_label not in {primary, secondary}:
+        raise CheckError("pilot_oauth_selection")
     auth = json.loads(raw)
     pool = auth.get("credential_pool", {}) if isinstance(auth, dict) else {}
     rows = pool.get("openai-codex", []) if isinstance(pool, dict) else []
-    if not isinstance(rows, list) or len(rows) != 1 or not isinstance(rows[0], dict):
+    expected = {primary, secondary} if credential_label == secondary else {primary}
+    if (not isinstance(rows, list) or len(rows) != len(expected)
+            or any(not isinstance(row, dict) for row in rows)
+            or {row.get("label") for row in rows} != expected):
         raise CheckError("pilot_oauth_selection")
-    row = rows[0]
+    row = next(row for row in rows if row.get("label") == credential_label)
     token = row.get("access_token")
-    if (row.get("auth_type") != "oauth" or row.get("label") != "cognee-pilot-codex"
+    if (row.get("auth_type") != "oauth"
             or row.get("source") != "manual:device_code" or row.get("disabled") is True
             or row.get("base_url", "").rstrip("/") != BASE_URL
             or not isinstance(token, str) or not 32 <= len(token) <= 32768
             or not token.isascii() or any(ord(char) < 33 or ord(char) > 126 for char in token)):
+        raise CheckError("pilot_oauth_selection")
+    if credential_label == secondary and any(
+            item.get("access_token") == token for item in rows if item is not row):
         raise CheckError("pilot_oauth_selection")
     return token
 
@@ -256,7 +266,7 @@ def failure(error):
     return result
 
 
-def main(*, approved_test=False):
+def main(*, approved_test=False, credential_label="cognee-pilot-codex"):
     snapshots = {}
     uid = None
     phase = "restricted_preflight"
@@ -265,7 +275,7 @@ def main(*, approved_test=False):
         os.chdir(HOME)
         logging.disable(logging.CRITICAL)
         phase = "pilot_credential"
-        token = select_credential(snapshots["auth.json"])
+        token = select_credential(snapshots["auth.json"], credential_label=credential_label)
         phase = "native_imports"
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             components = native_components()
@@ -276,7 +286,7 @@ def main(*, approved_test=False):
             raise CheckError("profile_state_changed_preserve_and_review")
         print(json.dumps({"complete": True, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL, "base_url": BASE_URL,
-            **result, "maximum_requests": 1, "model_called": True,
+            **result, "credential_label": credential_label, "maximum_requests": 1, "model_called": True,
             "profile_settings_and_auth_unchanged": True, "model_defaults_changed": False,
             "human_credentials_copied": False, "memory_records_written": False,
             "full_hermes_turn_tested": False, "hermes_capture_qualified": False,
@@ -597,7 +607,7 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
         agent.close()
 
 
-def main_memory(*, stage, approved_test=False):
+def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-codex"):
     if stage == "inspect":
         return main_inspect(approved_test=approved_test)
     snapshots = {}
@@ -624,7 +634,7 @@ def main_memory(*, stage, approved_test=False):
         os.chdir(HOME)
         os.umask(0o077)
         logging.disable(logging.CRITICAL)
-        token = select_credential(snapshots["auth.json"])
+        token = select_credential(snapshots["auth.json"], credential_label=credential_label)
         verify_provider()
         sys.path.insert(0, str(RELEASE / "repo"))
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
@@ -746,7 +756,8 @@ def main_memory(*, stage, approved_test=False):
             if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
                 raise CheckError("profile_state_changed_preserve_and_review")
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
-            "profile": "enhanced-cognee-pilot", "model": MODEL, "native_agent_turn_passed": True,
+            "profile": "enhanced-cognee-pilot", "model": MODEL,
+            "credential_label": credential_label, "native_agent_turn_passed": True,
             "selected_capture_passed": capture, "fresh_session_recall_passed": not capture and not correction,
             "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
             "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],

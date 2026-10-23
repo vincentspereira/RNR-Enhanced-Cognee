@@ -108,6 +108,10 @@ requires encrypted coverage, native checks and the existing pause/owner decision
    credential expiry and local API acceptance without a cloud request. The updated
    model-test guard blocks further sends in that process after its first 429;
    a later manual process has a fresh latch, not proof of a cleared rate limit.
+   The owner subsequently authorized a fresh second-account pilot sign-in.
+   Use the documented secondary login and explicit per-test credential label;
+   do not rotate automatically, reset limits or alter main Hermes defaults.
+   Enrollment alone does not prove remaining quota or memory-token readiness.
 2. Qualify ambiguous clarification, private-detail/credential exclusion and
    cross-scope denial in the current restricted runtime, reusing dated unchanged
    service evidence only where justified.

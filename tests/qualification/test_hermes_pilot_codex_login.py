@@ -169,7 +169,8 @@ def test_concurrent_settings_change_is_reported_without_restoration(login, monke
 
 @pytest.mark.parametrize("mutation", ["none", "root", "supplementary", "nnp", "capability",
                                      "unsafe-directory", "existing-auth", "human-readable"])
-def test_restricted_preflight_boundaries(login, monkeypatch, mutation):
+@pytest.mark.parametrize("existing_auth", [False, True])
+def test_restricted_preflight_boundaries(login, monkeypatch, mutation, existing_auth):
     account = SimpleNamespace(pw_name="hermes-runtime", pw_uid=1000, pw_gid=42, pw_dir=str(login.HOME))
     if mutation == "root": account.pw_uid = 0
     monkeypatch.setattr(login.pwd, "getpwuid", lambda uid: account)
@@ -190,10 +191,10 @@ def test_restricted_preflight_boundaries(login, monkeypatch, mutation):
     monkeypatch.setattr(login, "read_private", lambda name, uid:
         login.EXPECTED_CONFIG if name == "config.yaml" else b"PRIVATE_SETTINGS_SENTINEL")
     if mutation == "none":
-        uid, snapshots = login.preflight(True)
+        uid, snapshots = login.preflight(True, existing_auth=existing_auth)
         assert uid == 1000 and snapshots["config.yaml"] == login.EXPECTED_CONFIG
     else:
-        with pytest.raises(login.LoginError): login.preflight(True)
+        with pytest.raises(login.LoginError): login.preflight(True, existing_auth=existing_auth)
 
 
 @pytest.mark.parametrize("unsafe", ["symlink", "hardlink", "public-mode"])
@@ -211,3 +212,160 @@ def test_private_auth_reader_refuses_unsafe_files_without_changing_them(login, t
     with pytest.raises((login.LoginError, OSError)):
         login.read_private("auth.json", os.geteuid())
     assert target.read_bytes() == b"PRIVATE_STORED_TOKEN_SENTINEL"
+
+
+def secondary_auth(login):
+    row = auth_record(login)["credential_pool"]["openai-codex"][0]
+    row.update(access_token="synthetic-first-access-" + "x" * 32,
+               refresh_token="synthetic-first-refresh-" + "x" * 32,
+               base_url="https://chatgpt.com/backend-api/codex", priority=0,
+               last_status="exhausted", last_status_at=1700000000)
+    return {"credential_pool": {"openai-codex": [row]}}
+
+
+def added_auth(login, before):
+    auth = json.loads(before)
+    auth["credential_pool"]["openai-codex"].append(dict(
+        auth_type="oauth", label=login.SECONDARY_LABEL, source="manual:device_code",
+        base_url="https://chatgpt.com/backend-api/codex", priority=1,
+        access_token="synthetic-second-access-" + "y" * 32,
+        refresh_token="synthetic-second-refresh-" + "y" * 32))
+    return auth
+
+
+def setup_secondary(login, tmp_path, monkeypatch, *, mutation=None):
+    monkeypatch.setattr(login, "PROFILE", tmp_path)
+    before = json.dumps(secondary_auth(login)).encode()
+    auth_file = tmp_path / "auth.json"
+    auth_file.write_bytes(before)
+    auth_file.chmod(0o600)
+    snapshots = {"config.yaml": login.EXPECTED_CONFIG, ".env": b"synthetic-private-memory-key"}
+    monkeypatch.setattr(login, "preflight", lambda approved, **kw: (os.geteuid(), dict(snapshots))
+        if approved and kw == {"existing_auth": True} else pytest.fail("Explicit restricted preflight required"))
+    monkeypatch.setattr(login.os, "chdir", lambda *a: None)
+    monkeypatch.setattr(login.os, "umask", lambda *a: None)
+    monkeypatch.setattr(login.logging, "disable", lambda *a: None)
+    reader = login.read_private
+    monkeypatch.setattr(login, "read_private", lambda name, uid:
+        reader(name, uid) if name == "auth.json" else snapshots[name])
+    monkeypatch.setattr(login.subprocess, "run", lambda *a, **kw: SimpleNamespace(returncode=int(mutation == "dns")))
+    def identity(token):
+        if mutation == "unknown": raise login.LoginError("Account identity hints unavailable.")
+        return ("synthetic-workspace", "first" if "first" in token or mutation == "same-account" else "second")
+    monkeypatch.setattr(login, "account_identity", identity)
+    calls = []
+    def native(label):
+        calls.append(label)
+        auth = added_auth(login, before)
+        rows = auth["credential_pool"]["openai-codex"]
+        if mutation == "old-token": rows[0]["access_token"] = "PRIVATE_DRIFT_SENTINEL"
+        if mutation == "old-status": rows[0]["last_status"] = None
+        if mutation == "old-metadata": rows[0]["priority"] = 1
+        if mutation == "missing-row": rows.pop(0)
+        if mutation == "duplicate": rows.append(dict(rows[1]))
+        if mutation == "wrong-label": rows[1]["label"] = "PRIVATE_LABEL_SENTINEL"
+        if mutation == "settings": snapshots["config.yaml"] = b"changed"
+        if mutation == "native-error": raise RuntimeError("PRIVATE_NATIVE_SENTINEL")
+        auth_file.write_text(json.dumps(auth))
+    monkeypatch.setattr(login, "native_login", native)
+    return before, auth_file, calls, snapshots
+
+
+def test_secondary_native_login_preserves_first_account_and_does_not_call_model(login, tmp_path, monkeypatch, capsys):
+    before, auth_file, calls, snapshots = setup_secondary(login, tmp_path, monkeypatch)
+    login.main_secondary(approved_login=True)
+    output = capsys.readouterr().out
+    report = json.loads(output[output.index("{"):])
+    assert report["complete"] and report["secondary_pilot_oauth_saved"]
+    assert report["existing_credential_fields_preserved"] and report["account_identity_hints_differ"]
+    assert report["credential_label"] == login.SECONDARY_LABEL and calls == [login.SECONDARY_LABEL]
+    assert not any(report[k] for k in ("model_called", "quota_availability_tested", "runtime_qualified",
+        "account_identity_signature_verified", "human_credentials_copied", "model_defaults_changed"))
+    backup = tmp_path / report["private_auth_backup"]
+    assert backup.read_bytes() == before and stat.S_IMODE(backup.stat().st_mode) == 0o600
+    assert len(login.secondary_rows(auth_file.read_bytes(), added=True)) == 2
+    assert "synthetic-first" not in output and "synthetic-second" not in output
+
+
+@pytest.mark.parametrize("mutation", ["dns", "unknown", "same-account", "old-token", "old-status",
+    "old-metadata", "missing-row", "duplicate", "wrong-label", "settings", "native-error"])
+def test_secondary_failures_preserve_evidence_and_hide_private_details(login, tmp_path, monkeypatch, capsys, mutation):
+    before, auth_file, calls, snapshots = setup_secondary(login, tmp_path, monkeypatch, mutation=mutation)
+    with pytest.raises(SystemExit): login.main_secondary(approved_login=True)
+    output = capsys.readouterr().out
+    report = json.loads(output[output.index("{"):])
+    assert not report["complete"] and not report["model_called"]
+    assert "PRIVATE_" not in output and "synthetic-first" not in output
+    if report["private_auth_backup"]:
+        assert (tmp_path / report["private_auth_backup"]).read_bytes() == before
+    if mutation in {"dns", "unknown"}:
+        assert not calls and auth_file.read_bytes() == before
+    elif mutation != "native-error":
+        # No automatic overwrite, removal, rollback or status clearing after a refusal.
+        assert auth_file.read_bytes() != before
+
+
+@pytest.mark.parametrize("mutation", ["symlink", "hardlink", "public-mode", "held"])
+def test_secondary_lock_refuses_unsafe_or_concurrent_attempt_before_native_login(login, tmp_path, monkeypatch, capsys, mutation):
+    import fcntl
+    before, auth_file, calls, snapshots = setup_secondary(login, tmp_path, monkeypatch)
+    lock = tmp_path / ".secondary-login.lock"
+    held = None
+    if mutation == "symlink": lock.symlink_to(auth_file)
+    elif mutation == "hardlink": os.link(auth_file, lock)
+    else:
+        lock.touch(mode=0o644 if mutation == "public-mode" else 0o600)
+        if mutation == "held":
+            held = lock.open("r+")
+            fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    try:
+        with pytest.raises(SystemExit): login.main_secondary(approved_login=True)
+        assert not calls and auth_file.read_bytes() == before
+        assert not json.loads(capsys.readouterr().out)["complete"]
+    finally:
+        if held: held.close()
+
+
+def test_secondary_mode_never_replaces_existing_auth_backup(login, tmp_path, monkeypatch):
+    monkeypatch.setattr(login, "PROFILE", tmp_path)
+    monkeypatch.setattr(login.uuid, "uuid4", lambda: SimpleNamespace(hex="fixed"))
+    name = login.preserve_auth(b"synthetic-first")
+    with pytest.raises(FileExistsError): login.preserve_auth(b"synthetic-second")
+    assert (tmp_path / name).read_bytes() == b"synthetic-first"
+
+
+def test_native_secondary_uses_only_explicit_secondary_label(login, tmp_path, monkeypatch, capsys):
+    labels = []
+    def execute(args):
+        labels.append(args.label)
+        print(login.URL)
+        print("2. Enter this code:\nABCD-EFGH")
+    mock_native(login, tmp_path, monkeypatch, execute)
+    login.native_login(login.SECONDARY_LABEL)
+    assert labels == [login.SECONDARY_LABEL]
+
+
+def test_secondary_already_added_cannot_start_another_login(login, tmp_path, monkeypatch, capsys):
+    before, auth_file, calls, snapshots = setup_secondary(login, tmp_path, monkeypatch)
+    auth_file.write_text(json.dumps(added_auth(login, before)))
+    preserved = auth_file.read_bytes()
+    with pytest.raises(SystemExit): login.main_secondary(approved_login=True)
+    assert not calls and auth_file.read_bytes() == preserved
+    assert json.loads(capsys.readouterr().out)["failure_stage"] == "existing_pilot_auth"
+
+
+@pytest.mark.parametrize("identity", [None, ("", "subject"), ("account",), ["account", "subject"], ("account", "subject")])
+def test_account_hint_uses_only_protected_native_reader_without_disclosing_identity(login, tmp_path, monkeypatch, capsys, identity):
+    release = tmp_path / "release"
+    (release / "repo/agent").mkdir(parents=True)
+    source = release / "repo/agent/credential_pool.py"
+    source.touch()
+    monkeypatch.setattr(login, "RELEASE", release)
+    monkeypatch.setattr(sys, "path", list(sys.path))
+    reader = SimpleNamespace(__file__=str(source), _codex_principal_identity=lambda token: identity)
+    monkeypatch.setitem(sys.modules, "agent", SimpleNamespace(credential_pool=reader))
+    if identity == ("account", "subject"):
+        assert login.account_identity("PRIVATE_TOKEN") == identity
+    else:
+        with pytest.raises(login.LoginError): login.account_identity("PRIVATE_TOKEN")
+    assert not capsys.readouterr().out

@@ -1277,3 +1277,30 @@ warnings, including 18 added expiry/privacy/status-refusal/rate-limit regression
 Network/agent operations use fixtures, with real HTTPX hooks on a simulated
 transport. No installed host or cloud model call was made in Workspace. Continue
 with the non-model operational check while corrected model recall is deferred.
+
+## 23 October: second-account sign-in prepared after owner authorization
+
+The owner confirms exhaustion of the first OpenAI account's five-hour window
+and authorizes his second account for the restricted pilot's ongoing tests.
+login_pilot_codex.main_secondary(approved_login=True) prepares native fresh
+device-code OAuth enrollment with an explicit secondary label, retaining the
+first credential and a private no-overwrite local auth backup. Existing pilot
+settings remain checked, human/global credential imports are forbidden, and
+same/unknown native principal hints or unexpected pool/drift stop the flow
+without removing resulting evidence. Principal hints are decoded without
+signature verification; no identity values leave the helper. Local credential
+copies stay inside the private pilot and do not establish off-machine recovery.
+
+check_pilot_codex's basic and memory entry points now require explicit selection
+of cognee-pilot-codex-secondary when the two expected accounts are present.
+There is no fallback to the first account, automatic account rotation, reset of
+exhaustion state or change to main Hermes model defaults. Preserve the model
+request guard's first-429 latch. The next installed action is operator/browser
+sign-in only, followed by local memory-token readiness and deliberately selected
+read-only corrected recall. Existing capture/correction receipts stay intact.
+
+Workspace focused suites pass 622 tests, zero failures/skips and no reported
+warnings, including 43 new account-selection/preservation/privacy/lock/native
+hint/orchestration cases. Native provider/auth/network behavior uses fixtures;
+no second-account host login/model completion, renewed memory token or fleet
+admission is claimed. Full runtime and release gates remain open.

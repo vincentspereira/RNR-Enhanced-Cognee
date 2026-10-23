@@ -969,3 +969,60 @@ operations/status refusals and first-429 blocking across request/recovery client
 The native status check remains pending; no cloud/model call ran in Workspace.
 Defer another corrected-memory model recall until its limit permits a deliberate
 retry; no provider change, credential copying or limit bypass is introduced.
+
+## 23 October: owner-selected second pilot OpenAI account
+
+The owner confirms the first account reached its five-hour usage limit and
+authorizes a fresh sign-in to his second account for continued pilot tests.
+This is pilot-only account enrollment; main Hermes defaults, first-account
+credential fields and everyday bot/profile settings must remain preserved.
+No automatic account rotation, status reset or retry across accounts is added.
+
+The pinned/hash-verified login helper now supports
+main_secondary(approved_login=True). Run it under the same hermes-runtime
+identity, protected tools1 interpreter, clean environment and no-new-privileges
+wrapper as the original sign-in. Allow a 360-second outer timeout. Existing
+auth.json must contain exactly the original named native OAuth entry; the
+normal auth.lock, when present, must be a private regular single-link file.
+A separate private advisory lock excludes competing secondary-helper sign-ins.
+It does not lock out unrelated Hermes processes; keep the pilot idle throughout
+sign-in. The human/global auth stores remain forbidden, and pilot settings must
+match the prepared memory-only configuration. No existing credential is removed.
+
+Before starting native auth_add_command, the helper checks OpenAI sign-in DNS
+and preserves the existing pilot auth.json in a new no-overwrite mode-0600
+auth-before-secondary-<random>.json inside the private profile. This is a local
+credential copy, not an encrypted off-machine recovery proof. Keep it private
+and retain it for review. The profile-backup coverage gap remains open.
+
+Open the terminal's fixed OpenAI device-login URL in a private browser window,
+then deliberately sign in to the SECOND account. Do not paste device codes,
+passwords, emails or tokens into chat. Only the terminal prints the short-lived
+device code. This uses Hermes' native fresh OAuth add operation; it imports no
+human credential file. The new entry is named cognee-pilot-codex-secondary.
+
+Verification requires exactly two expected labels, the original entry's fields
+preserved, unchanged checked pilot settings and differing native account
+identity hints. The native comparison decodes account/subject metadata without
+signature verification: it detects an accidental repeat account but does not
+prove token validity, entitlement, quota or a reset. IDs remain private. A same
+account, unknown hint, unexpected pool or concurrent drift stops qualification
+and retains all state/copies for review; do not delete, overwrite, retry login
+blindly or restore a stale auth store over a newer grant.
+
+After the owner's successful sign-in receipt, basic completion and memory test
+entry points accept explicit credential_label="cognee-pilot-codex-secondary".
+Without that explicit choice, the old single-account selector refuses a two-row
+pool. It never falls back to the first credential or uses native pool rotation.
+The native agent receives the selected token only, with credential_pool=None
+and no fallback model. First-429 blocking remains enforced. Each account keeps
+its own provider restrictions; signing in makes no quota-availability claim.
+Check ordinary local Cognee credential expiry/status independently, then resume
+the read-only recall_corrected stage rather than replaying capture/correction.
+
+Workspace fixture suites pass 622 tests, zero failures/skips and no reported
+warnings. The 43 added cases cover private no-overwrite backups, concurrent/
+unsafe locks, original credential/status preservation, wrong-account refusal,
+native protected identity hints, strict second-account selection and corrected
+recall using that explicit token. Native auth/model/network calls use fixtures;
+no second-account login, provider request or installed-host pass is claimed.
