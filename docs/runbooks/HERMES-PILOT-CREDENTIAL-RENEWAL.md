@@ -2,7 +2,8 @@
 
 Scope: Ubuntu-Hermes, permanent hermes-runtime account and its existing
 enhanced-cognee-pilot only. Reviewed 23 October 2026. Source implementation and
-Workspace tests are complete; installed qualification is still pending.
+Workspace tests and the owner-run manual renewal passed. Installed interruption
+recovery and an unattended/fleet credential lifecycle remain unqualified.
 
 ## What the owner does
 
@@ -77,3 +78,14 @@ already installed; inspection/reconciliation must determine that first.
 Workspace checks use real temporary files and locks for transaction/recovery
 cases, with API replies and account/process boundaries simulated. Installed
 renewal and actual host interruption recovery require their own evidence.
+
+## Installed result received on 23 October
+
+At helper 8fb6fca95cf5480830d748134da93b785645820a the owner returned
+complete=true/credential_renewal for the restricted pilot. The new expiry is
+2026-10-24T09:15:06+00:00 (10:15:06 London time on 24 October). API acceptance,
+missing/expired/altered refusal, retained old environment and unchanged
+settings/OAuth all passed. No model was called or memory written. The receipt
+reported interrupted_attempts_reconciled=0: this successful run is not installed
+crash-recovery evidence. Keep the new expiry distinct from the initial token's
+older expiry. No repeat of this successful renewal is requested.

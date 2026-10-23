@@ -1250,3 +1250,20 @@ credential without changing OAuth or model defaults. No chat-model quota is used
 This is prepared manual renewal, not an installed recurring issuer or all-bot
 lifecycle. Focused Workspace suites pass 817 tests, zero failures/skips and no
 reported warnings; installed renewal is pending the owner's sanitized receipt.
+
+## 23 October: manual token renewal passed; inspect recovery coverage next
+
+Owner-run 8fb6fca9 passed manual fixed-scope pilot renewal. The retained old
+file, settings/OAuth preservation, new-token acceptance and negative controls
+verified; expiry is 2026-10-24T09:15:06+00:00. No model or memory write occurred.
+interrupted_attempts_reconciled=0 is not installed crash-recovery qualification.
+Preserve this pass; do not rerun initial provisioning or successful model tests.
+
+Next run the pinned/hash-verified inspect_pilot_recovery.py once as the existing
+restricted account with the protected tools1 Python and no-new-privileges.
+Its standard-library inventory has no SQLite connection, HTTP/model call or
+file write. It reports counts, sizes and protection/binding flags without
+private filenames, credentials or contents. See HERMES-PILOT-RECOVERY.md.
+It creates no backup or restored files and changes no schedule/Windows script.
+Focused Workspace suites pass 846 tests, zero failures/skips and no reported
+warnings; installed profile backup and disposable restore remain unqualified.

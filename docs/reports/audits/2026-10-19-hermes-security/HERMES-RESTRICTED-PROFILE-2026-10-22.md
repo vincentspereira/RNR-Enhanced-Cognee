@@ -1590,3 +1590,44 @@ existing issuer signing/root operator checks are reused. The actual committed
 bundle is checked in memory without executing an operator/host/model action.
 Installed renewal remains pending the next owner-run command. runtime_qualified
 stays false for remaining operational, sharing/isolation, release and fleet work.
+
+## 23 October: installed manual renewal passed; recovery inventory prepared
+
+Owner-run helper 8fb6fca95cf5480830d748134da93b785645820a returned
+complete=true/credential_renewal as hermes-runtime for enhanced-cognee-pilot.
+New expiry: 2026-10-24T09:15:06+00:00. The old environment was preserved;
+settings/OAuth were unchanged; new-token API acceptance and missing/expired/
+altered refusal controls passed. The signing key was not available to the
+restricted process. No model was called or memory record written. The receipt
+reported interrupted_attempts_reconciled=0, so actual installed interrupted-
+renewal recovery is not established by this success. Do not replay the completed
+renewal. This does not install a recurring issuer or admit the everyday fleet.
+
+The next prepared helper, inspect_pilot_recovery.py, is read-only and entirely
+standard-library. It verifies the fixed restricted identity/process/home and
+walks pinned directory descriptors under the restricted HOME, including the
+profile, retained private generations, receipts and workspace. It counts sizes,
+regular files, hardlinks, sockets/special files and SQLite-header/WAL/SHM matches.
+It opens no SQLite connection (avoiding connection-side WAL/SHM effects), decodes
+no credential, makes no HTTP/model request and follows no unknown symlink.
+Only 16-byte source-file headers are read; protected public provider files are
+read separately to verify their known hashes. Private filenames, link targets,
+headers, contents, tokens and exception messages are absent from the report.
+
+Unreadable/racing files, nested mounts or traversal budgets prevent a complete
+inventory report. Missing/unsafe required-file flags and unknown links remain
+visible as bounded booleans/counts for review, not automatic exclusions. The
+age tool probe checks protected regular executable metadata only, without
+executing the tools or reading recovery keys. SQLite counts identify header
+candidates, not database integrity or consistency. Full backup, manifest
+verification, disposable restore, timers/Windows collection and trusted-program
+rebuild/restore remain separate work. No archive or restored directory is made.
+
+Workspace focused suites pass 846 tests, zero failures/skips and no reported
+warnings in the existing repository Python 3.12 environment. Twenty-nine added
+inventory cases use actual files, links, FIFO/socket and live SQLite/WAL fixtures
+and verify no content/mtime changes. Process identity and protected-root metadata
+checks use fixtures. Existing native/model/network paths remain simulated here.
+The earlier temporary qualification environment was unavailable; no installed
+Hermes runtime or dependency lock was changed to run these source checks.
+Installed recovery inventory remains pending the next owner-run result.

@@ -12,7 +12,10 @@ and no edit/write attempt. All eleven local API privacy refusal cases also pass
 at owner-run helper 37cc5d9b, preserving records/history/receipts/profile with no
 OAuth/chat-model use or memory write. One native selected-privacy turn also
 passes at owner-run 79264eeb with one model request and no tool/write. Later
-human follow-up, retraction/history, renewal/recovery/isolation,
+human follow-up and retraction/history remain open. Manual fixed-scope pilot
+renewal also passes at owner-run 8fb6fca9, preserving old environment/settings/
+OAuth, with new expiry 2026-10-24T09:15:06+00:00 and API refusal controls passing.
+Installed interrupted-renewal recovery, unattended/fleet lifecycle, recovery/isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
 synthetic results below retain their original identity/model/revision scope.
 

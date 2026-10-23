@@ -33,6 +33,15 @@ credential-review coverage must be reconciled against its existing private recor
 
 ## Credential operation
 
+Latest owner-run update: manual renewal passed at
+8fb6fca95cf5480830d748134da93b785645820a. The ordinary pilot token expires at
+2026-10-24T09:15:06+00:00. New-token acceptance, missing/expired/altered refusal,
+retained old environment and unchanged settings/OAuth passed with no model or
+memory write. No interrupted attempt was reconciled in that run. Installed
+interruption recovery, unattended lifecycle and fleet rollout remain separate.
+The original issue/inspection history below retains its earlier time and scope.
+
+
 The initial ordinary memory token was issued for 24 hours and its recorded
 expiry was 2026-10-23T18:23:15+00:00. This is the initial receipt's expiry, not
 a fresh observation of the installed token or the current clock. Successful
@@ -152,10 +161,11 @@ enrollment/local-status step, not the remaining gates below.
    one secondary-account model request, no editing tool/write and preserved
    records/history/receipts/profile. Preserve these passes. Later human-answer,
    pending-state durability and retraction/history checks remain separate.
-3. Qualify the prepared manual fixed-scope pilot renewal bundle, including its
-   retained private evidence. Workspace transaction/interruption/refusal checks
-   pass; installed renewal, fleet credential lifecycle and explicit encrypted
-   restricted-profile recovery remain open. Read HERMES-PILOT-CREDENTIAL-RENEWAL.md.
+3. Preserve the owner-run manual renewal pass at 8fb6fca9; do not repeat it.
+   Installed interruption recovery and unattended/fleet lifecycle remain open.
+   Next run the read-only restricted-HOME recovery inventory, then implement and
+   qualify encrypted profile/workspace/receipt backup and disposable recovery.
+   Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the
    pilot token across bots or assume one shared OS account isolates their files.
 5. Reconcile current service backup freshness, release/security checks, private

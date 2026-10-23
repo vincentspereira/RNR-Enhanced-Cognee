@@ -44,7 +44,7 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 |---|---|---|
 | 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
-| 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Manual fixed-scope pilot renewal, refusal and interruption handling are prepared/tested in Workspace; installed renewal and fleet lifecycle remain open |
+| 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Owner-run manual pilot renewal and API refusal controls pass; installed interruption recovery and unattended/fleet lifecycle remain open |
 | 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody passed; earlier service restore exists; later /var/lib/hermes-runtime coverage and current recovery evidence remain open |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
 | 6. Fleet inventory and staged admission | Enumerate actual main/bot/other profiles, map distinct scopes/credentials and real launch identities, back up configurations, then qualify batches with own-scope/other-scope/shared checks and a preserved disable/recovery path | Everyday main/bot profiles remain unchanged; no whole-fleet activation claimed |
@@ -84,12 +84,20 @@ explicit secondary account, no tool/edit/write attempt, no full sensitive canary
 in the reply and unchanged canonical/history/receipts/settings/credentials.
 This is one finite synthetic case; do not replay it or infer universal detection.
 
-Next qualify manual fixed-scope pilot credential renewal using the new reviewed
-issuer/renewal bundle. It replaces only the ordinary memory token, preserves the
-old environment, checks 401 negative controls and populated-scope acceptance,
-and retains interruption evidence. It calls no chat model and changes no OAuth
-account/default. See HERMES-PILOT-CREDENTIAL-RENEWAL.md. Installed recovery of an
-interrupted renewal and unattended/fleet lifecycle are separate claims.
+Owner-run manual credential renewal passed at
+8fb6fca95cf5480830d748134da93b785645820a. New expiry is
+2026-10-24T09:15:06+00:00; API acceptance, refusal controls, retained previous
+environment and unchanged settings/OAuth passed without a model or memory write.
+interrupted_attempts_reconciled=0 does not establish installed crash recovery.
+
+Next run the read-only restricted-HOME inventory prepared in
+inspect_pilot_recovery.py. It reports aggregate sizes/types, required-file
+protection flags, SQLite-header/sidecar counts and the protected provider binding,
+without credential decoding, SQLite connections, HTTP or file writes. Unknown
+links are counted rather than followed. These results inform the encrypted
+profile/workspace/receipt snapshot and disposable-restore implementation; they
+are not backup/recovery proof. Read HERMES-PILOT-RECOVERY.md. No v12/Windows task,
+cloud upload, running service, main profile or bot is changed by this inventory.
 
 ### Historical clarification diagnostic, superseded by the passes above
 
