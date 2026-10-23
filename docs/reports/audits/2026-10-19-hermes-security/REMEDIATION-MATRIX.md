@@ -41,7 +41,10 @@ then failed the combined real encrypted-backup qualification before timer enable
 completed. Service execution, report admission and ciphertext authentication are
 not distinguished by that summary; backup absence/success is not inferred. Next
 inspect the exact upgraded artifacts and retained invocation read-only, without
-rerunning the updater. Actual encrypted-job/timer/collection remain unqualified.
+rerunning the updater. Owner-run 6b4453bf inspection itself stopped in its grouped
+service_state step. Revised read/parse/error metadata and a labeled missing-ID
+journal fallback are prepared; retained reports alone cannot qualify the upgraded
+run. Actual encrypted-job/timer/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

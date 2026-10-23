@@ -2022,3 +2022,42 @@ completion-contract failures and suppression of private paths/values. The
 original-mode inspector and guarded upgrade tests remain passing. Root/host
 systemctl/journal behavior is simulated here; the returned host result is still
 needed and no new installed backup success is claimed.
+
+## 23 October: inspector stopped before retained report; bounded diagnostic repair
+
+Owner-run 6b4453bf3ae3ce74890aa64d5dc35c2401e2e9d0 returned complete=false,
+failure_stage=service_state. It reports no file write, service restart, timer
+change, credential read or model call. That grouped phase covered two command
+reads/decodes and a current-invocation requirement; the result does not identify
+the failed operation or establish a new backup failure. No destructive retry,
+rollback, model call or configuration change is justified by this diagnostic.
+
+The inspector now splits status read/parse, policy read/parse, invocation
+discovery and timer read/parse. Its failure result preserves verified public
+artifact flags and any already sanitized state/policy, with allowlisted
+exception names, bounded errno/exit status and fixed output-budget/presence
+flags. Private exception text/arguments/filenames/stdout/stderr remain excluded.
+
+If current InvocationID is missing/zero, a bounded selected-unit journal read
+can discover the latest retained trusted _SYSTEMD_INVOCATION_ID, ignoring ID
+claims inside MESSAGE. It is explicitly labeled diagnostic-only; a complete
+retained report, including one satisfying the upgrade report shape, is not
+proof of a fresh upgraded run or independently authenticated ciphertext. The
+helper does not enable the timer, read keys or relax any admission condition.
+Systemd v255's unit_may_gc/free paths permit inactive unit collection; this
+supports the missing-ID possibility without proving that cause on this host:
+https://github.com/systemd/systemd/blob/v255/src/core/unit.c
+
+The helper input budget is deliberately raised to 24576 bytes in the new pinned
+bootstrap; old commands/hashes remain historical. The installed runner/service,
+originals, backups, profiles and previous passing tests remain unchanged. Actual
+encrypted-job/timer qualification, Windows coverage and fleet rollout stay open.
+
+Workspace validation: 1121 focused tests pass, zero failures/skips and no
+reported pytest warnings. Twenty-five new cases cover private exception/argument
+suppression, bounded command failures, partial state on status/policy read/decode
+errors, missing-ID journal fallback, trusted-metadata selection versus MESSAGE
+spoofing, no-ID/malformed/oversized journal refusal and diagnostic-only labeling.
+All original/upgraded inspector and guarded updater tests still pass. Host
+systemctl/journal effects remain simulated here; no installed backup or timer
+success is inferred from this source suite.

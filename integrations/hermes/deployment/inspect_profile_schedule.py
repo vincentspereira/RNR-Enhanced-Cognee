@@ -49,6 +49,31 @@ RESULTS = {'success', 'exit-code', 'signal', 'core-dump', 'timeout', 'resources'
 class InspectionError(RuntimeError):
     """No raw error details are returned."""
 
+    def __init__(self, category, diagnostics=None):
+        super().__init__(category)
+        self.diagnostics = diagnostics
+
+
+def error_details(error):
+    allowed = {'PermissionError', 'FileNotFoundError', 'OSError', 'TimeoutExpired',
+        'UnicodeDecodeError', 'JSONDecodeError', 'ValueError', 'TypeError', 'InspectionError'}
+    result = {'exception_type': type(error).__name__ if type(error).__name__ in allowed else 'other'}
+    number = getattr(error, 'errno', None)
+    if type(number) is int and 0 < number < 4096: result['errno'] = number
+    categories = {'bounded_read_failed', 'public_path_changed', 'journal_budget_or_invocation',
+        'journal_entry_budget', 'journal_parse_budget', 'no_retained_service_invocation',
+        'approved_human_operator_required', 'host_systemd_required'}
+    if isinstance(error, InspectionError):
+        result['reason'] = str(error) if str(error) in categories else 'inspection_guard'
+        # Only command() constructs this fixed scalar schema.
+        value = error.diagnostics
+        if isinstance(value, dict):
+            for key in ('stdout_over_budget', 'stderr_over_budget', 'stderr_present'):
+                if type(value.get(key)) is bool: result[key] = value[key]
+            if type(value.get('exit_status')) is int and -255 <= value['exit_status'] <= 255:
+                result['exit_status'] = value['exit_status']
+    return result
+
 
 def command(arguments, limit=524288):
     # -n on journalctl bounds the selected entries; size caps reject oversized
@@ -56,7 +81,9 @@ def command(arguments, limit=524288):
     result = subprocess.run(arguments, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}, timeout=20, close_fds=True)
     if result.returncode or len(result.stdout) > limit or len(result.stderr) > 4096:
-        raise InspectionError('bounded_read_failed')
+        raise InspectionError('bounded_read_failed', dict(exit_status=result.returncode,
+            stdout_over_budget=len(result.stdout) > limit, stderr_over_budget=len(result.stderr) > 4096,
+            stderr_present=bool(result.stderr)))
     return result.stdout
 
 
@@ -159,8 +186,23 @@ def journal_report(raw, invocation, *, diagnostics=None):
     return found
 
 
+def latest_retained_invocation(raw):
+    """Diagnostic fallback only; newest trusted unit ID is not upgrade proof."""
+    if len(raw) > 524288: raise InspectionError('journal_budget_or_invocation')
+    lines = raw.splitlines()
+    if len(lines) > 160: raise InspectionError('journal_entry_budget')
+    for line in reversed(lines):
+        value = json.loads(line)
+        if not isinstance(value, dict) or value.get('_SYSTEMD_UNIT') != SERVICE: continue
+        invocation = value.get('_SYSTEMD_INVOCATION_ID')
+        if isinstance(invocation, str) and re.fullmatch('[0-9a-f]{32}', invocation) and invocation != '0' * 32:
+            return invocation
+    return None
+
+
 def main(*, upgraded=False):
     phase = 'operator_preflight'
+    hashes, state, effective = None, None, None
     try:
         if (type(upgraded) is not bool or os.geteuid() != 0 or os.environ.get('WSL_DISTRO_NAME') != 'Ubuntu-Hermes'
                 or os.environ.get('SUDO_USER') != 'vincentspereira'):
@@ -171,17 +213,20 @@ def main(*, upgraded=False):
         expected_artifacts = UPGRADED_EXPECTED if upgraded else EXPECTED
         hashes = {label + '_matches_published': public_file(path, size, expected)
                   for path, (label, size, expected) in expected_artifacts.items()}
-        phase = 'service_state'
+        phase = 'service_status_read'
         raw = command(['/usr/bin/systemctl', 'show', SERVICE, '--all', '--property=InvocationID',
             '--property=Result', '--property=ExecMainStatus', '--property=ActiveState'], limit=4096)
+        phase = 'service_status_parse'
         fields = dict(line.split('=', 1) for line in raw.decode('ascii').splitlines() if '=' in line)
         state = {key: value for key, value in fields.items()
                  if key == 'Result' and value in RESULTS or key == 'ActiveState' and value in STATES
                  or key == 'ExecMainStatus' and re.fullmatch(r'[0-9]{1,3}', value)}
+        phase = 'service_policy_read'
         policy = command(['/usr/bin/systemctl', 'show', SERVICE, '--all', '--property=NoNewPrivileges',
             '--property=PrivateNetwork', '--property=ProtectHome', '--property=ProtectSystem',
             '--property=CapabilityBoundingSet', '--property=AmbientCapabilities',
             '--property=DropInPaths', '--property=FragmentPath'], limit=4096)
+        phase = 'service_policy_parse'
         policy = dict(line.split('=', 1) for line in policy.decode('ascii').splitlines() if '=' in line)
         effective = {key: policy.get(key) == expected for key, expected in (
             ('NoNewPrivileges', 'yes'), ('PrivateNetwork', 'yes'), ('ProtectHome', 'yes'), ('ProtectSystem', 'strict'))}
@@ -191,29 +236,40 @@ def main(*, upgraded=False):
             effective['parent_ambient_setuid_only'] = policy.get('AmbientCapabilities', '').split() == ['cap_setuid']
             effective['expected_service_path'] = policy.get('FragmentPath') == str(Path('/etc/systemd/system') / SERVICE)
         invocation = fields.get('InvocationID', '')
+        invocation_source = 'current_unit'
         if not re.fullmatch(r'[0-9a-f]{32}', invocation) or invocation == '0' * 32:
-            raise InspectionError('no_retained_service_invocation')
+            phase = 'retained_invocation_discovery'
+            raw = command(['/usr/bin/journalctl', '--no-pager', '--output=json', '--lines=160', '_SYSTEMD_UNIT=' + SERVICE])
+            invocation = latest_retained_invocation(raw)
+            if invocation is None: raise InspectionError('no_retained_service_invocation')
+            invocation_source = 'latest_retained_journal_diagnostic_only'
         phase = 'retained_journal_inspection'
         raw = command(['/usr/bin/journalctl', '--no-pager', '--output=json', '--lines=160',
             '_SYSTEMD_UNIT=' + SERVICE, '_SYSTEMD_INVOCATION_ID=' + invocation])
         diagnostics = {}
         report = journal_report(raw, invocation, diagnostics=diagnostics)
+        phase = 'timer_state_read'
         timer = command(['/usr/bin/systemctl', 'show', TIMER, '--all',
             '--property=ActiveState', '--property=UnitFileState'], limit=4096)
+        phase = 'timer_state_parse'
         timer = dict(line.split('=', 1) for line in timer.decode('ascii').splitlines() if '=' in line)
         print(json.dumps({'complete': True, 'stage': 'profile_backup_schedule_inspection',
             'reviewed_schedule': 'upgraded_ab8c990b' if upgraded else 'original_d7c7880c',
             'published_artifacts': hashes, 'service_state': state, 'effective_policy': effective,
             'retained_backup_report_found': report is not None, 'retained_backup_report': report,
             'journal_diagnostics': diagnostics,
+            'invocation_source': invocation_source,
+            'retained_report_proves_upgraded_run': False,
             'timer_active': timer.get('ActiveState') == 'active',
             'timer_enabled': timer.get('UnitFileState') in {'enabled', 'enabled-runtime'},
             'files_written': False, 'service_started_or_restarted': False, 'timer_changed': False,
             'credentials_read': False, 'model_called': False, 'memory_records_written': False,
             'runtime_qualified': False}, indent=2))
-    except Exception:
+    except Exception as error:
         print(json.dumps({'complete': False, 'stage': 'profile_backup_schedule_inspection',
             'failure_stage': phase, 'category': 'retained_schedule_inspection_incomplete',
+            'failure_details': error_details(error),
+            'published_artifacts': hashes, 'service_state': state, 'effective_policy': effective,
             'files_written': False, 'service_started_or_restarted': False, 'timer_changed': False,
             'credentials_read': False, 'model_called': False, 'runtime_qualified': False}, indent=2))
         raise SystemExit(1) from None

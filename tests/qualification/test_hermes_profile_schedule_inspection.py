@@ -122,6 +122,8 @@ def test_inspector_does_not_run_or_modify_any_service_or_read_credentials(module
         assert 'start' not in argv and 'enable' not in argv and 'restart' not in argv
         assert 'cat' not in argv and not any('/etc/enhanced-cognee' in arg for arg in argv)
         if argv[0].endswith('journalctl'):
+            if mutation == 'no-invocation' and not any(arg.startswith('_SYSTEMD_INVOCATION_ID=') for arg in argv):
+                return b''
             assert '_SYSTEMD_INVOCATION_ID=' + INVOCATION in argv
             return journal(module, ['PRIVATE_EXCEPTION'] if mutation == 'missing-report' else [json.dumps(failure())])
         assert argv[:2] == ['/usr/bin/systemctl', 'show']
@@ -168,7 +170,7 @@ def test_upgraded_expected_artifacts_reconstruct_qualified_candidate(module):
                       (Path('/etc/systemd/system') / module.TIMER, timer)):
         _, size, expected = module.UPGRADED_EXPECTED[path]
         assert len(raw) == size and hashlib.sha256(raw).hexdigest() == expected
-    assert len(PATH.read_bytes()) <= 16384
+    assert len(PATH.read_bytes()) <= 24576
 
 
 def success():
@@ -256,3 +258,101 @@ def test_upgraded_mode_must_be_boolean_before_any_file_access(module, monkeypatc
     monkeypatch.setattr(module, 'public_file', lambda *a: pytest.fail('No file access'))
     with pytest.raises(SystemExit): module.main(upgraded='PRIVATE')
     assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
+
+
+@pytest.mark.parametrize('error', [PermissionError(1, 'PRIVATE_KEY', '/PRIVATE_PATH'),
+    FileNotFoundError(2, 'PRIVATE_KEY', '/PRIVATE_PATH'), subprocess.TimeoutExpired('PRIVATE_ARG', 20, output=b'PRIVATE'),
+    UnicodeDecodeError('ascii', b'\xffPRIVATE', 0, 1, 'PRIVATE'), ValueError('PRIVATE'),
+    RuntimeError('PRIVATE'), TypeError('PRIVATE')])
+def test_failure_details_never_include_exception_messages_arguments_or_paths(module, error):
+    result = module.error_details(error)
+    assert set(result) <= {'exception_type', 'errno'}
+    assert 'PRIVATE' not in json.dumps(result)
+
+
+@pytest.mark.parametrize('mutation', ['exit', 'stdout', 'stderr', 'permission', 'timeout'])
+def test_command_failure_details_return_only_fixed_categories_and_bounded_scalars(module, monkeypatch, mutation):
+    def run(argv, **kwargs):
+        assert kwargs['env'] == {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}
+        assert kwargs['stdin'] is subprocess.DEVNULL and kwargs['close_fds']
+        if mutation == 'permission': raise PermissionError(1, 'PRIVATE')
+        if mutation == 'timeout': raise subprocess.TimeoutExpired('PRIVATE', 20, output=b'PRIVATE')
+        return NS(returncode=1 if mutation == 'exit' else 0,
+            stdout=b'PRIVATE' * 100 if mutation == 'stdout' else b'PRIVATE',
+            stderr=b'PRIVATE' * 1000 if mutation == 'stderr' else b'PRIVATE')
+    monkeypatch.setattr(module.subprocess, 'run', run)
+    with pytest.raises((module.InspectionError, PermissionError, subprocess.TimeoutExpired)) as caught:
+        module.command(['/usr/bin/systemctl', 'show', module.SERVICE], limit=16)
+    result = module.error_details(caught.value)
+    assert 'PRIVATE' not in json.dumps(result)
+    if mutation in {'exit', 'stdout', 'stderr'}:
+        assert result['reason'] == 'bounded_read_failed'
+        assert result['stdout_over_budget'] is (mutation == 'stdout')
+        assert result['stderr_over_budget'] is (mutation == 'stderr')
+        assert result['exit_status'] == (1 if mutation == 'exit' else 0)
+
+
+@pytest.mark.parametrize('mutation', ['none', 'latest', 'message-spoof', 'wrong-unit', 'zero', 'invalid', 'oversize'])
+def test_diagnostic_fallback_uses_only_trusted_unit_metadata_not_message_content(module, mutation):
+    raw = b''
+    if mutation == 'latest': raw = journal(module, ['old'], invocation='b' * 32) + b'\n' + journal(module, ['new'])
+    if mutation == 'message-spoof': raw = journal(module, ['{"_SYSTEMD_INVOCATION_ID":"' + 'c' * 32 + '"}'])
+    if mutation == 'wrong-unit': raw = journal(module, ['PRIVATE'], unit='other.service')
+    if mutation == 'zero': raw = journal(module, ['PRIVATE'], invocation='0' * 32)
+    if mutation == 'invalid': raw = b'PRIVATE_BAD_JSON'
+    if mutation == 'oversize': raw = b'x' * 524289
+    if mutation in {'invalid', 'oversize'}:
+        with pytest.raises((ValueError, module.InspectionError)): module.latest_retained_invocation(raw)
+    else: assert module.latest_retained_invocation(raw) == (INVOCATION if mutation in {'latest', 'message-spoof'} else None)
+
+
+@pytest.mark.parametrize('mutation', [None, 'status-command', 'status-decode', 'policy-command', 'policy-decode', 'no-journal-id'])
+def test_missing_current_id_and_partial_failures_preserve_sanitized_evidence(module, monkeypatch, capsys, mutation):
+    monkeypatch.setattr(module.os, 'geteuid', lambda: 0)
+    monkeypatch.setenv('WSL_DISTRO_NAME', 'Ubuntu-Hermes')
+    monkeypatch.setenv('SUDO_USER', 'vincentspereira')
+    monkeypatch.setattr(Path, 'read_text', lambda *a, **kw: 'systemd\n')
+    monkeypatch.setattr(module, 'public_file', lambda *a: True)
+    queries = []
+    def command(argv, **kwargs):
+        queries.append(argv)
+        if argv[0].endswith('journalctl'):
+            if not any(arg.startswith('_SYSTEMD_INVOCATION_ID=') for arg in argv):
+                return b'' if mutation == 'no-journal-id' else journal(module, [json.dumps(success())])
+            assert '_SYSTEMD_INVOCATION_ID=' + INVOCATION in argv
+            return journal(module, [json.dumps(success())])
+        assert argv[:2] == ['/usr/bin/systemctl', 'show']
+        if module.TIMER in argv: return b'ActiveState=inactive\nUnitFileState=disabled\n'
+        if '--property=NoNewPrivileges' in argv:
+            if mutation == 'policy-command': raise module.InspectionError('bounded_read_failed', dict(exit_status=1, stderr_present=True))
+            if mutation == 'policy-decode': return b'PRIVATE_\xff'
+            return ('NoNewPrivileges=yes\nPrivateNetwork=yes\nProtectHome=yes\nProtectSystem=strict\n'
+                'CapabilityBoundingSet=cap_setgid cap_setuid\nDropInPaths=\nAmbientCapabilities=cap_setuid\n'
+                'FragmentPath=/etc/systemd/system/' + module.SERVICE + '\n').encode()
+        if mutation == 'status-command': raise module.InspectionError('bounded_read_failed', dict(exit_status=1, stderr_present=True))
+        if mutation == 'status-decode': return b'PRIVATE_\xff'
+        return b'InvocationID=\nResult=success\nExecMainStatus=0\nActiveState=inactive\n'
+    monkeypatch.setattr(module, 'command', command)
+    if mutation:
+        with pytest.raises(SystemExit): module.main(upgraded=True)
+    else: module.main(upgraded=True)
+    text = capsys.readouterr().out
+    result = json.loads(text)
+    assert 'PRIVATE' not in text
+    assert not result['files_written'] and not result['service_started_or_restarted']
+    assert not result['credentials_read'] and not result['timer_changed']
+    assert all(result['published_artifacts'].values())
+    if mutation:
+        expected = dict(**{'status-command': 'service_status_read', 'status-decode': 'service_status_parse',
+            'policy-command': 'service_policy_read', 'policy-decode': 'service_policy_parse',
+            'no-journal-id': 'retained_invocation_discovery'})
+        assert result['failure_stage'] == expected[mutation]
+        if mutation in {'policy-command', 'policy-decode', 'no-journal-id'}:
+            assert result['service_state'] == dict(Result='success', ExecMainStatus='0', ActiveState='inactive')
+        if mutation == 'no-journal-id': assert result['failure_details']['reason'] == 'no_retained_service_invocation'
+    else:
+        assert result['invocation_source'] == 'latest_retained_journal_diagnostic_only'
+        assert result['retained_backup_report']['complete']
+        assert not result['retained_report_proves_upgraded_run']
+        assert not result['timer_enabled']
+        assert len([q for q in queries if q[0].endswith('journalctl')]) == 2

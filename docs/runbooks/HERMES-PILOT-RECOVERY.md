@@ -20,6 +20,11 @@ rerunning the updater. Actual encrypted job qualification, timer verification
 and Windows collection remain pending. Earlier failed
 diagnostics below remain historical evidence, not instructions to repeat them.
 
+The subsequent owner-run 6b4453bf read-only inspector stopped in service_state
+without returning state or a retained report. It made no writes/restarts/key
+reads. Its broad catch does not distinguish command, decoding or missing-ID
+failure. Use the revised detailed inspector below; do not rerun the updater.
+
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
 valid only for its recorded generation, source, identity and scope. Preserve it.
@@ -540,3 +545,40 @@ does not need the pilot or everyday bots stopped. It does not run/restart a
 service, create a backup, read backup configuration/recovery keys, decrypt,
 change profiles/timers, call a model or write memory. The old successful manual
 recovery and transient snapshot evidence remain preserved; no replay is needed.
+
+## Inspector service-state failure: detailed read-only continuation
+
+Owner-run 6b4453bf3ae3ce74890aa64d5dc35c2401e2e9d0 stopped in service_state
+before returning a retained report. No writes, service starts, timer changes,
+credential reads or model calls occurred. That phase grouped status read/parse,
+policy read/parse and the current invocation-ID requirement. Its generic error
+cannot identify which failed; no new backup defect or protection failure follows
+from this result.
+
+The revised inspector separates these steps and returns only known exception
+names, bounded errno/command exit status and output-budget/presence flags.
+Already verified artifact hashes and sanitized state/policy survive later
+failures. Raw stdout/stderr, exception messages/arguments and private paths do
+not leave the helper. No root backup configuration or recovery identity is read.
+
+If the current unit has no usable invocation ID, the inspector performs a
+bounded read of the latest 160 selected-unit journal records. It selects the
+newest nonzero trusted _SYSTEMD_INVOCATION_ID belonging to that exact service,
+ignoring IDs embedded in untrusted MESSAGE text, and then reads only that
+invocation. The report labels this latest_retained_journal_diagnostic_only and
+explicitly sets retained_report_proves_upgraded_run=false. It may describe an
+older attempt; no upgrade freshness, cipher authentication or timer admission is
+inferred. Missing journal metadata remains a visible failure with partial state.
+
+This fallback addresses an assumption in the previous inspector: systemd can
+collect inactive unit objects after completion, so the current unit identifier
+need not remain available. This is a plausible explanation, not a confirmed
+cause on Ubuntu-Hermes. Primary source:
+https://github.com/systemd/systemd/blob/v255/src/core/unit.c
+
+Run only the new pinned/hash-verified read-only inspector, as vincentspereira in
+a normal Ubuntu-Hermes terminal. Starting in ~ is fine; Hermes/bots can continue.
+The new verified-input budget is 24576 bytes rather than 16384 because of the
+added diagnostics; published prior command pins/limits remain historical.
+Relay only JSON, keep installed and preserved files intact and do not repeat
+any backup/update/model/recovery test while this retained evidence is reconciled.

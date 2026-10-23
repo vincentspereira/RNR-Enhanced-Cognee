@@ -156,3 +156,10 @@ ciphertext exists. Next inspect the exact upgraded runner/service and retained
 invocation read-only; preserve old/new artifacts, manual recovery and passing
 snapshot evidence. Do not rerun the updater. Installed encrypted-job/timer and
 all separate collection/release/fleet gates remain pending.
+
+Retained-inspection follow-up: owner-run 6b4453bf stopped in service_state with
+no writes and no retained report. Revised read-only diagnostics separate read,
+parse and missing-current-ID failures, preserving sanitized partial state. A
+latest-journal-ID fallback is diagnostic only and explicitly cannot qualify the
+upgraded run. Keep the installed upgrade and previous evidence intact; no
+updater rerun, timer activation or repeated model/recovery test is requested.

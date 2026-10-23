@@ -206,3 +206,11 @@ Next run only the upgraded read-only inspector described in the recovery
 runbook. It targets exact a1ffd4c258238847 runner bytes and retained invocation
 status/report, without service start, credentials, models or writes. Do not
 repeat the updater or claim recurring profile coverage until reconciled.
+
+Owner-run 6b4453bf read-only inspection itself stopped in the grouped
+service_state phase and returned no retained report. No write/restart/key read
+occurred. Next use the detailed read-only inspector: separate status/policy
+read/parse stages, bounded exception/errno/exit metadata and preserved partial
+state. Missing current invocation metadata triggers only a labeled latest
+retained journal diagnostic; it does not prove that the report is from the
+upgraded attempt. No root cause or completed backup is inferred yet.
