@@ -164,8 +164,9 @@ enrollment/local-status step, not the remaining gates below.
 3. Preserve the owner-run manual renewal pass at 8fb6fca9; do not repeat it.
    Installed interruption recovery and unattended/fleet lifecycle remain open.
    The owner-run 61c272a7 recovery inventory also passed: 60 files/205571 bytes,
-   no detected databases or problematic entries. Next qualify the prepared manual
-   encrypted file-only snapshot/disposable restore. Recurring/collector coverage
+   no detected databases or problematic entries. Owner-run ca2682c6 also passed
+   manual encrypted profile recovery of all 60 files with scoped access and live
+   source preserved. Daily profile job installation is next; collector coverage
    and current canonical database recovery remain separate.
    Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the

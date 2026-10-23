@@ -45,7 +45,7 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 | 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
 | 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Owner-run manual pilot renewal and API refusal controls pass; installed interruption recovery and unattended/fleet lifecycle remain open |
-| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody and restricted-HOME inventory pass; manual encrypted profile snapshot/disposable restore is prepared; installed restore, recurring/collector coverage and current service generation remain open |
+| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody, inventory and manual encrypted profile restore pass (ca2682c6, 60 files/205571 bytes); daily profile job is prepared; installed recurring operation, collector coverage and current service generation remain open |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
 | 6. Fleet inventory and staged admission | Enumerate actual main/bot/other profiles, map distinct scopes/credentials and real launch identities, back up configurations, then qualify batches with own-scope/other-scope/shared checks and a preserved disable/recovery path | Everyday main/bot profiles remain unchanged; no whole-fleet activation claimed |
 
@@ -95,13 +95,15 @@ Owner-run recovery inventory passed at
 database/sidecar or problematic entries, all required private files/receipts
 and protected provider/tool flags passed. No source data was copied then.
 
-Next qualify the prepared manual encrypted file-only HOME snapshot and disposable
-restore using the existing protected age recipient/signing key/recovery identity.
-The ordinary child handles source/archive data; root only authenticates/encrypts
-and controls new destinations. Restored private files, provider binding and
-ordinary local API access are checked without launching Hermes/model code.
-Keep the pilot idle and relay only the sanitized result. See
-HERMES-PILOT-RECOVERY.md. Recurring/Windows collection, current canonical database
+Owner-run manual profile recovery now passes at
+ca2682c6af3d0c40855e795a1dca9c778629184e: signed ciphertext/decryption,
+60 recovered files/205571 bytes, private permissions/provider binding/scoped API
+access, with live source and the failed destination preserved. No repeat of
+that restore is needed. Next install/qualify the prepared separate daily
+profile-backup job and persistent timer using the reviewed protected runner.
+It performs encryption-only snapshots with no model/API, memory write or
+recovery-identity read. Keep the pilot idle for its first run. See
+HERMES-PILOT-RECOVERY.md. Windows collection, current canonical database
 recovery and fresh-machine program rebuild remain separate; no fleet activation.
 
 ### Historical clarification diagnostic, superseded by the passes above

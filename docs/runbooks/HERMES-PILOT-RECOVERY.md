@@ -5,9 +5,11 @@ relayed by the owner; this session has no direct access to that isolated host.
 
 ## Current position
 
-The 23 October manual profile run created an encrypted generation but stopped
-during disposable restore. Preserve both outputs; use the fixed-generation
-read-only inspection described at the end of this runbook before retrying.
+The owner-run fresh restore at ca2682c6 passed on 23 October: 60 files,
+205571 bytes, private permissions, provider binding and scoped access verified,
+with live source preserved. Retain both failed and successful destinations.
+Recurring profile backup installation/operation and Windows collection remain
+separate pending gates; the earlier failure/inspection steps below are history.
 
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
@@ -249,3 +251,68 @@ phase/checks when available. Relay either JSON result before another attempt.
 A pass qualifies this manual file-only generation restore; it does not establish
 recurring backup/collection, a PostgreSQL restore, native restored Hermes startup,
 fresh-machine program rebuild, full release qualification or fleet admission.
+
+
+## Owner-run fresh restore: passed on 23 October
+
+The owner ran ca2682c6af3d0c40855e795a1dca9c778629184e and returned
+complete=true/stage profile_restore_existing. It reused the original signed
+encrypted generation, authenticated/decrypted it and restored all 60 files
+(205571 bytes) at:
+
+```text
+/var/lib/hermes-runtime-recovery/check-22bf4ef6ac48438ebc4970fabe2ae8a5
+```
+
+Copied file content/private permissions, protected provider binding and scoped
+ordinary API access passed. Live source was preserved, the failed destination
+was not reused, and no plaintext archive, model call or memory write occurred.
+This qualifies that manual generation's file recovery. It did not launch
+restored Hermes or install recurring backup/Windows coverage. Preserve the
+successful and failed copies until a separately approved cleanup.
+
+## Prepared daily encrypted profile backup
+
+The next reviewed operator bundle calls install_schedule, requiring the human
+operator, root authentication and host PID 1 systemd. No distro restart or
+runtime reinstall is requested. It refuses existing profile schedule files or
+loaded units rather than overwriting them. It installs a content-addressed,
+root-owned runner containing only the three hash-verified public sources under
+/opt/enhanced-cognee-profile-backup. No writable-checkout import or private key
+is embedded. Main/system model defaults and all live profiles remain unchanged.
+
+The new enhanced-cognee-profile-backup.service performs a backup-only run. Root
+reads the protected backup configuration, encrypts the restricted child's bounded
+in-memory file snapshot with the public recipient, signs completion metadata
+and authenticates the resulting ciphertext. It does not read the age recovery
+identity, decrypt, make a disposable restore, connect to a model/API or write
+memories. The root service's network is disabled and its recovery/operator/API/
+worker key files are inaccessible. Persistent writes are limited to the approved backup destination; a private
+temporary directory is available and the restricted HOME is read-only. CAP_SETUID/CAP_SETGID
+permit the ordinary child identity with no extra groups/capabilities. No other
+service or database timer is modified.
+
+The installer validates the two new units, starts the backup service once,
+requires its successful exit, then enables the separate daily persistent timer
+with up to 15 minutes of randomized delay. It verifies timer enabled/active state and a scheduled next run. This first installed run and timer state still require an owner result.
+A persistent timer runs only while WSL/systemd is running; it catches a missed
+scheduled event when the distro next starts, not while the laptop is off.
+
+The bounded file-only method still refuses SQLite/WAL/SHM, unknown links,
+changing source state and budget overruns rather than recording a false success.
+Keep the pilot idle for initial qualification. Concurrent writers outside the
+shared renewal lock can make a later run fail; successful operation under a
+busy fleet and consistent database capture require their own implementation.
+Each successful scheduled run retains a distinct encrypted generation; there
+is no deletion/retention cleanup. This is daily recovery coverage, not file-level
+cloud deduplication. Existing Windows/restic deduplication remains separate.
+
+If installation or its first run fails, preserve files/logs and relay only the
+sanitized report before retrying. A partial install is not automatically rolled
+back. The existing database timer remains unchanged. To pause this new timer
+using an authorized operator terminal, use sudo systemctl disable --now
+enhanced-cognee-profile-backup.timer; this retains units, runner and backups.
+Disabling the timer does not interrupt an already running backup; let it finish.
+No Windows collector, scheduled Windows task, v12 resumption or cloud upload is
+performed. The new hermes-home-tar+age format still needs explicit collection
+and remote recovery qualification before any off-machine coverage claim.

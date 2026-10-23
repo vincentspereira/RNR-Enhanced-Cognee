@@ -589,25 +589,30 @@ def new_recovery_destination(core, account, generation, *, create_parent=True):
     return RECOVERY / leaf
 
 
-def main(*, core, inspector, sources, inspect_existing=False, restore_existing=False):
+def main(*, core, inspector, sources, inspect_existing=False, restore_existing=False, backup_only=False, scheduled_backup=False):
     phase, completed = "operator_preflight", False
     backup_path = recovery_path = None
     try:
-        if type(inspect_existing) is not bool or type(restore_existing) is not bool or inspect_existing and restore_existing:
+        modes = (inspect_existing, restore_existing, backup_only)
+        if (any(type(value) is not bool for value in (*modes, scheduled_backup)) or sum(modes) > 1
+                or scheduled_backup and not backup_only):
             raise BackupError("unapproved_backup_mode")
-        if os.geteuid() != 0 or os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes" or os.environ.get("SUDO_USER") != "vincentspereira":
+        if (os.geteuid() != 0 or os.environ.get("WSL_DISTRO_NAME") != "Ubuntu-Hermes"
+                or not scheduled_backup and os.environ.get("SUDO_USER") != "vincentspereira"):
             raise BackupError("approved_human_operator_required")
         account = pwd.getpwnam("hermes-runtime")
         if account.pw_uid == 0 or Path(account.pw_dir) != inspector["HOME"] or set(os.getgrouplist(account.pw_name, account.pw_gid)) != {account.pw_gid}:
             raise BackupError("restricted_account_protection")
         python = (inspector["RELEASE"] / "venv/bin/python").resolve(strict=True)
         if (not python.is_relative_to(inspector["RELEASE"]) or not inspector["protected_file"](python, executable=True)
-                or not inspector["protected_file"](AGE, executable=True) or not inspector["protected_file"](IDENTITY)):
+                or not inspector["protected_file"](AGE, executable=True)
+                or not backup_only and not inspector["protected_file"](IDENTITY)):
             raise BackupError("protected_program_or_recovery_identity")
         config_fd = core["open_directory"](Path("/etc/enhanced-cognee"), {0})
         try:
             config = json.loads(core["read_private_at"](config_fd, "backup.json", 0)[0])
-            core["read_private_at"](config_fd, IDENTITY.name, 0)  # Enforce root-only recovery-file mode too.
+            if not backup_only:
+                core["read_private_at"](config_fd, IDENTITY.name, 0)  # No recovery-key read for daily encryption.
         finally: os.close(config_fd)
         recipient, key, key_id = (config[k] for k in ("ENHANCED_BACKUP_RECIPIENT", "ENHANCED_BACKUP_SIGNING_KEY", "ENHANCED_BACKUP_SIGNING_KEY_ID"))
         if (not isinstance(recipient, str) or not re.fullmatch(r"age1[0-9a-z]{20,100}", recipient)
@@ -688,6 +693,16 @@ def main(*, core, inspector, sources, inspect_existing=False, restore_existing=F
             core["create_private_at"](directory, name + ".json", canonical(manifest))
             os.fsync(directory)
             backup_path, completed = str(DESTINATION / name), True
+            if backup_only:
+                phase = "published_ciphertext_authentication"
+                verify_completed(core, directory, name, key, key_id)
+                print(json.dumps({"complete": True, "stage": "profile_backup_only",
+                    "encrypted_backup": backup_path, "source_files": receipt["files"],
+                    "source_bytes": receipt["source_bytes"], "signed_ciphertext_verified": True,
+                    "decryption_tested": False, "disposable_restore_created": False,
+                    "recovery_identity_read": False, "plaintext_archive_written": False,
+                    "model_called": False, "memory_records_written": False, "runtime_qualified": False}, indent=2))
+                return
             phase = "authenticated_decryption"
             ciphertext = verify_completed(core, directory, name, key, key_id)
             recovered = age(["--decrypt", "--identity", str(IDENTITY)], data=ciphertext)
@@ -708,7 +723,8 @@ def main(*, core, inspector, sources, inspect_existing=False, restore_existing=F
             "native_restored_hermes_launched": False, "recurring_profile_backup_installed": False,
             "windows_collection_qualified": False, "runtime_qualified": False}, indent=2))
     except Exception as error:
-        stage = "profile_recovery_inspection" if inspect_existing else "profile_restore_existing" if restore_existing else "profile_backup_restore"
+        stage = ("profile_recovery_inspection" if inspect_existing else "profile_restore_existing" if restore_existing
+                 else "profile_backup_only" if backup_only else "profile_backup_restore")
         report = {"complete": False, "stage": stage, "failure_stage": phase,
             "category": "profile_backup_or_restore_incomplete_preserve_evidence", "encrypted_backup_created": completed,
             "encrypted_backup": backup_path, "disposable_restore": recovery_path,
@@ -721,6 +737,224 @@ def main(*, core, inspector, sources, inspect_existing=False, restore_existing=F
             report["memory_records_written"] = False
         if inspect_existing: report["files_written"] = False
         print(json.dumps(report, indent=2))
+        raise SystemExit(1) from None
+
+
+SCHEDULE_ROOT = Path('/opt/enhanced-cognee-profile-backup')
+UNIT_ROOT = Path('/etc/systemd/system')
+SERVICE_NAME = 'enhanced-cognee-profile-backup.service'
+TIMER_NAME = 'enhanced-cognee-profile-backup.timer'
+
+
+def schedule_payloads(sources):
+    """Only already hash-verified public definitions enter the protected runner."""
+    if set(sources) != NAMES:
+        raise BackupError('unapproved_backup_bundle')
+    code = b'# Reviewed public definitions; no writable-checkout imports.\n'
+    for variable, filename in (('core', 'provision_pilot_access.py'), ('inspector', 'inspect_pilot_recovery.py'), ('backup', 'backup_pilot_profile.py')):
+        raw = sources[BASE + filename]
+        if not isinstance(raw, bytes) or not 0 < len(raw) <= 65536:
+            raise BackupError('unapproved_backup_bundle')
+        code += (variable + "={'__name__':'reviewed_scheduled_definitions'}\nexec(compile(" + repr(raw)
+                 + ",'reviewed-scheduled-source','exec')," + variable + ')\n').encode()
+    # Only the child needs its own public source bytes. No root secret is embedded.
+    code += ('sources=' + repr(sources) + '\n').encode()
+    code += b"backup['main'](core=core, inspector=inspector, sources=sources, backup_only=True, scheduled_backup=True)\n"
+    if len(code) > 262144: raise BackupError('scheduled_program_budget')
+    edition = digest(code)[:16]
+    runner = SCHEDULE_ROOT / edition / 'run.py'
+    service = f'''[Unit]
+Description=Encrypted restricted Hermes profile backup
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+Environment=WSL_DISTRO_NAME=Ubuntu-Hermes
+WorkingDirectory=/tmp
+ExecStart=/usr/bin/python3 -I -B {runner}
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateNetwork=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadOnlyPaths=/var/lib/hermes-runtime
+ReadWritePaths=/var/backups/enhanced-cognee
+InaccessiblePaths=-/etc/enhanced-cognee/age-recovery-identity.txt -/etc/enhanced-cognee/operator.json -/etc/enhanced-cognee/api.json -/etc/enhanced-cognee/worker.json
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID
+AmbientCapabilities=
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=32
+TimeoutStartSec=3min
+'''.encode()
+    timer = f'''[Unit]
+Description=Daily encrypted restricted Hermes profile backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=15min
+Unit={SERVICE_NAME}
+
+[Install]
+WantedBy=timers.target
+'''.encode()
+    return runner, code, service, timer
+
+
+def schedule_command(arguments, *, timeout=200, allowed_codes=(0,), unit_path=None):
+    environment = {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}
+    if unit_path is not None:
+        environment['SYSTEMD_UNIT_PATH'] = str(unit_path) + ':/usr/lib/systemd/system'
+    result = subprocess.run(arguments, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        env=environment, timeout=timeout, close_fds=True)
+    if (result.returncode not in allowed_codes or len(result.stdout) > 65536 or len(result.stderr) > 4096
+            or unit_path is not None and result.stderr):
+        raise BackupError('schedule_command_failed_private_output_suppressed')
+    return result.stdout
+
+
+def install_schedule(*, core, inspector, sources):
+    """Human-operated initial installation only; conflicts stop without replacement.
+
+    The existing database timer and all prior profile generations remain intact.
+    A failure preserves any new files/unit state for inspection, never rollback.
+    """
+    phase, runner, service_installed, timer_enabled = 'operator_preflight', None, False, False
+    try:
+        if (os.geteuid() != 0 or os.environ.get('WSL_DISTRO_NAME') != 'Ubuntu-Hermes'
+                or os.environ.get('SUDO_USER') != 'vincentspereira'):
+            raise BackupError('approved_human_operator_required')
+        if Path('/proc/1/comm').read_text().strip() != 'systemd':
+            raise BackupError('host_systemd_required')
+        runner, program, service, timer = schedule_payloads(sources)
+        phase = 'existing_schedule_review'
+        units = core['open_directory'](UNIT_ROOT, {0})
+        try:
+            # Refuse even one pre-existing schedule file. This is not an updater.
+            for name in (SERVICE_NAME, TIMER_NAME):
+                try: os.stat(name, dir_fd=units, follow_symlinks=False)
+                except FileNotFoundError: continue
+                raise BackupError('existing_profile_schedule_preserved_review_required')
+            for name in (SERVICE_NAME, TIMER_NAME):
+                output = schedule_command(['/usr/bin/systemctl', 'show', name, '--property=LoadState', '--value'], allowed_codes=(0, 4))
+                if output.strip() != b'not-found':
+                    raise BackupError('existing_loaded_schedule_preserved_review_required')
+            phase = 'protected_runner_preparation'
+            parent = core['open_directory'](SCHEDULE_ROOT.parent, {0})
+            try:
+                try: os.mkdir(SCHEDULE_ROOT.name, 0o755, dir_fd=parent)
+                except FileExistsError: pass
+            finally: os.close(parent)
+            protected = core['open_directory'](SCHEDULE_ROOT, {0})
+            try:
+                try: os.mkdir(runner.parent.name, 0o755, dir_fd=protected)
+                except FileExistsError: pass
+            finally: os.close(protected)
+            edition = core['open_directory'](runner.parent, {0})
+            try:
+                # An incomplete prior edition is retained; only identical regular
+                # root-owned protected public code is reusable.
+                try:
+                    fd = os.open('run.py', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644, dir_fd=edition)
+                except FileExistsError:
+                    fd = os.open('run.py', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=edition)
+                    try:
+                        info = os.fstat(fd)
+                        if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_nlink != 1
+                                or info.st_mode & 0o022 or info.st_size != len(program)
+                                or os.read(fd, len(program) + 1) != program):
+                            raise BackupError('existing_runner_preserved_review_required')
+                    finally: os.close(fd)
+                else:
+                    with os.fdopen(fd, 'wb') as handle:
+                        os.fchmod(handle.fileno(), 0o644)
+                        handle.write(program)
+                        handle.flush()
+                        os.fsync(handle.fileno())
+                os.fsync(edition)
+            finally: os.close(edition)
+            phase = 'unit_validation'
+            # Verify the generated unit files in this root-protected directory
+            # before they are installed or a timer is enabled.
+            edition = core['open_directory'](runner.parent, {0})
+            try:
+                for name, payload in ((SERVICE_NAME, service), (TIMER_NAME, timer)):
+                    fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644, dir_fd=edition)
+                    with os.fdopen(fd, 'wb') as handle:
+                        os.fchmod(handle.fileno(), 0o644)
+                        handle.write(payload)
+                        handle.flush()
+                        os.fsync(handle.fileno())
+                os.fsync(edition)
+            finally: os.close(edition)
+            schedule_command(['/usr/bin/systemd-analyze', 'verify', str(runner.parent / SERVICE_NAME), str(runner.parent / TIMER_NAME)], unit_path=runner.parent)
+            phase = 'unit_publication'
+            for name, payload in ((SERVICE_NAME, service), (TIMER_NAME, timer)):
+                fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644, dir_fd=units)
+                with os.fdopen(fd, 'wb') as handle:
+                    os.fchmod(handle.fileno(), 0o644)
+                    handle.write(payload)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+            os.fsync(units)
+            service_installed = True
+        finally: os.close(units)
+        phase = 'service_qualification'
+        schedule_command(['/usr/bin/systemctl', 'daemon-reload'])
+        # Run once before enabling the timer; a failed job leaves it disabled.
+        schedule_command(['/usr/bin/systemctl', 'start', SERVICE_NAME])
+        output = schedule_command(['/usr/bin/systemctl', 'show', SERVICE_NAME,
+            '--property=Result', '--property=ExecMainStatus', '--property=ActiveState'])
+        fields = dict(line.split('=', 1) for line in output.decode('ascii').splitlines() if '=' in line)
+        if fields != {'Result': 'success', 'ExecMainStatus': '0', 'ActiveState': 'inactive'}:
+            raise BackupError('profile_backup_service_not_successful')
+        phase = 'daily_timer_enable'
+        schedule_command(['/usr/bin/systemctl', 'enable', '--now', TIMER_NAME])
+        timer_enabled = True
+        if (schedule_command(['/usr/bin/systemctl', 'is-enabled', TIMER_NAME]).strip() != b'enabled'
+                or schedule_command(['/usr/bin/systemctl', 'is-active', TIMER_NAME]).strip() != b'active'):
+            raise BackupError('daily_profile_timer_not_ready')
+        deadline = schedule_command(['/usr/bin/systemctl', 'show', TIMER_NAME,
+            '--property=NextElapseUSecRealtime', '--value']).strip()
+        if not deadline or deadline == b'n/a':
+            raise BackupError('daily_profile_timer_has_no_next_run')
+        print(json.dumps({'complete': True, 'stage': 'profile_backup_schedule', 'protected_runner': str(runner),
+            'profile_backup_service_passed': True, 'daily_profile_timer_enabled': True,
+            'daily_profile_timer_active': True, 'next_daily_run_scheduled': True,
+            'network_disabled_for_backup_service': True,
+            'recovery_identity_used_by_backup_service': False, 'previous_generations_preserved': True,
+            'disposable_restore_created': False, 'existing_database_schedule_changed': False,
+            'windows_collection_qualified': False, 'model_called': False, 'memory_records_written': False,
+            'runtime_qualified': False}, indent=2))
+    except Exception:
+        state = None
+        if service_installed:
+            try:
+                raw = schedule_command(['/usr/bin/systemctl', 'show', SERVICE_NAME,
+                    '--property=Result', '--property=ExecMainStatus', '--property=ActiveState'])
+                fields = dict(line.split('=', 1) for line in raw.decode('ascii').splitlines() if '=' in line)
+                if (set(fields) == {'Result', 'ExecMainStatus', 'ActiveState'}
+                        and fields['Result'] in {'success', 'exit-code', 'signal', 'core-dump', 'timeout', 'resources', 'start-limit-hit', 'oom-kill', 'protocol'}
+                        and fields['ActiveState'] in {'active', 'inactive', 'failed', 'activating', 'deactivating', 'maintenance'}
+                        and re.fullmatch(r'[0-9]{1,3}', fields['ExecMainStatus'])):
+                    state = fields
+            except Exception: pass
+        print(json.dumps({'complete': False, 'stage': 'profile_backup_schedule', 'failure_stage': phase,
+            'category': 'schedule_incomplete_preserve_installed_evidence', 'protected_runner': str(runner) if runner else None,
+            'service_files_published': service_installed, 'timer_enable_command_completed': timer_enabled,
+            'service_state': state,
+            'existing_database_schedule_changed': False, 'model_called': False,
+            'runtime_qualified': False}, indent=2))
         raise SystemExit(1) from None
 
 

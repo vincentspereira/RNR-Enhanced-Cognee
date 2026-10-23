@@ -1741,3 +1741,50 @@ account switching/API calls remain simulated in Workspace; actual age/file
 round trips and the permission regression remain real synthetic checks. The
 published bundle/bootstrap is verified without invoking its operator entry point.
 These results do not qualify installed recovery or clear other release gates.
+
+## 23 October: manual restricted profile recovery passes; daily job prepared
+
+Owner-run ca2682c6af3d0c40855e795a1dca9c778629184e returned complete=true for
+profile_restore_existing. It authenticated/decrypted the existing signed
+hermes_profile_20261023T104510Z_419749ed.tar.age generation and recovered all
+60 files/205571 bytes in
+/var/lib/hermes-runtime-recovery/check-22bf4ef6ac48438ebc4970fabe2ae8a5.
+Recovered content/private permissions, provider binding and scoped ordinary API
+access passed; live source was preserved and the failed destination was not
+reused. No plaintext archive, model call or memory write occurred. Preserve the
+failed and successful copies. This closes this generation's manual file recovery,
+not restored native Hermes startup, a current database restore or fleet recovery.
+
+A separate daily profile-backup installer/runner is prepared. A bounded
+backup-only mode snapshots the selected restricted HOME, encrypts and signs,
+and verifies the ciphertext without reading the age recovery identity,
+decrypting or making repeated recovery copies. The protected content-addressed
+runner embeds only verified public code. Systemd disables networking, makes
+source read-only, masks privileged recovery/operator/API/worker key files and
+limits persistent writes to the backup destination. CAP_SETUID/CAP_SETGID allow
+the restricted child; it receives no root signing/recovery secrets. The job
+retains existing size/type/change/SQLite refusal guards and all generations.
+
+The human-operated installer refuses existing unit conflicts, validates staged
+units, installs only the new profile service/timer, runs the job once and requires
+success before enabling the daily persistent timer. It verifies timer enabled,
+active and next-run state. Existing database timer, profiles, model defaults,
+Windows tasks and cloud destinations remain unchanged. Failures preserve partial
+installation for review rather than overwriting/cleaning/retrying automatically.
+
+The manual pass is owner-relayed installed evidence. Daily service/timer
+operation is not yet installed evidence; only the next owner result can close
+that gate. The Windows collector still excludes this profile format, v12 is
+paused, and current database/program recovery, other lifecycle/isolation/privacy/
+release gates and staged real-profile/fleet admission remain open.
+
+Workspace validation: 981 focused checks passed, zero failures/skips and no
+reported pytest warnings, including 135 profile-backup/schedule cases. Real age
+synthetic-key encryption/signature verification, private file recovery and
+protected traversal regressions still pass. Generated runner compilation and
+native systemd verification of the new units pass. Installer root/account/
+systemctl effects are simulated; the actual job's sandbox/capability behavior
+and timer operation require the installed operator result. An initial broad
+local verifier also encountered an unrelated existing Workspace PM2 environment
+warning; no PM2 file was changed. Isolated new-unit validation excludes unrelated
+local overrides and rejects warnings. Required full release checks remain open.

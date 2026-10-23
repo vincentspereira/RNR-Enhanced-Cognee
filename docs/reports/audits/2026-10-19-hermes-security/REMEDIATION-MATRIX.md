@@ -21,7 +21,9 @@ generation but stopped during disposable restore; preserve both backup and
 recovery destination. Owner-run 6a7c5ee4 authenticated/validated the backup and
 confirmed it matches live source; retained recovered membership failed before
 settings/API checks. A fresh restore from that existing encrypted generation is
-prepared, preserving the failed destination; installed profile recovery is open.
+completed at owner-run ca2682c6: all 60 files/205571 bytes, permissions, provider
+and scoped access passed; live source and failed copy preserved. Daily profile
+job is prepared, but recurring operation/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

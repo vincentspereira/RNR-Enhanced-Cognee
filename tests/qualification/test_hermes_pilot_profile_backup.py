@@ -381,7 +381,7 @@ def test_child_drop_identity_clean_environment_and_private_output_validation(hom
         assert actual == report
 
 
-@pytest.mark.parametrize("mutation", [None, "encrypt", "authenticate", "decrypt", "restore", "restore-count", "existing-parent-mode"])
+@pytest.mark.parametrize("mutation", [None, "encrypt", "authenticate", "decrypt", "restore", "restore-count", "existing-parent-mode", "daily", "scheduled"])
 def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_host_protection(home, tmp_path, monkeypatch, capsys, mutation):
     core, inspector, backup, _, _, _, _, _ = home
     real_uid = os.geteuid()
@@ -421,6 +421,8 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
     monkeypatch.setitem(core, "open_directory", open_dir)
     def private(fd, name, uid):
         if name == "backup.json": return json.dumps(config).encode(), None
+        if mutation in {"daily", "scheduled"} and name == key_path.name:
+            pytest.fail('Daily backup must not read the recovery identity')
         return read(fd, name, uid)
     monkeypatch.setitem(core, "read_private_at", private)
     calls = []
@@ -435,6 +437,7 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
     monkeypatch.setattr(backup, "run_child", child)
     age = backup.age
     def crypto(args, **kwargs):
+        if mutation in {"daily", "scheduled"}: assert args[0] == '--encrypt'
         if mutation == "encrypt" and args[0] == "--encrypt" or mutation == "decrypt" and args[0] == "--decrypt":
             raise backup.BackupError("age_operation_failed_private_details_suppressed")
         return age(args, **kwargs)
@@ -446,13 +449,16 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
     monkeypatch.setattr(backup, "verify_completed", verified)
     old_mask = os.umask(0o077)
     try:
-        if mutation:
+        if mutation == 'scheduled': monkeypatch.delenv('SUDO_USER')
+        if mutation in {'daily', 'scheduled'}:
+            backup.main(core=core, inspector=inspector, sources={}, backup_only=True, scheduled_backup=mutation == 'scheduled')
+        elif mutation:
             with pytest.raises(SystemExit): backup.main(core=core, inspector=inspector, sources={})
         else: backup.main(core=core, inspector=inspector, sources={})
     finally: os.umask(old_mask)
     output = capsys.readouterr().out
     report = json.loads(output)
-    assert "PRIVATE_" not in output and report["complete"] == (mutation is None)
+    assert "PRIVATE_" not in output and report["complete"] == (mutation in {None, 'daily', 'scheduled'})
     assert not report["model_called"] and not report["runtime_qualified"]
     assert calls == (["snapshot", "restore"] if mutation in {None, "restore", "restore-count"} else ["snapshot"])
     if mutation is None:
@@ -460,6 +466,12 @@ def test_operator_pipeline_uses_real_age_and_ciphertext_files_with_simulated_hos
         assert report["signed_ciphertext_verified"] and report["decryption_roundtrip_verified"]
         assert not report["plaintext_archive_written"] and not report["recurring_profile_backup_installed"]
         assert Path(report["encrypted_backup"]).read_bytes().startswith(b"age-encryption.org/v1\n")
+    elif mutation in {'daily', 'scheduled'}:
+        assert report['stage'] == 'profile_backup_only'
+        assert report['recovery_identity_read'] is False and report['decryption_tested'] is False
+        assert report['disposable_restore_created'] is False and not recovery.exists()
+        assert report['signed_ciphertext_verified'] is True
+        assert len(list(destination.glob('*.tar.age'))) == 1
     else:
         assert report["encrypted_backup_created"] == (mutation != "encrypt")
         if mutation == "existing-parent-mode": assert stat.S_IMODE(recovery.stat().st_mode) == 0o700
@@ -693,4 +705,125 @@ def test_conflicting_or_non_boolean_operator_modes_refused_before_any_access(mod
     with pytest.raises(SystemExit):
         backup.main(core=vars(core), inspector=vars(inspector), sources={},
                     inspect_existing=inspect, restore_existing=restore)
+    assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
+
+
+def test_schedule_program_compiles_and_units_validate_with_native_systemd(modules, tmp_path):
+    *_, backup = modules
+    sources = {name: Path(name).read_bytes() for name in backup.NAMES}
+    runner, code, service, timer = backup.schedule_payloads(sources)
+    compile(code, '<protected-scheduled-runner>', 'exec')
+    assert len(code) <= 262144 and str(runner).startswith('/opt/enhanced-cognee-profile-backup/')
+    assert b'backup_only=True, scheduled_backup=True' in code
+    assert b'PrivateNetwork=yes' in service and b'ProtectSystem=strict' in service
+    assert b'CapabilityBoundingSet=CAP_SETUID CAP_SETGID\n' in service
+    assert b'InaccessiblePaths=-/etc/enhanced-cognee/age-recovery-identity.txt' in service
+    assert b'OnCalendar=daily' in timer and b'Persistent=true' in timer
+    for name, raw in ((backup.SERVICE_NAME, service), (backup.TIMER_NAME, timer)):
+        (tmp_path / name).write_bytes(raw)
+    result = subprocess.run(['/usr/bin/systemd-analyze', 'verify', str(tmp_path / backup.SERVICE_NAME),
+        str(tmp_path / backup.TIMER_NAME)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8', 'SYSTEMD_UNIT_PATH': str(tmp_path) + ':/usr/lib/systemd/system'})
+    assert result.returncode == 0, result.stderr.decode()
+    assert not result.stderr, 'Unit validation warnings must be reviewed'
+
+
+@pytest.mark.parametrize('mutation', [None, 'unit-conflict', 'loaded-conflict', 'validate', 'service', 'result', 'enable', 'inactive', 'deadline'])
+def test_schedule_install_preserves_conflicts_and_enables_only_after_service_pass(home, monkeypatch, tmp_path, capsys, mutation):
+    core, inspector, backup, _, _, _, _, _ = home
+    store = tmp_path / 'opt' / 'profile-backup'
+    store.parent.mkdir()
+    units = tmp_path / 'system-units'
+    units.mkdir()
+    monkeypatch.setattr(backup, 'SCHEDULE_ROOT', store)
+    monkeypatch.setattr(backup, 'UNIT_ROOT', units)
+    monkeypatch.setattr(backup.os, 'geteuid', lambda: 0)
+    monkeypatch.setenv('WSL_DISTRO_NAME', 'Ubuntu-Hermes')
+    monkeypatch.setenv('SUDO_USER', 'vincentspereira')
+    original_read = Path.read_text
+    def read(path, *args, **kwargs):
+        return 'systemd\n' if path == Path('/proc/1/comm') else original_read(path, *args, **kwargs)
+    monkeypatch.setattr(Path, 'read_text', read)
+    sentinel = units / backup.SERVICE_NAME
+    if mutation == 'unit-conflict': sentinel.write_bytes(b'PRIVATE_EXISTING_OPERATOR_UNIT')
+    calls = []
+    def command(argv, **kw):
+        calls.append(argv)
+        if argv[0].endswith('systemd-analyze'):
+            if mutation == 'validate': raise backup.BackupError('unit_validation_failed')
+            return b''
+        action = argv[1]
+        if action == 'show' and '--property=LoadState' in argv:
+            return b'loaded\n' if mutation == 'loaded-conflict' else b'not-found\n'
+        if action == 'show' and '--property=NextElapseUSecRealtime' in argv:
+            return b'n/a\n' if mutation == 'deadline' else b'Sat 2026-10-24 00:08:00 BST\n'
+        if action == 'show':
+            return b'Result=success\nExecMainStatus=0\nActiveState=' + (b'active' if mutation == 'result' else b'inactive') + b'\n'
+        if action == 'start' and mutation == 'service': raise backup.BackupError('private_details_suppressed')
+        if action == 'enable' and mutation == 'enable': raise backup.BackupError('private_details_suppressed')
+        if action == 'is-enabled': return b'enabled\n'
+        if action == 'is-active': return b'inactive\n' if mutation == 'inactive' else b'active\n'
+        return b''
+    monkeypatch.setattr(backup, 'schedule_command', command)
+    sources = {name: Path(name).read_bytes() for name in backup.NAMES}
+    if mutation:
+        with pytest.raises(SystemExit): backup.install_schedule(core=core, inspector=inspector, sources=sources)
+    else: backup.install_schedule(core=core, inspector=inspector, sources=sources)
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert 'PRIVATE' not in output and report['complete'] is (mutation is None)
+    assert report['model_called'] is False and report['existing_database_schedule_changed'] is False
+    actions = [a[1] for a in calls if a[0] == '/usr/bin/systemctl']
+    enabled = any(action == 'enable' for action in actions)
+    assert enabled is (mutation in {None, 'enable', 'inactive', 'deadline'})
+    if enabled: assert actions.index('start') < actions.index('enable')
+    if mutation == 'unit-conflict': assert sentinel.read_bytes() == b'PRIVATE_EXISTING_OPERATOR_UNIT'
+    if mutation is None:
+        assert report['daily_profile_timer_active'] and report['daily_profile_timer_enabled']
+        runner = Path(report['protected_runner'])
+        assert runner.is_file() and stat.S_IMODE(runner.stat().st_mode) == 0o644
+        assert stat.S_IMODE(sentinel.stat().st_mode) == 0o644
+        assert not report['windows_collection_qualified'] and not report['disposable_restore_created']
+    if mutation in {'validate', 'loaded-conflict'}: assert not list(units.iterdir())
+
+
+def test_schedule_requires_host_systemd_without_changing_or_restarting_it(home, monkeypatch, capsys):
+    core, inspector, backup, *_ = home
+    monkeypatch.setattr(backup.os, 'geteuid', lambda: 0)
+    monkeypatch.setenv('WSL_DISTRO_NAME', 'Ubuntu-Hermes')
+    monkeypatch.setenv('SUDO_USER', 'vincentspereira')
+    monkeypatch.setattr(Path, 'read_text', lambda *a, **kw: 'sandbox-init\n')
+    monkeypatch.setattr(backup, 'schedule_command', lambda *a, **kw: pytest.fail('No changes or restart'))
+    with pytest.raises(SystemExit): backup.install_schedule(core=core, inspector=inspector, sources={})
+    assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
+
+
+@pytest.mark.parametrize('mutation', [None, 'missing-unit', 'nonzero', 'stdout-budget', 'stderr-budget', 'unit-warning'])
+def test_schedule_commands_suppress_private_output_and_enforce_unit_warning_gate(home, monkeypatch, mutation):
+    _, _, backup, *_ = home
+    kwargs_seen = []
+    def run(argv, **kwargs):
+        kwargs_seen.append(kwargs)
+        assert kwargs['stdin'] is subprocess.DEVNULL and kwargs['close_fds'] is True
+        assert kwargs['env']['PATH'] == '/usr/bin:/bin'
+        return NS(returncode=4 if mutation == 'missing-unit' else 1 if mutation == 'nonzero' else 0,
+            stdout=b'x' * 65537 if mutation == 'stdout-budget' else b'not-found\n',
+            stderr=b'x' * 4097 if mutation == 'stderr-budget' else b'PRIVATE_RAW_KEY' if mutation == 'unit-warning' else b'')
+    monkeypatch.setattr(backup.subprocess, 'run', run)
+    args = dict(allowed_codes=(0, 4)) if mutation == 'missing-unit' else {}
+    if mutation == 'unit-warning': args['unit_path'] = Path('/opt/protected-unit-test')
+    if mutation in {'nonzero', 'stdout-budget', 'stderr-budget', 'unit-warning'}:
+        with pytest.raises(backup.BackupError) as error: backup.schedule_command(['/usr/bin/systemctl', 'show'], **args)
+        assert 'PRIVATE' not in str(error.value)
+    else: assert backup.schedule_command(['/usr/bin/systemctl', 'show'], **args) == b'not-found\n'
+    if mutation == 'unit-warning':
+        assert kwargs_seen[0]['env']['SYSTEMD_UNIT_PATH'] == '/opt/protected-unit-test:/usr/lib/systemd/system'
+
+
+@pytest.mark.parametrize('backup_only,scheduled', [(False, True), (1, False), (True, 1)])
+def test_scheduled_mode_cannot_invoke_restore_or_accept_non_boolean_mode(modules, monkeypatch, capsys, backup_only, scheduled):
+    core, inspector, backup = modules
+    monkeypatch.setattr(backup.pwd, 'getpwnam', lambda *a: pytest.fail('No account or key access'))
+    with pytest.raises(SystemExit): backup.main(core=vars(core), inspector=vars(inspector), sources={},
+        backup_only=backup_only, scheduled_backup=scheduled)
     assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
