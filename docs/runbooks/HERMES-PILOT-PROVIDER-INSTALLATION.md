@@ -1107,3 +1107,41 @@ Workspace fixture suites pass 672 tests, zero failures/skips and no reported
 warnings, including eight added diagnostic/deferred-preservation cases. Installed
 diagnosis and the other rollout groups remain pending; no Workspace model call,
 profile activation, Windows backup or unrelated fleet change occurred.
+
+## 23 October: account for native automatic recall before clarification
+
+The owner's latest diagnostic identifies the sole failure as absence of an
+explicit read tool before enhanced_clarify. The completed turn had two HTTP 200
+model requests, correct pending target, a reply question mark, no edit/write
+attempt and verified post-turn canonical/history/receipt/profile preservation.
+Hermes can legitimately obtain the record through automatic prefetch before
+calling tools; the earlier qualification predicate omitted that read path.
+
+The unchanged pinned native implementation is visible in
+[turn context](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/turn_context.py),
+[memory manager](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/memory_manager.py)
+and [Codex adapter](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/codex_responses_adapter.py).
+Automatic recall is a source-supported explanation, not retrospective proof of
+what the model received in the earlier run. Preserve the earlier refusal.
+
+Run the next pinned/hash-verified clarify_followup once under the same restricted
+wrapper, explicit secondary label and 180-second limit. The helper now verifies
+the current canonical ID/version/content in the native provider's returned read
+and in marked native user input_text inside a model request receiving HTTP 200.
+It correlates that response with the actual request, and freezes whether this
+delivery occurred before the first clarify callback. An explicit read also must
+match the current record. A late, stale, malformed or undelivered prefetch does
+not satisfy the requirement. No read/tool/context is fabricated or added to the
+model prompt to make the test pass. No IDs/content are printed or persisted by
+the qualification instrumentation.
+
+Expect the previous success fields plus memory_evidence_verified=true and,
+when automatic recall supplies the evidence, verified_prefetch_before_clarify=true.
+The tool list may contain only enhanced_clarify; an extra get/recall tool is not
+required when this delivery proof passes. Every edit/write/pending-target/history/
+receipt/profile check remains enforced. runtime_qualified stays false for the
+other rollout groups. No installed provider upgrade or settings change is needed.
+
+Workspace suites pass 698 tests, zero failures/skips and no reported warnings,
+including 26 new evidence/delivery/order/guard cases. This adds source regression
+coverage, not 26 operator/model runs. Installed delivery qualification is pending.

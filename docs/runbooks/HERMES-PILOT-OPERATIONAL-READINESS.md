@@ -116,6 +116,14 @@ owner-run clarify_followup failed; its missing condition is not established by
 the terse original report. The updated helper adds bounded diagnostics and
 post-turn preservation verification without weakening the behavior/write guard.
 
+The subsequent owner diagnostic verified canonical/receipt preservation, zero
+editing/write attempts, the correct pending target and a native completed turn
+with a question mark. Only explicit read-tool ordering failed. Pinned Hermes
+also prefetches before tools; the updated helper requires matching canonical
+record retrieval and delivery in a successful observed model request before
+accepting this read path. Earlier diagnostics did not capture that proof, so
+one confirmation remains. Installed provider/core/settings/defaults are unchanged.
+
 23 October owner-run update at helper revision
 2117ba01ae473dfd0ff4698c212eec01c8c013cf: secondary pilot sign-in passed,
 preserving original credential fields and checked settings. The non-model

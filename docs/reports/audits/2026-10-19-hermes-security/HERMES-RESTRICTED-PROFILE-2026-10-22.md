@@ -1406,3 +1406,46 @@ authoritative preservation, including changed canonical data refusing a false
 preservation flag. Existing native-tool cases now assert individual diagnostic
 flags. Model/native/network behavior uses fixtures; this is not installed-host
 diagnosis or a passing ambiguity result. No new cloud request ran in Workspace.
+
+## 23 October: diagnostic isolates tool-only read assumption
+
+The owner-run 5b2538adc46b0ecd3c4530004e34791c28f09c42 diagnostic completed
+the native turn with two HTTP 200 model requests and enhanced_clarify as the
+only observed tool. The expected record alone was pending, the reply contained
+a question mark, no editing tool or canonical write attempt occurred, and
+post-turn canonical/history/receipt preservation verified. Checked profile
+settings/credentials were unchanged. The sole failed behavior predicate was
+memory_read_before_clarify=false, which then counted explicit get/recall tools.
+
+Pinned Hermes source establishes a separate legitimate read path:
+agent/turn_context.py::_memory_turn_start_and_prefetch calls prefetch_all before
+the model/tool loop, composes the returned evidence into the current user API
+content, and the native Codex adapter serializes that text as input_text.
+The repository provider's prefetch retrieves current permitted records and
+returns its marked JSON evidence. The old predicate missed this path; the
+owner result alone did not record whether this particular prefetch was delivered.
+Do not retroactively qualify the historical run without that evidence.
+
+The qualification helper now accepts either a matching authenticated explicit
+record read before clarify or verified native prefetch delivery before clarify.
+For the latter, the guarded provider must return the canonical current record
+ID/version/content, and the same record must appear in a marked native user
+input_text message in an observed model request receiving HTTP 200. Response
+identity is correlated to the actual observed request. Evidence is snapshotted
+at the first clarify callback; a later read/response cannot repair that order.
+The helper does not inject its preflight record into the model prompt, fabricate
+a tool call or manually run prefetch. All inspection is local/content-free in
+the public report. The marked records stay untrusted evidence, not instructions.
+
+Editing choices remain visible; any editing tool/blocked write, wrong pending
+target, changed canonical state/history/receipt/profile or failed question check
+still refuses qualification. The model prompt, installed provider/core/defaults,
+credentials and scopes are unchanged. One new pinned run confirms the now
+observed evidence route; no earlier write stage or successful gate is replayed.
+
+Workspace focused suites pass 698 tests, zero failures/skips and no reported
+warnings. The 26 added cases cover exact/stale/malformed/wrong-role evidence,
+matching authenticated reads, real HTTPX request/response correlation, failed
+HTTP statuses, late/undelivered prefetch and edit/pending-target refusals after
+prefetch. Native/model paths use fixtures and simulated transport; installed
+automatic-recall delivery remains unqualified pending the next owner result.

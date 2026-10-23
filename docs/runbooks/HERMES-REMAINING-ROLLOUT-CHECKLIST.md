@@ -20,6 +20,14 @@ which condition failed: missing clarification, no preceding read, an editing
 tool attempt, a blocked write or unexpected pending state. It did not complete
 the post-turn canonical/receipt comparison. Keep this gate failed/pending.
 
+Subsequent owner-run diagnostics at 5b2538ad verified post-turn preservation,
+correct pending target, a completed native turn/question, no editing tool and
+zero write attempts. Only the explicit-read-tool predicate failed. Pinned native
+Hermes also recalls automatically before tools. The updated qualification helper
+requires actual matching current-record retrieval and successful model-request
+delivery before accepting this alternative, preserving all other guards. The
+historical report alone does not establish delivery; one confirmation remains.
+
 ## How much remains
 
 There are five shared readiness groups, followed by the actual fleet rollout.
@@ -65,9 +73,9 @@ compare canonical content/history, counts, receipts and checked profile state
 before reporting whether preservation verified. A failed comparison never
 becomes a preservation pass. The original behavior and write guard stay enforced.
 
-One deliberate new run of clarify_followup is needed because the older helper
-did not retain those details and its in-process pending state was cleared on
-shutdown. This is not a repeat of capture, correction or corrected recall.
+One deliberate new run of clarify_followup is needed to confirm matching native
+automatic-recall delivery before clarification, which earlier diagnostics did
+not observe. This is not a repeat of capture, correction or corrected recall.
 Use the explicit secondary account, existing scopes/receipts and the new pinned
 hash-verified helper. It may consume existing subscription quota. Stop on an
 observed 429; do not rotate accounts automatically or reset statuses.
