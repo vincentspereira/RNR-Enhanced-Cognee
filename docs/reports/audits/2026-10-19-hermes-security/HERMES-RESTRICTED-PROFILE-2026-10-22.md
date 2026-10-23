@@ -1368,3 +1368,41 @@ provider-contract tests added to this run. Native agent/model/network paths use
 fixtures; the provider-contract cases exercise the repository provider with
 substituted dependencies/transport. The uncertain-change installed check remains
 pending, with all other release/renewal/recovery/fleet gates preserved.
+
+## 23 October: uncertain-change check failed; diagnostic detail corrected
+
+The owner returned complete=false/native_agent_turn at helper revision
+ef39013eab7aba9df2c1413e39f53943ddaaa0f8, category
+ambiguous_change_not_preserved_for_clarification. Checked settings/credentials
+were unchanged and memory_writes_may_have_occurred=false. The report does not
+identify which of the five behavior/guard/pending conditions failed and did
+not complete the post-turn canonical/receipt comparison. No assumption about
+the model's actual tool sequence, question or pending target is justified.
+
+The helper now preserves that failure category and includes bounded native
+turn/model-request/tool-name diagnostics plus clarification flags: tool called,
+preceding read, editing tool called, bounded attempted-write count, pending-set
+shape/expected-target checks and reply question-mark presence. It prints no
+IDs, content, previews, arguments, tokens or raw errors. A completed turn that
+misses the clarification conditions still proceeds through authoritative
+canonical/history/count/receipt/profile preservation checks before the behavior
+failure is returned. Its preservation flag becomes true only after those checks
+all pass; drift reports a failed preservation check rather than a false pass.
+
+The write guard, visible edit choices, required native clarification and question
+checks remain enforced. Existing fixtures/receipts are reused without edits.
+One bounded diagnostic run consumes existing second-account quota; no prior
+successful stage is replayed. No installed clarification pass is claimed.
+
+The owner's remaining-test question is reconciled in
+[the rollout checklist](../../../runbooks/HERMES-REMAINING-ROLLOUT-CHECKLIST.md):
+five shared readiness groups followed by actual fleet admission, with per-profile
+checks batched where safe. These groups include unfinished implementation and
+owner/host evidence; they cannot be honestly converted into a fixed command count.
+
+Focused Workspace suites pass 672 tests, zero failures/skips and no reported
+warnings. Eight added cases cover bounded diagnostic privacy and deferred
+authoritative preservation, including changed canonical data refusing a false
+preservation flag. Existing native-tool cases now assert individual diagnostic
+flags. Model/native/network behavior uses fixtures; this is not installed-host
+diagnosis or a passing ambiguity result. No new cloud request ran in Workspace.

@@ -1075,3 +1075,35 @@ Workspace fixtures pass 664 tests with zero failures/skips and no reported
 warnings, including 28 new clarification/guard/preservation cases and 14 existing
 provider-contract cases added to the focused run. No new cloud or installed-host
 call ran in Workspace. The installed clarification check is pending.
+
+## 23 October: failed clarification needs bounded diagnostics
+
+The owner's ef39013eab7aba9df2c1413e39f53943ddaaa0f8 run returned
+ambiguous_change_not_preserved_for_clarification, unchanged checked profile
+settings/credentials and no possible canonical writes from the guarded test.
+The terse result did not identify the failing condition or complete the
+post-turn canonical/receipt comparison. Preserve that failure and do not infer
+the model's tool sequence, a lost memory, a question or a successful gate.
+
+Run the next pinned/hash-verified clarify_followup once, with the same explicit
+secondary label and restricted 180-second operator wrapper. It now reports
+bounded native turn/tool-name diagnostics and clarification booleans/counts.
+If the completed turn misses a clarification condition, authoritative reads
+still check unchanged canonical history, counts, receipts and profile files
+before setting post_turn_canonical_and_receipt_preservation_verified=true.
+Canonical drift cannot be converted into a behavior failure with a false
+preservation pass. No identifiers, conversation text, arguments or credentials
+are printed. The required behavior, visible editing choices and pre-transport
+write guard are unchanged. Expect either the same success flags or an actionable
+sanitized diagnostic; do not describe this reporting fix as an installed pass.
+
+The [remaining rollout checklist](HERMES-REMAINING-ROLLOUT-CHECKLIST.md) separates
+five shared readiness groups from actual fleet admission, rather than promising
+a fixed remaining command count. Existing 40-plus profiles need inventory and
+batch scope/launch/backup checks. Private credential-review coverage remains a
+separate owner checkpoint; completed custody/recovery steps are retained.
+
+Workspace fixture suites pass 672 tests, zero failures/skips and no reported
+warnings, including eight added diagnostic/deferred-preservation cases. Installed
+diagnosis and the other rollout groups remain pending; no Workspace model call,
+profile activation, Windows backup or unrelated fleet change occurred.

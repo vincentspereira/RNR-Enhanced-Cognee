@@ -109,6 +109,13 @@ requires encrypted coverage, native checks and the existing pause/owner decision
 
 ## Remaining sequence
 
+The [remaining rollout checklist](HERMES-REMAINING-ROLLOUT-CHECKLIST.md) groups
+the open work into five shared readiness groups followed by actual fleet
+admission. This is a work breakdown, not a fixed test/command count. The latest
+owner-run clarify_followup failed; its missing condition is not established by
+the terse original report. The updated helper adds bounded diagnostics and
+post-turn preservation verification without weakening the behavior/write guard.
+
 23 October owner-run update at helper revision
 2117ba01ae473dfd0ff4698c212eec01c8c013cf: secondary pilot sign-in passed,
 preserving original credential fields and checked settings. The non-model

@@ -88,6 +88,29 @@ class NativeTurnError(CheckError):
             self.http_status = next((s for s in reversed(self.diagnostics["http_statuses"]) if s >= 400), None)
 
 
+class ClarificationError(NativeTurnError):
+    """Content-free evidence for a completed turn that missed clarification."""
+
+    def __init__(self, result, requests, calls, attempts, pending, target):
+        super().__init__(result, requests, calls)
+        self.args = ("ambiguous_change_not_preserved_for_clarification",)
+        called = "enhanced_clarify" in calls
+        before = calls[:calls.index("enhanced_clarify")] if called else []
+        count = attempts.get("writes") if isinstance(attempts, dict) else None
+        self.clarification_diagnostics = {
+            "clarify_tool_called": called,
+            "memory_read_before_clarify": bool({"enhanced_get", "enhanced_recall"}.intersection(before)),
+            "editing_tool_called": bool({"enhanced_remember", "enhanced_correct", "enhanced_retract"}.intersection(calls)),
+            "canonical_write_attempts": count if type(count) is int and 0 <= count <= 1000 else None,
+            "pending_state_is_set": isinstance(pending, set),
+            "expected_record_pending": target in pending if isinstance(pending, set) else False,
+            "only_expected_record_pending": pending == {target} if isinstance(pending, set) else False,
+            "native_reply_has_question_mark": isinstance(result, dict)
+                and isinstance(result.get("final_response"), str) and "?" in result["final_response"],
+            "post_turn_canonical_and_receipt_preservation_verified": False,
+        }
+
+
 def read_private(name, uid):
     if name not in {"config.yaml", "enhanced_cognee.json", "auth.json", ".env"}:
         raise CheckError("unapproved_file")
@@ -263,6 +286,8 @@ def failure(error):
     result = {"category": category, "http_status": status, "provider_code": provider_code}
     if isinstance(error, NativeTurnError):
         result.update(http_status=error.http_status, native_diagnostics=error.diagnostics)
+    if isinstance(error, ClarificationError):
+        result["clarification_diagnostics"] = error.clarification_diagnostics
     return result
 
 
@@ -634,7 +659,8 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
                 or {"enhanced_remember", "enhanced_correct", "enhanced_retract"}.intersection(calls)
                 or attempts["writes"] != 0
                 or provider._pending_clarifications != {clarification_target}):
-            raise CheckError("ambiguous_change_not_preserved_for_clarification")
+            raise ClarificationError(result, requests, calls, attempts,
+                getattr(provider, "_pending_clarifications", None), clarification_target)
         return result.get("final_response", ""), sorted(set(calls)), requests["count"]
     finally:
         agent.close()
@@ -755,7 +781,13 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
             if correction: correction_stamp = save_correction_receipt(state, session, previous)
             extra = {"correction_target": (previous, fixture)} if correction else {}
             if clarification: extra["clarification_target"] = previous["id"]
-            answer, calls, requests = native_memory_turn("capture" if capture else "correct" if correction else "clarify" if clarification else "recall", token, provider, session, prompt, **extra)
+            clarification_failure = None
+            try:
+                answer, calls, requests = native_memory_turn("capture" if capture else "correct" if correction else "clarify" if clarification else "recall", token, provider, session, prompt, **extra)
+            except ClarificationError as error:
+                if not clarification: raise
+                clarification_failure = error
+                answer = ""
             phase = "saved_memory_verification"
             # agent.close shuts the provider down; reinitialize for authoritative reads.
             provider.initialize("pilot_verification", hermes_home=str(PROFILE), agent_context="primary")
@@ -789,7 +821,9 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
                 interval_pattern = r"\b(?:twenty[ -]three|23)[ -]+day"
                 if re.search(r"\b(?:nineteen|19)[ -]+day", answer.casefold()):
                     raise CheckError("superseded_interval_returned_as_current")
-            if clarification and (row != previous or not isinstance(answer, str) or len(answer) > 4000
+            if clarification and row != previous:
+                raise CheckError("clarification_question_or_preservation_not_verified")
+            if clarification and clarification_failure is None and (not isinstance(answer, str) or len(answer) > 4000
                     or "?" not in answer or not re.search(r"\b(?:should|would|which|confirm|decided|prefer|clarify|want)\b", answer.casefold())):
                 raise CheckError("clarification_question_or_preservation_not_verified")
             if not capture and not correction and not clarification and (row != previous or row["id"] not in answer
@@ -797,6 +831,10 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
                 raise CheckError("fresh_session_recall_not_verified")
             if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
                 raise CheckError("profile_state_changed_preserve_and_review")
+            if clarification_failure is not None:
+                clarification_failure.clarification_diagnostics["post_turn_canonical_and_receipt_preservation_verified"] = True
+                phase = "native_agent_turn"
+                raise clarification_failure
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL,
             "credential_label": credential_label, "native_agent_turn_passed": True,

@@ -147,14 +147,37 @@ def test_native_ambiguous_turn_keeps_edit_choices_visible_but_refuses_any_attemp
         return requests
     monkeypatch.setattr(check, "restrict_agent", restrict)
     if mutation:
-        with pytest.raises(check.CheckError):
+        with pytest.raises(check.CheckError) as caught:
             check.native_memory_turn("clarify", TOKEN, provider, "new-session", "synthetic uncertain change", clarification_target="cedar")
+        if mutation != "rate-limit":
+            report = check.failure(caught.value)
+            detail = report["clarification_diagnostics"]
+            assert report["category"] == "ambiguous_change_not_preserved_for_clarification"
+            assert detail["clarify_tool_called"] == (mutation != "no-clarify")
+            assert detail["memory_read_before_clarify"] == (mutation not in {"no-read", "no-clarify", "wrong-order"})
+            assert detail["editing_tool_called"] == (mutation in {"remember", "correct", "retract"})
+            assert detail["canonical_write_attempts"] == int(mutation == "hidden-write")
+            assert detail["only_expected_record_pending"] == (mutation not in {"no-clarify", "wrong-target"})
+            assert not detail["post_turn_canonical_and_receipt_preservation_verified"]
+            assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
     else:
         answer, calls, count = check.native_memory_turn("clarify", TOKEN, provider, "new-session", "synthetic uncertain change", clarification_target="cedar")
         assert "?" in answer and calls == ["enhanced_clarify", "enhanced_get"] and count == 2
     assert options["allowed"] == {"enhanced_get", "enhanced_recall", "enhanced_status", "enhanced_clarify",
         "enhanced_remember", "enhanced_correct", "enhanced_retract"}
     assert options["closed"] and not transport and options["credential_pool"] is None
+
+
+@pytest.mark.parametrize("count,expected", [(0, 0), (3, 3), (True, None), (-1, None), (1001, None), ("PRIVATE_COUNT", None)])
+def test_clarification_diagnostic_never_exposes_ids_content_or_unbounded_values(check, count, expected):
+    error = check.ClarificationError({"completed": True, "final_response": "PRIVATE_RESPONSE?"},
+        {"count": 2}, ["enhanced_get", "enhanced_clarify", "PRIVATE_TOOL"],
+        {"writes": count}, {"PRIVATE_RECORD_ID"}, "PRIVATE_TARGET_ID")
+    report = check.failure(error)
+    assert report["clarification_diagnostics"]["canonical_write_attempts"] == expected
+    assert report["clarification_diagnostics"]["native_reply_has_question_mark"]
+    assert not report["clarification_diagnostics"]["expected_record_pending"]
+    assert "PRIVATE_" not in json.dumps(report)
 
 
 def fixture_components(check, *, model="gpt-6.1-sol", terminal=True, text=None, finish="stop", tool_calls=None):
@@ -826,7 +849,8 @@ def test_corrected_recall_refuses_stale_answers_and_changed_evidence(check, monk
 
 
 @pytest.mark.parametrize("mutation", [None, "scope", "old-record", "old-receipt", "new-receipt", "correction-receipt",
-                                     "changed-current", "no-question", "no-question-meaning", "post-count"])
+                                     "changed-current", "no-question", "no-question-meaning", "post-count",
+                                     "native-clarification", "native-clarification-drift"])
 def test_uncertain_change_requires_question_and_unchanged_existing_evidence(check, monkeypatch, tmp_path, capsys, mutation):
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "clarify_followup", False, mutation)
 
@@ -890,7 +914,7 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         assert previous["id"] == "synthetic-followup-id" and f == new_state["fixture"]
         value = saved(p, f, followup=True)
         value.update(version=2, content=f + " twenty-three days", state="active")
-        if mutation == "changed-current" and prompts: value["category"] = "changed"
+        if mutation in {"changed-current", "native-clarification-drift"} and prompts: value["category"] = "changed"
         return value
     monkeypatch.setattr(check, "verify_correction", corrected)
     monkeypatch.setattr(check, "prior_correction_version", lambda p, r: saved(p, new_state["fixture"], followup=True))
@@ -933,6 +957,9 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
             if followup: assert fixture not in prompt
         if fails:
             raise check.NativeTurnError({"completed": False, "error": "PRIVATE_ERROR"}, {"count": 1}, [])
+        if mutation in {"native-clarification", "native-clarification-drift"}:
+            raise check.ClarificationError({"completed": True, "final_response": "PRIVATE_RESPONSE?"},
+                {"count": 2}, ["enhanced_get"], {"writes": 0}, set(), "synthetic-followup-id")
         if mutation == "old-receipt":
             check.STATE.write_bytes(check.STATE.read_bytes())
         if mutation == "new-receipt": receipt_path.write_bytes(receipt_path.read_bytes())
@@ -969,12 +996,18 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     output = capsys.readouterr().out
     report = json.loads(output)
     if fails or mutation:
-        expected_phase = "native_agent_turn" if fails else (
+        expected_phase = "native_agent_turn" if fails or mutation == "native-clarification" else (
             "fixture_preparation" if mutation in {"existing-receipt", "scope", "fixture-collision", "missing-receipt", "existing-correction"} else "saved_memory_verification")
         assert not report["complete"] and report["failure_stage"] == expected_phase
         assert report["memory_writes_may_have_occurred"] == ((capture or correction) and expected_phase != "fixture_preparation")
         assert report["profile_settings_and_credentials_unchanged"] is True
         if fails: assert report["native_diagnostics"]["native_error_present"]
+        if mutation == "native-clarification":
+            assert report["clarification_diagnostics"]["post_turn_canonical_and_receipt_preservation_verified"]
+            assert not report["clarification_diagnostics"]["clarify_tool_called"]
+        if mutation == "native-clarification-drift":
+            assert report["category"] == "clarification_question_or_preservation_not_verified"
+            assert "clarification_diagnostics" not in report
         if receipts: assert receipt_path.read_bytes() == receipts[0]
     else:
         assert report["complete"] and report["native_agent_turn_passed"]
