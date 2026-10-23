@@ -418,3 +418,37 @@ creates no backup and does not replace/rerun the installed service or enable its
 timer. Keep the pilot idle and relay only its JSON. The installed job remains
 failed/disabled until this candidate passes and a separately guarded upgrade
 qualifies an actual backup run. Do not repeat the initial installer.
+
+## Missing parent CAP_SETUID: targeted transient candidate, 23 October
+
+Owner-run 56c0d439 completed the diagnostic, not the snapshot. The external
+process was created and returned exit 127; setpriv reported setresuid failure.
+The root parent had effective CAP_SETGID and no-new-privileges, but lacked
+effective CAP_SETUID. No snapshot/ciphertext was created. Installed units,
+runner, timer, source profile and previous recovery evidence remain unchanged.
+
+Systemd v255's public exec-invoke.c explicitly drops CAP_SETUID in its
+keep_seccomp_privileges path unless that capability is requested in the ambient
+set. This is consistent with the observed asymmetry; it is source-based causal
+evidence, not proof of the exact installed binary's execution path:
+https://github.com/systemd/systemd/blob/v255/src/core/exec-invoke.c
+
+The next temporary candidate requests AmbientCapabilities=CAP_SETUID for the
+root service, retaining the existing two-capability bounding set. It explicitly
+clears all ambient and inheritable capabilities in setpriv before executing the
+non-root snapshot reader. The reader's existing zero-effective/zero-ambient,
+single-group and no-new-privileges guards stay enforced before profile access.
+No other selected sandbox restriction is relaxed. This changes the candidate's
+ambient setting; earlier descriptions of a same-policy probe do not describe
+this new candidate. The prepared schedule template receives the same correction,
+but no installed job is replaced or rerun by the probe.
+
+Run only the newly pinned/hash-verified probe with the pilot idle. Its two
+candidate-policy flags report requested settings, not observed success.
+complete=true means sanitized diagnostics were obtained; the decisive snapshot
+condition is launch_diagnostics.snapshot_completed=true, with child exit 0.
+The ordinary snapshot is discarded in RAM. No backup configuration/signing or
+recovery key is read, no backup is created, no API/model is called and no memory
+is written. The old timer remains disabled. A successful candidate must precede
+an exact-old-artifact guarded upgrade, an actual signed encrypted backup run and
+timer verification. Do not repeat the original installer.

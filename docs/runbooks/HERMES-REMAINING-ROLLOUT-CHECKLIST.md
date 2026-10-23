@@ -103,11 +103,21 @@ that restore is needed. Owner-run d7c7880c installed the separate daily job
 files, but its first run exited 1 and timer enable did not complete. Owner-run 3bd4bf8f verified public artifacts/protections and found the retained
 restricted_snapshot failure with no backup created. Owner-run 058b71da then observed PermissionError/errno 1 before a child
 result. Next qualify the scheduled external identity-launch candidate with the
-updated same-policy transient probe before any installed service replacement.
+updated transient probe before any installed service replacement.
 It performs encryption-only snapshots with no model/API, memory write or
 recovery-identity read. Keep the pilot idle for its first run. See
 HERMES-PILOT-RECOVERY.md. Windows collection, current canonical database
 recovery and fresh-machine program rebuild remain separate; no fleet activation.
+
+Latest owner-run 56c0d439: the temporary launcher returned 127 at setresuid;
+the root parent has effective CAP_SETGID but lacks CAP_SETUID. No snapshot or
+backup completed and installed files/timer remain untouched. The next candidate
+retains CAP_SETUID in the root service's ambient set, with the same bounding
+set, then explicitly clears ambient/inheritable capabilities for the non-root
+reader. Other selected restrictions and the reader's zero-effective/ambient
+guard remain. Qualify this finite RAM-only snapshot first. Then prepare the
+guarded update of exact known installed artifacts, run an actual encrypted
+backup successfully and verify the timer. Do not repeat the initial installer.
 
 ### Historical clarification diagnostic, superseded by the passes above
 

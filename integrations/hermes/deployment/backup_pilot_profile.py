@@ -491,10 +491,11 @@ def run_child(core, inspector, sources, account, mode, data=b"", destination=Non
     if external_identity:
         if type(account.pw_uid) is not int or account.pw_uid <= 0 or type(account.pw_gid) is not int or account.pw_gid <= 0:
             raise BackupError("restricted_account_protection")
-        # Keep the same clear-groups/UID/GID/no-new-privileges boundary. Avoid
-        # Python's pre-exec identity calls only for the scheduled service path.
+        # Drop the root service's ambient/inheritable sets as well as groups.
+        # The child still refuses effective/ambient capabilities or missing NNP.
+        # Avoid Python's pre-exec identity calls only for the scheduled path.
         arguments = ["/usr/bin/setpriv", "--reuid=" + str(account.pw_uid), "--regid=" + str(account.pw_gid),
-                     "--clear-groups", "--no-new-privs", "--", *arguments]
+                     "--clear-groups", "--ambient-caps=-all", "--inh-caps=-all", "--no-new-privs", "--", *arguments]
         identity = {}
     result = subprocess.run(arguments,
         input=data, **identity, cwd="/tmp",
@@ -804,7 +805,7 @@ RestrictSUIDSGID=yes
 RestrictNamespaces=yes
 RestrictAddressFamilies=AF_UNIX
 CapabilityBoundingSet=CAP_SETUID CAP_SETGID
-AmbientCapabilities=
+AmbientCapabilities=CAP_SETUID
 MemoryMax=512M
 CPUQuota=100%
 TasksMax=32

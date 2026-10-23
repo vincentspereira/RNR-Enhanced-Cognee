@@ -170,7 +170,13 @@ enrollment/local-status step, not the remaining gates below.
    first run exited 1 and timer enable did not complete. Read-only inspection of
    the retained failure at 3bd4bf8f now confirms restricted_snapshot failure before
    any encrypted backup. Owner-run 058b71da observed launch EPERM; next qualify
-   the external identity-launch candidate with the same-policy transient probe.
+   the external identity-launch candidate with a bounded transient probe.
+   Owner-run 56c0d439 now identifies a setresuid refusal: the parent lacks
+   effective CAP_SETUID while CAP_SETGID/no-new-privileges are present. The next
+   candidate explicitly retains ambient CAP_SETUID in the root backup service
+   and clears ambient/inheritable sets before the non-root reader. Its existing
+   zero-effective/zero-ambient guard remains mandatory. This is a candidate
+   policy correction, not an installed service repair; see the recovery runbook.
    Recurring operation
    and collector coverage
    and current canonical database recovery remain separate.

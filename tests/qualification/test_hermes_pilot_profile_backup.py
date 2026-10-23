@@ -718,6 +718,7 @@ def test_schedule_program_compiles_and_units_validate_with_native_systemd(module
     assert b'backup_only=True, scheduled_backup=True' in code
     assert b'PrivateNetwork=yes' in service and b'ProtectSystem=strict' in service
     assert b'CapabilityBoundingSet=CAP_SETUID CAP_SETGID\n' in service
+    assert b'AmbientCapabilities=CAP_SETUID\n' in service
     assert b'InaccessiblePaths=-/etc/enhanced-cognee/age-recovery-identity.txt' in service
     assert b'OnCalendar=daily' in timer and b'Persistent=true' in timer
     for name, raw in ((backup.SERVICE_NAME, service), (backup.TIMER_NAME, timer)):
@@ -835,8 +836,9 @@ def test_scheduled_identity_launcher_avoids_python_preexec_identity_calls_withou
     receipt = dict(complete=True, files=60, entries=104, source_bytes=205571)
     def run(argv, **kwargs):
         if 'user' in kwargs: raise PermissionError(1, 'synthetic blocked pre-exec transition')
-        assert argv[:6] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups', '--no-new-privs', '--']
-        assert argv[6:9] == ['/usr/bin/setpriv', '--no-new-privs', '--']
+        assert argv[:8] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups',
+            '--ambient-caps=-all', '--inh-caps=-all', '--no-new-privs', '--']
+        assert argv[8:11] == ['/usr/bin/setpriv', '--no-new-privs', '--']
         assert not {'user', 'group', 'extra_groups'}.intersection(kwargs)
         assert kwargs['close_fds'] and kwargs['cwd'] == '/tmp'
         assert kwargs['env'] == {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}

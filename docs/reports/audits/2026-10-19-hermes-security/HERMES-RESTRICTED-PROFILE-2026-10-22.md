@@ -1906,3 +1906,46 @@ with successful Popen construction and a real harmless native child execution
 that checks parent UID/GID/groups preservation. Privileged systemd/account effects
 remain an operator-host qualification, not a local pass. Only the published
 candidate probe is the next operator action; do not reinstall/enable the old job.
+
+## 23 October: parent CAP_SETUID absent; targeted capability retention candidate
+
+Owner-run 56c0d439e363c344d4261b8529dc46c40c6234c3 returns a complete
+diagnostic with snapshot_completed=false. Popen constructed the external
+launcher, which returned exit 127 at setresuid. Parent CAP_SETGID is effective,
+CAP_SETUID is not, and no-new-privileges is set. No snapshot, ciphertext,
+service-key read, model request, memory write or installed-unit/timer change
+occurred. Preserve the old failure and the successful manual recovery evidence.
+
+Primary systemd v255 exec-invoke.c contains an explicit CAP_SETUID drop during
+the keep_seccomp_privileges path unless ambient CAP_SETUID was requested. This
+fits the observed asymmetry without proving the exact host binary's call path:
+https://github.com/systemd/systemd/blob/v255/src/core/exec-invoke.c
+
+The prepared schedule template and transient candidate now request only
+CAP_SETUID in the root service's ambient set; the bounding set remains exactly
+CAP_SETUID/CAP_SETGID. The external identity launcher explicitly clears all
+ambient/inheritable capabilities as well as supplementary groups before the
+non-root reader executes. Its existing identity, no-new-privileges and
+zero-effective/zero-ambient checks remain before any profile access. All other
+selected process/filesystem/network restrictions remain. Manual operator
+backup/restore paths retain their qualified launcher. This is a targeted
+candidate ambient-policy change, superseding earlier same-policy descriptions.
+
+The temporary probe still reads only verified public runner definitions and
+the ordinary restricted profile; successful snapshot data is discarded in RAM.
+Candidate-policy flags describe requested settings, not verified execution.
+complete=true reports available diagnostics; snapshot_completed=true and child
+exit 0 are required for snapshot success. Installed runner/service/timer remain
+unchanged, and the old timer remains disabled. A guarded exact-old-artifact
+upgrade, successful real encrypted backup and timer qualification are still
+required after the candidate passes. No fleet activation is claimed.
+
+Workspace validation: 1041 focused tests pass, zero failures/skips and no
+reported pytest warnings. Native systemd unit syntax validation and the real
+setpriv capability-clear options pass locally; that ordinary-user CLI test
+starts with no effective/ambient capabilities and does not prove a privileged
+transition. Additional guard tests refuse retained ambient/effective CAP_SETUID
+before profile inspection. Existing manual recovery and source preservation
+tests remain passing. Root/systemd/UID-transition effects still require the
+owner-run transient candidate; no installed success or coverage percentage is
+claimed from this suite.

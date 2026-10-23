@@ -56,7 +56,8 @@ def test_unknown_runner_rejected_before_ast_or_execution(probe, published, mutat
 def test_instrument_records_errno_and_exception_type_without_secret_values(probe, monkeypatch, capsys, mutation):
     class BackupError(RuntimeError): pass
     def original(argv, **kwargs):
-        assert argv[:6] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups', '--no-new-privs', '--']
+        assert argv[:8] == ['/usr/bin/setpriv', '--reuid=993', '--regid=985', '--clear-groups',
+            '--ambient-caps=-all', '--inh-caps=-all', '--no-new-privs', '--']
         assert not {'user', 'group', 'extra_groups'}.intersection(kwargs)
         if mutation == 'permission': raise PermissionError(13, 'PRIVATE_SECRET', '/private/filename')
         if mutation == 'missing': raise FileNotFoundError(2, 'PRIVATE_SECRET')
@@ -123,6 +124,8 @@ def test_transient_probe_keeps_original_units_and_has_no_persistent_write_except
         assert '--expand-environment=no' in argv
         assert '--property=ProtectSystem=strict' in argv and '--property=PrivateNetwork=yes' in argv
         assert '--property=CapabilityBoundingSet=CAP_SETUID CAP_SETGID' in argv
+        assert '--property=AmbientCapabilities=CAP_SETUID' in argv
+        assert '--property=NoNewPrivileges=yes' in argv
         assert not any('ReadWritePaths' in item for item in argv[:-1])
         assert kwargs['stdin'] is subprocess.DEVNULL and kwargs['close_fds'] is True
         assert len(argv[-1].encode()) <= 120000
@@ -138,6 +141,8 @@ def test_transient_probe_keeps_original_units_and_has_no_persistent_write_except
     assert report['complete'] is (mutation != 'no-report')
     assert not report['installed_job_rerun'] and not report['installed_units_changed']
     assert not report['backup_created'] and not report['service_signing_or_recovery_keys_read']
+    assert report['candidate_parent_ambient_setuid_requested'] is True
+    assert report['child_capability_clear_requested'] is True
 
 
 def test_operator_guard_prevents_any_public_program_read_or_transient_launch(probe, monkeypatch, capsys):
@@ -187,4 +192,28 @@ def test_native_process_observation_works_without_root_or_profile_access(probe, 
     report = probe.safe_result(output.encode())
     assert report['process_created'] is True and report['launch_returned'] is True
     assert report['child_exit_status'] is not None and report['popen_errno'] is None
+    assert (os.getuid(), os.getgid(), os.getgroups()) == before
+
+
+def test_native_explicit_capability_clear_runs_with_no_new_privileges():
+    """Exercise the real tool flags as this ordinary user, without profile access.
+
+    This validates CLI support and the no-capability result, not a privileged
+    systemd/UID transition or removal of an initially nonzero capability set.
+    """
+    import os
+    import sys
+    before = (os.getuid(), os.getgid(), os.getgroups())
+    code = """import json
+from pathlib import Path
+fields = dict(line.split(':', 1) for line in Path('/proc/self/status').read_text().splitlines())
+print(json.dumps({key: fields[key].strip() for key in ('CapEff', 'CapAmb', 'CapInh', 'NoNewPrivs')}))
+"""
+    result = subprocess.run(['/usr/bin/setpriv', '--ambient-caps=-all', '--inh-caps=-all',
+        '--no-new-privs', '--', sys.executable, '-I', '-B', '-c', code],
+        cwd='/tmp', env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'},
+        stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5, close_fds=True)
+    assert result.returncode == 0 and not result.stderr
+    assert json.loads(result.stdout) == dict(CapEff='0000000000000000',
+        CapAmb='0000000000000000', CapInh='0000000000000000', NoNewPrivs='1')
     assert (os.getuid(), os.getgid(), os.getgroups()) == before

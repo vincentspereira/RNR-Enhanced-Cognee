@@ -27,9 +27,14 @@ job files were installed at owner-run d7c7880c but its first run exited 1;
 timer enable did not complete. Owner-run 3bd4bf8f confirmed exact public files
 and protections; the retained report fails at restricted_snapshot before
 creating ciphertext. Owner-run 058b71da observed Python launch PermissionError
-(errno 1), with no child result. A scheduled external identity-launch candidate
-and same-policy transient qualification are prepared; installed repair and
-recurring operation/collection remain unqualified.
+(errno 1), with no child result. Owner-run 56c0d439 subsequently confirmed a
+created process returning 127 at setresuid: effective parent CAP_SETUID is
+missing, while CAP_SETGID and no-new-privileges are present. The next temporary
+candidate retains ambient CAP_SETUID for the root backup service and explicitly
+clears ambient/inheritable sets before the non-root snapshot reader, whose
+zero-effective/ambient guard remains enforced. Other selected restrictions and
+the two-capability bounding set remain. No installed unit/timer is changed by
+this probe; installed repair and recurring operation/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

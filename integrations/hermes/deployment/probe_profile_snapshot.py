@@ -1,7 +1,9 @@
 """Bounded temporary systemd probe of the published restricted snapshot launcher.
 
 The original service/timer/runner are never changed or rerun. A collected
-transient unit uses the same process protections, with no persistent write path.
+transient unit tests retaining CAP_SETUID in the root parent's ambient set,
+then clearing ambient/inheritable capabilities before the restricted child.
+Other selected protections remain, with no persistent write path.
 An ordinary profile snapshot is discarded in RAM. No service secrets are read.
 """
 from __future__ import annotations
@@ -33,7 +35,7 @@ PROPERTIES = [
     'InaccessiblePaths=-/etc/enhanced-cognee/age-recovery-identity.txt -/etc/enhanced-cognee/operator.json -/etc/enhanced-cognee/api.json -/etc/enhanced-cognee/worker.json',
     'ProtectKernelTunables=yes', 'ProtectKernelModules=yes', 'ProtectControlGroups=yes',
     'RestrictSUIDSGID=yes', 'RestrictNamespaces=yes', 'RestrictAddressFamilies=AF_UNIX',
-    'CapabilityBoundingSet=CAP_SETUID CAP_SETGID', 'AmbientCapabilities=',
+    'CapabilityBoundingSet=CAP_SETUID CAP_SETGID', 'AmbientCapabilities=CAP_SETUID',
     'MemoryMax=512M', 'CPUQuota=100%', 'TasksMax=32', 'RuntimeMaxSec=120s', 'WorkingDirectory=/tmp',
 ]
 EXCEPTIONS = {'PermissionError', 'FileNotFoundError', 'OSError', 'TimeoutExpired', 'ValueError',
@@ -125,7 +127,7 @@ def observed(argv, **kwargs):
     if type(uid) is not int or uid <= 0 or type(gid) is not int or gid <= 0 or groups != ():
         raise RuntimeError('restricted_identity_required')
     argv = ['/usr/bin/setpriv', '--reuid=' + str(uid), '--regid=' + str(gid),
-            '--clear-groups', '--no-new-privs', '--', *argv]
+            '--clear-groups', '--ambient-caps=-all', '--inh-caps=-all', '--no-new-privs', '--', *argv]
     original_popen = subprocess.Popen
     def tracked_popen(*args, **options):
         process = original_popen(*args, **options)
@@ -232,6 +234,8 @@ def main():
         report = safe_result(result.stdout)
         print(json.dumps({'complete': report is not None, 'stage': 'profile_snapshot_launch_probe',
             'identity_launcher': 'setpriv_clear_groups',
+            'candidate_parent_ambient_setuid_requested': True,
+            'child_capability_clear_requested': True,
             'probe_report_found': report is not None, 'launch_diagnostics': report,
             'transient_command_exit_status': result.returncode if -255 <= result.returncode <= 255 else None,
             'installed_job_rerun': False, 'installed_units_changed': False, 'timer_changed': False,

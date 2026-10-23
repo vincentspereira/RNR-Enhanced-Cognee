@@ -199,7 +199,7 @@ def test_public_report_is_sanitized_and_never_claims_recovery(inspector, tmp_pat
     assert not result["profile_recovery_qualified"] and not result["runtime_qualified"]
 
 
-@pytest.mark.parametrize("mutation", ["approval", "account", "home", "groups", "python", "capabilities", "privileges"])
+@pytest.mark.parametrize("mutation", ["approval", "account", "home", "groups", "python", "capabilities", "privileges", "ambient-setuid", "effective-setuid"])
 def test_identity_protection_before_any_home_inspection(inspector, monkeypatch, tmp_path, mutation):
     uid, gid = os.geteuid(), os.getegid()
     release = Path(inspector.sys.executable).resolve().parent
@@ -210,5 +210,7 @@ def test_identity_protection_before_any_home_inspection(inspector, monkeypatch, 
     monkeypatch.setenv("HERMES_HOME", str(inspector.HOME / inspector.PROFILE_RELATIVE))
     monkeypatch.setattr(inspector.os, "getgroups", lambda: [gid, gid + 1] if mutation == "groups" else [gid])
     monkeypatch.setattr(Path, "read_text", lambda *a, **kw: "NoNewPrivs: " + ("0" if mutation == "privileges" else "1")
-        + "\nCapAmb: 0000000000000000\nCapEff: " + ("0000000000000001" if mutation == "capabilities" else "0000000000000000"))
+        + "\nCapAmb: " + ("0000000000000080" if mutation == "ambient-setuid" else "0000000000000000")
+        + "\nCapEff: " + ("0000000000000080" if mutation == "effective-setuid" else
+            "0000000000000001" if mutation == "capabilities" else "0000000000000000"))
     with pytest.raises(inspector.InspectionError): inspector.preflight(mutation != "approval")
