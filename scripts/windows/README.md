@@ -1,5 +1,19 @@
 # Windows backup v12
 
+Current checkpoint, 23 October: Ubuntu-Hermes source-side collection inventory
+passes for six database and two restricted-profile encrypted backup pairs.
+The v12 collector requires both recent families and verifies ciphertext hashes;
+it does not read keys, authenticate signatures or decrypt. The checkpoint and
+task-switch guards require the new cognee-v2-profiles scope, preventing reuse of
+old database-only success as profile coverage. V12 remains paused; the v11
+scheduled task must stay unchanged. Owner-run native Windows qualification of
+the updated files is the next step. This synthetic test does not run a full
+backup, copy real data to the cloud or switch the task. Actual collection,
+downloaded recovery and the real v12 backup remain separate unfinished checks.
+
+Earlier operating/status paragraphs below are dated history. Instructions to
+resume a backup or switch its task do not override the current pause.
+
 Current follow-up, 22 October: the real run passed inventory but stopped at
 home capture because a null options array became an empty command argument.
 The correction is installed and passes 55 portable checks, zero failures/skips.
@@ -71,3 +85,14 @@ pytest warnings. The new collector has actual age/tar recovery and a real restic
 producer refusal/restore test. Root ownership is simulated in these fixtures;
 portable PS7 is not native Windows 5.1/DPAPI/VSS/ACL/cloud qualification. Earlier
 native hashes/results above remain historical and do not admit these changes.
+
+Windows file preparation now complete: five reviewed files were copied to
+C:\Scripts with prior versions preserved and SHA-256 copies verified; the
+local source-verification manifest was refreshed. The current focused checks
+pass: 30 collector cases, 14 Python backup tests and 65 portable PowerShell
+checks, zero failures/skips. Native Windows qualification is still unrun;
+Windows PowerShell cannot execute from this session (Exec format error).
+Run the updated Test-WindowsBackup-v12.ps1 in elevated Windows PowerShell under
+the backup owner account. It uses synthetic data and checks local recovery
+metadata; it does not resume v12, collect real service backups, upload or change
+a scheduled task. V12 remains paused; no scheduled task was changed here.

@@ -103,6 +103,29 @@ try {
   Check $case.name ($caught -eq $case.blocked)
  }
 
+ $taskAst=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot Update-WSLBackupTask-v12.ps1),[ref]$tokens,[ref]$errors)
+ $taskCoverage=@($taskAst.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Assert-V12ScheduledCoverage'},$true))
+ if ($taskCoverage.Count -ne 1) {throw 'Expected one actual task coverage guard.'}
+ . ([scriptblock]::Create($taskCoverage[0].Extent.Text))
+ foreach ($case in @(
+  @{name='task_rejects_database_only_coverage';legacy=$true;omit='';local=$true;cloud=$true;blocked=$true},
+  @{name='task_accepts_both_families_and_all_homes';legacy=$false;omit='';local=$true;cloud=$true;blocked=$false},
+  @{name='task_rejects_missing_home';legacy=$false;omit='Ubuntu-Hermes';local=$true;cloud=$true;blocked=$true},
+  @{name='task_rejects_offline_export_only';legacy=$false;omit='Ubuntu-Workspace';local=$true;cloud=$true;blocked=$true},
+  @{name='task_rejects_incomplete_local';legacy=$false;omit='';local=$false;cloud=$true;blocked=$true},
+  @{name='task_rejects_incomplete_cloud_copy';legacy=$false;omit='';local=$true;cloud=$false;blocked=$true}
+ )) {
+  $fixture=@{local_complete=$case.local;cloud=@{OneDrive=$true;GoogleDrive=$case.cloud};completed=@{}}
+  foreach ($scope in @('cognee-v2-profiles','Ubuntu-Workspace','Ubuntu-Hermes','Ubuntu-Company','Windows-D')) {
+   if ($scope -ne $case.omit) {$fixture.completed[$scope]=@{snapshot='synthetic'}}
+  }
+  if ($case.legacy) {$fixture.completed.Remove('cognee-v2-profiles');$fixture.completed.cognee=@{snapshot='synthetic'}}
+  # Read the same PSCustomObject shape produced by the saved JSON checkpoint.
+  $fixture=$fixture|ConvertTo-Json -Depth 5|ConvertFrom-Json
+  $caught=$false;try {Assert-V12ScheduledCoverage $fixture} catch {$caught=$true}
+  Check $case.name ($caught -eq $case.blocked)
+ }
+
  $null=Engine @('backup','--tag','scope:fixture','--tag','run:old',$src)
  $r=Engine @('snapshots','--json','--tag','scope:fixture,run:new')
  Check new_run_cannot_reuse_old_tagged_snapshot (@(ConvertFrom-V12JsonArray $r.stdout).Count -eq 0)

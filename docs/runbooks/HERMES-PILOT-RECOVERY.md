@@ -20,12 +20,15 @@ passes close bounded pilot recovery and installed encrypted-profile-job/timer
 qualification. They do not qualify future unattended firing, decryption of every
 new generation, full-fleet/SQLite homes or Windows/cloud collection.
 
-The next prepared step is the no-export encrypted-family inventory described
-below: require recent database and profile generations and report only counts/
-hash checks, without keys or backup execution. The dual-family Windows v12
-collector/checkpoint changes are source-only and require native admission;
-v12 stays paused and the v11 task is unchanged. Earlier diagnostic failures and
-operator steps below are dated history, not requests to replay completed work.
+Owner-run ea6f2438 collection inventory now also passes: eight completed
+pairs (six database, two restricted-profile), coverage schema 2, both required
+families and ciphertext hashes verified. This was read-only: no export/copy,
+backup, credential read or upload. The collector does not authenticate manifest
+signatures or decrypt; separate key-based recovery evidence remains distinct.
+Do not repeat this passed inventory. The next step is native Windows qualification
+of the updated collector/checkpoint/task-admission files. V12 stays paused and
+the v11 scheduled task stays unchanged. Earlier diagnostic failures and operator
+steps below are dated history, not requests to replay completed work.
 
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
@@ -670,3 +673,37 @@ A pass is source-side collection readiness, not native Windows/remote recovery.
 Later Windows qualification must cover the updated exact script/helper hashes,
 producer/restore path, private ACLs and actual downloaded recovery before any
 scheduled-task switch. V12 stays paused and existing generations are preserved.
+
+## 23 October: encrypted-family inventory passed; Windows admission prepared
+
+The owner returned complete=true at ea6f2438: completed_pairs=8,
+database_completed_pairs=6, profile_completed_pairs=2, coverage_schema=2,
+required_families=[database, hermes_profile], ciphertext_hashes_verified=true.
+backup_started/cloud_upload/files_written/credentials_read were all false;
+signed_authenticity_and_decryption_verified remained false by design. This
+closes source-side collection readiness only. Preserve the existing manual
+signature/decryption/restore and daily-timer evidence; no replay is needed.
+
+The Windows task-admission helper now requires cognee-v2-profiles rather than
+the retired database-only cognee scope, plus all three home scopes, Windows-D
+and completed local/both cloud-folder copies. Six executed portable cases cover
+new coverage admission and refusal of legacy, missing-home, offline-only,
+incomplete local and incomplete cloud checkpoints. Native Windows qualification
+executes these same actual function definitions without changing a task.
+
+This Workspace session cannot execute Windows PowerShell (Exec format error),
+so it cannot claim Windows 5.1, DPAPI, VSS or task-state verification. Installing
+reviewed script files does not run them or resume the paused backup. A fresh
+owner-run elevated Windows native qualification remains required, followed by
+separate actual encrypted collection/recovery and any explicitly resumed backup.
+
+Windows file preparation now complete: five reviewed files were copied to
+C:\Scripts with prior versions preserved and SHA-256 copies verified; the
+local source-verification manifest was refreshed. The current focused checks
+pass: 30 collector cases, 14 Python backup tests and 65 portable PowerShell
+checks, zero failures/skips. Native Windows qualification is still unrun;
+Windows PowerShell cannot execute from this session (Exec format error).
+Run the updated Test-WindowsBackup-v12.ps1 in elevated Windows PowerShell under
+the backup owner account. It uses synthetic data and checks local recovery
+metadata; it does not resume v12, collect real service backups, upload or change
+a scheduled task. V12 remains paused; no scheduled task was changed here.

@@ -2158,3 +2158,36 @@ producer tests. RNR_RESTIC selects that reviewed executable; a missing tool is
 not converted into a skip. The workflow YAML/embedded bootstrap parses and the
 local pinned binary hash matches provenance. The explicit engine route passes
 all 30 collection tests. This is preparation, not a hosted CI success claim.
+
+## 23 October: source collection inventory passed; Windows files updated
+
+Owner-run ea6f2438 returned complete=true, coverage_schema=2 and eight completed
+pairs: six database and two restricted-profile generations. Both required
+families and ciphertext hashes passed. No backup/export/file write, credential
+read or cloud upload occurred. Signature authenticity/decryption were explicitly
+not tested by this keyless inventory. Preserve the passed manual encrypted
+restore, owner custody and daily profile timer evidence; do not replay them.
+
+Workspace found a remaining task-admission mismatch: the v12 updater still
+required the old cognee scope. It now requires cognee-v2-profiles and the three
+home/Windows-D scopes after local and both cloud-folder copies complete. Six
+actual extracted-function cases execute in portable/native qualification,
+including rejection of legacy, missing-home, offline-only and incomplete runs.
+
+Current focused verification: 30 collector pytest cases, 14 portable Python
+backup tests and 65 portable PowerShell checks pass with zero failures/skips;
+pytest reports no warnings. These include real encrypted restic restore and
+actual age fixtures. The earlier broad 1174-pass source result remains recorded;
+it was not rerun or relabeled as a Windows result.
+
+Five reviewed files were placed in C:\Scripts: the v12 launcher, native test,
+task-update helper, dual-family collector and v12 guide. Each previous installed
+file matched a known Git blob, was preserved before replacement, and each new
+copy matches source SHA-256. The local source-verification manifest was refreshed
+and its original preserved. No keys/passwords/private settings were read, no
+scheduled task was changed, and no backup/upload was started. V12 remains paused.
+This session's attempt to invoke Windows PowerShell failed with Exec format
+error; therefore no native Windows test or live scheduled-task read is claimed.
+The owner must run the updated synthetic qualification from elevated Windows
+PowerShell under vince. Real Windows encrypted-service collection/restore,
+cloud recovery, full v12 completion and task switching remain separate gates.

@@ -1,5 +1,19 @@
 # Backup v12 - operating and recovery guide
 
+Current checkpoint, 23 October: Ubuntu-Hermes source-side collection inventory
+passes for six database and two restricted-profile encrypted backup pairs.
+The v12 collector requires both recent families and verifies ciphertext hashes;
+it does not read keys, authenticate signatures or decrypt. The checkpoint and
+task-switch guards require the new cognee-v2-profiles scope, preventing reuse of
+old database-only success as profile coverage. V12 remains paused; the v11
+scheduled task must stay unchanged. Owner-run native Windows qualification of
+the updated files is the next step. This synthetic test does not run a full
+backup, copy real data to the cloud or switch the task. Actual collection,
+downloaded recovery and the real v12 backup remain separate unfinished checks.
+
+Earlier operating/status paragraphs below are dated history. Instructions to
+resume a backup or switch its task do not override the current pause.
+
 Current follow-up, 22 October: the real run passed inventory but stopped at
 home capture because a null options array became an empty command argument.
 The correction is installed and passes 55 portable checks, zero failures/skips.

@@ -1,5 +1,14 @@
 # Finding-by-finding remediation record
 
+
+23 October Windows preparation: the updated v12 launcher, native qualification,
+task-admission helper, dual-family collector and guide are installed at
+C:\Scripts with originals preserved and copy hashes verified. The existing
+source-verification manifest is refreshed. Portable checks pass (30 collector,
+14 Python backup and 65 PowerShell); native Windows remains unrun because this
+session cannot execute Windows PowerShell. No task, real backup or upload was
+started; v12 remains paused. Owner-run elevated native qualification is next.
+
 23 October restricted-pilot evidence: [native save/retrieve cycle](HERMES-RESTRICTED-PROFILE-2026-10-22.md).
 The permanent non-admin pilot now passes native GPT-6.1-Sol selected capture and
 fresh-process recall of the same invented decision, preserving the original
@@ -51,8 +60,11 @@ ciphertext/signature/counts/time before timer enable. No manual backup replay or
 unit replacement is requested; persistent enable can run a scheduled catch-up.
 Owner-run df79510b now authenticates the retained upgraded profile generation
 (60 files/205571 bytes) and confirms the daily timer enabled/active with next run.
-Future scheduled firing and Windows/remote collection remain unqualified. Source
-v12 dual-family collection/checkpoint protection is prepared, not installed.
+Future scheduled firing and Windows/remote collection remain unqualified.
+Owner-run ea6f2438 source-side collection inventory now passes: six database/two
+profile pairs, both families and ciphertext hashes verified without keys,
+export, backup or upload. V12 native qualification and actual collection remain
+open; its updated checkpoint and task-admission guards require both families.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

@@ -10,15 +10,26 @@ account restrictions below are dated history superseded by the later approval;
 private/everyday fleet activation remains unadmitted. Hermes model defaults
 remain unchanged; approved cloud-model arguments were limited to tests.
 
-The next prepared backup action is a no-export encrypted-family inventory in
-Ubuntu-Hermes. Source v12 now collects both database/profile families with
-versioned checkpoint coverage and strict private-path/hash/stream guards, but
-has not been installed or resumed; the v11 Windows task is unchanged. Current
+Owner-run ea6f2438 now passes the no-export encrypted-family inventory in
+Ubuntu-Hermes: six database and two profile pairs, schema 2 and ciphertext
+hashes verified, with no key read, export, backup or upload. Do not repeat it.
+V12 now requires both database/profile families with versioned checkpoint and
+scheduled-task admission guards. Native Windows qualification/actual collection
+remain pending; v12 stays paused and the v11 task stays unchanged. Current
 database-generation recovery, Windows/remote coverage, later human-answer/
 history safeguards, actual peer/fleet sharing/isolation, unattended credential
 lifecycle, credential revocation/review and release/main-merge gates remain.
 See [the current rollout checklist](../../../runbooks/HERMES-REMAINING-ROLLOUT-CHECKLIST.md)
 and [dated restricted-profile evidence](HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+
+
+23 October Windows preparation: the updated v12 launcher, native qualification,
+task-admission helper, dual-family collector and guide are installed at
+C:\Scripts with originals preserved and copy hashes verified. The existing
+source-verification manifest is refreshed. Portable checks pass (30 collector,
+14 Python backup and 65 PowerShell); native Windows remains unrun because this
+session cannot execute Windows PowerShell. No task, real backup or upload was
+started; v12 remains paused. Owner-run elevated native qualification is next.
 
 Historical decisions and checkpoints follow; they do not override the current
 owner approval and verified milestones above.

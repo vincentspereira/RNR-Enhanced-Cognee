@@ -1,6 +1,17 @@
 # Preview first. -Apply updates only this existing task's action after prerequisites.
 [CmdletBinding(SupportsShouldProcess=$true)]
 param([switch]$Apply,[switch]$PromptForTaskCredential)
+function Assert-V12ScheduledCoverage {
+ param([object]$Run)
+ if (-not $Run.local_complete -or -not $Run.cloud.OneDrive -or -not $Run.cloud.GoogleDrive) {
+  throw 'The first local backup and both cloud sync-folder copies must complete before switching the task.'
+ }
+ foreach ($scope in @('cognee-v2-profiles','Ubuntu-Workspace','Ubuntu-Hermes','Ubuntu-Company','Windows-D')) {
+  if (-not $Run.completed.PSObject.Properties[$scope]) {
+   throw 'The normal real backup must qualify all three homes, encrypted Cognee database AND profile coverage, and Windows-D. Legacy database-only snapshots and offline exports do not qualify the scheduled home backup.'
+  }
+ }
+}
 $ErrorActionPreference='Stop'
 # Process-local built-in modules; no saved environment or machine policy change.
 $env:PSModulePath=Join-Path $PSHOME 'Modules'
@@ -30,10 +41,7 @@ foreach ($entry in $proof.source_hashes.PSObject.Properties) {
 $state=Join-Path $env:LOCALAPPDATA 'RNR-Backups\v12-state\active-run.json'
 if (-not (Test-Path -LiteralPath $state)) {throw 'Complete the first real v12 backup and review coverage before switching the task.'}
 $completed=Get-Content -LiteralPath $state -Raw|ConvertFrom-Json
-if (-not $completed.local_complete -or -not $completed.cloud.OneDrive -or -not $completed.cloud.GoogleDrive) {throw 'The first local backup and both cloud sync-folder copies must complete before switching the task.'}
-foreach ($scope in @('cognee','Ubuntu-Workspace','Ubuntu-Hermes','Ubuntu-Company','Windows-D')) {
- if (-not $completed.completed.PSObject.Properties[$scope]) {throw 'The normal real backup must qualify all three homes, Cognee and Windows-D. Offline exports alone do not qualify the scheduled home backup.'}
-}
+Assert-V12ScheduledCoverage $completed
 
 if (-not [IO.File]::Exists($scriptPath)) {throw 'Maintained v12 script is missing.'}
 $passwordPath="$env:APPDATA\RNR-Backups\archive-password.xml"

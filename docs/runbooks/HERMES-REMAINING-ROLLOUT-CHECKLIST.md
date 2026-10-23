@@ -45,17 +45,19 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 | 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
 | 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Owner-run manual pilot renewal and API refusal controls pass; installed interruption recovery and unattended/fleet lifecycle remain open |
-| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key custody, inventory and manual encrypted profile restore pass; df79510b now verifies the upgraded protected runner, signed 60-file/205571-byte ciphertext and enabled/active daily timer with next run. Future scheduled firing, current database generation, full-fleet/SQLite homes, Windows/remote collection and fresh-machine rebuild remain open; v12 dual-family collector source is prepared but not installed |
+| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key custody, inventory and manual encrypted profile restore pass; df79510b now verifies the upgraded protected runner, signed 60-file/205571-byte ciphertext and enabled/active daily timer with next run. Future scheduled firing, current database generation, full-fleet/SQLite homes, Windows/remote collection and fresh-machine rebuild remain open; ea6f2438 source-side inventory passes for six database/two profile pairs; native Windows dual-family collection remains pending |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
 | 6. Fleet inventory and staged admission | Enumerate actual main/bot/other profiles, map distinct scopes/credentials and real launch identities, back up configurations, then qualify batches with own-scope/other-scope/shared checks and a preserved disable/recovery path | Everyday main/bot profiles remain unchanged; no whole-fleet activation claimed |
 
-The installed daily profile-backup/timer gate is now complete at owner-run
-df79510b. Do not repeat it. The next prepared backup step is a no-export,
-read-only collection inventory inside Ubuntu-Hermes: require fresh encrypted
-database and profile families and report counts/hash checks without keys. This
-is not a v12 resume or Windows/cloud qualification. Conversation follow-up,
-peer/fleet sharing boundaries, unattended credentials and release checks remain
-open as shown above. Preserve everyday profiles/bots and current model defaults.
+The installed daily profile-backup/timer gate passed at owner-run df79510b.
+The no-export collection inventory also passed at ea6f2438: six completed
+encrypted database pairs and two profile pairs, both recent families present
+and ciphertext hashes verified. No keys, export, backup or upload were used.
+Do not repeat these passed checks. The next backup step is native Windows
+qualification of the updated files; source inventory is not Windows collection,
+remote recovery or a v12 resume. Conversation follow-up, peer/fleet sharing,
+unattended credentials and release checks remain open. Preserve everyday
+profiles/bots and current model defaults.
 
 Group 5's relevant runtime/backend checks must be distinguished from the full
 repository release: separate frontend issues remain tracked for release/main
