@@ -88,6 +88,75 @@ def test_arbitrary_account_label_is_refused_before_parsing_auth(check):
         check.select_credential(b"not-json", credential_label="PRIVATE_LABEL_SENTINEL")
 
 
+@pytest.mark.parametrize("method,path,allowed", [
+    ("GET", "/v1/memories/status", True), ("GET", "/v1/memories/cedar/history?limit=3", True),
+    ("POST", "/v1/memories/recall", True), ("POST", "/v1/memories", False),
+    ("PATCH", "/v1/memories/cedar", False), ("POST", "/v1/memories/cedar/retract", False),
+    ("DELETE", "/v1/memories/cedar", False), ("POST", "/v1/sharing", False)])
+def test_clarification_guard_blocks_every_write_before_transport(check, method, path, allowed):
+    calls = []
+    provider = NS(_client=NS(request=lambda *a: calls.append(a) or {"ok": True}))
+    attempts = check.guard_read_only_client(provider)
+    if allowed:
+        assert provider._client.request(method, path, {"synthetic": True}) == {"ok": True}
+        assert len(calls) == 1 and attempts["writes"] == 0
+    else:
+        with pytest.raises(ValueError): provider._client.request(method, path, {"PRIVATE_CONTENT": "PRIVATE_SENTINEL"})
+        assert not calls and attempts["writes"] == 1
+
+
+@pytest.mark.parametrize("mutation", [None, "no-read", "no-clarify", "wrong-order", "wrong-target",
+    "remember", "correct", "retract", "hidden-write", "rate-limit"])
+def test_native_ambiguous_turn_keeps_edit_choices_visible_but_refuses_any_attempt(check, tmp_path, monkeypatch, mutation):
+    import sys
+    release = tmp_path / "release"
+    (release / "repo").mkdir(parents=True)
+    source = release / "repo/run_agent.py"
+    source.touch()
+    monkeypatch.setattr(check, "RELEASE", release)
+    transport = []
+    provider = NS(_client=NS(request=lambda *a: transport.append(a)), _pending_clarifications=set())
+    options = {}
+    class Manager:
+        def add_provider(self, p): assert p is provider
+        def initialize_all(self, *a, **kw): pass
+    class Agent:
+        def __init__(self, **kwargs): options.update(kwargs)
+        def run_conversation(self, prompt, conversation_history):
+            assert conversation_history == [] and prompt == "synthetic uncertain change"
+            calls = ["enhanced_get", "enhanced_clarify"]
+            if mutation == "no-read": calls = ["enhanced_clarify"]
+            if mutation == "no-clarify": calls = ["enhanced_get"]
+            if mutation == "wrong-order": calls.reverse()
+            if mutation in {"remember", "correct", "retract"}: calls.insert(1, "enhanced_" + mutation)
+            if mutation == "hidden-write":
+                with pytest.raises(ValueError): provider._client.request("PATCH", "/v1/memories/cedar", {})
+            for name in calls:
+                options["tool_progress_callback"]("tool.started", name, "PRIVATE_PREVIEW", {"PRIVATE": "BODY"})
+                if name == "enhanced_clarify":
+                    provider._pending_clarifications.add("wrong" if mutation == "wrong-target" else "cedar")
+            requests["count"] = 2
+            if mutation == "rate-limit": requests["rate_limited"] = True
+            return {"completed": True, "final_response": "Would you like to confirm the proposed change?"}
+        def close(self): options["closed"] = True
+    monkeypatch.setitem(sys.modules, "run_agent", NS(__file__=str(source), AIAgent=Agent))
+    monkeypatch.setitem(sys.modules, "agent.memory_manager", NS(MemoryManager=Manager))
+    requests = {"count": 0}
+    def restrict(agent, allowed):
+        options["allowed"] = allowed
+        return requests
+    monkeypatch.setattr(check, "restrict_agent", restrict)
+    if mutation:
+        with pytest.raises(check.CheckError):
+            check.native_memory_turn("clarify", TOKEN, provider, "new-session", "synthetic uncertain change", clarification_target="cedar")
+    else:
+        answer, calls, count = check.native_memory_turn("clarify", TOKEN, provider, "new-session", "synthetic uncertain change", clarification_target="cedar")
+        assert "?" in answer and calls == ["enhanced_clarify", "enhanced_get"] and count == 2
+    assert options["allowed"] == {"enhanced_get", "enhanced_recall", "enhanced_status", "enhanced_clarify",
+        "enhanced_remember", "enhanced_correct", "enhanced_retract"}
+    assert options["closed"] and not transport and options["credential_pool"] is None
+
+
 def fixture_components(check, *, model="gpt-6.1-sol", terminal=True, text=None, finish="stop", tool_calls=None):
     def headers(kwargs, **options):
         assert options == {"access_token": TOKEN, "base_url": check.BASE_URL}
@@ -756,6 +825,12 @@ def test_corrected_recall_refuses_stale_answers_and_changed_evidence(check, monk
     exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "recall_corrected", False, mutation)
 
 
+@pytest.mark.parametrize("mutation", [None, "scope", "old-record", "old-receipt", "new-receipt", "correction-receipt",
+                                     "changed-current", "no-question", "no-question-meaning", "post-count"])
+def test_uncertain_change_requires_question_and_unchanged_existing_evidence(check, monkeypatch, tmp_path, capsys, mutation):
+    exercise_memory_stage(check, monkeypatch, tmp_path, capsys, "clarify_followup", False, mutation)
+
+
 def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mutation=None, *, secondary=False):
     import sys
     fixture = "a" * 32
@@ -773,8 +848,9 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     monkeypatch.setattr(check, "HOME", tmp_path)
     monkeypatch.setattr(check, "STATE", tmp_path / "fixture.json")
     correction = stage == "correct_followup"
-    corrected_recall = stage == "recall_corrected"
-    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected"}
+    clarification = stage == "clarify_followup"
+    corrected_recall = stage in {"recall_corrected", "clarify_followup"}
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected", "clarify_followup"}
     capture = stage in {"capture", "capture_followup"}
     new_state = {"fixture": "b" * 32, "capture_session": "cognee_capture_" + "b" * 32}
     receipt_path = check.state_path(followup)
@@ -846,6 +922,11 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
             assert check.correction_path().exists()
             assert kwargs["correction_target"][0]["version"] == 1
             assert kwargs["correction_target"][1] == new_state["fixture"]
+        elif stage == "clarify":
+            assert clarification and kwargs["clarification_target"] == "synthetic-followup-id"
+            assert "not sure" in prompt and "have not decided" in prompt and "twenty-nine-day" in prompt
+            assert "twenty-three" not in prompt and "nineteen" not in prompt
+            assert session != new_state["capture_session"]
         else:
             assert "remember" not in prompt.casefold()
             assert ("nineteen-day" if followup else "thirteen-day") in prompt
@@ -858,12 +939,15 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         if mutation == "correction-receipt": check.correction_path().write_bytes(check.correction_path().read_bytes())
         answer = "nineteen days, synthetic-followup-id" if followup else "thirteen days, synthetic-record-id"
         if corrected_recall: answer = "twenty-three days, synthetic-followup-id"
+        if clarification: answer = "Would you like to keep the current decision or confirm the proposed change?"
+        if mutation == "no-question": answer = "I will keep the current decision."
+        if mutation == "no-question-meaning": answer = "Everything is done?"
         if mutation == "answer-interval": answer = "thirteen days, synthetic-followup-id"
         if mutation == "answer-citation": answer = ("twenty-three" if corrected_recall else "nineteen") + " days, no citation"
         if mutation == "superseded-answer": answer = "twenty-three days; formerly nineteen days, synthetic-followup-id"
         return answer, ["enhanced_remember"] if stage == "capture" else ["enhanced_get"], 3
     monkeypatch.setattr(check, "native_memory_turn", turn)
-    if stage in {"recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected"}: check.save_state(state)
+    if stage in {"recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected", "clarify_followup"}: check.save_state(state)
     if (stage == "recall_followup" or correction or corrected_recall) and mutation != "missing-receipt": check.save_state(new_state, followup=True)
     baseline_receipt = check.STATE.read_bytes() if followup else None
     followup_receipt = receipt_path.read_bytes() if (stage == "recall_followup" or correction or corrected_recall) and receipt_path.exists() else None
@@ -895,11 +979,15 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
     else:
         assert report["complete"] and report["native_agent_turn_passed"]
         assert report["memory_records_written"] == (capture or correction)
-        assert report["fresh_session_recall_passed"] == (not capture and not correction)
+        assert report["fresh_session_recall_passed"] == (not capture and not correction and not clarification)
         if correction:
             assert report["clear_correction_passed"] and report["previous_version_preserved"] and report["current_version"] == 2
         if corrected_recall:
-            assert report["corrected_recall_passed"] and report["correction_receipt_preserved"] and report["current_version"] == 2
+            assert report["corrected_recall_passed"] == (not clarification)
+            assert report["correction_receipt_preserved"] and report["current_version"] == 2
+        if clarification:
+            assert report["ambiguous_clarification_passed"] and report["standing_decision_unchanged"]
+            assert report["canonical_write_attempts"] == 0
         if followup:
             assert report["original_fixture_and_receipt_preserved"] and report["synthetic_active_records"] == 2
         if stage == "recall_followup": assert report["followup_receipt_preserved"]

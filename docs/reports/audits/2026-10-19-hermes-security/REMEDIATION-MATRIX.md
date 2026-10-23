@@ -5,7 +5,8 @@ The permanent non-admin pilot now passes native GPT-6.1-Sol selected capture and
 fresh-process recall of the same invented decision, preserving the original
 fixture/receipts and checked settings/credentials. This is narrow pilot evidence;
 clear native correction with retained version history also passes. Corrected
-fresh-session recall, privacy/conflict, renewal/recovery/isolation,
+fresh-session recall now passes with the explicitly selected second pilot
+OpenAI account; no memory write or settings change occurred. Privacy/conflict, renewal/recovery/isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
 synthetic results below retain their original identity/model/revision scope.
 

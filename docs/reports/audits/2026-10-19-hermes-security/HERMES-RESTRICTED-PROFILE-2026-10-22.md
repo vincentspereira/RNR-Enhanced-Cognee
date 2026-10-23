@@ -1331,3 +1331,40 @@ retained prior history, current-answer/citation and unchanged canonical records,
 receipts/settings/credentials. Preserve first-429 blocking and all existing
 evidence; do not replay completed capture/correction stages. Second-account
 model access and corrected fresh recall remain pending that installed result.
+
+## 23 October: second-account corrected recall passed; uncertainty next
+
+The owner returned complete=true/stage recall_corrected at helper revision
+2117ba01ae473dfd0ff4698c212eec01c8c013cf. Effective account was hermes-runtime,
+profile enhanced-cognee-pilot and model gpt-6.1-sol, explicitly selecting
+cognee-pilot-codex-secondary. The native agent completed with enhanced_get and
+two guarded model requests. The fresh answer/citation matched current version 2
+with two active synthetic records; the prior version, correction receipt,
+original fixture/receipt and follow-up receipt were preserved. Checked settings/
+credentials and defaults were unchanged. memory_records_written=false;
+selected_capture_passed=false is the expected per-stage flag, not a reversal
+of earlier selected capture. runtime_qualified remains false.
+
+The next prepared stage, clarify_followup, presents an undecided proposed
+twenty-nine-day change to the same fictional Cedar project in a fresh session.
+It supplies neither the existing answer nor record ID. Native recall/get must
+precede enhanced_clarify, which must leave that existing record pending locally.
+The final reply must contain a basic English clarification question. Keep
+remember/correct/retract visible alongside read/clarify tools so non-selection
+is observable. A separate per-instance client guard refuses every canonical
+write before transport. Any editing tool call or blocked write attempt fails
+the stage even if the model subsequently asks a question.
+
+After the turn, reinitialize the native provider and compare current Cedar,
+retained versions, Larch, counts, all three receipts and checked profile files.
+No new receipt is written; no model response/tool preview is published. The
+provider's pending clarification is in-process state checked before shutdown;
+this test does not establish pending-state durability across session restarts,
+a later human-answer turn, privacy exclusions or cross-bot denial.
+
+Workspace focused suites pass 664 tests, zero failures/skips and no reported
+warnings: 28 new guard/native-turn/evidence/question cases plus the 14 existing
+provider-contract tests added to this run. Native agent/model/network paths use
+fixtures; the provider-contract cases exercise the repository provider with
+substituted dependencies/transport. The uncertain-change installed check remains
+pending, with all other release/renewal/recovery/fleet gates preserved.

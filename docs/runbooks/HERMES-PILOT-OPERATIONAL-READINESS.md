@@ -16,9 +16,14 @@ Correction reached Cedar version 2, preserving version 1 and the Larch record.
 The owner ran recall_corrected at helper revision
 086e61e698e46b3bddec48befe35829ea46fe900. The model service returned 429 for
 all three observed requests, classified as rate_limit; no memory tool ran.
-Corrected fresh recall remains unqualified. The previous correction pass is
-preserved; do not rerun write stages or infer archive/credential corruption.
-The exact model-limit reset time was not supplied and is not established.
+That first-account attempt did not qualify corrected recall. The owner then
+passed recall_corrected at 2117ba01ae473dfd0ff4698c212eec01c8c013cf using the
+explicit secondary pilot credential: native completed turn, enhanced_get, two
+model requests, version 2 and two active records. The current answer/citation,
+prior version and all receipts were validated; checked settings/credentials
+were unchanged and no memory write occurred. This establishes the narrow
+corrected fresh-recall gate. It does not establish that the first account's
+limit reset; do not replay completed write stages.
 
 Older service backup/restore and 42-space tests retain their own revisions and
 identities. They do not establish recovery of this later restricted profile or
@@ -114,20 +119,17 @@ was false. No token renewal, profile-backup proof, model call, memory write or
 runtime qualification occurred. These dated results supersede the pending
 enrollment/local-status step, not the remaining gates below.
 
-1. Defer corrected-model recall after the observed 429. Check ordinary memory
-   credential expiry and local API acceptance without a cloud request. The updated
-   model-test guard blocks further sends in that process after its first 429;
-   a later manual process has a fresh latch, not proof of a cleared rate limit.
-   The owner subsequently authorized a fresh second-account pilot sign-in.
-   Use the documented secondary login and explicit per-test credential label;
-   do not rotate automatically, reset limits or alter main Hermes defaults.
-   Enrollment alone does not prove remaining quota or memory-token readiness.
-   Both enrollment and current local API acceptance now have owner-run passes.
-   Next run one read-only recall_corrected stage with explicit secondary label.
-   Second-account model access and corrected recall still need that result.
+1. Enrollment, current local API acceptance and second-account corrected recall
+   now have owner-run passes. Preserve dated evidence and use the secondary
+   credential explicitly for subsequent model tests. Keep first-429 blocking,
+   no automatic account rotation/status reset and unchanged main Hermes defaults.
 2. Qualify ambiguous clarification, private-detail/credential exclusion and
    cross-scope denial in the current restricted runtime, reusing dated unchanged
    service evidence only where justified.
+   clarify_followup is now prepared for one uncertain invented Cedar change,
+   requiring a question and native pending clarification for the existing record
+   with no canonical edit attempt and all prior evidence preserved. This is a
+   single-turn test, not durable pending-state or human follow-up qualification.
 3. Qualify protected renewal and explicit encrypted restricted-profile recovery.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the
    pilot token across bots or assume one shared OS account isolates their files.

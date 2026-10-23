@@ -73,7 +73,7 @@ class NativeTurnError(CheckError):
             "native_exit_reason": exit_reason if isinstance(exit_reason, str) and exit_reason in exits | {"max_iterations_reached"} else None,
             "model_requests": requests["count"] if type(requests.get("count")) is int and 0 <= requests["count"] <= 6 else None,
             "http_statuses": [s for s in statuses[:6] if type(s) is int and 100 <= s <= 599] if isinstance(statuses, list) else [],
-            "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember", "enhanced_correct"})),
+            "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember", "enhanced_correct", "enhanced_retract", "enhanced_clarify"})),
             "request_guard_failure": requests.get("guard_failure") if requests.get("guard_failure") in {
                 "unexpected_memory_test_request", "unexpected_memory_test_wire_contract", "invalid_memory_test_payload",
                 "model_rate_limit_observed_stop"} else None,
@@ -494,6 +494,21 @@ def guard_correction_client(provider, previous, fixture):
     return attempted
 
 
+def guard_read_only_client(provider):
+    """Advertise ordinary tools but refuse every canonical write in this test."""
+    request = provider._client.request
+    attempted = {"writes": 0}
+    lock = threading.Lock()
+    def guarded(method, path, body=None):
+        if method == "GET" or method == "POST" and path == "/v1/memories/recall":
+            return request(method, path, body)
+        with lock:
+            attempted["writes"] += 1
+        raise ValueError("Qualification preserves canonical memory while awaiting clarification.")
+    provider._client.request = guarded
+    return attempted
+
+
 def restrict_agent(agent, allowed):
     names = {tool.get("function", {}).get("name") for tool in agent.tools}
     if not allowed.issubset(names) or agent._memory_manager is None:
@@ -560,7 +575,7 @@ def restrict_agent(agent, allowed):
     return requests
 
 
-def native_memory_turn(stage, token, provider, session, prompt, *, correction_target=None):
+def native_memory_turn(stage, token, provider, session, prompt, *, correction_target=None, clarification_target=None):
     import run_agent
     from agent.memory_manager import MemoryManager
     if not Path(run_agent.__file__).resolve(strict=True).is_relative_to(RELEASE / "repo"):
@@ -572,10 +587,16 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
         if not isinstance(correction_target, tuple) or len(correction_target) != 2:
             raise CheckError("missing_correction_target")
         guard_correction_client(provider, *correction_target)
+    attempts = None
+    if stage == "clarify":
+        if (not isinstance(clarification_target, str)
+                or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", clarification_target)
+                or getattr(provider, "_pending_clarifications", None) != set()):
+            raise CheckError("clarification_target_or_pending_state")
     calls = []
     def progress(event_type, tool_name=None, *unused, **kwargs):
         if event_type == "tool.started" and tool_name in {
-                "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_correct"}:
+                "enhanced_remember", "enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_correct", "enhanced_retract", "enhanced_clarify"}:
             calls.append(tool_name)
     agent = run_agent.AIAgent(model=MODEL, provider="openai-codex", api_mode="codex_responses",
         api_key=token, base_url=BASE_URL, enabled_toolsets=["memory"], max_iterations=5,
@@ -587,6 +608,11 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
         allowed = {"enhanced_recall", "enhanced_get", "enhanced_status"}
         if stage == "capture": allowed.add("enhanced_remember")
         if stage == "correct": allowed.add("enhanced_correct")
+        if stage == "clarify":
+            # Keep write choices visible so their absence is observed, not forced
+            # by hiding them. The separate client guard prevents any actual write.
+            allowed |= {"enhanced_clarify", "enhanced_remember", "enhanced_correct", "enhanced_retract"}
+            attempts = guard_read_only_client(provider)
         requests = restrict_agent(agent, allowed)
         try:
             result = agent.run_conversation(prompt, conversation_history=[])
@@ -602,6 +628,13 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
         if stage == "correct" and ("enhanced_recall" not in calls or "enhanced_correct" not in calls
                 or calls.index("enhanced_recall") > calls.index("enhanced_correct")):
             raise CheckError("model_did_not_recall_then_correct")
+        if stage == "clarify" and (
+                "enhanced_clarify" not in calls
+                or not {"enhanced_get", "enhanced_recall"}.intersection(calls[:calls.index("enhanced_clarify")])
+                or {"enhanced_remember", "enhanced_correct", "enhanced_retract"}.intersection(calls)
+                or attempts["writes"] != 0
+                or provider._pending_clarifications != {clarification_target}):
+            raise CheckError("ambiguous_change_not_preserved_for_clarification")
         return result.get("final_response", ""), sorted(set(calls)), requests["count"]
     finally:
         agent.close()
@@ -617,11 +650,12 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
     uid = None
     phase = "restricted_preflight"
     correction = stage == "correct_followup"
-    corrected_recall = stage == "recall_corrected"
-    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected"}
+    clarification = stage == "clarify_followup"
+    corrected_recall = stage in {"recall_corrected", "clarify_followup"}
+    followup = stage in {"capture_followup", "recall_followup", "correct_followup", "recall_corrected", "clarify_followup"}
     capture = stage in {"capture", "capture_followup"}
     try:
-        if stage not in {"capture", "recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected"}: raise CheckError("unapproved_stage")
+        if stage not in {"capture", "recall", "capture_followup", "recall_followup", "correct_followup", "recall_corrected", "clarify_followup"}: raise CheckError("unapproved_stage")
         uid, snapshots = preflight(approved_test)
         snapshots[".env"] = read_private(".env", uid)
         import yaml
@@ -712,11 +746,16 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
                         + "Explain the corrected decision in one sentence.")
                 if corrected_recall:
                     prompt += " Answer with only the current interval and its record ID; do not include historical alternatives."
+                if clarification:
+                    prompt = ("For the entirely fictional Cedar qualification project " + fixture
+                        + ", we may switch to a twenty-nine-day review cycle, but I am not sure and have not decided. "
+                        + "What do you need to know from me?")
             phase = "native_agent_turn"
             if capture: save_state(state, followup=followup)
             if correction: correction_stamp = save_correction_receipt(state, session, previous)
             extra = {"correction_target": (previous, fixture)} if correction else {}
-            answer, calls, requests = native_memory_turn("capture" if capture else "correct" if correction else "recall", token, provider, session, prompt, **extra)
+            if clarification: extra["clarification_target"] = previous["id"]
+            answer, calls, requests = native_memory_turn("capture" if capture else "correct" if correction else "clarify" if clarification else "recall", token, provider, session, prompt, **extra)
             phase = "saved_memory_verification"
             # agent.close shuts the provider down; reinitialize for authoritative reads.
             provider.initialize("pilot_verification", hermes_home=str(PROFILE), agent_context="primary")
@@ -750,7 +789,10 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
                 interval_pattern = r"\b(?:twenty[ -]three|23)[ -]+day"
                 if re.search(r"\b(?:nineteen|19)[ -]+day", answer.casefold()):
                     raise CheckError("superseded_interval_returned_as_current")
-            if not capture and not correction and (row != previous or row["id"] not in answer
+            if clarification and (row != previous or not isinstance(answer, str) or len(answer) > 4000
+                    or "?" not in answer or not re.search(r"\b(?:should|would|which|confirm|decided|prefer|clarify|want)\b", answer.casefold())):
+                raise CheckError("clarification_question_or_preservation_not_verified")
+            if not capture and not correction and not clarification and (row != previous or row["id"] not in answer
                     or not re.search(interval_pattern, answer.casefold())):
                 raise CheckError("fresh_session_recall_not_verified")
             if any(read_private(name, uid) != raw for name, raw in snapshots.items()):
@@ -758,13 +800,15 @@ def main_memory(*, stage, approved_test=False, credential_label="cognee-pilot-co
         print(json.dumps({"complete": True, "stage": stage, "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "model": MODEL,
             "credential_label": credential_label, "native_agent_turn_passed": True,
-            "selected_capture_passed": capture, "fresh_session_recall_passed": not capture and not correction,
+            "selected_capture_passed": capture, "fresh_session_recall_passed": not capture and not correction and not clarification,
             "profile_settings_and_credentials_unchanged": True, "model_defaults_changed": False,
             "tool_calls": calls, "model_requests": requests, "synthetic_active_records": after["active_records"],
             "current_version": row["version"], "memory_records_written": capture or correction,
             **({"clear_correction_passed": True, "previous_version_preserved": True} if correction else {}),
-            **({"corrected_recall_passed": True, "previous_version_preserved": True,
+            **({"corrected_recall_passed": not clarification, "previous_version_preserved": True,
                 "correction_receipt_preserved": True} if corrected_recall else {}),
+            **({"ambiguous_clarification_passed": True, "standing_decision_unchanged": True,
+                "canonical_write_attempts": 0} if clarification else {}),
             **({"original_fixture_and_receipt_preserved": True} if followup else {}),
             **({"followup_receipt_preserved": True} if followup and not capture else {}),
             "runtime_qualified": False}, indent=2))

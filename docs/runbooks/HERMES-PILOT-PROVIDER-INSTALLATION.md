@@ -1026,3 +1026,52 @@ unsafe locks, original credential/status preservation, wrong-account refusal,
 native protected identity hints, strict second-account selection and corrected
 recall using that explicit token. Native auth/model/network calls use fixtures;
 no second-account login, provider request or installed-host pass is claimed.
+
+## 23 October: corrected recall passed; ambiguous-change check prepared
+
+Owner-run secondary enrollment, local authenticated status and corrected recall
+now pass at helper revision 2117ba01ae473dfd0ff4698c212eec01c8c013cf. The last
+stage observed enhanced_get, two guarded GPT-6.1-Sol requests, two active records
+and current version 2 with retained old history/receipts/settings/credentials.
+No memory write or default change occurred. Keep the earlier first-account 429
+as historical evidence; this pass does not assert that its limit has reset.
+
+Do not rerun the old 086e61e6 recall or df64ad56 operations commands to reconstruct
+these completed gates. The former lacks explicit second-account selection. The
+existing original/capture/correction receipts are deliberately preserved and
+write stages are not replayed. The next operator step is one pinned/hash-verified
+main_memory(stage="clarify_followup", approved_test=True,
+credential_label="cognee-pilot-codex-secondary") under the same protected tools1
+runtime, clean restricted environment and 180-second outer timeout.
+
+The new prompt describes an uncertain, undecided proposed twenty-nine-day Cedar
+change. It does not supply the stored interval/record ID or demand a particular
+tool by name. Keep normal memory-edit choices visible to the model. A successful
+native turn must consult memory, then call enhanced_clarify for the existing
+record, ask a basic English question and leave the current record unchanged.
+No editing tool may be called. A separate qualification client guard refuses
+every canonical write before transport and records attempts; even a refused
+write fails qualification. The native provider's local pending set must contain
+only the expected record before shutdown. No human confirmation is fabricated.
+
+Post-turn authoritative reads validate current version 2, unchanged canonical
+content/history and Larch, exactly two active records, all three receipts and
+checked profile/settings/authentication files. This mode writes no new receipt
+and uses the existing scoped memory identity, explicit second-account OAuth and
+first-429 model guard. Expect ambiguous_clarification_passed=true,
+standing_decision_unchanged=true, canonical_write_attempts=0,
+previous_version_preserved=true and memory_records_written=false. Capture,
+fresh-recall and corrected-recall per-stage flags are false here; earlier passes
+stand. runtime_qualified remains false.
+
+The pending marker is native in-process state; shutdown clears it. This stage
+does not qualify persistence across restarts or the later human-answer turn.
+It is a narrow invented-case observation, not proof of all conversational
+ambiguities, sensitive-data exclusion or fleet isolation. On refusal preserve
+all records/receipts, return only the sanitized report and reconcile the actual
+failure instead of repeating write stages or downgrading safeguards.
+
+Workspace fixtures pass 664 tests with zero failures/skips and no reported
+warnings, including 28 new clarification/guard/preservation cases and 14 existing
+provider-contract cases added to the focused run. No new cloud or installed-host
+call ran in Workspace. The installed clarification check is pending.
