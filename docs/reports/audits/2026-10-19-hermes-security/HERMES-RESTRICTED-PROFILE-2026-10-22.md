@@ -1788,3 +1788,34 @@ and timer operation require the installed operator result. An initial broad
 local verifier also encountered an unrelated existing Workspace PM2 environment
 warning; no PM2 file was changed. Isolated new-unit validation excludes unrelated
 local overrides and rejects warnings. Required full release checks remain open.
+
+## 23 October: daily profile job installed but first run fails
+
+Owner-run d7c7880c692f9c90c1a4c84974835abf0fcb3e3a published profile service
+files and /opt/enhanced-cognee-profile-backup/57b8a79716f67331/run.py.
+It stopped at service_qualification with Result=exit-code, ExecMainStatus=1,
+ActiveState=failed. The timer-enable command did not complete. Existing database
+scheduling was unchanged and no model was called. Installed recurring operation
+is failed/pending; do not label source unit tests or the earlier manual recovery
+pass as a successful daily job. Preserve the partial installation and logs.
+
+A separate read-only schedule inspector is prepared. It verifies the fixed
+published public artifacts, reports allowlisted effective protection flags,
+and selects only the retained failed invocation for bounded journal parsing.
+It handles both whole and split stdout JSON reports and emits only allowlisted
+backup/child failure stages/categories, booleans and counts. Raw journal text,
+tracebacks, arbitrary values/private paths/credentials never leave the helper.
+No credential file is opened, job rerun or timer/file configuration changed.
+Published expected bytes are reconstructed from the exact original Git bundle;
+the inspector never executes the installed runner or a writable checkout.
+The next operator report is needed to identify the backup failure stage before
+repairing the installed job. The manual 60-file recovery pass is retained.
+
+Workspace validation: 1006 focused checks pass, zero failures/skips and no
+reported pytest warnings. The 25 new diagnostic cases cover exact original
+Git-bundle reconstruction, whole/split journal JSON, invocation/unit isolation,
+private/unknown value suppression, parser/entry/size budgets, operator guards,
+public drift and an explicit missing-retained-report outcome. Host identity,
+artifact metadata and journal/systemctl effects are simulated in these tests;
+no installed service is queried here. Existing 981 source checks retain their
+scope. No installed recurring-operation pass or specific root cause is claimed.

@@ -166,7 +166,9 @@ enrollment/local-status step, not the remaining gates below.
    The owner-run 61c272a7 recovery inventory also passed: 60 files/205571 bytes,
    no detected databases or problematic entries. Owner-run ca2682c6 also passed
    manual encrypted profile recovery of all 60 files with scoped access and live
-   source preserved. Daily profile job installation is next; collector coverage
+   source preserved. Owner-run d7c7880c installed the daily job files, but its
+   first run exited 1 and timer enable did not complete. Read-only inspection of
+   the retained failure is next; recurring operation and collector coverage
    and current canonical database recovery remain separate.
    Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the

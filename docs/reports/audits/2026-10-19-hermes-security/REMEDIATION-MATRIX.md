@@ -23,7 +23,9 @@ confirmed it matches live source; retained recovered membership failed before
 settings/API checks. A fresh restore from that existing encrypted generation is
 completed at owner-run ca2682c6: all 60 files/205571 bytes, permissions, provider
 and scoped access passed; live source and failed copy preserved. Daily profile
-job is prepared, but recurring operation/collection remain unqualified.
+job files were installed at owner-run d7c7880c but its first run exited 1;
+timer enable did not complete. Read-only retained-invocation diagnostics are
+prepared; recurring operation/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

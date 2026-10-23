@@ -316,3 +316,36 @@ Disabling the timer does not interrupt an already running backup; let it finish.
 No Windows collector, scheduled Windows task, v12 resumption or cloud upload is
 performed. The new hermes-home-tar+age format still needs explicit collection
 and remote recovery qualification before any off-machine coverage claim.
+
+## Daily job first run: failed; preserve installed evidence
+
+Owner-run d7c7880c692f9c90c1a4c84974835abf0fcb3e3a published the new service
+files and protected runner at:
+
+```text
+/opt/enhanced-cognee-profile-backup/57b8a79716f67331/run.py
+```
+
+The first service run failed (Result=exit-code, ExecMainStatus=1,
+ActiveState=failed) at service_qualification. The timer-enable command was not
+completed. Existing database scheduling was unchanged. No model call occurred.
+This is not a working installed recurring backup; the earlier manual recovery
+pass remains valid. Do not repeat install_schedule, restart the job, remove
+files, weaken permissions or enable the timer to bypass this failed gate.
+
+The next pinned/hash-verified inspect_profile_schedule.py step is read-only.
+It validates the fixed public runner/service/timer against their exact published
+bytes and reports effective protection flags. It reads only the failed service's
+retained invocation using systemctl/journalctl. The parser accepts a bounded
+whole or split JSON backup report and returns only allowlisted phase/category,
+booleans and counts. Arbitrary message/exception text, source content, credential
+values, private paths and raw logs are never emitted. No credential file is
+opened and no service, timer, file, memory or model operation is started/changed.
+Filesystem/journal reads may update access metadata according to host policy.
+
+Run that diagnostic in a normal Ubuntu-Hermes operator terminal as
+vincentspereira and authenticate sudo privately. Relay only the resulting JSON.
+complete=true here means the diagnostic ran, not that the failed job succeeded.
+If the journal lacks an accepted retained report, that absence is explicit;
+it does not establish a cause or authorize a repeat. Apply a correction only
+after reconciling the retained failure stage and effective configuration.
