@@ -12,13 +12,15 @@ OpenAI account is independently enrolled, and the local API accepted the ordinar
 memory credential at its last check. Settings/defaults and prior evidence were
 preserved. These completed gates do not need replaying to reconstruct evidence.
 
-The owner then returned complete=false/native_agent_turn with category
+Historical uncertainty diagnostic (superseded by the passes below): the owner
+returned complete=false/native_agent_turn with category
 ambiguous_change_not_preserved_for_clarification at helper revision
 ef39013eab7aba9df2c1413e39f53943ddaaa0f8. Checked settings/credentials were
 unchanged and memory_writes_may_have_occurred=false. That report does not say
 which condition failed: missing clarification, no preceding read, an editing
 tool attempt, a blocked write or unexpected pending state. It did not complete
-the post-turn canonical/receipt comparison. Keep this gate failed/pending.
+the post-turn canonical/receipt comparison. That run remained failed/pending
+until the later, verified native-prefetch pass.
 
 Subsequent owner-run diagnostics at 5b2538ad verified post-turn preservation,
 correct pending target, a completed native turn/question, no editing tool and
@@ -26,7 +28,8 @@ zero write attempts. Only the explicit-read-tool predicate failed. Pinned native
 Hermes also recalls automatically before tools. The updated qualification helper
 requires actual matching current-record retrieval and successful model-request
 delivery before accepting this alternative, preserving all other guards. The
-historical report alone does not establish delivery; one confirmation remains.
+historical report alone did not establish delivery; the later 0768a43e pass
+established it for the single-turn uncertainty case.
 
 ## How much remains
 
@@ -39,9 +42,9 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 
 | Group | Required result | Current status |
 |---|---|---|
-| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty and all eleven local API privacy cases pass; native privacy/human follow-up remain open |
+| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
-| 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Current 24-hour credential works at last check; renewal mechanism/qualification remains open |
+| 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Manual fixed-scope pilot renewal, refusal and interruption handling are prepared/tested in Workspace; installed renewal and fleet lifecycle remain open |
 | 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody passed; earlier service restore exists; later /var/lib/hermes-runtime coverage and current recovery evidence remain open |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
 | 6. Fleet inventory and staged admission | Enumerate actual main/bot/other profiles, map distinct scopes/credentials and real launch identities, back up configurations, then qualify batches with own-scope/other-scope/shared checks and a preserved disable/recovery path | Everyday main/bot profiles remain unchanged; no whole-fleet activation claimed |
@@ -75,11 +78,18 @@ privacy cases passed at 37cc5d9bd8a25b233fca7f0754d33f035d40269b, with expected
 422/409 refusals, unchanged canonical/history/receipts/profile, no OAuth store
 read, no chat-model call and no memory write. Preserve both passes.
 
-Next run one bounded native privacy turn using only invented details and the
-explicit secondary pilot OAuth account. Editing tools stay visible; a separate
-API guard blocks writes, and any editing choice fails the test. Compare existing
-canonical/history/receipts/profile even on a native failure. This is finite
-model behavior coverage, not complete privacy classification or fleet admission.
+Owner-run native privacy also passed at
+79264eebd2a3a5d99822b45580f496a56b6bc2b1: one GPT-6.1-Sol request using the
+explicit secondary account, no tool/edit/write attempt, no full sensitive canary
+in the reply and unchanged canonical/history/receipts/settings/credentials.
+This is one finite synthetic case; do not replay it or infer universal detection.
+
+Next qualify manual fixed-scope pilot credential renewal using the new reviewed
+issuer/renewal bundle. It replaces only the ordinary memory token, preserves the
+old environment, checks 401 negative controls and populated-scope acceptance,
+and retains interruption evidence. It calls no chat model and changes no OAuth
+account/default. See HERMES-PILOT-CREDENTIAL-RENEWAL.md. Installed recovery of an
+interrupted renewal and unattended/fleet lifecycle are separate claims.
 
 ### Historical clarification diagnostic, superseded by the passes above
 

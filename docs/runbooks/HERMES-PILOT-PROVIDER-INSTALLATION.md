@@ -1234,3 +1234,19 @@ the run; neither should be bypassed. runtime_qualified remains false for later
 human-answer, retraction/history, sharing/isolation, renewal/recovery and release
 work. Focused Workspace suites pass 760 tests, zero failures/skips and no reported
 warnings; model/native paths here are fixtures, not installed-host evidence.
+
+## 23 October: native privacy passed; next qualify ordinary token renewal
+
+Owner-run 79264eeb confirms the native sensitive-input case passed: one explicit
+secondary-account GPT-6.1-Sol request, no tools or writes, absent full sensitive
+canaries and all checked state preserved. Do not repeat it. This finite case
+does not qualify later human-answer/pending durability or retraction/history.
+
+Next follow HERMES-PILOT-CREDENTIAL-RENEWAL.md. The new reviewed two-file bundle
+uses the existing stdlib issuer core and a separate renewal extension. It runs
+only through the human operator, retaining root-only signing and restricted-child
+profile writes. It handles the already populated scope and existing ordinary
+credential without changing OAuth or model defaults. No chat-model quota is used.
+This is prepared manual renewal, not an installed recurring issuer or all-bot
+lifecycle. Focused Workspace suites pass 817 tests, zero failures/skips and no
+reported warnings; installed renewal is pending the owner's sanitized receipt.

@@ -10,7 +10,9 @@ OpenAI account; no memory write or settings change occurred. A single uncertain
 change also passes with verified native prefetch, correct pending clarification
 and no edit/write attempt. All eleven local API privacy refusal cases also pass
 at owner-run helper 37cc5d9b, preserving records/history/receipts/profile with no
-OAuth/chat-model use or memory write. Native privacy/human follow-up, renewal/recovery/isolation,
+OAuth/chat-model use or memory write. One native selected-privacy turn also
+passes at owner-run 79264eeb with one model request and no tool/write. Later
+human follow-up, retraction/history, renewal/recovery/isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
 synthetic results below retain their original identity/model/revision scope.
 

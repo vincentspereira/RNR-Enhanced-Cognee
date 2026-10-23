@@ -1539,3 +1539,54 @@ The native selected-privacy installed result remains pending. Success leaves
 runtime_qualified=false: later human-answer/durability, retraction/history,
 peer/fleet access, sharing, renewal, restricted-profile recovery and relevant
 release/owner checks still require completion.
+
+## 23 October: installed native privacy passed; manual pilot renewal prepared
+
+The owner returned complete=true/privacy_model at helper revision
+79264eebd2a3a5d99822b45580f496a56b6bc2b1, as hermes-runtime in the restricted
+pilot. Explicit secondary GPT-6.1-Sol made one model request. There were no tool
+calls, editing choices or canonical write attempts. Full sensitive canaries
+were absent from the reply. Canonical records/history, receipts, checked profile
+settings and credentials were preserved, with no default change or memory write.
+This closes the finite native sensitive-input case, not universal privacy
+classification, later human-answer/durability or all conversation safeguards.
+
+The next implementation is renew_pilot_access.py composed with the unchanged
+reviewed provision_pilot_access.py issuer core. Root retains the existing human
+operator, protected account/executable and matching protected-key checks. It
+mints only the fixed qualification/hermes_pilot/api_client/selected identity for
+24 hours. The signing key stays in the root process. Only ordinary candidate,
+expired and altered control tokens cross the pipe; public source is in child
+arguments, never credentials. Third-party dotenv parsing and all runtime-owned
+profile traversal/writes happen after dropping uid/groups, setting no-new-privs
+and selecting the protected Python with a clean environment.
+
+The child takes a private nonblocking renewal lock, validates exactly one existing
+credential assignment and preserves all other environment bytes. It requires
+the known pilot settings, snapshots OAuth/config bytes, checks missing/expired/
+altered controls receive 401 and the new token sees the ready schema-3 encrypted
+populated two-record scope. Only the ordinary token is replaced atomically,
+with a verified private old copy, staged generation and durable transaction
+journal. Readback/live API acceptance and checked-file preservation precede the
+completion receipt. No memory mutation, OAuth refresh, model call, automatic
+issuer/timer, scope expansion or everyday/fleet activation is added.
+
+Recognized interrupted attempts are closed as published/not_published according
+to exact current-file and retained-generation hashes; no rollback/deletion is
+performed. A fresh retry then makes its own retained generation. Unknown edits,
+torn/corrupt evidence, unsafe links/modes or mismatched copies fail closed for
+operator review. Orphan pre-journal copies remain private and retained. This
+prepared process does not prove installed interruption recovery or cover the
+later restricted HOME in backups. Manual 24-hour renewal is not an unattended
+fleet credential lifecycle. Owner recovery custody remains completed; signing/
+encryption keys are not rotated by ordinary access-token renewal.
+
+Workspace focused suites pass 817 tests, zero failures/skips and no reported
+warnings. Fifty-seven added renewal cases exercise actual private-file parsing,
+replacement, permissions, retained copies, lock contention, staged interruption
+and fresh retry recovery, malformed/conflicting evidence and scope/role/lifetime
+refusal. Local API responses and process/account protection checks are simulated;
+existing issuer signing/root operator checks are reused. The actual committed
+bundle is checked in memory without executing an operator/host/model action.
+Installed renewal remains pending the next owner-run command. runtime_qualified
+stays false for remaining operational, sharing/isolation, release and fleet work.

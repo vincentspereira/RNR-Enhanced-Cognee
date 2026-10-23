@@ -148,10 +148,14 @@ enrollment/local-status step, not the remaining gates below.
    Owner-run 0768a43e confirms this single-turn case passed using verified native
    prefetch before clarification. Owner-run 37cc5d9b also confirms all eleven API
    privacy refusals and preservation checks passed without OAuth/chat-model use.
-   Preserve both passes. Next qualify one native synthetic sensitive-input turn
-   with visible edit tools, blocked writes and explicit secondary pilot OAuth.
-   Later human-answer/durability checks remain separate.
-3. Qualify protected renewal and explicit encrypted restricted-profile recovery.
+   Owner-run 79264eeb also confirms the native synthetic privacy turn passed with
+   one secondary-account model request, no editing tool/write and preserved
+   records/history/receipts/profile. Preserve these passes. Later human-answer,
+   pending-state durability and retraction/history checks remain separate.
+3. Qualify the prepared manual fixed-scope pilot renewal bundle, including its
+   retained private evidence. Workspace transaction/interruption/refusal checks
+   pass; installed renewal, fleet credential lifecycle and explicit encrypted
+   restricted-profile recovery remain open. Read HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the
    pilot token across bots or assume one shared OS account isolates their files.
 5. Reconcile current service backup freshness, release/security checks, private
