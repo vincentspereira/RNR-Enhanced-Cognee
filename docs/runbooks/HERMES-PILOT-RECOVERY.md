@@ -386,14 +386,17 @@ diagnostic can describe a failed launch; it does not qualify recurring backups
 or authorize weakening the installed service. Preserve the disabled timer and
 existing manual recovery evidence until the concrete cause is reconciled.
 
-## Launch probe result: EPERM; external identity launcher candidate
+## Subprocess probe result: EPERM; external identity launcher candidate
 
 Owner-run 058b71da8b6542ee528d6d24fd1ea3cf24f410f1 returned an observed
 PermissionError with errno 1 during the Python subprocess launch. The launch
 attempt did not return a child result or child stderr/receipt. No snapshot or
 backup completed, root signing/recovery keys were not read and original units/
-timer remained unchanged. This establishes a refused launch, not the exact
-failed kernel call; errno 1 alone does not prove which policy caused it.
+timer remained unchanged. The observer wrapped subprocess.run, including communication/cleanup; it does
+not establish that Popen construction failed or the child never started. Errno
+1 alone does not identify the failed call or policy. The candidate probe now
+tracks successful Popen construction and whether the timeout window elapsed,
+distinguishing a pre-exec refusal from a later communication/cleanup error.
 
 The candidate scheduled launcher delegates the same positive non-root UID/GID,
 empty supplementary groups and no-new-privileges transition to /usr/bin/setpriv.

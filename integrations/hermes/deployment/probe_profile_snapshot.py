@@ -39,7 +39,8 @@ PROPERTIES = [
 EXCEPTIONS = {'PermissionError', 'FileNotFoundError', 'OSError', 'TimeoutExpired', 'ValueError',
               'RuntimeError', 'ImportError', 'ModuleNotFoundError', 'SyntaxError', 'TypeError', 'BackupError'}
 FLAGS = {'launch_attempted', 'launch_returned', 'stderr_present', 'snapshot_completed',
-         'parent_setuid_capability', 'parent_setgid_capability', 'parent_no_new_privileges', 'launch_error_has_filename'}
+         'parent_setuid_capability', 'parent_setgid_capability', 'parent_no_new_privileges',
+         'launch_error_has_filename', 'error_after_timeout_window', 'process_created'}
 COUNTS = {'child_exit_status', 'popen_errno', 'stderr_errno'}
 FIELDS = FLAGS | COUNTS | {'exception_type', 'stderr_exception_type', 'failure_category', 'child_phase', 'child_category', 'setpriv_failure_stage'}
 SWITCH_STAGES = {'setgroups', 'setresgid', 'setresuid', 'setregid', 'setreuid', 'execute', None}
@@ -102,12 +103,13 @@ def verified_sources(raw):
 # Public instrumentation only. All stdout/stderr from the snapshot child stays
 # in its root parent and is discarded. Only these bounded scalar fields return.
 INSTRUMENT = r'''
-import json, pwd, re, subprocess
+import json, pwd, re, subprocess, time
 from types import SimpleNamespace
 stats = dict(launch_attempted=False, launch_returned=False, stderr_present=False,
     snapshot_completed=False, child_exit_status=None, popen_errno=None,
     stderr_errno=None, exception_type=None, stderr_exception_type=None, failure_category=None, child_phase=None, child_category=None, setpriv_failure_stage=None,
-    parent_setuid_capability=False, parent_setgid_capability=False, parent_no_new_privileges=False, launch_error_has_filename=False)
+    parent_setuid_capability=False, parent_setgid_capability=False, parent_no_new_privileges=False,
+    launch_error_has_filename=False, error_after_timeout_window=False, process_created=False)
 with open('/proc/self/status') as handle:
     process_fields = dict(line.split(':', 1) for line in handle.read().splitlines())
 effective = int(process_fields.get('CapEff', '0').strip(), 16)
@@ -124,15 +126,27 @@ def observed(argv, **kwargs):
         raise RuntimeError('restricted_identity_required')
     argv = ['/usr/bin/setpriv', '--reuid=' + str(uid), '--regid=' + str(gid),
             '--clear-groups', '--no-new-privs', '--', *argv]
+    original_popen = subprocess.Popen
+    def tracked_popen(*args, **options):
+        process = original_popen(*args, **options)
+        stats['process_created'] = True
+        return process
+    subprocess.Popen = tracked_popen
+    started = time.monotonic()
     try:
         result = original_run(argv, **kwargs)
     except Exception as error:
+        timeout = kwargs.get('timeout')
+        stats['error_after_timeout_window'] = (type(timeout) in (int, float) and timeout > 0
+            and time.monotonic() - started >= timeout)
         stats['launch_error_has_filename'] = getattr(error, 'filename', None) is not None
         stats['exception_type'] = type(error).__name__ if type(error).__name__ in allowed_errors else None
         number = getattr(error, 'errno', None)
         stats['popen_errno'] = number if type(number) is int and 0 < number < 4096 else None
         stats['failure_category'] = 'launch_exception'
         raise
+    finally:
+        subprocess.Popen = original_popen
     stats['launch_returned'] = True
     stats['child_exit_status'] = result.returncode if type(result.returncode) is int and -255 <= result.returncode <= 255 else None
     stats['stderr_present'] = bool(result.stderr)

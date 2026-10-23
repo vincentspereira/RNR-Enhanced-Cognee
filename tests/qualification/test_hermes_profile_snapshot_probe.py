@@ -146,3 +146,45 @@ def test_operator_guard_prevents_any_public_program_read_or_transient_launch(pro
     monkeypatch.setattr(probe.subprocess, 'run', lambda *a, **kw: pytest.fail('No transient launch'))
     with pytest.raises(SystemExit): probe.main()
     assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'
+
+
+def test_process_creation_is_distinguished_from_later_communication_error(probe, monkeypatch, capsys):
+    class BackupError(RuntimeError): pass
+    sentinel = object()
+    monkeypatch.setattr(subprocess, 'Popen', lambda *a, **kw: sentinel)
+    def run(argv, **kwargs):
+        assert subprocess.Popen(argv) is sentinel
+        raise PermissionError(1, 'PRIVATE_CLEANUP_FAILURE')
+    monkeypatch.setattr(subprocess, 'run', run)
+    monkeypatch.setattr(probe.pwd, 'getpwnam', lambda *a: NS(pw_uid=993, pw_dir='/var/lib/hermes-runtime'))
+    def child(core, inspector, sources, account, mode):
+        return backup['subprocess'].run(['/public/child'], user=993, group=985, extra_groups=(), timeout=90)
+    backup = {'BackupError': BackupError, 'run_child': child}
+    exec(compile(probe.INSTRUMENT, '<tracked-process-probe>', 'exec'), dict(backup=backup, core={}, inspector={}, sources={}))
+    output = capsys.readouterr().out
+    assert 'PRIVATE' not in output
+    report = probe.safe_result(output.encode())
+    assert report['process_created'] is True and report['launch_returned'] is False
+    assert report['exception_type'] == 'PermissionError' and report['popen_errno'] == 1
+    assert not report['error_after_timeout_window']
+
+
+def test_native_process_observation_works_without_root_or_profile_access(probe, monkeypatch, capsys):
+    import os
+    class BackupError(RuntimeError): pass
+    before = (os.getuid(), os.getgid(), os.getgroups())
+    uid, gid = os.getuid() or 65534, os.getgid() or 65534
+    monkeypatch.setattr(probe.pwd, 'getpwnam', lambda *a: NS(pw_uid=uid, pw_dir='/var/lib/hermes-runtime'))
+    def child(core, inspector, sources, account, mode):
+        result = backup['subprocess'].run(['/usr/bin/true'], user=uid, group=gid, extra_groups=(),
+            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}, timeout=5)
+        if result.returncode: raise BackupError('restricted_child_refused')
+        return b'', {}
+    backup = {'BackupError': BackupError, 'run_child': child}
+    exec(compile(probe.INSTRUMENT, '<native-process-observation>', 'exec'), dict(backup=backup, core={}, inspector={}, sources={}))
+    output = capsys.readouterr().out
+    report = probe.safe_result(output.encode())
+    assert report['process_created'] is True and report['launch_returned'] is True
+    assert report['child_exit_status'] is not None and report['popen_errno'] is None
+    assert (os.getuid(), os.getgid(), os.getgroups()) == before

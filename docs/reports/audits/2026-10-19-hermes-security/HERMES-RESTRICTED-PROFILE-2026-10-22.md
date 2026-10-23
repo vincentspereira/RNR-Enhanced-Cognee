@@ -1853,7 +1853,7 @@ systemd-run help confirms the selected CLI options; no transient job is launched
 from Workspace. Installed failure cause/repair and recurring qualification remain
 pending. Earlier manual recovery and privacy/capture passes are not replayed.
 
-## 23 October: observed EPERM before snapshot; candidate external transition
+## 23 October: observed subprocess EPERM; candidate external transition
 
 Owner-run 058b71da8b6542ee528d6d24fd1ea3cf24f410f1 completed the launch probe:
 launch_attempted=true, launch_returned=false, PermissionError/errno 1, no child
@@ -1889,3 +1889,20 @@ and parent capability/no-new-privileges flags. Stable runner serialization also
 passes reversed-source-order tests. Native new-unit verification still passes.
 Privileged account transitions/systemd effects remain simulated here; candidate
 installed success and the eventual guarded service replacement are not claimed.
+
+
+Diagnostic interpretation correction: the old launch_returned flag observed the
+whole subprocess.run call, not only Popen construction. An exception there can
+also arise during communication/timeout cleanup; the old report does not prove
+that the child never executed. The revised candidate probe tracks successful
+Popen construction and the timeout window directly, retains parent capability
+flags and returns only safe scalar fields. A native harmless subprocess test
+exercises that observation without profile/root access and confirms the parent
+identity/groups remain unchanged. No installed policy is changed on this basis.
+
+Final candidate observation checks: 1038 focused tests pass, zero failures/skips
+and no pytest warnings. This adds a synthetic later-communication PermissionError
+with successful Popen construction and a real harmless native child execution
+that checks parent UID/GID/groups preservation. Privileged systemd/account effects
+remain an operator-host qualification, not a local pass. Only the published
+candidate probe is the next operator action; do not reinstall/enable the old job.
