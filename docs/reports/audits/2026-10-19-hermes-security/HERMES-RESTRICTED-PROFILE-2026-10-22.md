@@ -1819,3 +1819,36 @@ public drift and an explicit missing-retained-report outcome. Host identity,
 artifact metadata and journal/systemctl effects are simulated in these tests;
 no installed service is queried here. Existing 981 source checks retain their
 scope. No installed recurring-operation pass or specific root cause is claimed.
+
+## 23 October: retained snapshot launcher failure; isolated probe prepared
+
+Owner-run 3bd4bf8f38565dc272d0ab02a14ab679a3b93137 verified exact installed
+public artifacts, selected effective protections and no service drop-ins.
+The retained backup-only report failed at restricted_snapshot before creating
+ciphertext; no child diagnostics were available. Timer enabled/active are both
+false. No writes, credential access, service rerun, model or memory operation
+occurred during inspection. The original manual recovery pass remains valid.
+
+The existing parent suppresses failures that occur before a child JSON receipt
+is available. A temporary probe is prepared to observe this boundary, retaining
+the original units and policy. It validates the exact published root runner,
+parses only the source-table literal and checks pinned source hashes; it never
+runs the installed backup main. A unique collected transient systemd job uses
+the same selected process/identity/network/home restrictions without a persistent
+backup write path. Its parent records only known exception types and bounded
+numeric error/exit codes from the old snapshot launcher. Successful ordinary
+profile snapshot bytes stay in memory and are discarded. No root service key,
+backup/manifest, model/API or memory write is involved. Installed root cause and
+recurring operation remain pending; no protection has been relaxed.
+
+Workspace validation: 1029 focused checks pass, zero failures/skips and no
+reported pytest warnings. The 23 new probe cases validate exact old public
+runner/source hashes, literal-table parsing without runner execution, compiled
+argument budgets, synthetic permission/missing-file/argument-limit/timeout and
+child-refusal outcomes, strict scalar sanitization, no persistent write exception,
+environment-expansion suppression and operator guards. Transient systemd and
+privileged launch effects are simulated; the original public child program is
+87489 bytes and the probe stays within its 120000-byte argument guard. Local
+systemd-run help confirms the selected CLI options; no transient job is launched
+from Workspace. Installed failure cause/repair and recurring qualification remain
+pending. Earlier manual recovery and privacy/capture passes are not replayed.

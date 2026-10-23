@@ -349,3 +349,39 @@ complete=true here means the diagnostic ran, not that the failed job succeeded.
 If the journal lacks an accepted retained report, that absence is explicit;
 it does not establish a cause or authorize a repeat. Apply a correction only
 after reconciling the retained failure stage and effective configuration.
+
+## Retained job inspection: launch-stage failure, no backup created
+
+Owner-run 3bd4bf8f38565dc272d0ab02a14ab679a3b93137 completed the read-only
+inspection. Exact published runner/service/timer hashes and selected effective
+protections passed, with no service drop-ins. The retained backup-only report
+stopped at restricted_snapshot with encrypted_backup_created=false. No child
+report was retained. Timer active/enabled were both false. No files, credentials,
+models or memory were touched by that inspection. This rules out observed
+public-artifact drift; it does not identify the underlying launch exception.
+
+The next probe verifies the same fixed public runner, parses only its literal
+source table and validates all three pinned source hashes. It never executes the
+installed runner's main entry point. A unique collected transient systemd unit
+uses the same identity-switching/process/network/home protections, with stricter
+persistent filesystem access: it has no backup write exception. Environment
+expansion of the public program argument is disabled. The temporary unit gets
+no service backup/signing/recovery configuration or keys and never changes the
+installed job, timer, runner, profiles or backup generations.
+
+Within that temporary boundary, the reviewed parent observes the existing
+restricted snapshot launcher. It returns only launch flags, known exception
+types and bounded numeric errors/statuses. Any successful ordinary profile
+snapshot (including its ordinary credentials) stays in memory and is discarded;
+no archive/manifest/file is created, no root key is read and no model/memory/API
+request occurs. Raw stdout/stderr/paths/tracebacks are never relayed. This is a
+new finite launch diagnostic, not a repeat of manual recovery or the failed
+installed backup job. WSL/systemd may retain normal transient-unit journal
+metadata; no existing logs or files are removed.
+
+Run the pinned/hash-verified probe in the normal Ubuntu-Hermes operator terminal
+as vincentspereira, with the restricted pilot idle; other Hermes sessions/bots
+can continue. Authenticate sudo privately and relay only its JSON. A completed
+diagnostic can describe a failed launch; it does not qualify recurring backups
+or authorize weakening the installed service. Preserve the disabled timer and
+existing manual recovery evidence until the concrete cause is reconciled.

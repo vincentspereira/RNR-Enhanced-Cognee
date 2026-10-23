@@ -168,7 +168,9 @@ enrollment/local-status step, not the remaining gates below.
    manual encrypted profile recovery of all 60 files with scoped access and live
    source preserved. Owner-run d7c7880c installed the daily job files, but its
    first run exited 1 and timer enable did not complete. Read-only inspection of
-   the retained failure is next; recurring operation and collector coverage
+   the retained failure at 3bd4bf8f now confirms restricted_snapshot failure before
+   any encrypted backup. A temporary launch probe is next; recurring operation
+   and collector coverage
    and current canonical database recovery remain separate.
    Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the
