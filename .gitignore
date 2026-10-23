@@ -255,6 +255,7 @@ fix_*.py
 *_backup.*
 !src/memory_backup.py
 !tests/qualification/test_encrypted_backup.py
+!tests/qualification/test_hermes_pilot_profile_backup.py
 
 # Database files (should not be in git)
 *.db

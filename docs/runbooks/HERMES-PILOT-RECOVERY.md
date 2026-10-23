@@ -17,7 +17,7 @@ retained private generations, test receipts and potentially original workspace
 work. A database dump does not include these files. The existing daily database
 timer and Windows collector do not establish their backup coverage.
 
-## Next operator step: read-only inventory
+## Read-only inventory: passed; preserve this evidence
 
 Run the published pinned/hash-verified inspect_pilot_recovery.py command from a
 normal Ubuntu-Hermes terminal as vincentspereira. Starting in ~ is fine. The
@@ -73,7 +73,85 @@ Qualify scope/access using ordinary credentials and the reviewed renewal path.
 Keep database generation consistency and trusted program-artifact rebuild or
 recovery as separate checks. Preserve all existing backup generations.
 
-Recurring profile backup, completion collection and disposable restoration still
-need implementation/installed evidence. This inventory installs no service,
+Recurring profile backup and completion collection still need implementation/
+installed evidence. A manual snapshot/restore is now prepared as described below;
+its installed result is pending. This inventory installs no service,
 creates no archive/restored directory and performs no cleanup. Full fleet
 inventory and staged admission remain in HERMES-REMAINING-ROLLOUT-CHECKLIST.md.
+
+## Installed inventory result received on 23 October
+
+At 61c272a767f1383acccd9760d782da8c8e127752, the owner returned a complete
+restricted-HOME scan: 104 entries, 43 directories, 60 regular files, 205571
+logical bytes, largest file 38499 bytes and one expected provider link. No
+SQLite-header/WAL/SHM candidates, unknown links, sockets/special files, hardlinks,
+nested mounts, unreadable or changing entries were observed. All four required
+private-file flags and all three receipt flags passed, as did protected provider
+payload and age/age-keygen metadata checks. No backup or restore happened in
+that inspection. Do not repeat it as a separate operator step.
+
+## Next operator step: encrypted snapshot and disposable restore
+
+Use the new pinned/hash-verified three-file bundle: the unchanged issuer file
+for protected-file/loopback helpers, the unchanged inventory file for fixed
+identity/provider checks, and backup_pilot_profile.py. Root executes reviewed
+standard-library definitions only; it never imports code from the writable
+checkout or walks/extracts the agent-owned source tree. A clean restricted
+child reads that fixed HOME, holding the existing renewal lock while producing
+a bounded in-memory tar snapshot. Required private files and receipts must be
+present/private and the only link must be the reviewed provider binding.
+
+This finite file-only method is based on the installed inventory. It refuses
+SQLite/WAL/SHM files rather than making an inconsistent copy; any future database
+requires a supported database snapshot implementation. It also refuses unknown
+links, hardlinks, special files, changed source state, over 2048 entries or over
+16 MiB of file data. No unfamiliar source folder is silently excluded. Source
+bytes, modes and directory membership are checked again; keep the pilot idle.
+
+Root encrypts the in-memory archive using the existing public age recipient,
+records an HMAC-signed completion manifest using the existing protected backup
+signing key, then verifies the signature/ciphertext and decrypts with the existing
+protected recovery identity. These keys stay in root processes and are not
+passed to the restricted child. A plaintext archive is never written to disk.
+The manifest's format is hermes-home-tar+age; private source filenames and
+hashes stay inside encryption. Completed files are root-owned mode 0600 at:
+
+```text
+/var/backups/enhanced-cognee/hermes_profile_<UTC>_<id>.tar.age
+/var/backups/enhanced-cognee/hermes_profile_<UTC>_<id>.tar.age.json
+```
+
+A fresh private recovery copy is created outside the source home at:
+
+```text
+/var/lib/hermes-runtime-recovery/check-<generation>/home/
+```
+
+The root-controlled parent permits traversal but no listing/write by ordinary
+users. The generation belongs to hermes-runtime with mode 0700; recovered
+directories are 0700 and files 0600. Original source modes remain in the encrypted
+manifest for reviewed recovery, but recovered files are not made executable.
+No prior folder or file is overwritten. The copy includes credential files;
+retain its private permissions and use the authorised operator for inspection.
+No recovery copy or existing backup generation is automatically deleted.
+
+The restricted child validates exact archive membership, hashes, safe paths and
+parent types without extractall, writes only in the fresh destination, rereads
+all recovered files, checks provider link/settings against the protected
+artifact, then uses the recovered ordinary token for one local API status check.
+The live source is compared again afterward. No recovered hook or program is
+executed and no recovered Hermes chat/model is launched. An expired recovered
+token is refused; this check does not renew it or weaken expiry.
+
+Expect complete=true/stage profile_backup_restore, verified signature,
+decryption, files/private permissions, provider binding and scoped API status,
+with live_source_preserved=true and runtime_qualified=false. Relay only the
+sanitized JSON. If the command stops, preserve all evidence and send its result
+before retrying. A completed encrypted generation or partial private recovery
+may already exist after a later failure. No rollback or automatic cleanup runs.
+
+This is a manual pilot snapshot/recovery qualification. It does not install a
+recurring profile backup, update Windows collection, upload a cloud copy, restore
+a PostgreSQL generation, prove a fresh-machine program rebuild or admit the
+fleet. The existing database timer, v11 task and paused v12 remain unchanged.
+Owner recovery custody is reused; no new password or key rotation is needed.

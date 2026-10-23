@@ -45,7 +45,7 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 | 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
 | 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
 | 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Owner-run manual pilot renewal and API refusal controls pass; installed interruption recovery and unattended/fleet lifecycle remain open |
-| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody passed; earlier service restore exists; later /var/lib/hermes-runtime coverage and current recovery evidence remain open |
+| 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key-package custody and restricted-HOME inventory pass; manual encrypted profile snapshot/disposable restore is prepared; installed restore, recurring/collector coverage and current service generation remain open |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
 | 6. Fleet inventory and staged admission | Enumerate actual main/bot/other profiles, map distinct scopes/credentials and real launch identities, back up configurations, then qualify batches with own-scope/other-scope/shared checks and a preserved disable/recovery path | Everyday main/bot profiles remain unchanged; no whole-fleet activation claimed |
 
@@ -90,14 +90,19 @@ Owner-run manual credential renewal passed at
 environment and unchanged settings/OAuth passed without a model or memory write.
 interrupted_attempts_reconciled=0 does not establish installed crash recovery.
 
-Next run the read-only restricted-HOME inventory prepared in
-inspect_pilot_recovery.py. It reports aggregate sizes/types, required-file
-protection flags, SQLite-header/sidecar counts and the protected provider binding,
-without credential decoding, SQLite connections, HTTP or file writes. Unknown
-links are counted rather than followed. These results inform the encrypted
-profile/workspace/receipt snapshot and disposable-restore implementation; they
-are not backup/recovery proof. Read HERMES-PILOT-RECOVERY.md. No v12/Windows task,
-cloud upload, running service, main profile or bot is changed by this inventory.
+Owner-run recovery inventory passed at
+61c272a767f1383acccd9760d782da8c8e127752: 60 files/205571 bytes, no detected
+database/sidecar or problematic entries, all required private files/receipts
+and protected provider/tool flags passed. No source data was copied then.
+
+Next qualify the prepared manual encrypted file-only HOME snapshot and disposable
+restore using the existing protected age recipient/signing key/recovery identity.
+The ordinary child handles source/archive data; root only authenticates/encrypts
+and controls new destinations. Restored private files, provider binding and
+ordinary local API access are checked without launching Hermes/model code.
+Keep the pilot idle and relay only the sanitized result. See
+HERMES-PILOT-RECOVERY.md. Recurring/Windows collection, current canonical database
+recovery and fresh-machine program rebuild remain separate; no fleet activation.
 
 ### Historical clarification diagnostic, superseded by the passes above
 

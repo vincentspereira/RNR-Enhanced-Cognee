@@ -1631,3 +1631,45 @@ checks use fixtures. Existing native/model/network paths remain simulated here.
 The earlier temporary qualification environment was unavailable; no installed
 Hermes runtime or dependency lock was changed to run these source checks.
 Installed recovery inventory remains pending the next owner-run result.
+
+## 23 October: installed inventory passed; profile encryption/recovery prepared
+
+Owner-run 61c272a767f1383acccd9760d782da8c8e127752 returned a complete restricted
+recovery inventory: 104 entries, 43 directories, 60 files, 205571 logical bytes,
+largest 38499 bytes, one expected provider link. Database headers/sidecars,
+unknown links, sockets/special files, hardlinks, mounts, unreadable/changing
+entries were all zero. Required credentials/settings/receipts and protected
+provider/tool checks passed. This was inspection only, with no files written,
+credential decoding, database connection, HTTP or model call.
+
+backup_pilot_profile.py now implements a manual bounded file-only HOME snapshot
+and disposable recovery using that evidence. A three-source hash-verified bundle
+runs only stdlib code as root. Protected issuer/inventory helpers are unchanged.
+The restricted child holds the existing renewal lock and reads pinned source
+descriptors into bounded RAM, refusing databases/sidecars, unknown links,
+hardlinks, special modes/files, changed state or exceeded entry/data budgets.
+All source files, retained private generations, receipts and workspace are
+included. This is not a future live-SQLite backup implementation.
+
+Root persists only age ciphertext and a signed completion manifest in the
+approved backup directory. Signing/recovery keys stay in root processes and no
+plaintext archive is written. Signature/ciphertext and decryption equality are
+verified before the restricted child parses the recovered tar. Exact membership,
+parent types and file hashes are checked; no extractall or recovered code runs.
+A fresh private destination outside the live HOME receives directories 0700 and
+files 0600, with only the known protected provider link. Recovered configuration
+and ordinary local scoped API access are checked, and live source compared again.
+Old source/backups and failed partial evidence are retained, without rollback or
+automatic deletion. OAuth sign-ins/defaults and ordinary token remain unchanged.
+
+Workspace focused suites pass 914 tests, zero failures/skips and no reported
+warnings. Sixty-eight added cases exercise real source/archive/private-file round
+trips, actual age with generated synthetic keys, HMAC/ciphertext authentication,
+unsafe member/type/path/budget rejection, source changes, restore/API refusal,
+no-replace publication and the operator pipeline. Host root/UID/group/protected
+metadata and API replies are simulated; no installed-host restore is claimed.
+The ignore exception admits only the new synthetic test source, keeping private
+backup/archive exclusions intact. Installed profile recovery is pending the
+next owner command. Recurring profile backup, Windows collection/cloud recovery,
+current PostgreSQL generation restore, trusted-program rebuild, later human-
+answer/retraction, sharing/isolation and fleet/release gates remain open.

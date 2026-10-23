@@ -1267,3 +1267,23 @@ private filenames, credentials or contents. See HERMES-PILOT-RECOVERY.md.
 It creates no backup or restored files and changes no schedule/Windows script.
 Focused Workspace suites pass 846 tests, zero failures/skips and no reported
 warnings; installed profile backup and disposable restore remain unqualified.
+
+## 23 October: inventory passed; encrypted profile snapshot/restore prepared
+
+The owner-run 61c272a7 inventory passed: 60 files, 205571 bytes, no detected
+SQLite/sidecars or problematic entries, expected protected provider link and
+private credentials/receipts present. Preserve that pass; do not repeat it.
+
+The next three-file operator bundle composes the unchanged issuer/inventory
+helpers with backup_pilot_profile.py. It makes one bounded file-only in-memory
+snapshot under the restricted identity, encrypts/signs with existing protected
+keys and verifies a fresh private restore outside the live HOME. It refuses
+new databases, unknown links, changing state or exceeded budgets. No plaintext
+archive file, recovered program execution, model call, token renewal, schedule
+change, cloud upload or fleet admission occurs. Existing generations and source
+are retained. See HERMES-PILOT-RECOVERY.md for paths and qualification limits.
+
+Workspace focused suites pass 914 tests, zero failures/skips and no reported
+warnings. Sixty-eight new cases include actual age encryption/decryption with
+synthetic keys and file/permission round trips; host identity/API boundaries are
+simulated. Installed encrypted profile recovery remains pending the owner run.

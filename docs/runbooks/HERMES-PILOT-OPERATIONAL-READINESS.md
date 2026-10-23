@@ -163,8 +163,10 @@ enrollment/local-status step, not the remaining gates below.
    pending-state durability and retraction/history checks remain separate.
 3. Preserve the owner-run manual renewal pass at 8fb6fca9; do not repeat it.
    Installed interruption recovery and unattended/fleet lifecycle remain open.
-   Next run the read-only restricted-HOME recovery inventory, then implement and
-   qualify encrypted profile/workspace/receipt backup and disposable recovery.
+   The owner-run 61c272a7 recovery inventory also passed: 60 files/205571 bytes,
+   no detected databases or problematic entries. Next qualify the prepared manual
+   encrypted file-only snapshot/disposable restore. Recurring/collector coverage
+   and current canonical database recovery remain separate.
    Read HERMES-PILOT-RECOVERY.md and HERMES-PILOT-CREDENTIAL-RENEWAL.md.
 4. Inventory actual profiles/bots and their launch identities. Do not copy the
    pilot token across bots or assume one shared OS account isolates their files.
