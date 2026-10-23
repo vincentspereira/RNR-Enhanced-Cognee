@@ -479,6 +479,36 @@ def test_real_httpx_request_client_guard_runs_before_transport_and_has_one_globa
         for client in clients: client._client.close()
 
 
+def test_first_429_prevents_more_physical_requests_on_initial_and_rebuilt_clients(check):
+    sent = []
+    clients = []
+    def respond(request):
+        sent.append(request)
+        return httpx.Response(429, json={"error": "PRIVATE_PROVIDER_BODY"})
+    def factory(*args, **kwargs):
+        client = NS(max_retries=2, _client=httpx.Client(transport=httpx.MockTransport(respond)))
+        clients.append(client)
+        return client
+    agent = agent_fixture(check)
+    agent.client = factory()
+    agent._create_openai_client = factory
+    counts = check.restrict_agent(agent, {"enhanced_recall"})
+    payload = {"model": check.MODEL, "store": False, "tools": [{"name": "enhanced_recall"}]}
+    try:
+        client = agent._create_openai_client({}, reason="request", shared=False)
+        assert client._client.post(check.BASE_URL + "/responses", json=payload).status_code == 429
+        for client in [agent.client, agent._create_openai_client({}, reason="recovery", shared=False)]:
+            with pytest.raises(check.CheckError, match="model_rate_limit_observed_stop"):
+                client._client.post(check.BASE_URL + "/responses", json=payload)
+        assert len(sent) == counts["count"] == 1 and counts["http_statuses"] == [429]
+        report = check.failure(check.NativeTurnError({"completed": False, "failure_reason": "rate_limit"}, counts, []))
+        assert report["http_status"] == 429 and report["native_diagnostics"]["rate_limit_response_observed"]
+        assert report["native_diagnostics"]["request_guard_failure"] == "model_rate_limit_observed_stop"
+        assert "PRIVATE_" not in json.dumps(report)
+    finally:
+        for client in clients: client._client.close()
+
+
 def test_concurrent_request_clients_cannot_exceed_the_shared_physical_limit(check):
     from concurrent.futures import ThreadPoolExecutor
     agent = agent_fixture(check)
@@ -583,7 +613,7 @@ def test_native_result_diagnostics_allow_only_fixed_codes_and_bounded_metadata(
     assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
 
 
-@pytest.mark.parametrize("outcome", ["complete", "incomplete", "exception", "guard-rejected", "no-recall", "no-save", "wrong-order"])
+@pytest.mark.parametrize("outcome", ["complete", "incomplete", "exception", "guard-rejected", "no-recall", "no-save", "wrong-order", "429-completed"])
 @pytest.mark.parametrize("action", ["capture", "correct"])
 def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tmp_path, outcome, action):
     import sys
@@ -611,6 +641,9 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
             for name in sequence:
                 options["tool_progress_callback"]("tool.started", name, "PRIVATE_PREVIEW", {"content": "PRIVATE_ARGUMENTS"})
             requests["count"] = 3
+            if outcome == "429-completed":
+                requests["rate_limited"] = True
+                requests["http_statuses"] = [429]
             if outcome == "exception": raise TimeoutError("PRIVATE_EXCEPTION_SENTINEL")
             if outcome in {"incomplete", "guard-rejected"}:
                 if outcome == "guard-rejected": requests["guard_failure"] = "unexpected_memory_test_wire_contract"
@@ -637,7 +670,7 @@ def test_native_agent_runtime_overrides_and_fresh_history(check, monkeypatch, tm
             check.native_memory_turn(action, TOKEN, object(), "synthetic-session", "synthetic user decision", **kwargs)
         report = check.failure(caught.value)
         assert options["closed"] and report["category"] == "native_agent_turn_incomplete"
-        assert report["http_status"] == (400 if outcome == "incomplete" else None)
+        assert report["http_status"] == (400 if outcome == "incomplete" else 429 if outcome == "429-completed" else None)
         assert report["native_diagnostics"]["model_requests"] == 3
         assert report["native_diagnostics"]["native_exception_category"] == ("timeout" if outcome == "exception" else None)
         assert "PRIVATE_" not in json.dumps(report) and TOKEN not in json.dumps(report)
@@ -883,7 +916,9 @@ def test_malformed_inspection_results_do_not_expand_reads_or_echo_content(check,
     assert "PRIVATE_SENTINEL" not in str(error.value)
 
 
-def test_inspect_stage_never_reads_oauth_or_constructs_a_model_agent(check, monkeypatch, tmp_path, capsys):
+@pytest.mark.parametrize("operations", [False, True])
+@pytest.mark.parametrize("denied", [False, True])
+def test_inspect_stage_never_reads_oauth_or_constructs_a_model_agent(check, monkeypatch, tmp_path, capsys, operations, denied):
     import sys
     snapshots = {"config.yaml": b"memory-only", "enhanced_cognee.json": json.dumps({
         "base_url": "http://127.0.0.1:28080", "timeout": 10, "include_shared": True, "capture_policy": "selected"}).encode()}
@@ -914,12 +949,72 @@ def test_inspect_stage_never_reads_oauth_or_constructs_a_model_agent(check, monk
     monkeypatch.setitem(sys.modules, "agent", NS(secret_scope=secrets))
     monkeypatch.setitem(sys.modules, "agent.secret_scope", secrets)
     monkeypatch.setitem(sys.modules, "plugins", NS(memory=loader))
-    monkeypatch.setattr(check, "memory_status", lambda provider: {"active_records": 0})
+    def status(provider):
+        if denied: raise check.CheckError("pilot_memory_scope_or_credential")
+        return {"active_records": 0}
+    monkeypatch.setattr(check, "memory_status", status)
     monkeypatch.setattr(check, "inspect_fixture", lambda *a: {"matching_fixture_records": 0, "capture_agent_turn_qualified": False})
-    check.main_memory(stage="inspect", approved_test=True)
+    timing_calls = []
+    monkeypatch.setattr(check, "token_timing", lambda token, now: timing_calls.append(token) or {"unverified_token_expired": False})
+    if operations:
+        monkeypatch.setattr(check, "read_state", lambda *a: pytest.fail("No receipt reads during operational check"))
+        monkeypatch.setattr(check, "state_stamp", lambda *a: pytest.fail("No receipt reads during operational check"))
+        monkeypatch.setattr(check, "inspect_fixture", lambda *a: pytest.fail("No memory content read during operational check"))
+        if denied:
+            with pytest.raises(SystemExit): check.main_operations(approved_test=True)
+        else:
+            check.main_operations(approved_test=True)
+    else:
+        if denied:
+            with pytest.raises(SystemExit): check.main_memory(stage="inspect", approved_test=True)
+        else:
+            check.main_memory(stage="inspect", approved_test=True)
     output = capsys.readouterr().out
     report = json.loads(output)
-    assert report["complete"] and report["stage"] == "inspect"
-    assert report["checked_profile_files_and_receipt_unchanged"] and not report["oauth_store_read"]
+    if denied:
+        assert not report["complete"] and report["failure_stage"] == "authenticated_memory_inspection"
+        if operations:
+            assert report["stage"] == "operations" and report["unverified_token_expired"] is False
+            assert not report["credential_renewed"] and not report["oauth_store_read"]
+        assert not report["model_called"] and not report["memory_records_written"]
+        assert "PRIVATE_" not in output and resets == ["PRIVATE_BINDING"]
+        return
+    assert report["complete"] and report["stage"] == ("operations" if operations else "inspect")
+    assert report["checked_profile_files_unchanged" if operations else "checked_profile_files_and_receipt_unchanged"] and not report["oauth_store_read"]
+    assert len(timing_calls) == int(operations)
+    if operations:
+        assert report["authenticated_api_status_passed"] and not report["credential_renewed"]
+        assert report["profile_backup_coverage_verified"] is False
     assert not report["model_called"] and not report["memory_records_written"]
     assert "PRIVATE_" not in output and resets == ["PRIVATE_BINDING"]
+
+
+@pytest.mark.parametrize("offset", [-1, 0, 1, 3600, 3601])
+def test_token_timing_is_metadata_only_and_never_claims_signature_verification(check, offset):
+    now = 1700000000
+    claims = {"sub": "hermes_pilot_runtime", "agent_id": "hermes_pilot", "tenant": "qualification",
+              "project_id": "hermes_pilot", "roles": ["api_client"], "capture_policy": "selected",
+              "iat": now - 7200, "exp": now + offset, "private": "PRIVATE_SENTINEL"}
+    segment = check.base64.urlsafe_b64encode(json.dumps(claims).encode()).decode().rstrip("=")
+    report = check.token_timing("header." + segment + ".PRIVATE_SIGNATURE", now)
+    assert report["unverified_token_expired"] == (offset <= 0)
+    assert report["unverified_token_expires_within_one_hour"] == (0 < offset <= 3600)
+    assert not report["token_signature_checked_locally"] and "PRIVATE_" not in json.dumps(report)
+
+
+@pytest.mark.parametrize("mutation", ["roles", "scope", "lifetime", "boolean", "duplicate", "malformed", "oversize"])
+def test_token_timing_refuses_ambiguous_claims_without_disclosure(check, mutation):
+    claims = {"sub": "hermes_pilot_runtime", "agent_id": "hermes_pilot", "tenant": "qualification",
+              "project_id": "hermes_pilot", "roles": ["api_client"], "capture_policy": "selected", "iat": 1, "exp": 3601}
+    if mutation == "roles": claims["roles"] = ["admin"]
+    if mutation == "scope": claims["project_id"] = "PRIVATE_OTHER_PROJECT"
+    if mutation == "lifetime": claims["exp"] = 86402
+    if mutation == "boolean": claims["exp"] = True
+    raw = json.dumps(claims)
+    if mutation == "duplicate": raw = raw[:-1] + ', "exp":3602}'
+    segment = check.base64.urlsafe_b64encode(raw.encode()).decode().rstrip("=")
+    token = "header." + segment + ".PRIVATE_SIGNATURE"
+    if mutation == "malformed": token = "PRIVATE_SENTINEL"
+    if mutation == "oversize": token = "x" * 8193
+    with pytest.raises(check.CheckError) as caught: check.token_timing(token, 100)
+    assert "PRIVATE_" not in str(caught.value)

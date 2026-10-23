@@ -7,6 +7,8 @@ Use only the pilot's own scoped credentials; preserve settings and test evidence
 from __future__ import annotations
 
 import contextlib
+import base64
+from datetime import datetime, timezone
 import hashlib
 import io
 import json
@@ -73,7 +75,9 @@ class NativeTurnError(CheckError):
             "http_statuses": [s for s in statuses[:6] if type(s) is int and 100 <= s <= 599] if isinstance(statuses, list) else [],
             "tool_calls": sorted(set(c for c in calls if c in {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_remember", "enhanced_correct"})),
             "request_guard_failure": requests.get("guard_failure") if requests.get("guard_failure") in {
-                "unexpected_memory_test_request", "unexpected_memory_test_wire_contract", "invalid_memory_test_payload"} else None,
+                "unexpected_memory_test_request", "unexpected_memory_test_wire_contract", "invalid_memory_test_payload",
+                "model_rate_limit_observed_stop"} else None,
+            "rate_limit_response_observed": requests.get("rate_limited") is True,
         }
         safe_categories = {"dns_error", "tls_certificate_error", "timeout", "dependency_missing",
                            "sdk_or_native_argument_error", "http_error", "connection_error", "provider_stream_error"}
@@ -489,11 +493,14 @@ def restrict_agent(agent, allowed):
     agent.valid_tool_names = set(allowed)
     if agent._fallback_chain or agent._fallback_activated:
         raise CheckError("unexpected_model_fallback")
-    requests = {"count": 0, "http_statuses": [], "guard_failure": None}
+    requests = {"count": 0, "http_statuses": [], "guard_failure": None, "rate_limited": False}
     lock = threading.RLock()
     def guard(request):
         # Request-scoped clients and retries share one physical-request budget.
         with lock:
+            if requests["rate_limited"]:
+                requests["guard_failure"] = "model_rate_limit_observed_stop"
+                raise CheckError("model_rate_limit_observed_stop")
             if request.method != "POST" or str(request.url) != BASE_URL + "/responses" or requests["count"] >= 6:
                 requests["guard_failure"] = "unexpected_memory_test_request"
                 raise CheckError("unexpected_memory_test_request")
@@ -516,6 +523,8 @@ def restrict_agent(agent, allowed):
     def observe_response(response):
         status = response.status_code
         with lock:
+            if status == 429:
+                requests["rate_limited"] = True
             if type(status) is int and 100 <= status <= 599 and len(requests["http_statuses"]) < 6:
                 requests["http_statuses"].append(status)
     def install(client):
@@ -574,7 +583,8 @@ def native_memory_turn(stage, token, provider, session, prompt, *, correction_ta
         except Exception as cause:
             raise NativeTurnError(None, requests, calls, cause) from None
         if (not isinstance(result, dict) or result.get("completed") is not True
-                or result.get("failed") or result.get("error") or not 0 < requests["count"] <= 6):
+                or result.get("failed") or result.get("error") or requests.get("rate_limited")
+                or not 0 < requests["count"] <= 6):
             raise NativeTurnError(result, requests, calls)
         if stage == "capture" and ("enhanced_recall" not in calls or "enhanced_remember" not in calls
                 or calls.index("enhanced_recall") > calls.index("enhanced_remember")):
@@ -806,11 +816,46 @@ def state_stamp(*, followup=False):
     return info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
-def main_inspect(*, approved_test=False):
+def token_timing(token, now):
+    """Only expiry metadata; decoding is not signature verification or issuance."""
+    if (not isinstance(token, str) or not token.isascii() or len(token) > 8192
+            or not re.fullmatch(r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", token)):
+        raise CheckError("pilot_token_shape")
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result: raise CheckError("pilot_token_duplicate_claim")
+            result[key] = value
+        return result
+    try:
+        segment = token.split(".")[1]
+        claims = json.loads(base64.urlsafe_b64decode(segment + "=" * (-len(segment) % 4)), object_pairs_hook=unique)
+    except Exception:
+        raise CheckError("pilot_token_claims_unreadable") from None
+    expected = {"sub": "hermes_pilot_runtime", "agent_id": "hermes_pilot", "tenant": "qualification",
+                "project_id": "hermes_pilot", "roles": ["api_client"], "capture_policy": "selected"}
+    if (not isinstance(claims, dict) or any(claims.get(k) != v for k, v in expected.items())
+            or type(claims.get("exp")) is not int or type(claims.get("iat")) is not int
+            or not 0 <= claims["iat"] < claims["exp"] <= 4102444800
+            or claims["exp"] - claims["iat"] > 86400):
+        raise CheckError("pilot_token_identity_or_lifetime")
+    remaining = claims["exp"] - int(now)
+    return {"unverified_token_expires_utc": datetime.fromtimestamp(claims["exp"], timezone.utc).isoformat(),
+            "unverified_token_expired": remaining <= 0,
+            "unverified_token_expires_within_one_hour": 0 < remaining <= 3600,
+            "token_signature_checked_locally": False}
+
+
+def main_operations(*, approved_test=False):
+    return main_inspect(approved_test=approved_test, operations=True)
+
+
+def main_inspect(*, approved_test=False, operations=False):
     phase = "restricted_preflight"
     provider = None
     secrets = None
     binding = None
+    timing = {}
     try:
         uid, snapshots = preflight(approved_test, include_auth=False)
         snapshots[".env"] = read_private(".env", uid)
@@ -821,9 +866,12 @@ def main_inspect(*, approved_test=False):
         os.chdir(HOME)
         logging.disable(logging.CRITICAL)
         verify_provider()
-        phase = "receipt_inspection"
-        receipt_stamp = state_stamp()
-        state = read_state(uid)
+        receipt_stamp = None
+        state = None
+        if not operations:
+            phase = "receipt_inspection"
+            receipt_stamp = state_stamp()
+            state = read_state(uid)
         sys.path.insert(0, str(RELEASE / "repo"))
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             import agent.secret_scope as secrets
@@ -834,6 +882,7 @@ def main_inspect(*, approved_test=False):
             memory_token = secrets.load_env_file(PROFILE / ".env").get("ENHANCED_COGNEE_ACCESS_TOKEN")
             if not isinstance(memory_token, str) or not memory_token:
                 raise CheckError("missing_pilot_memory_token")
+            timing = token_timing(memory_token, time.time()) if operations else {}
             binding = secrets.set_secret_scope({"ENHANCED_COGNEE_ACCESS_TOKEN": memory_token}, profile_home=str(PROFILE))
             if loader.find_provider_dir("enhanced_cognee").resolve() != ARTIFACT:
                 raise CheckError("native_memory_discovery")
@@ -841,16 +890,19 @@ def main_inspect(*, approved_test=False):
             provider.initialize("pilot_receipt_inspection", hermes_home=str(PROFILE), agent_context="primary")
             phase = "authenticated_memory_inspection"
             status = memory_status(provider)
-            result = inspect_fixture(provider, state)
+            result = {**timing, "authenticated_api_status_passed": True,
+                      "credential_renewed": False, "profile_backup_coverage_verified": False} if operations else inspect_fixture(provider, state)
             if (any(read_private(name, uid) != raw for name, raw in snapshots.items())
-                    or read_state(uid) != state or state_stamp() != receipt_stamp):
+                    or not operations and (read_state(uid) != state or state_stamp() != receipt_stamp)):
                 raise CheckError("profile_or_receipt_changed_preserve_and_review")
-        print(json.dumps({"complete": True, "stage": "inspect", "effective_user": "hermes-runtime",
+        print(json.dumps({"complete": True, "stage": "operations" if operations else "inspect", "effective_user": "hermes-runtime",
             "profile": "enhanced-cognee-pilot", "scope_active_records": status["active_records"],
-            **result, "checked_profile_files_and_receipt_unchanged": True, "oauth_store_read": False,
+            **result, **({"checked_profile_files_unchanged": True} if operations else {"checked_profile_files_and_receipt_unchanged": True}), "oauth_store_read": False,
             "model_called": False, "memory_records_written": False, "runtime_qualified": False}, indent=2))
     except Exception as error:
         print(json.dumps({"complete": False, "failure_stage": phase, **failure(error),
+            **({"stage": "operations", **timing, "credential_renewed": False,
+                "profile_backup_coverage_verified": False, "oauth_store_read": False} if operations else {}),
             "test_evidence_preserved": True, "model_called": False,
             "memory_records_written": False, "runtime_qualified": False}, indent=2))
         raise SystemExit(1) from None

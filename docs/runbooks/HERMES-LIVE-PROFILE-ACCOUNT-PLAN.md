@@ -15,9 +15,15 @@ approval again. Prepare the permanent hermes-runtime account and initial profile
 through the verified Ubuntu-Hermes operator workflow; begin with invented data.
 The owner has now reported successful guarded creation of hermes-runtime with
 home /var/lib/hermes-runtime, mode 0700, only its own group and a locked password.
-No Hermes profile is configured yet. The Workspace session did not create or
-directly inspect the host account. See
+That account-creation checkpoint originally preceded profile configuration.
+Later owner receipts now confirm the restricted enhanced-cognee-pilot profile,
+native provider/scoped access, independent pilot OAuth, selected capture,
+fresh-session recall and clear correction with retained history. Corrected
+fresh recall and operational/private-use gates remain separate. The Workspace
+session did not directly inspect the isolated host. See
 [the operator checkpoint](../reports/audits/2026-10-19-hermes-security/HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+Current renewal/recovery coverage and remaining operational work are reconciled
+in [the operational-readiness review](HERMES-PILOT-OPERATIONAL-READINESS.md).
 
 The initial profile is a rollout stage, not the final coverage limit. Use the
 same protected backend for the main assistant and the entire actual fleet,

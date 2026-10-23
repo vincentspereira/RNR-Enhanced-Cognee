@@ -1238,3 +1238,42 @@ Native corrected recall remains pending the next operator command. The clear
 correction above is now verified; do not rerun it to obtain recall evidence.
 Ambiguous clarification/privacy, renewable credentials, protected-profile
 recovery, peer isolation, release and fleet qualification remain separate gates.
+
+## 23 October: corrected recall refused by model HTTP 429
+
+Owner output for 086e61e698e46b3bddec48befe35829ea46fe900 reported an
+incomplete failed native turn: three guarded requests each returned HTTP 429,
+native_failure_reason=rate_limit, no observed memory tools and no guard failure.
+Checked settings/credentials were unchanged and canonical writes were disabled.
+The earlier completed correction/history evidence stands; corrected fresh recall
+is unqualified, and its post-turn canonical comparison was not reached. No exact
+reset time, provider error code, token fault or account-wide limit detail was
+provided. Do not infer these from the status alone or rerun correction/capture.
+
+The qualification helper now latches an observed 429 across all guarded client
+instances and refuses later sends before transport, including native turn retries.
+Any observed 429 refuses qualification even if the returned native result claims
+completion. Already in-flight requests are not cancelled retroactively; a fresh
+manual process has a fresh latch, not evidence that the model limit has cleared.
+No default/fallback/account/model setting, persistent service or bot is changed.
+
+Independent source review also confirms the pilot's initial 24-hour credential
+and a distinct backup boundary: /var/lib/hermes-runtime is not selected by
+the Windows v12 original-user home stream or the canonical database dump. This
+does not invalidate separately proved database/key-package recovery, and no
+Windows backup was executed or edited. V12 remains paused. The new operational
+runbook records concrete protected-renewal and profile/disposable-restore work,
+without inventing installed coverage or repeating completed owner custody steps.
+
+main_operations(approved_test=True) is prepared as a read-only local status and
+expiry check: no OAuth access, chat agent/model, record/receipt reads or writes,
+credential renewal or backup claims. Decoded ordinary-token expiry is explicitly
+unverified locally; authenticated current API status is separate. Unknown or
+ambiguous claims are refused without disclosure. Failure can retain only safe
+expiry metadata, never token/claims dumps. The local status execution is pending.
+
+Focused Workspace suites pass 579 tests, zero failures/skips and no reported
+warnings, including 18 added expiry/privacy/status-refusal/rate-limit regressions.
+Network/agent operations use fixtures, with real HTTPX hooks on a simulated
+transport. No installed host or cloud model call was made in Workspace. Continue
+with the non-model operational check while corrected model recall is deferred.

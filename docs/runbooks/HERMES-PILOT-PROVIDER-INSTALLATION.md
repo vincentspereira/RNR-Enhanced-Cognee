@@ -929,3 +929,43 @@ current-answer/citation, stale answers and canonical/receipt preservation. Nativ
 agent/provider/network calls use fixtures; installed corrected recall is pending.
 This step can consume existing subscription usage, with defaults and everyday
 profiles/bots unchanged.
+
+## 23 October: corrected recall hit the model rate limit; local operations next
+
+The owner returned complete=false/stage native_agent_turn from helper revision
+086e61e698e46b3bddec48befe35829ea46fe900. The three observed HTTP statuses were
+429; native failure_reason was rate_limit. No tool call was observed, checked
+profile/settings/credentials were unchanged and no canonical write was enabled.
+The post-turn authoritative comparison did not complete. Do not infer the
+exact reset time, a credential fault or a failed prior correction from this
+result. Corrected recall remains unqualified; preserve all fixtures/receipts.
+
+The test helper now latches the first observed 429 across its initial/request/
+recovery clients and rejects further requests before sending. SDK retries were
+already disabled; Hermes' own turn retries explain why three physical requests
+were previously observed. This qualification guard leaves native guards intact
+and cannot claim that an account limit has reset. Already in-flight concurrent
+requests are not retroactively cancelled, and a later manual process has a fresh
+latch. Any observed 429 refuses success even if a native result says completed.
+
+The next safe operator step is main_operations(approved_test=True), using the
+same restricted account and pinned/hash-verified helper. It reads only checked
+profile settings and ordinary Cognee .env, decodes bounded token-expiry metadata
+without claiming local signature verification, and requests authenticated local
+API status. It reads no OAuth store, memory content or receipts and constructs
+no chat agent. It writes/renews nothing and consumes no cloud-model request.
+Claims are explicitly unverified locally; API acceptance is a separate current
+server observation. Safe expiry metadata remains available on an API refusal.
+
+[The operational-readiness review](HERMES-PILOT-OPERATIONAL-READINESS.md) explains
+the scope, required renewal checks and restricted-profile recovery gap. Existing
+home-selected backups and canonical database dumps do not automatically include
+the new /var/lib/hermes-runtime profile. Its backup proof remains false/unverified
+in this status check; no backup or Windows task is changed and V12 stays paused.
+
+Focused Workspace fixtures pass 579 tests with zero failures/skips and no reported
+warnings. Eighteen added cases cover expiry/privacy/identity validation, read-only
+operations/status refusals and first-429 blocking across request/recovery clients.
+The native status check remains pending; no cloud/model call ran in Workspace.
+Defer another corrected-memory model recall until its limit permits a deliberate
+retry; no provider change, credential copying or limit bypass is introduced.

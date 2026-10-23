@@ -1,0 +1,121 @@
+# Restricted Hermes pilot: operational readiness
+
+Reviewed in Workspace on 23 October 2026. This is a source/evidence review,
+not a new inspection of Ubuntu-Hermes. Preserve the existing service, profiles,
+keys, backup generations and all qualification receipts. V12 remains paused.
+
+## What is already established
+
+The owner supplied native results for the protected runtime/provider and
+restricted account. The pilot passes automatic selected capture, separate-process
+recall and clear correction with preserved version history, using invented data
+and temporary GPT-6.1-Sol subscription model arguments. Exact results are in
+[the restricted-profile report](../reports/audits/2026-10-19-hermes-security/HERMES-RESTRICTED-PROFILE-2026-10-22.md).
+
+Correction reached Cedar version 2, preserving version 1 and the Larch record.
+The owner ran recall_corrected at helper revision
+086e61e698e46b3bddec48befe35829ea46fe900. The model service returned 429 for
+all three observed requests, classified as rate_limit; no memory tool ran.
+Corrected fresh recall remains unqualified. The previous correction pass is
+preserved; do not rerun write stages or infer archive/credential corruption.
+The exact model-limit reset time was not supplied and is not established.
+
+Older service backup/restore and 42-space tests retain their own revisions and
+identities. They do not establish recovery of this later restricted profile or
+installed admission of the current fleet. The owner already tested recovery-key
+custody separately; do not ask for those completed steps again. Outstanding real
+credential-review coverage must be reconciled against its existing private record.
+
+## Credential operation
+
+The initial ordinary memory token was issued for 24 hours and its recorded
+expiry was 2026-10-23T18:23:15+00:00. This is the initial receipt's expiry, not
+a fresh observation of the installed token or the current clock. Successful
+past calls do not establish future validity. Do not extend lifetime, assume a
+renewal occurred or re-run initial provisioning against a populated scope.
+
+The existing provision_pilot_access.py deliberately refuses an existing token
+and requires an empty namespace. It is an initial issuer, not a renewal tool.
+The untracked renew_protected_test_tokens.py in Workspace is preserved unrelated
+work; this continuation neither admits nor publishes it as the pilot renewer.
+
+check_pilot_codex.py now provides main_operations(approved_test=True), a prepared
+read-only restricted-account check. It reads the ordinary memory token from the
+pilot .env through the native scoped loader and reports only bounded expiry
+metadata. Claims are decoded locally without a signing key and explicitly marked
+unverified. Separate authenticated API status tests current server acceptance;
+neither decoding nor a successful API response proves a future renewal path.
+
+The check reads no auth.json, human credential store, operator key, test receipt
+or memory content, constructs no chat agent and calls no cloud model. It compares
+checked profile/settings/.env bytes after status. It does not renew tokens,
+alter configuration or test backups. profile_backup_coverage_verified=false is
+an explicit unverified gate, not a filesystem scan result. Use the next reviewed,
+pinned/hash-verified operator command to check the local memory credential/API
+while cloud model testing is deferred. This does not call the rate-limited model
+or claim its limit has cleared. If the API refuses access, decoded expiry metadata
+is still explicitly unverified; reconcile renewal rather than repeat model calls.
+
+Before unattended operation, prepare and qualify a fixed-scope operator renewal
+path with protected code and locking, a private no-replace old-file backup,
+signature/identity/lifetime verification, fresh/expired/altered negative controls,
+atomic environment publication and preservation of all other settings. Signing
+authority stays out of the runtime account. Prove agent denial and recovery
+after interrupted renewal; do not inject privileged renewal callbacks into a
+profile controlled by the agent. Existing JWTs remain usable until expiry unless
+an independently supported revocation path invalidates them. Do not rotate the
+global signing key to stop one profile.
+
+## Recovery coverage: keep the layers distinct
+
+| Recovery item | Source/evidence finding | Required proof before private use |
+|---|---|---|
+| Canonical memory database | src/memory_backup.py streams pg_dump through age and signs a completion manifest | Current encrypted generation, signature/decryption and a disposable database restore with history and scope checks |
+| Service/recovery keys | Separate protected files and owner-tested recovery package | Preserve that package/custody; reconcile any later key change without exporting secrets into reports |
+| Restricted Hermes profile | /var/lib/hermes-runtime/.hermes/profiles/enhanced-cognee-pilot is outside the original user's home | Explicit encrypted profile backup and disposable recovery of settings, scoped access and native provider binding |
+| Runtime qualification receipts/workspace | Files under /var/lib/hermes-runtime are outside the original user's home | Include retained test receipts and any original workspace work in explicit coverage; no automatic cleanup |
+| Protected program artifacts | /opt/hermes-runtime releases and provider artifacts are separate from profile state | Record source/payload hashes and a verified rebuild or preserved artifact; restored plugin links must target the trusted artifact |
+| Full-distro backup | Can contain /var/lib, if a real distro export includes it | Verify actual export provenance/date and disposable recovery; do not infer coverage from a selected-file backup |
+
+Repository source confirms why home backup alone is insufficient:
+scripts/windows/backup-all-wsl-v12.ps1 starts the home producer as
+vincentspereira, and backup-v12/capture_home.py defaults --root to Path.home().
+It does not select /var/lib/hermes-runtime. The separate capture_cognee.py stream
+collects completed database dump/manifest pairs from /var/backups/enhanced-cognee;
+it does not collect the Hermes profile. The original user's .hermes bot-profile
+coverage therefore does not establish coverage of this new runtime home.
+
+No Windows script, scheduled task or running backup is changed by this review.
+Do not resume V12 just to close this gap. Prepare a Hermes-local encrypted profile
+snapshot first, using an operator-controlled destination and existing approved
+encryption/recovery mechanism. Exclude sockets and disposable caches; preserve
+original work, profiles, credential files and receipts only inside encryption.
+Use a no-write window on the selected profile and a supported consistent SQLite
+snapshot for any live database. Never copy mutable SQLite/WAL files blindly.
+
+Prove recovery in a fresh restricted disposable destination, never over the live
+profile. Validate file permissions, checksums, consistent database integrity,
+restored configuration/provider links and scope denial without publishing private
+data or copying root keys into the agent home. A recovered expiring token can be
+expired; qualify operator reissuance rather than weakening expiry or treating
+token rejection as archive corruption. Preserve restored evidence unless the
+owner explicitly permits its deletion. Any later collection to Windows/cloud
+requires encrypted coverage, native checks and the existing pause/owner decisions.
+
+## Remaining sequence
+
+1. Defer corrected-model recall after the observed 429. Check ordinary memory
+   credential expiry and local API acceptance without a cloud request. The updated
+   model-test guard blocks further sends in that process after its first 429;
+   a later manual process has a fresh latch, not proof of a cleared rate limit.
+2. Qualify ambiguous clarification, private-detail/credential exclusion and
+   cross-scope denial in the current restricted runtime, reusing dated unchanged
+   service evidence only where justified.
+3. Qualify protected renewal and explicit encrypted restricted-profile recovery.
+4. Inventory actual profiles/bots and their launch identities. Do not copy the
+   pilot token across bots or assume one shared OS account isolates their files.
+5. Reconcile current service backup freshness, release/security checks, private
+   credential review and the owner's activation review before staged rollout.
+
+These are implementation/qualification tasks already within the requested plan;
+this document adds no new activation, restart, deployment or sharing permission.
