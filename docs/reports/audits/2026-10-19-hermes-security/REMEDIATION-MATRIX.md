@@ -36,9 +36,12 @@ zero-effective/ambient guard remains enforced. Other selected restrictions and
 the two-capability bounding set remain. Owner-run 47b20e4d now confirms this
 corrected restricted snapshot passes
 with child exit 0; data was discarded in RAM and installed units/timer remained
-unchanged. The exact-artifact guarded upgrade is prepared to preserve originals,
-qualify a real signed encrypted job and then enable/verify its timer. Installed
-repair and recurring operation/collection remain unqualified until that result.
+unchanged. Owner-run ab8c990b replaced the service and preserved originals,
+then failed the combined real encrypted-backup qualification before timer enable
+completed. Service execution, report admission and ciphertext authentication are
+not distinguished by that summary; backup absence/success is not inferred. Next
+inspect the exact upgraded artifacts and retained invocation read-only, without
+rerunning the updater. Actual encrypted-job/timer/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected

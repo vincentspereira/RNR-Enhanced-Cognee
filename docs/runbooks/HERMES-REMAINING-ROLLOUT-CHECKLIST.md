@@ -148,3 +148,11 @@ service, verify one actual signed encrypted backup and then enable/verify the
 daily timer. This step is prepared, not owner-run complete. Failed/partial
 updates preserve evidence and require review before any retry. Other readiness
 and fleet gates above remain open.
+
+Latest owner update at ab8c990b: corrected service replacement succeeded and
+originals were preserved. The combined real backup qualification stage failed;
+no timer-enable command completed. Do not infer which subcheck failed or whether
+ciphertext exists. Next inspect the exact upgraded runner/service and retained
+invocation read-only; preserve old/new artifacts, manual recovery and passing
+snapshot evidence. Do not rerun the updater. Installed encrypted-job/timer and
+all separate collection/release/fleet gates remain pending.

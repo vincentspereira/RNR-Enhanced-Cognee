@@ -1,4 +1,4 @@
-"""Read-only, allowlisted diagnostics for the first installed profile backup job.
+"""Read-only, allowlisted diagnostics for fixed original/upgraded backup jobs.
 
 Never execute/restart the runner, change units/timer state, or open credentials.
 Only fixed public program/unit bytes and bounded journal/status data are read.
@@ -20,6 +20,12 @@ RUNNER = Path('/opt/enhanced-cognee-profile-backup/57b8a79716f67331/run.py')
 EXPECTED = {
     RUNNER: ('runner', 175004, '57b8a79716f67331fe093dd8d698f0feda6b480cf1131c60c86d92303a780a86'),
     Path('/etc/systemd/system') / SERVICE: ('service', 913, 'a83b1f5ff166b4a1de8e40065305e523d8a01185982b6d228cfbe8a72fdf219c'),
+    Path('/etc/systemd/system') / TIMER: ('timer', 213, 'e4647f8177721961d5419d29a785bab5a74dc097a70273768bfceba9fa365b94'),
+}
+UPGRADED_RUNNER = Path('/opt/enhanced-cognee-profile-backup/a1ffd4c258238847/run.py')
+UPGRADED_EXPECTED = {
+    UPGRADED_RUNNER: ('runner', 177098, 'a1ffd4c258238847e1a6feda83badcf2de56e7c058bba3f48708f6eaa68dbe33'),
+    Path('/etc/systemd/system') / SERVICE: ('service', 923, '631497ab150c6b3be092fcd0ef49cf7632a4436afe27170f4b5663f4c98e8a98'),
     Path('/etc/systemd/system') / TIMER: ('timer', 213, 'e4647f8177721961d5419d29a785bab5a74dc097a70273768bfceba9fa365b94'),
 }
 PHASES = {'operator_preflight', 'restricted_snapshot', 'encrypted_snapshot', 'published_ciphertext_authentication'}
@@ -102,12 +108,21 @@ def safe_report(value):
     else:
         for key in ('source_files', 'source_bytes'):
             if type(value.get(key)) is int and 0 <= value[key] <= 16777216: report[key] = value[key]
-        for key in ('signed_ciphertext_verified', 'decryption_tested', 'recovery_identity_read'):
+        for key in ('signed_ciphertext_verified', 'decryption_tested', 'recovery_identity_read',
+                    'plaintext_archive_written', 'model_called', 'memory_records_written'):
             if type(value.get(key)) is bool: report[key] = value[key]
+        report['upgrade_completion_contract_passed'] = (
+            value.get('signed_ciphertext_verified') is True
+            and all(value.get(key) is False for key in ('decryption_tested', 'recovery_identity_read',
+                'plaintext_archive_written', 'model_called', 'memory_records_written'))
+            and type(value.get('source_files')) is int and 1 <= value['source_files'] <= 2048
+            and type(value.get('source_bytes')) is int and 1 <= value['source_bytes'] <= 16777216
+            and isinstance(value.get('encrypted_backup'), str)
+            and re.fullmatch(r'/var/backups/enhanced-cognee/hermes_profile_[0-9]{8}T[0-9]{6}Z_[0-9a-f]{8}\.tar\.age', value['encrypted_backup']) is not None)
     return report
 
 
-def journal_report(raw, invocation):
+def journal_report(raw, invocation, *, diagnostics=None):
     if not re.fullmatch(r'[0-9a-f]{32}', invocation) or len(raw) > 524288:
         raise InspectionError('journal_budget_or_invocation')
     messages = []
@@ -122,9 +137,11 @@ def journal_report(raw, invocation):
             messages.append(message)
     # journald may preserve a multi-line MESSAGE or split stdout at newlines.
     text = '\n'.join(messages)
+    if diagnostics is not None:
+        diagnostics['matching_journal_messages'] = len(messages)
     decoder = json.JSONDecoder()
     found = None
-    attempts = 0
+    attempts, reports, completions = 0, 0, 0
     for index, char in enumerate(text):
         if char != '{': continue
         attempts += 1
@@ -132,49 +149,63 @@ def journal_report(raw, invocation):
         try: candidate, _ = decoder.raw_decode(text[index:])
         except ValueError: continue
         cleaned = safe_report(candidate)
-        if cleaned is not None: found = cleaned
+        if cleaned is not None:
+            found = cleaned
+            reports += 1
+            if cleaned.get('upgrade_completion_contract_passed') is True: completions += 1
+    if diagnostics is not None:
+        diagnostics.update(allowlisted_backup_reports=reports,
+            upgrade_contract_completed_reports=completions)
     return found
 
 
-def main():
+def main(*, upgraded=False):
     phase = 'operator_preflight'
     try:
-        if (os.geteuid() != 0 or os.environ.get('WSL_DISTRO_NAME') != 'Ubuntu-Hermes'
+        if (type(upgraded) is not bool or os.geteuid() != 0 or os.environ.get('WSL_DISTRO_NAME') != 'Ubuntu-Hermes'
                 or os.environ.get('SUDO_USER') != 'vincentspereira'):
             raise InspectionError('approved_human_operator_required')
         if Path('/proc/1/comm').read_text().strip() != 'systemd':
             raise InspectionError('host_systemd_required')
         phase = 'public_artifact_verification'
+        expected_artifacts = UPGRADED_EXPECTED if upgraded else EXPECTED
         hashes = {label + '_matches_published': public_file(path, size, expected)
-                  for path, (label, size, expected) in EXPECTED.items()}
+                  for path, (label, size, expected) in expected_artifacts.items()}
         phase = 'service_state'
-        raw = command(['/usr/bin/systemctl', 'show', SERVICE, '--property=InvocationID',
+        raw = command(['/usr/bin/systemctl', 'show', SERVICE, '--all', '--property=InvocationID',
             '--property=Result', '--property=ExecMainStatus', '--property=ActiveState'], limit=4096)
         fields = dict(line.split('=', 1) for line in raw.decode('ascii').splitlines() if '=' in line)
         state = {key: value for key, value in fields.items()
                  if key == 'Result' and value in RESULTS or key == 'ActiveState' and value in STATES
                  or key == 'ExecMainStatus' and re.fullmatch(r'[0-9]{1,3}', value)}
-        policy = command(['/usr/bin/systemctl', 'show', SERVICE, '--property=NoNewPrivileges',
+        policy = command(['/usr/bin/systemctl', 'show', SERVICE, '--all', '--property=NoNewPrivileges',
             '--property=PrivateNetwork', '--property=ProtectHome', '--property=ProtectSystem',
-            '--property=CapabilityBoundingSet', '--property=DropInPaths'], limit=4096)
+            '--property=CapabilityBoundingSet', '--property=AmbientCapabilities',
+            '--property=DropInPaths', '--property=FragmentPath'], limit=4096)
         policy = dict(line.split('=', 1) for line in policy.decode('ascii').splitlines() if '=' in line)
         effective = {key: policy.get(key) == expected for key, expected in (
             ('NoNewPrivileges', 'yes'), ('PrivateNetwork', 'yes'), ('ProtectHome', 'yes'), ('ProtectSystem', 'strict'))}
         effective['only_identity_switch_capabilities'] = set(policy.get('CapabilityBoundingSet', '').split()) == {'cap_setuid', 'cap_setgid'}
         effective['no_service_drop_ins'] = policy.get('DropInPaths') == ''
+        if upgraded:
+            effective['parent_ambient_setuid_only'] = policy.get('AmbientCapabilities', '').split() == ['cap_setuid']
+            effective['expected_service_path'] = policy.get('FragmentPath') == str(Path('/etc/systemd/system') / SERVICE)
         invocation = fields.get('InvocationID', '')
         if not re.fullmatch(r'[0-9a-f]{32}', invocation) or invocation == '0' * 32:
             raise InspectionError('no_retained_service_invocation')
         phase = 'retained_journal_inspection'
         raw = command(['/usr/bin/journalctl', '--no-pager', '--output=json', '--lines=160',
             '_SYSTEMD_UNIT=' + SERVICE, '_SYSTEMD_INVOCATION_ID=' + invocation])
-        report = journal_report(raw, invocation)
-        timer = command(['/usr/bin/systemctl', 'show', TIMER,
+        diagnostics = {}
+        report = journal_report(raw, invocation, diagnostics=diagnostics)
+        timer = command(['/usr/bin/systemctl', 'show', TIMER, '--all',
             '--property=ActiveState', '--property=UnitFileState'], limit=4096)
         timer = dict(line.split('=', 1) for line in timer.decode('ascii').splitlines() if '=' in line)
         print(json.dumps({'complete': True, 'stage': 'profile_backup_schedule_inspection',
+            'reviewed_schedule': 'upgraded_ab8c990b' if upgraded else 'original_d7c7880c',
             'published_artifacts': hashes, 'service_state': state, 'effective_policy': effective,
             'retained_backup_report_found': report is not None, 'retained_backup_report': report,
+            'journal_diagnostics': diagnostics,
             'timer_active': timer.get('ActiveState') == 'active',
             'timer_enabled': timer.get('UnitFileState') in {'enabled', 'enabled-runtime'},
             'files_written': False, 'service_started_or_restarted': False, 'timer_changed': False,

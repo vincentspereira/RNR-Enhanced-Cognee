@@ -1987,3 +1987,38 @@ binding, staged file preservation, real HMAC/ciphertext tampering and permission
 symlink/hardlink guards. Native age recovery and systemd unit syntax tests in
 the existing suite still pass. Root metadata/host systemctl actions are simulated
 here; the actual installed upgrade/backup/timer result must come from the owner.
+
+## 23 October: guarded service replacement completed; backup qualification incomplete
+
+Owner-run ab8c990b105d2ab3bb234f53d62f11b1d6120d35 returned complete=false at
+real_encrypted_backup_qualification with service_replaced=true and
+timer_enable_command_completed=false. Original public files were preserved at
+/opt/enhanced-cognee-profile-backup/before-upgrade-3facdc095f4b49e6ba6c00b000c7e1e7.
+The published candidate runner is a1ffd4c258238847 (177098 bytes); the corrected
+service is 923 bytes and the timer file remains the original 213 bytes. The
+existing database schedule, model settings and memory records were unchanged.
+This returned phase encompasses service start/state, fresh-invocation journal
+admission and ciphertext/manifest authentication. It does not identify the
+failing subcheck or establish that no backup was created. Do not infer a new
+capability defect, rerun the updater or overwrite preserved/installed evidence.
+
+The read-only inspector now has an explicit boolean upgraded mode with fixed
+new runner/service hashes and the unchanged timer hash. Original mode remains
+available for historical artifacts. It inspects selected unit status/policy,
+latest retained invocation and only bounded/sanitized backup reports, adding
+message/report counts and the exact success-report contract flag. This can
+distinguish a failed service from an absent, duplicated or incomplete completion
+report without replaying execution. It reads no signing/recovery configuration,
+returns no report paths/private values, makes no API/model request and changes
+no files, services, timer or memories. A complete diagnostic is not operational
+backup qualification. Actual daily encrypted-job success, timer/collector/fleet
+readiness remain open; earlier manual restore and transient passes are retained.
+
+Workspace validation for this continuation: 1096 focused checks pass, zero
+failures/skips and no pytest warnings. Eighteen added inspection cases verify
+the exact qualified candidate hashes, upgraded read-only command selection,
+drift/status/policy/timer reporting, missing/duplicate completed reports,
+completion-contract failures and suppression of private paths/values. The
+original-mode inspector and guarded upgrade tests remain passing. Root/host
+systemctl/journal behavior is simulated here; the returned host result is still
+needed and no new installed backup success is claimed.

@@ -197,3 +197,12 @@ prepared; the next owner action qualifies a real encrypted service run, verifies
 its signed ciphertext and only then enables/verifies the daily timer. No model
 call, key-custody replay or manual restore replay is needed. Actual recurring
 operation and Windows collection are not yet claimed; see HERMES-PILOT-RECOVERY.md.
+
+Owner-run ab8c990b follow-up: service replacement completed with original public
+files preserved, but real_encrypted_backup_qualification failed before timer
+enable completed. The summary groups execution/report/authentication checks,
+so neither service failure nor backup absence/success is established yet.
+Next run only the upgraded read-only inspector described in the recovery
+runbook. It targets exact a1ffd4c258238847 runner bytes and retained invocation
+status/report, without service start, credentials, models or writes. Do not
+repeat the updater or claim recurring profile coverage until reconciled.

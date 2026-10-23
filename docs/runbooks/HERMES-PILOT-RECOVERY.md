@@ -8,12 +8,16 @@ relayed by the owner; this session has no direct access to that isolated host.
 The owner-run fresh restore at ca2682c6 passed on 23 October: 60 files,
 205571 bytes, private permissions, provider binding and scoped access verified,
 with live source preserved. Retain both failed and successful destinations.
-Daily job files are installed, but the original job failed and its timer remains
-disabled. Owner-run 47b20e4d now passes the corrected transient snapshot: child
+Daily job files are installed. Owner-run 47b20e4d passes the corrected transient snapshot: child
 exit 0, both required parent capabilities present, restricted reader guards
 enforced, ordinary snapshot discarded in RAM. No installed job/timer changed.
-The exact-artifact guarded upgrade is prepared; actual encrypted job execution,
-timer verification and Windows collection remain pending. Earlier failed
+Owner-run ab8c990b replaced the service and preserved originals, then stopped at
+real_encrypted_backup_qualification before any timer-enable command completed.
+That phase includes service execution, completion-report admission and signed
+ciphertext verification; the returned summary does not identify which failed
+or establish whether ciphertext was created. Inspect retained state without
+rerunning the updater. Actual encrypted job qualification, timer verification
+and Windows collection remain pending. Earlier failed
 diagnostics below remain historical evidence, not instructions to repeat them.
 
 The owner tested custody of the encrypted Cognee key package and its password
@@ -507,3 +511,32 @@ enhanced-cognee-profile-backup.timer. This does not stop a job already running.
 Restoring a preserved unit requires a reviewed exact-current-file comparison and
 daemon reload; the preserved original is the known failed version, so restoring
 it would not repair daily backups. No automatic unit rollback is performed.
+
+## Upgraded service stopped before timer enable: inspect retained evidence
+
+Owner-run ab8c990b105d2ab3bb234f53d62f11b1d6120d35 reported service_replaced=true
+and failure_stage=real_encrypted_backup_qualification. Original public files
+were preserved at /opt/enhanced-cognee-profile-backup/before-upgrade-3facdc095f4b49e6ba6c00b000c7e1e7.
+The new reviewed runner is /opt/enhanced-cognee-profile-backup/a1ffd4c258238847/run.py.
+The timer-enable command did not complete and the database schedule was unchanged.
+Do not repeat the updater: it deliberately refuses this already replaced service.
+Do not restore the known failed original or delete retained files.
+
+This summary does not say whether the new service exited unsuccessfully, a
+completion report failed admission or the operator's ciphertext authentication
+failed. No backup absence/success or new root cause is inferred. Use the newly
+pinned/hash-verified inspect_profile_schedule.py with main(upgraded=True).
+It validates the exact new runner/service and unchanged timer hashes, reads
+current service status/policy and only the latest retained invocation's bounded
+journal entries, and reports sanitized backup phases/counts/flags. It also counts
+matching journal messages, recognized reports and reports satisfying the
+upgrader's completion contract, distinguishing missing/duplicate/invalid reports.
+Paths from reports, raw logs, errors, credentials and private profile content
+are never returned. A successful inspection is not a successful backup.
+
+Run in the normal Ubuntu-Hermes operator terminal as vincentspereira, starting
+in ~ if desired. Enter sudo privately and relay only JSON. This read-only step
+does not need the pilot or everyday bots stopped. It does not run/restart a
+service, create a backup, read backup configuration/recovery keys, decrypt,
+change profiles/timers, call a model or write memory. The old successful manual
+recovery and transient snapshot evidence remain preserved; no replay is needed.
