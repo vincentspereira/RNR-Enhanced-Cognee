@@ -25,6 +25,14 @@ without returning state or a retained report. It made no writes/restarts/key
 reads. Its broad catch does not distinguish command, decoding or missing-ID
 failure. Use the revised detailed inspector below; do not rerun the updater.
 
+Owner-run 3b456aeb now completes that inspection: all new artifact hashes and
+selected protections match; state reports success/0/inactive; one retained
+completed encryption-only report describes 60 files/205571 bytes. The report was
+found through latest retained journal metadata, not a current unit identifier,
+so it does not yet prove a fresh upgraded run or independently authenticate the
+ciphertext. The timer is confirmed inactive/disabled. The guarded continuation
+below reuses that generation; do not repeat the passing inspection/restore.
+
 The owner tested custody of the encrypted Cognee key package and its password
 manager recovery copy. Earlier service database backup/restore evidence remains
 valid only for its recorded generation, source, identity and scope. Preserve it.
@@ -582,3 +590,52 @@ The new verified-input budget is 24576 bytes rather than 16384 because of the
 added diagnostics; published prior command pins/limits remain historical.
 Relay only JSON, keep installed and preserved files intact and do not repeat
 any backup/update/model/recovery test while this retained evidence is reconciled.
+
+## Retained completion found: authenticate it and enable the daily timer
+
+Owner-run 3b456aeb42fba557c311eba1269e7df79846ea8b confirms exact new public
+runner/service/timer bytes, selected protections and inactive/disabled timer.
+Current unit state is success/0/inactive. Fifteen matching retained messages
+contain one completed encryption-only report: 60 files/205571 bytes, signed
+ciphertext reported verified, no decryption/recovery identity/plaintext archive/
+model/memory write. Because no usable current invocation ID was available,
+retained_report_proves_upgraded_run=false remains deliberate. This is not yet
+operator-authenticated ciphertext or recurring schedule qualification.
+
+Use only the newly pinned upgrade_profile_schedule.py main_resume(sources)
+bundle. It accepts the exact qualified three-source definitions, verifies all
+installed candidate bytes/stable metadata and all preserved original hashes/
+private permissions, and acquires the existing root-private upgrade lock.
+No runner or service file is created/replaced; the original main is not called.
+The service/timer must be idle, timer disabled, with no jobs/drop-ins and the
+expected policy. Existing private profile contents are not read by this step.
+
+The continuation reads only the bounded last 160 selected-unit journal records.
+It selects the latest trusted invocation and admits completed report lines only
+when trusted metadata identifies root and the exact /usr/bin/python3 -I -B
+/opt/enhanced-cognee-profile-backup/a1ffd4c258238847/run.py command after the service
+file's publication timestamp. IDs/commands/timestamps inside MESSAGE cannot
+supply identity. Missing, old, conflicting or incomplete evidence stops rather
+than weakening admission. Trusted journal field semantics are documented at:
+https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
+
+The operator then independently authenticates the named ciphertext and manifest
+using root-private backup.json, verifies counts and requires the signed creation
+time after service publication and no later than now. The age recovery identity
+is never opened and no decryption runs. Installed candidate bytes/metadata and
+idle schedule are checked again before any timer command. Only then does
+systemctl enable --now run for this timer; active/enabled/next-run checks must
+pass. The existing database schedule is untouched. This explicitly authorizes
+no new manual backup run; Persistent=true can cause an ordinary scheduled
+catch-up run once the timer starts. Keep the pilot idle for this final step.
+
+Run in the normal Ubuntu-Hermes operator terminal as vincentspereira, starting
+in ~ if desired. Other Hermes profiles/bots can continue. Sudo may ask for the
+Linux password privately; no vault password/browser login/model request is
+needed. The four-file archive bootstrap hashes every public source before
+executing definitions; the reviewed helper budget is now 24576 bytes. Relay
+only JSON. If a guard fails, preserve evidence and do not repeat the updater or
+continuation automatically. Failure during/after timer enable can leave partial
+timer state; the report explicitly states whether the enable command completed.
+Windows collection, private-use/fleet admission and other release gates remain
+separate; this step does not replay manual recovery or change model defaults.

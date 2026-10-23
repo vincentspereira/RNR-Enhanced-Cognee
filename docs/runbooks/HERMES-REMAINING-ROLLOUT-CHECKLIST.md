@@ -163,3 +163,12 @@ parse and missing-current-ID failures, preserving sanitized partial state. A
 latest-journal-ID fallback is diagnostic only and explicitly cannot qualify the
 upgraded run. Keep the installed upgrade and previous evidence intact; no
 updater rerun, timer activation or repeated model/recovery test is requested.
+
+Latest result: owner-run 3b456aeb retained inspection succeeds with all artifact/
+policy checks, success/0/inactive state and one completed 60-file/205571-byte
+report. Timer remains inactive/disabled. This fallback report alone does not
+qualify a fresh upgraded run or authenticate its files. Next use the pinned
+main_resume continuation to bind trusted root/exact-runner/post-publication
+journal metadata, verify ciphertext/signature/counts/signed time, then enable
+and verify the daily timer. No manual backup, unit replacement, model or restore
+replay. A persistent timer may perform a scheduled catch-up. Other gates remain.

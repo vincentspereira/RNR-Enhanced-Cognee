@@ -6,6 +6,7 @@ runner, generations and failures; never automatically retry or roll back.
 from __future__ import annotations
 
 import fcntl
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -249,6 +250,147 @@ def main(sources):
             category='upgrade_incomplete_preserve_evidence_do_not_repeat', service_replaced=published,
             timer_enable_command_completed=enabled, preserved_originals=str(ROOT / preservation) if preservation else None,
             existing_database_schedule_changed=False, model_called=False, memory_records_written=False,
+            runtime_qualified=False), indent=2))
+        raise SystemExit(1) from None
+
+
+PRESERVED = ROOT / 'before-upgrade-3facdc095f4b49e6ba6c00b000c7e1e7'
+
+
+def bound_retained_report(raw, runner, publication_ns):
+    """Admit only root journal output from this exact runner after publication."""
+    if len(raw) > 65536: raise UpgradeError('journal_budget')
+    lines = raw.splitlines()
+    if len(lines) > 160: raise UpgradeError('journal_budget')
+    rows = [json.loads(line) for line in lines]
+    latest = None
+    for row in rows:
+        if not isinstance(row, dict) or row.get('_SYSTEMD_UNIT') != SERVICE: continue
+        invocation = row.get('_SYSTEMD_INVOCATION_ID')
+        if isinstance(invocation, str) and re.fullmatch('[0-9a-f]{32}', invocation) and invocation != '0' * 32:
+            latest = invocation
+    if latest is None: raise UpgradeError('retained_invocation_missing')
+    selected = []
+    for row in rows:
+        if not isinstance(row, dict) or row.get('_SYSTEMD_UNIT') != SERVICE or row.get('_SYSTEMD_INVOCATION_ID') != latest: continue
+        timestamp = row.get('__REALTIME_TIMESTAMP')
+        if (row.get('_UID') != '0' or row.get('_CMDLINE') != '/usr/bin/python3 -I -B ' + str(runner)
+                or not isinstance(timestamp, str) or not re.fullmatch('[0-9]{1,20}', timestamp)
+                or int(timestamp) * 1000 < publication_ns):
+            continue
+        selected.append(row)
+    if not selected: raise UpgradeError('upgraded_root_runner_journal_binding_missing')
+    # MESSAGE text cannot claim identity, command line, timestamp or invocation.
+    bound = b'\n'.join(json.dumps(row).encode() for row in selected)
+    return completed_report(bound, latest)
+
+
+def published_snapshot(core, path, expected):
+    directory = core['open_directory'](path.parent, {0})
+    try:
+        before = os.stat(path.name, dir_fd=directory, follow_symlinks=False)
+        if read_at(directory, path.name) != expected: raise UpgradeError('installed_candidate_drift')
+        after = os.stat(path.name, dir_fd=directory, follow_symlinks=False)
+        stamp = lambda s: (s.st_dev, s.st_ino, s.st_uid, s.st_mode, s.st_nlink, s.st_size, s.st_mtime_ns, s.st_ctime_ns)
+        if stamp(before) != stamp(after): raise UpgradeError('installed_candidate_drift')
+        return stamp(after), after.st_mtime_ns
+    finally: os.close(directory)
+
+
+def main_resume(sources):
+    """Verify retained upgraded output/ciphertext, then enable only its timer.
+
+    Does not start the service, replace files or repeat the successful restore.
+    Starting a persistent timer may trigger its normal scheduled catch-up run.
+    """
+    phase, enabled, binding, authenticated = 'operator_preflight', False, False, False
+    try:
+        if (os.geteuid() != 0 or os.environ.get('WSL_DISTRO_NAME') != 'Ubuntu-Hermes'
+                or os.environ.get('SUDO_USER') != 'vincentspereira'
+                or Path('/proc/1/comm').read_text().strip() != 'systemd'):
+            raise UpgradeError('approved_host_operator_required')
+        core, inspector, backup = definitions(sources)
+        command = backup['schedule_command']
+        phase = 'verify_installed_and_preserved_artifacts'
+        runner, program, service, timer = backup['schedule_payloads'](sources)
+        if runner.parent.parent != ROOT: raise UpgradeError('candidate_scope_mismatch')
+        snapshots = {path: published_snapshot(core, path, raw) for path, raw in
+            ((runner, program), (UNITS / SERVICE, service), (UNITS / TIMER, timer))}
+        kept = core['open_directory'](PRESERVED, {0})
+        try:
+            if stat.S_IMODE(os.fstat(kept).st_mode) != 0o700: raise UpgradeError('preserved_originals_protection')
+            for path, (size, expected) in OLD.items():
+                name = 'old-runner.py' if path == OLD_RUNNER else path.name
+                if stat.S_IMODE(os.stat(name, dir_fd=kept, follow_symlinks=False).st_mode) != 0o600:
+                    raise UpgradeError('preserved_originals_protection')
+                raw = read_at(kept, name)
+                if len(raw) != size or hashlib.sha256(raw).hexdigest() != expected: raise UpgradeError('preserved_originals_drift')
+        finally: os.close(kept)
+        root = core['open_directory'](ROOT, {0})
+        try:
+            lock = os.open('.schedule-upgrade.lock', os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root)
+            try:
+                core['read_private_fd'](lock, 0)
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                phase = 'verify_idle_schedule_and_policy'
+                idle_original(command)
+                policy = fields(command, SERVICE, ('AmbientCapabilities', 'CapabilityBoundingSet',
+                    'NoNewPrivileges', 'PrivateNetwork', 'ProtectHome', 'ProtectSystem'))
+                if (policy['AmbientCapabilities'].split() != ['cap_setuid']
+                        or set(policy['CapabilityBoundingSet'].split()) != {'cap_setuid', 'cap_setgid'}
+                        or policy['NoNewPrivileges'] != 'yes' or policy['PrivateNetwork'] != 'yes'
+                        or policy['ProtectHome'] != 'yes' or policy['ProtectSystem'] != 'strict'):
+                    raise UpgradeError('effective_candidate_policy_mismatch')
+                phase = 'bind_retained_upgraded_run'
+                raw = command(['/usr/bin/journalctl', '--no-pager', '--output=json', '--lines=160', '_SYSTEMD_UNIT=' + SERVICE])
+                report = bound_retained_report(raw, runner, snapshots[UNITS / SERVICE][1])
+                binding = True
+                phase = 'authenticate_retained_ciphertext'
+                authenticate(core, backup, report)
+                authenticated = True
+                directory = core['open_directory'](backup['DESTINATION'], {0})
+                try: manifest = json.loads(core['read_private_at'](directory, Path(report['encrypted_backup']).name + '.json', 0)[0])
+                finally: os.close(directory)
+                created = datetime.fromisoformat(manifest['created_utc'])
+                if (created.tzinfo is None or created.astimezone(timezone.utc).timestamp() * 1e9 < snapshots[UNITS / SERVICE][1]
+                        or created > datetime.now(timezone.utc)):
+                    raise UpgradeError('signed_generation_predates_service_publication')
+                phase = 'final_candidate_and_schedule_recheck'
+                idle_original(command)
+                for path, raw in ((runner, program), (UNITS / SERVICE, service), (UNITS / TIMER, timer)):
+                    if published_snapshot(core, path, raw) != snapshots[path]: raise UpgradeError('installed_candidate_drift')
+                phase = 'daily_timer_enable'
+                command(['/usr/bin/systemctl', 'enable', '--now', TIMER])
+                enabled = True
+                if (command(['/usr/bin/systemctl', 'is-enabled', TIMER]).strip() != b'enabled'
+                        or command(['/usr/bin/systemctl', 'is-active', TIMER]).strip() != b'active'):
+                    raise UpgradeError('daily_timer_not_ready')
+                deadline = command(['/usr/bin/systemctl', 'show', TIMER, '--property=NextElapseUSecRealtime', '--value']).strip()
+                if not deadline or deadline == b'n/a': raise UpgradeError('daily_timer_has_no_next_run')
+                print(json.dumps(dict(complete=True, stage='profile_backup_schedule_resume',
+                    protected_runner=str(runner), retained_upgraded_runner_binding_verified=True,
+                    signed_ciphertext_verified=True, encrypted_backup=report['encrypted_backup'],
+                    source_files=report['source_files'], source_bytes=report['source_bytes'],
+                    daily_profile_timer_enabled=True, daily_profile_timer_active=True, next_daily_run_scheduled=True,
+                    new_backup_manually_started=False, scheduled_catchup_may_run=True,
+                    recovery_identity_read=False, decryption_tested=False, previous_generations_preserved=True,
+                    existing_database_schedule_changed=False, windows_collection_qualified=False,
+                    model_called=False, memory_records_written=False, runtime_qualified=False), indent=2))
+            finally: os.close(lock)
+        finally: os.close(root)
+    except Exception as error:
+        reasons = {'retained_invocation_missing', 'upgraded_root_runner_journal_binding_missing',
+            'completed_backup_report_required', 'unique_completed_backup_report_required',
+            'signed_generation_predates_service_publication', 'installed_candidate_drift',
+            'existing_schedule_needs_review', 'effective_candidate_policy_mismatch', 'journal_budget',
+            'preserved_originals_protection', 'preserved_originals_drift', 'daily_timer_not_ready',
+            'daily_timer_has_no_next_run', 'schedule_command_failed_private_output_suppressed'}
+        reason = str(error) if isinstance(error, UpgradeError) and str(error) in reasons else 'guard_or_command_incomplete'
+        print(json.dumps(dict(complete=False, stage='profile_backup_schedule_resume', failure_stage=phase,
+            category=reason, retained_upgraded_runner_binding_verified=binding,
+            signed_ciphertext_verified=authenticated, timer_enable_command_completed=enabled,
+            new_backup_manually_started=False, existing_database_schedule_changed=False,
+            recovery_identity_read=False, model_called=False, memory_records_written=False,
             runtime_qualified=False), indent=2))
         raise SystemExit(1) from None
 

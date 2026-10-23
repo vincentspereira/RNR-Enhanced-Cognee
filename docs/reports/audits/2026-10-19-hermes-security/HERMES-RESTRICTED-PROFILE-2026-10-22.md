@@ -2061,3 +2061,45 @@ spoofing, no-ID/malformed/oversized journal refusal and diagnostic-only labeling
 All original/upgraded inspector and guarded updater tests still pass. Host
 systemctl/journal effects remain simulated here; no installed backup or timer
 success is inferred from this source suite.
+
+## 23 October: retained completion found; guarded timer continuation prepared
+
+Owner-run 3b456aeb42fba557c311eba1269e7df79846ea8b returns complete=true:
+all candidate runner/service/timer hash flags and selected protection flags pass,
+state reports success/0/inactive, timer inactive/disabled. Fifteen matching
+retained messages contain one completed encryption-only report for 60 files/
+205571 bytes; no decryption, recovery-key read, plaintext archive, model or memory
+write was reported. No usable current invocation ID was present; journal fallback
+is diagnostic-only and retained_report_proves_upgraded_run=false is retained.
+No operator ciphertext authentication or upgraded-run freshness is inferred yet.
+
+A new main_resume entry accepts only the exact qualified three-source bundle,
+verifies stable installed candidate and private preserved originals, takes the
+existing upgrade lock and refuses active/enabled/overridden schedules. It never
+calls the original updater or manually starts a service/backup. Bounded retained
+journal admission requires latest trusted unit invocation, root UID, exact
+protected runner command line and timestamp after service-file publication.
+MESSAGE fields cannot claim identity. Root then verifies ciphertext/HMAC/counts
+and signed creation time using only backup.json, followed by candidate/schedule
+rechecks. Only then may timer enable/active/enabled/next-run checks occur.
+Trusted journal field documentation:
+https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
+
+No installed file is replaced, no recovery identity/decryption/model/private
+profile read occurs and previous generations/database schedule stay intact.
+Persistent timer enable can trigger an ordinary catch-up generation; no claim
+of zero scheduled jobs is made. The new helper bootstrap budget is deliberately
+24576 bytes. Failures preserve evidence and report stage/known category plus
+binding/authentication/enable flags without raw errors or secrets. The owner-run
+continuation is still pending, and no recurring operation/fleet/Windows admission
+is claimed. Earlier manual recovery and passing snapshot tests are not replayed.
+
+Workspace validation: 1144 focused tests pass, zero failures/skips and no
+reported pytest warnings. Twenty-three new cases cover root/exact-runner/time
+journal binding, MESSAGE spoofing, stale/conflicting/duplicate/incomplete reports,
+preserved/installed drift and permissions, policy/enabled-timer refusal, signature
+failure, signed old/future generation times, post-authentication drift and timer
+enable ordering. Resume tests assert no service start/restart/reload or file
+replacement. Existing actual HMAC/ciphertext tamper checks and native age/unit
+syntax checks pass. Privileged root metadata, journal and systemctl effects in
+the new continuation are simulated; installed-host confirmation remains pending.

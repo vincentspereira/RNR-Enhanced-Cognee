@@ -32,7 +32,7 @@ def test_fixed_candidate_sources_match_published_pins_and_compile(upgrade, sourc
     compile(program, '<published-candidate>', 'exec')
     assert b'AmbientCapabilities=CAP_SETUID\n' in service
     assert b'--ambient-caps=-all' in program and b'--inh-caps=-all' in program
-    assert len(Path('integrations/hermes/deployment/upgrade_profile_schedule.py').read_bytes()) <= 16384
+    assert len(Path('integrations/hermes/deployment/upgrade_profile_schedule.py').read_bytes()) <= 24576
     with pytest.raises(upgrade.UpgradeError): upgrade.definitions(dict(sources, unexpected=b'PRIVATE'))
     sources[next(iter(sources))] += b'PRIVATE'
     with pytest.raises(upgrade.UpgradeError): upgrade.definitions(sources)
@@ -266,3 +266,108 @@ def test_original_artifact_hashes_match_exact_historical_installer(upgrade):
     assert runner == upgrade.OLD_RUNNER
     for path, value in ((runner, program), (upgrade.UNITS / upgrade.SERVICE, service), (upgrade.UNITS / upgrade.TIMER, timer)):
         assert (len(value), hashlib.sha256(value).hexdigest()) == upgrade.OLD[path]
+
+
+def rooted_journal(upgrade, runner, report=None, *, timestamp=2000000000, **changes):
+    value = dict(_SYSTEMD_UNIT=upgrade.SERVICE, _SYSTEMD_INVOCATION_ID='a' * 32,
+        _UID='0', _CMDLINE='/usr/bin/python3 -I -B ' + str(runner),
+        __REALTIME_TIMESTAMP=str(timestamp), MESSAGE=json.dumps(report or completed(), indent=2))
+    value.update(changes)
+    return json.dumps(value).encode()
+
+
+@pytest.mark.parametrize('mutation', [None, 'uid', 'cmdline', 'time', 'timestamp-type', 'message-spoof',
+    'later-unbound', 'duplicate', 'incomplete', 'size'])
+def test_retained_admission_requires_latest_root_runner_metadata_after_publication(upgrade, mutation):
+    runner = upgrade.ROOT / 'a1ffd4c258238847/run.py'
+    changes = {}
+    if mutation == 'uid': changes['_UID'] = '993'
+    if mutation == 'cmdline': changes['_CMDLINE'] = '/usr/bin/python3 -I -B /old/run.py'
+    if mutation == 'time': changes['__REALTIME_TIMESTAMP'] = '999'
+    if mutation == 'timestamp-type': changes['__REALTIME_TIMESTAMP'] = ['PRIVATE']
+    if mutation == 'message-spoof': changes.update(_UID='993', MESSAGE=json.dumps(dict(completed(), _UID='0', _CMDLINE='/usr/bin/python3 -I -B ' + str(runner))))
+    report = dict(completed(), complete=False) if mutation == 'incomplete' else completed()
+    raw = rooted_journal(upgrade, runner, report, **changes)
+    if mutation == 'later-unbound': raw += b'\n' + rooted_journal(upgrade, runner, _SYSTEMD_INVOCATION_ID='b' * 32, _CMDLINE='PRIVATE_OTHER_RUNNER')
+    if mutation == 'duplicate': raw += b'\n' + raw
+    if mutation == 'size': raw = b'x' * 65537
+    if mutation:
+        with pytest.raises(upgrade.UpgradeError): upgrade.bound_retained_report(raw, runner, 1000000)
+    else: assert upgrade.bound_retained_report(raw, runner, 1000000) == completed()
+
+
+@pytest.mark.parametrize('mutation', [None, 'preserved-drift', 'preserved-mode', 'service-drift',
+    'policy', 'enabled', 'binding', 'signature', 'manifest-old', 'manifest-future', 'post-auth-drift', 'deadline'])
+def test_resume_authenticates_existing_generation_before_timer_without_starting_or_replacing_service(
+    upgrade, sources, installation, monkeypatch, capsys, mutation):
+    import datetime
+    root, units, old_runner, service, timer, calls, events, state = installation
+    core, _, backup = upgrade.definitions(sources)
+    preserved = root / 'before-approved'
+    preserved.mkdir(mode=0o700)
+    monkeypatch.setattr(upgrade, 'PRESERVED', preserved)
+    old_bytes = {path: path.read_bytes() for path in upgrade.OLD}
+    for path, raw in old_bytes.items():
+        p = preserved / ('old-runner.py' if path == old_runner else path.name)
+        p.write_bytes(raw); p.chmod(0o600)
+    (root / '.schedule-upgrade.lock').write_bytes(b''); (root / '.schedule-upgrade.lock').chmod(0o600)
+    runner, program, service_bytes, timer_bytes = backup['schedule_payloads'](sources)
+    runner.parent.mkdir(); runner.write_bytes(program)
+    service.write_bytes(service_bytes)
+    backup_root = root / 'backups'; backup_root.mkdir(mode=0o700)
+    backup['DESTINATION'] = backup_root
+    created = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    if mutation == 'manifest-old': created = '2000-01-01T00:00:00+00:00'
+    if mutation == 'manifest-future': created = '2999-01-01T00:00:00+00:00'
+    def read_private(directory, name, uid):
+        assert name == Path(completed()['encrypted_backup']).name + '.json'
+        return json.dumps(dict(created_utc=created)).encode(), None
+    core['read_private_at'] = read_private
+    original_command = backup['schedule_command']
+    def command(argv, **kw):
+        if argv[0] == '/usr/bin/journalctl':
+            calls.append(argv)
+            return rooted_journal(upgrade, runner, timestamp=service.stat().st_mtime_ns // 1000 + 1000,
+                _UID='993' if mutation == 'binding' else '0')
+        raw = original_command(argv, **kw)
+        if '--property=ProtectHome' in argv: raw += b'ProtectHome=yes\nProtectSystem=strict\n'
+        return raw
+    backup['schedule_command'] = command
+    state['mutation'] = mutation
+    if mutation == 'preserved-drift': (preserved / 'old-runner.py').write_bytes(b'PRIVATE_OLD_MODIFIED')
+    if mutation == 'preserved-mode': (preserved / 'old-runner.py').chmod(0o644)
+    if mutation == 'service-drift': service.write_bytes(b'PRIVATE_SERVICE_CHANGED')
+    original_auth = upgrade.authenticate
+    def authenticate(*a):
+        original_auth(*a)
+        if mutation == 'post-auth-drift': service.write_bytes(b'PRIVATE_NEW_UNIT')
+    monkeypatch.setattr(upgrade, 'authenticate', authenticate)
+    before = {p: p.read_bytes() for p in (runner, service, timer, old_runner)}
+    if mutation:
+        with pytest.raises(SystemExit): upgrade.main_resume(sources)
+    else: upgrade.main_resume(sources)
+    text = capsys.readouterr().out; result = json.loads(text)
+    assert 'PRIVATE' not in text
+    assert result['complete'] is (mutation is None)
+    assert not result['new_backup_manually_started'] and not result['recovery_identity_read']
+    assert not result['existing_database_schedule_changed'] and not result['model_called']
+    assert all('start' not in argv and 'restart' not in argv and 'daemon-reload' not in argv for argv in calls)
+    assert ('enable' in events) is (mutation in {None, 'deadline'})
+    for p, raw in before.items():
+        if mutation == 'post-auth-drift' and p == service: continue
+        assert p.read_bytes() == raw
+    if 'enable' in events: assert events.index('authenticate') < events.index('enable')
+    if mutation is None:
+        assert result['retained_upgraded_runner_binding_verified'] and result['signed_ciphertext_verified']
+        assert result['daily_profile_timer_enabled'] and result['daily_profile_timer_active']
+        assert result['scheduled_catchup_may_run'] and not result['decryption_tested']
+    if mutation in {'manifest-old', 'manifest-future'}:
+        assert result['category'] == 'signed_generation_predates_service_publication'
+        assert result['signed_ciphertext_verified']
+
+
+def test_resume_operator_guard_precedes_source_execution(upgrade, monkeypatch, capsys):
+    monkeypatch.setattr(upgrade.os, 'geteuid', lambda: 1000)
+    monkeypatch.setattr(upgrade, 'definitions', lambda s: pytest.fail('No source execution'))
+    with pytest.raises(SystemExit): upgrade.main_resume({})
+    assert json.loads(capsys.readouterr().out)['failure_stage'] == 'operator_preflight'

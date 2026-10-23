@@ -214,3 +214,13 @@ read/parse stages, bounded exception/errno/exit metadata and preserved partial
 state. Missing current invocation metadata triggers only a labeled latest
 retained journal diagnostic; it does not prove that the report is from the
 upgraded attempt. No root cause or completed backup is inferred yet.
+
+Owner-run 3b456aeb now passes retained inspection: installed bytes/protections
+match; current state reports success/0/inactive; one completed encryption-only
+60-file/205571-byte report is retained; timer inactive/disabled. The journal
+fallback remains diagnostic-only. The next main_resume continuation binds root
+journal metadata to the exact runner after publication, independently verifies
+ciphertext/HMAC/counts/signed time, rechecks candidate and idle schedule, then
+enables/verifies the timer. It does not manually start a backup or replace files.
+A persistent timer may perform a scheduled catch-up; keep the pilot idle for
+this final step. Actual authenticated continuation/timer success remains pending.

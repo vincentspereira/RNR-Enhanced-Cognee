@@ -43,8 +43,13 @@ not distinguished by that summary; backup absence/success is not inferred. Next
 inspect the exact upgraded artifacts and retained invocation read-only, without
 rerunning the updater. Owner-run 6b4453bf inspection itself stopped in its grouped
 service_state step. Revised read/parse/error metadata and a labeled missing-ID
-journal fallback are prepared; retained reports alone cannot qualify the upgraded
-run. Actual encrypted-job/timer/collection remain unqualified.
+journal fallback are prepared. Owner-run 3b456aeb now confirms matching
+artifacts/protections, success/0/inactive state, one retained completed 60-file
+report and inactive/disabled timer. A prepared continuation must bind trusted root
+journal metadata to the exact post-publication runner and authenticate its
+ciphertext/signature/counts/time before timer enable. No manual backup replay or
+unit replacement is requested; persistent enable can run a scheduled catch-up.
+Actual authenticated continuation/timer/collection remain unqualified.
 Installed interrupted-renewal recovery, unattended/fleet lifecycle, recurring
 profile/collector coverage, installed profile/service recovery and isolation,
 release and everyday/fleet admission remain separate gates. Earlier protected
