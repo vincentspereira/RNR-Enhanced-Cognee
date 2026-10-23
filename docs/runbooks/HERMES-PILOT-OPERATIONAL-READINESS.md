@@ -104,6 +104,16 @@ requires encrypted coverage, native checks and the existing pause/owner decision
 
 ## Remaining sequence
 
+23 October owner-run update at helper revision
+2117ba01ae473dfd0ff4698c212eec01c8c013cf: secondary pilot sign-in passed,
+preserving original credential fields and checked settings. The non-model
+operations check passed current authenticated local API status, reporting two
+active records. Decoded token timing reported not expired/not within one hour
+at the check, with expiry 2026-10-23T18:23:15+00:00; local signature checking
+was false. No token renewal, profile-backup proof, model call, memory write or
+runtime qualification occurred. These dated results supersede the pending
+enrollment/local-status step, not the remaining gates below.
+
 1. Defer corrected-model recall after the observed 429. Check ordinary memory
    credential expiry and local API acceptance without a cloud request. The updated
    model-test guard blocks further sends in that process after its first 429;
@@ -112,6 +122,9 @@ requires encrypted coverage, native checks and the existing pause/owner decision
    Use the documented secondary login and explicit per-test credential label;
    do not rotate automatically, reset limits or alter main Hermes defaults.
    Enrollment alone does not prove remaining quota or memory-token readiness.
+   Both enrollment and current local API acceptance now have owner-run passes.
+   Next run one read-only recall_corrected stage with explicit secondary label.
+   Second-account model access and corrected recall still need that result.
 2. Qualify ambiguous clarification, private-detail/credential exclusion and
    cross-scope denial in the current restricted runtime, reusing dated unchanged
    service evidence only where justified.

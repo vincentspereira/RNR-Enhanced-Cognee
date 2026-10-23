@@ -1304,3 +1304,30 @@ warnings, including 43 new account-selection/preservation/privacy/lock/native
 hint/orchestration cases. Native provider/auth/network behavior uses fixtures;
 no second-account host login/model completion, renewed memory token or fleet
 admission is claimed. Full runtime and release gates remain open.
+
+## 23 October: owner-run secondary sign-in and local readiness passed
+
+The owner returned complete=true for main_secondary at source revision
+2117ba01ae473dfd0ff4698c212eec01c8c013cf. It ran as hermes-runtime for
+enhanced-cognee-pilot, saved the named secondary OAuth entry and a private local
+auth backup, preserved the original credential fields and checked pilot settings,
+and copied no human credentials. Native decoded account identity hints differed;
+their signatures were not locally checked. No model or memory write occurred,
+and remaining model quota was not tested. Do not equate login with completion.
+
+The owner's subsequent main_operations result at the same helper revision
+reported complete=true, authenticated_api_status_passed=true and two active
+scope records. Decoded token timing reported expiry 2026-10-23T18:23:15+00:00,
+not expired and not within one hour at that check; local signature verification
+was false. Current API acceptance is distinct server evidence, not proof of
+future acceptance or a renewed credential. Checked profile files were unchanged,
+OAuth state was not read, and no model or memory write occurred.
+
+credential_renewed=false, profile_backup_coverage_verified=false and
+runtime_qualified=false remain explicit. The next prepared step is one native
+read-only recall_corrected check with explicit
+credential_label="cognee-pilot-codex-secondary". Require current version 2,
+retained prior history, current-answer/citation and unchanged canonical records,
+receipts/settings/credentials. Preserve first-429 blocking and all existing
+evidence; do not replay completed capture/correction stages. Second-account
+model access and corrected fresh recall remain pending that installed result.
