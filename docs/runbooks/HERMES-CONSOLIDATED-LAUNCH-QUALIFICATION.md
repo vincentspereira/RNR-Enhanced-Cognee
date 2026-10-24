@@ -68,6 +68,30 @@ report, not a newly verified machine receipt. It reports only its current model
 request count and follow-up scope. Changed, resolved, missing or ambiguous state
 is refused; there is no automatic repair, profile selection or retry.
 
+Post-answer checkpoint: the owner entered the displayed sentence successfully
+on 9ee85b05. Existing pending record/history and peer access passed, but the
+native follow-up stopped with a broad native_followup condition. The old receipt
+does not establish whether zero, one or both mutations reached the service.
+Do not replay the answer or assume preservation. Use the explicit mode
+`inspect-attempt EXPLICIT_TEST_ID` first. It verifies the candidate and issues
+fresh ordinary credentials for the same invented/peer scopes, then inspects only
+the private validated journal and canonical history/current row through the
+restricted child. Root does not read the agent-owned profile. No OAuth store,
+model, human prompt, sharing change or memory mutation is used. API request
+accounting can advance; the short-lived ordinary credentials stay in memory.
+
+The observation labels unchanged_pending, corrected_not_retracted,
+retracted_with_history or state_needs_review. It reports only verified version
+counts, pending/state flags and peer HTTP status, never record content. A
+completed inspection is not a completed model qualification and does not prove
+the old model failure cause. Changed/nonmatching/ambiguous evidence is refused.
+Future follow-up failure receipts now expose only fixed bounded fields: model
+request count/status, completion/error/rate-limit flags, called mutation-tool
+flags, service-acknowledged correction/retraction, peer withdrawal and the last
+fixed checkpoint. Raw error text, answers, prompts and tool arguments remain
+excluded. Determine the next action from the read-only installed state instead
+of automatically retrying.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional
@@ -111,8 +135,8 @@ checkout. Fetch the delivery branch without switching a running checkout.
 
 The pinned scripts/qualification/run_hermes_launch_native.sh accepts
 the existing checkout path, full published revision and optional mode
-(`qualify`, the default, `inspect`, or `resume-answer` with an explicit fourth
-test-ID argument). It verifies the seven
+(`qualify`, the default, `inspect`, `resume-answer` or `inspect-attempt`, with an
+explicit fourth test-ID argument for the last two). It verifies the seven
 public archived sources before any root definitions execute, stages a separate
 protected candidate, and uses two non-root native Hermes processes. It requires
 the already enrolled secondary pilot model account; no automatic fallback or

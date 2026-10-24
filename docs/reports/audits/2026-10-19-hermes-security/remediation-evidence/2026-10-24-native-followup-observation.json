@@ -1,0 +1,51 @@
+{
+  "source_parent": "9ee85b05b90fc2a897c1ef59361e6b843eb78bb0",
+  "environment": "Ubuntu-Workspace",
+  "explicit_invented_test_id": "5d0e9a49bdf544359ae6deff",
+  "owner_report": {
+    "human_answer_received": true,
+    "pending_original_fixture_verified": true,
+    "existing_peer_access_verified": true,
+    "native_followup_passed": false,
+    "failure_stage": "native_followup_after_process_restart",
+    "native_substage": "native_followup",
+    "native_failure_category": "condition_or_native_error",
+    "native_http_status": null
+  },
+  "installed_canonical_state_known": false,
+  "model_failure_cause_established": false,
+  "automatic_model_retry": false,
+  "read_only_observation_prepared": true,
+  "new_local_observation_cases": 30,
+  "regression": {
+    "name": "hermes-and-recovery",
+    "exit_code": 0,
+    "retained_fixtures": "/tmp/ecq-84q8blgt",
+    "tests": 1330,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 1330,
+    "complete": true
+  },
+  "pytest_warnings_reported": 0,
+  "coverage_measured": false,
+  "secret_scan_findings": 0,
+  "provider_or_service_changed": false,
+  "installed_host_executed_from_workspace": false,
+  "fleet_launch_approved": false,
+  "sources": [
+    {
+      "path": "integrations/hermes/deployment/qualify_launch_candidate.py",
+      "sha256": "0aa763887368eb63dd4299009c01db6865e5c1ef8fc0a9979f98c2530a95b0a5"
+    },
+    {
+      "path": "scripts/qualification/run_hermes_launch_native.sh",
+      "sha256": "6c8b63debdf4376cdd6f76e87b9f46f815e58fc84f7c8b9d1d48b6e640282b52"
+    },
+    {
+      "path": "tests/qualification/test_hermes_launch_observation.py",
+      "sha256": "b4678ec739f3f1a24dd1a9438d694c239eff899e8e57f5777a9ac23f24b29f4f"
+    }
+  ]
+}

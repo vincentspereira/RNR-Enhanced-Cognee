@@ -37,8 +37,26 @@ CHILD_PHASES = {"restricted_preflight", "pilot_snapshot", "original_provider_ver
                 "question_reinitialization", "question_pending_gate", "question_record_preservation",
                 "question_history_preservation", "answer_reinitialization",
                 "resume_pending_fixture",
+                "attempt_state_observation",
                 "restart_pending_gate", "native_followup", "final_history", "pilot_preservation"}
 CHILD_PROGRESS = {"native_substage": "restricted_preflight"}
+FOLLOWUP_STATE = None
+
+
+def validate_followup_state(value):
+    flags = {"correction_tool_called", "retraction_tool_called", "correction_committed",
+             "peer_withdrawal_verified", "retraction_committed", "native_completed",
+             "native_error_present", "rate_limited"}
+    require(isinstance(value, dict) and set(value) == flags | {"model_requests", "checkpoint", "last_model_http_status"}
+            and all(type(value[k]) is bool for k in flags)
+            and (value["model_requests"] is None or type(value["model_requests"]) is int
+                 and 0 <= value["model_requests"] <= 6)
+            and (value["last_model_http_status"] is None or type(value["last_model_http_status"]) is int
+                 and 100 <= value["last_model_http_status"] <= 599)
+            and value["checkpoint"] in {"manager_initialization", "agent_initialization", "request_admission",
+                "native_conversation", "target_correction", "correction_response", "peer_withdrawal",
+                "target_retraction", "retraction_response", "completion_validation"})
+    return dict(value)
 
 
 def validate_status(status, project):
@@ -55,9 +73,12 @@ def child_failure(error):
                 "timeout" if isinstance(error, TimeoutError) else
                 "http_error" if type(status) is int and 400 <= status <= 599 else
                 "condition_or_native_error")
-    return dict(complete=False, native_substage=CHILD_PROGRESS["native_substage"],
+    result = dict(complete=False, native_substage=CHILD_PROGRESS["native_substage"],
                 native_failure_category=category,
                 native_http_status=status if type(status) is int and 400 <= status <= 599 else None)
+    if FOLLOWUP_STATE is not None:
+        result["followup_observation"] = validate_followup_state(FOLLOWUP_STATE)
+    return result
 
 
 def child_inspect(sources):
@@ -157,6 +178,58 @@ def verify_pending_fixture(provider, status, run_id):
     return ident
 
 
+def observe_attempt(provider, status, run_id):
+    """Read only the explicit invented scope; report shape, never stored text."""
+    require(status.get("subject") == "launch_" + run_id
+            and type(status.get("active_records")) is int and status["active_records"] in {0, 1})
+    with provider._clarification_journal(create=False) as fd:
+        require(fd is not None)
+        before = os.fstat(fd)
+        raw = os.pread(fd, 1048577, 0)
+        after = os.fstat(fd)
+        require(len(raw) == before.st_size <= 1048576
+                and (before.st_size, before.st_mtime_ns, before.st_ctime_ns)
+                == (after.st_size, after.st_mtime_ns, after.st_ctime_ns))
+        # initialize() and the journal context already validate every entry.
+        ids = {json.loads(line)["record_id"] for line in raw.splitlines()}
+        require(len(ids) == 1)
+        ident = next(iter(ids))
+        require(re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident) is not None)
+        pending = provider._pending_clarifications == {ident}
+        require(provider._pending_clarifications in (set(), {ident}))
+        history = provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=10")
+        require(isinstance(history, dict) and history.get("next_before_version") is None
+                and not history.get("response_limit_reached"))
+        versions = history.get("versions")
+        require(isinstance(versions, list) and 2 <= len(versions) <= 4
+                and all(isinstance(v, dict) and v.get("id") == ident and type(v.get("version")) is int
+                        for v in versions)
+                and {v["version"] for v in versions} == set(range(1, len(versions) + 1)))
+        rows = {v["version"]: v for v in versions}
+        prefix = "Fictional Cedar launch " + run_id + " uses "
+        require(rows[1].get("content") == prefix + "eleven-day reviews."
+                and rows[2].get("content") == prefix + "ten-day reviews.")
+        if len(versions) >= 3:
+            content = rows[3].get("content")
+            require(isinstance(content, str) and run_id in content
+                    and re.search(r"\b(?:five|5)[ -]+day", content.casefold()))
+        latest = len(versions)
+        retracted = latest == 4
+        require(history.get("record_state") == ("retracted" if retracted else "active")
+                and status["active_records"] == (0 if retracted else 1))
+        if retracted:
+            require(rows[4].get("content") == rows[3]["content"])
+        else:
+            row = provider._client.request("GET", "/v1/memories/" + ident)
+            require(isinstance(row, dict) and row.get("id") == ident
+                    and row.get("project_id") == "launch_" + run_id
+                    and type(row.get("version")) is int and row["version"] == latest
+                    and row.get("state") == "active" and row.get("content") == rows[latest]["content"])
+    return dict(record_id=ident, canonical_version=latest, record_retracted=retracted,
+                pending_clarification_present=pending, history_versions_verified=latest,
+                model_called=False, memory_records_written=False, oauth_store_read=False)
+
+
 def api(token, method, path, body=None):
     require(path.startswith("/v1/memories"))
     connection = HTTPConnection("127.0.0.1", 28080, timeout=10)
@@ -193,6 +266,11 @@ def native_turn(core, provider, oauth, prompt, target):
     Keep both editing choices visible. Transport guards prevent unrelated
     writes and verify withdrawal from the peer scope after correction.
     """
+    global FOLLOWUP_STATE
+    FOLLOWUP_STATE = dict(correction_tool_called=False, retraction_tool_called=False,
+        correction_committed=False, peer_withdrawal_verified=False, retraction_committed=False,
+        native_completed=False, native_error_present=False, rate_limited=False,
+        last_model_http_status=None, model_requests=None, checkpoint="manager_initialization")
     import run_agent
     from agent.memory_manager import MemoryManager
     require(Path(run_agent.__file__).resolve().is_relative_to(RELEASE / "repo"))
@@ -208,48 +286,74 @@ def native_turn(core, provider, oauth, prompt, target):
         endpoint = "/v1/memories/" + target["record_id"]
         require(isinstance(body, dict))
         if not changes:
+            FOLLOWUP_STATE["checkpoint"] = "target_correction"
             require(method == "PATCH" and path == endpoint and type(body.get("expected_version")) is int
                     and body["expected_version"] == 2)
             content = body.get("content", "")
             require(isinstance(content, str) and target["run_id"] in content
                     and re.search(r"\b(?:five|5)[ -]+day", content.casefold()))
             result = original(method, path, body)
+            FOLLOWUP_STATE["checkpoint"] = "correction_response"
             require(result.get("version") == 3)
+            FOLLOWUP_STATE["correction_committed"] = True
+            FOLLOWUP_STATE["checkpoint"] = "peer_withdrawal"
             require(api(target["peer_token"], "GET", endpoint)[0] == 404)
+            FOLLOWUP_STATE["peer_withdrawal_verified"] = True
             changes.append("correct")
             return result
+        FOLLOWUP_STATE["checkpoint"] = "target_retraction"
         require(changes == ["correct"] and method == "POST" and path == endpoint + "/retract"
                 and type(body.get("expected_version")) is int and body == {"expected_version": 3})
         result = original(method, path, body)
+        FOLLOWUP_STATE["checkpoint"] = "retraction_response"
         require(result.get("version") == 4 and result.get("state") == "retracted")
+        FOLLOWUP_STATE["retraction_committed"] = True
         changes.append("retract")
         return result
     provider._client.request = guarded
+    def progress(event_type, tool_name=None, *unused, **kwargs):
+        if event_type == "tool.started" and tool_name in {"enhanced_correct", "enhanced_retract"}:
+            FOLLOWUP_STATE["correction_tool_called" if tool_name == "enhanced_correct" else "retraction_tool_called"] = True
+    FOLLOWUP_STATE["checkpoint"] = "agent_initialization"
     agent = run_agent.AIAgent(model=core["MODEL"], provider="openai-codex", api_mode="codex_responses",
         api_key=oauth, base_url=core["BASE_URL"], enabled_toolsets=["memory"], max_iterations=5,
         run_budget_seconds=100, fallback_model={}, credential_pool=None,
         reasoning_config={"enabled": True, "effort": "low"}, save_trajectories=False,
         quiet_mode=True, skip_background_review=True, session_id="launch-answer-" + target["run_id"],
-        memory_manager=manager, cwd=str(HOME))
+        memory_manager=manager, cwd=str(HOME), tool_progress_callback=progress)
+    requests = None
     try:
+        FOLLOWUP_STATE["checkpoint"] = "request_admission"
         requests = core["restrict_agent"](agent, {"enhanced_recall", "enhanced_get", "enhanced_status",
                                                 "enhanced_correct", "enhanced_retract", "enhanced_clarify"})
+        FOLLOWUP_STATE["checkpoint"] = "native_conversation"
         result = agent.run_conversation(prompt, conversation_history=[])
+        FOLLOWUP_STATE["checkpoint"] = "completion_validation"
+        FOLLOWUP_STATE["native_completed"] = isinstance(result, dict) and result.get("completed") is True
+        FOLLOWUP_STATE["native_error_present"] = isinstance(result, dict) and bool(result.get("error"))
         require(isinstance(result, dict) and result.get("completed") is True
                 and not result.get("failed") and not result.get("error")
                 and not requests.get("rate_limited") and 0 < requests["count"] <= 6
                 and changes == ["correct", "retract"])
         return requests["count"]
     finally:
+        if isinstance(requests, dict):
+            count = requests.get("count")
+            FOLLOWUP_STATE["model_requests"] = count if type(count) is int and 0 <= count <= 6 else None
+            FOLLOWUP_STATE["rate_limited"] = requests.get("rate_limited") is True
+            statuses = requests.get("http_statuses")
+            if isinstance(statuses, list) and statuses:
+                code = statuses[-1]
+                FOLLOWUP_STATE["last_model_http_status"] = code if type(code) is int and 100 <= code <= 599 else None
         agent.close()
 
 
 def child(sources, bundle, stage, artifact):
-    require(stage in {"inspect", "question", "answer", "resume-check"})
+    require(stage in {"inspect", "question", "answer", "resume-check", "attempt-state"})
     if stage == "inspect":
         return child_inspect(sources)
     core = definitions(sources[BASE + "deployment/check_pilot_codex.py"], "launch_native_core")
-    uid, snapshots = (core["preflight"](True, include_auth=False) if stage == "resume-check"
+    uid, snapshots = (core["preflight"](True, include_auth=False) if stage in {"resume-check", "attempt-state"}
                       else core["preflight"](True))
     CHILD_PROGRESS["native_substage"] = "pilot_snapshot"
     snapshots[".env"] = core["read_private"](".env", uid)
@@ -257,7 +361,7 @@ def child(sources, bundle, stage, artifact):
     CHILD_PROGRESS["native_substage"] = "original_provider_verification"
     core["verify_provider"]()  # Preserve the previous pilot's exact admission.
     oauth = None
-    if stage != "resume-check":
+    if stage not in {"resume-check", "attempt-state"}:
         CHILD_PROGRESS["native_substage"] = "secondary_model_credential"
         oauth = core["select_credential"](snapshots["auth.json"], credential_label="cognee-pilot-codex-secondary")
     run_id = bundle["run_id"]
@@ -339,6 +443,9 @@ def child(sources, bundle, stage, artifact):
             ident = verify_pending_fixture(provider, status, run_id)
             result = dict(record_id=ident, pending_original_fixture_verified=True,
                           model_called=False, memory_records_written=False, oauth_store_read=False)
+        elif stage == "attempt-state":
+            CHILD_PROGRESS["native_substage"] = "attempt_state_observation"
+            result = observe_attempt(provider, status, run_id)
         else:
             CHILD_PROGRESS["native_substage"] = "restart_pending_gate"
             ident = bundle["record_id"]
@@ -395,7 +502,8 @@ def run_child(account, sources, bundle, stage, artifact):
     require(0 < len(result.stdout) <= 16384)
     report = json.loads(result.stdout)
     if result.returncode == 1 and isinstance(report, dict) and report.get("complete") is False:
-        require(set(report) == {"complete", "native_substage", "native_failure_category", "native_http_status"}
+        fixed = {"complete", "native_substage", "native_failure_category", "native_http_status"}
+        require(set(report) in (fixed, fixed | {"followup_observation"})
                 and report["native_substage"] in CHILD_PHASES
                 and report["native_failure_category"] in {
                     "dependency_missing", "timeout", "http_error", "condition_or_native_error"}
@@ -404,9 +512,26 @@ def run_child(account, sources, bundle, stage, artifact):
         PROGRESS.update(native_substage=report["native_substage"],
                         native_failure_category=report["native_failure_category"],
                         native_http_status=report["native_http_status"])
+        if "followup_observation" in report:
+            PROGRESS["followup_observation"] = validate_followup_state(report["followup_observation"])
         raise ValueError("native_candidate_incomplete_preserve_evidence")
     require(result.returncode == 0)
     require(isinstance(report, dict) and report.get("complete") is True)
+    if stage == "attempt-state":
+        fixed = dict(complete=True, original_pilot_settings_and_credentials_preserved=True,
+                     model_called=False, memory_records_written=False, oauth_store_read=False)
+        fields = {"record_id", "canonical_version", "record_retracted",
+                  "pending_clarification_present", "history_versions_verified"}
+        require(set(report) == set(fixed) | fields and all(report[k] is v for k, v in fixed.items())
+                and isinstance(report["record_id"], str)
+                and re.fullmatch(r"[A-Za-z0-9_-]{1,64}", report["record_id"]) is not None
+                and type(report["canonical_version"]) is int and report["canonical_version"] in {2, 3, 4}
+                and type(report["history_versions_verified"]) is int
+                and report["history_versions_verified"] == report["canonical_version"]
+                and type(report["record_retracted"]) is bool
+                and report["record_retracted"] is (report["canonical_version"] == 4)
+                and type(report["pending_clarification_present"]) is bool)
+        return report
     if stage == "resume-check":
         expected = dict(complete=True, pending_original_fixture_verified=True,
                         original_pilot_settings_and_credentials_preserved=True,
@@ -435,10 +560,10 @@ def run_child(account, sources, bundle, stage, artifact):
 def main(sources, mode="qualify", resume_id=None):
     require(os.geteuid() == 0 and os.environ.get("WSL_DISTRO_NAME") == "Ubuntu-Hermes"
             and os.environ.get("SUDO_USER") == "vincentspereira")
-    require(mode in {"qualify", "inspect", "resume-answer"})
-    require((mode == "resume-answer" and isinstance(resume_id, str)
+    require(mode in {"qualify", "inspect", "resume-answer", "inspect-attempt"})
+    require((mode in {"resume-answer", "inspect-attempt"} and isinstance(resume_id, str)
              and re.fullmatch(r"[a-f0-9]{24}", resume_id) is not None)
-            or mode != "resume-answer" and resume_id is None)
+            or mode not in {"resume-answer", "inspect-attempt"} and resume_id is None)
     if mode in {"qualify", "resume-answer"}:
         PROGRESS["failure_stage"] = "terminal_preflight"
         terminal_preflight()
@@ -455,7 +580,7 @@ def main(sources, mode="qualify", resume_id=None):
         require(path == Path("/usr/bin/setpriv") or resolved.is_relative_to(RELEASE))
         directory = issuer["open_directory"](resolved.parent, {0})
         os.close(directory)
-    if mode in {"inspect", "resume-answer"}:
+    if mode in {"inspect", "resume-answer", "inspect-attempt"}:
         PROGRESS["failure_stage"] = "protected_candidate_verification"
         directory = installer["open_directory"](installer["ARTIFACT"])
         try:
@@ -465,6 +590,8 @@ def main(sources, mode="qualify", resume_id=None):
             os.close(directory)
         if mode == "resume-answer":
             return resume_answer(account, sources, installer["ARTIFACT"], issuer, resume_id)
+        if mode == "inspect-attempt":
+            return inspect_attempt(account, sources, installer["ARTIFACT"], issuer, resume_id)
         PROGRESS["failure_stage"] = "read_only_native_inspection"
         report = run_child(account, sources, {}, "inspect", installer["ARTIFACT"])
         print(json.dumps(dict(report, stage="read_only_launch_diagnostic",
@@ -518,6 +645,33 @@ def resume_answer(account, sources, artifact, issuer, run_id):
         **{k: v for k, v in second.items() if k not in {"complete", "model_requests"}},
         unattended_renewal_qualified=False, current_database_restore_qualified=False,
         actual_fleet_boundaries_qualified=False, fleet_launch_approved=False), indent=2))
+
+
+def inspect_attempt(account, sources, artifact, issuer, run_id):
+    require(isinstance(run_id, str) and re.fullmatch(r"[a-f0-9]{24}", run_id) is not None)
+    PROGRESS["failure_stage"] = "observation_scoped_credentials"
+    now = int(time.time())
+    claims = dict(sub="launch_" + run_id, agent_id="launch_test", tenant="qualification",
+                  project_id="launch_" + run_id, roles=["api_client"], capture_policy="selected",
+                  iat=now, exp=now + 3600)
+    key = issuer["load_signing_key"]()
+    token = issuer["sign_claims"](claims, key)
+    peer = issuer["sign_claims"](dict(claims, sub="peer_" + run_id, project_id="peer_" + run_id), key)
+    del key
+    bundle = dict(run_id=run_id, project=claims["project_id"], token=token)
+    PROGRESS["failure_stage"] = "read_only_attempt_observation"
+    result = run_child(account, sources, bundle, "attempt-state", artifact)
+    code, _ = api(peer, "GET", "/v1/memories/" + result["record_id"])
+    require(type(code) is int and code in {200, 404})
+    phase = ("unchanged_pending" if result["canonical_version"] == 2 and result["pending_clarification_present"]
+             else "corrected_not_retracted" if result["canonical_version"] == 3
+             else "retracted_with_history" if result["canonical_version"] == 4
+             else "state_needs_review")
+    print(json.dumps(dict({k: v for k, v in result.items() if k != "record_id"},
+        stage="read_only_existing_attempt", observed_run_id=run_id, observed_phase=phase,
+        peer_http_status=code, ordinary_credentials_issued=2, credentials_persisted=False,
+        model_failure_cause_established=False, native_followup_qualified=False,
+        automatic_retry=False, fleet_launch_approved=False), indent=2))
 
 
 def qualify_candidate(account, sources, artifact, issuer):

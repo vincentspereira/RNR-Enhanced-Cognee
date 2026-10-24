@@ -213,3 +213,70 @@ diff secret scan found zero leaks. Coverage was not measured. Private artifacts
 remain at /tmp/ec-native-answer-resume-20261024 and /tmp/ecq-aik605l6. Sanitized
 counts/source hashes are in remediation-evidence/2026-10-24-native-answer-continuation.json.
 A real installed human answer/native follow-up remains pending.
+
+## Human answer received; current mutation state not yet known
+
+The owner's next 9ee85b05 continuation shows the exact displayed answer entered
+for 5d0e9a49bdf544359ae6deff. pending_original_fixture_verified and
+existing_peer_access_verified passed. human_answer_received=true. The command
+then stopped at native_followup_after_process_restart/native_followup, with
+condition_or_native_error and no HTTP status. This establishes that the actual
+human-answer gate passed and the restarted provider's unconfirmed-edit check
+returned an error as required. It does not prove that the model sent no writes,
+that both requested writes completed, or that current state remained unchanged.
+No automatic answer replay or fresh test scope is warranted from that receipt.
+
+The follow-up helper's broad result assertion combined model completion,
+request-budget/rate-limit handling and observed correction/retraction. It now
+retains only bounded fixed evidence on failure: initialization/admission/
+conversation/guard checkpoints, model request count and last HTTP status,
+completion/error/rate-limit booleans, called correction/retraction flags,
+service-acknowledged mutation flags and peer-withdrawal acknowledgement. Root
+revalidates the entire diagnostic shape before adding it to a failure receipt.
+No exception messages, model output, arguments, record content or confirmation
+quotes are serialized. These fields help future failures; they cannot recover
+the lost details of the owner's preceding model run.
+
+The pinned public Hermes [_init_memory implementation](https://github.com/NousResearch/hermes-agent/blob/4d04303818b61bf3aa09278af48356315515965b/agent/agent_init.py)
+reuses an injected already-initialized memory manager. This does not support a
+constructor-reinitialization explanation for this failure. No source fix to
+the model/provider behavior is claimed without installed evidence.
+
+The next installed action is the new inspect-attempt mode with that explicit
+test ID. It verifies the existing public artifact without staging, issues only
+two ordinary short-lived tokens and runs a restricted read-only child. No OAuth
+store, model, human prompt or memory/sharing mutation is used. The actual
+validated private journal is locked and read through its read-only descriptor;
+exactly one record ID must have appeared. Bounded canonical history must have
+consecutive integer versions 1 through 2, 3 or 4, the exact original invented
+versions 1-2 and the guarded five-day correction if present. Retraction must
+preserve the corrected content. Current state/active count are checked, and an
+active current row must agree with history. A retracted row is inspected through
+owner history, because ordinary current GET hides retracted records by design.
+
+The observation returns only version/count/state/pending flags and current peer
+HTTP status. Its complete flag means the inspection completed. It explicitly
+keeps model_failure_cause_established, native_followup_qualified, automatic_retry
+and fleet_launch_approved false. Changed or inconsistent synthetic evidence is
+refused without repair. The safe next action depends on whether the installed
+record is still pending, only corrected, or already retracted; do not repeat the
+previous resume command until that state is known. API request accounting can
+advance; scoped credentials remain in memory and the operator key stays in root.
+
+Local real-journal/fake-transport cases cover all three canonical versions with
+both pending-state possibilities, refusal of altered/paginated/inconsistent
+history and current state, strict root receipt shapes and ordinary-only
+observation orchestration. The provider and service were not changed. Original
+helper/launcher copies remain under .archive/2026-10-24_launch_followup_observation.
+
+Final observation validation: 1330 Hermes/operator/encrypted-collection/portable
+backup tests passed, zero failures/errors/skips and no reported pytest warnings.
+This includes 30 new observation/diagnostic cases. Syntax/ASCII and shell checks
+pass; the redacted staged-diff secret scan found zero leaks. Coverage was not
+measured. Private final logs/fixtures remain at
+/tmp/ec-native-followup-observation-final-20261024 and /tmp/ecq-84q8blgt. Earlier
+passing evidence is retained at /tmp/ec-native-followup-observation-20261024.
+Sanitized counts/source hashes are recorded in
+remediation-evidence/2026-10-24-native-followup-observation.json. The next
+installed read-only observation and the native follow-up qualification remain
+pending; the original failure cause is not established.
