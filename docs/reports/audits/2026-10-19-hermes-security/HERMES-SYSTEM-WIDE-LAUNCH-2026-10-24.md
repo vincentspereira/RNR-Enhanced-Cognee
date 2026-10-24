@@ -239,6 +239,43 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Actual derived recovery PASSED at `/var/tmp/ec-launch-index-recovery-sw3log4z`,
+helper SHA256 ea5ca64abdd34fb80a545d7e982320744398f2db502cdc358a86a8097bd841e7.
+Fresh pipeline/graph `lr_cc098bbed2b9424a`, Qdrant collection
+`ec_lr_cc098bbed2b9424a` and the protected recovery cache account replayed 111
+restored events. Actual Qdrant/ArcadeDB/Valkey, reviewed sharing/revocation and
+withdrawal all passed. No live canonical/index or service-runtime change was
+made by that qualification. Preserve and reuse the pass; do not replay it.
+The source label still mentions worker cache, but the explicit selected-cache
+operator flag is true; the actual account used was the protected recovery
+operator, not the unchanged worker account.
+
+Cache operator installation PASSED at
+`/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/cache-operator-installation`:
+new/existing worker authentication, recovery-prefix SET/GET/DEL and other-prefix
+denial all verified. Cache restarted; existing worker rules, profiles and
+encryption keys did not change. Do not reinstall this account. Full credential
+rotation remains incomplete.
+
+Fresh GitHub actions API query for exact 21abf485 again returned successful
+Required CI 40055830507, memory 40055830334, canonical 40055830340 and dashboard
+40055830325. The broad pipeline 40055830266 and full-runtime 40055830273 still
+fail. Label workflows are skipped. No failure has been suppressed or relabeled.
+
+`switch_launch_service_candidate.py` is now prepared for controlled backend
+selection. It requires the protected staging/canonical/derived receipts, verifies
+the exact pinned wheel and its installed source bytes, preserves both private
+role configurations and unit definitions, and writes new fixed-role drop-ins.
+Only the model-cache field changes in the role JSON; credentials, memory/index
+keys and roles remain identical. Candidate working directories avoid importing
+an older checkout. It restarts API/index services, checks their actual executable
+and cwd bindings, readiness, a new ordinary scope's authenticated status, and
+missing/expired token denial. Failure restores saved configs, retains disabled
+drop-ins, and attempts old-service readiness. No profiles or canonical records
+are edited. This is not installed worker-projection, native-turn, issuer/timer,
+full credential rotation or fleet admission. Its eight source tests pass;
+protected execution and installed rollback acceptance remain pending.
+
 Corrected owner-run cache inspection found one configured worker write-key
 pattern and no match for the recovery namespace. No connection/replay/write
 occurred. This establishes a configured namespace prerequisite; the failed
