@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import tempfile
 import uuid
 from urllib.parse import urlsplit, urlunsplit
@@ -21,6 +22,7 @@ from urllib.parse import urlsplit, urlunsplit
 REVISION = "21abf4857ca8dce8e0a3aafc725266c8d3754529"
 BASE = Path("/opt/enhanced-cognee-memory/candidates") / REVISION
 RECOVERY = Path("/var/tmp/ec-launch-recovery-aja7p8j9/summary.json")
+RETAINED = Path("/root/cognee-protected-continuation-20261020T190055Z")
 
 
 def private_json(path, *, limit=65536):
@@ -40,18 +42,125 @@ def local(value, scheme, port):
     return value
 
 
+def settings_protection(path):
+    """Bounded metadata only; stop before entering an untrusted ancestor."""
+    report = {"accepted": False, "configured_path": str(path)}
+    if not path.is_absolute() or ".." in path.parts:
+        return dict(report, reason="noncanonical_or_relative_path")
+    if not any(path.is_relative_to(root) for root in (
+            Path("/etc/enhanced-cognee"), Path("/opt/enhanced-cognee-memory"))):
+        return dict(report, reason="outside_reviewed_operator_roots")
+    for item in [*reversed(path.parents), path]:
+        try:
+            info = item.lstat()
+        except OSError:
+            return dict(report, reason="metadata_unavailable", component=str(item))
+        reason = ("symlink" if stat.S_ISLNK(info.st_mode) else
+                  "non_root_owner" if info.st_uid != 0 else
+                  "group_or_other_writable" if info.st_mode & 0o022 else None)
+        if reason:
+            return dict(report, reason=reason, component=str(item), uid=info.st_uid,
+                        mode=format(stat.S_IMODE(info.st_mode), "04o"))
+        if item != path and not stat.S_ISDIR(info.st_mode):
+            return dict(report, reason="ancestor_not_directory", component=str(item))
+    if not stat.S_ISREG(info.st_mode) or info.st_size > 16384:
+        return dict(report, reason="settings_type_or_size")
+    return dict(report, accepted=True, reason="protected")
+
+
 def protected_settings(path):
-    if (not path.is_absolute() or not any(path.is_relative_to(root) for root in (
-            Path("/etc/enhanced-cognee"), Path("/opt/enhanced-cognee-memory")))
-            or path != path.resolve(strict=True)):
+    if not settings_protection(path)["accepted"]:
         raise ValueError("protected_index_settings_required")
-    for item in [path, *path.parents]:
+
+
+def credential_source(configured, binding):
+    """Translate only the exact reviewed mount using effective systemd metadata."""
+    mounted = Path("/run/credentials/enhanced-cognee-index.service/index.json")
+    source = Path("/etc/enhanced-cognee/index.json")
+    if configured != mounted:
+        raise ValueError("service_index_credential_binding_unverified")
+    if (not isinstance(binding, dict) or set(binding) != {"type", "data"}
+            or binding["type"] != "a(ss)" or not isinstance(binding["data"], list)
+            or len(binding["data"]) > 32
+            or any(not isinstance(row, list) or len(row) != 2
+                   or any(not isinstance(v, str) or len(v) > 4096 for v in row)
+                   for row in binding["data"])):
+        raise ValueError("service_index_credential_binding_unverified")
+    selected = [row for row in binding["data"] if row[0] == "index.json"]
+    if selected != [["index.json", str(source)]]:
+        raise ValueError("service_index_credential_binding_unverified")
+    return source
+
+
+def operator_settings_path(configured):
+    if configured.is_relative_to(Path("/run/credentials")):
+        result = subprocess.run(["/usr/bin/busctl", "--system", "--json=short", "get-property",
+            "org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/enhanced_2dcognee_2dindex_2eservice",
+            "org.freedesktop.systemd1.Service", "LoadCredential"], capture_output=True,
+            timeout=10, check=False, env={"PATH": "/usr/bin:/bin", "LC_ALL": "C"})
+        if result.returncode or len(result.stdout) > 16384:
+            raise ValueError("service_index_credential_binding_unverified")
+        return credential_source(configured, json.loads(result.stdout))
+    return configured
+
+
+def retained_json(path):
+    if not path.is_absolute() or ".." in path.parts or not path.is_relative_to(RETAINED):
+        raise ValueError("retained_authority_path_refused")
+    for item in [*reversed(path.parents), path]:
         info = item.lstat()
         if info.st_uid != 0 or info.st_mode & 0o022 or stat.S_ISLNK(info.st_mode):
-            raise ValueError("protected_index_settings_required")
-    info = path.stat()
-    if not stat.S_ISREG(info.st_mode) or info.st_size > 16384:
-        raise ValueError("protected_index_settings_required")
+            raise ValueError("retained_authority_path_refused")
+        if item != path and not stat.S_ISDIR(info.st_mode):
+            raise ValueError("retained_authority_path_refused")
+    return private_json(path)
+
+
+def authority_fields(settings, active):
+    """Accept the existing real-store qualification contract, never guessed keys."""
+    required = {"arcade_user", "arcade_password", "cache_url", "qdrant_url", "arcade_url"}
+    if (not isinstance(settings, dict) or not required <= settings.keys()
+            or any(not isinstance(settings[k], str) or not settings[k] for k in required)):
+        raise ValueError("retained_authority_contract_unavailable")
+    if any(settings[k].rstrip("/") != active[k].rstrip("/") for k in ("qdrant_url", "arcade_url")):
+        raise ValueError("retained_authority_store_binding_differs")
+    local(settings["qdrant_url"], {"http", "https"}, 28535)
+    local(settings["arcade_url"], {"http", "https"}, 28536)
+    local(settings["cache_url"], {"redis", "rediss"}, 28537)
+    return {"INDEX_ARCADEDB_USER": settings["arcade_user"],
+            "INDEX_ARCADEDB_PASSWORD": settings["arcade_password"],
+            "INDEX_VALKEY_URL": settings["cache_url"]}
+
+
+def retained_authority(active, result):
+    document = retained_json(RETAINED / "qualification-environment.json")
+    if not isinstance(document, dict):
+        raise ValueError("retained_authority_contract_unavailable")
+    # Only structure/field names are diagnostic; values remain in root memory.
+    result["retained_authority_field_names"] = sorted(k for k in document
+        if isinstance(k, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,100}", k))
+    environment = document
+    for wrapper in ("environment", "env"):
+        if wrapper in document:
+            if not isinstance(document[wrapper], dict):
+                raise ValueError("retained_authority_contract_unavailable")
+            environment = document[wrapper]
+            break
+    selected = environment
+    for name in ("RNR_QUALIFICATION_INDEX_SETTINGS", "index_settings_path", "index_settings"):
+        if name in environment:
+            reference = environment[name]
+            if isinstance(reference, str):
+                selected = retained_json(Path(reference))
+            elif name == "index_settings" and isinstance(reference, dict):
+                selected = reference
+            else:
+                raise ValueError("retained_authority_contract_unavailable")
+            break
+    authority = authority_fields(selected, active)
+    result["store_authority_source"] = "protected_retained_real_store_qualification"
+    result["worker_permissions_changed"] = False
+    return authority
 
 
 async def qualify(result):
@@ -72,14 +181,18 @@ async def qualify(result):
         raise ValueError("completed_disposable_recovery_required")
     operator = private_json(Path("/etc/enhanced-cognee/operator.json"))
     worker_config = private_json(Path("/etc/enhanced-cognee/worker.json"))
-    settings_path = Path(worker_config["ENHANCED_INDEX_CONFIG"])
+    configured_path = Path(worker_config["ENHANCED_INDEX_CONFIG"])
+    settings_path = operator_settings_path(configured_path)
     protected_settings(settings_path)
+    result["operator_index_settings_source_verified"] = True
     settings = json.loads(settings_path.read_text())
     if settings.get("model") != MODEL or settings.get("dimensions") != 384:
         raise ValueError("admitted_model_required")
     # Prefer the protected operator identity. A worker lacking permission to
     # create new namespaces must fail; no ACL/grant is altered to make it pass.
     combined = dict(worker_config, **operator)
+    if not all(k in operator for k in ("INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL")):
+        combined.update(retained_authority(settings, result))
     required = {"ENHANCED_MEMORY_DATABASE_URL", "ENHANCED_INDEX_KEY", "INDEX_ARCADEDB_USER",
                 "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL", "INDEX_QDRANT_API_KEY"}
     if not required <= combined.keys():
@@ -118,6 +231,11 @@ async def qualify(result):
                 attempts += 1
                 if attempts > 2000:
                     raise ValueError("bounded_replay_budget_exceeded")
+                async with pool.acquire() as conn:
+                    failed = await conn.fetchval("""SELECT EXISTS(SELECT 1 FROM shared_memory.index_deliveries
+                        WHERE pipeline=$1 AND completed_at IS NULL AND error_code IS NOT NULL)""", pipeline)
+                if failed:
+                    raise ValueError("new_pipeline_has_unready_deliveries")
             async with pool.acquire() as conn:
                 pending = await conn.fetchval("""SELECT count(*) FROM shared_memory.record_outbox o
                     LEFT JOIN shared_memory.index_deliveries d ON d.event_id=o.id AND d.pipeline=$1
@@ -182,8 +300,71 @@ async def qualify(result):
 
 def main():
     import sys
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    inspection = parser.add_mutually_exclusive_group()
+    inspection.add_argument("--inspect-settings", action="store_true",
+                        help="Read protection metadata only; no store connection or replay")
+    inspection.add_argument("--inspect-store-authority", action="store_true",
+                            help="Report protected config field/file names only; no secret values or store calls")
+    args = parser.parse_args()
     if os.geteuid() != 0 or Path(sys.prefix) != BASE / "runtime":
         raise SystemExit("ERR: use the staged protected Python as operator")
+    if args.inspect_store_authority:
+        try:
+            operator = private_json(Path("/etc/enhanced-cognee/operator.json"))
+            worker = private_json(Path("/etc/enhanced-cognee/worker.json"))
+            directory = Path("/etc/enhanced-cognee")
+            info = directory.lstat()
+            if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o077:
+                raise ValueError("operator_input_protection")
+            names = list(directory.iterdir())
+            if len(names) > 128:
+                raise ValueError("operator_input_protection")
+            report = {"operator_field_names": sorted(operator), "worker_field_names": sorted(worker),
+                      "protected_json_file_names": sorted(p.name for p in names if p.suffix == ".json"),
+                      "protected_file_names": sorted(p.name for p in names),
+                      "operator_has_graph_identity_fields": all(k in operator for k in
+                          ("INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD")),
+                      "operator_graph_identity_differs_from_worker":
+                          operator.get("INDEX_ARCADEDB_USER") is not None and
+                          operator.get("INDEX_ARCADEDB_USER") != worker.get("INDEX_ARCADEDB_USER")}
+            # Historical reports locate preparation under /root/cognee-*.
+            # List only matching deployment-directory metadata, never unrelated
+            # root files, profile trees, file contents or recovery key values.
+            retained = []
+            for candidate in Path("/root").iterdir():
+                if not candidate.name.startswith(("cognee-", "enhanced-cognee-")):
+                    continue
+                info = candidate.lstat()
+                if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o077:
+                    continue
+                if len(retained) >= 32:
+                    raise ValueError("operator_input_protection")
+                entries = list(candidate.iterdir())
+                if len(entries) > 256:
+                    raise ValueError("operator_input_protection")
+                retained.append({"directory": str(candidate),
+                                 "entry_names": sorted(p.name for p in entries)})
+            report["retained_deployment_directory_metadata"] = retained
+        except Exception:
+            report = {"category": "protected_authority_metadata_unavailable"}
+        print(json.dumps({"stage": "store_authority_metadata_inspection", **report,
+                          "secret_values_printed": False, "store_connections": False,
+                          "live_state_changed": False}))
+        return 0
+    if args.inspect_settings:
+        try:
+            config = private_json(Path("/etc/enhanced-cognee/worker.json"))
+            configured = Path(config["ENHANCED_INDEX_CONFIG"])
+            selected = operator_settings_path(configured)
+            report = dict(settings_protection(selected), configured_service_path=str(configured),
+                          effective_systemd_source_verified=selected != configured)
+        except Exception:
+            report = {"accepted": False, "reason": "protected_config_metadata_unavailable"}
+        print(json.dumps({"stage": "settings_protection_inspection", "settings_protection": report,
+                          "store_connections": False, "replay_started": False, "live_state_changed": False}))
+        return 0
     os.umask(0o077)
     logging.disable(logging.CRITICAL)
     evidence = Path(tempfile.mkdtemp(prefix="ec-launch-index-recovery-", dir="/var/tmp"))
@@ -195,7 +376,10 @@ def main():
         asyncio.run(asyncio.wait_for(qualify(result), timeout=600))
     except BaseException as error:
         categories = {"operator_input_protection", "local_store_binding_required", "completed_disposable_recovery_required",
-            "protected_index_settings_required", "admitted_model_required", "operator_store_credentials_incomplete",
+            "protected_index_settings_required", "service_index_credential_binding_unverified",
+            "admitted_model_required", "operator_store_credentials_incomplete",
+            "retained_authority_path_refused", "retained_authority_contract_unavailable",
+            "retained_authority_store_binding_differs",
             "bounded_replay_budget_exceeded", "new_pipeline_has_unready_deliveries", "actual_vector_recall_failed",
             "actual_graph_recall_failed", "actual_cache_encryption_failed", "restored_peer_scope_denial_failed",
             "reviewed_sharing_revocation_failed", "actual_index_withdrawal_failed", "actual_cache_withdrawal_failed"}

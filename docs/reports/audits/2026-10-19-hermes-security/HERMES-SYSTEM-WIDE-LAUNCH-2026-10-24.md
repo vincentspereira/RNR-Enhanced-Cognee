@@ -66,6 +66,50 @@ alone does not prove the exact underlying path condition. The repaired finite
 action reuses the restored database; it does not repeat backup/restoration.
 Actual new Qdrant/ArcadeDB/Valkey namespace results are still pending here.
 
+The next owner-run attempt also stopped at protected_preflight with the same
+category, retaining /var/tmp/ec-launch-index-recovery-ji6bxi9z and changing no
+live state. The earlier path repair did not close the gate. A new
+`--inspect-settings` mode reports only the configured path and failed ownership,
+mode, link, location or size check. It makes no store connection and does not
+repeat qualification. Ancestors are inspected from the root downward, stopping
+before entering an untrusted subtree. The actual failed condition remains
+unknown until the protected metadata receipt is returned.
+
+The returned metadata established the cause: the configured location is
+/run/credentials/enhanced-cognee-index.service/index.json, a service-private
+systemd credential mount. Effective systemd D-Bus LoadCredential metadata and
+the protected-stores drop-in identify its source as
+/etc/enhanced-cognee/index.json. The helper now verifies that exact effective
+name/source pair and validates the operator source with unchanged ownership,
+permission, ancestor, link and size checks. It never reads another service's
+mount or changes a credential's protection. The repaired function passed an
+actual-host metadata-only lookup; no credential contents or stores were read
+by that lookup. Twenty source boundary tests pass, including wrong/duplicate
+bindings and other-service mount denial. The next qualification result remains
+pending; this metadata repair alone is not an index recovery pass.
+
+The following owner-run attempt passed settings protection but stopped at
+new_actual_store_namespaces with HTTP 403. Its evidence remains at
+/var/tmp/ec-launch-index-recovery-rququyjm. The helper's first provisioning
+operation creates the new ArcadeDB database. The protected authority inspection
+then confirmed that operator.json has no graph/cache administration identity;
+the first helper had fallen back to the worker credentials. No worker privilege
+was expanded and no live store was cleared or service changed.
+
+A bounded metadata listing located the retained protected deployment's
+qualification-environment.json. The helper now admits that exact operator
+artifact and an explicitly referenced settings file only under its protected
+deployment archive. It accepts the reviewed actual-store qualification schema,
+requires matching selected local endpoints, and keeps credential values in
+the root process. It does not guess password field names, try multiple keys,
+change ACLs or rotate/re-enroll credentials. Unsupported/missing contracts fail
+before provisioning with field-name diagnostics only. Twenty-seven index
+boundary checks pass. Actual retained-authority acceptance remains pending.
+Replay also stops on its first failed delivery rather than running through
+additional failures. The metadata mode reads operator/worker JSON structure
+to report field names; it does not print values or read the listed evidence
+file bodies. The earlier wording that it read no file contents was too broad.
+
 The new credential implementation includes strict root-owned policy admission,
 profile-owner transactional publication using the reviewed issuer/journals,
 and a root driver with fixed signing choices, restricted children and bounded
@@ -107,8 +151,8 @@ completion remains open; no cause is inferred from the old failed predicate.
 
 ## Qualification and release evidence
 
-New targeted source checks currently pass 62 cases: six inventory, six artifact
-staging, 17 policy, eight lifecycle, 11 index endpoint/path boundaries and
+New targeted source checks currently pass 78 cases: six inventory, six artifact
+staging, 17 policy, eight lifecycle, 27 index endpoint/path boundaries and
 14 issuer receipt/identity/source-protection checks. Counts include no failures,
 errors or skips in those passing selections. Earlier failed attempts remain
 separate: sandbox-mapped ownership initially produced five inventory failures;
