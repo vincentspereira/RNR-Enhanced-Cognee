@@ -239,6 +239,33 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Grouped derived-service credential selection PASSED at
+`candidate-gtnhc4kc/derived-service-rotation-valid-probe`. New graph API/worker
+and Valkey worker logins authenticate; new Qdrant keys authenticate and both old
+Qdrant keys are denied. The valid denial probe observed collection HTTP 200,
+absent point HTTP 404 and read-only delete HTTP 403. API readiness passed after
+restarts. No profile, encryption or application signing-key change occurred.
+Old graph/cache users remain for rollback; full credential rotation/revocation
+and post-rotation projection acceptance are still incomplete. Preserve the pass
+and the earlier rollback receipt; no invalid probe is relabeled a pass.
+
+Next prepared operation, `rotate_launch_postgres_operator.py`, preserves existing
+PostgreSQL administrator/backup role names and ownership while replacing their
+passwords. It requires the grouped pass, uses the staged operator secret and
+generates a separate protected backup password only if backup has its own role.
+Both new configs and old originals are retained privately before ALTER ROLE.
+Native quote_ident/quote_literal protect legacy identifiers/password punctuation;
+role passwords change transactionally without database or service restart. New
+connections must authenticate/read schema 3 and old passwords must be denied
+before protected operator/backup configs are published and verified again.
+Failure uses the retained authenticated operator connection to restore old
+passwords, restores only recognized unchanged/owned config selections, and
+checks old logins, reporting conflicts rather than overwriting concurrent work.
+No canonical, profile, cipher/index, backup-signing, age-recovery or application
+issuer key changes are made. Seven source tests pass; installed execution and
+hard-interruption recovery remain pending. Existing signing-key rotation waits
+for coordinated profile credential reissue; it is not silently performed here.
+
 First grouped derived-service rotation did NOT pass. Receipt at
 `candidate-gtnhc4kc/derived-service-rotation` reports
 vector_readonly_write_boundary_failed and rollback_api_ready=true. The saved
