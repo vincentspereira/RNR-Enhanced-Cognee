@@ -92,6 +92,17 @@ fixed checkpoint. Raw error text, answers, prompts and tool arguments remain
 excluded. Determine the next action from the read-only installed state instead
 of automatically retrying.
 
+Installed state closure: the owner-run f63cdd52 observation returned canonical
+version 4, retracted=true, four history versions, pending=false and peer 404
+for 5d0e9a49bdf544359ae6deff. These canonical effects passed; preserve them and
+do not run resume-answer again on that completed record. The inspection itself
+used no OAuth/model/memory write and kept the checked pilot files unchanged.
+The earlier overall native-turn failure cause/completion gate remains open.
+Further work moves to the separate dependency and operational gates, preserving
+this state as evidence. [The current checkpoint](../reports/audits/2026-10-19-hermes-security/CANONICAL-EFFECTS-AND-SECURITY-2026-10-24.md)
+also records the compatible source repair reducing full-runtime findings from
+17 to 11; the restricted index-lock Pillow findings remain at 37.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional

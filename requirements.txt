@@ -39,8 +39,8 @@ pyyaml==6.0.3                      # YAML parsing
 structlog>=25.2.0,<26              # Matches the core project requirement
 rich>=13.8.0,<14.0                 # Rich console output (must be >=13.8 for typer 0.25.x)
 prometheus-client==0.25.0          # Prometheus metrics
-opentelemetry-api==1.41.1          # OpenTelemetry tracing
-opentelemetry-sdk==1.41.1
+opentelemetry-api==1.45.1          # Patched tracing API; keep SDK cohort aligned
+opentelemetry-sdk==1.45.1
 
 # Data Processing and Analysis
 numpy==1.26.4                      # Numerical computing
@@ -137,7 +137,7 @@ pytest-mock>=3.14,<4.0             # Mocking in tests
 pytest-cov>=5.0,<8.0               # Coverage reporting (5+ supports pytest 8)
 
 # Development Tools
-black==26.3.1                      # Code formatting (>=26.3.1 fixes cache-path traversal; dev-only)
+black==26.10.1                     # Patched development formatter
 flake8==7.0.0                      # Linting
 mypy==1.9.0                        # Type checking
 pre-commit==3.6.0                  # Git hooks
@@ -170,4 +170,4 @@ ipython==8.22.2                    # Enhanced Python REPL
 jupyter==1.1.1                      # Jupyter notebook support
 
 # Security floor for transitive packaging support.
-setuptools>=83.0.0
+setuptools>=84.1.0

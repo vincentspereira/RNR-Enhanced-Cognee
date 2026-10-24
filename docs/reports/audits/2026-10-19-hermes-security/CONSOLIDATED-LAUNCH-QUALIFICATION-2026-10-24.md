@@ -1,5 +1,14 @@
 # Consolidated launch qualification - 24 October 2026
 
+Latest checkpoint: owner-run inspection verifies the candidate's completed
+canonical correction/retraction, four preserved versions, cleared pending
+clarification and peer 404. The earlier native turn's overall completion gate
+remains open; do not replay the completed test record. Compatible source
+dependency updates reduce the full-lock findings from 17 to 11, while the
+restricted index lock retains 37 Pillow findings. See [the current canonical
+effects/security report](CANONICAL-EFFECTS-AND-SECURITY-2026-10-24.md); older
+counts and hosted runs below retain their original revision scope.
+
 Hosted follow-up: Required CI passed on 06037eb7b, but the enforced memory audit
 found 37 Pillow advisories. A compatible full-runtime Pillow fix passes 4344
 unit tests; the restricted FastEmbed/Pillow conflict and broader audit findings

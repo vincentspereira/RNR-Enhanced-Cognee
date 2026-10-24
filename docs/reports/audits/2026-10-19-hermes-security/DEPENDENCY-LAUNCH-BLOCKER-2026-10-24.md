@@ -5,6 +5,14 @@ resolving the restricted embedding runtime's dependency conflict. Do not admit
 private/everyday fleet use or merge a release with the enforced security gate
 failing. Do not ignore advisories or force incompatible dependency metadata.
 
+Latest compatible-source checkpoint: the full lock now has 11 findings instead
+of the initial 17, after patched Black, pypdf, setuptools and an aligned tracing
+cohort were resolved without any other distribution changes. The restricted
+index lock still reports 37 Pillow findings. Stable LiteLLM's filelock cap and
+the limits/packaging/virtualenv constraint prevent admitting all remaining
+patches together. No downgrade, incompatible metadata override or installed
+upgrade is admitted. See [canonical effects and current security evidence](CANONICAL-EFFECTS-AND-SECURITY-2026-10-24.md).
+
 The hosted required check passed on source
 06037eb7b6d60eecc3be3921c3012d86d8e56a75. Both frontend qualification lanes
 and canonical-browser also passed at the observed checkpoint. Separate memory,
@@ -33,11 +41,13 @@ the installed-package compatibility check passes, and all 4344 unit tests pass
 with zero failures/errors/skips and no reported pytest warnings. The original
 runtime and the failed-attempt evidence are retained.
 
-A fresh unsuppressed full-lock audit after the Pillow update retains 17
+At the initial Pillow-only checkpoint, an unsuppressed full-lock audit retained 17
 advisories in six other packages: black, filelock, opentelemetry-api, pypdf,
 setuptools and virtualenv. This is not a clean full-release audit. The audit tool
 also reported cache-deserialization warnings before completing with findings;
-those warnings are not hidden or converted into a clean result.
+those warnings are not hidden or converted into a clean result. The subsequent
+compatible-source checkpoint above supersedes that count for the current full
+lock; filelock and virtualenv retain 11 findings between them.
 
 ## Why the restricted memory runtime remains blocked
 

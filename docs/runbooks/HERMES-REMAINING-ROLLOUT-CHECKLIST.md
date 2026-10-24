@@ -8,6 +8,16 @@ restart/same-turn gaps are repaired and source-tested; installed candidate
 qualification and the other operational/fleet gates remain open. The dated
 checkpoint below is preserved and does not override the new evidence.
 
+Current installed state checkpoint: the owner's f63cdd52 read-only inspection
+of test 5d0e9a49bdf544359ae6deff confirms canonical version 4, a retracted
+record, all four history versions, no pending clarification and peer HTTP 404.
+The actual human answer passed on the preceding continuation. Preserve this
+completed state and do not replay correction/retraction or resume that record.
+The earlier native turn's overall completion predicate failed; its exact cause
+and the driver's native_followup_qualified gate remain open. Verified canonical
+effects and a fully completed native-turn receipt are distinct evidence.
+See [the current installed checkpoint](../reports/audits/2026-10-19-hermes-security/CANONICAL-EFFECTS-AND-SECURITY-2026-10-24.md).
+
 The subsequent [dependency audit follow-up](../reports/audits/2026-10-19-hermes-security/DEPENDENCY-LAUNCH-BLOCKER-2026-10-24.md)
 confirms the required CI pass but a still-failing restricted FastEmbed/Pillow
 security gate. Source/conversation passes do not close that launch blocker.
@@ -54,8 +64,8 @@ when they use the same trust boundary; do not ask the owner to replay passes.
 
 | Group | Required result | Current status |
 |---|---|---|
-| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Capture/clear correction/corrected recall, single-turn uncertainty, all eleven local API privacy cases and one real native sensitive-input turn pass; later human follow-up/retraction/history work remains open |
-| 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Selected runtime denial and earlier synthetic multi-space tests exist; actual peer/fleet boundaries and installed sharing need reconciliation |
+| 1. Conversation safeguards | Uncertainty asks a question without editing; a later genuine human answer permits only the confirmed change; sensitive details/credentials are rejected; correction/retraction retain appropriate history without claiming sensitive history was erased | Earlier capture/correction/recall/privacy passes retained; current owner-run candidate question and human-answer gate pass; read-only canonical observation verifies correction/retraction, four versions and cleared pending state. Overall native-turn completion failure remains unresolved; do not replay the completed record |
+| 2. Access and reviewed sharing | The intended runtime cannot reach privileged/peer secrets; private spaces deny other callers; only approved shared summaries are visible and revocation/current-version rules hold | Current installed signed-scope negative/reviewer-sharing/revocation checks passed; the completed record returns peer 404. Actual peer-secret, OS and everyday fleet boundaries remain open |
 | 3. Credential operation | Protected fixed-scope renewal, expiry/refusal controls, safe atomic publication and interrupted-renewal recovery work without giving agents signing authority | Owner-run manual pilot renewal and API refusal controls pass; installed interruption recovery and unattended/fleet lifecycle remain open |
 | 4. Recoverable state | Explicit encrypted restricted-profile/workspace/receipt coverage, consistent database generation and disposable restoration prove recovery without overwriting live state | Owner key custody, inventory and manual encrypted profile restore pass; df79510b now verifies the upgraded protected runner, signed 60-file/205571-byte ciphertext and enabled/active daily timer with next run. Future scheduled firing, current database generation, full-fleet/SQLite homes, Windows/remote collection and fresh-machine rebuild remain open; ea6f2438 source-side inventory passes for six database/two profile pairs; native Windows dual-family collection remains pending |
 | 5. Runtime and release checks | Relevant backend/provider dependencies and required checks pass, failures/unready indexes are reported honestly, and deployed artifacts match the admitted source | Known dependency/release issues and final candidate checks remain; a unit pass alone does not close these |
