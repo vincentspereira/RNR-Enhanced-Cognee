@@ -130,6 +130,47 @@ future failure. Installed-host cache access and exact-image/store acceptance
 are still required; no cause beyond the observed cache incompatibility or
 successful image qualification is inferred.
 
+## Hosted accepted memory candidate and final type repair
+
+On cc6dc226f85c2d87fe8a2878494af1a2dc1d58db, both
+[project memory qualification](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055060743)
+and [canonical memory stack qualification](https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055060862)
+PASS. The combined memory XML records 1411 passed, zero failures/errors and five
+explicit separate-client/browser/store skips. The actual-store XML records 35
+passed, zero failures/errors/skips. Actual restricted API/worker images pass
+semantic/source-linked recall, restart/backlog recovery, scope, reviewed sharing
+and revocation, correction lineage and retraction. Reduced-runtime smoke passes.
+Required CI and the canonical browser/both frontend jobs also pass at that head.
+These are hosted synthetic results, not the installed Hermes fleet.
+
+The exact built restricted image has zero HIGH/CRITICAL findings. Its complete
+inventory retains 37 other findings: 26 MEDIUM, 10 LOW and one UNKNOWN. The
+UNKNOWN ca-certificates DSA-6572-1 has a reported Debian fix at
+20250419+deb13u1; the other 36 have no reported fixed version in that scan.
+No inventory or advisory is hidden. Patched Python certifi is already in the
+service lock; that does not erase the separate base-image trust-store finding.
+Keep these image findings visible for release review and subsequent base-image
+maintenance. Full legacy filelock and installed gates remain independent.
+
+The broader Python-3.11 CI still fails. Its unit/system run records 34 failed
+and 4408 passed with 80.90 percent measured coverage; passing coverage does not
+close failed tests. Failures include missing optional pymemcache/locust test
+dependencies and historical legacy MCP fixtures/contracts. It is not the
+passing restricted eight-tool qualification. The broader type gate separately
+found three no-any-return errors in provenance and encryption. Source now
+requires a string database update acknowledgement and bytes from both crypto
+backends, failing closed on unexpected types. No cast/ignore or type-check
+suppression is used. The unchanged 29-module blocking type selection passes
+with mypy 2.4.0 using the matched installed dependency environment. A first
+isolated mypy invocation without that environment reported four unrelated
+missing-import-derived Any errors; both logs are retained and not conflated.
+
+After the type guards, the entire source batch again passes 4349 unit and 1330
+Hermes/operator/recovery checks with zero failures/errors/skips. Targeted real
+crypto/provenance tests pass 79 checks. Fresh encrypted database/model recovery
+and wheel checks cover the final source separately. No broader all-green/main
+merge claim is made; fresh hosted results must be checked on its published head.
+
 ## Exact remaining execution boundary
 
 The owner-run completed version-4 record remains preserved; its earlier native

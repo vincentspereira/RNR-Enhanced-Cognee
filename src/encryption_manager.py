@@ -210,6 +210,8 @@ class EncryptionManager:
                 )
                 nonce, body = raw[:_GCM_NONCE_LEN], raw[_GCM_NONCE_LEN:]
                 plaintext = self._aesgcm.decrypt(nonce, body, None)
+                if not isinstance(plaintext, bytes):
+                    raise ValueError("Invalid authenticated plaintext type")
                 return plaintext.decode("utf-8")
             except Exception as exc:
                 logger.error("decrypt failed: %s", exc)
@@ -219,6 +221,8 @@ class EncryptionManager:
             try:
                 token_str = ciphertext[len(_ENC_PREFIX):]
                 plaintext = self._fernet.decrypt(token_str.encode("ascii"))
+                if not isinstance(plaintext, bytes):
+                    raise ValueError("Invalid authenticated plaintext type")
                 return plaintext.decode("utf-8")
             except Exception as exc:
                 logger.error("decrypt failed: %s", exc)

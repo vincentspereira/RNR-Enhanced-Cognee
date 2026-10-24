@@ -244,7 +244,7 @@ class MemoryProvenanceTracker:
                     checksum,
                     row["content"],
                 )
-            return result == "UPDATE 1"
+            return isinstance(result, str) and result == "UPDATE 1"
         except Exception as exc:
             logger.error("mark_verified failed for %s: %s", memory_id, exc)
             return False

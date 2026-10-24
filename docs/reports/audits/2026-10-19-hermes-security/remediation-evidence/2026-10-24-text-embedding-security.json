@@ -137,5 +137,71 @@
     "container_worker_catchup_passed": false,
     "public_model_cache_traversal_fixed": true,
     "fresh_hosted_validation_required": true
+  },
+  "accepted_hosted_memory_candidate": {
+    "revision": "cc6dc226f85c2d87fe8a2878494af1a2dc1d58db",
+    "required_ci": "success",
+    "canonical_browser_and_frontends": "success",
+    "memory_run": 40055060743,
+    "memory_passed": 1411,
+    "memory_skipped": 5,
+    "actual_store_run": 40055060862,
+    "actual_store_passed": 35,
+    "actual_store_skipped": 0,
+    "restricted_image_high_critical": 0,
+    "complete_image_findings": {
+      "MEDIUM": 26,
+      "LOW": 10,
+      "UNKNOWN": 1
+    },
+    "base_trust_bundle_patch_still_tracked": true
+  },
+  "final_type_guard_repair": {
+    "mypy_version": "2.4.0",
+    "matched_dependency_environment": true,
+    "blocking_modules_passed": 29,
+    "targeted_crypto_provenance_passed": 79,
+    "full_source_batch": {
+      "batch": "source",
+      "complete": true,
+      "lanes": [
+        {
+          "name": "units",
+          "exit_code": 0,
+          "retained_fixtures": "/tmp/ecq-2yzn7yft",
+          "tests": 4349,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 4349,
+          "complete": true
+        },
+        {
+          "name": "hermes-and-recovery",
+          "exit_code": 0,
+          "retained_fixtures": "/tmp/ecq-vvsnb_sp",
+          "tests": 1330,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 1330,
+          "complete": true
+        }
+      ],
+      "created_utc": "2026-10-24T02:46:52.990826+00:00",
+      "installed_host_qualified": false,
+      "fleet_launch_approved": false
+    },
+    "new_source_sha256": {
+      "src/encryption_manager.py": "80167331ca4db98f3565547284f8e4785ab4538b78abefc94b24b4b1aecd9f58",
+      "src/memory_provenance.py": "5ab64a5f52fb3e681dafbcc2adbc05f40f3b9a70ee69922ca8114cda2f07bed8"
+    },
+    "fresh_hosted_results_required": true
+  },
+  "broader_ci_still_fails": {
+    "unit_system_failed": 34,
+    "unit_system_passed": 4408,
+    "measured_coverage_percent": 80.9,
+    "main_merge_qualified": false
   }
 }
