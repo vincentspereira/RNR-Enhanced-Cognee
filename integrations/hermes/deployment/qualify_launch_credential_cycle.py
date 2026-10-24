@@ -24,7 +24,10 @@ import uuid
 REVISION = "21abf4857ca8dce8e0a3aafc725266c8d3754529"
 BASE = Path("/opt/enhanced-cognee-memory/candidates") / REVISION
 RELEASE = Path("/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1")
-FIXTURES = Path("/var/lib/hermes-credential-qualification")
+# Public random fixture identifiers only. The reviewed directory walker opens
+# every ancestor O_RDONLY; each private child remains owner-only mode 0700.
+# Preserve earlier fixtures under hermes-credential-qualification unchanged.
+FIXTURES = Path("/var/lib/hermes-renewal-qualification")
 CHILD_PHASE = "identity"
 CHILD_DIAGNOSTICS = {}
 PROCESS_STARTED = time.monotonic()
@@ -190,6 +193,7 @@ def child(artifact, data):
         class CacheProbe(GatewayAgentCacheMixin):
             _MEMORY_IDENTITY_PROVIDER_MEMO = {}
         before = CacheProbe._memory_provider_identity_signature("enhanced_cognee")
+        CHILD_PHASE = "fixture_transaction_open"
         directory = core["open_directory"](profile, {0, account.pw_uid})
         try:
             import fcntl
@@ -329,10 +333,10 @@ def main():
         result["operator_helper_sha256"] = hashlib.sha256(script.read_bytes()).hexdigest()
         protected(FIXTURES.parent)
         if not FIXTURES.exists():
-            FIXTURES.mkdir(mode=0o711)
-            FIXTURES.chmod(0o711)
+            FIXTURES.mkdir(mode=0o755)
+            FIXTURES.chmod(0o755)
         protected(FIXTURES)
-        require(FIXTURES.stat().st_mode & 0o111 == 0o111, "fixture_parent_traversal")
+        require(stat.S_IMODE(FIXTURES.stat().st_mode) == 0o755, "fixture_parent_directory_read_access")
         profile = FIXTURES / run_id
         profile.mkdir(mode=0o700)
         os.chown(profile, account.pw_uid, account.pw_gid)
@@ -361,7 +365,7 @@ def main():
         received = json.loads((evidence / "bounded-child-receipt.json").read_bytes())
         result["child_stderr_bytes"] = (evidence / "bounded-child-stderr.log").stat().st_size
         result["checkpoint"] = "child_receipt"
-        phases = {"identity", "source_load", "fixture_files", "native_imports", "initial_status", "initial_native_status",
+        phases = {"identity", "source_load", "fixture_files", "native_imports", "initial_status", "initial_native_status", "fixture_transaction_open",
                   "interruption_prepared", "interruption_published", "await_expiry", "expired_refusal",
                   "native_refresh", "new_status", "preservation"}
         if isinstance(received, dict) and received.get("complete") is False and received.get("phase") in phases:

@@ -253,18 +253,40 @@ def safe_field_names(document):
         and not re.match(r"(?:gh[pousr]_|sk_|eyJ)", key))[:32]
 
 
+def retained_structure(path):
+    """Schema inspection only, including read-only JSON under protected /root.
+
+    This is never a credential loader. Keep retained_json's private-file
+    requirement for authority consumption unchanged.
+    """
+    selected = {RETAINED / "authorization.json",
+                Path("/root/cognee-runtime-inputs-20261020/inputs.json")}
+    if path not in selected:
+        raise ValueError("structure_path_refused")
+    for parent in reversed(path.parents):
+        info = parent.lstat()
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+            raise ValueError("structure_path_refused")
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as source:
+        info = os.fstat(source.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022 or info.st_size > 65536:
+            raise ValueError("structure_file_refused")
+        document = json.loads(source.read(65537))
+    keys = safe_field_names(document)
+    return {"field_names": keys, "nested_field_names": {
+        key: safe_field_names(document[key]) for key in keys if isinstance(document[key], dict)}}
+
+
 def inspect_remaining_authority():
     """No network or issuer calls. Only observed operator artifact structure."""
     report = {"selected_artifacts": [], "fleet_entries": [], "store_connections": False,
               "credentials_issued": 0, "secret_values_printed": False, "live_state_changed": False}
-    authorization = RETAINED / "authorization.json"
-    try:
-        document = retained_json(authorization)
-        report["selected_artifacts"].append({"path": str(authorization), "field_names": safe_field_names(document),
-            "nested_field_names": {key: safe_field_names(document[key]) for key in safe_field_names(document)
-                                   if isinstance(document[key], dict)}})
-    except (OSError, ValueError):
-        report["selected_artifacts"].append({"path": str(authorization), "structure_available": False})
+    for selected in (RETAINED / "authorization.json", Path("/root/cognee-runtime-inputs-20261020/inputs.json")):
+        try:
+            report["selected_artifacts"].append({"path": str(selected), **retained_structure(selected)})
+        except (OSError, ValueError):
+            report["selected_artifacts"].append({"path": str(selected), "structure_available": False})
     directory = RETAINED / "fleet-223416"
     for parent in [*reversed(directory.parents), directory]:
         info = parent.lstat()

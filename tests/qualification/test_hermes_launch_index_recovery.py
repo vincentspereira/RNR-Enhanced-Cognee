@@ -12,6 +12,11 @@ helper = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(helper)
 
 
+def test_structure_inspection_cannot_read_arbitrary_protected_files():
+    with pytest.raises(ValueError, match="structure_path_refused"):
+        helper.retained_structure(Path("/etc/enhanced-cognee/operator.json"))
+
+
 @pytest.mark.parametrize("url,schemes,port", [
     ("https://example.invalid:28535", {"http", "https"}, 28535),
     ("http://127.0.0.1:6333", {"http", "https"}, 28535),

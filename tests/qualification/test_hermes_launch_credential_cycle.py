@@ -1,6 +1,7 @@
 """Source guards only; the real API/native cycle needs the operator run."""
 import hashlib
 import importlib.util
+import os
 from pathlib import Path
 import sys
 import time
@@ -99,3 +100,26 @@ def test_exception_metadata_is_bounded_for_chained_errors():
         following.__cause__ = error
         error = following
     assert len(helper.exception_metadata(error)) == 4
+
+
+@pytest.mark.skipif(os.geteuid() == 0, reason="Requires ordinary Unix permission enforcement")
+def test_readonly_directory_walker_needs_readable_parent_but_private_child(tmp_path):
+    parent = tmp_path / "public-identifiers"
+    parent.mkdir(mode=0o755)
+    child = parent / "private-profile"
+    child.mkdir(mode=0o700)
+    parent.chmod(0o111)  # Same effective read/traverse rights as other users of 0711.
+    try:
+        with pytest.raises(PermissionError):
+            os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    finally:
+        parent.chmod(0o755)
+    fd = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        private = os.open(child.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+        try:
+            assert os.fstat(private).st_mode & 0o777 == 0o700
+        finally:
+            os.close(private)
+    finally:
+        os.close(fd)

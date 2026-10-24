@@ -239,6 +239,28 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Follow-up owner receipt `/var/tmp/ec-credential-cycle-jm43udye` identified
+PermissionError errno 13 at helper line 193, opening the fixture transaction
+directory. Both operator and native authenticated status requests had passed;
+the preceding phase label was too broad. The root-owned synthetic parent was
+0711, but the reused guarded walker opens ancestors O_RDONLY. New attempts use
+a separate root-owned 0755 `/var/lib/hermes-renewal-qualification` parent
+containing public random identifiers and owner-only 0700 child profiles. Earlier
+fixture parents, contents, permissions and all actual profiles are preserved.
+The transaction-directory phase is now explicit. A real ordinary-user Unix
+permission regression and the credential/lifecycle selection pass (27 tests).
+This is a source correction; the next installed operator execution is pending.
+
+The owner does not know the ArcadeDB administrator credential location. No
+password or reset was requested. Schema-only inspection now admits two exact
+root-owned, nonwritable JSON paths under protected /root even when the file is
+0644: the retained authorization file and the runtime preparation inputs file.
+It returns safe top/nested field names only. This function cannot load authority
+or inspect arbitrary paths; the separate credential loader still requires
+private files. Index recovery helper source selection passes 33 tests. Actual
+store provisioning and fleet acceptance remain blocked, with no privilege
+expansion or live writes performed.
+
 Latest owner-run diagnostics (24 October, retained without replay):
 `/var/tmp/ec-credential-cycle-majciy1l` failed in the previously combined
 initial-status phase. The operator request returned HTTP 200 with every
