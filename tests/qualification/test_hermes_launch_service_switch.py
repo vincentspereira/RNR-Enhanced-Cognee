@@ -5,6 +5,8 @@ import hmac
 import importlib.util
 import json
 from pathlib import Path
+import stat
+from types import SimpleNamespace
 
 import pytest
 
@@ -74,3 +76,24 @@ def test_refusal_reason_does_not_expose_arbitrary_exception_messages():
     assert helper.refusal_reason(ValueError("installed_package_inventory_required")) == "installed_package_inventory_required"
     assert helper.refusal_reason(ValueError("invented-private-value")) == "protected_input_or_service_error"
     assert helper.refusal_reason(PermissionError("invented-private-path")) == "protected_input_or_service_error"
+
+
+def test_shared_sticky_parent_and_private_receipt_directory_have_distinct_guards():
+    helper.directory_guard(SimpleNamespace(st_uid=0,st_mode=stat.S_IFDIR | 0o1777),sticky=True)
+    helper.directory_guard(SimpleNamespace(st_uid=0,st_mode=stat.S_IFDIR | 0o700),private=True)
+    with pytest.raises(ValueError):
+        helper.directory_guard(SimpleNamespace(st_uid=0,st_mode=stat.S_IFDIR | 0o1777))
+    with pytest.raises(ValueError):
+        helper.directory_guard(SimpleNamespace(st_uid=0,st_mode=stat.S_IFDIR | 0o755),private=True)
+
+
+@pytest.mark.parametrize("uid,mode",[(1000,stat.S_IFDIR | 0o1777),(0,stat.S_IFDIR | 0o777),
+    (0,stat.S_IFLNK | 0o1777)])
+def test_sticky_exception_does_not_admit_user_owned_nonsticky_or_link_directory(uid,mode):
+    with pytest.raises(ValueError):
+        helper.directory_guard(SimpleNamespace(st_uid=uid,st_mode=mode),sticky=True)
+
+
+def test_recovery_reader_cannot_read_arbitrary_shared_parent_files():
+    with pytest.raises(ValueError,match="fixed_recovery_receipt_required"):
+        helper.recovery_receipt(Path("/var/tmp/caller-selected/summary.json"))

@@ -26,6 +26,46 @@ BASE = Path("/opt/enhanced-cognee-memory/candidates") / REVISION
 SHARED_SHA256 = "d7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef"
 WHEEL_SHA256 = "9ba46a58f32adf29c378690041beaa96ff2f545d432df1265d62617caf5ba7d5"
 ROLES = {"api":"api", "index":"worker"}
+RECOVERY_RECEIPTS = {Path("/var/tmp/ec-launch-recovery-aja7p8j9/summary.json"),
+                     Path("/var/tmp/ec-launch-index-recovery-sw3log4z/summary.json")}
+
+
+def directory_guard(info, *, sticky=False, private=False):
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0:
+        raise ValueError("receipt_directory_protection_required")
+    mode = stat.S_IMODE(info.st_mode)
+    if ((sticky and mode != 0o1777) or (private and mode != 0o700)
+            or (not sticky and not private and mode & 0o022)):
+        raise ValueError("receipt_directory_protection_required")
+
+
+def recovery_receipt(path):
+    """Exact root-private receipts below the fixed root-owned sticky /var/tmp.
+
+    Directory descriptors pin every component. Never generalize this shared
+    parent exception to credentials, runtime files or arbitrary caller paths.
+    """
+    if path not in RECOVERY_RECEIPTS:
+        raise ValueError("fixed_recovery_receipt_required")
+    fd = os.open("/",os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        directory_guard(os.fstat(fd))
+        for name in ("var","tmp",path.parent.name):
+            child = os.open(name,os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,dir_fd=fd)
+            os.close(fd)
+            fd = child
+            directory_guard(os.fstat(fd),sticky=name == "tmp",private=name == path.parent.name)
+        item = os.open("summary.json",os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,dir_fd=fd)
+        with os.fdopen(item,"rb") as stream:
+            info = os.fstat(stream.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o600 or info.st_size > 262144:
+                raise ValueError("receipt_file_protection_required")
+            raw = stream.read(262145)
+            if len(raw) > 262144:
+                raise ValueError("receipt_file_protection_required")
+            return json.loads(raw)
+    finally:
+        os.close(fd)
 
 
 def runtime_members(names):
@@ -39,6 +79,7 @@ def refusal_reason(error):
         "wheel_size_required", "exact_wheel_required", "wheel_member_required",
         "installed_wheel_bytes_differ", "installed_package_inventory_required",
         "admitted_model_required", "existing_runtime_selection_preserved",
+        "receipt_directory_protection_required", "fixed_recovery_receipt_required", "receipt_file_protection_required",
         "protected_ancestor_required", "protected_file_required", "input_budget",
         "bounded_service_control_failed"}
     return str(error) if type(error) is ValueError and str(error) in allowed else "protected_input_or_service_error"
@@ -131,8 +172,8 @@ def main():
     for path in (BASE, BASE / "runtime/bin/python", BASE / "model-cache"):
         protected(path)
     staging = json.loads(read(BASE / "operator-evidence/summary.json",0))
-    canonical = json.loads(read(Path("/var/tmp/ec-launch-recovery-aja7p8j9/summary.json"),0))
-    derived = json.loads(read(Path("/var/tmp/ec-launch-index-recovery-sw3log4z/summary.json"),0))
+    canonical = recovery_receipt(Path("/var/tmp/ec-launch-recovery-aja7p8j9/summary.json"))
+    derived = recovery_receipt(Path("/var/tmp/ec-launch-index-recovery-sw3log4z/summary.json"))
     if (staging.get("complete") is not True or staging.get("source_revision") != REVISION
             or canonical.get("canonical_recovery_qualified") is not True
             or derived.get("derived_store_recovery_qualified") is not True

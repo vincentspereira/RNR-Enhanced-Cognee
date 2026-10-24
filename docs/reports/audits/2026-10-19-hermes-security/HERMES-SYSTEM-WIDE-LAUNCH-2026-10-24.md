@@ -239,6 +239,23 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+The corrected inventory helper's owner-run preflight then refused with
+protected_ancestor_required. The generic root-config reader rejects writable
+ancestors; canonical/derived receipts live under the normal root-owned sticky
+1777 /var/tmp, in root-owned 0700 evidence directories. This path shape is
+different from service credential storage. Host permissions and the generic
+credential reader remain unchanged.
+
+A dedicated reader now admits only the two exact completed recovery receipt
+paths. It anchors directory descriptors at /, opens each component O_NOFOLLOW,
+requires protected root-owned /var, exactly root-owned sticky 1777 /var/tmp,
+then a root-owned 0700 receipt directory and root-owned regular 0600 bounded
+summary file. The shared-parent exception cannot select arbitrary paths or
+read service credentials. Fifteen switch-helper source tests pass, including
+nonsticky/user-owned/link refusal, private-child permissions and fixed-path
+admission. Controlled installed selection still needs the next protected run;
+no recovery qualification is rerun by this correction.
+
 The first owner-run controlled-service helper returned a generic preflight
 refusal, not a verified runtime switch. Local inspection found a definite
 inventory bug: only 27 src files were selected while the helper required at
