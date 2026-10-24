@@ -11,7 +11,8 @@ spec.loader.exec_module(helper)
 
 
 @pytest.mark.parametrize("username,password", [("", "invented"), ("bad:name", "invented"),
-    ("two words", "invented"), ("invented", ""), ("invented", "bad\nvalue"), ("invented", "bad\x00value")])
+    ("two words", "invented"), ("invented", ""), ("invented", "bad\nvalue"), ("invented", "bad\x00value"),
+    ("ARCADEDB_PASSWORD", "invented"), ("ARCADEDB_USER", "invented"), ("ARCADEDB_USERNAME", "invented")])
 def test_malformed_identity_rejected_without_echo(username, password):
     with pytest.raises(ValueError, match="^invalid_local_graph_identity$"):
         helper.authority_document(username, password)

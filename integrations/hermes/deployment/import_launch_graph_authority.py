@@ -18,6 +18,8 @@ DESTINATION = Path("/etc/enhanced-cognee/launch-index-authority.json")
 def authority_document(username, password):
     if (not isinstance(username, str) or not username or len(username) > 128
             or not username.isascii() or any(c.isspace() or c == ":" for c in username)
+            or username in {"ARCADEDB_PASSWORD", "ARCADEDB_USER", "ARCADEDB_USERNAME",
+                            "INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD"}
             or not isinstance(password, str) or not password or len(password) > 4096
             or any(c in password for c in "\x00\r\n")):
         raise ValueError("invalid_local_graph_identity")
