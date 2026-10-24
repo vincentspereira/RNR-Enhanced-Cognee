@@ -239,6 +239,54 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026: post-rotation worker acceptance PASSED at
+`operator-evidence/installed-worker-projection-after-rotation`, helper SHA256
+d7edafe7c39c43dd808df961586b5ac83dc4bc2622b7d64c90a26923d22d6ebb.
+New scope `wp_3bf69b4eaab3bfe1`, record
+`597bd851-d2b1-45f8-b460-6832fe3eec51` proved actual semantic/graph/encrypted-cache
+delivery, peer denial, withdrawal and retained history with current credentials.
+No chat model or profile change occurred. Reuse this pass, never replay its edits.
+
+Owner-child token inventory PASSED at `operator-evidence/token-bindings-o7gaywzr`:
+45 observed profile homes, three local memory configs/tokens and three verified
+bindings, zero unresolved reads/exclusions. These are observed homes, not 45
+admitted bots. Application signing key and profiles remain unchanged. Signing-key
+rotation needs coordinated reissue for those three bindings; unconditional
+key replacement would invalidate their existing tokens.
+
+Pinned gateway code confirms multiplexed turns enter _profile_runtime_scope,
+which calls _load_profile_secret_scope before cache identity extraction. This
+is stronger source evidence than the refresh function alone, but it is not a
+running-gateway reload pass for every actual launch mode. CLI/singleton and
+unmapped launch bindings remain explicit. No native code or guards were changed.
+
+`stage_launch_issuer.py` prepares five hash-pinned issuer/policy/transaction files
+under a new protected operator candidate and an entirely disabled root-only
+allowlist. It reads only the retained credential-free root inventory, never
+agent profile trees. Supported verified scopes are preserved; unconfigured
+scopes remain explicit proposals, not confirmed mappings. Existing readonly or
+explicit-capture bindings are withheld for manual reissue planning rather than
+upgraded. Shared UIDs and administrative runtime accounts remain blockers.
+All reload/launch/backup/OS flags stay false and all enabled flags stay false.
+Existing code/policy destinations are never overwritten. Its protected direct
+preflight must return zero admitted/published credentials; no timer or service
+is installed/enabled, no key is read by the disabled issuer path and no profile
+changes. Thirty-five staging/policy/issuer source checks pass. Operator staging
+execution, active installed issuer/gateway/scheduler qualification, coordinated
+app-key rotation, legacy-login retirement/custody and per-profile admission are
+still pending. Final fleet switch is not review-ready.
+
+Read-only existing-job checks on 25 October retained sanitized journal metadata
+outside publication at scheduled-backup-metadata-20261025.json. Database service
+reported complete postgres-custom+age, created UTC 2026-10-24T23:03:21.297769,
+plaintext_dump_written=false. No manual firing occurred. The bounded profile
+journal sample yielded no structured receipt; systemd separately reports its
+existing timer triggered 25 October 00:00:13 BST, job Result=success/exit 0 and
+next 26 October 00:02:52 GMT. This is execution metadata, not a fresh structured
+profile recovery pass or evidence of full 45-home coverage. No assumption is
+made that this database receipt follows administrator rotation without comparing
+its protected timing evidence. Prior qualified backup/recovery scopes remain.
+
 PostgreSQL operator/backup password rotation PASSED at
 `candidate-gtnhc4kc/postgres-operator-backup-rotation`, helper SHA256
 53f020055aaf9e2a0b13fe8a26e0eefd325376f2810c062b98b61c39d11746f6.
