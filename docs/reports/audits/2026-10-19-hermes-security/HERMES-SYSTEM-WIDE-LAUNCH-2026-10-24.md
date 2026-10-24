@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Fresh native attempt `e8d9362220ad4a78b3806974` at protected evidence
+`native-qualification-s0i2fcwk` received the owner's actual terminal answer.
+Question preservation, reviewed sharing, correction and retraction commits,
+and peer withdrawal passed. The overall native result FAILED: completed=false,
+no error, no rate limit, HTTP 200, five physical model requests, completion
+validation checkpoint. Preserve this retracted record; never replay its edits.
+It is not a native-completion pass or evidence that a model/timeout caused it.
+
+Pinned Hermes turn_finalizer.py requires a real final response, no failure or
+interruption, and iteration room unless the exit is text_response. It reports
+api_calls and turn_exit_reason, previously omitted by the qualification receipt.
+The helper had max_iterations=5 while its independent physical-request guard
+already allowed at most six requests. The revised test aligns the native loop
+with that existing six-request cap, retains the 100-second wall-clock limit,
+all exact-target/version/write guards and strict completed predicate. It does
+not change the installed Hermes code or increase the physical-request cap.
+Five requests alone do not prove the previous exit reason; future failures now
+include only fixed exit categories, bounded counts and boolean final/failure/
+interruption flags, not raw exit strings or model output.
+
+Both completed run IDs are refused before fresh credential issuance and for
+mutating resume-answer mode; read-only observation remains separate. The new
+wrapper still offers no resume arguments or automatic retry. Updated public
+source hashes match both launchers. The first expanded source selection found
+five fake-agent interface failures (129 passes); test doubles now expose the
+real native max_iterations attribute, and all 134 selected tests pass. Installed
+completion remains pending on a new scope with a new genuine terminal answer.
+
 Controlled installed candidate switch PASSED at
 `/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-evidence/controlled-runtime-switch`.
 The owner-run receipt verifies all 34 installed wheel files, actual API and

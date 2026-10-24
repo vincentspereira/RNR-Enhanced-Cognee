@@ -41,6 +41,35 @@ CHILD_PHASES = {"restricted_preflight", "pilot_snapshot", "original_provider_ver
                 "restart_pending_gate", "native_followup", "final_history", "pilot_preservation"}
 CHILD_PROGRESS = {"native_substage": "restricted_preflight"}
 FOLLOWUP_STATE = None
+COMPLETION_DIAGNOSTIC = None
+FINISHED_RUNS = {"5d0e9a49bdf544359ae6deff", "e8d9362220ad4a78b3806974"}
+
+
+def completion_diagnostic(result, maximum):
+    value = result if isinstance(result, dict) else {}
+    reason = value.get("turn_exit_reason")
+    category = "other"
+    if isinstance(reason, str):
+        if reason.startswith("max_iterations_reached("):
+            category = "iteration_limit"
+        elif reason.startswith("text_response("):
+            category = "text_response"
+        elif reason == "budget_exhausted":
+            category = "budget_exhausted"
+    calls = value.get("api_calls")
+    return {"exit_category": category, "api_calls": calls if type(calls) is int and 0 <= calls <= 6 else None,
+            "max_iterations": maximum, "final_response_present": value.get("final_response") is not None,
+            "failed": value.get("failed") is True, "interrupted": value.get("interrupted") is True}
+
+
+def validate_completion_diagnostic(value):
+    require(isinstance(value, dict) and set(value) == {"exit_category", "api_calls", "max_iterations",
+        "final_response_present", "failed", "interrupted"}
+        and value["exit_category"] in {"other", "iteration_limit", "text_response", "budget_exhausted"}
+        and (value["api_calls"] is None or type(value["api_calls"]) is int and 0 <= value["api_calls"] <= 6)
+        and type(value["max_iterations"]) is int and value["max_iterations"] == 6
+        and all(type(value[k]) is bool for k in ("final_response_present", "failed", "interrupted")))
+    return dict(value)
 
 
 def validate_followup_state(value):
@@ -78,6 +107,8 @@ def child_failure(error):
                 native_http_status=status if type(status) is int and 400 <= status <= 599 else None)
     if FOLLOWUP_STATE is not None:
         result["followup_observation"] = validate_followup_state(FOLLOWUP_STATE)
+    if COMPLETION_DIAGNOSTIC is not None:
+        result["completion_diagnostic"] = validate_completion_diagnostic(COMPLETION_DIAGNOSTIC)
     return result
 
 
@@ -266,7 +297,7 @@ def native_turn(core, provider, oauth, prompt, target):
     Keep both editing choices visible. Transport guards prevent unrelated
     writes and verify withdrawal from the peer scope after correction.
     """
-    global FOLLOWUP_STATE
+    global FOLLOWUP_STATE, COMPLETION_DIAGNOSTIC
     FOLLOWUP_STATE = dict(correction_tool_called=False, retraction_tool_called=False,
         correction_committed=False, peer_withdrawal_verified=False, retraction_committed=False,
         native_completed=False, native_error_present=False, rate_limited=False,
@@ -316,7 +347,7 @@ def native_turn(core, provider, oauth, prompt, target):
             FOLLOWUP_STATE["correction_tool_called" if tool_name == "enhanced_correct" else "retraction_tool_called"] = True
     FOLLOWUP_STATE["checkpoint"] = "agent_initialization"
     agent = run_agent.AIAgent(model=core["MODEL"], provider="openai-codex", api_mode="codex_responses",
-        api_key=oauth, base_url=core["BASE_URL"], enabled_toolsets=["memory"], max_iterations=5,
+        api_key=oauth, base_url=core["BASE_URL"], enabled_toolsets=["memory"], max_iterations=6,
         run_budget_seconds=100, fallback_model={}, credential_pool=None,
         reasoning_config={"enabled": True, "effort": "low"}, save_trajectories=False,
         quiet_mode=True, skip_background_review=True, session_id="launch-answer-" + target["run_id"],
@@ -328,6 +359,7 @@ def native_turn(core, provider, oauth, prompt, target):
                                                 "enhanced_correct", "enhanced_retract", "enhanced_clarify"})
         FOLLOWUP_STATE["checkpoint"] = "native_conversation"
         result = agent.run_conversation(prompt, conversation_history=[])
+        COMPLETION_DIAGNOSTIC = completion_diagnostic(result, agent.max_iterations)
         FOLLOWUP_STATE["checkpoint"] = "completion_validation"
         FOLLOWUP_STATE["native_completed"] = isinstance(result, dict) and result.get("completed") is True
         FOLLOWUP_STATE["native_error_present"] = isinstance(result, dict) and bool(result.get("error"))
@@ -503,7 +535,7 @@ def run_child(account, sources, bundle, stage, artifact):
     report = json.loads(result.stdout)
     if result.returncode == 1 and isinstance(report, dict) and report.get("complete") is False:
         fixed = {"complete", "native_substage", "native_failure_category", "native_http_status"}
-        require(set(report) in (fixed, fixed | {"followup_observation"})
+        require(fixed <= set(report) <= fixed | {"followup_observation", "completion_diagnostic"}
                 and report["native_substage"] in CHILD_PHASES
                 and report["native_failure_category"] in {
                     "dependency_missing", "timeout", "http_error", "condition_or_native_error"}
@@ -514,6 +546,8 @@ def run_child(account, sources, bundle, stage, artifact):
                         native_http_status=report["native_http_status"])
         if "followup_observation" in report:
             PROGRESS["followup_observation"] = validate_followup_state(report["followup_observation"])
+        if "completion_diagnostic" in report:
+            PROGRESS["completion_diagnostic"] = validate_completion_diagnostic(report["completion_diagnostic"])
         raise ValueError("native_candidate_incomplete_preserve_evidence")
     require(result.returncode == 0)
     require(isinstance(report, dict) and report.get("complete") is True)
@@ -564,6 +598,7 @@ def main(sources, mode="qualify", resume_id=None):
     require((mode in {"resume-answer", "inspect-attempt"} and isinstance(resume_id, str)
              and re.fullmatch(r"[a-f0-9]{24}", resume_id) is not None)
             or mode not in {"resume-answer", "inspect-attempt"} and resume_id is None)
+    require(mode != "resume-answer" or resume_id not in FINISHED_RUNS)
     if mode in {"qualify", "resume-answer"}:
         PROGRESS["failure_stage"] = "terminal_preflight"
         terminal_preflight()
@@ -676,7 +711,7 @@ def inspect_attempt(account, sources, artifact, issuer, run_id):
 
 def qualify_candidate(account, sources, artifact, issuer):
     run_id = uuid.uuid4().hex[:24]
-    require(run_id != "5d0e9a49bdf544359ae6deff")
+    require(run_id not in FINISHED_RUNS)
     PROGRESS["new_test_run_id"] = run_id
     now = int(time.time())
     key = issuer["load_signing_key"]()

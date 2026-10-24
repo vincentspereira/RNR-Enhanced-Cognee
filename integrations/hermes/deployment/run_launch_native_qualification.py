@@ -19,7 +19,7 @@ import tempfile
 REVISION = "21abf4857ca8dce8e0a3aafc725266c8d3754529"
 BASE = Path("/opt/enhanced-cognee-memory/candidates") / REVISION
 FILES = {
-    "deployment/qualify_launch_candidate.py":"77d0ede0b44ec9fc26ed22b581b9fa2ff6cf10004b12c4e76c8ab3c8103d82c9",
+    "deployment/qualify_launch_candidate.py":"442735b4c32bda66e57097d48074fc6183d9b855eb01bd4e74fb124fdbe8df8b",
     "deployment/check_pilot_codex.py":"8aad07b7a40770eb89d687bc2b7c9c004f88b1b79b94304e179058e568b38695",
     "deployment/install_pilot_provider.py":"410cfc4145848f5bf868c0ff1f8e7a0245057c0b53f662b8cb45a41f5d450368",
     "deployment/provision_pilot_access.py":"f2bf3ec50bfd8414011aa322e027f7c266a7102d558c0b7d0518549e8a8b2cc6",

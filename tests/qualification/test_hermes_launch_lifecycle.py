@@ -107,7 +107,9 @@ def test_both_native_child_stages_reopen_closed_provider_and_preserve_gates(prov
         def add_provider(self, provider): self.provider = provider
         def initialize_all(self, session, **kwargs): self.provider.initialize(session, **kwargs)
     class Agent:
-        def __init__(self, **kwargs): self.options = kwargs
+        def __init__(self, **kwargs):
+            self.options = kwargs
+            self.max_iterations = kwargs["max_iterations"]
         def run_conversation(self, prompt, conversation_history):
             provider = self.options["memory_manager"].provider
             provider.on_turn_start(1, prompt)

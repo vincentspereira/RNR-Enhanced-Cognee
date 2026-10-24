@@ -245,7 +245,9 @@ def test_native_followup_transport_is_limited_to_confirmed_target(native, tmp_pa
         def add_provider(self, value): assert value is provider
         def initialize_all(self, *a, **kw): assert kw["hermes_home"] == str(tmp_path)
     class Agent:
-        def __init__(self, **kw): options.update(kw)
+        def __init__(self, **kw):
+            options.update(kw)
+            self.max_iterations = kw["max_iterations"]
         def close(self): options["closed"] = True
         def run_conversation(self, prompt, conversation_history):
             assert prompt == "REAL_TERMINAL_ANSWER_FIXTURE" and conversation_history == []
