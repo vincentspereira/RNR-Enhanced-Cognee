@@ -239,6 +239,36 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Corrected owner-run cache inspection found one configured worker write-key
+pattern and no match for the recovery namespace. No connection/replay/write
+occurred. This establishes a configured namespace prerequisite; the failed
+delivery's precise exception is still not available, and effective ACL
+acceptance is not claimed.
+
+`install_launch_cache_operator.py` prepares an installed transition using the
+existing staged Valkey operator credential, not another generated secret. It
+hash-verifies the reviewed stdlib file/control primitives, preserves the original
+ACL in a new exclusive attempt directory, and appends one distinct account.
+Existing worker lines stay byte-identical. Its SHA256 password rule admits only
+`ec:lr_*:*` with PING/GET/SET/DEL; no ACL, configuration, flush or general admin
+command is granted. The cache is stopped/restarted because systemd loads a
+credential-file snapshot. Both current worker and new operator must authenticate.
+A new invented expiring key proves SET/GET/DEL, and GET outside the recovery
+prefix must be refused. The ordinary agent receives no new secret. A separate
+root-only authority file is installed only after these checks. Failure attempts
+restore the original ACL, restart and check worker authentication, retaining
+failed evidence. Hard interruption remains an operator recovery case.
+
+The index helper now prefers this explicit protected cache authority for
+qualification and inspection, leaving the running worker configuration intact.
+The 52-test cache-installer/index source selection passes (including ACL-line
+preservation, prefix restriction, hashed rather than plaintext password storage,
+bounded RESP parsing, shared-source hash pin and ordinary-user refusal).
+Installed account/restart/rollback qualification is pending. Do not present
+these source tests as installed ACL acceptance. Daily recovery generations,
+prior graph/credential-cycle passes and the completed historical test remain
+preserved. Reference: https://valkey.io/topics/acl/ .
+
 CORRECTION: the owner-run retained_replay_policy_inspection receipt reported
 zero configured worker cache write-key patterns and stopped without connections
 or replay. The diagnostic parser used shlex comments=True, which treats Valkey

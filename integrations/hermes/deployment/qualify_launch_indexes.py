@@ -294,7 +294,8 @@ def inspect_replay_failure():
             or receipt.get("category") != "new_pipeline_has_unready_deliveries"):
         raise ValueError("observed_failed_pipeline_required")
     worker = private_json(Path("/etc/enhanced-cognee/worker.json"))
-    username = urlsplit(worker["INDEX_VALKEY_URL"]).username or "default"
+    cache_authority = explicit_cache_authority()
+    username = urlsplit((cache_authority or worker)["INDEX_VALKEY_URL"]).username or "default"
     acl_path = Path("/etc/enhanced-cognee/valkey-users.acl")
     protected_settings(acl_path)
     fd = os.open(acl_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
@@ -303,8 +304,22 @@ def inspect_replay_failure():
         if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_size > 16384:
             raise ValueError("protected_acl_required")
         raw = stream.read(16385).decode("ascii")
-    return {"failed_pipeline": pipeline, **cache_write_namespace_policy(raw, username, pipeline),
+    return {"failed_pipeline": pipeline, "protected_cache_operator_selected": cache_authority is not None,
+            **cache_write_namespace_policy(raw, username, pipeline),
             "store_connections": False, "delivery_replayed": False, "live_state_changed": False}
+
+
+def explicit_cache_authority():
+    path = Path("/etc/enhanced-cognee/launch-cache-authority.json")
+    if not os.path.lexists(path):
+        return None
+    protected_settings(path)
+    document = private_json(path)
+    if (not isinstance(document, dict) or set(document) != {"INDEX_VALKEY_URL"}
+            or not isinstance(document["INDEX_VALKEY_URL"], str)):
+        raise ValueError("explicit_operator_cache_authority_invalid")
+    local(document["INDEX_VALKEY_URL"], {"redis"}, 28537)
+    return document
 
 
 def delivery_failure_metadata(error):
@@ -424,6 +439,10 @@ async def qualify(result):
         result["store_authority_source"] = "explicit_protected_graph_operator_existing_worker_cache"
     elif not all(k in operator for k in ("INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL")):
         combined.update(retained_authority(settings, result))
+    cache_authority = explicit_cache_authority()
+    if cache_authority is not None:
+        combined.update(cache_authority)
+        result["protected_recovery_cache_operator_selected"] = True
     required = {"ENHANCED_MEMORY_DATABASE_URL", "ENHANCED_INDEX_KEY", "INDEX_ARCADEDB_USER",
                 "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL", "INDEX_QDRANT_API_KEY"}
     if not required <= combined.keys():
