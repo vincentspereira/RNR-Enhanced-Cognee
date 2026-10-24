@@ -340,7 +340,17 @@ async def qualify(result):
     # Prefer the protected operator identity. A worker lacking permission to
     # create new namespaces must fail; no ACL/grant is altered to make it pass.
     combined = dict(worker_config, **operator)
-    if not all(k in operator for k in ("INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL")):
+    authority_path = Path("/etc/enhanced-cognee/launch-index-authority.json")
+    if os.path.lexists(authority_path):
+        protected_settings(authority_path)
+        graph_authority = private_json(authority_path)
+        if (not isinstance(graph_authority, dict)
+                or set(graph_authority) != {"INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD"}
+                or any(not isinstance(v, str) or not v for v in graph_authority.values())):
+            raise ValueError("explicit_operator_graph_authority_invalid")
+        combined.update(graph_authority)
+        result["store_authority_source"] = "explicit_protected_graph_operator_existing_worker_cache"
+    elif not all(k in operator for k in ("INDEX_ARCADEDB_USER", "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL")):
         combined.update(retained_authority(settings, result))
     required = {"ENHANCED_MEMORY_DATABASE_URL", "ENHANCED_INDEX_KEY", "INDEX_ARCADEDB_USER",
                 "INDEX_ARCADEDB_PASSWORD", "INDEX_VALKEY_URL", "INDEX_QDRANT_API_KEY"}

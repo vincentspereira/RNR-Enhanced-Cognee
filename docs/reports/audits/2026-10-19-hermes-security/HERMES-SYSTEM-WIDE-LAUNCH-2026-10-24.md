@@ -239,6 +239,31 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Owner-run credential component qualification now PASSED, retained at
+`/var/tmp/ec-credential-cycle-nt875dsi`, helper SHA256
+`131af05be0ce1c9285579516e2903ed1838e94d5841e1e449afaeb3041d20f6c`.
+New fixture `/var/lib/hermes-renewal-qualification/9646ae3baf454698` proved real
+API expiry denial, replacement acceptance, installed native secret refresh,
+changed cache identity, prepared/published journal reconciliation and preserved
+settings/synthetic auth. No model was called or memory record written. This
+pass must be reused. Installed issuer, running gateway rebuild and scheduled
+renewal firing remain explicitly unqualified, as the receipt reports.
+
+The latest authority inspection found only authorization-decision fields in
+the retained authorization file; runtime inputs structure was unavailable.
+The owner then confirmed awareness of an existing ARCADEDB_PASSWORD in .env.
+No secret value was supplied to the agent. A terminal-only import helper now
+creates a new root-owned 0600 fixed operator file using the exact matching
+username and a hidden password prompt. It refuses non-root/non-terminal use,
+unprotected ancestors, links and existing destinations. It never reads the
+agent-owned .env or authenticates/resets/grants anything. Index qualification
+can consume only the two explicit graph fields from this protected file and
+retains the current worker cache/Qdrant authority without widening it. The
+import/index source selection passes 41 tests. Import and actual store
+qualification execution are pending. Copying a credential out of an
+agent-readable .env does not resolve its prior exposure; final credential
+isolation/disposition remains a separate admission check.
+
 Follow-up owner receipt `/var/tmp/ec-credential-cycle-jm43udye` identified
 PermissionError errno 13 at helper line 193, opening the fixture transaction
 directory. Both operator and native authenticated status requests had passed;
