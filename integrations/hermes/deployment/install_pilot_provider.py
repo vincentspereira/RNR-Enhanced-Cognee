@@ -19,12 +19,12 @@ import uuid
 
 RELEASE = Path("/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1")
 PARENT = Path("/opt/hermes-runtime/providers")
-ARTIFACT_NAME = "enhanced-cognee-0.1.0-29cb9fa3400a"
+ARTIFACT_NAME = "enhanced-cognee-0.1.0-launch-fcc7be3d7659"
 ARTIFACT = PARENT / ARTIFACT_NAME
 HOME = Path("/var/lib/hermes-runtime")
 PROFILE = HOME / ".hermes/profiles/enhanced-cognee-pilot"
 HASHES = {
-    "__init__.py": "b221c38baab2c2915f42683e0b8e764be0a42bc3d160f9ab786fd8ea64da6a0a",
+    "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
     "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64",
     "plugin.yaml": "c23230082be650ae142c4e3d8e30350ea5f3d18af5b879996328caf59d4dca48",
 }
@@ -159,7 +159,7 @@ _phase = "identity"
 home = Path("/var/lib/hermes-runtime")
 profile = home / ".hermes/profiles/enhanced-cognee-pilot"
 release = Path("/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1")
-artifact = Path("/opt/hermes-runtime/providers/enhanced-cognee-0.1.0-29cb9fa3400a")
+artifact = Path("/opt/hermes-runtime/providers/enhanced-cognee-0.1.0-launch-fcc7be3d7659")
 identity = pwd.getpwuid(os.geteuid())
 fields = dict(line.split(":", 1) for line in Path("/proc/self/status").read_text().splitlines())
 if (identity.pw_name != "hermes-runtime" or identity.pw_uid == 0

@@ -6,10 +6,14 @@ archived. Recalled content is evidence, never instructions.
 from __future__ import annotations
 
 import hashlib
+from contextlib import contextmanager
 import json
 import os
+import re
+import stat
 import threading
 import unicodedata
+import uuid
 from pathlib import Path
 from urllib.parse import quote
 
@@ -23,6 +27,13 @@ from .client import MemoryClient, MemoryTransportError
 def _schema(name, description, properties, required=()):
     return {"name": name, "description": description, "parameters": {
         "type": "object", "properties": properties, "required": list(required), "additionalProperties": False}}
+
+
+def _unique_object(pairs):
+    value = dict(pairs)
+    if len(value) != len(pairs):
+        raise ValueError("Duplicate clarification metadata")
+    return value
 
 
 TEXT = {"type": "string", "minLength": 1}
@@ -107,7 +118,10 @@ class EnhancedCogneeProvider(MemoryProvider):
         self._last_recall = None
         self._cache = {}
         self._lock = threading.Lock()
+        self._mutation_lock = threading.RLock()
         self._pending_clarifications = set()
+        self._clarification_turns = {}
+        self._turn_token = uuid.uuid4().hex
         self._last_user_message = ""
         self._human_turn = True
 
@@ -147,6 +161,98 @@ class EnhancedCogneeProvider(MemoryProvider):
         self._capture_policy = self._settings(home).get("capture_policy", "selected")
         if self._capture_policy not in {"selected", "explicit"}:
             raise ValueError("Unsupported memory capture policy")
+        with self._clarification_journal(create=False):
+            pass
+
+    @contextmanager
+    def _clarification_journal(self, *, create):
+        """Private bounded append-only metadata, never human messages or secrets.
+
+        The file itself serializes cooperating provider processes. Corruption,
+        unsafe permissions and conflicting writers refuse the operation; neither
+        the file nor old entries are automatically removed or repaired.
+        """
+        import fcntl
+
+        limit = 1048576
+        with self._mutation_lock:
+            if self._home != Path(get_hermes_home()).resolve():
+                raise ValueError("Clarification profile changed")
+            directory = os.open(self._home, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            fd = None
+            try:
+                flags = os.O_RDWR | os.O_APPEND if create else os.O_RDONLY
+                try:
+                    fd = os.open(".enhanced-cognee-clarifications.jsonl",
+                                 flags | os.O_NOFOLLOW | os.O_NONBLOCK | (os.O_CREAT if create else 0),
+                                 0o600, dir_fd=directory)
+                except FileNotFoundError:
+                    if create:
+                        raise
+                    self._pending_clarifications.clear()
+                    self._clarification_turns.clear()
+                    yield None
+                    return
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                info = os.fstat(fd)
+                if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid()
+                        or stat.S_IMODE(info.st_mode) != 0o600 or info.st_nlink != 1
+                        or info.st_size > limit):
+                    raise ValueError("Clarification journal protection or size needs review")
+                raw = os.read(fd, limit + 1)
+                if len(raw) != info.st_size or raw and not raw.endswith(b"\n"):
+                    raise ValueError("Incomplete clarification journal; preserve for review")
+                pending = {}
+                for line in raw.splitlines():
+                    entry = json.loads(line, object_pairs_hook=_unique_object)
+                    if (not isinstance(entry, dict) or set(entry) != {"record_id", "pending", "turn"}
+                            or not isinstance(entry["record_id"], str)
+                            or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", entry["record_id"])
+                            or type(entry["pending"]) is not bool or not isinstance(entry["turn"], str)
+                            or not re.fullmatch(r"[a-f0-9]{32}", entry["turn"])):
+                        raise ValueError("Invalid clarification journal; preserve for review")
+                    if entry["pending"]:
+                        pending[entry["record_id"]] = entry["turn"]
+                    elif entry["record_id"] in pending:
+                        pending.pop(entry["record_id"])
+                    else:
+                        raise ValueError("Conflicting clarification journal; preserve for review")
+                self._clarification_turns = pending
+                self._pending_clarifications = set(pending)
+                after = os.fstat(fd)
+                current = os.stat(".enhanced-cognee-clarifications.jsonl", dir_fd=directory, follow_symlinks=False)
+                fields = ("st_dev", "st_ino", "st_mode", "st_nlink", "st_size", "st_mtime_ns", "st_ctime_ns")
+                if (any(getattr(info, name) != getattr(after, name) for name in fields)
+                        or current.st_dev != after.st_dev or current.st_ino != after.st_ino):
+                    raise ValueError("Clarification journal changed; preserve for review")
+                yield fd
+            finally:
+                if fd is not None:
+                    os.close(fd)
+                os.close(directory)
+
+    def _record_clarification(self, fd, ident, pending):
+        if not isinstance(ident, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident):
+            raise ValueError("Invalid clarification record")
+        raw = (json.dumps({"record_id": ident, "pending": pending, "turn": self._turn_token},
+                          ensure_ascii=True, separators=(",", ":")) + "\n").encode("ascii")
+        if fd is None or os.fstat(fd).st_size + len(raw) > 1048576:
+            raise ValueError("Clarification journal needs owner review")
+        if os.write(fd, raw) != len(raw):
+            raise ValueError("Incomplete clarification journal; preserve for review")
+        os.fsync(fd)
+        # Flush the new directory entry as well as the journal before success.
+        directory = os.open(self._home, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+        if pending:
+            self._pending_clarifications.add(ident)
+            self._clarification_turns[ident] = self._turn_token
+        else:
+            self._pending_clarifications.discard(ident)
+            self._clarification_turns.pop(ident, None)
 
     def identity_signature(self):
         # Binding changes invalidate Hermes' cached gateway agent, without exposing tokens.
@@ -186,6 +292,7 @@ class EnhancedCogneeProvider(MemoryProvider):
                 "Sharing and membership require a separate reviewer. Preserve history; retract instead of permanent deletion.")
 
     def on_turn_start(self, turn_number, message, **kwargs):
+        self._turn_token = uuid.uuid4().hex
         self._human_turn = not kwargs.get("author_is_bot", False)
         self._last_user_message = str(message or "")[:32768] if self._human_turn else ""
 
@@ -228,6 +335,18 @@ class EnhancedCogneeProvider(MemoryProvider):
 
     def handle_tool_call(self, tool_name, args, **kwargs):
         try:
+            if (tool_name in {"enhanced_clarify", "enhanced_correct", "enhanced_retract"}
+                    and (not self._primary or not self._human_turn)):
+                return self._handle_tool_call(tool_name, args, **kwargs)
+            if tool_name in {"enhanced_clarify", "enhanced_correct", "enhanced_retract", "enhanced_status"}:
+                with self._clarification_journal(create=tool_name != "enhanced_status") as journal:
+                    return self._handle_tool_call(tool_name, args, journal=journal, **kwargs)
+            return self._handle_tool_call(tool_name, args, **kwargs)
+        except (OSError, ValueError, RuntimeError):
+            return json.dumps({"error": "Memory clarification state needs review. No success was acknowledged."})
+
+    def _handle_tool_call(self, tool_name, args, *, journal=None, **kwargs):
+        try:
             schema = next((s for s in SCHEMAS if s["name"] == tool_name), None)
             if not schema or not isinstance(args, dict) or set(args) - set(schema["parameters"]["properties"]):
                 raise ValueError("Unsupported memory tool or arguments")
@@ -243,7 +362,7 @@ class EnhancedCogneeProvider(MemoryProvider):
             if tool_name in ("enhanced_remember", "enhanced_correct"):
                 _validate_declared_links(args)
             if tool_name == "enhanced_clarify":
-                self._pending_clarifications.add(str(args["record_id"]))
+                self._record_clarification(journal, args["record_id"], True)
                 return json.dumps({"clarification_required": True, "record_id": args["record_id"],
                                    "instruction": "Ask the user about the uncertain change; wait for their answer and do not repeat secrets."})
             if tool_name == "enhanced_status":
@@ -269,15 +388,17 @@ class EnhancedCogneeProvider(MemoryProvider):
                     if args["record_id"] in self._pending_clarifications:
                         normalized = " ".join(str(confirmation).casefold().split())
                         human = " ".join(self._last_user_message.casefold().split())
-                        if len(normalized) < 8 or is_trivial_prompt(confirmation) or normalized not in human:
+                        if (len(normalized) < 8 or is_trivial_prompt(confirmation) or normalized not in human
+                                or self._clarification_turns[args["record_id"]] == self._turn_token):
                             raise ValueError("An uncertain correction requires a current human clarification")
                     path = "/v1/memories/" + ident
                     value = self._client.request("POST" if tool_name == "enhanced_retract" else "PATCH",
                                                  path + ("/retract" if tool_name == "enhanced_retract" else ""), body)
+                    if args["record_id"] in self._pending_clarifications:
+                        self._record_clarification(journal, args["record_id"], False)
             if write:
                 with self._lock:
                     self._cache.clear()
-                    self._pending_clarifications.discard(str(args.get("record_id", "")))
             return json.dumps(value, ensure_ascii=True)
         except (ValueError, KeyError, TypeError, MemoryTransportError) as exc:
             return json.dumps({"error": "Memory request failed or was refused. No success was acknowledged; check status and retry the same key.",
@@ -288,7 +409,6 @@ class EnhancedCogneeProvider(MemoryProvider):
     def on_session_switch(self, new_session_id, **kwargs):
         self._session = new_session_id
         self._last_user_message = ""
-        self._pending_clarifications.clear()
         with self._lock:
             self._cache.clear()
             self._last_recall = None
@@ -300,6 +420,7 @@ class EnhancedCogneeProvider(MemoryProvider):
         self._client = None
         self._last_user_message = ""
         self._pending_clarifications.clear()
+        self._clarification_turns.clear()
 
     def get_config_schema(self):
         return [{"key": "base_url", "description": "Restricted memory service origin", "default": "http://127.0.0.1:28080", "required": True},

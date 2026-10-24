@@ -1,5 +1,13 @@
 # Remaining Hermes memory rollout work
 
+24 October continuation: the owner authorized proceeding in two consolidated
+work batches. See [the current qualification report](../reports/audits/2026-10-19-hermes-security/CONSOLIDATED-LAUNCH-QUALIFICATION-2026-10-24.md)
+and [the two-batch procedure](HERMES-CONSOLIDATED-LAUNCH-QUALIFICATION.md).
+The 62-check native synthetic Windows pass is verified. New clarification
+restart/same-turn gaps are repaired and source-tested; installed candidate
+qualification and the other operational/fleet gates remain open. The dated
+checkpoint below is preserved and does not override the new evidence.
+
 Reviewed in Workspace on 23 October 2026 against repository source and the
 owner-relayed installed results. This is not direct access to Ubuntu-Hermes.
 

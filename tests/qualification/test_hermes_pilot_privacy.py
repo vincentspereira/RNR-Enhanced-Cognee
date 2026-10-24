@@ -44,7 +44,9 @@ async def test_actual_api_admission_rejects_every_case_before_canonical_database
     now = int(time.time())
     token = jwt.encode({"sub": "hermes_pilot_runtime", "tenant": "qualification", "project_id": "hermes_pilot",
         "agent_id": "hermes_pilot", "roles": ["api_client"], "capture_policy": "selected",
-        "iat": now, "exp": now + 300}, signing, algorithm="HS256")
+        # This lane tests content admission, not exact issue-time boundaries.
+        # A small host clock correction must not turn it into a 401 test.
+        "iat": now - 30, "exp": now + 300}, signing, algorithm="HS256")
     pool = NS(acquire=lambda: pytest.fail("Rejected input must not reach a database write/read transaction"))
     service = MemoryService(pool, NS(_enabled=True))
     # Request-budget accounting uses PostgreSQL before content admission. Keep
