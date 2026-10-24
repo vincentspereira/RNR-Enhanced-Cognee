@@ -93,6 +93,42 @@ def require(condition):
         raise ValueError("qualification_condition_not_met")
 
 
+def terminal_preflight():
+    """A piped source bundle still needs a real terminal for the human answer."""
+    try:
+        # Buffered text r+ requires seeking; Linux terminals cannot seek.
+        with open("/dev/tty", "r", encoding="ascii") as reader, \
+                open("/dev/tty", "w", encoding="ascii", buffering=1) as writer:
+            require(reader.isatty() and writer.isatty())
+    except (OSError, ValueError):
+        PROGRESS["human_answer_failure"] = "terminal_unavailable"
+        raise ValueError("qualification_terminal_unavailable") from None
+
+
+def read_human_answer(run_id):
+    require(isinstance(run_id, str) and re.fullmatch(r"[a-f0-9]{24}", run_id) is not None)
+    expected = ("For fictional Cedar launch " + run_id
+        + ", use five-day reviews, then retract this invented test record while preserving history.")
+    try:
+        with open("/dev/tty", "r", encoding="ascii") as reader, \
+                open("/dev/tty", "w", encoding="ascii", buffering=1) as writer:
+            require(reader.isatty() and writer.isatty())
+            writer.write("Native question, unchanged record and scoped sharing checks passed.\n"
+                         "For this invented test only, type the following answer to continue:\n" + expected + "\n> ")
+            writer.flush()
+            raw = reader.readline(1024)
+    except (OSError, ValueError):
+        PROGRESS["human_answer_failure"] = "terminal_unavailable_or_encoding"
+        raise ValueError("qualification_terminal_input_unavailable") from None
+    if not raw:
+        PROGRESS["human_answer_failure"] = "terminal_end_of_input"
+        raise ValueError("qualification_human_answer_missing")
+    if not raw.endswith("\n") or raw.strip() != expected:
+        PROGRESS["human_answer_failure"] = "answer_mismatch_or_truncated"
+        raise ValueError("qualification_human_answer_not_confirmed")
+    return raw.strip()
+
+
 def api(token, method, path, body=None):
     require(path.startswith("/v1/memories"))
     connection = HTTPConnection("127.0.0.1", 28080, timeout=10)
@@ -354,6 +390,10 @@ def main(sources, mode="qualify"):
     require(os.geteuid() == 0 and os.environ.get("WSL_DISTRO_NAME") == "Ubuntu-Hermes"
             and os.environ.get("SUDO_USER") == "vincentspereira")
     require(mode in {"qualify", "inspect"})
+    if mode == "qualify":
+        PROGRESS["failure_stage"] = "terminal_preflight"
+        terminal_preflight()
+        PROGRESS["failure_stage"] = "operator_preflight"
     issuer = definitions(sources[BASE + "deployment/provision_pilot_access.py"], "launch_issuer")
     installer = definitions(sources[BASE + "deployment/install_pilot_provider.py"], "launch_installer")
     account = pwd.getpwnam("hermes-runtime")
@@ -383,6 +423,10 @@ def main(sources, mode="qualify"):
     installer["stage_artifact"](candidate_payload(sources))
     PROGRESS["candidate_staged"] = True
     artifact = installer["ARTIFACT"]
+    return qualify_candidate(account, sources, artifact, issuer)
+
+
+def qualify_candidate(account, sources, artifact, issuer):
     run_id = uuid.uuid4().hex[:24]
     now = int(time.time())
     key = issuer["load_signing_key"]()
@@ -412,19 +456,13 @@ def main(sources, mode="qualify"):
     require(api(token, "POST", endpoint + "/share", share)[0] == 403)
     require(api(reviewer, "PATCH", endpoint, {"expected_version": 2, "content": "Unapproved reviewer edit"})[0] == 403)
     require(api(reviewer, "POST", endpoint + "/share", share)[0] == 200)
-    PROGRESS["reviewed_sharing_passed"] = True
     require(api(peer, "GET", endpoint)[0] == 200)
     require(api(reviewer, "POST", endpoint + "/share", dict(share, revoke=True))[0] == 200)
     require(api(peer, "GET", endpoint)[0] == 404)
     require(api(reviewer, "POST", endpoint + "/share", share)[0] == 200)
-    expected_answer = ("For fictional Cedar launch " + run_id
-        + ", use five-day reviews, then retract this invented test record while preserving history.")
+    PROGRESS["reviewed_sharing_passed"] = True
     PROGRESS["failure_stage"] = "human_answer"
-    with open("/dev/tty", "r+", encoding="ascii", buffering=1) as terminal:
-        terminal.write("Native question, unchanged record and scoped sharing checks passed.\n"
-                       "For this invented test only, type the following answer to continue:\n" + expected_answer + "\n> ")
-        answer = terminal.readline(1024).strip()
-    require(answer == expected_answer)
+    answer = read_human_answer(run_id)
     PROGRESS["human_answer_received"] = True
     bundle.update(record_id=ident, human_answer=answer)
     PROGRESS["failure_stage"] = "native_followup_after_process_restart"

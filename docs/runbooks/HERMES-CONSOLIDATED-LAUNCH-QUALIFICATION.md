@@ -31,6 +31,20 @@ required. Reuse the successful inspection evidence; the next native command is
 one `qualify` invocation with the corrected published revision. Retain both
 earlier incomplete attempts without replay or deletion.
 
+Latest terminal checkpoint: on 1fa28665 the owner-run native question and
+reviewed-sharing phases passed, including post-question record/history checks.
+The run stopped at human_answer before receiving an answer. Buffered text r+
+cannot open a Linux terminal because it requires seeking. The helper now uses
+separate read/write streams, checks terminal availability before issuing keys
+or calling a model, and reports fixed input-failure categories without input
+content. Real pseudo-terminal tests cover piped-bundle stdin, a visible prompt,
+accepted/mismatched/EOF/non-ASCII replies and no controlling terminal. Operator
+flow fixtures also test the full question/sharing/human/follow-up sequence.
+No typed fixture is counted as real human confirmation. The previous attempt
+has no trusted resumable operator receipt identifying its scope, so it cannot
+be safely selected for automatic continuation. Preserve it; one corrected fresh
+qualification is required to exercise the terminal answer and native follow-up.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional

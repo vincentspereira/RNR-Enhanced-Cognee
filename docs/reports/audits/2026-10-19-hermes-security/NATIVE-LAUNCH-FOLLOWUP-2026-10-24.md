@@ -108,3 +108,50 @@ Sanitized source hashes/counts are in
 remediation-evidence/2026-10-24-native-provider-lifecycle.json. Required CI on the
 earlier d275ab5e passed; Security Audit, memory-qualification, full-runtime and
 other legacy jobs still failed. No all-green release result is claimed.
+
+## Third owner result and terminal input correction
+
+On 1fa286652d53420b28b0f4f245a89666fe61e1fa, the owner-relayed result reaches
+failure_stage=human_answer, with native_question_passed=true and
+reviewed_sharing_passed=true. Candidate admission, negative credentials, native
+clarification, unchanged current/history rows, restored pending state and the
+scoped sharing/revocation checks preceding this stage passed. Human-answer
+receipt and native follow-up are false; no follow-up acceptance is claimed.
+
+The helper attempted open('/dev/tty', 'r+', buffering=1) before displaying its
+prompt. A real local Linux pseudo-terminal reproduces UnsupportedOperation:
+File or stream is not seekable. Buffered text update mode requires seeking;
+the terminal cannot provide it. The receipt itself does not disclose that
+low-level exception, but this confirmed defect is consistent with the stage.
+Separate read and write streams now handle terminal I/O and flush the prompt.
+A terminal preflight runs before protected issuer definitions, candidate
+staging, credential creation or model execution. Absent terminals stop early.
+Rejected/EOF/encoding input reports fixed categories without serializing the
+reply. The script still requires the actual operator to supply the displayed
+invented-data answer; no automatic answer is supplied.
+
+Ten new regressions cover real controlling-terminal I/O with piped bundle stdin,
+acceptance and three refusal cases, missing-terminal refusal before issuer
+loading, and complete operator-flow/failure-order fixtures. Model, canonical
+store and human input in these tests are simulated. No local test is promoted
+to installed human/model acceptance. The sharing-progress flag is now set only
+after every sharing/revocation/resharing check completes, so an intermediate
+failure cannot mark that whole phase passed.
+
+The previous operator kept its run identifier/ordinary tokens only in memory
+and emitted no trusted resume checkpoint. Agent-owned pending journals do not
+prove which attempt reached the operator's sharing checks. No profile is chosen
+by guessed timestamps or a same-user claim. Earlier attempts, profiles and
+histories remain intact; one new corrected qualification must gather the real
+answer and follow-up. The original helper and launcher were preserved under
+the ignored .archive/2026-10-24_launch_terminal_input directory. The provider,
+service, immutable artifact, existing pilot and model defaults are unchanged.
+
+Final terminal follow-up validation: 1269 Hermes/operator/encrypted-collection/
+portable-backup tests passed, zero failures/errors/skips and no reported pytest
+warnings. This includes ten new terminal/operator cases. Python/embedded-source,
+shell syntax and ASCII checks passed; the redacted staged-diff secret scan
+found zero leaks. Coverage was not measured. Private logs/fixtures remain at
+/tmp/ec-native-terminal-fix-20261024 and /tmp/ecq-ofu5gu7v. Sanitized counts and
+source hashes are in remediation-evidence/2026-10-24-native-terminal-input.json.
+No native follow-up or whole-fleet pass is inferred from these local results.
