@@ -1,5 +1,14 @@
 # Remaining Hermes memory rollout work
 
+Latest source checkpoint: the restricted text-only service now has a clean
+locked dependency audit, matching real BGE vectors and disposable encrypted
+recovery evidence. The full legacy lock retains three filelock findings.
+See [the source report](../reports/audits/2026-10-19-hermes-security/TEXT-EMBEDDING-SECURITY-2026-10-24.md)
+and [the consolidated host continuation](HERMES-SYSTEM-WIDE-LAUNCH-CONTINUATION.md).
+Installed renewal/recovery, native completion and real fleet admission remain
+open. Do not replay the completed version-4 record. Older checkpoints below
+retain their dates and do not override this update.
+
 24 October continuation: the owner authorized proceeding in two consolidated
 work batches. See [the current qualification report](../reports/audits/2026-10-19-hermes-security/CONSOLIDATED-LAUNCH-QUALIFICATION-2026-10-24.md)
 and [the two-batch procedure](HERMES-CONSOLIDATED-LAUNCH-QUALIFICATION.md).

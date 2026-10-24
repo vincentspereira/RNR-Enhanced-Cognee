@@ -40,11 +40,14 @@ def main():
     for name in ("sh", "bash", "su", "mount", "apt", "dpkg", "pip"):
         assert shutil.which(name) is None
     import asyncpg
-    import fastembed
+    import onnxruntime
+    import tokenizers
     import redis
     import src.memory_api
     import src.index_runtime
-    assert asyncpg and fastembed and redis and src.memory_api and src.index_runtime
+    assert asyncpg and onnxruntime and tokenizers and redis and src.memory_api and src.index_runtime
+    for name in ("fastembed", "PIL"):
+        assert importlib.util.find_spec(name) is None
     report = json.loads(Path("/usr/share/enhanced-cognee/runtime-inventory.json").read_text())
     assert report["package_inventories_preserved"]
     for package in report["additional_debian_packages"]:

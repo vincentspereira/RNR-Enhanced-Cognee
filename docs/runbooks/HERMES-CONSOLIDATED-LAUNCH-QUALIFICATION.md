@@ -1,5 +1,14 @@
 # Two-batch Hermes launch qualification
 
+Latest source checkpoint: the restricted text-only service now has a clean
+locked dependency audit, matching real BGE vectors and disposable encrypted
+recovery evidence. The full legacy lock retains three filelock findings.
+See [the source report](../reports/audits/2026-10-19-hermes-security/TEXT-EMBEDDING-SECURITY-2026-10-24.md)
+and [the consolidated host continuation](HERMES-SYSTEM-WIDE-LAUNCH-CONTINUATION.md).
+Installed renewal/recovery, native completion and real fleet admission remain
+open. Do not replay the completed version-4 record. Older checkpoints below
+retain their dates and do not override this update.
+
 Prepared 24 October 2026 in Ubuntu-Workspace. This is a continuation of the
 restricted pilot, not permission to activate everyday profiles or the fleet.
 Use two work batches, with individual checks and retained failure evidence.

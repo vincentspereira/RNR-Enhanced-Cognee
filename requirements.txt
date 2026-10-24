@@ -171,3 +171,4 @@ jupyter==1.1.1                      # Jupyter notebook support
 
 # Security floor for transitive packaging support.
 setuptools>=84.1.0
+virtualenv>=21.14.9

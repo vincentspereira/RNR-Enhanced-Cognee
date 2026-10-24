@@ -1,5 +1,10 @@
 # Canonical effects and remaining security gates - 24 October 2026
 
+Latest source checkpoint: [text-only embedding repair](TEXT-EMBEDDING-SECURITY-2026-10-24.md) closes the
+restricted Pillow gate (zero known lock findings) and admits the reviewed
+limits/packaging/virtualenv update. Full-lock findings are now three in filelock.
+Installed host/fleet gates remain open. Historical results below are retained.
+
 Recommendation: retain the completed invented-data result and finish the
 dependency/operational gates before everyday or system-wide admission. Do not
 replay the correction/retraction simply to obtain another overall success flag.

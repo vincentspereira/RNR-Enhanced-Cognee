@@ -29,6 +29,24 @@ environments. Prepare the named local embedding model once as an operator; the
 runtime loads its existing offline cache. No chat-model API key belongs in this
 service. The Hermes plugin reuses its host's separately configured model.
 
+The restricted 1.2.0 runtime uses a text-only ONNX adapter, independently of
+optional full-engine FastEmbed support. Its admitted model is
+`BAAI/bge-small-en-v1.5` (384 dimensions). Other models fail closed pending
+separate admission. Prepare a NEW operator-owned flat cache explicitly:
+
+```bash
+python scripts/qualification/prepare_text_model.py --cache /APPROVED/NEW/model-cache
+```
+
+Replace the example with the selected protected directory. This downloads only
+five public MIT-licensed files at a pinned repository revision and verifies
+exact sizes/SHA-256. `--source /APPROVED/EXISTING/flat-cache` uses verified local
+files instead. Existing differing files are refused and retained. Runtime
+startup never downloads or falls back to another model. Preserve the old cache
+and runtime; do not repoint a running service until artifact, vector, actual
+index/recovery and installed-host checks pass. A FastEmbed snapshot/link layout
+is not silently migrated into the new flat cache.
+
 The separate `packaging/memory/pyproject.toml` builds the small
 `rnr-enhanced-cognee-memory` wheel directly from this same maintained source.
 Install the hashed index and MCP locks, then this wheel with `--no-deps`, and run

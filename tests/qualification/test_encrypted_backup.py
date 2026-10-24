@@ -18,7 +18,8 @@ from src.encryption_manager import EncryptionManager
 
 
 @pytest.mark.asyncio
-async def test_actual_encrypted_dump_restore_and_wrong_key_denial(tmp_path, monkeypatch):
+@pytest.mark.parametrize("text_model", [False, True], ids=["canonical", "text-model-recovery"])
+async def test_actual_encrypted_dump_restore_and_wrong_key_denial(tmp_path, monkeypatch, text_model):
     url = os.getenv("RNR_QUALIFICATION_DATABASE_URL")
     if not url or not shutil.which("age") or not shutil.which("age-keygen"):
         pytest.skip("Requires an explicitly disposable DB and free age tools")
@@ -26,6 +27,13 @@ async def test_actual_encrypted_dump_restore_and_wrong_key_denial(tmp_path, monk
     docker = os.getenv("RNR_QUALIFICATION_DOCKER", "docker")
     if not container and not (shutil.which("pg_dump") and shutil.which("pg_restore")):
         pytest.skip("Requires PostgreSQL client tools or an explicitly disposable PG container")
+    embedder = None
+    if text_model:
+        cache = os.getenv("RNR_QUALIFICATION_MODEL_CACHE")
+        if not cache:
+            pytest.skip("Requires the explicit prepared offline text-model cache")
+        from src.local_embeddings import LocalEmbeddings, MODEL, MODEL_FILES
+        embedder = LocalEmbeddings(MODEL, cache)
     suffix = uuid.uuid4().hex[:16]
     source_name, target_name = "memory_backup_src_" + suffix, "memory_restore_" + suffix
     uri = urlsplit(url)
@@ -43,10 +51,16 @@ async def test_actual_encrypted_dump_restore_and_wrong_key_denial(tmp_path, monk
     cipher = EncryptionManager(master_key=Fernet.generate_key().decode())
     scope = MemoryScope("backup_fixture", "source", "alice", "hermes")
     try:
-        service = MemoryService(source, cipher)
+        service = MemoryService(source, cipher, embedder)
         await service.initialize()
         record = await service.remember(scope, "Synthetic backup cedar fixture", idempotency_key="backup")
         await service.correct(scope, record["id"], expected_version=1, content="Synthetic backup birch fixture")
+        if text_model:
+            semantic = await service.remember(scope, "Recovery copies are retained for thirty days.", idempotency_key="semantic")
+            await service.remember(scope, "Lunch is served in the garden at noon.", idempotency_key="distractor")
+            recalled = await service.recall(scope, "How long do we keep backups?", limit=1)
+            assert recalled["retrieval"] == "semantic"
+            assert recalled["results"][0]["id"] == semantic["id"]
         identity, wrong = tmp_path / "identity.txt", tmp_path / "wrong.txt"
         for path in (identity, wrong):
             subprocess.run(["age-keygen", "-o", str(path)], check=True, capture_output=True)
@@ -73,13 +87,27 @@ async def test_actual_encrypted_dump_restore_and_wrong_key_denial(tmp_path, monk
             await restore(str(path), str(identity), target_name, restore_command=restore_command)
         target = await asyncpg.create_pool(database_url(target_name), min_size=1, max_size=2)
         try:
-            recovered = MemoryService(target, cipher)
+            if text_model:
+                # Restore the model to a separate cache and start a fresh
+                # engine; never reuse the original model/session object.
+                restored_cache = tmp_path / "restored-model"
+                restored_cache.mkdir()
+                for name in MODEL_FILES:
+                    shutil.copyfile(Path(cache) / name, restored_cache / name)
+                embedder = LocalEmbeddings(MODEL, str(restored_cache))
+            recovered = MemoryService(target, cipher, embedder)
             await recovered.check_schema()
             assert (await recovered.get(scope, record["id"]))["content"] == "Synthetic backup birch fixture"
             with pytest.raises(KeyError):
                 await recovered.get(MemoryScope(scope.tenant, "other", "alice", "hermes"), record["id"])
             async with target.acquire() as conn:
-                assert await conn.fetchval("SELECT count(*) FROM shared_memory.record_versions") == 2
+                assert await conn.fetchval("SELECT count(*) FROM shared_memory.record_versions") == (4 if text_model else 2)
+            if text_model:
+                recalled = await recovered.recall(scope, "How long do we keep backups?", limit=1)
+                assert recalled["retrieval"] == "semantic"
+                assert recalled["results"][0]["id"] == semantic["id"]
+                assert (await recovered.recall(MemoryScope(scope.tenant, "other", "alice", "hermes"),
+                    "How long do we keep backups?"))["results"] == []
         finally:
             await target.close()
     finally:

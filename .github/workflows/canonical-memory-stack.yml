@@ -82,9 +82,10 @@ jobs:
         run: |
           python - <<'PY'
           import json, os, pathlib, time, urllib.request
-          from fastembed import TextEmbedding
+          import subprocess, sys
           # Explicit operator preparation; runtime model downloads remain off.
-          TextEmbedding("BAAI/bge-small-en-v1.5", cache_dir=os.environ["RNR_QUALIFICATION_MODEL_CACHE"], threads=2)
+          subprocess.run([sys.executable, "scripts/qualification/prepare_text_model.py",
+              "--cache", os.environ["RNR_QUALIFICATION_MODEL_CACHE"]], check=True)
           for port in (6333, 2480):
               for attempt in range(60):
                   try:

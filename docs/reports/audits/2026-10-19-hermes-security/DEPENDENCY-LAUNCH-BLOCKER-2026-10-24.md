@@ -1,5 +1,10 @@
 # Dependency launch blocker - 24 October 2026
 
+Latest source checkpoint: [text-only embedding repair](TEXT-EMBEDDING-SECURITY-2026-10-24.md) closes the
+restricted Pillow gate (zero known lock findings) and admits the reviewed
+limits/packaging/virtualenv update. Full-lock findings are now three in filelock.
+Installed host/fleet gates remain open. Historical results below are retained.
+
 Recommendation: continue only the approved invented-data qualification while
 resolving the restricted embedding runtime's dependency conflict. Do not admit
 private/everyday fleet use or merge a release with the enforced security gate
