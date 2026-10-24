@@ -31,7 +31,14 @@ async def test_real_model_restart_long_input_and_parallel_queries():
                             "fixtures/text_embedding_reference.json").read_text())
     assert reference["model"] == MODEL
     for case in reference["cases"]:
-        np.testing.assert_allclose(await second.embed(case["text"]), case["vector"], atol=1e-6, rtol=1e-5)
+        actual = np.asarray(await second.embed(case["text"]))
+        expected = np.asarray(case["vector"])
+        # A quantized model can choose different integer kernels on another
+        # CPU. Keep same-host restart strict above; compare the stored baseline
+        # by bounded component error AND angular agreement across machines.
+        assert np.max(np.abs(actual - expected)) <= 1e-3
+        cosine = np.dot(actual, expected) / (np.linalg.norm(actual) * np.linalg.norm(expected))
+        assert cosine >= 0.99999
     with pytest.raises(ValueError, match="admitted"):
         LocalEmbeddings("unreviewed/other-model", cache)
     with pytest.raises(ValueError, match="text"):

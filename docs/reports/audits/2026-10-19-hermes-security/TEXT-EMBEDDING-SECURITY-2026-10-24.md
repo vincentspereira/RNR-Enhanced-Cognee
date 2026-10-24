@@ -91,6 +91,45 @@ database generations and failed-attempt logs remain private/local. Original
 source and locks were preserved under .archive/2026-10-24_text_embedding_security.
 Sanitized hashes/counts are in remediation-evidence/2026-10-24-text-embedding-security.json.
 
+## Hosted continuation and portability repairs
+
+The first hosted run on d2bb1ccfd61960428dce9905ed21986678310a69 passed the
+restricted dependency audit, but the combined memory lane reported 51 failed,
+1360 passed and 5 skipped. Forty-nine failures came from fixtures hardcoding
+UID 1000 while GitHub's temporary files belong to its actual runner. These
+fixtures now use their actual effective UID; production ownership guards stay
+unchanged. A one-shot helper also left the pytest process umask at 0077,
+silently making a later deliberately public negative fixture private. A scoped
+fixture now restores the process mask between qualification cases. The actual
+cache permission rejection is not weakened.
+
+The cross-machine golden-vector assertion observed a maximum component
+difference of 0.00021559 on the first case, while strict same-host restart
+checks passed. The exact 30-vector baseline equality above applies to Workspace.
+Quantized CPU kernels can vary; [ONNX Runtime documents architecture-dependent
+integer saturation](https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html#when-and-why-do-i-need-to-try-u8u8).
+The stored cross-machine reference now requires BOTH maximum component error
+<=0.001 and cosine >=0.99999. Same-host restart still uses the original strict
+tolerance, and model/tokenizer hashes, dimensions, semantic ordering and scope
+checks remain enforced. This is a numeric portability bound, not an assertion
+of bit-for-bit equality across CPUs. Fresh hosted results remain necessary.
+
+After these fixture repairs the complete combined memory selection passes
+locally: 1411 passed, zero failed/errors and 5 explicit skips (Node/Go/Rust real
+clients, browser and external derived stores). Those require their separate
+hosted jobs and are not called passes. The source operator/cache selection also
+passes 286 checks. Earlier independent source/real-DB counts remain valid.
+
+The first hosted default-stack job built the restricted image and passed its
+reduced-runtime smoke, but the image's worker did not catch up. The new model
+cache had operator-only 0700 traversal, which cannot serve the non-root container.
+CI now explicitly grants read/traverse for that NEW public-only cache and exact
+pinned public files; private settings/keys are untouched. A bounded container
+state artifact records exit/OOM/status without configuration or raw logs on
+future failure. Installed-host cache access and exact-image/store acceptance
+are still required; no cause beyond the observed cache incompatibility or
+successful image qualification is inferred.
+
 ## Exact remaining execution boundary
 
 The owner-run completed version-4 record remains preserved; its earlier native

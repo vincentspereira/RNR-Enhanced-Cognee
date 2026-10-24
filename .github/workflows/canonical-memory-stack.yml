@@ -86,6 +86,12 @@ jobs:
           # Explicit operator preparation; runtime model downloads remain off.
           subprocess.run([sys.executable, "scripts/qualification/prepare_text_model.py",
               "--cache", os.environ["RNR_QUALIFICATION_MODEL_CACHE"]], check=True)
+          # This new cache contains only pinned public MIT model files. The
+          # non-root API/worker containers need read/traverse access to it.
+          pathlib.Path(os.environ["RNR_QUALIFICATION_MODEL_CACHE"]).chmod(0o755)
+          from src.local_embeddings import MODEL_FILES
+          for name in MODEL_FILES:
+              (pathlib.Path(os.environ["RNR_QUALIFICATION_MODEL_CACHE"]) / name).chmod(0o644)
           for port in (6333, 2480):
               for attempt in range(60):
                   try:
@@ -144,6 +150,22 @@ jobs:
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro -v "$PWD:/report" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --format json --output /report/image-security.json canonical-memory:qualification
           # Functional success does not close the security gate. No ignore file.
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --severity HIGH,CRITICAL --exit-code 1 canonical-memory:qualification
+      - name: Retain bounded container failure state without configuration or logs
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json, pathlib, subprocess
+          states = {}
+          for name in ('canonical-memory-api', 'canonical-memory-index'):
+              result = subprocess.run(['docker', 'inspect', '--format',
+                  '{{json .State}}', name], capture_output=True, text=True, timeout=10)
+              try:
+                  state = json.loads(result.stdout) if result.returncode == 0 else {}
+                  states[name] = {key: state.get(key) for key in ('Status', 'Running', 'ExitCode', 'OOMKilled')}
+              except ValueError:
+                  states[name] = {'inspection_valid': False}
+          pathlib.Path('container-state.json').write_text(json.dumps(states, indent=2))
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -153,4 +175,5 @@ jobs:
             image-security.json
             built-default-stack.log
             reduced-runtime.log
+            container-state.json
           retention-days: 14

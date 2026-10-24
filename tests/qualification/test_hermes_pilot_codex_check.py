@@ -1,6 +1,7 @@
 """No live OAuth or model calls: verify bounded native completion orchestration."""
 import importlib.util
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace as NS
 
@@ -443,7 +444,7 @@ def test_only_allowlisted_provider_codes_leave_failure_report(check, code, expec
 
 def setup_main(check, monkeypatch):
     snapshots = {"auth.json": json.dumps(credential(check)).encode(), "config.yaml": b"memory-only"}
-    monkeypatch.setattr(check, "preflight", lambda approved: (1000, snapshots))
+    monkeypatch.setattr(check, "preflight", lambda approved: (os.geteuid(), snapshots))
     monkeypatch.setattr(check.os, "chdir", lambda path: None)
     monkeypatch.setattr(check.logging, "disable", lambda value: None)
     monkeypatch.setattr(check, "native_components", lambda: ())
@@ -1004,7 +1005,7 @@ def exercise_memory_stage(check, monkeypatch, tmp_path, capsys, stage, fails, mu
         "config.yaml": b"memory:\n  provider: enhanced_cognee\n",
         "enhanced_cognee.json": json.dumps({"base_url": "http://127.0.0.1:28080", "timeout": 10,
             "include_shared": True, "capture_policy": "selected"}).encode()}
-    monkeypatch.setattr(check, "preflight", lambda approved: (1000, snapshots))
+    monkeypatch.setattr(check, "preflight", lambda approved: (os.geteuid(), snapshots))
     monkeypatch.setattr(check.os, "chdir", lambda path: None)
     monkeypatch.setattr(check.os, "umask", lambda mask: None)
     monkeypatch.setattr(check.logging, "disable", lambda value: None)
@@ -1232,7 +1233,7 @@ def test_inspect_stage_never_reads_oauth_or_constructs_a_model_agent(check, monk
         "base_url": "http://127.0.0.1:28080", "timeout": 10, "include_shared": True, "capture_policy": "selected"}).encode()}
     def preflight(approved, *, include_auth=True):
         assert approved and include_auth is False
-        return 1000, snapshots
+        return os.geteuid(), snapshots
     monkeypatch.setattr(check, "preflight", preflight)
     monkeypatch.setattr(check, "read_private", lambda name, uid:
         b"PRIVATE_MEMORY_TOKEN" if name == ".env" else snapshots[name])

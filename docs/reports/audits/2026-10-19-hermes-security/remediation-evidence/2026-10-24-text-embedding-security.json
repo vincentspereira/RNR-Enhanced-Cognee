@@ -108,5 +108,34 @@
     "Windows real collection and remote/offline recovery",
     "owner historical credential disposition",
     "final release review"
-  ]
+  ],
+  "hosted_initial_memory": {
+    "revision": "d2bb1ccfd61960428dce9905ed21986678310a69",
+    "passed": 1360,
+    "failures": 51,
+    "skipped": 5,
+    "repaired_fixture_causes": [
+      "hardcoded local UID",
+      "process umask leak"
+    ],
+    "cross_machine_reference": {
+      "observed_first_case_maximum_component_error": 0.00021559,
+      "admitted_maximum_component_error": 0.001,
+      "required_cosine": 0.99999,
+      "same_host_restart_tolerance_unchanged": true
+    },
+    "fixed_source_local_combined": {
+      "passed": 1411,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5
+    },
+    "fresh_hosted_validation_required": true
+  },
+  "hosted_initial_default_stack": {
+    "image_build_and_reduced_runtime_smoke_passed": true,
+    "container_worker_catchup_passed": false,
+    "public_model_cache_traversal_fixed": true,
+    "fresh_hosted_validation_required": true
+  }
 }
