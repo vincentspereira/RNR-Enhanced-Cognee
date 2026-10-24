@@ -1,5 +1,11 @@
 # Consolidated launch qualification - 24 October 2026
 
+Hosted follow-up: Required CI passed on 06037eb7b, but the enforced memory audit
+found 37 Pillow advisories. A compatible full-runtime Pillow fix passes 4344
+unit tests; the restricted FastEmbed/Pillow conflict and broader audit findings
+remain open. See [the dependency blocker](DEPENDENCY-LAUNCH-BLOCKER-2026-10-24.md).
+The green functional results below are not a green dependency/release result.
+
 Recommendation: continue the restricted candidate qualification. System-wide
 Hermes/Enhanced Cognee launch remains unadmitted. The owner authorized proceeding
 with pending tests and consolidating them into one or two batches. This authorizes

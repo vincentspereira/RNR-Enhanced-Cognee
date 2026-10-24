@@ -5,6 +5,11 @@ restricted pilot, not permission to activate everyday profiles or the fleet.
 Use two work batches, with individual checks and retained failure evidence.
 Two batches are not a promise that implementation gaps disappear in two calls.
 
+Current security blocker: the restricted FastEmbed dependency caps Pillow below
+the patched major version. [The 24 October dependency report](../reports/audits/2026-10-19-hermes-security/DEPENDENCY-LAUNCH-BLOCKER-2026-10-24.md)
+records the failed enforced audit, compatible full-runtime update and unresolved
+restricted-service gate. Do not force an incompatible install to proceed.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional

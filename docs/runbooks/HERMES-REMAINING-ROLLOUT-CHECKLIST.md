@@ -8,6 +8,10 @@ restart/same-turn gaps are repaired and source-tested; installed candidate
 qualification and the other operational/fleet gates remain open. The dated
 checkpoint below is preserved and does not override the new evidence.
 
+The subsequent [dependency audit follow-up](../reports/audits/2026-10-19-hermes-security/DEPENDENCY-LAUNCH-BLOCKER-2026-10-24.md)
+confirms the required CI pass but a still-failing restricted FastEmbed/Pillow
+security gate. Source/conversation passes do not close that launch blocker.
+
 Reviewed in Workspace on 23 October 2026 against repository source and the
 owner-relayed installed results. This is not direct access to Ubuntu-Hermes.
 
