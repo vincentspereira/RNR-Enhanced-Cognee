@@ -2,6 +2,7 @@
 import hashlib
 import hmac
 import importlib.util
+from io import BytesIO
 import json
 from pathlib import Path
 
@@ -45,7 +46,8 @@ def test_all_shared_support_sources_match_pins():
         assert hashlib.sha256(SOURCE.with_name(name).read_bytes()).hexdigest() == digest
 
 
-def test_inspection_reads_only_fixed_probe_and_reports_cache_refusal_without_secrets(monkeypatch,capsys):
+@pytest.mark.parametrize("finish",[False,True])
+def test_inspection_or_finish_refuses_mutation_without_verified_delivery(monkeypatch,capsys,finish):
     monkeypatch.setattr(helper.os,"geteuid",lambda:0)
     previous = {"project":"wp_10df177d41ceef89","record_id":"c85b599e-69b4-46f4-ac8d-9f3848bc3d3b"}
     worker = {"INDEX_VALKEY_URL":"redis://invented:invented-private-cache@127.0.0.1:28537/0",
@@ -65,10 +67,30 @@ def test_inspection_reads_only_fixed_probe_and_reports_cache_refusal_without_sec
                     "vector_index":"queried","results":[{"id":previous["record_id"]}],"paths":[{}]}
     monkeypatch.setattr(helper,"definitions",definitions)
     monkeypatch.setattr(helper,"public_index_settings",lambda:{"pipeline":"hermes"})
+    monkeypatch.setattr(helper,"cache_get",lambda *a:("refused",None))
     monkeypatch.setattr(helper,"api",api)
-    assert helper.inspect_existing() == 0
+    assert helper.inspect_existing(finish=finish) == (1 if finish else 0)
     output = capsys.readouterr().out
     receipt = json.loads(output)
     assert receipt["cache_get_refused"] is True and receipt["memory_written"] is False
     assert len(calls) == 3
     assert "invented-private" not in output
+
+
+def test_realistic_encrypted_embedding_cache_reply_exceeds_small_probe_limit():
+    raw = json.dumps({"payload":"enc2:"+"A"*12000}).encode()
+    wire = b"$"+str(len(raw)).encode()+b"\r\n"+raw+b"\r\n"
+    assert helper.cache_bulk_reply(BytesIO(wire)) == ("bulk",raw)
+    small_reader = helper.definitions("install_launch_cache_operator.py")["read_reply"]
+    with pytest.raises(ValueError,match="bounded_cache_response_required"):
+        small_reader(BytesIO(wire))
+
+
+@pytest.mark.parametrize("wire",[b"$262145\r\n",b"$12\r\nshort\r\n",b"+unexpected\r\n"])
+def test_larger_cache_reader_still_refuses_oversize_truncation_and_wrong_type(wire):
+    with pytest.raises(ValueError):
+        helper.cache_bulk_reply(BytesIO(wire))
+
+
+def test_cache_reader_suppresses_private_error_text():
+    assert helper.cache_bulk_reply(BytesIO(b"-NOPERM invented-private-details\r\n")) == ("refused",None)

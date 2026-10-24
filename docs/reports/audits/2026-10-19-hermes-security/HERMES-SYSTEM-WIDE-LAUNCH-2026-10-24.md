@@ -239,6 +239,27 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+The first read-only installed-worker inspection also returned a generic refusal.
+Source tracing found a reader-contract mismatch: the reused cache setup probe
+limits bulk replies to 4096 bytes, but actual encrypted memory payloads include
+384-dimensional embeddings and can exceed that. A regression with a realistic
+12 KiB encrypted-shaped payload reproduces that reader refusal; this is a
+confirmed harness size defect, not yet a captured diagnosis of the host reply.
+The installed probe now has a fixed-key GET reader bounded at 262144 bytes,
+matching its API response bound. Authentication retains the small bounded
+reader. The qualified cache installer and its source hash are unchanged.
+
+New `--finish-existing` mode first performs the read-only checks on the exact
+retained project/record. It refuses mutation unless current worker/index/cache
+delivery predicates pass and the canonical row remains active at version 1.
+An exclusive started receipt precedes the sole version-1 retraction. It verifies
+withdrawal and two-version history and writes a separate finish receipt; original
+creation/failure evidence stays intact. No creation retry, chat call, completed
+native-record access or automatic ambiguous-retraction retry is allowed. Fixed
+phase/refusal metadata and post-mutation failure receipts avoid another opaque
+error. Sixteen source tests pass, including bounds, refusal suppression and
+no mutation when delivery is unverified. Installed delivery/finish remains open.
+
 Installed-worker probe did NOT pass. Protected evidence
 `operator-evidence/installed-worker-projection` records new scope
 `wp_10df177d41ceef89` and invented record
