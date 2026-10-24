@@ -75,3 +75,37 @@ def test_ordinary_user_cannot_import_store_configuration_or_control_services(mon
     monkeypatch.setattr(helper.os,"geteuid",lambda:1000)
     with pytest.raises(ValueError,match="protected_operator_python_required"):
         helper.main()
+
+
+def test_readonly_probe_uses_valid_uuid_and_proven_absent_disposable_point(monkeypatch):
+    calls = []
+    def status(port,path,headers,method="GET",body=None):
+        calls.append((path,method,body))
+        if len(calls) == 1:return 200
+        if len(calls) == 2:return 404
+        assert method == "POST" and path.endswith("/points/delete?wait=true")
+        assert len(body["points"]) == 1
+        assert body["points"][0] == calls[1][0].rsplit("/",1)[1]
+        return 403
+    monkeypatch.setattr(helper,"http_status",status)
+    passed,result = helper.readonly_write_probe("invented-admin","invented-readonly")
+    assert passed and result["readonly_delete_http"] == 403
+    assert all("/ec_lr_cc098bbed2b9424a" in row[0] for row in calls)
+
+
+@pytest.mark.parametrize("existence,absence",[(404,404),(200,200)])
+def test_denial_probe_never_deletes_if_collection_or_absence_unverified(monkeypatch,existence,absence):
+    calls = []
+    def status(port,path,headers,method="GET",body=None):
+        assert method == "GET"
+        calls.append(path)
+        return existence if len(calls) == 1 else absence
+    monkeypatch.setattr(helper,"http_status",status)
+    assert helper.readonly_write_probe("invented-admin","invented-readonly")[0] is False
+
+
+@pytest.mark.parametrize("code",[200,400,404,500])
+def test_non_authorization_failure_is_not_misreported_as_readonly_denial(monkeypatch,code):
+    responses = iter([200,404,code])
+    monkeypatch.setattr(helper,"http_status",lambda *args,**kwargs:next(responses))
+    assert helper.readonly_write_probe("invented-admin","invented-readonly")[0] is False

@@ -19,6 +19,7 @@ import shlex
 import signal
 import sys
 import time
+import uuid
 from urllib.parse import quote, unquote, urlsplit
 
 BASE = Path("/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529")
@@ -122,9 +123,28 @@ def await_check(check):
     return False
 
 
+def readonly_write_probe(admin_key,readonly_key):
+    # This collection belongs to the retained successful disposable recovery,
+    # not the live pipeline. Never target an existing point for denial tests.
+    collection = "/collections/ec_lr_cc098bbed2b9424a"
+    exists = http_status(28535,collection,{"api-key":admin_key})
+    ident = str(uuid.uuid4())
+    absent = http_status(28535,collection+"/points/"+ident,{"api-key":admin_key})
+    result = {"collection_exists_http":exists,"absent_point_http":absent}
+    if exists != 200 or absent != 404:
+        return False,result
+    code = http_status(28535,collection+"/points/delete?wait=true",
+        {"api-key":readonly_key,"Content-Type":"application/json"},"POST",{"points":[ident]})
+    result["readonly_delete_http"] = code
+    return code in {401,403},result
+
+
 def main():
     if os.geteuid() != 0 or Path(sys.prefix) != BASE / "runtime":
         raise ValueError("protected_operator_python_required")
+    retry = sys.argv[1:] == ["--retry-after-verified-rollback"]
+    if sys.argv[1:] and not retry:
+        raise ValueError("fixed_rotation_action_required")
     import yaml
     os.umask(0o077)
     shared = support("recover_launch_graph_operator.py")
@@ -140,6 +160,14 @@ def main():
              "cache":Path("/etc/enhanced-cognee/valkey-users.acl"),"qdrant":Path("/etc/enhanced-cognee/qdrant.yaml")}
     owners = {name:graph_owner if name == "graph" else 0 for name in paths}
     original = {name:read(path,owners[name]) for name,path in paths.items()}
+    if retry:
+        previous = STAGE / "derived-service-rotation"
+        receipt = json.loads(read(previous / "summary.json",0))
+        if (receipt.get("complete") is not False or receipt.get("rollback_api_ready") is not True
+                or receipt.get("reason") != "vector_readonly_write_boundary_failed"):
+            raise ValueError("verified_specific_rollback_required")
+        if any(read(previous / (name+".before.private"),0) != raw for name,raw in original.items()):
+            raise ValueError("rollback_configurations_do_not_match")
     configs = {name:json.loads(original[name]) for name in ("api","worker")}
     uri = urlsplit(configs["worker"]["INDEX_VALKEY_URL"])
     if uri.hostname not in {"127.0.0.1","localhost"} or uri.port != 28537 or uri.path not in {"","/0"}:
@@ -159,7 +187,7 @@ def main():
     configs["worker"]["INDEX_VALKEY_URL"] = "redis://"+quote(username,safe="")+":"+quote(password,safe="")+"@127.0.0.1:28537/0"
     for kind in ("api","worker"):
         changed[kind] = json.dumps(configs[kind]).encode()
-    attempt = STAGE / "derived-service-rotation"
+    attempt = STAGE / ("derived-service-rotation-valid-probe" if retry else "derived-service-rotation")
     attempt.mkdir(mode=0o700)
     for name,raw in original.items():
         write(attempt / (name+".before.private"),raw)
@@ -198,9 +226,10 @@ def main():
         if any(http_status(28535,"/collections",{"api-key":vector["service"][field]}) not in {401,403}
                for field in ("api_key","read_only_api_key")):
             raise ValueError("old_vector_key_still_accepted")
-        if http_status(28535,"/collections/ec_denied_qualification/points?wait=true",
-            {"api-key":candidates["qdrant"]["readonly"]["api_key"],"Content-Type":"application/json"},
-            "PUT",{"points":[]}) not in {401,403}:
+        denied,probe = readonly_write_probe(candidates["qdrant"]["admin_write"]["api_key"],
+                                           candidates["qdrant"]["readonly"]["api_key"])
+        result["readonly_write_probe"] = probe
+        if not denied:
             raise ValueError("vector_readonly_write_boundary_failed")
         result["checkpoint"] = "consumer_restart"
         control("start","api")
@@ -241,6 +270,7 @@ if __name__ == "__main__":
             "existing_cache_candidate_preserved","unique_existing_worker_acl_required","existing_worker_password_hash_not_verified",
             "existing_qdrant_service_configuration_required","generated_vector_key_required","fixed_cache_binding_required",
             "active_vector_authority_binding_required","protected_ancestor_required","protected_file_required"}
+        allowed.update({"fixed_rotation_action_required","verified_specific_rollback_required","rollback_configurations_do_not_match"})
         reason = str(error) if type(error) is ValueError and str(error) in allowed else "protected_input_or_configuration_error"
         print(json.dumps({"complete":False,"category":"derived_service_rotation_preflight_refused_no_secret_output","reason":reason}))
         raise SystemExit(1)

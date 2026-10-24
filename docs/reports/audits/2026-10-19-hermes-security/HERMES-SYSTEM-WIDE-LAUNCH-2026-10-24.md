@@ -239,6 +239,33 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+First grouped derived-service rotation did NOT pass. Receipt at
+`candidate-gtnhc4kc/derived-service-rotation` reports
+vector_readonly_write_boundary_failed and rollback_api_ready=true. The saved
+pre-bundle configs (which already contain the new PostgreSQL service logins)
+were restored; this is not a graph/cache/vector credential activation pass.
+Data, profiles and encryption/application keys remain unchanged.
+
+The failed denial probe used an empty upsert against a nonexistent collection.
+That can fail validation before meaningful authorization testing; its HTTP
+status was not retained, so the receipt does not establish a write-capable
+read-only key. The corrected probe uses the retained disposable recovery
+collection `ec_lr_cc098bbed2b9424a`, verifies its existence with the admin key,
+generates a fresh UUID, proves that point absent, then sends a valid delete
+request for only that absent point with the read-only key. Numeric existence,
+absence and authorization statuses are recorded; only 401/403 count as denial,
+never 200/400/404/500. No existing point or live pipeline is targeted.
+This matches the supported Qdrant security-test operation:
+https://qdrant.tech/documentation/tutorials-operations/secure-qdrant/ .
+
+The explicit `--retry-after-verified-rollback` action requires the exact failed
+reason, successful rollback receipt, and byte equality of all five active configs
+with the saved baseline before it starts. It retains the original attempt and
+uses a separate exclusive `derived-service-rotation-valid-probe` directory.
+Fourteen source checks pass, including no delete without verified absence and
+strict authorization-status interpretation. Installed retry remains pending;
+no failed check is reclassified as a pass.
+
 PostgreSQL API/worker credential rotation PASSED at
 `/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/postgres-service-rotation`.
 The owner-run receipt confirms staged replacement roles authenticate and pass
