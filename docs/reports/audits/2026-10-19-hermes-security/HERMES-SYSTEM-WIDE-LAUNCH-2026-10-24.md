@@ -239,6 +239,37 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Protected preparation executed successfully at
+`/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc`: 11 configuration snapshots
+and 12 replacement identities, none activated. Graph metadata confirms the
+service-owned 0600 server-users.jsonl has three entries in the
+name/password/databases format and a PBKDF2WithHmacSHA256 password. Groups are
+also service-owned 0600. No encryption or recovery key changed.
+
+The next root-only recovery helper is pinned to this exact stage. ArcadeDB
+server management requires built-in root, so its name is retained and its
+forgotten password is replaced using the staged operator secret. API and worker
+must not be root. Before stopping, the helper validates the installed hash
+format against the current worker password (Base64 salt TEXT, 65536 iterations),
+requires current worker authentication and invalid-password denial, snapshots
+user/group files and preserves any mistaken manual authority file. Only the
+root password field changes; other user lines remain byte-identical. The graph
+service is stopped and restarted; new root and existing worker must authenticate
+before protected operator authority is installed. On verification failure it
+preserves failed artifacts, restores original user bytes and attempts restart
+and worker acceptance. Each attempt is exclusive; incomplete attempts are not
+automatically replayed. SIGTERM/SIGINT enter the failure path; hard termination
+still requires operator review of the retained snapshots/journal.
+
+Eight source tests pass, including hash encoding, service-line preservation,
+ordinary-user refusal, malformed-user schema refusal and a simulated failed-new-
+authentication rollback. These are not installed recovery acceptance. Actual
+operator execution, derived-store qualification, the remaining service-account
+rotations, issuer reissue/revocation and final fleet gates remain open.
+The account and hash rules were checked against maintained primary sources:
+https://docs.arcadedb.com/arcadedb/how-to/operations/users and
+https://docs.arcadedb.com/arcadedb/reference/http-api/http .
+
 Owner decision: replace forgotten usernames/passwords for the Enhanced Cognee
 stack only, explicitly confirmed after scope clarification. External model
 accounts and unrelated Hermes applications are outside this rotation. The
