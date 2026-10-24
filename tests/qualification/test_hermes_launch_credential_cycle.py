@@ -77,3 +77,25 @@ def test_extra_diagnostic_fields_are_not_forwarded():
     value = helper.status_diagnostic(helper.claims_for("0123456789abcdef"), 0, {}, time.time())
     value["response_body"] = "invented-private-marker"
     assert helper.valid_diagnostic(value) is False
+
+
+def test_exception_metadata_omits_messages_and_private_attribute_values():
+    try:
+        try:
+            raise PermissionError(13, "invented-private-path-and-token")
+        except PermissionError:
+            raise RuntimeError("invented-private-response") from None
+    except RuntimeError as error:
+        value = helper.exception_metadata(error)
+    assert [row["kind"] for row in value] == ["RuntimeError", "PermissionError"]
+    assert value[1]["errno"] == 13
+    assert "invented-private" not in str(value)
+
+
+def test_exception_metadata_is_bounded_for_chained_errors():
+    error = ValueError("invented-private-marker")
+    for _ in range(8):
+        following = RuntimeError("invented-private-marker")
+        following.__cause__ = error
+        error = following
+    assert len(helper.exception_metadata(error)) == 4

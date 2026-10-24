@@ -88,6 +88,32 @@ def valid_diagnostic(value):
             and type(value["initialization_elapsed_ms"]) is int and 0 <= value["initialization_elapsed_ms"] <= 110000)
 
 
+def exception_metadata(error):
+    """Fixed categories and line numbers only; never exception messages/locals."""
+    known = {"ValueError", "TypeError", "AttributeError", "KeyError", "NameError",
+             "RuntimeError", "MemoryTransportError", "PermissionError", "FileNotFoundError",
+             "OSError", "URLError", "HTTPError", "TimeoutError"}
+    chain = []
+    seen = set()
+    while error is not None and id(error) not in seen and len(chain) < 4:
+        seen.add(id(error))
+        kind = type(error).__name__
+        row = {"kind": kind if kind in known else "other"}
+        number = getattr(error, "errno", None)
+        if type(number) is int and 0 < number < 4096:
+            row["errno"] = number
+        frames = []
+        trace = error.__traceback__
+        while trace is not None:
+            if trace.tb_frame.f_code.co_filename == __file__:
+                frames.append(trace.tb_lineno)
+            trace = trace.tb_next
+        row["helper_lines"] = frames[-4:]
+        chain.append(row)
+        error = error.__cause__ or error.__context__
+    return chain
+
+
 def child(artifact, data):
     global CHILD_PHASE, CHILD_DIAGNOSTICS
     account = pwd.getpwuid(os.geteuid())
@@ -158,6 +184,7 @@ def child(artifact, data):
         require(provider._client.token == data["old"], "initial_native_credential")
         CHILD_PHASE = "initial_status"
         lifecycle["accepted_status"](core, data["old"])
+        CHILD_PHASE = "initial_native_status"
         initial = provider._client.request("GET", "/v1/memories/status")
         require(initial.get("project_id") == identity["project_id"], "initial_native_scope")
         class CacheProbe(GatewayAgentCacheMixin):
@@ -255,6 +282,7 @@ def main():
             result = child(args.child, json.load(sys.stdin))
         except BaseException as error:
             result = {"complete": False, "category": "cycle_child_refused_preserve_fixture", "phase": CHILD_PHASE}
+            result["exception_metadata"] = exception_metadata(error)
             status = getattr(error, "status_code", None)
             if type(status) is int and 400 <= status <= 599:
                 result["native_http_status"] = status
@@ -333,11 +361,25 @@ def main():
         received = json.loads((evidence / "bounded-child-receipt.json").read_bytes())
         result["child_stderr_bytes"] = (evidence / "bounded-child-stderr.log").stat().st_size
         result["checkpoint"] = "child_receipt"
-        phases = {"identity", "source_load", "fixture_files", "native_imports", "initial_status",
+        phases = {"identity", "source_load", "fixture_files", "native_imports", "initial_status", "initial_native_status",
                   "interruption_prepared", "interruption_published", "await_expiry", "expired_refusal",
                   "native_refresh", "new_status", "preservation"}
         if isinstance(received, dict) and received.get("complete") is False and received.get("phase") in phases:
             result["child_failure_phase"] = received["phase"]
+            # Child ran the hash-recorded helper in a root-owned artifact. Still
+            # project only exact bounded metadata rather than arbitrary JSON.
+            metadata = received.get("exception_metadata")
+            if isinstance(metadata, list) and len(metadata) <= 4:
+                allowed = {"ValueError", "TypeError", "AttributeError", "KeyError", "NameError", "RuntimeError",
+                           "MemoryTransportError", "PermissionError", "FileNotFoundError", "OSError",
+                           "URLError", "HTTPError", "TimeoutError", "other"}
+                if all(isinstance(row, dict) and set(row) <= {"kind", "errno", "helper_lines"}
+                       and row.get("kind") in allowed and isinstance(row.get("helper_lines"), list)
+                       and len(row["helper_lines"]) <= 4
+                       and all(type(n) is int and 0 < n < 10000 for n in row["helper_lines"])
+                       and ("errno" not in row or type(row["errno"]) is int and 0 < row["errno"] < 4096)
+                       for row in metadata):
+                    result["exception_metadata"] = metadata
             if valid_diagnostic(received.get("initial_status_diagnostic")):
                 result["initial_status_diagnostic"] = received["initial_status_diagnostic"]
             status = received.get("native_http_status")

@@ -239,6 +239,27 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Latest owner-run diagnostics (24 October, retained without replay):
+`/var/tmp/ec-credential-cycle-majciy1l` failed in the previously combined
+initial-status phase. The operator request returned HTTP 200 with every
+readiness, schema, encryption, tenant, project, subject and count predicate true;
+57 seconds remained and initialization took 1158 ms. Expiration and an operator
+scope refusal are not supported explanations for this attempt. The next helper
+separates the native request phase and emits only bounded exception categories,
+numeric errno and helper line numbers, never messages, locals or response bodies.
+Its 18 focused source checks pass; installed execution remains unqualified.
+
+The latest `--inspect-blockers` receipt found authorization structure unavailable
+and only `smoke.log` and `summary.json` (both root-owned 0644) in the selected
+retained fleet directory. It made no connections and issued no credentials.
+No existing graph administration credential was recovered. The active graph
+unit has no Environment or LoadCredential entries and no rootPassword startup
+property. No worker privilege expansion, password guess or credential reset was
+attempted. Existing operator credentials remain a prerequisite for disposable
+actual-store namespace creation. The reviewed stdlib client's public local
+readiness probe succeeded separately; that does not establish authenticated
+native-provider acceptance.
+
 The protected candidate is staged; the live service has not switched in this
 receipt. Actual index recovery, controlled synthetic API/worker acceptance,
 installed credential lifecycle/expiry/reload/interruption/schedule acceptance,
