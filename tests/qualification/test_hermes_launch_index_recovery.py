@@ -17,6 +17,23 @@ def test_structure_inspection_cannot_read_arbitrary_protected_files():
         helper.retained_structure(Path("/etc/enhanced-cognee/operator.json"))
 
 
+@pytest.mark.parametrize("rules,allowed", [
+    ("~ec:live:*", False), ("~ec:*", True), ("~ec:* resetkeys ~ec:live:*", False),
+    ("%R~ec:*", False), ("%W~ec:*", True), ("allkeys", True)])
+def test_cache_policy_distinguishes_read_only_and_other_namespace(rules, allowed):
+    raw = "user invented on >invented-private-password "+rules+" +get +set"
+    report = helper.cache_write_namespace_policy(raw, "invented", "lr_0123456789abcdef")
+    assert report["configured_cache_new_namespace_pattern_matches"] is allowed
+    assert report["configured_cache_user_found"] is True
+    assert report["effective_acl_verified"] is False
+    assert "invented-private-password" not in str(report)
+
+
+def test_delivery_diagnostic_never_contains_error_message_or_private_values():
+    error = ValueError("invented-private-record-content")
+    assert helper.delivery_failure_metadata(error) == {"kind":"ValueError", "source_frames":[]}
+
+
 @pytest.mark.parametrize("url,schemes,port", [
     ("https://example.invalid:28535", {"http", "https"}, 28535),
     ("http://127.0.0.1:6333", {"http", "https"}, 28535),

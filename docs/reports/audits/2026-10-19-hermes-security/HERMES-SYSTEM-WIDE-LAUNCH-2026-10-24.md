@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Installed graph operator recovery PASSED at
+`/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/graph-operator-recovery`.
+The owner-run receipt confirms the built-in root password was replaced,
+existing user entries preserved, existing worker and new operator authenticated,
+protected operator authority installed and the previous hash retained. Graph
+restarted; other stores, profiles and memory data did not change. Do not rerun
+this recovery or regenerate its staged secret. Full credential rotation remains
+incomplete.
+
+Subsequent index attempt `/var/tmp/ec-launch-index-recovery-p7ys6cv3` provisioned
+actual graph `lr_fe57f4be223342a5` and vector collection
+`ec_lr_fe57f4be223342a5` using the recovered operator. It failed during restored
+outbox replay with new_pipeline_has_unready_deliveries. This is not a derived
+recovery pass. Retain the namespace and failed deliveries. The normal worker
+deliberately stores only projection_unavailable, so no sink-specific cause is
+inferred from that receipt. New helper diagnostics capture only fixed exception
+categories, numeric HTTP status and bounded maintained-source frame locations;
+messages, payloads and credential values remain excluded.
+
+The `--diagnose-replay` mode first examines configured cache write-key patterns
+for the fixed observed failed pipeline without connecting or replaying. This is
+configuration evidence, not effective ACL acceptance. It stops if the selected
+cache user or namespace write pattern is absent. Otherwise it performs normal
+qualification in a fresh namespace with delivery diagnostics. Forty index
+helper source checks pass, including unrelated/read-only cache prefix refusal
+and exclusion of private exception messages. Installed diagnostic execution is
+pending. No completed historical record or credential-cycle pass is repeated.
+
 Protected preparation executed successfully at
 `/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc`: 11 configuration snapshots
 and 12 replacement identities, none activated. Graph metadata confirms the

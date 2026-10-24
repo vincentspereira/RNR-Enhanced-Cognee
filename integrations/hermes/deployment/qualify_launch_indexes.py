@@ -13,6 +13,8 @@ import logging
 import os
 from pathlib import Path
 import re
+import fnmatch
+import shlex
 import stat
 import subprocess
 import tempfile
@@ -253,6 +255,72 @@ def safe_field_names(document):
         and not re.match(r"(?:gh[pousr]_|sk_|eyJ)", key))[:32]
 
 
+def cache_write_namespace_policy(raw, username, pipeline):
+    """Configured key-pattern metadata only, never credentials or ACL lines."""
+    patterns = []
+    found = False
+    for line in raw.splitlines():
+        tokens = shlex.split(line, comments=True)
+        if len(tokens) < 2 or tokens[:2] != ["user", username]:
+            continue
+        found = True
+        for token in tokens[2:]:
+            if token in {"reset", "resetkeys"}:
+                patterns = []
+            elif token == "allkeys":
+                patterns.append("*")
+            elif token.startswith("~"):
+                patterns.append(token[1:])
+            elif token.startswith("%W~") or token.startswith("%RW~"):
+                patterns.append(token.split("~", 1)[1])
+    return {"configured_cache_user_found": found,
+            "configured_cache_write_key_pattern_count": len(patterns),
+            "configured_cache_new_namespace_pattern_matches": any(
+                fnmatch.fnmatchcase("ec:"+pipeline+":"+"a"*64, pattern) for pattern in patterns),
+            "effective_acl_verified": False}
+
+
+def inspect_replay_failure():
+    evidence = Path("/var/tmp/ec-launch-index-recovery-p7ys6cv3/summary.json")
+    # Fixed observed receipt and protected config only. No delivery retry,
+    # decryption, store connection, live write or namespace creation.
+    receipt = private_json(evidence)
+    pipeline = receipt.get("new_pipeline")
+    if (pipeline != "lr_fe57f4be223342a5" or receipt.get("checkpoint") != "restored_outbox_replay"
+            or receipt.get("category") != "new_pipeline_has_unready_deliveries"):
+        raise ValueError("observed_failed_pipeline_required")
+    worker = private_json(Path("/etc/enhanced-cognee/worker.json"))
+    username = urlsplit(worker["INDEX_VALKEY_URL"]).username or "default"
+    acl_path = Path("/etc/enhanced-cognee/valkey-users.acl")
+    protected_settings(acl_path)
+    fd = os.open(acl_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_size > 16384:
+            raise ValueError("protected_acl_required")
+        raw = stream.read(16385).decode("ascii")
+    return {"failed_pipeline": pipeline, **cache_write_namespace_policy(raw, username, pipeline),
+            "store_connections": False, "delivery_replayed": False, "live_state_changed": False}
+
+
+def delivery_failure_metadata(error):
+    kinds = {"HTTPStatusError", "TimeoutError", "ValueError", "NoPermissionError", "AuthenticationError",
+             "ResponseError", "ConnectionError", "PermissionError", "KeyError", "TypeError"}
+    result = {"kind": type(error).__name__ if type(error).__name__ in kinds else "other"}
+    status = getattr(getattr(error, "response", None), "status_code", None)
+    if type(status) is int and 100 <= status <= 599:
+        result["store_http_status"] = status
+    trace = error.__traceback__
+    frames = []
+    while trace:
+        name = Path(trace.tb_frame.f_code.co_filename).name
+        if name in {"index_sinks.py", "index_outbox.py", "local_embeddings.py", "text_embeddings.py"}:
+            frames.append({"module": name, "line": trace.tb_lineno})
+        trace = trace.tb_next
+    result["source_frames"] = frames[-6:]
+    return result
+
+
 def retained_structure(path):
     """Schema inspection only, including read-only JSON under protected /root.
 
@@ -383,7 +451,16 @@ async def qualify(result):
         result["checkpoint"] = "new_actual_store_namespaces"
         await sinks.provision(create_graph_database=True)
         result["actual_store_namespaces_provisioned"] = True
-        worker = IndexWorker(service, sinks)
+        class ObservedWorker(IndexWorker):
+            async def _deliver(self, job):
+                try:
+                    return await super()._deliver(job)
+                except Exception as error:
+                    # The normal worker retains its generic retry/error contract.
+                    # Only this qualification receipt gets bounded diagnostics.
+                    result["delivery_failure"] = delivery_failure_metadata(error)
+                    raise
+        worker = ObservedWorker(service, sinks)
         async def drain():
             attempts = 0
             while await worker.run_once():
@@ -468,10 +545,26 @@ def main():
                             help="Report protected config field/file names only; no secret values or store calls")
     inspection.add_argument("--inspect-blockers", action="store_true",
                             help="Inspect selected authorization JSON structure and immediate fleet entry metadata only")
+    inspection.add_argument("--inspect-replay-failure", action="store_true",
+                            help="Inspect configured cache key policy for the retained failed pipeline; no replay")
+    inspection.add_argument("--diagnose-replay", action="store_true",
+                            help="Stop on configured cache namespace denial; otherwise qualify a fresh namespace with bounded diagnostics")
     args = parser.parse_args()
     if os.geteuid() != 0 or Path(sys.prefix) != BASE / "runtime":
         raise SystemExit("ERR: use the staged protected Python as operator")
     helper_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    replay_policy = None
+    if args.inspect_replay_failure or args.diagnose_replay:
+        try:
+            report = inspect_replay_failure()
+        except (OSError, ValueError, KeyError):
+            report = {"category": "failed_pipeline_policy_inspection_unavailable", "store_connections": False,
+                      "delivery_replayed": False, "live_state_changed": False}
+        if (args.inspect_replay_failure or report.get("configured_cache_user_found") is not True
+                or report.get("configured_cache_new_namespace_pattern_matches") is not True):
+            print(json.dumps({"stage": "retained_replay_policy_inspection", **report}))
+            return 0 if args.inspect_replay_failure else 1
+        replay_policy = report
     if args.inspect_blockers:
         try:
             report = inspect_remaining_authority()
@@ -543,6 +636,8 @@ def main():
               "derived_store_recovery_qualified": False, "live_indexes_changed": False,
               "live_canonical_edits": False, "service_runtime_changed": False,
               "fleet_launch_approved": False, "checkpoint": "protected_preflight"}
+    if replay_policy is not None:
+        result["prior_failed_pipeline_policy"] = replay_policy
     try:
         asyncio.run(asyncio.wait_for(qualify(result), timeout=600))
     except BaseException as error:
