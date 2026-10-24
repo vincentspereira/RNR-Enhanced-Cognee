@@ -125,3 +125,26 @@ def test_incomplete_retained_authority_is_not_guessed():
 def test_retained_reference_must_stay_in_explicit_operator_archive(path):
     with pytest.raises(ValueError, match="retained_authority_path_refused"):
         helper.retained_json(Path(path))
+
+
+def test_identical_retained_copies_do_not_require_credential_trials():
+    document = authority()
+    report = {}
+    selected = helper.unique_authority([(Path("one.json"), document), (Path("two.json"), document)], document, report)
+    assert selected["INDEX_ARCADEDB_USER"] == "invented_operator"
+    assert report["retained_authority_candidate_paths"] == ["one.json", "two.json"]
+    assert "invented-only-not-live" not in str(report)
+
+
+def test_conflicting_retained_credentials_require_operator_review():
+    first, second = authority(), authority()
+    second["arcade_password"] = "other-invented-not-live"
+    report = {}
+    with pytest.raises(ValueError, match="retained_authority_missing_or_ambiguous"):
+        helper.unique_authority([(Path("one.json"), first), (Path("two.json"), second)], first, report)
+    assert "other-invented-not-live" not in str(report)
+
+
+def test_no_supported_retained_store_config_is_not_an_authority_pass():
+    with pytest.raises(ValueError, match="retained_authority_missing_or_ambiguous"):
+        helper.unique_authority([(Path("database-only.json"), {"RNR_QUALIFICATION_DATABASE_URL": "invented"})], authority(), {})

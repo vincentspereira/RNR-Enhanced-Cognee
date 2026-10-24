@@ -110,6 +110,30 @@ additional failures. The metadata mode reads operator/worker JSON structure
 to report field names; it does not print values or read the listed evidence
 file bodies. The earlier wording that it read no file contents was too broad.
 
+The retained-artifact attempt at /var/tmp/ec-launch-index-recovery-7ao7916p
+stopped before provisioning: qualification-environment.json contains only
+RNR_QUALIFICATION_DATABASE_URL. It supplies no store authority. A bounded
+configuration-only discovery path now checks the observed deployment archive
+and its fleet-223416 configuration folders, refusing agent-owned/writable/link
+paths and oversized inputs. It admits only the reviewed store-settings schema
+with matching selected local origins. Identical protected copies can be reused;
+conflicting credential sets require operator review. No multiple-password
+trials occur. A unique supported set proceeds into the existing finite recovery
+qualification; missing/ambiguous sources return metadata only. Thirty index
+boundary cases pass. New receipts also identify the operator helper's SHA-256.
+Store-administration access and actual derived recovery remain unqualified.
+
+Independent read-only host evidence now establishes actual scheduled firing for
+the existing database/profile backup timers at 00:02:39 BST on 24 October.
+Root stdout receipts in that trigger window report a completed age-encrypted
+PostgreSQL dump and a completed signed profile ciphertext for 60 files /
+205571 bytes. The profile job reports signed_ciphertext_verified=true, no
+recovery-identity read, no plaintext archive, no model call and no memory write.
+These are the existing backup jobs, not credential-renewal scheduling or fleet
+backup coverage. No backup or restore was rerun to collect this evidence.
+Filtered metadata is retained in scheduled-backup-journal-metadata.json outside
+publication; raw journal bodies were not retained or printed.
+
 The new credential implementation includes strict root-owned policy admission,
 profile-owner transactional publication using the reviewed issuer/journals,
 and a root driver with fixed signing choices, restricted children and bounded
@@ -149,11 +173,26 @@ provider receiving the updated value. It does not establish a real expiry cycle
 or that an already running gateway rebuilt its cached agent. Native-turn overall
 completion remains open; no cause is inferred from the old failed predicate.
 
+The actual live/staged auth.py, enterprise_auth.py, memory_api.py and
+memory_service.py files are byte-identical. Both environments have PyJWT 2.15.1
+and cryptography 50.0.2. A new independent operator component helper is prepared
+to exercise real API expiry and native refresh plus prepared/published journal
+reconciliation, using fixed ordinary claims and a new synthetic fixture outside
+the existing runtime home. The initial credential is backdated to retain the
+reviewed 24-hour claim lifetime but expire after 60 real seconds; the clock is
+not mocked. Child HOME/HERMES_HOME and writes are confined to that fixture.
+It uses no model, real OAuth data or memory writes and enables no issuer/timer.
+Root signing keys never enter child input/environment/arguments. Source hashes,
+claim/receipt guards and privilege refusal pass 13 source checks. Installed
+component results are still pending; source tests do not establish the real
+expiry cycle, running-gateway reload or an installed issuer pass.
+
 ## Qualification and release evidence
 
-New targeted source checks currently pass 78 cases: six inventory, six artifact
-staging, 17 policy, eight lifecycle, 27 index endpoint/path boundaries and
-14 issuer receipt/identity/source-protection checks. Counts include no failures,
+New targeted source checks currently pass 94 cases: six inventory, six artifact
+staging, 17 policy, eight lifecycle, 30 index endpoint/path boundaries,
+14 issuer receipt/identity/source-protection and 13 credential-cycle guards.
+Counts include no failures,
 errors or skips in those passing selections. Earlier failed attempts remain
 separate: sandbox-mapped ownership initially produced five inventory failures;
 real-host execution and the deliberate metadata-only writable-parent warning

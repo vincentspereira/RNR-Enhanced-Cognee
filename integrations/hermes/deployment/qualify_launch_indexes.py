@@ -7,6 +7,7 @@ prefixes are retained on success and failure. No service/profile switch.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import logging
 import os
@@ -132,6 +133,82 @@ def authority_fields(settings, active):
             "INDEX_VALKEY_URL": settings["cache_url"]}
 
 
+def unique_authority(candidates, active, result):
+    matches = []
+    for path, settings in candidates:
+        try:
+            value = authority_fields(settings, active)
+        except (ValueError, KeyError, TypeError):
+            continue
+        matches.append((path, value))
+    result["retained_authority_candidate_paths"] = [str(path) for path, _ in matches]
+    # Compare in protected memory only. Never emit secret hashes or try multiple
+    # credentials against a service to decide which one works.
+    variants = {tuple(sorted(value.items())) for _, value in matches}
+    if len(variants) != 1:
+        raise ValueError("retained_authority_missing_or_ambiguous")
+    result["store_authority_source"] = "unique_protected_retained_store_settings"
+    return matches[0][1]
+
+
+def discover_retained_authority(active, result):
+    """Bounded config-only inspection of the observed deployment/fleet archive."""
+    candidates = []
+    pending = [(RETAINED, 0), (RETAINED / "fleet-223416", 0)]
+    seen = set()
+    inspected = 0
+    skipped = 0
+    protection_skips = []
+    while pending:
+        directory, depth = pending.pop()
+        if directory in seen:
+            continue
+        seen.add(directory)
+        try:
+            info = directory.lstat()
+        except FileNotFoundError:
+            continue
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+            skipped += 1
+            continue
+        # Check trusted ancestors before listing; never enter an agent-owned
+        # directory. The known private root is the scope of this search.
+        for parent in [*reversed(directory.parents), directory]:
+            metadata = parent.lstat()
+            if metadata.st_uid != 0 or metadata.st_mode & 0o022 or stat.S_ISLNK(metadata.st_mode):
+                raise ValueError("retained_authority_path_refused")
+        entries = list(directory.iterdir())
+        if len(entries) > 256 or len(seen) > 16:
+            raise ValueError("retained_authority_search_budget")
+        for path in sorted(entries):
+            item = path.lstat()
+            if (stat.S_ISDIR(item.st_mode) and directory.is_relative_to(RETAINED / "fleet-223416")
+                    and depth < 2 and item.st_uid == 0 and not item.st_mode & 0o022
+                    and any(word in path.name.lower() for word in ("index", "settings", "config"))):
+                pending.append((path, depth + 1))
+            if (not stat.S_ISREG(item.st_mode) or path.suffix != ".json"
+                    or not any(word in path.name.lower() for word in ("index", "settings", "config", "environment"))):
+                continue
+            inspected += 1
+            if inspected > 128:
+                raise ValueError("retained_authority_search_budget")
+            if item.st_uid != 0 or item.st_mode & 0o077 or item.st_size > 65536:
+                skipped += 1
+                protection_skips.append({"path": str(path), "uid": item.st_uid,
+                    "mode": format(stat.S_IMODE(item.st_mode), "04o"), "size": item.st_size})
+                continue
+            try:
+                document = retained_json(path)
+            except (ValueError, OSError):
+                skipped += 1
+                continue
+            candidates.append((path, document))
+    result["retained_settings_files_inspected"] = inspected
+    result["retained_settings_entries_skipped"] = skipped
+    result["retained_settings_protection_skips"] = protection_skips
+    return unique_authority(candidates, active, result)
+
+
 def retained_authority(active, result):
     document = retained_json(RETAINED / "qualification-environment.json")
     if not isinstance(document, dict):
@@ -157,8 +234,13 @@ def retained_authority(active, result):
             else:
                 raise ValueError("retained_authority_contract_unavailable")
             break
-    authority = authority_fields(selected, active)
-    result["store_authority_source"] = "protected_retained_real_store_qualification"
+    try:
+        authority = authority_fields(selected, active)
+        result["store_authority_source"] = "protected_retained_real_store_qualification"
+    except ValueError as error:
+        if str(error) != "retained_authority_contract_unavailable":
+            raise
+        authority = discover_retained_authority(active, result)
     result["worker_permissions_changed"] = False
     return authority
 
@@ -310,6 +392,7 @@ def main():
     args = parser.parse_args()
     if os.geteuid() != 0 or Path(sys.prefix) != BASE / "runtime":
         raise SystemExit("ERR: use the staged protected Python as operator")
+    helper_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     if args.inspect_store_authority:
         try:
             operator = private_json(Path("/etc/enhanced-cognee/operator.json"))
@@ -369,6 +452,7 @@ def main():
     logging.disable(logging.CRITICAL)
     evidence = Path(tempfile.mkdtemp(prefix="ec-launch-index-recovery-", dir="/var/tmp"))
     result = {"source_revision": REVISION, "evidence": str(evidence), "complete": False,
+              "operator_helper_sha256": helper_sha256,
               "derived_store_recovery_qualified": False, "live_indexes_changed": False,
               "live_canonical_edits": False, "service_runtime_changed": False,
               "fleet_launch_approved": False, "checkpoint": "protected_preflight"}
@@ -380,6 +464,7 @@ def main():
             "admitted_model_required", "operator_store_credentials_incomplete",
             "retained_authority_path_refused", "retained_authority_contract_unavailable",
             "retained_authority_store_binding_differs",
+            "retained_authority_missing_or_ambiguous", "retained_authority_search_budget",
             "bounded_replay_budget_exceeded", "new_pipeline_has_unready_deliveries", "actual_vector_recall_failed",
             "actual_graph_recall_failed", "actual_cache_encryption_failed", "restored_peer_scope_denial_failed",
             "reviewed_sharing_revocation_failed", "actual_index_withdrawal_failed", "actual_cache_withdrawal_failed"}
