@@ -25,7 +25,7 @@ def native():
     return module
 
 
-@pytest.mark.parametrize("response", ["accepted", "mismatch", "eof", "non-ascii"])
+@pytest.mark.parametrize("response", ["accepted", "accepted-resume", "mismatch", "eof", "non-ascii"])
 def test_real_controlling_terminal_with_piped_bundle_input(response):
     code = '''import fcntl,importlib.util,json,os,sys,termios
 os.setsid()
@@ -38,7 +38,7 @@ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 try:
  module.terminal_preflight()
  module.PROGRESS["failure_stage"]="human_answer"
- answer=module.read_human_answer("a"*24)
+ answer=module.read_human_answer("a"*24,resumed=sys.argv[3]=="resume")
  print(json.dumps({"complete":True,"human_answer_received":bool(answer)}))
 except Exception:
  print(json.dumps({"complete":False,**module.PROGRESS}));sys.exit(1)
@@ -47,7 +47,8 @@ except Exception:
     process = None
     try:
         process = subprocess.Popen([sys.executable, "-I", "-B", "-c", code, os.ttyname(slave),
-            str(Path("integrations/hermes/deployment/qualify_launch_candidate.py").resolve())],
+            str(Path("integrations/hermes/deployment/qualify_launch_candidate.py").resolve()),
+            "resume" if response == "accepted-resume" else "new"],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.stdin.write(b"PUBLIC-BUNDLE-FIXTURE")
         process.stdin.close()
@@ -59,13 +60,13 @@ except Exception:
         assert b"type the following answer" in prompt and b"> " in prompt
         answer = ("For fictional Cedar launch " + "a" * 24
                   + ", use five-day reviews, then retract this invented test record while preserving history.\n").encode()
-        sent = {"accepted": answer, "mismatch": b"PRIVATE_MISMATCH_FIXTURE\n",
+        sent = {"accepted": answer, "accepted-resume": answer, "mismatch": b"PRIVATE_MISMATCH_FIXTURE\n",
                 "eof": b"\x04", "non-ascii": b"\xc3\xa9\n"}[response]
         os.write(master, sent)
         stdout, stderr = process.communicate(timeout=5)
         assert stderr == b"" and b"PRIVATE_" not in stdout
         report = json.loads(stdout)
-        if response == "accepted":
+        if response in {"accepted", "accepted-resume"}:
             assert process.returncode == 0 and report == dict(complete=True, human_answer_received=True)
         else:
             assert process.returncode == 1 and report["complete"] is False

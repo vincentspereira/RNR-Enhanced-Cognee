@@ -155,3 +155,61 @@ found zero leaks. Coverage was not measured. Private logs/fixtures remain at
 /tmp/ec-native-terminal-fix-20261024 and /tmp/ecq-ofu5gu7v. Sanitized counts and
 source hashes are in remediation-evidence/2026-10-24-native-terminal-input.json.
 No native follow-up or whole-fleet pass is inferred from these local results.
+
+## Explicit identified attempt and remaining human answer
+
+The owner's next 9917f620 output includes the actual terminal prompt for test
+5d0e9a49bdf544359ae6deff, native_question_passed=true,
+reviewed_sharing_passed=true, human_answer_received=false and
+human_answer_failure=answer_mismatch_or_truncated. The owner confirmed entering
+a different or blank answer and asked how to respond. Explain the interaction
+plainly: while the command waits at `>`, paste the full displayed sentence and
+press Enter. Never supply an answer automatically or treat this explanation as
+the actual terminal confirmation. No follow-up conversation was accepted yet.
+
+The explicit test ID changes the earlier continuation limitation: a prior JSON
+without its ID could not safely identify the profile. The paired terminal output
+now supplies that ID directly from the owner. A new resume-answer mode requires
+that explicit 24-character lowercase hex value, verifies the existing protected
+artifact without staging it, and signs only two ordinary short-lived credentials
+for launch_<ID> and peer_<ID>. No reviewer token, profile creation, fixture write
+or sharing change occurs. Operator keys stay in root; agent-owned files are read
+only by the restricted child. No private token, settings or raw answer is logged.
+
+The read-only child avoids the OAuth store and verifies the original pilot's
+checked files, candidate binding and signed qualification status. Exactly one
+pending record and one active record must exist. Its canonical subject, project,
+state, version and exact invented content must match. Full returned history must
+contain only expected versions 1 and 2 for that same record and invented scope,
+with no truncated/paginated remainder. The current peer grant must still return
+that version. The checks do not replay the earlier model or establish the old
+question/sharing receipt independently; the continuation output says so.
+
+The real terminal answer is then passed, unchanged, to a separate native answer
+process using the original provider gate and versioned correction/retraction
+guard. Model requests, current history and withdrawal from the peer are verified
+as before. Output labels the new result as resumed human follow-up, with the
+prior owner report kept separate and no whole-fleet approval. Changed/resolved
+records or absent/ambiguous state stop instead of guessing or reconstructing.
+Existing incomplete attempts remain untouched except for the specifically
+requested, human-confirmed correction/retraction if this follow-up succeeds.
+
+Workspace tests exercise the actual provider/journal/read-only continuation
+between the question and answer stages, including unchanged journal bytes and
+no OAuth selection during the check. Dedicated negative fixtures reject wrong
+subjects/projects/content/states/version types, missing/multiple pending records,
+incomplete/altered history and invalid IDs. Operator-flow fixtures enforce peer
+access and the live-answer boundary, issue only ordinary roles, and reject
+unexpected receipt fields. A real pseudo-terminal fixture exercises the resumed
+prompt; synthetic typed input remains local test evidence only. Originals were
+preserved under .archive/2026-10-24_launch_answer_continuation before edits.
+
+Final continuation validation: 1300 Hermes/operator/encrypted-collection/
+portable-backup tests passed, zero failures/errors/skips and no reported pytest
+warnings. This includes 30 dedicated admission cases and one added resumed
+pseudo-terminal case; the existing real-provider lifecycle cases also exercise
+the read-only continuation. Syntax/ASCII/shell checks pass. The redacted staged
+diff secret scan found zero leaks. Coverage was not measured. Private artifacts
+remain at /tmp/ec-native-answer-resume-20261024 and /tmp/ecq-aik605l6. Sanitized
+counts/source hashes are in remediation-evidence/2026-10-24-native-answer-continuation.json.
+A real installed human answer/native follow-up remains pending.

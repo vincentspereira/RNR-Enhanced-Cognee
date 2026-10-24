@@ -50,9 +50,11 @@ def test_both_native_child_stages_reopen_closed_provider_and_preserve_gates(prov
     monkeypatch.setenv("HERMES_HOME", str(core["PROFILE"]))
     files = {"config.yaml": b"original config", "auth.json": b"private synthetic auth",
              "enhanced_cognee.json": b"original settings", ".env": b"private synthetic env"}
-    core.update(preflight=lambda approved: (os.geteuid(), {k: v for k, v in files.items() if k != ".env"}),
+    auth_selections = []
+    core.update(preflight=lambda approved, include_auth=True: (os.geteuid(), {
+                    k: v for k, v in files.items() if k != ".env" and (include_auth or k != "auth.json")}),
                 read_private=lambda name, uid: files[name], verify_provider=lambda: None,
-                select_credential=lambda raw, credential_label: "synthetic-oauth")
+                select_credential=lambda raw, credential_label: (auth_selections.append(True) or "synthetic-oauth"))
     snapshots = copy.deepcopy(files)
     state = {"row": None, "versions": []}
     api_calls = []
@@ -65,13 +67,14 @@ def test_both_native_child_stages_reopen_closed_provider_and_preserve_gates(prov
             api_calls.append((method, path))
             if path == "/v1/memories/status":
                 return dict(ready=True, schema_version=3, tenant_id="qualification", project_id=project,
+                            subject="launch_" + run_id,
                             encryption="AES-256-GCM", active_records=int(bool(state["row"] and state["row"]["state"] == "active")))
             if path.endswith("/history?limit=10"):
                 return copy.deepcopy(dict(record_state=state["row"]["state"], versions=state["versions"]))
             if method == "GET": return copy.deepcopy(state["row"])
             if method == "POST" and path == "/v1/memories":
                 assert state["row"] is None
-                row = dict(id="fixture", version=1, content=body["content"], state="active")
+                row = dict(id="fixture", version=1, content=body["content"], state="active", project_id=project)
             else:
                 assert body["expected_version"] == state["row"]["version"]
                 row = dict(state["row"], version=state["row"]["version"] + 1)
@@ -156,6 +159,14 @@ def test_both_native_child_stages_reopen_closed_provider_and_preserve_gates(prov
         assert state["row"]["version"] == 2
         assert question["record_id"] == "fixture"
         assert all(p._client is None for p in providers)
+        journal_before = (profile / ".enhanced-cognee-clarifications.jsonl").read_bytes()
+        canonical_before = copy.deepcopy(state)
+        prepared = native.child(sources, bundle, "resume-check", artifact)
+        assert prepared["pending_original_fixture_verified"] is True and prepared["record_id"] == "fixture"
+        assert prepared["model_called"] is prepared["memory_records_written"] is prepared["oauth_store_read"] is False
+        assert len(auth_selections) == 1 and closes == [True]
+        assert (profile / ".enhanced-cognee-clarifications.jsonl").read_bytes() == journal_before
+        assert state == canonical_before
         bundle.update(record_id="fixture", human_answer="Use five-day reviews, then retract the invented record.")
         if damage == "answer-history":
             with pytest.raises(ValueError): native.child(sources, bundle, "answer", artifact)
@@ -165,7 +176,7 @@ def test_both_native_child_stages_reopen_closed_provider_and_preserve_gates(prov
             assert answer["complete"] is answer["restart_pending_gate_passed"] is answer["history_preserved"] is True
             assert answer["versioned_correction_and_retraction_passed"] is True
             assert [row["version"] for row in state["versions"]] == [1, 2, 3, 4]
-        assert closes == [True, True] and len(providers) == 2
+        assert closes == [True, True] and len(providers) == 3
         assert state["row"]["version"] == 4 and state["row"]["state"] == "retracted"
     assert files == snapshots
     assert Path(os.environ["HERMES_HOME"]) == core["PROFILE"] == root / "original-pilot"

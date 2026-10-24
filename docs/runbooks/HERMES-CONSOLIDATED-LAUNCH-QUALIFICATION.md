@@ -45,6 +45,29 @@ has no trusted resumable operator receipt identifying its scope, so it cannot
 be safely selected for automatic continuation. Preserve it; one corrected fresh
 qualification is required to exercise the terminal answer and native follow-up.
 
+Explicit-scope continuation: the next owner output includes test ID
+5d0e9a49bdf544359ae6deff in the displayed terminal sentence, paired with native
+question/sharing passes and answer_mismatch_or_truncated. The owner confirmed
+entering a different or blank answer. That refusal is expected. The newly
+available explicit ID permits a narrow continuation without guessing profiles.
+Use `resume-answer EXPLICIT_TEST_ID` as the launcher's mode and fourth argument.
+Only the identified invented qualification scope is eligible. The helper verifies
+the protected candidate, issues fresh ordinary credentials for that exact scope
+and its existing peer, and runs a non-root no-model/no-write check of the pending
+journal, exact version-2 invented content and complete versions 1-2. Existing
+peer read access must still be valid. It creates no profile, memory or share.
+No reviewer credential is issued. Root does not traverse the agent profile.
+
+At the displayed `>` prompt, paste the full displayed fictional sentence and
+press Enter. Do not paste the `>` symbol, and do not paste the answer into a
+normal shell after the command has ended. Only the real typed answer permits
+the separate native follow-up process. A wrong/blank answer still stops safely.
+The continuation does not replay the question or sharing sequence, and its
+receipt explicitly treats earlier question evidence as the separate owner
+report, not a newly verified machine receipt. It reports only its current model
+request count and follow-up scope. Changed, resolved, missing or ambiguous state
+is refused; there is no automatic repair, profile selection or retry.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional
@@ -88,7 +111,8 @@ checkout. Fetch the delivery branch without switching a running checkout.
 
 The pinned scripts/qualification/run_hermes_launch_native.sh accepts
 the existing checkout path, full published revision and optional mode
-(`qualify`, the default, or `inspect`). It verifies the seven
+(`qualify`, the default, `inspect`, or `resume-answer` with an explicit fourth
+test-ID argument). It verifies the seven
 public archived sources before any root definitions execute, stages a separate
 protected candidate, and uses two non-root native Hermes processes. It requires
 the already enrolled secondary pilot model account; no automatic fallback or

@@ -36,6 +36,7 @@ CHILD_PHASES = {"restricted_preflight", "pilot_snapshot", "original_provider_ver
                 "empty_scope", "synthetic_fixture", "native_clarification", "question_preservation",
                 "question_reinitialization", "question_pending_gate", "question_record_preservation",
                 "question_history_preservation", "answer_reinitialization",
+                "resume_pending_fixture",
                 "restart_pending_gate", "native_followup", "final_history", "pilot_preservation"}
 CHILD_PROGRESS = {"native_substage": "restricted_preflight"}
 
@@ -105,7 +106,7 @@ def terminal_preflight():
         raise ValueError("qualification_terminal_unavailable") from None
 
 
-def read_human_answer(run_id):
+def read_human_answer(run_id, *, resumed=False):
     require(isinstance(run_id, str) and re.fullmatch(r"[a-f0-9]{24}", run_id) is not None)
     expected = ("For fictional Cedar launch " + run_id
         + ", use five-day reviews, then retract this invented test record while preserving history.")
@@ -113,7 +114,9 @@ def read_human_answer(run_id):
         with open("/dev/tty", "r", encoding="ascii") as reader, \
                 open("/dev/tty", "w", encoding="ascii", buffering=1) as writer:
             require(reader.isatty() and writer.isatty())
-            writer.write("Native question, unchanged record and scoped sharing checks passed.\n"
+            lead = ("Existing invented record, history and peer access verified.\n" if resumed else
+                    "Native question, unchanged record and scoped sharing checks passed.\n")
+            writer.write(lead +
                          "For this invented test only, type the following answer to continue:\n" + expected + "\n> ")
             writer.flush()
             raw = reader.readline(1024)
@@ -127,6 +130,31 @@ def read_human_answer(run_id):
         PROGRESS["human_answer_failure"] = "answer_mismatch_or_truncated"
         raise ValueError("qualification_human_answer_not_confirmed")
     return raw.strip()
+
+
+def verify_pending_fixture(provider, status, run_id):
+    """Bind continuation to the explicit invented scope, not a guessed profile."""
+    require(type(status.get("active_records")) is int and status["active_records"] == 1
+            and status.get("subject") == "launch_" + run_id
+            and len(provider._pending_clarifications) == 1)
+    ident = next(iter(provider._pending_clarifications))
+    require(isinstance(ident, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,64}", ident) is not None)
+    row = provider._client.request("GET", "/v1/memories/" + ident)
+    prefix = "Fictional Cedar launch " + run_id + " uses "
+    require(isinstance(row, dict) and row.get("id") == ident and type(row.get("version")) is int
+            and row["version"] == 2 and row.get("state") == "active"
+            and row.get("project_id") == "launch_" + run_id
+            and row.get("content") == prefix + "ten-day reviews.")
+    history = provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=10")
+    require(isinstance(history, dict) and history.get("record_state") == "active"
+            and history.get("next_before_version") is None and not history.get("response_limit_reached"))
+    versions = history.get("versions")
+    require(isinstance(versions, list) and len(versions) == 2
+            and all(isinstance(v, dict) and type(v.get("version")) is int for v in versions)
+            and {v["version"] for v in versions} == {1, 2})
+    require(all(v.get("id") == ident and v.get("content") == prefix +
+                ("eleven-day reviews." if v["version"] == 1 else "ten-day reviews.") for v in versions))
+    return ident
 
 
 def api(token, method, path, body=None):
@@ -217,17 +245,21 @@ def native_turn(core, provider, oauth, prompt, target):
 
 
 def child(sources, bundle, stage, artifact):
+    require(stage in {"inspect", "question", "answer", "resume-check"})
     if stage == "inspect":
         return child_inspect(sources)
     core = definitions(sources[BASE + "deployment/check_pilot_codex.py"], "launch_native_core")
-    uid, snapshots = core["preflight"](True)
+    uid, snapshots = (core["preflight"](True, include_auth=False) if stage == "resume-check"
+                      else core["preflight"](True))
     CHILD_PROGRESS["native_substage"] = "pilot_snapshot"
     snapshots[".env"] = core["read_private"](".env", uid)
     original_home = core["PROFILE"]
     CHILD_PROGRESS["native_substage"] = "original_provider_verification"
     core["verify_provider"]()  # Preserve the previous pilot's exact admission.
-    CHILD_PROGRESS["native_substage"] = "secondary_model_credential"
-    oauth = core["select_credential"](snapshots["auth.json"], credential_label="cognee-pilot-codex-secondary")
+    oauth = None
+    if stage != "resume-check":
+        CHILD_PROGRESS["native_substage"] = "secondary_model_credential"
+        oauth = core["select_credential"](snapshots["auth.json"], credential_label="cognee-pilot-codex-secondary")
     run_id = bundle["run_id"]
     require(re.fullmatch(r"[a-f0-9]{24}", run_id) is not None)
     # The qualified whole-home backup refuses unknown provider links. Keep
@@ -302,6 +334,11 @@ def child(sources, bundle, stage, artifact):
             CHILD_PROGRESS["native_substage"] = "question_history_preservation"
             require(provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=10") == before)
             result = {"record_id": ident, "question_and_preservation_passed": True, "model_requests": requests}
+        elif stage == "resume-check":
+            CHILD_PROGRESS["native_substage"] = "resume_pending_fixture"
+            ident = verify_pending_fixture(provider, status, run_id)
+            result = dict(record_id=ident, pending_original_fixture_verified=True,
+                          model_called=False, memory_records_written=False, oauth_store_read=False)
         else:
             CHILD_PROGRESS["native_substage"] = "restart_pending_gate"
             ident = bundle["record_id"]
@@ -370,6 +407,15 @@ def run_child(account, sources, bundle, stage, artifact):
         raise ValueError("native_candidate_incomplete_preserve_evidence")
     require(result.returncode == 0)
     require(isinstance(report, dict) and report.get("complete") is True)
+    if stage == "resume-check":
+        expected = dict(complete=True, pending_original_fixture_verified=True,
+                        original_pilot_settings_and_credentials_preserved=True,
+                        model_called=False, memory_records_written=False, oauth_store_read=False)
+        require(set(report) == set(expected) | {"record_id"}
+                and all(report[k] is v for k, v in expected.items())
+                and isinstance(report["record_id"], str)
+                and re.fullmatch(r"[A-Za-z0-9_-]{1,64}", report["record_id"]) is not None)
+        return report
     if stage == "inspect":
         expected = dict(complete=True, authenticated_status_contract_passed=True,
                         original_pilot_settings_and_credentials_preserved=True,
@@ -386,11 +432,14 @@ def run_child(account, sources, bundle, stage, artifact):
     return report
 
 
-def main(sources, mode="qualify"):
+def main(sources, mode="qualify", resume_id=None):
     require(os.geteuid() == 0 and os.environ.get("WSL_DISTRO_NAME") == "Ubuntu-Hermes"
             and os.environ.get("SUDO_USER") == "vincentspereira")
-    require(mode in {"qualify", "inspect"})
-    if mode == "qualify":
+    require(mode in {"qualify", "inspect", "resume-answer"})
+    require((mode == "resume-answer" and isinstance(resume_id, str)
+             and re.fullmatch(r"[a-f0-9]{24}", resume_id) is not None)
+            or mode != "resume-answer" and resume_id is None)
+    if mode in {"qualify", "resume-answer"}:
         PROGRESS["failure_stage"] = "terminal_preflight"
         terminal_preflight()
         PROGRESS["failure_stage"] = "operator_preflight"
@@ -406,7 +455,7 @@ def main(sources, mode="qualify"):
         require(path == Path("/usr/bin/setpriv") or resolved.is_relative_to(RELEASE))
         directory = issuer["open_directory"](resolved.parent, {0})
         os.close(directory)
-    if mode == "inspect":
+    if mode in {"inspect", "resume-answer"}:
         PROGRESS["failure_stage"] = "protected_candidate_verification"
         directory = installer["open_directory"](installer["ARTIFACT"])
         try:
@@ -414,6 +463,8 @@ def main(sources, mode="qualify"):
             installer["verify_artifact"](directory)
         finally:
             os.close(directory)
+        if mode == "resume-answer":
+            return resume_answer(account, sources, installer["ARTIFACT"], issuer, resume_id)
         PROGRESS["failure_stage"] = "read_only_native_inspection"
         report = run_child(account, sources, {}, "inspect", installer["ARTIFACT"])
         print(json.dumps(dict(report, stage="read_only_launch_diagnostic",
@@ -424,6 +475,49 @@ def main(sources, mode="qualify"):
     PROGRESS["candidate_staged"] = True
     artifact = installer["ARTIFACT"]
     return qualify_candidate(account, sources, artifact, issuer)
+
+
+def resume_answer(account, sources, artifact, issuer, run_id):
+    require(isinstance(run_id, str) and re.fullmatch(r"[a-f0-9]{24}", run_id) is not None)
+    PROGRESS["resuming_explicit_test_scope"] = True
+    PROGRESS["failure_stage"] = "resume_scoped_credentials"
+    now = int(time.time())
+    claims = dict(sub="launch_" + run_id, agent_id="launch_test", tenant="qualification",
+                  project_id="launch_" + run_id, roles=["api_client"], capture_policy="selected",
+                  iat=now, exp=now + 3600)
+    key = issuer["load_signing_key"]()
+    token = issuer["sign_claims"](claims, key)
+    peer = issuer["sign_claims"](dict(claims, sub="peer_" + run_id, project_id="peer_" + run_id), key)
+    del key
+    bundle = dict(run_id=run_id, project=claims["project_id"], token=token, peer_token=peer)
+    PROGRESS["failure_stage"] = "resume_pending_fixture"
+    prior = run_child(account, sources, bundle, "resume-check", artifact)
+    ident = prior["record_id"]
+    PROGRESS["pending_original_fixture_verified"] = True
+    PROGRESS["failure_stage"] = "resume_existing_peer_access"
+    code, row = api(peer, "GET", "/v1/memories/" + ident)
+    require(code == 200 and isinstance(row, dict) and row.get("id") == ident
+            and type(row.get("version")) is int and row["version"] == 2
+            and row.get("project_id") == claims["project_id"]
+            and row.get("content") == "Fictional Cedar launch " + run_id + " uses ten-day reviews.")
+    PROGRESS["existing_peer_access_verified"] = True
+    PROGRESS["failure_stage"] = "human_answer"
+    answer = read_human_answer(run_id, resumed=True)
+    PROGRESS["human_answer_received"] = True
+    bundle.update(record_id=ident, human_answer=answer)
+    PROGRESS["failure_stage"] = "native_followup_after_process_restart"
+    second = run_child(account, sources, bundle, "answer", artifact)
+    PROGRESS["native_followup_passed"] = True
+    require(api(peer, "GET", "/v1/memories/" + ident)[0] == 404)
+    print(json.dumps(dict(complete=True, stage="native_candidate_resumed_human_followup",
+        resumed_run_id=run_id, candidate_artifact=artifact.name,
+        pending_original_fixture_verified=True, existing_peer_access_verified=True,
+        prior_question_and_sharing_replayed=False, prior_machine_receipt_verified=False,
+        prior_question_evidence_source="owner_report_separate_from_this_followup",
+        model_requests=second["model_requests"], request_count_scope="resumed_followup_only",
+        **{k: v for k, v in second.items() if k not in {"complete", "model_requests"}},
+        unattended_renewal_qualified=False, current_database_restore_qualified=False,
+        actual_fleet_boundaries_qualified=False, fleet_launch_approved=False), indent=2))
 
 
 def qualify_candidate(account, sources, artifact, issuer):
