@@ -148,3 +148,15 @@ def test_conflicting_retained_credentials_require_operator_review():
 def test_no_supported_retained_store_config_is_not_an_authority_pass():
     with pytest.raises(ValueError, match="retained_authority_missing_or_ambiguous"):
         helper.unique_authority([(Path("database-only.json"), {"RNR_QUALIFICATION_DATABASE_URL": "invented"})], authority(), {})
+
+
+def test_schema_metadata_never_contains_values_or_token_shaped_keys():
+    data = {"arcade_password": "invented-private-value", "roles": ["invented"],
+            "private conversation text": "not emitted", "ghp_" + "invented_token_key": "not emitted"}
+    result = helper.safe_field_names(data)
+    assert result == ["arcade_password", "roles"]
+    assert "invented-private-value" not in str(result)
+
+
+def test_non_object_is_not_dumped_as_metadata():
+    assert helper.safe_field_names(["invented-private-value"]) == []

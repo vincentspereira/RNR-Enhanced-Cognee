@@ -123,6 +123,16 @@ qualification; missing/ambiguous sources return metadata only. Thirty index
 boundary cases pass. New receipts also identify the operator helper's SHA-256.
 Store-administration access and actual derived recovery remain unqualified.
 
+The next owner-run locator attempt retained
+/var/tmp/ec-launch-index-recovery-eo367tjw and found no supported authority
+contract: one matching configuration JSON inspected, no protection skips and
+no candidate paths. This does not prove all retained operator artifacts lack
+credentials. Full index qualification must not be repeated without a newly
+identified authority source. A read-only selected-artifact inspection now
+reports the authorization.json schema and immediate fleet-223416 entry/schema
+metadata, without reading agent-owned subtrees, printing values or making
+authentication attempts.
+
 Independent read-only host evidence now establishes actual scheduled firing for
 the existing database/profile backup timers at 00:02:39 BST on 24 October.
 Root stdout receipts in that trigger window report a completed age-encrypted
@@ -187,11 +197,23 @@ claim/receipt guards and privilege refusal pass 13 source checks. Installed
 component results are still pending; source tests do not establish the real
 expiry cycle, running-gateway reload or an installed issuer pass.
 
+The first component run retained /var/tmp/ec-credential-cycle-z4p40_pa and
+failed in initial_status, with no stderr bytes and no profile/service switch.
+Its helper SHA-256 matches the published source. No expiry, quota, model or
+reset cause is established by that phase label. Fixed bounded failure
+diagnostics now report the initial HTTP status, individual scope/readiness/type
+match flags, seconds remaining and initialization duration. They do not print
+claims or response values, change the expiry guard or weaken authentication.
+The public readiness probe independently returns HTTP 200 with ready=true,
+semantic retrieval, graph configuration and the expected encryption label;
+that is not authenticated-operation evidence. A new-scope instrumented
+component run is prepared, not qualified.
+
 ## Qualification and release evidence
 
-New targeted source checks currently pass 94 cases: six inventory, six artifact
-staging, 17 policy, eight lifecycle, 30 index endpoint/path boundaries,
-14 issuer receipt/identity/source-protection and 13 credential-cycle guards.
+New targeted source checks currently pass 99 cases: six inventory, six artifact
+staging, 17 policy, eight lifecycle, 32 index endpoint/path boundaries,
+14 issuer receipt/identity/source-protection and 16 credential-cycle guards.
 Counts include no failures,
 errors or skips in those passing selections. Earlier failed attempts remain
 separate: sandbox-mapped ownership initially produced five inventory failures;

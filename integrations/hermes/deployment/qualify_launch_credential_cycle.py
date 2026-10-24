@@ -26,6 +26,8 @@ BASE = Path("/opt/enhanced-cognee-memory/candidates") / REVISION
 RELEASE = Path("/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1")
 FIXTURES = Path("/var/lib/hermes-credential-qualification")
 CHILD_PHASE = "identity"
+CHILD_DIAGNOSTICS = {}
+PROCESS_STARTED = time.monotonic()
 FILES = {
     "deployment/provision_pilot_access.py": "f2bf3ec50bfd8414011aa322e027f7c266a7102d558c0b7d0518549e8a8b2cc6",
     "deployment/renew_pilot_access.py": "8fb4b4dfe3941a15755bf367c982d0aadfad7fcaac94932df9b46202d8583567",
@@ -61,8 +63,33 @@ def protected(path):
                 "public_artifact_protection")
 
 
+def status_diagnostic(identity, code, body, expires):
+    data = body if isinstance(body, dict) else {}
+    return {"http_status": code if type(code) is int and 100 <= code <= 599 else 0,
+            "body_is_object": isinstance(body, dict), "ready": data.get("ready") is True,
+            "schema_matches": data.get("schema_version") == 3,
+            "encryption_matches": data.get("encryption") == "AES-256-GCM",
+            "tenant_matches": data.get("tenant_id") == identity["tenant"],
+            "project_matches": data.get("project_id") == identity["project_id"],
+            "subject_matches": data.get("subject") == identity["sub"],
+            "active_count_valid": type(data.get("active_records")) is int and data["active_records"] >= 0,
+            "pending_count_valid": type(data.get("pending_change_events")) is int and data["pending_change_events"] >= 0,
+            "seconds_remaining": max(-86400, min(86400, int(expires-time.time()))),
+            "initialization_elapsed_ms": max(0, min(110000, int((time.monotonic()-PROCESS_STARTED)*1000)))}
+
+
+def valid_diagnostic(value):
+    flags = {"body_is_object", "ready", "schema_matches", "encryption_matches", "tenant_matches",
+             "project_matches", "subject_matches", "active_count_valid", "pending_count_valid"}
+    return (isinstance(value, dict) and set(value) == flags | {"http_status", "seconds_remaining", "initialization_elapsed_ms"}
+            and all(type(value[k]) is bool for k in flags)
+            and type(value["http_status"]) is int and (value["http_status"] == 0 or 100 <= value["http_status"] <= 599)
+            and type(value["seconds_remaining"]) is int and -86400 <= value["seconds_remaining"] <= 86400
+            and type(value["initialization_elapsed_ms"]) is int and 0 <= value["initialization_elapsed_ms"] <= 110000)
+
+
 def child(artifact, data):
-    global CHILD_PHASE
+    global CHILD_PHASE, CHILD_DIAGNOSTICS
     account = pwd.getpwuid(os.geteuid())
     fields = dict(line.split(":", 1) for line in Path("/proc/self/status").read_text().splitlines())
     require(account.pw_name == "hermes-runtime" and account.pw_uid != 0 and not os.getgroups()
@@ -78,6 +105,19 @@ def child(artifact, data):
     renewal = definitions(artifact / "deployment/renew_pilot_access.py", "cycle_journal")
     lifecycle = definitions(artifact / "deployment/fleet_credential_lifecycle.py", "cycle_transaction")
     core["IDENTITY"] = identity
+    request_status = core["api_status"]
+    def observed_status(token):
+        global CHILD_DIAGNOSTICS
+        try:
+            code, body = request_status(token)
+        except Exception:
+            if CHILD_PHASE == "initial_status":
+                CHILD_DIAGNOSTICS = status_diagnostic(identity, 0, {}, data["expires_at"])
+            raise
+        if CHILD_PHASE == "initial_status":
+            CHILD_DIAGNOSTICS = status_diagnostic(identity, code, body, data["expires_at"])
+        return code, body
+    core["api_status"] = observed_status
     profile = FIXTURES / run_id
     info = profile.lstat()
     require(info.st_uid == account.pw_uid and stat.S_IMODE(info.st_mode) == 0o700
@@ -213,8 +253,13 @@ def main():
     if args.child is not None:
         try:
             result = child(args.child, json.load(sys.stdin))
-        except BaseException:
+        except BaseException as error:
             result = {"complete": False, "category": "cycle_child_refused_preserve_fixture", "phase": CHILD_PHASE}
+            status = getattr(error, "status_code", None)
+            if type(status) is int and 400 <= status <= 599:
+                result["native_http_status"] = status
+            if valid_diagnostic(CHILD_DIAGNOSTICS):
+                result["initial_status_diagnostic"] = CHILD_DIAGNOSTICS
         print(json.dumps(result))
         return 0 if result["complete"] else 1
     require(os.geteuid() == 0 and Path(sys.prefix) == BASE / "runtime", "protected_operator_python_required")
@@ -293,6 +338,11 @@ def main():
                   "native_refresh", "new_status", "preservation"}
         if isinstance(received, dict) and received.get("complete") is False and received.get("phase") in phases:
             result["child_failure_phase"] = received["phase"]
+            if valid_diagnostic(received.get("initial_status_diagnostic")):
+                result["initial_status_diagnostic"] = received["initial_status_diagnostic"]
+            status = received.get("native_http_status")
+            if type(status) is int and 400 <= status <= 599:
+                result["native_http_status"] = status
         require(process.returncode == 0, "child_exit")
         result.update(cycle_receipt(received))
         result["synthetic_fixture"] = str(profile)

@@ -245,6 +245,51 @@ def retained_authority(active, result):
     return authority
 
 
+def safe_field_names(document):
+    if not isinstance(document, dict):
+        return []
+    return sorted(key for key in document if isinstance(key, str)
+        and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", key)
+        and not re.match(r"(?:gh[pousr]_|sk_|eyJ)", key))[:32]
+
+
+def inspect_remaining_authority():
+    """No network or issuer calls. Only observed operator artifact structure."""
+    report = {"selected_artifacts": [], "fleet_entries": [], "store_connections": False,
+              "credentials_issued": 0, "secret_values_printed": False, "live_state_changed": False}
+    authorization = RETAINED / "authorization.json"
+    try:
+        document = retained_json(authorization)
+        report["selected_artifacts"].append({"path": str(authorization), "field_names": safe_field_names(document),
+            "nested_field_names": {key: safe_field_names(document[key]) for key in safe_field_names(document)
+                                   if isinstance(document[key], dict)}})
+    except (OSError, ValueError):
+        report["selected_artifacts"].append({"path": str(authorization), "structure_available": False})
+    directory = RETAINED / "fleet-223416"
+    for parent in [*reversed(directory.parents), directory]:
+        info = parent.lstat()
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+            raise ValueError("retained_authority_path_refused")
+    entries = sorted(directory.iterdir())
+    report["fleet_entry_count"] = len(entries)
+    report["fleet_entries_truncated"] = len(entries) > 64
+    for path in entries[:64]:
+        info = path.lstat()
+        row = {"name": path.name, "uid": info.st_uid, "mode": format(stat.S_IMODE(info.st_mode), "04o"),
+               "regular": stat.S_ISREG(info.st_mode), "directory": stat.S_ISDIR(info.st_mode),
+               "symlink": stat.S_ISLNK(info.st_mode)}
+        if row["regular"] and path.suffix == ".json" and info.st_uid == 0 and not info.st_mode & 0o077 and info.st_size <= 65536:
+            try:
+                row["field_names"] = safe_field_names(retained_json(path))
+            except (OSError, ValueError):
+                row["structure_available"] = False
+        report["fleet_entries"].append(row)
+    require_size = len(json.dumps(report)) <= 32768
+    if not require_size:
+        raise ValueError("retained_authority_search_budget")
+    return report
+
+
 async def qualify(result):
     import asyncpg
     from src.index_contracts import IndexIdentity
@@ -389,10 +434,20 @@ def main():
                         help="Read protection metadata only; no store connection or replay")
     inspection.add_argument("--inspect-store-authority", action="store_true",
                             help="Report protected config field/file names only; no secret values or store calls")
+    inspection.add_argument("--inspect-blockers", action="store_true",
+                            help="Inspect selected authorization JSON structure and immediate fleet entry metadata only")
     args = parser.parse_args()
     if os.geteuid() != 0 or Path(sys.prefix) != BASE / "runtime":
         raise SystemExit("ERR: use the staged protected Python as operator")
     helper_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    if args.inspect_blockers:
+        try:
+            report = inspect_remaining_authority()
+        except (OSError, ValueError):
+            report = {"category": "selected_authority_structure_unavailable", "store_connections": False,
+                      "credentials_issued": 0, "secret_values_printed": False, "live_state_changed": False}
+        print(json.dumps({"stage": "remaining_authority_structure", **report}))
+        return 0
     if args.inspect_store_authority:
         try:
             operator = private_json(Path("/etc/enhanced-cognee/operator.json"))

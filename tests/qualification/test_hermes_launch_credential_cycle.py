@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 from pathlib import Path
 import sys
+import time
 
 import pytest
 
@@ -48,3 +49,31 @@ def test_unprivileged_caller_stops_before_fixture_creation(monkeypatch):
     monkeypatch.setattr(helper.os, "geteuid", lambda: 1000)
     with pytest.raises(ValueError, match="protected_operator_python_required"):
         helper.main()
+
+
+def test_status_diagnostic_emits_flags_not_response_or_claim_values():
+    identity = helper.claims_for("0123456789abcdef")
+    body = {"ready": True, "schema_version": 3, "encryption": "AES-256-GCM",
+            "tenant_id": identity["tenant"], "project_id": identity["project_id"],
+            "subject": identity["sub"], "active_records": 0, "pending_change_events": 0,
+            "unexpected_private_field": "invented-sensitive-marker"}
+    value = helper.status_diagnostic(identity, 200, body, time.time()+60)
+    assert helper.valid_diagnostic(value)
+    assert value["project_matches"] is True
+    assert value["http_status"] == 200
+    assert "invented-sensitive-marker" not in str(value)
+    assert identity["project_id"] not in str(value)
+
+
+def test_expired_authentication_is_distinct_from_scope_mismatch():
+    identity = helper.claims_for("0123456789abcdef")
+    value = helper.status_diagnostic(identity, 401, {}, time.time()-1)
+    assert helper.valid_diagnostic(value)
+    assert value["http_status"] == 401 and value["seconds_remaining"] < 0
+    assert value["ready"] is False
+
+
+def test_extra_diagnostic_fields_are_not_forwarded():
+    value = helper.status_diagnostic(helper.claims_for("0123456789abcdef"), 0, {}, time.time())
+    value["response_body"] = "invented-private-marker"
+    assert helper.valid_diagnostic(value) is False
