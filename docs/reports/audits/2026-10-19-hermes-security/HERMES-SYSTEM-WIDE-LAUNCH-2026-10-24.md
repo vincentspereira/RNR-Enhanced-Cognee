@@ -239,6 +239,37 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+PostgreSQL API/worker credential rotation PASSED at
+`/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/postgres-service-rotation`.
+The owner-run receipt confirms staged replacement roles authenticate and pass
+restricted privilege predicates; active API/worker DB URLs were changed and API
+readiness passed. Old roles are retained, and no profile, encryption key or
+application issuer key changed. This is activation of those two service logins,
+not complete credential rotation. Post-rotation worker projection remains an
+explicit acceptance item; prior native/model evidence is retained with scope.
+
+Next prepared grouped transition: `rotate_launch_derived_services.py` requires
+that completed PostgreSQL receipt and uses the existing protected candidate
+Python and staged secrets. It snapshots current (already PostgreSQL-rotated)
+API/worker configs plus graph-user, cache-ACL and Qdrant configs. New graph API/
+worker users copy only the exact existing database grant maps and preserve all
+old user bytes. The new cache worker copies the exact current prefix/command
+rules under its staged username with a new SHA256 password hash. Recovery
+operator accounts stay unchanged. Qdrant changes only api_key and
+read_only_api_key; unrelated parsed configuration values remain identical.
+API/index consumers and the three derived stores are restarted together, then
+new graph/cache/key authentication, old Qdrant-key denial, read-only Qdrant
+write denial and API readiness must pass. Failure restores all saved configs
+and restarts the prior selections; old graph/cache users are retained rather
+than silently revoked. Data, profiles, encryption keys and application signing
+key do not change. Seven source tests pass, including grant/prefix preservation,
+wrong-old-password refusal, unchanged vector configuration and source pins.
+Installed grouped rotation and its post-rotation projection acceptance remain
+pending. Built-in PostgreSQL administrator/backup identities, application issuer
+rotation, obsolete login retirement/custody and issuer/fleet gates remain open.
+Qdrant key configuration was checked against its primary security documentation:
+https://qdrant.tech/documentation/operations/security/ .
+
 Installed-worker projection PASSED in the retained original probe's guarded
 finish. The running worker reported running/available and zero pending changes;
 semantic query returned the exact probe, graph paths were present, and the
