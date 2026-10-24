@@ -239,6 +239,33 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Owner decision: replace forgotten usernames/passwords for the Enhanced Cognee
+stack only, explicitly confirmed after scope clarification. External model
+accounts and unrelated Hermes applications are outside this rotation. The
+previous manual graph import stored a variable label as username and was never
+authenticated; do not attempt it or replay that incorrect credential. Preserve
+the file and any owner-created archive.
+
+`prepare_launch_credential_rotation.py` now stages one root-only candidate
+directory below `/var/lib/enhanced-cognee-rotation`, protected copies of fixed
+current configuration files, and 12 independently random login/key candidates:
+three PostgreSQL roles, three ArcadeDB users, three Valkey users, Qdrant read
+and admin/write API keys, and one application issuer signing key. It returns
+only counts/flags, private stage path and bounded fixed-schema graph metadata.
+No candidate is activated. Memory encryption, index identity, backup signing
+and recovery keys remain unchanged. Replacing the issuer key will require
+coordinated token reissue; candidate generation is not successful rotation.
+The four preparation source tests pass, including ordinary-user refusal,
+private file permissions, exclusive creation and symlink preservation.
+Protected operator execution, installed-version-specific account recovery,
+service configuration updates, acceptance and safe revocation remain pending.
+
+ArcadeDB's maintained operations documentation describes hashed server-user
+configuration and recommends its user-management API/console. The exact
+installed format must be inspected before choosing an offline recovery path:
+https://docs.arcadedb.com/arcadedb/how-to/operations/users . No user file has
+been removed or rewritten and no default/password guess has been attempted.
+
 Owner-run credential component qualification now PASSED, retained at
 `/var/tmp/ec-credential-cycle-nt875dsi`, helper SHA256
 `131af05be0ce1c9285579516e2903ed1838e94d5841e1e449afaeb3041d20f6c`.
