@@ -260,7 +260,11 @@ def cache_write_namespace_policy(raw, username, pipeline):
     patterns = []
     found = False
     for line in raw.splitlines():
-        tokens = shlex.split(line, comments=True)
+        # In ACL rules #<sha256> is a password, not an inline comment.
+        # Only a whole comment line can be skipped. Preserve later key rules.
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        tokens = shlex.split(line, comments=False)
         if len(tokens) < 2 or tokens[:2] != ["user", username]:
             continue
         found = True

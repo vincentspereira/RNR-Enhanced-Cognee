@@ -34,6 +34,15 @@ def test_delivery_diagnostic_never_contains_error_message_or_private_values():
     assert helper.delivery_failure_metadata(error) == {"kind":"ValueError", "source_frames":[]}
 
 
+def test_hashed_password_token_does_not_hide_later_cache_key_rules():
+    digest = "a"*64
+    raw = "# comment\nuser invented on #"+digest+" ~ec:* -@all +get +set"
+    report = helper.cache_write_namespace_policy(raw, "invented", "lr_0123456789abcdef")
+    assert report["configured_cache_write_key_pattern_count"] == 1
+    assert report["configured_cache_new_namespace_pattern_matches"] is True
+    assert digest not in str(report)
+
+
 @pytest.mark.parametrize("url,schemes,port", [
     ("https://example.invalid:28535", {"http", "https"}, 28535),
     ("http://127.0.0.1:6333", {"http", "https"}, 28535),

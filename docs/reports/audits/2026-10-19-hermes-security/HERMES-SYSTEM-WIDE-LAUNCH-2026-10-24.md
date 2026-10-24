@@ -239,6 +239,22 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+CORRECTION: the owner-run retained_replay_policy_inspection receipt reported
+zero configured worker cache write-key patterns and stopped without connections
+or replay. The diagnostic parser used shlex comments=True, which treats Valkey
+`#<password-hash>` tokens as comments and can discard all following key rules.
+That receipt does not establish absent write-key rules or the cause of the
+failed delivery. The earlier interpretation of a cache namespace blocker is
+withdrawn. No cache account or privilege was changed on its basis.
+
+The parser now skips only whole-line comments and preserves inline password-hash
+tokens while returning no hashes or ACL values. The 41-test index helper source
+selection passes, including a regression using a hashed password followed by
+key rules. Re-execute the corrected diagnostic mode to obtain valid configured
+policy evidence and, if admitted, actual failure metadata from a fresh recovery
+namespace. Graph recovery and credential-cycle passes remain reusable.
+Reference: https://valkey.io/topics/acl/ documents `#<hash>` as a password rule.
+
 Installed graph operator recovery PASSED at
 `/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/graph-operator-recovery`.
 The owner-run receipt confirms the built-in root password was replaced,
