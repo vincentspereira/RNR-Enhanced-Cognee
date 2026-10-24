@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import secrets
 import stat
+import sys
 import time
 from urllib.parse import unquote, urlsplit
 
@@ -81,9 +82,57 @@ def public_index_settings():
         return json.loads(stream.read(16385))
 
 
+def inspect_existing():
+    if os.geteuid() != 0:
+        raise ValueError("local_root_operator_required")
+    support = definitions("recover_launch_graph_operator.py")
+    read = support["read_file"]
+    attempt = BASE / "operator-evidence/installed-worker-projection"
+    previous = json.loads(read(attempt / "summary.json",0))
+    if previous.get("project") != "wp_10df177d41ceef89" or previous.get("record_id") != "c85b599e-69b4-46f4-ac8d-9f3848bc3d3b":
+        raise ValueError("fixed_observed_probe_required")
+    issuer = definitions("provision_pilot_access.py")
+    now = int(time.time())
+    key = issuer["load_signing_key"]()
+    token = issuer["sign_claims"]({"sub":"worker_projection","agent_id":"worker_projection",
+        "tenant":"qualification","project_id":previous["project"],"roles":["api_client"],
+        "capture_policy":"selected","iat":now,"exp":now+300},key)
+    del key
+    result = {"stage":"read_only_installed_worker_probe_inspection","memory_written":False,
+              "model_chat_called":False,"profiles_changed":False,"fleet_launch_approved":False}
+    code,status = api(token,"GET","/v1/memories/status")
+    index = status.get("index",{}) if isinstance(status,dict) else {}
+    state = index.get("worker_state")
+    pending = status.get("pending_change_events")
+    result.update(status_http=code,worker_available=index.get("worker_available") is True,
+        worker_state=state if state in {"running","degraded","unavailable"} else "other",
+        pending_change_events=pending if type(pending) is int and 0 <= pending <= 1000000 else None)
+    code,recall = api(token,"POST","/v1/memories/recall",{"query":"Cedar Birch","limit":5})
+    result.update(recall_http=code,vector_queried=recall.get("vector_index") == "queried",
+        probe_in_recall=any(isinstance(row,dict) and row.get("id") == previous["record_id"] for row in recall.get("results",[])))
+    code,graph = api(token,"POST","/v1/memories/connections",{"entity":"Cedar","depth":1})
+    result.update(graph_http=code,graph_paths_present=bool(graph.get("paths")))
+    worker = json.loads(read(Path("/etc/enhanced-cognee/worker.json"),0))
+    settings = public_index_settings()
+    uri = urlsplit(worker["INDEX_VALKEY_URL"])
+    cache_key = record_cache_key(worker["ENHANCED_INDEX_KEY"],settings["pipeline"],previous["project"],previous["record_id"])
+    cache = definitions("install_launch_cache_operator.py")["cache_call"]
+    kind,cached = cache(unquote(uri.username or "default"),unquote(uri.password or ""),"GET",cache_key)
+    result.update(cache_get_refused=kind == "refused",cache_value_present=cached is not None)
+    if kind == "bulk" and cached is not None:
+        parsed = json.loads(cached)
+        result["cache_payload_encrypted"] = isinstance(parsed.get("payload"),str) and parsed["payload"].startswith("enc2:")
+    print(json.dumps(result))
+    return 0
+
+
 def main():
     if os.geteuid() != 0:
         raise ValueError("local_root_operator_required")
+    if sys.argv[1:] == ["--inspect"]:
+        return inspect_existing()
+    if len(sys.argv) != 1:
+        raise ValueError("fixed_operator_mode_required")
     os.umask(0o077)
     support = definitions("recover_launch_graph_operator.py")
     read,write = support["read_file"],support["private_write"]

@@ -239,6 +239,27 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Installed-worker probe did NOT pass. Protected evidence
+`operator-evidence/installed-worker-projection` records new scope
+`wp_10df177d41ceef89` and invented record
+`c85b599e-69b4-46f4-ac8d-9f3848bc3d3b`; create was acknowledged, then delivery
+qualification stopped before retraction. Preserve this active invented record
+and its attempt; do not rerun creation. The previous generic failure receipt
+does not distinguish actual worker lag, global pipeline readiness, cache-read
+permission, projection failure or a harness assertion. No cause is invented.
+Current read-only systemd metadata shows the index service active/running,
+Result=success and NRestarts=0; startup state alone is not delivery acceptance.
+
+The helper's new `--inspect` mode binds to this exact project/record receipt,
+issues only an ordinary short-lived read token, and requests status, recall,
+connections and GET of its exact derived cache key. It emits whitelisted state,
+counts and presence/encryption/refusal flags, never row content, keys or token
+values. No canonical mutation, model call, retry, namespace creation or profile
+access occurs in inspection. Ten source checks pass, including a read-only
+endpoint allowlist test and exclusion of private fixture values. Installed
+inspection is pending. Native/restore/runtime-selection passes remain valid;
+worker delivery remains open until actual evidence resolves this failure.
+
 Native completion now PASSED for fresh run `ecca693d52d54add88d509db`, retained
 at `native-qualification-y9nulhi3` under the candidate's protected operator
 evidence directory. Actual human answer, separate native processes, restart

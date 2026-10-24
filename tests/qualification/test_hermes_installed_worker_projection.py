@@ -43,3 +43,32 @@ def test_ordinary_user_refused_before_private_reads(monkeypatch):
 def test_all_shared_support_sources_match_pins():
     for name,digest in helper.SOURCES.items():
         assert hashlib.sha256(SOURCE.with_name(name).read_bytes()).hexdigest() == digest
+
+
+def test_inspection_reads_only_fixed_probe_and_reports_cache_refusal_without_secrets(monkeypatch,capsys):
+    monkeypatch.setattr(helper.os,"geteuid",lambda:0)
+    previous = {"project":"wp_10df177d41ceef89","record_id":"c85b599e-69b4-46f4-ac8d-9f3848bc3d3b"}
+    worker = {"INDEX_VALKEY_URL":"redis://invented:invented-private-cache@127.0.0.1:28537/0",
+              "ENHANCED_INDEX_KEY":"invented-private-index"}
+    calls = []
+    def definitions(name):
+        if name == "recover_launch_graph_operator.py":
+            return {"read_file":lambda path,owner:json.dumps(previous if path.name == "summary.json" else worker).encode()}
+        if name == "provision_pilot_access.py":
+            return {"load_signing_key":lambda:"invented-private-signing", "sign_claims":lambda *a:"invented-ordinary-token"}
+        return {"cache_call":lambda *a:("refused",None)}
+    def api(token,method,path,body=None):
+        assert method == "GET" and path.endswith("/status") or method == "POST" and path in {
+            "/v1/memories/recall","/v1/memories/connections"}
+        calls.append((method,path))
+        return 200,{"index":{"worker_state":"running","worker_available":True},"pending_change_events":0,
+                    "vector_index":"queried","results":[{"id":previous["record_id"]}],"paths":[{}]}
+    monkeypatch.setattr(helper,"definitions",definitions)
+    monkeypatch.setattr(helper,"public_index_settings",lambda:{"pipeline":"hermes"})
+    monkeypatch.setattr(helper,"api",api)
+    assert helper.inspect_existing() == 0
+    output = capsys.readouterr().out
+    receipt = json.loads(output)
+    assert receipt["cache_get_refused"] is True and receipt["memory_written"] is False
+    assert len(calls) == 3
+    assert "invented-private" not in output
