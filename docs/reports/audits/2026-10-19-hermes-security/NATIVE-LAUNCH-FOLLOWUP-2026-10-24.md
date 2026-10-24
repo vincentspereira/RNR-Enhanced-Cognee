@@ -54,3 +54,57 @@ No Ubuntu-Hermes execution occurred from Workspace. The dependency audit blocker
 unattended renewal, current database recovery and actual fleet admission remain
 separate open requirements. Passing this corrected test cannot by itself approve
 system-wide activation.
+
+## Second owner result and provider lifecycle correction
+
+On d275ab5e0309bde2bef13a7a76d2c8e94808397d, the owner's read-only installed
+diagnostic passed the authenticated status contract, candidate artifact and
+checked-pilot preservation. It reports no model call, memory write or OAuth
+store read. The subsequent native run stopped at question_preservation, with
+the native clarification routine having returned. Sharing, human-answer and
+native follow-up acceptance remain false. Record/history preservation is not
+inferred from reaching this stage.
+
+Source review found a second deterministic harness defect. The actual
+native_memory_turn calls agent.close in its finally block, which shuts down the
+provider and clears its client. The launch child then dereferenced that closed
+client to check the record/history. Its answer stage had the same defect. The
+original reviewed main_memory checker already reinitializes before these reads.
+Both candidate stages now do likewise, retaining the same active secret scope,
+profile and settings. The question verification additionally requires the exact
+pending record to reload from the real durable journal. Separate fixed substages
+identify reinitialization, pending-state, current-record and history checks.
+The provider, service, credentials and immutable candidate artifact are unchanged.
+
+A local full-child regression reproduces AttributeError on the unfixed code at
+the post-question client read. After correction it runs both stages with the
+actual provider, filesystem journal, reviewed native conversation helper and
+follow-up transport guard. The host, model and canonical HTTP transport are
+simulated. A fresh provider loads the question's pending state, rejects an
+unconfirmed correction, accepts the later synthetic human fixture, performs
+version-checked correction/retraction, and reloads state after both closures.
+Negative cases reject a missing question mark, changed current record, changed
+history, lost pending state and invalid final version history. The local fixture
+is not installed evidence or a replacement for the real terminal human answer.
+
+The owner's receipt does not expose the original low-level exception. The local
+closed-client failure is confirmed and consistent with the reported stage; an
+earlier question-format failure in that same stage cannot be ruled out from
+the receipt alone. Do not claim a proven host exception or preserved rows yet.
+The original helper and launcher are retained under the ignored
+.archive/2026-10-24_launch_provider_lifecycle directory. The successful native
+inspection need not repeat. One new corrected native qualification should use
+a fresh fictional scope and retain all prior attempts.
+
+Final lifecycle follow-up validation: 1259 Hermes/operator/encrypted-collection/
+portable-backup checks passed, zero failures/errors/skips and no reported pytest
+warnings. This includes 50 existing harness checks and six new full-child cases.
+Private final logs and fixtures are at /tmp/ec-native-lifecycle-fix-final-20261024
+and /tmp/ecq-1wqyqkq8. Earlier fixture failures remain at
+/tmp/ec-native-lifecycle-fix-20261024; those test-only issues required a writable
+journal descriptor for the deliberate mutation and restoration of the process
+umask after each simulated child. Production admission rules were not relaxed.
+Sanitized source hashes/counts are in
+remediation-evidence/2026-10-24-native-provider-lifecycle.json. Required CI on the
+earlier d275ab5e passed; Security Audit, memory-qualification, full-runtime and
+other legacy jobs still failed. No all-green release result is claimed.

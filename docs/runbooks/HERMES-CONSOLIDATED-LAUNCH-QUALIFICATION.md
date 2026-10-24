@@ -18,6 +18,19 @@ actual contract, including the qualification tenant and signed project scope.
 This repairs the test; it does not establish why the earlier host attempt stopped.
 See [the native follow-up report](../reports/audits/2026-10-19-hermes-security/NATIVE-LAUNCH-FOLLOWUP-2026-10-24.md).
 
+Latest native checkpoint: the owner-run read-only check on d275ab5e passed.
+The corrected native run then reached question_preservation and stopped. The
+native conversation helper closes its provider before returning; both launch
+stages now reinitialize that provider under the same scoped binding before
+authoritative post-turn reads. The pending question must reload from its
+durable journal, and the record and complete queried history must still match.
+Six local lifecycle cases exercise the actual provider and conversation helper,
+with simulated host/model/transport. They include refusal on damaged current
+record, history, pending state and final history. A new installed pass is still
+required. Reuse the successful inspection evidence; the next native command is
+one `qualify` invocation with the corrected published revision. Retain both
+earlier incomplete attempts without replay or deletion.
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional

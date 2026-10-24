@@ -34,6 +34,8 @@ CHILD_PHASES = {"restricted_preflight", "pilot_snapshot", "original_provider_ver
                 "secondary_model_credential", "candidate_profile", "native_imports",
                 "candidate_discovery", "candidate_initialization", "authenticated_status",
                 "empty_scope", "synthetic_fixture", "native_clarification", "question_preservation",
+                "question_reinitialization", "question_pending_gate", "question_record_preservation",
+                "question_history_preservation", "answer_reinitialization",
                 "restart_pending_gate", "native_followup", "final_history", "pilot_preservation"}
 CHILD_PROGRESS = {"native_substage": "restricted_preflight"}
 
@@ -251,7 +253,17 @@ def child(sources, bundle, stage, artifact):
                 clarification_record=previous, clarification_observation=observation)
             CHILD_PROGRESS["native_substage"] = "question_preservation"
             require(isinstance(answer, str) and "?" in answer)
+            # Native agent.close() shuts down its memory manager/provider.
+            # Reopen under the same scoped binding for authoritative reads,
+            # as the original pilot verification already does.
+            CHILD_PROGRESS["native_substage"] = "question_reinitialization"
+            provider.initialize("launch-question-verification-" + run_id,
+                                hermes_home=str(profile), agent_context="primary")
+            CHILD_PROGRESS["native_substage"] = "question_pending_gate"
+            require(provider._pending_clarifications == {ident})
+            CHILD_PROGRESS["native_substage"] = "question_record_preservation"
             require(provider._client.request("GET", "/v1/memories/" + ident) == previous)
+            CHILD_PROGRESS["native_substage"] = "question_history_preservation"
             require(provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=10") == before)
             result = {"record_id": ident, "question_and_preservation_passed": True, "model_requests": requests}
         else:
@@ -263,6 +275,9 @@ def child(sources, bundle, stage, artifact):
                                                  "content": "Fictional Cedar launch " + run_id + " uses five-day reviews."}))
             CHILD_PROGRESS["native_substage"] = "native_followup"
             requests = native_turn(core, provider, oauth, bundle["human_answer"], bundle)
+            CHILD_PROGRESS["native_substage"] = "answer_reinitialization"
+            provider.initialize("launch-answer-verification-" + run_id,
+                                hermes_home=str(profile), agent_context="primary")
             CHILD_PROGRESS["native_substage"] = "final_history"
             history = provider._client.request("GET", "/v1/memories/" + ident + "/history?limit=10")
             require(history.get("record_state") == "retracted")
