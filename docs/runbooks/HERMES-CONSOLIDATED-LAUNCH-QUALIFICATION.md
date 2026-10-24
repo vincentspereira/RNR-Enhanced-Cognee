@@ -10,6 +10,14 @@ the patched major version. [The 24 October dependency report](../reports/audits/
 records the failed enforced audit, compatible full-runtime update and unresolved
 restricted-service gate. Do not force an incompatible install to proceed.
 
+Native follow-up: the owner's first candidate attempt staged the artifact but
+stopped in the native-question phase. The original receipt did not identify its
+substep. A confirmed helper error expected encryption="enabled"; the actual
+schema-3 service reports encryption="AES-256-GCM". The helper now validates that
+actual contract, including the qualification tenant and signed project scope.
+This repairs the test; it does not establish why the earlier host attempt stopped.
+See [the native follow-up report](../reports/audits/2026-10-19-hermes-security/NATIVE-LAUNCH-FOLLOWUP-2026-10-24.md).
+
 ## Batch 1: automated source and disposable integration checks
 
 Run with the native Linux test interpreter and the repository-pinned optional
@@ -51,14 +59,27 @@ Run in the normal Ubuntu-Hermes operator terminal, not Hermes chat. Use the
 published revision recorded in the launch report and the existing source
 checkout. Fetch the delivery branch without switching a running checkout.
 
-The pinned scripts/qualification/run_hermes_launch_native.sh accepts exactly
-the existing checkout path and full published revision. It verifies the seven
+The pinned scripts/qualification/run_hermes_launch_native.sh accepts
+the existing checkout path, full published revision and optional mode
+(`qualify`, the default, or `inspect`). It verifies the seven
 public archived sources before any root definitions execute, stages a separate
 protected candidate, and uses two non-root native Hermes processes. It requires
 the already enrolled secondary pilot model account; no automatic fallback or
 account rotation is allowed. A model refusal/429 stops the run. Up to six model
 requests per process are allowed, with a 100-second native agent budget each.
 No model defaults are changed.
+
+After the incomplete attempt, first use the same pinned launcher with `inspect`.
+This verifies the already-staged public candidate without changing it and runs
+a restricted read-only check of the existing pilot's service status contract.
+It does not load a provider, create a profile, read OAuth credentials, call a
+model, sign/renew credentials or write memory records. Existing API request
+accounting can still advance. Existing pilot API expiry/HTTP errors stop the
+check; report the sanitized result rather than changing credentials blindly.
+If inspection passes, use `qualify` once with the corrected revision. It creates
+a fresh invented-data scope, retaining the earlier attempt and all its evidence.
+Each new failure identifies a fixed public native substage and, when available,
+an HTTP status; exception messages, credentials and model output are excluded.
 
 The operator issues one-hour credentials for two new qualification scopes.
 The signing key stays in the operator process; the reviewer credential also

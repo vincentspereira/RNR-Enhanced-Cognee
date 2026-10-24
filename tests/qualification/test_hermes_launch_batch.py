@@ -22,6 +22,100 @@ def native():
     return load("integrations/hermes/deployment/qualify_launch_candidate.py", "native_launch_test")
 
 
+@pytest.mark.asyncio
+async def test_launch_accepts_status_from_actual_memory_service(native):
+    from src.memory_service import MemoryService, MemoryScope
+    class Connection:
+        async def fetchval(self, *args): return 0
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+    service = MemoryService(NS(acquire=Connection), NS(_enabled=True))
+    scope = MemoryScope("qualification", "launch_fixture", "fixture", "fixture")
+    status = await service.status(scope)
+    native.validate_status(status, scope.project)
+    assert status["encryption"] == "AES-256-GCM"
+
+
+@pytest.mark.parametrize("key,value", [("encryption", "enabled"), ("encryption", "disabled"),
+    ("tenant_id", "private"), ("project_id", "other"), ("schema_version", 3.0), ("ready", 1)])
+def test_launch_status_rejects_wrong_contract(native, key, value):
+    status = dict(ready=True, schema_version=3, tenant_id="qualification",
+                  project_id="launch_fixture", encryption="AES-256-GCM")
+    status[key] = value
+    with pytest.raises(ValueError): native.validate_status(status, "launch_fixture")
+
+
+@pytest.mark.parametrize("phase", sorted({"secondary_model_credential", "authenticated_status", "native_clarification"}))
+def test_child_failure_reports_stage_without_exception_content(native, phase):
+    native.CHILD_PROGRESS["native_substage"] = phase
+    report = native.child_failure(ValueError("PRIVATE_TOKEN_AND_MODEL_OUTPUT"))
+    assert report == dict(complete=False, native_substage=phase,
+                          native_failure_category="condition_or_native_error", native_http_status=None)
+    assert "PRIVATE" not in json.dumps(report)
+
+
+@pytest.mark.parametrize("mutation", [None, "private-field", "private-phase", "private-category", "bad-status"])
+def test_parent_only_accepts_fixed_child_failure_fields(native, monkeypatch, mutation):
+    report = dict(complete=False, native_substage="authenticated_status",
+                  native_failure_category="http_error", native_http_status=401)
+    if mutation == "private-field": report["PRIVATE"] = "secret"
+    if mutation == "private-phase": report["native_substage"] = "PRIVATE"
+    if mutation == "private-category": report["native_failure_category"] = "PRIVATE"
+    if mutation == "bad-status": report["native_http_status"] = "PRIVATE"
+    monkeypatch.setattr(native.subprocess, "run", lambda *a, **kw: NS(returncode=1, stdout=json.dumps(report).encode()))
+    with pytest.raises(ValueError):
+        native.run_child(NS(pw_uid=995, pw_gid=996), {}, {}, "question", Path("/opt/public-candidate"))
+    if mutation is None:
+        assert native.PROGRESS["native_substage"] == "authenticated_status"
+        assert native.PROGRESS["native_failure_category"] == "http_error"
+    else:
+        assert "native_substage" not in native.PROGRESS
+
+
+def test_inspection_uses_only_status_and_never_reads_oauth_or_creates_profile(native, monkeypatch):
+    import types
+    calls = []
+    settings = json.dumps(dict(base_url="http://127.0.0.1:28080", timeout=10,
+                               include_shared=True, capture_policy="selected")).encode()
+    snapshots = {"enhanced_cognee.json": settings, "config.yaml": b"original"}
+    files = dict(snapshots, **{".env": b"private-test-env"})
+    core = dict(PROFILE=Path("/private-pilot"),
+                preflight=lambda approved, include_auth: (calls.append(("preflight", include_auth)) or (995, dict(snapshots))),
+                read_private=lambda name, uid: (calls.append(("read", name)) or files[name]),
+                verify_provider=lambda: calls.append(("verify_provider",)))
+    class Client:
+        def __init__(self, origin, token, timeout):
+            assert origin == "http://127.0.0.1:28080" and token == "fixture-only" and timeout == 10
+        def request(self, method, path):
+            calls.append((method, path))
+            return dict(ready=True, schema_version=3, tenant_id="qualification", project_id="hermes_pilot",
+                        subject="hermes_pilot_runtime", encryption="AES-256-GCM")
+    monkeypatch.setattr(native, "definitions", lambda source, name: core if source == "core" else {"MemoryClient": Client})
+    package = types.ModuleType("agent")
+    secrets = types.ModuleType("agent.secret_scope")
+    secrets.__file__ = str(native.RELEASE / "repo/agent/secret_scope.py")
+    secrets.load_env_file = lambda path: {"ENHANCED_COGNEE_ACCESS_TOKEN": "fixture-only"}
+    package.secret_scope = secrets
+    monkeypatch.setitem(sys.modules, "agent", package)
+    monkeypatch.setitem(sys.modules, "agent.secret_scope", secrets)
+    sources = {native.BASE + "deployment/check_pilot_codex.py": "core",
+               native.BASE + "enhanced_cognee/client.py": "client"}
+    report = native.child(sources, {}, "inspect", Path("/unused"))
+    assert report["complete"] is True and report["authenticated_status_contract_passed"] is True
+    assert report["model_called"] is report["memory_records_written"] is report["oauth_store_read"] is False
+    assert ("preflight", False) in calls and ("read", "auth.json") not in calls
+    assert [c for c in calls if c[0] in {"GET", "POST", "PATCH", "DELETE"}] == [("GET", "/v1/memories/status")]
+
+
+def test_read_only_receipt_rejects_any_claim_that_it_called_model(native, monkeypatch):
+    report = dict(complete=True, authenticated_status_contract_passed=True,
+                  original_pilot_settings_and_credentials_preserved=True,
+                  model_called=True, memory_records_written=False, oauth_store_read=False)
+    monkeypatch.setattr(native.subprocess, "run", lambda *a, **kw: NS(returncode=0, stdout=json.dumps(report).encode()))
+    with pytest.raises(ValueError):
+        native.run_child(NS(pw_uid=995, pw_gid=996), {}, {}, "inspect", Path("/opt/public-candidate"))
+
+
 def test_pinned_launcher_matches_every_public_source_and_never_extracts_a_bundle():
     import hashlib
     script = Path("scripts/qualification/run_hermes_launch_native.sh").read_text()
