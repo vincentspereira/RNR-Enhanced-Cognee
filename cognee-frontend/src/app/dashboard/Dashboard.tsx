@@ -40,6 +40,8 @@ export default function Dashboard({ accessToken }: DashboardProps) {
     removeNotebook,
   } = useNotebooks();
 
+  const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!notebooks.length) {
       refreshNotebooks()
@@ -51,7 +53,6 @@ export default function Dashboard({ accessToken }: DashboardProps) {
     }
   }, [notebooks.length, refreshNotebooks]);
 
-  const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
 
   const handleNotebookRemove = useCallback((notebookId: string) => {
     return removeNotebook(notebookId)
@@ -134,7 +135,7 @@ export default function Dashboard({ accessToken }: DashboardProps) {
 
           <AddDataToCognee
             datasets={datasets}
-            refreshDatasets={refreshDatasetsRef.current}
+            refreshDatasets={() => refreshDatasetsRef.current()}
             useCloud={isCloudEnv}
           />
 

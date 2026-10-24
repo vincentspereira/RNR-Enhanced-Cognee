@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-20",
+  "scope": "Synthetic Workspace qualification; no everyday/private deployment",
+  "unit": {
+    "tests": 4285,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 44.893,
+    "xml_sha256": "cceb54868627ca027dbf497b1728c8f11beb880e7a77fd89aaac8102491db4d9"
+  },
+  "full_opt_in_qualification": {
+    "tests": 77,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 28.426,
+    "xml_sha256": "5a15e08908713c00bf3458b2801ea1d9e4726d254160381f40cd5d2beae93edd"
+  },
+  "restored_checks": {
+    "adapter_file_tests": 39,
+    "locust_import_subprocess_tests": 1,
+    "locust_timeout_seconds": 30,
+    "dependency_lock": "requirements-unit-optional.lock",
+    "hash_verification": true,
+    "test_only_packages_audited": 38,
+    "known_dependency_findings": 0
+  },
+  "fleet": {
+    "bot_spaces": 41,
+    "controller_spaces": 1,
+    "distinct_profile_contract_instances": 42,
+    "real_postgresql_api": true,
+    "installed_Hermes_fleet": false,
+    "simultaneous_chat_models_qualified": false
+  },
+  "backup_script": {
+    "saved_original_filename": true,
+    "original_copies_preserved": true,
+    "synthetic_powershell_checks": 29,
+    "synthetic_age_inventory_checks": 8,
+    "actual_7zip_encryption_and_restore": true,
+    "Windows_DPAPI_or_live_WSL_cloud_run_qualified": false,
+    "robocopy_cause": "ERROR 433 copying a PostgreSQL Unix socket; replaced workspace mirror with native Linux archive",
+    "approved_service_backup_directory": "/var/backups/enhanced-cognee",
+    "service_backup_installed": false
+  },
+  "release": {
+    "merge_performed": false,
+    "new_hosted_checks": {
+      "source_commit": "cf9030f02bf71280fc9af553da38e53e9dd4a070",
+      "required_ci": "passed",
+      "unit_tests_passed": 4285,
+      "core_canonical_tests_passed": 64,
+      "functional_store_tests_passed": 21,
+      "actual_image_restart_recovery": "passed",
+      "security_gate": "failed",
+      "image_id": "sha256:f2d16586d01917ee3ff5a0db9237569a54d760df47c60c12d71902aeaf39cdec"
+    },
+    "previous_OS_image_security_gate": "failed; no finding suppression"
+  },
+  "native_distribution": {
+    "wheel_sha256": "0840b79b6d377763caad5ebd5751e706a87bba1d108f9cc75769be0baf812d59",
+    "packaging_boundary": "passed",
+    "clean_outside_checkout_imports": "passed",
+    "compatible_packages": 55
+  },
+  "clean_required_canonical_lane": {
+    "passed": 64,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "compatible_locked_packages": 59
+  }
+}

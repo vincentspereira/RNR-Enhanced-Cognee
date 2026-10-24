@@ -1,0 +1,3 @@
+# Optional operator worker for the default Qdrant/ArcadeDB/Valkey stack.
+-r requirements-memory.in
+redis==5.1.1

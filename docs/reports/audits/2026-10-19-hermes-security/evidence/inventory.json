@@ -1,0 +1,89 @@
+{
+  "tracked_files": 2611,
+  "python_files": 1766,
+  "parse_errors": [
+    {
+      "path": "integration/test_comprehensive_integration.py",
+      "line": 276,
+      "error": "positional argument follows keyword argument (test_comprehensive_integration.py, line 276)"
+    },
+    {
+      "path": "production/deployment/production_deployment_preparation.py",
+      "line": 770,
+      "error": "unterminated string literal (detected at line 770) (production_deployment_preparation.py, line 770)"
+    },
+    {
+      "path": "testing/automation/test_ci_cd_integration.py",
+      "line": 526,
+      "error": "invalid syntax. Perhaps you forgot a comma? (test_ci_cd_integration.py, line 526)"
+    },
+    {
+      "path": "testing/automation/test_end_to_end_workflows.py",
+      "line": 856,
+      "error": "positional argument follows keyword argument (test_end_to_end_workflows.py, line 856)"
+    },
+    {
+      "path": "testing/fixtures/test_data_generator.py",
+      "line": 303,
+      "error": "closing parenthesis '}' does not match opening parenthesis '(' (test_data_generator.py, line 303)"
+    },
+    {
+      "path": "testing/performance/test_production_scenarios.py",
+      "line": 894,
+      "error": "invalid syntax (test_production_scenarios.py, line 894)"
+    },
+    {
+      "path": "testing/scripts/generate_coverage_report.py",
+      "line": 216,
+      "error": "unexpected indent (generate_coverage_report.py, line 216)"
+    },
+    {
+      "path": "testing/ui/test_user_interface.py",
+      "line": 461,
+      "error": "positional argument follows keyword argument (test_user_interface.py, line 461)"
+    }
+  ],
+  "top_level_counts": {
+    "[root]": 32,
+    ".github": 57,
+    ".kilocode": 1,
+    ".upstream-sync": 14,
+    "alembic": 16,
+    "alembic_enhanced": 4,
+    "assets": 20,
+    "benchmarks": 4,
+    "bin": 16,
+    "clients": 15,
+    "cognee-frontend": 145,
+    "cognee-starter-kit": 9,
+    "cognee": 1453,
+    "config": 11,
+    "dashboard": 105,
+    "deploy": 29,
+    "deployment": 11,
+    "distributed": 16,
+    "docker": 17,
+    "docs": 103,
+    "enhanced_cognee_client": 5,
+    "evals": 81,
+    "examples": 50,
+    "installer": 5,
+    "integration": 1,
+    "licenses": 1,
+    "logs": 2,
+    "migrations": 9,
+    "monitoring": 11,
+    "notebooks": 13,
+    "plugins": 5,
+    "production": 11,
+    "scripts": 15,
+    "sdk_pkg": 6,
+    "setup": 8,
+    "src": 120,
+    "tasks": 4,
+    "testing": 28,
+    "tests": 154,
+    "tools": 3,
+    "working_dir_error_replication": 1
+  }
+}

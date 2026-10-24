@@ -44,3 +44,25 @@ The HTTP contract is stable; new languages should not break it.
 ## License
 
 All clients are Apache-2.0. See repository root [LICENSE](../LICENSE).
+# Security qualification update - 19 October 2026
+
+The Python, Node, Go and Rust clients distinguish an operator API key from a
+scoped Bearer token. Authenticated remote URLs require HTTPS, and redirects are
+refused. Python, Go and Rust disable ambient proxies by default. Node uses its
+configured fetch implementation, which is part of the caller's trusted transport.
+Node/Go/Rust responses are limited to 1 MiB. These checks do not qualify every
+backend or optional provider.
+
+These clients currently address legacy HTTP endpoints. Credentials carrying a
+`project_id` are confined to the restricted `/v1/memories` API, so they cannot be
+used to reach these older endpoints. Use the isolated Hermes provider for that
+API; do not substitute an administrator key to bypass the project boundary.
+
+Use `access_token` in Python, `accessToken` in Node, `AccessToken` in Go, or
+`.api_key(None).access_token(Some(...))` in Rust. Keep tokens in the calling
+system's secret store, outside source, instructions and memory content.
+
+Local checks: Python wheel/registry contracts, Node 9 tests, Rust 9 tests plus a
+documentation compile, and the Go suite with its race detector pass. Current
+Rust lock and Go vulnerability checks report no known findings. These are local
+results, not a claim of published SDK releases or private-project activation.

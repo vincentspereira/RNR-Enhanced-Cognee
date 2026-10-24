@@ -17,7 +17,8 @@ CRYPTOGRAPHY (RNR Enhanced Cognee):
     so the existing master-key configuration is reused unchanged.
 
 Dependencies: cryptography (pip install cryptography)
-Falls back gracefully if cryptography is not installed (plain-text mode).
+Development-only plaintext mode is available when encryption is not required.
+Production and explicitly protected use fail closed without cryptography or keys.
 
 ASCII-only output. No Unicode symbols.
 """
@@ -94,10 +95,9 @@ class EncryptionManager:
     content ("enc:" prefix) is decrypted transparently for backward
     compatibility, so no data migration is required to read existing rows.
 
-    When cryptography is not installed the class operates in pass-through
-    mode: encrypt() returns the plaintext unchanged and decrypt() returns
-    the ciphertext unchanged.  All async methods degrade gracefully when
-    the database pool is unavailable.
+    Production requires cryptography and a persistent master key. Optional local
+    development can use plaintext, but protected ciphertext is never returned as
+    if it had been decrypted when cryptography is unavailable.
 
     Usage::
 
@@ -128,6 +128,11 @@ class EncryptionManager:
         """
         self.pool = postgres_pool
         self._enabled: bool = _CRYPTO_AVAILABLE
+        required = os.getenv("ENHANCED_ENV", "").lower() in ("prod", "production") or os.getenv("ENHANCED_ENCRYPTION_REQUIRED", "0") == "1"
+        if required and not self._enabled:
+            raise RuntimeError("Required encryption is unavailable")
+        if required and not master_key:
+            raise ValueError("A persistent encryption master key is required")
 
         if not self._enabled:
             self._fernet: Any = None
@@ -138,6 +143,8 @@ class EncryptionManager:
         if master_key:
             key_bytes = master_key.encode() if isinstance(master_key, str) else master_key
         else:
+            if os.getenv("ENHANCED_ENV", "").lower() in ("prod", "production"):
+                raise ValueError("ENCRYPTION_MASTER_KEY is required in production")
             key_bytes = Fernet.generate_key()
             logger.info(
                 "INFO EncryptionManager: no master_key provided - generated a new key"
@@ -163,7 +170,11 @@ class EncryptionManager:
         routed later.  A fresh 96-bit nonce is generated for every call, so
         encrypting the same value twice yields different ciphertext.
         """
-        if not self._enabled or not plaintext:
+        if not plaintext:
+            return plaintext
+        if not self._enabled:
+            if os.getenv("ENHANCED_ENCRYPTION_REQUIRED", "0") == "1" or os.getenv("ENHANCED_ENV", "").lower() in ("prod", "production"):
+                raise RuntimeError("Required encryption is unavailable")
             return plaintext
 
         try:
@@ -173,7 +184,7 @@ class EncryptionManager:
             return _GCM_PREFIX + token
         except Exception as exc:
             logger.error("encrypt failed: %s", exc)
-            return plaintext
+            raise RuntimeError("Memory encryption failed; plaintext was not accepted") from exc
 
     def decrypt(self, ciphertext: str) -> str:
         """
@@ -185,7 +196,11 @@ class EncryptionManager:
 
         Returns the original value unchanged when encryption is disabled.
         """
-        if not self._enabled or not ciphertext:
+        if not ciphertext:
+            return ciphertext
+        if not self._enabled:
+            if ciphertext.startswith((_GCM_PREFIX, _ENC_PREFIX)):
+                raise RuntimeError("Encrypted memory cannot be read without cryptography")
             return ciphertext
 
         if ciphertext.startswith(_GCM_PREFIX):
@@ -195,19 +210,23 @@ class EncryptionManager:
                 )
                 nonce, body = raw[:_GCM_NONCE_LEN], raw[_GCM_NONCE_LEN:]
                 plaintext = self._aesgcm.decrypt(nonce, body, None)
+                if not isinstance(plaintext, bytes):
+                    raise ValueError("Invalid authenticated plaintext type")
                 return plaintext.decode("utf-8")
             except Exception as exc:
                 logger.error("decrypt failed: %s", exc)
-                return ciphertext
+                raise ValueError("Encrypted memory authentication failed") from exc
 
         if ciphertext.startswith(_ENC_PREFIX):
             try:
                 token_str = ciphertext[len(_ENC_PREFIX):]
                 plaintext = self._fernet.decrypt(token_str.encode("ascii"))
+                if not isinstance(plaintext, bytes):
+                    raise ValueError("Invalid authenticated plaintext type")
                 return plaintext.decode("utf-8")
             except Exception as exc:
                 logger.error("decrypt failed: %s", exc)
-                return ciphertext
+                raise ValueError("Legacy encrypted memory authentication failed") from exc
 
         return ciphertext
 
@@ -277,8 +296,8 @@ class EncryptionManager:
             return {"memory_id": memory_id, "error": str(exc)}
 
     async def get_encryption_stats(self) -> Dict[str, Any]:
-        f"""
-        Return aggregate encryption statistics for {_t_docs()}.
+        """
+        Return aggregate encryption statistics for the scoped documents table.
 
         Returns:
             Dict with total_memories, encrypted_memories, encryption_enabled,

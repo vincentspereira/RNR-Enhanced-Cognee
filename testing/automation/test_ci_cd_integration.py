@@ -523,7 +523,7 @@ class CICDTestFramework:
             status="passed" if overall_coverage >= ci_config.coverage_threshold else "failed",
             metrics={"coverage_percentage": overall_coverage},
             thresholds={"min_coverage": ci_config.coverage_threshold},
-            actual_values{"coverage": overall_coverage},
+            actual_values={"coverage": overall_coverage},
             timestamp=datetime.now(timezone.utc)
         )
         quality_gates.append(coverage_gate)
@@ -897,15 +897,15 @@ class TestCICDIntegration:
                         },
                         {
                             "name": "Install dependencies",
-                            "run": |
-                                python -m pip install --upgrade pip
-                                pip install -r requirements.txt
-                                pip install -r requirements-test.txt
+                            "run": (
+                                "python -m pip install --upgrade pip\n"
+                                "pip install -r requirements.txt\n"
+                                "pip install -r requirements-test.txt\n"
+                            )
                         },
                         {
                             "name": "Run tests",
-                            "run": |
-                                python -m pytest testing/ -v --cov=src --cov-report=xml --junit-xml=test-results.xml
+                            "run": "python -m pytest testing/ -v --cov=src --cov-report=xml --junit-xml=test-results.xml"
                         },
                         {
                             "name": "Upload coverage to Codecov",

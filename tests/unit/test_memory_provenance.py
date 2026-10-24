@@ -271,21 +271,27 @@ class TestAddTransformation:
 # ---------------------------------------------------------------------------
 
 class TestMarkVerified:
+    @staticmethod
+    def verified_connection():
+        conn = AsyncMock()
+        conn.fetchrow = AsyncMock(return_value={"content": "synthetic",
+            "provenance": {"checksum": hashlib.sha256(b"synthetic").hexdigest()}})
+        conn.execute = AsyncMock(return_value="UPDATE 1")
+        return conn
+
     async def test_no_pool_returns_false(self):
         tracker = MemoryProvenanceTracker(postgres_pool=None)
         result = await tracker.mark_verified("mem-1")
         assert result is False
 
     async def test_success_returns_true(self):
-        conn = AsyncMock()
-        conn.execute = AsyncMock(return_value=None)
+        conn = self.verified_connection()
         tracker = _tracker_with_conn(conn)
         result = await tracker.mark_verified("mem-1")
         assert result is True
 
     async def test_verified_by_defaults_to_system(self):
-        conn = AsyncMock()
-        conn.execute = AsyncMock(return_value=None)
+        conn = self.verified_connection()
         tracker = _tracker_with_conn(conn)
         await tracker.mark_verified("mem-1", verified_by=None)
         # Second positional arg to execute is verified_by ("system")
@@ -293,19 +299,30 @@ class TestMarkVerified:
         assert call_args[2] == "system"
 
     async def test_verified_by_custom_value(self):
-        conn = AsyncMock()
-        conn.execute = AsyncMock(return_value=None)
+        conn = self.verified_connection()
         tracker = _tracker_with_conn(conn)
         await tracker.mark_verified("mem-1", verified_by="admin-agent")
         call_args = conn.execute.call_args[0]
         assert call_args[2] == "admin-agent"
 
     async def test_db_exception_returns_false(self):
-        conn = AsyncMock()
+        conn = self.verified_connection()
         conn.execute = AsyncMock(side_effect=RuntimeError("boom"))
         tracker = _tracker_with_conn(conn)
         result = await tracker.mark_verified("mem-err")
         assert result is False
+
+    @pytest.mark.parametrize("baseline", [None, {}, {"checksum": "wrong"}])
+    async def test_missing_or_wrong_baseline_never_acquires_verification(self, baseline):
+        conn = self.verified_connection()
+        conn.fetchrow.return_value["provenance"] = baseline
+        assert not await _tracker_with_conn(conn).mark_verified("mem-1")
+        conn.execute.assert_not_awaited()
+
+    async def test_concurrent_change_is_not_acknowledged(self):
+        conn = self.verified_connection()
+        conn.execute.return_value = "UPDATE 0"
+        assert not await _tracker_with_conn(conn).mark_verified("mem-1")
 
 
 # ---------------------------------------------------------------------------

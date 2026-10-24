@@ -35,6 +35,7 @@ import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type
+from src.security.capabilities import read_import_text
 
 logger = logging.getLogger(__name__)
 
@@ -102,10 +103,7 @@ class PlainTextLoader(EnhancedCogneeLoader):
     DESCRIPTION = "Loads plain text, Markdown, and reStructuredText files."
 
     async def load(self, source: str, encoding: str = "utf-8", **kwargs: Any) -> str:
-        path = Path(source)
-        if not path.exists():
-            raise IOError(f"File not found: {source}")
-        return path.read_text(encoding=encoding)
+        return read_import_text(source, encoding=encoding)
 
 
 class JsonLoader(EnhancedCogneeLoader):
@@ -117,11 +115,7 @@ class JsonLoader(EnhancedCogneeLoader):
 
     async def load(self, source: str, **kwargs: Any) -> str:
         import json
-        path = Path(source)
-        if not path.exists():
-            raise IOError(f"File not found: {source}")
-
-        raw = path.read_text(encoding="utf-8")
+        raw = read_import_text(source)
         # Try JSON-Lines first
         lines = [ln.strip() for ln in raw.splitlines() if ln.strip()]
         if all(ln.startswith("{") or ln.startswith("[") for ln in lines[:3]):
@@ -144,11 +138,7 @@ class HtmlLoader(EnhancedCogneeLoader):
     DESCRIPTION = "Loads HTML files, extracting visible text content."
 
     async def load(self, source: str, **kwargs: Any) -> str:
-        path = Path(source)
-        if not path.exists():
-            raise IOError(f"File not found: {source}")
-
-        raw = path.read_text(encoding="utf-8")
+        raw = read_import_text(source)
         try:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(raw, "html.parser")

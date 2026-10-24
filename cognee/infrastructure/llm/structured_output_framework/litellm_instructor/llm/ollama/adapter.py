@@ -75,7 +75,7 @@ class OllamaAPIAdapter(LLMInterface):
 
     @retry(
         stop=stop_after_delay(128),
-        wait=wait_exponential_jitter(8, 128),
+        wait=wait_exponential_jitter(multiplier=8, max=128),
         retry=retry_if_not_exception_type(
             (litellm.exceptions.NotFoundError, litellm.exceptions.AuthenticationError)
         ),
@@ -127,7 +127,7 @@ class OllamaAPIAdapter(LLMInterface):
 
     @retry(
         stop=stop_after_delay(128),
-        wait=wait_exponential_jitter(8, 128),
+        wait=wait_exponential_jitter(multiplier=8, max=128),
         retry=retry_if_not_exception_type(
             (litellm.exceptions.NotFoundError, litellm.exceptions.AuthenticationError)
         ),
@@ -168,7 +168,7 @@ class OllamaAPIAdapter(LLMInterface):
 
     @retry(
         stop=stop_after_delay(128),
-        wait=wait_exponential_jitter(2, 128),
+        wait=wait_exponential_jitter(multiplier=2, max=128),
         retry=retry_if_not_exception_type(
             (litellm.exceptions.NotFoundError, litellm.exceptions.AuthenticationError)
         ),

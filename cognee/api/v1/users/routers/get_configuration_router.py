@@ -43,7 +43,7 @@ def get_configuration_router() -> APIRouter:
         config_id: UUID,
         user: User = Depends(get_authenticated_user),
     ):
-        return await method_get_principal_configuration(config_id=config_id)
+        return await method_get_principal_configuration(config_id=config_id, principal_id=user.id)
 
     @router.get("/get_user_configuration/", response_model=list)
     async def get_user_all_configuration(

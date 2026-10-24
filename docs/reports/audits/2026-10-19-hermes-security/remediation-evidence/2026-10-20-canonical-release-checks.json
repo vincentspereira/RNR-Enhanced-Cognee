@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-20",
+  "python": "3.12.3",
+  "native_dependency_check": "passed, 55 packages compatible",
+  "native_imports_outside_checkout": [
+    "src.memory_api",
+    "src.index_runtime",
+    "src.memory_backup",
+    "src.security.tool_policy",
+    "bin.project_memory_mcp",
+    "enhanced_cognee_client.project_memory"
+  ],
+  "native_upstream_cognee_installed": false,
+  "wheel_boundary": "passed both artifacts",
+  "dashboard_build": "passed Next.js 16.4.2 with type checking",
+  "scope": "native artifact compatibility; full Cognee distribution needs requirements-full.lock",
+  "artifacts": {
+    "native_wheel": {
+      "filename": "rnr_enhanced_cognee_memory-1.1.0-py3-none-any.whl",
+      "sha256": "1a7a06338974cc1ec94f50aea3c5dcd306896cab8f4ef85139f60e9072387cb0"
+    },
+    "full_wheel": {
+      "filename": "cognee-1.0.9+enhanced-py3-none-any.whl",
+      "sha256": "2d209679c33fe3dfabfd08ebaca74c23f97f04bfe5340d0d7f0e5b8b2d478648"
+    }
+  }
+}

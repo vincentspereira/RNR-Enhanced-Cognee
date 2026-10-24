@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { exportChartAsPNG, exportChartAsPDF, exportChartAsSVG } from "@/lib/utils/chart-export";
+import { exportChartAsPNG, exportChartAsPDF } from "@/lib/utils/chart-export";
 import { Download } from "lucide-react";
 import { NeutralButton } from "@/components/ui/elements/NeutralButton";
 

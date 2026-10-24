@@ -5,14 +5,14 @@
 psycopg2-binary==2.9.12            # PostgreSQL adapter (replaces SQLite)
 pgvector==0.4.2                    # Vector support for PostgreSQL
 qdrant-client==1.18.0             # Qdrant vector database client (replaces LanceDB)
-neo4j==5.25.0                      # Neo4j graph database client (replaces Kuzu)
+neo4j>=5.28.0,<6                   # Matches the pyproject neo4j extra
 redis==5.1.1                       # Redis client (new cache layer)
 
 # Web Framework and API
 fastapi==0.136.1                   # Web framework
 uvicorn==0.47.0                    # ASGI server
 pydantic==2.13.4                    # Data validation
-pydantic-settings==2.14.1           # Settings management
+pydantic-settings>=2.14.2,<3           # Settings management
 
 # Database and ORM
 sqlalchemy==2.0.49                 # SQL ORM
@@ -20,12 +20,12 @@ alembic==1.18.4                    # Database migrations
 asyncpg==0.31.0                    # Async PostgreSQL driver
 
 # Authentication and Security
-python-jose[cryptography]==3.5.0   # JWT handling
 passlib[bcrypt]==1.7.4             # Password hashing
-python-multipart==0.0.29            # Form data parsing
-cryptography==48.0.0                # Cryptographic operations
+python-multipart>=0.0.31,<1         # Form data parsing, current security floor
+cryptography>=50.0.0,<51             # Authenticated encryption, current security floor
 
 # HTTP and Networking
+certifi>=2026.10.19                 # Corrected trust bundle, GHSA-6q48-6c7w-9gw2
 httpx==0.28.1                      # Async HTTP client
 aiofiles==23.2.1                   # Async file operations
 requests==2.34.2                   # HTTP requests (for some integrations)
@@ -36,11 +36,11 @@ python-decouple==3.8               # Configuration management
 pyyaml==6.0.3                      # YAML parsing
 
 # Logging and Monitoring
-structlog==24.1.0                  # Structured logging
+structlog>=25.2.0,<26              # Matches the core project requirement
 rich>=13.8.0,<14.0                 # Rich console output (must be >=13.8 for typer 0.25.x)
 prometheus-client==0.25.0          # Prometheus metrics
-opentelemetry-api==1.41.1          # OpenTelemetry tracing
-opentelemetry-sdk==1.41.1
+opentelemetry-api==1.45.1          # Patched tracing API; keep SDK cohort aligned
+opentelemetry-sdk==1.45.1
 
 # Data Processing and Analysis
 numpy==1.26.4                      # Numerical computing
@@ -53,22 +53,20 @@ langdetect==1.0.9                   # Language detection (28 languages)
 
 # Text Processing and NLP
 tiktoken==0.13.0                    # Token counting
-nltk==3.9.4                        # Natural language processing
 spacy>=3.8.13,<3.9                 # NLP pipeline (3.8.14 doesn't exist on PyPI; 3.8.13 is latest in the 3.8.x line)
-textstat==0.7.13                    # Text statistics
 
 # Machine Learning and AI
-transformers==4.53.0               # HuggingFace transformers (>=4.53.0 fixes RCE/ReDoS CVEs)
-torch==2.12.0                       # PyTorch
-sentence-transformers==2.6.1       # Sentence embeddings
-accelerate==1.13.0                 # PyTorch acceleration
-datasets==2.18.0                   # Dataset handling
+transformers>=5.10.0,<6             # Current security floor; verify optional model compatibility
+torch>=2.13.0,<3                       # PyTorch
+sentence-transformers>=6.1.0,<7    # Supports the current Transformers major
+accelerate>=1.15.0,<2              # PyTorch acceleration
+datasets>=5.1.0,<6                 # Supports current fsspec security fixes
 
 # AI Provider SDKs
-openai>=1.80.1,<2.0                # OpenAI API (pyproject requires >=1.80.1)
+openai>=2.20.0,<3                 # Matches the current LiteLLM dependency
 anthropic==0.102.0                   # Anthropic API
 google-generativeai==0.8.6         # Google AI
-mcp>=1.0.0                         # Model Context Protocol SDK (FastMCP server for MCP tools)
+mcp>=1.27.1,<2                    # FastMCP v1 contract; v2 has incompatible APIs
 
 # AWS SDK (imported at module level by src/security/enhanced_security_framework.py
 # for credential rotation tooling; required even if AWS features aren't used)
@@ -80,7 +78,7 @@ slowapi>=0.1.9,<1.0
 
 # More module-level imports found by clean-CI install audit (each one fails
 # test-collection at import time because they are imported unconditionally):
-PyJWT>=2.8,<3.0                    # `import jwt` in src/security/{auth,enhanced_security_framework}.py
+PyJWT>=2.15.1,<3.0                 # Scoped JWT verification
 bleach>=6.0,<7.0                   # HTML/XSS sanitization
 dataclasses-json>=0.6,<1.0         # JSON (de)serialization for @dataclass
 feedparser>=6.0,<7.0               # RSS/Atom feed parsing (used by ingest_url)
@@ -90,7 +88,6 @@ markdown>=3.5,<4.0                 # Markdown -> HTML rendering
 # Memory and Caching
 redis==5.1.1                       # Redis client
 hiredis==2.3.2                     # Redis parser
-diskcache==5.6.3                   # Disk-based caching
 
 # Task Queue and Background Jobs
 celery==5.6.3                      # Distributed task queue
@@ -102,14 +99,14 @@ markupsafe==2.1.5                  # Secure markup
 
 # CLI and Utilities
 typer==0.25.1                       # CLI framework
-click==8.4.0                       # Command line interface
+click>=8.4.2,<9                   # Command line interface
 # rich-cli removed: it's a phantom dependency -- never imported in our code,
 # and the pinned version 4.3.0 doesn't exist on PyPI (max published is 1.8.1).
 # The `rich` package (transitive via typer) provides everything we need.
 
 # File Processing
 python-magic==0.4.27               # File type detection
-pillow==12.2.0                     # Image processing (>=12.2.0 fixes buffer-overflow + PDF DoS CVEs)
+pillow>=13.0.0,<14                    # Current image security floor; requires Python >=3.11
 python-docx==1.2.0                 # Word document processing
 openpyxl==3.1.5                    # Excel file processing
 pdfplumber==0.11.9                 # PDF processing
@@ -119,7 +116,7 @@ marshmallow==3.26.2                # Object serialization (>=3.26.2 fixes Schema
 cerberus==1.3.8                    # Data validation
 
 # Graph Processing (Neo4j integration)
-neo4j==5.25.0                      # Neo4j official Python driver
+neo4j>=5.28.0,<6                   # Neo4j official Python driver
 py2neo==2021.2.4                   # Alternative Neo4j client
 networkx==3.4.2                    # Network analysis
 
@@ -131,16 +128,16 @@ hnswlib==0.8.0                     # Hierarchical navigable small world
 # Async Support
 asyncio==3.4.3                     # Async programming
 asyncio-mqtt==0.16.2               # MQTT async client
-aiohttp==3.14.0                     # Async HTTP client/server (3.14.0 fixes CVE-2026-34993 + CVE-2026-47265)
+aiohttp>=3.14.3,<4                 # Current security floor
 
 # Testing (development only)
-pytest>=8.1.0,<9.0                 # Testing framework (pinned to 8.x; 9.x removes APIs we use)
+pytest>=9.0.3,<10                 # Testing framework; current security floor
 pytest-asyncio>=0.24.0,<2.0        # Async testing (0.24 added pytest 8 support; 1.x is current)
 pytest-mock>=3.14,<4.0             # Mocking in tests
 pytest-cov>=5.0,<8.0               # Coverage reporting (5+ supports pytest 8)
 
 # Development Tools
-black==26.3.1                      # Code formatting (>=26.3.1 fixes cache-path traversal; dev-only)
+black==26.10.1                     # Patched development formatter
 flake8==7.0.0                      # Linting
 mypy==1.9.0                        # Type checking
 pre-commit==3.6.0                  # Git hooks
@@ -171,3 +168,7 @@ orjson==3.11.9                     # Fast JSON
 # Development Environment
 ipython==8.22.2                    # Enhanced Python REPL
 jupyter==1.1.1                      # Jupyter notebook support
+
+# Security floor for transitive packaging support.
+setuptools>=84.1.0
+virtualenv>=21.14.9

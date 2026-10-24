@@ -5,6 +5,65 @@ use enhanced_cognee_client::{Client, Error, MemoryEntry, SearchQuery};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
+#[tokio::test]
+async fn scoped_token_redirect_and_response_budget() {
+    let destination = MockServer::start().await;
+    Mock::given(method("GET"))
+        .respond_with(ResponseTemplate::new(200))
+        .expect(0)
+        .mount(&destination)
+        .await;
+    let origin = MockServer::start().await;
+    Mock::given(path("/health"))
+        .and(header("Authorization", "Bearer synthetic"))
+        .respond_with(ResponseTemplate::new(302).insert_header("Location", destination.uri()))
+        .expect(1)
+        .mount(&origin)
+        .await;
+    let client = Client::builder()
+        .base_url(origin.uri())
+        .api_key(None)
+        .access_token(Some("synthetic".into()))
+        .build()
+        .unwrap();
+    assert!(matches!(
+        client.get_health().await,
+        Err(Error::Http { status: 302, .. })
+    ));
+    let oversized = MockServer::start().await;
+    Mock::given(path("/health"))
+        .respond_with(ResponseTemplate::new(200).set_body_string("x".repeat(1024 * 1024 + 1)))
+        .mount(&oversized)
+        .await;
+    assert!(matches!(
+        test_client(&oversized.uri()).await.get_health().await,
+        Err(Error::ResponseTooLarge)
+    ));
+}
+
+#[test]
+fn unsafe_or_ambiguous_credentials_are_refused() {
+    assert!(Client::builder()
+        .base_url("http://remote")
+        .api_key(None)
+        .access_token(Some("synthetic".into()))
+        .build()
+        .is_err());
+    assert!(Client::builder()
+        .base_url("https://approved")
+        .api_key(Some("one".into()))
+        .access_token(Some("two".into()))
+        .build()
+        .is_err());
+    for url in [
+        "file:///private",
+        "https://user:pass@approved",
+        "https://approved/?secret=fixture",
+    ] {
+        assert!(Client::builder().base_url(url).build().is_err());
+    }
+}
+
 async fn test_client(server_url: &str) -> Client {
     Client::builder()
         .base_url(server_url)
@@ -131,8 +190,7 @@ async fn http_error_surfaces_status_and_body() {
     Mock::given(method("POST"))
         .and(path("/memory/add"))
         .respond_with(
-            ResponseTemplate::new(422)
-                .set_body_string("{\"detail\":\"validation failed\"}"),
+            ResponseTemplate::new(422).set_body_string("{\"detail\":\"validation failed\"}"),
         )
         .mount(&server)
         .await;

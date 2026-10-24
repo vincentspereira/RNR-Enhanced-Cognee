@@ -3,6 +3,8 @@ Production Deployment Preparation Framework
 Implements comprehensive production deployment infrastructure and CI/CD pipelines
 """
 
+import pytest
+
 import os
 import json
 import time
@@ -512,20 +514,19 @@ class CICDPipelineManager:
                         },
                         {
                             "name": "Install dependencies",
-                            "run": |
-                                python -m pip install --upgrade pip
-                                pip install -r requirements.txt
-                                pip install -r requirements-dev.txt
+                            "run": (
+                                "python -m pip install --upgrade pip\n"
+                                "pip install -r requirements.txt\n"
+                                "pip install -r requirements-dev.txt\n"
+                            )
                         },
                         {
                             "name": "Run unit tests",
-                            "run": |
-                                python -m pytest testing/unit/ -v --cov=src --cov-report=xml
+                            "run": "python -m pytest testing/unit/ -v --cov=src --cov-report=xml"
                         },
                         {
                             "name": "Run integration tests",
-                            "run": |
-                                python -m pytest testing/integration/ -v
+                            "run": "python -m pytest testing/integration/ -v"
                         },
                         {
                             "name": "Upload coverage",
@@ -546,10 +547,11 @@ class CICDPipelineManager:
                         },
                         {
                             "name": "Run security scan",
-                            "run": |
-                                pip install bandit safety
-                                bandit -r src/ -f json -o bandit-report.json
-                                safety check --json --output safety-report.json
+                            "run": (
+                                "pip install bandit safety\n"
+                                "bandit -r src/ -f json -o bandit-report.json\n"
+                                "safety check --json --output safety-report.json\n"
+                            )
                         }
                     ]
                 },
@@ -584,11 +586,12 @@ class CICDPipelineManager:
                             "uses": "docker/metadata-action@v5",
                             "with": {
                                 "images": "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}",
-                                "tags": |
-                                    type=ref,event=branch
-                                    type=ref,event=pr
-                                    type=sha,prefix={{branch}}-
-                                    type=raw,value=latest,enable={{is_default_branch}}
+                                "tags": (
+                                    "type=ref,event=branch\n"
+                                    "type=ref,event=pr\n"
+                                    "type=sha,prefix={{branch}}-\n"
+                                    "type=raw,value=latest,enable={{is_default_branch}}\n"
+                                )
                             }
                         },
                         {
@@ -598,7 +601,7 @@ class CICDPipelineManager:
                             "with": {
                                 "context": ".",
                                 "file": "./Dockerfile",
-                                "push": true,
+                                "push": True,
                                 "tags": "${{ steps.meta.outputs.tags }}",
                                 "labels": "${{ steps.meta.outputs.labels }}"
                             }
@@ -624,16 +627,18 @@ class CICDPipelineManager:
                         },
                         {
                             "name": "Configure kubectl",
-                            "run": |
-                                echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
-                                export KUBECONFIG=kubeconfig
+                            "run": (
+                                'echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig\n'
+                                "export KUBECONFIG=kubeconfig\n"
+                            )
                         },
                         {
                             "name": "Deploy to staging",
-                            "run": |
-                                export KUBECONFIG=kubeconfig
-                                kubectl set image deployment/enhanced-cognee-api enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-staging
-                                kubectl rollout status deployment/enhanced-cognee-api -n enhanced-cognee-staging
+                            "run": (
+                                "export KUBECONFIG=kubeconfig\n"
+                                "kubectl set image deployment/enhanced-cognee-api enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-staging\n"
+                                "kubectl rollout status deployment/enhanced-cognee-api -n enhanced-cognee-staging\n"
+                            )
                         }
                     ]
                 },
@@ -656,18 +661,19 @@ class CICDPipelineManager:
                         },
                         {
                             "name": "Configure kubectl",
-                            "run": |
-                                echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > kubeconfig
-                                export KUBECONFIG=kubeconfig
+                            "run": (
+                                'echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > kubeconfig\n'
+                                "export KUBECONFIG=kubeconfig\n"
+                            )
                         },
                         {
                             "name": "Deploy to production (Canary)",
-                            "run": |
-                                export KUBECONFIG=kubeconfig
-                                # Scale up canary deployment
-                                kubectl patch deployment enhanced-cognee-api-canary -p '{"spec":{"replicas":2}}' -n enhanced-cognee-production
-                                kubectl set image deployment/enhanced-cognee-api-canary enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-production
-                                kubectl rollout status deployment/enhanced-cognee-api-canary -n enhanced-cognee-production
+                            "run": (
+                                "export KUBECONFIG=kubeconfig\n"
+                                "kubectl patch deployment enhanced-cognee-api-canary -p '{\"spec\":{\"replicas\":2}}' -n enhanced-cognee-production\n"
+                                "kubectl set image deployment/enhanced-cognee-api-canary enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-production\n"
+                                "kubectl rollout status deployment/enhanced-cognee-api-canary -n enhanced-cognee-production\n"
+                            )
                         },
                         {
                             "name": "Wait for canary validation",
@@ -675,13 +681,12 @@ class CICDPipelineManager:
                         },
                         {
                             "name": "Promote canary to production",
-                            "run": |
-                                export KUBECONFIG=kubeconfig
-                                # Update main deployment
-                                kubectl set image deployment/enhanced-cognee-api enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-production
-                                kubectl rollout status deployment/enhanced-cognee-api -n enhanced-cognee-production
-                                # Scale down canary
-                                kubectl patch deployment enhanced-cognee-api-canary -p '{"spec":{"replicas":0}}' -n enhanced-cognee-production
+                            "run": (
+                                "export KUBECONFIG=kubeconfig\n"
+                                "kubectl set image deployment/enhanced-cognee-api enhanced-cognee-api=${{ needs.build.outputs.image }} -n enhanced-cognee-production\n"
+                                "kubectl rollout status deployment/enhanced-cognee-api -n enhanced-cognee-production\n"
+                                "kubectl patch deployment enhanced-cognee-api-canary -p '{\"spec\":{\"replicas\":0}}' -n enhanced-cognee-production\n"
+                            )
                         }
                     ]
                 }
@@ -767,22 +772,19 @@ class CICDPipelineManager:
                     },
                     "success": {
                         "steps": [
-                            "slackSend(
-                                color: 'good',
-                                message: \"${env.JOB_NAME} - ${env.BUILD_NUMBER} - Success!\")"
+                            "slackSend(color: 'good', "
+                            "message: \"${env.JOB_NAME} - ${env.BUILD_NUMBER} - Success!\")"
                             ]
                         },
                     "failure": {
                         "steps": [
-                            "slackSend(
-                                color: 'danger',
-                                message: \"${env.JOB_NAME} - ${env.BUILD_NUMBER} - Failed!\")"
+                            "slackSend(color: 'danger', "
+                            "message: \"${env.JOB_NAME} - ${env.BUILD_NUMBER} - Failed!\")"
                             ]
                         }
                     }
                 }
             }
-        }
 
         return pipeline
 

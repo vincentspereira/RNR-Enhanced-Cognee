@@ -1,0 +1,33 @@
+[Unit]
+Description=Restricted canonical project memory API
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+LoadCredential=api.json:/etc/enhanced-cognee/api.json
+WorkingDirectory=/opt/enhanced-cognee-memory
+ExecStart=/opt/enhanced-cognee-memory/runtime/bin/python -m src.memory_daemon api
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+AmbientCapabilities=
+MemoryMax=1G
+CPUQuota=200%
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

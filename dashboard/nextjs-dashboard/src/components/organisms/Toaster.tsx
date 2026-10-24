@@ -9,17 +9,9 @@ export function Toaster() {
       expand={false}
       richColors
       closeButton
-      toastOptions={{
-        duration: 4000,
-        error: {
-          duration: 6000,
-        },
-        loading: {
-          duration: Infinity, // Loading toasts stay until dismissed
-        },
-      }}
       className="toaster group"
       toastOptions={{
+        duration: 4000,
         classNames: {
           toast:
             "group toast group-[.toaster]:bg-white group-[.toaster]:text-gray-950 group-[.toaster]:border-gray-200 group-[.toaster]:shadow-lg",

@@ -37,6 +37,7 @@
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 use thiserror::Error;
+mod project_memory;
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -51,6 +52,9 @@ pub enum Error {
 
     #[error("invalid base URL: {0}")]
     InvalidBaseUrl(String),
+
+    #[error("response exceeds the 1 MiB client limit")]
+    ResponseTooLarge,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -124,8 +128,10 @@ pub struct KnowledgeRelation {
 
 /// Builder for [`Client`].
 pub struct ClientBuilder {
+    explicit_base_url: bool,
     base_url: String,
     api_key: Option<String>,
+    access_token: Option<String>,
     tenant_id: Option<String>,
     timeout: Duration,
 }
@@ -133,9 +139,11 @@ pub struct ClientBuilder {
 impl Default for ClientBuilder {
     fn default() -> Self {
         Self {
+            explicit_base_url: std::env::var("ENHANCED_COGNEE_URL").is_ok_and(|value| !value.is_empty()),
             base_url: std::env::var("ENHANCED_COGNEE_URL")
                 .unwrap_or_else(|_| "http://localhost:8080".to_string()),
             api_key: std::env::var("ENHANCED_API_KEY").ok(),
+            access_token: std::env::var("ENHANCED_COGNEE_ACCESS_TOKEN").ok(),
             tenant_id: std::env::var("ENHANCED_TENANT_ID").ok(),
             timeout: Duration::from_secs(30),
         }
@@ -144,12 +152,18 @@ impl Default for ClientBuilder {
 
 impl ClientBuilder {
     pub fn base_url<S: Into<String>>(mut self, url: S) -> Self {
+        self.explicit_base_url = true;
         self.base_url = url.into();
         self
     }
 
     pub fn api_key(mut self, key: Option<String>) -> Self {
         self.api_key = key;
+        self
+    }
+
+    pub fn access_token(mut self, token: Option<String>) -> Self {
+        self.access_token = token;
         self
     }
 
@@ -168,13 +182,44 @@ impl ClientBuilder {
         if base.is_empty() {
             return Err(Error::InvalidBaseUrl("empty".to_string()));
         }
+        let parsed =
+            reqwest::Url::parse(&base).map_err(|_| Error::InvalidBaseUrl("invalid URL".into()))?;
+        if !["http", "https"].contains(&parsed.scheme())
+            || parsed.host_str().is_none()
+            || !parsed.username().is_empty()
+            || parsed.password().is_some()
+            || parsed.query().is_some()
+            || parsed.fragment().is_some()
+        {
+            return Err(Error::InvalidBaseUrl(
+                "use HTTP(S) without embedded credentials, query or fragment".into(),
+            ));
+        }
+        if self.api_key.is_some() && self.access_token.is_some() {
+            return Err(Error::InvalidBaseUrl(
+                "use either api_key or access_token".into(),
+            ));
+        }
+        if (self.api_key.is_some() || self.access_token.is_some())
+            && parsed.scheme() == "http"
+            && !["localhost", "127.0.0.1", "[::1]", "::1"]
+                .contains(&parsed.host_str().unwrap_or(""))
+        {
+            return Err(Error::InvalidBaseUrl(
+                "authenticated remote services require HTTPS".into(),
+            ));
+        }
         let http = reqwest::Client::builder()
             .timeout(self.timeout)
+            .redirect(reqwest::redirect::Policy::none())
+            .no_proxy()
             .build()
             .map_err(Error::Network)?;
         Ok(Client {
+            explicit_base_url: self.explicit_base_url,
             base_url: base,
             api_key: self.api_key,
+            access_token: self.access_token,
             tenant_id: self.tenant_id,
             http,
         })
@@ -183,8 +228,10 @@ impl ClientBuilder {
 
 /// RNR Enhanced Cognee HTTP client.
 pub struct Client {
+    explicit_base_url: bool,
     base_url: String,
     api_key: Option<String>,
+    access_token: Option<String>,
     tenant_id: Option<String>,
     http: reqwest::Client,
 }
@@ -210,10 +257,7 @@ impl Client {
     }
 
     /// POST /knowledge/add_relation. Returns the new relation ID.
-    pub async fn add_knowledge_relation(
-        &self,
-        relation: &KnowledgeRelation,
-    ) -> Result<String> {
+    pub async fn add_knowledge_relation(&self, relation: &KnowledgeRelation) -> Result<String> {
         #[derive(Deserialize)]
         struct Resp {
             id: String,
@@ -249,13 +293,18 @@ impl Client {
             "POST" => self.http.post(&url),
             "PUT" => self.http.put(&url),
             "DELETE" => self.http.delete(&url),
-            _ => self.http.request(method.parse().unwrap_or(reqwest::Method::GET), &url),
+            _ => self
+                .http
+                .request(method.parse().unwrap_or(reqwest::Method::GET), &url),
         };
 
         req = req.header("Accept", "application/json");
 
         if let Some(key) = &self.api_key {
             req = req.header("X-API-Key", key);
+        }
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
         }
         if let Some(tenant) = &self.tenant_id {
             req = req.header("X-Tenant-ID", tenant);
@@ -264,16 +313,21 @@ impl Client {
             req = req.json(b);
         }
 
-        let resp = req.send().await?;
+        let mut resp = req.send().await?;
         let status = resp.status();
+        let mut body = Vec::new();
+        while let Some(chunk) = resp.chunk().await? {
+            if body.len() + chunk.len() > 1024 * 1024 {
+                return Err(Error::ResponseTooLarge);
+            }
+            body.extend_from_slice(&chunk);
+        }
         if !status.is_success() {
-            let body = resp.text().await.unwrap_or_default();
             return Err(Error::Http {
                 status: status.as_u16(),
-                body,
+                body: String::from_utf8_lossy(&body).into_owned(),
             });
         }
-        let body = resp.bytes().await?;
         let parsed = serde_json::from_slice(&body)?;
         Ok(parsed)
     }

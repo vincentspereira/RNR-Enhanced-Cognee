@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Input, Card, CardContent } from "@/components/atoms";
 import { MemoryCard } from "@/components/molecules";
-import { MemoryListSkeleton, AddMemoryModal } from "@/components/organisms";
+import { MemoryListSkeleton, AddMemoryModal, EditMemoryModal } from "@/components/organisms";
 import { useFilterStore, useUIStore } from "@/lib/stores";
 import type { MemoryFilters } from "@/lib/stores/filterStore";
+import { apiClient } from "@/lib/api/client";
 import { deleteMemory } from "@/lib/api/memories";
 import { queryKeys } from "@/lib/query/queryKeys";
 import { toast } from "sonner";
@@ -25,7 +26,7 @@ import {
   Plus
 } from "lucide-react";
 
-export default function MemoriesListPage() {
+function MemoriesListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -49,6 +50,7 @@ export default function MemoriesListPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null);
 
   // Pre-apply agent_id filter from query param (e.g. when navigating from /agents)
   useEffect(() => {
@@ -77,31 +79,35 @@ export default function MemoriesListPage() {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["memories", filters],
+    queryKey: queryKeys.memories.list(filters as unknown as Record<string, unknown>),
     queryFn: async ({ pageParam = 0 }) => {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(
-        `${apiBase}/api/memories?limit=50&offset=${pageParam}&${buildQueryString(filters)}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch memories");
+      if (filters.memory_type.length > 1 || filters.agent_id.length > 1 || filters.memory_concept.length ||
+          filters.category.length || filters.date_from || filters.date_to) {
+        throw new Error("This memory service supports one category or writer filter. Clear other filters to continue.");
       }
-      const json = await response.json();
+      if (filters.search) {
+        if (filters.memory_type.length) throw new Error("Clear the category filter before semantic search.");
+        const response = await apiClient.get("/api/search", { params: {
+          query: filters.search, limit: 20, agent_id: filters.agent_id[0],
+        } });
+        return { memories: response.data.results.map((m: Record<string, unknown>) => ({ ...m, id: m.memory_id })), nextOffset: undefined };
+      }
+      const response = await apiClient.get(
+        `/api/memories?limit=50&offset=${pageParam}&${buildQueryString(filters)}`
+      );
+      const json = response.data;
       // Normalize memory_id -> id for MemoryCard compatibility
       const rawMemories: Record<string, unknown>[] = json.memories || json || [];
       return {
         ...json,
+        nextOffset: response.headers["x-next-offset"] ? Number(response.headers["x-next-offset"]) : undefined,
         memories: rawMemories.map((m) => ({
           ...m,
           id: (m.id as string) || (m.memory_id as string),
         })),
       };
     },
-    getNextPageParam: (lastPage, allPages) => {
-      const mems = (lastPage as { memories: unknown[] }).memories || [];
-      if (mems.length < 50) return undefined;
-      return allPages.length * 50;
-    },
+    getNextPageParam: (lastPage) => lastPage.nextOffset,
     initialPageParam: 0,
   });
 
@@ -109,6 +115,7 @@ export default function MemoriesListPage() {
   type MemoryItem = {
     id: string;
     content: string;
+    version: number;
     summary?: string;
     memory_type?: string;
     memory_concept?: string;
@@ -137,24 +144,28 @@ export default function MemoriesListPage() {
 
   // Handle edit memory
   const handleEditMemory = (id: string) => {
-    router.push(`/memories/${id}/edit`);
+    setEditingMemoryId(id);
   };
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteMemory(id),
+    mutationFn: (id: string) => {
+      const record = memories.find((item) => item.id === id);
+      if (!record?.version) throw new Error("Reload this memory before retracting it.");
+      return deleteMemory(id, record.version);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.memories.all });
-      toast.success("Memory deleted");
+      toast.success("Memory retracted");
     },
     onError: (error: Error) => {
-      toast.error("Failed to delete memory", { description: error.message });
+      toast.error("Failed to retract memory", { description: error.message });
     },
   });
 
   // Handle delete memory
   const handleDeleteMemory = (id: string) => {
-    if (confirm("Are you sure you want to delete this memory?")) {
+    if (confirm("Retract this memory from recall? Its history will be preserved.")) {
       deleteMutation.mutate(id);
     }
   };
@@ -172,11 +183,15 @@ export default function MemoriesListPage() {
   const handleBatchDelete = async () => {
     const ids = Array.from(selectedMemories);
     const count = ids.length;
-    if (confirm(`Are you sure you want to delete ${count} memories?`)) {
+    if (confirm(`Retract ${count} memories from recall? Their history will be preserved.`)) {
       try {
-        await Promise.all(ids.map((id) => deleteMemory(id)));
+        await Promise.all(ids.map((id) => {
+          const record = memories.find((item) => item.id === id);
+          if (!record?.version) throw new Error("Reload selected memories before retracting them.");
+          return deleteMemory(id, record.version);
+        }));
         queryClient.invalidateQueries({ queryKey: queryKeys.memories.all });
-        toast.success(`Deleted ${count} memories`);
+        toast.success(`Retracted ${count} memories`);
       } catch (error) {
         toast.error("Some deletions failed", {
           description: error instanceof Error ? error.message : "Unknown error",
@@ -470,6 +485,15 @@ export default function MemoriesListPage() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
       />
+      {editingMemoryId && <EditMemoryModal isOpen onClose={() => setEditingMemoryId(null)} memoryId={editingMemoryId} />}
     </div>
+  );
+}
+
+export default function MemoriesListPage() {
+  return (
+    <Suspense fallback={<MemoryListSkeleton count={5} />}>
+      <MemoriesListContent />
+    </Suspense>
   );
 }

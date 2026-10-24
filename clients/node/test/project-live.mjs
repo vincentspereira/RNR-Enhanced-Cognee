@@ -1,0 +1,21 @@
+// Run only against an explicitly selected synthetic canonical service.
+import assert from "node:assert/strict";
+import { EnhancedCogneeClient } from "../dist/index.js";
+const baseUrl = process.env.RNR_CLIENT_QUALIFICATION_URL;
+const accessToken = process.env.RNR_CLIENT_QUALIFICATION_TOKEN;
+assert(baseUrl && accessToken && process.env.RNR_CLIENT_OTHER_TOKEN);
+const client = new EnhancedCogneeClient({ baseUrl, accessToken, tenantId: "" });
+const other = new EnhancedCogneeClient({ baseUrl, accessToken: process.env.RNR_CLIENT_OTHER_TOKEN, tenantId: "" });
+const first = await client.remember("Synthetic Node Cedar retains eleven copies.", "node-live-one");
+assert.equal((await client.remember("Synthetic Node Cedar retains eleven copies.", "node-live-one")).id, first.id);
+assert.equal((await client.recall("Cedar" )).results[0].id, first.id);
+await assert.rejects(() => other.getRecord(first.id), error => error.status === 404);
+assert.equal((await client.correctRecord(first.id, "Synthetic Node Cedar retains nine copies.", 1)).version, 2);
+await assert.rejects(() => client.correctRecord(first.id, "Stale", 1), error => error.status === 409);
+assert.equal((await client.listRecords()).results.length, 1);
+await client.retractRecord(first.id, 2);
+assert.equal((await client.recall("Cedar")).results.length, 0);
+assert.equal((await client.recordHistory(first.id)).versions.length, 3);
+await assert.rejects(() => client.remember("password: synthetic-only-secret", "node-no-secret"));
+assert.equal((await client.memoryStatus()).active_records, 0);
+console.log("Node canonical real-service qualification passed");

@@ -33,6 +33,11 @@ from src.plugin_loader import (  # noqa: E402
 # Tests: EnhancedCogneeLoader abstract interface
 # ---------------------------------------------------------------------------
 
+@pytest.fixture(autouse=True)
+def approved_fixture_files(monkeypatch, tmp_path):
+    monkeypatch.setenv("ENHANCED_CAPABILITIES", "file_import")
+    monkeypatch.setenv("ENHANCED_IMPORT_ROOTS", json.dumps([str(tmp_path)]))
+
 class TestEnhancedCogneeLoaderABC:
     def test_cannot_instantiate_abstract_class(self):
         with pytest.raises(TypeError):

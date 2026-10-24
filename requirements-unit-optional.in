@@ -1,0 +1,5 @@
+# Required for the complete unit lane; kept out of the deployed memory package.
+# Resolve against the full application's existing dependency versions.
+-c requirements-full.lock
+locust>=2.43,<3
+pymemcache>=4,<5

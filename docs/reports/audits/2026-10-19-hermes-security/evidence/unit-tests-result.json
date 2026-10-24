@@ -1,0 +1,18 @@
+{
+  "exit_code": 1,
+  "seconds": 46.61,
+  "network_guard": true,
+  "credential_environment_scrubbed": true,
+  "command": [
+    "/home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/unit/",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--override-ini=addopts=",
+    "--color=no",
+    "--junitxml=/tmp/rnr-cognee-audit-2026-10-19/unit-tests.xml"
+  ]
+}

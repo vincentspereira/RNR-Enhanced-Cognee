@@ -3,12 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import cytoscape, { Core, ElementDefinition } from "cytoscape";
 import { useGraphData, useGraphStats } from "@/lib/hooks/useGraphData";
-import { Search, ZoomIn, ZoomOut, Maximize, Download, Settings } from "lucide-react";
+import { Search, ZoomIn, ZoomOut, Maximize, Download } from "lucide-react";
 import { Input } from "@/components/ui/elements/Input";
 import { Select } from "@/components/ui/elements/Select";
 import { NeutralButton } from "@/components/ui/elements/NeutralButton";
 import { IconButton } from "@/components/ui/elements/IconButton";
-import { exportChartAsPNG } from "@/lib/utils/chart-export";
 
 type LayoutType = "force" | "hierarchical" | "circle" | "concentric";
 
@@ -16,7 +15,7 @@ const LAYOUT_OPTIONS: Record<
   LayoutType,
   { name: string; displayName: string }
 > = {
-  force: { name: "force", displayName: "Force Directed" },
+  force: { name: "cose", displayName: "Force Directed" },
   hierarchical: { name: "breadthfirst", displayName: "Hierarchical" },
   circle: { name: "circle", displayName: "Circle" },
   concentric: { name: "concentric", displayName: "Concentric" },
@@ -41,7 +40,7 @@ export function KnowledgeGraph({
   const [layout, setLayout] = useState<LayoutType>("force");
   const [nodeTypeFilter, setNodeTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [, setSelectedNode] = useState<string | null>(null);
 
   // Fetch graph data
   const { data: graphData, isLoading, error } = useGraphData(
@@ -95,8 +94,8 @@ export function KnowledgeGraph({
             label: "data(label)",
             "text-wrap": "wrap",
             "text-max-width": "80px",
-            width: (ele: any) => 20 + (ele.data("importance") || 1) * 10,
-            height: (ele: any) => 20 + (ele.data("importance") || 1) * 10,
+            width: (ele: cytoscape.NodeSingular) => 20 + (ele.data("importance") || 1) * 10,
+            height: (ele: cytoscape.NodeSingular) => 20 + (ele.data("importance") || 1) * 10,
           },
         },
         {
@@ -109,7 +108,7 @@ export function KnowledgeGraph({
         {
           selector: "edge",
           style: {
-            width: (ele: any) => 1 + (ele.data("strength") || 1) * 2,
+            width: (ele: cytoscape.EdgeSingular) => 1 + (ele.data("strength") || 1) * 2,
             "line-color": "#64748b",
             "target-arrow-color": "#64748b",
             "target-arrow-shape": "triangle",
@@ -131,7 +130,7 @@ export function KnowledgeGraph({
         animationDuration: 500,
         fit: true,
         padding: 50,
-      },
+      } as cytoscape.LayoutOptions,
       minZoom: 0.1,
       maxZoom: 5,
     });
@@ -155,7 +154,7 @@ export function KnowledgeGraph({
     return () => {
       cy.destroy();
     };
-  }, [graphData, layout]);
+  }, [graphData, layout, onNodeClick]);
 
   // Apply filters
   useEffect(() => {
@@ -164,12 +163,12 @@ export function KnowledgeGraph({
     const cy = cyRef.current;
 
     if (nodeTypeFilter === "all") {
-      cy.nodes().show();
-      cy.edges().show();
+      cy.nodes().style("display", "element");
+      cy.edges().style("display", "element");
     } else {
-      cy.nodes().filter((node) => node.data("type") === nodeTypeFilter).show();
-      cy.nodes().filter((node) => node.data("type") !== nodeTypeFilter).hide();
-      cy.edges().show();
+      cy.nodes().filter((node) => node.data("type") === nodeTypeFilter).style("display", "element");
+      cy.nodes().filter((node) => node.data("type") !== nodeTypeFilter).style("display", "none");
+      cy.edges().style("display", "element");
     }
 
     // Apply search
@@ -179,8 +178,8 @@ export function KnowledgeGraph({
         .filter((node) =>
           node.data("label").toLowerCase().includes(searchQuery.toLowerCase())
         );
-      cy.nodes().difference(matchingNodes).hide();
-      matchingNodes.show();
+      cy.nodes().difference(matchingNodes).style("display", "none");
+      matchingNodes.style("display", "element");
     }
   }, [nodeTypeFilter, searchQuery]);
 
@@ -282,9 +281,9 @@ export function KnowledgeGraph({
 
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 border border-slate-700 rounded-lg p-1">
-            <IconButton onClick={handleZoomIn} size="sm" icon={<ZoomIn className="w-4 h-4" />} />
-            <IconButton onClick={handleZoomOut} size="sm" icon={<ZoomOut className="w-4 h-4" />} />
-            <IconButton onClick={handleFit} size="sm" icon={<Maximize className="w-4 h-4" />} />
+            <IconButton onClick={handleZoomIn} aria-label="Zoom in" size="sm" icon={<ZoomIn className="w-4 h-4" />} />
+            <IconButton onClick={handleZoomOut} aria-label="Zoom out" size="sm" icon={<ZoomOut className="w-4 h-4" />} />
+            <IconButton onClick={handleFit} aria-label="Fit graph" size="sm" icon={<Maximize className="w-4 h-4" />} />
           </div>
 
           {/* Export */}
