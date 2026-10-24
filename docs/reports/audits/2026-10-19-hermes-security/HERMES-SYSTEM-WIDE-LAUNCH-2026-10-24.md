@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Installed-worker projection PASSED in the retained original probe's guarded
+finish. The running worker reported running/available and zero pending changes;
+semantic query returned the exact probe, graph paths were present, and the
+actual cache contained an encrypted payload of 12274 bytes. That observed size
+confirms the 4096-byte setup reader could not admit this valid response. Delivery
+needed no worker/service repair. The helper then retracted only the existing
+version-1 invented probe, verified actual withdrawal/no pending delivery and
+two-version history, retaining a separate `finish-existing.summary.json` under
+`operator-evidence/installed-worker-projection`. Earlier positive presence flags
+in the receipt describe the verified pre-withdrawal state; actual_withdrawal
+was checked afterward. Preserve/reuse this pass and do not replay creation,
+retraction or completed native tests.
+
+The next prepared credential-rotation step is PostgreSQL API/worker service
+identities only. `rotate_launch_postgres_services.py` uses the already protected
+staged usernames/passwords, protected candidate Python/asyncpg, fixed local
+PostgreSQL port 28434 (verified from installed unit), explicit reviewed schema-3
+grants and transactional role creation. New accounts must authenticate, read the
+schema and pass effective non-superuser/non-CREATEDB/non-CREATEROLE and canonical
+deletion/worker-update refusal predicates before configuration selection. Only
+the database URL fields change. Existing role configs and accounts remain for
+rollback; no old login is revoked or claimed rotated indirectly. It restarts
+API/index services, checks API readiness and restores saved configs/restarts on
+failure. A later post-rotation projection check remains explicit. Ten source
+checks pass; no installed PostgreSQL rotation is yet claimed. Operator/backup,
+graph service, vector/cache service and application issuer rotations, custody,
+issuer/scheduler/gateway and real fleet admission remain open.
+
 The first read-only installed-worker inspection also returned a generic refusal.
 Source tracing found a reader-contract mismatch: the reused cache setup probe
 limits bulk replies to 4096 bytes, but actual encrypted memory payloads include
