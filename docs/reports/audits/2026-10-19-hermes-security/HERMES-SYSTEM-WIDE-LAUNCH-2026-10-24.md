@@ -239,6 +239,36 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Native completion now PASSED for fresh run `ecca693d52d54add88d509db`, retained
+at `native-qualification-y9nulhi3` under the candidate's protected operator
+evidence directory. Actual human answer, separate native processes, restart
+clarification gate, versioned correction/retraction, complete history and peer
+withdrawal passed. Scope denial, reviewer edit denial, unreviewed-sharing denial,
+reviewed sharing/revocation and missing/expired/altered-token denial passed.
+The original pilot provider/settings/credentials were preserved, and no signing
+key entered the runtime. Eight model requests is the aggregate across two
+separate processes, not a widened per-process cap. Preserve/reuse this pass and
+never replay its retracted record. No further native model test is needed for
+the same source/host contract without a new concern.
+
+Its false backup, unattended-renewal and fleet-boundary flags are explicit
+separate scopes, not failures of previously qualified canonical/derived recovery.
+Issuer/timer/gateway execution, remaining credential rotation and each actual
+profile's admission remain pending. Do not infer fleet launch from this pass.
+
+`qualify_installed_worker_projection.py` is prepared to qualify delivery by the
+running candidate worker, distinct from restored-data replay by a helper. It
+requires the completed runtime receipt, uses hash-pinned stdlib support sources
+and protected configs, creates one new ordinary invented scope through the
+running API, checks peer denial, polls actual semantic/graph/encrypted-cache
+projection, then retracts only its new record and checks no pending delivery,
+withdrawal and retained two-version history. It calls no chat model or profile
+code. Every attempt is exclusive and journaled; failures retain the invented
+record and artifacts rather than retrying or deleting history. Nine source
+tests pass, including exact HMAC key contract, projection/encryption predicates,
+ordinary-user refusal and support hash pins. Installed delivery is still pending;
+these source checks do not close that gate.
+
 Native attempt `1fbbc4a6b40b48ed91f3b44b`, retained at
 `native-qualification-vyyutb_0`, again committed correction/retraction and verified
 peer withdrawal after the real terminal answer. Overall completion FAILED. This
