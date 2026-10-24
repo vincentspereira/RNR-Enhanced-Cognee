@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Controlled installed candidate switch PASSED at
+`/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-evidence/controlled-runtime-switch`.
+The owner-run receipt verifies all 34 installed wheel files, actual API and
+worker candidate executable/cwd bindings, authenticated scope status, and
+missing/expired token denial. Candidate model cache is selected, old runtime
+retained, no profile/canonical memory edits or credential rotations. This is an
+actual runtime change, not just staging. Do not rerun the switch. Installed
+worker delivery acceptance, native completion, issuer/timer acceptance, all
+remaining credential rotations and each actual profile admission remain open.
+
+`run_launch_native_qualification.py` is prepared for one fresh default-qualify
+run only, requiring the completed protected runtime switch receipt and seven
+hash-pinned public files. It rejects ordinary users and all CLI resume arguments.
+The maintained qualification helper now explicitly blocks generating the
+completed historical run ID and records its new random test ID for diagnostics.
+The existing pinned shell bundle hash was updated for that source change; the
+first regression selection detected that stale pin (one failure, 126 passes),
+then the corrected combined selection passed all 131 checks. No installed
+native/model pass is claimed from these tests.
+
+The wrapper preserves the verified source bundle and a sanitized receipt in a
+new root-private evidence directory. Existing helper code still drops UID before
+private profile/OAuth access, uses the approved route with finite request/budget
+guards, and requires the actual human answer at its visible terminal prompt.
+It neither fabricates answers nor resumes/retries an old test. This new synthetic
+scope is outside the qualified runtime-home backup tree; its backup admission
+is not implied. System-wide fleet switch remains unapproved.
+
 The corrected inventory helper's owner-run preflight then refused with
 protected_ancestor_required. The generic root-config reader rejects writable
 ancestors; canonical/derived receipts live under the normal root-owned sticky

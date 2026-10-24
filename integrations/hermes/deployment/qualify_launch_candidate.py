@@ -676,6 +676,8 @@ def inspect_attempt(account, sources, artifact, issuer, run_id):
 
 def qualify_candidate(account, sources, artifact, issuer):
     run_id = uuid.uuid4().hex[:24]
+    require(run_id != "5d0e9a49bdf544359ae6deff")
+    PROGRESS["new_test_run_id"] = run_id
     now = int(time.time())
     key = issuer["load_signing_key"]()
     claims = {"sub": "launch_" + run_id, "agent_id": "launch_test", "tenant": "qualification",
