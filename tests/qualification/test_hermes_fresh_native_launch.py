@@ -39,7 +39,7 @@ def test_wrapper_does_not_accept_resume_arguments(monkeypatch):
         helper.main()
 
 
-@pytest.mark.parametrize("finished",["5d0e9a49bdf544359ae6deff","e8d9362220ad4a78b3806974"])
+@pytest.mark.parametrize("finished",["5d0e9a49bdf544359ae6deff","e8d9362220ad4a78b3806974","1fbbc4a6b40b48ed91f3b44b"])
 def test_completed_historical_run_is_refused_before_credential_issuance(monkeypatch, finished):
     helper = module("qualify_launch_candidate")
     monkeypatch.setattr(helper.uuid,"uuid4",lambda:SimpleNamespace(hex=finished+"0"*8))
@@ -64,6 +64,15 @@ def test_completion_diagnostic_refuses_expanded_request_budget_or_extra_fields()
     value = helper.completion_diagnostic({},7)
     with pytest.raises(ValueError):
         helper.validate_completion_diagnostic(value)
+
+
+def test_tool_trace_keeps_only_bounded_fixed_names_without_arguments():
+    helper = module("qualify_launch_candidate")
+    value = helper.completion_diagnostic({},6,["enhanced_get"]*17+["invented-private-arguments"])
+    assert len(value["memory_tool_calls"]) == 16
+    assert value["tool_trace_truncated"] is True
+    assert "invented-private-arguments" not in str(value)
+    assert helper.validate_completion_diagnostic(value) == value
     value = helper.completion_diagnostic({},6)
     value["model_text"] = "invented-private-marker"
     with pytest.raises(ValueError):

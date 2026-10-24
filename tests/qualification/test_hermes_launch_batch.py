@@ -273,6 +273,10 @@ def test_native_followup_transport_is_limited_to_confirmed_target(native, tmp_pa
     if violation is None:
         assert native.native_turn(core, provider, "synthetic-oauth-only", "REAL_TERMINAL_ANSWER_FIXTURE", target) == 1
         assert len(sent) == 2
+        assert "record_id=target" in options["ephemeral_system_prompt"]
+        assert "current version=2" in options["ephemeral_system_prompt"]
+        assert "synthetic-oauth-only" not in options["ephemeral_system_prompt"]
+        assert options["max_iterations"] == 6 and options["run_budget_seconds"] == 100
     else:
         with pytest.raises(ValueError):
             native.native_turn(core, provider, "synthetic-oauth-only", "REAL_TERMINAL_ANSWER_FIXTURE", target)

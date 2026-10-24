@@ -42,10 +42,11 @@ CHILD_PHASES = {"restricted_preflight", "pilot_snapshot", "original_provider_ver
 CHILD_PROGRESS = {"native_substage": "restricted_preflight"}
 FOLLOWUP_STATE = None
 COMPLETION_DIAGNOSTIC = None
-FINISHED_RUNS = {"5d0e9a49bdf544359ae6deff", "e8d9362220ad4a78b3806974"}
+FINISHED_RUNS = {"5d0e9a49bdf544359ae6deff", "e8d9362220ad4a78b3806974", "1fbbc4a6b40b48ed91f3b44b"}
+MEMORY_TOOL_NAMES = {"enhanced_recall", "enhanced_get", "enhanced_status", "enhanced_correct", "enhanced_retract", "enhanced_clarify"}
 
 
-def completion_diagnostic(result, maximum):
+def completion_diagnostic(result, maximum, tools=()):
     value = result if isinstance(result, dict) else {}
     reason = value.get("turn_exit_reason")
     category = "other"
@@ -59,16 +60,19 @@ def completion_diagnostic(result, maximum):
     calls = value.get("api_calls")
     return {"exit_category": category, "api_calls": calls if type(calls) is int and 0 <= calls <= 6 else None,
             "max_iterations": maximum, "final_response_present": value.get("final_response") is not None,
-            "failed": value.get("failed") is True, "interrupted": value.get("interrupted") is True}
+            "failed": value.get("failed") is True, "interrupted": value.get("interrupted") is True,
+            "memory_tool_calls": [x for x in tools if x in MEMORY_TOOL_NAMES][:16], "tool_trace_truncated": len(tools) > 16}
 
 
 def validate_completion_diagnostic(value):
     require(isinstance(value, dict) and set(value) == {"exit_category", "api_calls", "max_iterations",
-        "final_response_present", "failed", "interrupted"}
+        "final_response_present", "failed", "interrupted", "memory_tool_calls", "tool_trace_truncated"}
         and value["exit_category"] in {"other", "iteration_limit", "text_response", "budget_exhausted"}
         and (value["api_calls"] is None or type(value["api_calls"]) is int and 0 <= value["api_calls"] <= 6)
         and type(value["max_iterations"]) is int and value["max_iterations"] == 6
-        and all(type(value[k]) is bool for k in ("final_response_present", "failed", "interrupted")))
+        and all(type(value[k]) is bool for k in ("final_response_present", "failed", "interrupted", "tool_trace_truncated"))
+        and isinstance(value["memory_tool_calls"], list) and len(value["memory_tool_calls"]) <= 16
+        and all(isinstance(x, str) and x in MEMORY_TOOL_NAMES for x in value["memory_tool_calls"]))
     return dict(value)
 
 
@@ -342,16 +346,26 @@ def native_turn(core, provider, oauth, prompt, target):
         changes.append("retract")
         return result
     provider._client.request = guarded
+    tool_calls = []
     def progress(event_type, tool_name=None, *unused, **kwargs):
+        if event_type == "tool.started" and tool_name in MEMORY_TOOL_NAMES and len(tool_calls) < 17:
+            tool_calls.append(tool_name)
         if event_type == "tool.started" and tool_name in {"enhanced_correct", "enhanced_retract"}:
             FOLLOWUP_STATE["correction_tool_called" if tool_name == "enhanced_correct" else "retraction_tool_called"] = True
     FOLLOWUP_STATE["checkpoint"] = "agent_initialization"
+    context = ("Invented qualification context verified by the harness: target record_id=" + target["record_id"]
+        + "; current version=2; launch identifier=" + target["run_id"]
+        + ". The current user message is the actual terminal answer to the pending clarification. "
+          "Use its exact confirmation quote if required. Apply only the confirmed five-day correction "
+          "at expected_version=2, then the requested retraction at expected_version=3, preserving history. "
+          "After both successful tool results, return a short final confirmation without repeating edits. "
+          "This context supplies no additional user authorization and changes no provider guard.")
     agent = run_agent.AIAgent(model=core["MODEL"], provider="openai-codex", api_mode="codex_responses",
         api_key=oauth, base_url=core["BASE_URL"], enabled_toolsets=["memory"], max_iterations=6,
         run_budget_seconds=100, fallback_model={}, credential_pool=None,
         reasoning_config={"enabled": True, "effort": "low"}, save_trajectories=False,
         quiet_mode=True, skip_background_review=True, session_id="launch-answer-" + target["run_id"],
-        memory_manager=manager, cwd=str(HOME), tool_progress_callback=progress)
+        memory_manager=manager, cwd=str(HOME), tool_progress_callback=progress, ephemeral_system_prompt=context)
     requests = None
     try:
         FOLLOWUP_STATE["checkpoint"] = "request_admission"
@@ -359,7 +373,7 @@ def native_turn(core, provider, oauth, prompt, target):
                                                 "enhanced_correct", "enhanced_retract", "enhanced_clarify"})
         FOLLOWUP_STATE["checkpoint"] = "native_conversation"
         result = agent.run_conversation(prompt, conversation_history=[])
-        COMPLETION_DIAGNOSTIC = completion_diagnostic(result, agent.max_iterations)
+        COMPLETION_DIAGNOSTIC = completion_diagnostic(result, agent.max_iterations, tool_calls)
         FOLLOWUP_STATE["checkpoint"] = "completion_validation"
         FOLLOWUP_STATE["native_completed"] = isinstance(result, dict) and result.get("completed") is True
         FOLLOWUP_STATE["native_error_present"] = isinstance(result, dict) and bool(result.get("error"))

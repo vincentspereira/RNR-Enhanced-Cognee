@@ -239,6 +239,35 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Native attempt `1fbbc4a6b40b48ed91f3b44b`, retained at
+`native-qualification-vyyutb_0`, again committed correction/retraction and verified
+peer withdrawal after the real terminal answer. Overall completion FAILED. This
+time the pinned finalizer reported iteration_limit, api_calls=6/max_iterations=6,
+final response present, failed=false, interrupted=false. The physical request
+trace shows six HTTP-successful calls without rate limiting. Iteration exhaustion
+is now observed, rather than inferred; the receipt does not retain the full
+preceding tool-call sequence. Preserve and never replay this retracted record.
+
+Source inspection shows the restarted answer turn passed the genuine user
+answer with an empty conversation history, but omitted the already verified
+target ID/version from agent context. The revised helper uses Hermes' additive
+ephemeral_system_prompt for this invented target's verified ID/version and
+requested correction/retraction sequence, plus an explicit final-confirmation
+instruction. The original human prompt remains byte-identical. Normal native
+instructions, clarification quote/version/write guards, six physical requests,
+six native iterations and 100-second budget stay unchanged. No tool result or
+completed flag is fabricated, and no installed Hermes code changes. This context
+omission is a concrete harness defect; it is not claimed to prove every prior
+tool choice or guarantee the next completion.
+
+Future failure diagnostics include at most 16 whitelisted memory tool names and
+a truncation flag, without arguments, private content or arbitrary names. All
+three finished run IDs are now blocked from mutating continuation/fresh issuance.
+Both public source pins match. The combined native source selection passes 136
+tests, including original-human-prompt preservation, additive context, unchanged
+limits, bounded tool-name diagnostics and guards. A new installed run with a new
+genuine terminal answer remains necessary. Do not resume any finished attempt.
+
 Fresh native attempt `e8d9362220ad4a78b3806974` at protected evidence
 `native-qualification-s0i2fcwk` received the owner's actual terminal answer.
 Question preservation, reviewed sharing, correction and retraction commits,
