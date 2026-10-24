@@ -33,4 +33,3 @@ CapabilityBoundingSet=CAP_SETUID CAP_SETGID
 AmbientCapabilities=CAP_SETUID CAP_SETGID
 TasksMax=32
 MemoryMax=256M
-

@@ -41,6 +41,12 @@ telemetry-device-ID persistence warning and was stopped only after verifying
 its executable and checkout identity. Cache and evidence were retained. The
 bounded unsandboxed probe then passed; no specific stall cause is established.
 
+An additional bounded comparison used the actual preserved protected 1.1.0
+runtime and protected 1.2.0 candidate, each with its existing offline cache.
+All three invented inputs produced identical 384-dimensional vectors: maximum
+component difference 0.0. This is actual same-host compatibility evidence,
+not a service switch or a claim that an unobserved fleet workload is qualified.
+
 Current canonical recovery passed in the owner's terminal. Generation
 memory_20261024T133759Z_180c52d5.dump.age was authenticated and restored into the
 NEW database memory_restore_launch_bfd73b0109fe4090. Canonical/history/sharing
@@ -84,6 +90,13 @@ not proof that no other cron mechanism exists. User-service inventory was
 unavailable in this execution context. Gateway, cron, persistent-session and
 other-account launch bindings remain unresolved. Process arguments,
 environments, credential values and conversation contents were not printed.
+
+Private mapping proposals now cover all 43 observed ordinary-account homes,
+with deterministic proposed scopes and restricted launch-account names. They
+explicitly preserve any existing mapping and leave every admission gate false.
+No proposed account was created or credential issued. The two restricted homes
+remain in the root-only registry pending admission import. These private names
+and proposed profile paths are excluded from publication.
 
 A finite probe of the actual pinned Hermes code, with invented strings and no
 API/model call, passed same-size/same-mtime dotenv reload, installed secret-scope
