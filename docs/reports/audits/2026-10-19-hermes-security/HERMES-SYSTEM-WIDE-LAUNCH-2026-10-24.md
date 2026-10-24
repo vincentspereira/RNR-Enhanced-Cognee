@@ -239,6 +239,41 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+PostgreSQL operator/backup password rotation PASSED at
+`candidate-gtnhc4kc/postgres-operator-backup-rotation`, helper SHA256
+53f020055aaf9e2a0b13fe8a26e0eefd325376f2810c062b98b61c39d11746f6.
+Two existing role passwords changed; new operator and backup connections
+authenticate, and both old passwords are denied. Role names/ownership, profiles,
+services, encryption/recovery and application signing keys remain unchanged.
+Old passwords exist only in protected rollback material. Preserve this pass;
+application-key coordination and legacy service-login retirement remain open.
+
+`inventory_launch_token_bindings.py` is a read-only preparation for application
+issuer-key coordination. Root signs nothing and never walks profile trees.
+Fixed owner children for the ordinary owner and hermes-runtime read only their
+memory provider config and selected .env token binding, without symlink follows
+or source execution from a profile. Known excluded project-profile names are
+skipped. No API/model connection or environment publication occurs. A bounded
+ordinary-token pipe terminates in root memory for fixed HS256/current-key
+signature verification; tokens are removed before private mapping persistence,
+never logged, printed, placed in argv or stored in the mapping. Expired genuine
+claims may be inventoried as expired, not treated as live authentication. Only
+explicit supported ordinary role/scope shapes become verified metadata. The
+private result does not qualify launch bindings or OS isolation and enables no
+policy row. Actual inventory execution remains pending.
+
+The installed-worker helper's `--post-rotation` mode requires all three completed
+rotation receipts and creates a new invented scope/journal named
+installed-worker-projection-after-rotation. It uses current credential configs
+to repeat only acceptance affected by those changes: new API writes, actual
+worker semantic/graph/cache projection, withdrawal and history. Earlier native
+and recovery passes are reused, with no chat request or completed record edit.
+The combined binding/worker source selection passes 27 tests, including signature
+tamper/admin-role refusal, expired-metadata distinction, owner nofollow reads,
+root profile-inspection refusal and strict completed-rotation prerequisites.
+Post-rotation delivery is not yet claimed. No app signing-key switch is prepared
+for execution until its existing profile bindings/reissue are accounted for.
+
 Grouped derived-service credential selection PASSED at
 `candidate-gtnhc4kc/derived-service-rotation-valid-probe`. New graph API/worker
 and Valkey worker logins authenticate; new Qdrant keys authenticate and both old

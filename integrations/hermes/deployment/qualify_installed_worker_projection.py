@@ -206,11 +206,17 @@ def main():
         return inspect_existing()
     if sys.argv[1:] == ["--finish-existing"]:
         return inspect_existing(finish=True)
-    if len(sys.argv) != 1:
+    post_rotation = sys.argv[1:] == ["--post-rotation"]
+    if len(sys.argv) != 1 and not post_rotation:
         raise ValueError("fixed_operator_mode_required")
     os.umask(0o077)
     support = definitions("recover_launch_graph_operator.py")
     read,write = support["read_file"],support["private_write"]
+    if post_rotation:
+        stage = Path("/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc")
+        for name in ("postgres-service-rotation","derived-service-rotation-valid-probe","postgres-operator-backup-rotation"):
+            if json.loads(read(stage / name / "summary.json",0)).get("complete") is not True:
+                raise ValueError("completed_credential_rotations_required")
     switched = json.loads(read(BASE / "operator-evidence/controlled-runtime-switch/summary.json",0))
     if switched.get("complete") is not True or switched.get("worker_candidate_bound") is not True:
         raise ValueError("installed_worker_required")
@@ -220,7 +226,7 @@ def main():
     if uri.hostname not in {"localhost","127.0.0.1"} or uri.port != 28537 or uri.path not in {"","/0"}:
         raise ValueError("fixed_cache_binding_required")
     cache_user,cache_password = unquote(uri.username or "default"),unquote(uri.password or "")
-    attempt = BASE / "operator-evidence/installed-worker-projection"
+    attempt = BASE / "operator-evidence" / ("installed-worker-projection-after-rotation" if post_rotation else "installed-worker-projection")
     attempt.mkdir(mode=0o700)  # Never replay an incomplete or finished attempt.
     issuer = definitions("provision_pilot_access.py")
     suffix = secrets.token_hex(8)
@@ -233,6 +239,8 @@ def main():
     peer = issuer["sign_claims"](dict(identity,project_id="peer_"+suffix,sub="worker_peer",iat=now,exp=now+600),key)
     del key
     result = {"complete":False,"evidence":str(attempt),"project":project,"installed_worker_projection_qualified":False,
+        "post_rotation_qualification":post_rotation,
+        "source_revision":BASE.name,"operator_helper_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "new_invented_canonical_record_written":False,"profiles_changed":False,"model_chat_called":False,
         "fleet_launch_approved":False,"checkpoint":"new_scope"}
     try:

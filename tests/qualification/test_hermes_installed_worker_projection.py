@@ -4,6 +4,7 @@ import hmac
 import importlib.util
 from io import BytesIO
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -94,3 +95,13 @@ def test_larger_cache_reader_still_refuses_oversize_truncation_and_wrong_type(wi
 
 def test_cache_reader_suppresses_private_error_text():
     assert helper.cache_bulk_reply(BytesIO(b"-NOPERM invented-private-details\r\n")) == ("refused",None)
+
+
+@pytest.mark.parametrize("complete",[False,"true",1])
+def test_post_rotation_probe_requires_strict_completed_rotation_receipts(monkeypatch,complete):
+    monkeypatch.setattr(helper.os,"geteuid",lambda:0)
+    monkeypatch.setattr(sys,"argv",["probe","--post-rotation"])
+    monkeypatch.setattr(helper,"definitions",lambda name:{"read_file":lambda *args:json.dumps({"complete":complete}).encode(),
+        "private_write":lambda *args:pytest.fail("must not write before prerequisites")})
+    with pytest.raises(ValueError,match="completed_credential_rotations_required"):
+        helper.main()
