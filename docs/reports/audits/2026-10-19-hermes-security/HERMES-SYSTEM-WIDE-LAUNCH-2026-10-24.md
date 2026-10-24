@@ -239,6 +239,17 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+The first owner-run controlled-service helper returned a generic preflight
+refusal, not a verified runtime switch. Local inspection found a definite
+inventory bug: only 27 src files were selected while the helper required at
+least 30. The pinned wheel contains 34 installed runtime/license files when
+enhanced_cognee_client, bin/project_memory_mcp.py and the license are included.
+All 34 readable installed files match the exact protected wheel. The corrected
+helper checks all non-dist-info files and requires the exact known count 34.
+Its ten focused source tests pass, including the omitted package roots and
+sanitized fixed refusal categories. No completed recovery or credential-cycle
+pass needs repeating; controlled installed selection remains pending.
+
 Actual derived recovery PASSED at `/var/tmp/ec-launch-index-recovery-sw3log4z`,
 helper SHA256 ea5ca64abdd34fb80a545d7e982320744398f2db502cdc358a86a8097bd841e7.
 Fresh pipeline/graph `lr_cc098bbed2b9424a`, Qdrant collection

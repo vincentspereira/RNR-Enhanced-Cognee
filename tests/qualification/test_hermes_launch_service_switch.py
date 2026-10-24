@@ -62,3 +62,15 @@ def test_ordinary_user_cannot_change_services(monkeypatch):
 
 def test_shared_file_primitives_are_hash_pinned():
     assert hashlib.sha256(SOURCE.with_name("recover_launch_graph_operator.py").read_bytes()).hexdigest() == helper.SHARED_SHA256
+
+
+def test_installed_inventory_includes_client_mcp_and_license_besides_src():
+    names = ["src/memory_service.py", "enhanced_cognee_client/client.py", "bin/project_memory_mcp.py",
+             "rnr_enhanced_cognee_memory-LICENSE", "rnr_enhanced_cognee_memory-1.2.0.dist-info/RECORD", "src/"]
+    assert helper.runtime_members(names) == names[:4]
+
+
+def test_refusal_reason_does_not_expose_arbitrary_exception_messages():
+    assert helper.refusal_reason(ValueError("installed_package_inventory_required")) == "installed_package_inventory_required"
+    assert helper.refusal_reason(ValueError("invented-private-value")) == "protected_input_or_service_error"
+    assert helper.refusal_reason(PermissionError("invented-private-path")) == "protected_input_or_service_error"

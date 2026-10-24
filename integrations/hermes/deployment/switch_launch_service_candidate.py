@@ -28,6 +28,22 @@ WHEEL_SHA256 = "9ba46a58f32adf29c378690041beaa96ff2f545d432df1265d62617caf5ba7d5
 ROLES = {"api":"api", "index":"worker"}
 
 
+def runtime_members(names):
+    return [name for name in names if not name.endswith("/")
+            and ".dist-info/" not in name]
+
+
+def refusal_reason(error):
+    allowed = {"local_root_operator_required", "reviewed_shared_source_required",
+        "protected_candidate_required", "verified_staging_and_recovery_required",
+        "wheel_size_required", "exact_wheel_required", "wheel_member_required",
+        "installed_wheel_bytes_differ", "installed_package_inventory_required",
+        "admitted_model_required", "existing_runtime_selection_preserved",
+        "protected_ancestor_required", "protected_file_required", "input_budget",
+        "bounded_service_control_failed"}
+    return str(error) if type(error) is ValueError and str(error) in allowed else "protected_input_or_service_error"
+
+
 def protected(path):
     for item in [*reversed(path.parents), path]:
         info = item.lstat()
@@ -131,9 +147,7 @@ def main():
         raise ValueError("exact_wheel_required")
     checked = 0
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
-        for name in archive.namelist():
-            if not name.startswith(("src/", "rnr_memory/")) or name.endswith("/"):
-                continue
+        for name in runtime_members(archive.namelist()):
             if ".." in Path(name).parts:
                 raise ValueError("wheel_member_required")
             installed = BASE / "runtime/lib/python3.12/site-packages" / name
@@ -141,7 +155,7 @@ def main():
             if installed.read_bytes() != archive.read(name):
                 raise ValueError("installed_wheel_bytes_differ")
             checked += 1
-    if checked < 30:
+    if checked != 34:
         raise ValueError("installed_package_inventory_required")
     originals, paths = {}, {}
     for unit, role in ROLES.items():
@@ -216,6 +230,7 @@ def main():
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (OSError,ValueError,KeyError,subprocess.SubprocessError):
-        print('{"complete":false,"category":"candidate_switch_preflight_refused_no_secret_output"}')
+    except (OSError,ValueError,KeyError,subprocess.SubprocessError) as error:
+        print(json.dumps({"complete":False,"category":"candidate_switch_preflight_refused_no_secret_output",
+                          "reason":refusal_reason(error)}))
         raise SystemExit(1)
