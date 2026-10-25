@@ -240,6 +240,41 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation, owner-run process observation completed at
+`operator-evidence/launch-process-bindings-h1iuy4mt`, helper SHA256
+dfd74c764b7396d664f41670b845b7f14341423a26fe42c54eb048f767ad1e03.
+Two identities inspected, two launch candidates, zero inventory matches,
+zero pinned executable matches, two missing profile bindings, no conflicts,
+inaccessible entries or process races. This is an observation completion,
+not qualified launch bindings. No profiles/services/keys/credentials changed.
+
+Follow-up found a classifier gap: PM2's saved definition directly names
+`gateway/run.py`, which the original observer did not recognize as a native
+entrypoint. The exact original source is retained privately at
+`/tmp/ec-launch-evidence-20261024/launch-process-bindings-v1-source.py` and in
+Git history. The corrected observer recognizes direct gateway scripts while
+still refusing unrelated run.py files. An ordinary-owner read-only snapshot
+can now run without sudo; it is explicitly NOT the protected two-user scope.
+Twenty-two source tests pass, including privacy, direct entrypoint recognition,
+root refusal in ordinary-owner mode and non-execution of saved PM2 definitions.
+
+The corrected ordinary-owner host snapshot still observed two candidates and
+zero explicit gateway/profile or pinned executable matches. One saved PM2
+entry directly selects gateway/run.py, but its interpreter does not match the
+pinned runtime and it supplies no explicit HERMES_HOME. Its source bytes match
+the pinned gateway source; this does not establish the other runtime files or
+live execution. Main profile metadata sets multiplex_profiles=true but does
+not explicitly select enhanced_cognee as its memory provider. These are saved
+configuration observations, not proof of which profile any live process uses.
+No active-profile/default binding was guessed, PM2 daemon contacted or service
+restarted. Sanitized ordinary-owner result:
+`/tmp/ec-launch-evidence-20261024/owner-launch-definitions-20261025.json`.
+Corrected protected two-user observation remains pending. All per-profile
+admission flags and fleet activation remain false; credential vault attachment
+verification is still pending. Reuse all passed native/expiry/recovery checks.
+
+
+
 25 October continuation, owner-run protected gateway v2 PASSED:
 `operator-evidence/gateway-renewal-v2/summary.json`, helper SHA256
 a2ce8eb144aaf4fd3e040b6a7436d2561c4bb12f9e6d7eda41aec8b59d9bdfe2. New synthetic profile

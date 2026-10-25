@@ -23,6 +23,43 @@ SUPPORT_SHA = 'd7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef'
 LIMIT = 512
 
 
+def saved_pm2_definitions(home, uid):
+    """Summarize saved configuration only; never contact/start the PM2 daemon."""
+    path = Path(home) / '.pm2/dump.pm2'
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except FileNotFoundError:
+        return dict(available=False, saved_entries=0, direct_gateway_entries=0)
+    with os.fdopen(fd, 'rb') as stream:
+        info = os.fstat(stream.fileno())
+        require(stat.S_ISREG(info.st_mode) and info.st_uid == uid and info.st_size <= 4194304)
+        raw = stream.read(4194305)
+        after = os.fstat(stream.fileno())
+        require(len(raw) == info.st_size and (info.st_ino, info.st_mtime_ns, info.st_ctime_ns)
+                == (after.st_ino, after.st_mtime_ns, after.st_ctime_ns))
+    entries = json.loads(raw)
+    require(isinstance(entries, list) and len(entries) <= LIMIT)
+    gateways, pinned_interpreters, explicit_homes = 0, 0, 0
+    for entry in entries:
+        require(isinstance(entry, dict))
+        env = entry.get('pm2_env', entry)
+        require(isinstance(env, dict))
+        script = env.get('pm_exec_path')
+        if not isinstance(script, str) or Path(script).parts[-2:] != ('gateway', 'run.py'):
+            continue
+        gateways += 1
+        interpreter = env.get('exec_interpreter')
+        # String equality suffices for this conservative definition check.
+        # Do not follow arbitrary saved paths or execute the saved program.
+        pinned_interpreters += interpreter == EXECUTABLE
+        nested = env.get('env', {})
+        home_value = env.get('HERMES_HOME', nested.get('HERMES_HOME') if isinstance(nested, dict) else None)
+        explicit_homes += profile_path(home_value, home) is not None
+    return dict(available=True, saved_entries=len(entries), direct_gateway_entries=gateways,
+                exact_pinned_interpreter_entries=pinned_interpreters, explicit_in_home_profile_entries=explicit_homes,
+                live_execution_proven=False)
+
+
 def require(value):
     if not value:
         raise ValueError('launch_observation_refused')
@@ -42,7 +79,8 @@ def profile_path(value, home):
 
 def observe(argv, environment, home, pinned_executable):
     """Extract only fixed classifications and an in-home profile binding."""
-    gateway = any(a == 'gateway' and b == 'run' for a, b in zip(argv, argv[1:]))
+    direct_gateway = any(Path(arg).parts[-2:] == ('gateway', 'run.py') for arg in argv[:3])
+    gateway = direct_gateway or any(a == 'gateway' and b == 'run' for a, b in zip(argv, argv[1:]))
     native = gateway or any(Path(arg).name in {'run_agent.py', 'hermes'} for arg in argv[:3])
     manager = any('pm2' in Path(arg).name.lower() for arg in argv[:2])
     if not native and not manager:
@@ -68,11 +106,13 @@ def observe(argv, environment, home, pinned_executable):
                 launch_binding_qualified=False)
 
 
-def owner_child():
+def owner_child(*, restricted=True):
     uid = os.geteuid()
     fields = dict(line.split(':', 1) for line in Path('/proc/self/status').read_text().splitlines())
-    require(uid != 0 and not os.getgroups() and fields['NoNewPrivs'].strip() == '1'
-            and all(fields[key].strip() == '0000000000000000' for key in ('CapEff', 'CapAmb')))
+    require(uid != 0)
+    if restricted:
+        require(not os.getgroups() and fields['NoNewPrivs'].strip() == '1'
+                and all(fields[key].strip() == '0000000000000000' for key in ('CapEff', 'CapAmb')))
     home = pwd.getpwuid(uid).pw_dir
     pinned = Path(EXECUTABLE).resolve(strict=True)
     rows, refused, races, inspected = [], 0, 0, 0
@@ -109,7 +149,21 @@ def owner_child():
             races += 1
         except PermissionError:
             refused += 1
-    print(json.dumps(dict(rows=rows, refused=refused, races=races)))
+    document = dict(rows=rows, refused=refused, races=races)
+    if restricted:
+        print(json.dumps(document))
+    else:
+        # Ordinary-owner observation is independent of the protected two-user
+        # qualification. Never print paths, arguments or environment contents.
+        print(json.dumps(dict(complete=True, stage='ordinary_owner_launch_snapshot', uid=uid,
+            live_launch_candidates=len(rows), gateway_candidates=sum(row['kind'] == 'gateway' for row in rows),
+            pinned_executable_candidates=sum(row['pinned_executable'] for row in rows),
+            explicit_profile_bindings=sum(row['profile_home'] is not None for row in rows),
+            selector_conflicts=sum(row['profile_selector_conflict'] for row in rows),
+            inaccessible_processes=refused, transient_process_races=races,
+            saved_pm2=saved_pm2_definitions(home, uid),
+            protected_two_identity_qualification=False, profiles_changed=False, services_changed=False,
+            keys_read=False, raw_arguments_or_environment_retained=False, fleet_launch_approved=False)))
 
 
 def validate_child(document, home):
@@ -176,7 +230,10 @@ def main():
 
 if __name__ == '__main__':
     try:
-        main()
+        if sys.argv[1:] == ['--owner-snapshot']:
+            owner_child(restricted=False)
+        else:
+            main()
     except Exception:
         print('{"complete":false,"category":"launch_observation_refused_no_secret_output"}')
         raise SystemExit(1)

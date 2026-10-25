@@ -46,6 +46,43 @@ def test_arbitrary_process_not_classified():
     assert helper.observe(['python', 'unrelated.py'], ['SECRET=invented'], HOME, False) is None
 
 
+def test_direct_native_gateway_script_is_recognized_without_cli_words():
+    row = helper.observe(['python', '/opt/invented/gateway/run.py'], ['HERMES_HOME=' + PROFILE], HOME, False)
+    assert row['kind'] == 'gateway' and row['profile_home'] == PROFILE
+    assert row['pinned_executable'] is False and row['launch_binding_qualified'] is False
+
+
+def test_unrelated_run_py_is_not_a_gateway():
+    assert helper.observe(['python', '/opt/unrelated/run.py'], [], HOME, False) is None
+
+
+def test_root_cannot_use_ordinary_owner_mode(monkeypatch):
+    monkeypatch.setattr(helper.os, 'geteuid', lambda: 0)
+    with pytest.raises(ValueError):
+        helper.owner_child(restricted=False)
+
+
+def test_saved_pm2_definition_is_not_a_live_binding_and_never_returns_secrets(tmp_path):
+    directory = tmp_path / '.pm2'
+    directory.mkdir()
+    (directory / 'dump.pm2').write_text(json.dumps([dict(pm_exec_path='/invented/gateway/run.py',
+        exec_interpreter='/invented/python', env={'TOKEN': 'invented-secret'})]))
+    report = helper.saved_pm2_definitions(str(tmp_path), helper.os.geteuid())
+    assert report['direct_gateway_entries'] == 1
+    assert report['exact_pinned_interpreter_entries'] == 0
+    assert report['explicit_in_home_profile_entries'] == 0
+    assert report['live_execution_proven'] is False
+    assert 'invented-secret' not in json.dumps(report)
+
+
+def test_saved_pm2_symlink_is_refused(tmp_path):
+    directory = tmp_path / '.pm2'
+    directory.mkdir()
+    (directory / 'dump.pm2').symlink_to('/invented/secret')
+    with pytest.raises(OSError):
+        helper.saved_pm2_definitions(str(tmp_path), helper.os.geteuid())
+
+
 def test_manager_is_only_a_candidate_not_a_profile_admission():
     row = helper.observe(['node', '/opt/pm2/bin/pm2'], [], HOME, False)
     assert row['kind'] == 'manager' and row['profile_home'] is None
