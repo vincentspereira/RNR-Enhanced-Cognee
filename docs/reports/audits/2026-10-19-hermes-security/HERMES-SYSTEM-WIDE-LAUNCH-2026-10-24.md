@@ -240,6 +240,34 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: protected isolation-plan preparation PASSED at
+`operator-evidence/profile-isolation-plan-p2bahhlh`. Plan SHA256
+b3baaccdda2f3fd7120bf75ff9e2fea7063c14e46bf66cd31277b9113cd2cd3b;
+helper SHA256 1db5bb35c34179fa2dc6903631c4532119bbbab88c7e24c3adc46dfcfbe2f53c.
+It accounts for 45 observed profiles, preserves three verified bindings and
+marks 42 scope assignments as proposals. Zero accounts, units, profile copies
+or credentials were created. All admission gates remain closed.
+
+Next implementation/qualification action is
+`qualify_launch_isolated_accounts.py`: a finite two-account batch selected from
+the pinned protected plan, retaining these intended permanent runtime identities.
+It refuses all name/group/home collisions before changes, then creates locked
+nologin system accounts with private empty homes. Only invented marker files
+are installed. Two actual restricted owner processes run concurrently, with
+NNP, zero effective/ambient capabilities and no supplementary groups. Each must
+read its own marker, be denied its peer's marker and /proc environment, be denied
+operator/recovery files without reading their contents, and be unable to invoke
+sudo under the exact runtime restrictions. The receipt contract requires every
+boundary predicate. No model/API call, real profile copy, credential mint,
+gateway/service start or unit installation occurs. Existing bots remain intact.
+Partial accounts/homes and all evidence are retained; collisions prevent an
+automatic retry. Eighteen source tests pass, including a real public-source /
+two-phase pipe protocol check; actual protected OS qualification remains pending.
+Even a successful invented OS boundary check will not qualify real profile copy,
+backup recovery, launch units or actual profile memory/renewal admission.
+
+
+
 25 October continuation: corrected protected two-owner observation completed at
 `operator-evidence/launch-process-bindings-amadrm2i`, helper SHA256
 14966268b02b6f93adf384c7a48aac850b82bdf51b0a5a5203fac6f3575c17ec.
