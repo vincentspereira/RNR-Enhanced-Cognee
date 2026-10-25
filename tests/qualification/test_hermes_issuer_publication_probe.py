@@ -39,6 +39,43 @@ def test_nonroot_stops_before_any_protected_read(monkeypatch):
     with pytest.raises(ValueError,match="fixed_root_operator_required"):helper.main()
 
 
+def test_retained_inspection_never_replays_cases_or_prints_private_logs(monkeypatch,tmp_path,capsys):
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    artifact = tmp_path / "artifact"
+    artifact.mkdir()
+    frozen = b"invented-frozen-public-probe"
+    (artifact / SOURCE.name).write_bytes(frozen)
+    monkeypatch.setattr(helper,"PUBLISHED_PROBE_SHA256",hashlib.sha256(frozen).hexdigest())
+    monkeypatch.setattr(helper,"EVIDENCE",evidence)
+    monkeypatch.setattr(helper,"ARTIFACT",artifact)
+    ident = "a"*16
+    unit = "ec-issuer-publication-"+ident
+    (evidence / "summary.json").write_text(json.dumps(dict(complete=False,reason="scheduled_publication_not_verified",scheduled_unit=unit+".service")))
+    (evidence / "scheduled-ticket.json").write_text(json.dumps(dict(id=ident,source_sha256=helper.PUBLISHED_PROBE_SHA256)))
+    case = evidence / ident
+    case.mkdir()
+    (case / "summary.json").write_text(json.dumps(dict(complete=False,checkpoint="installed_publication_child",unexpected="invented-private-value")))
+    monkeypatch.setattr(helper,"unit_metadata",lambda name:dict(ActiveState="failed",ExecMainStatus="1",User="root"))
+    monkeypatch.setattr(helper.subprocess,"run",lambda *args,**kwargs:SimpleNamespace(returncode=0,
+        stdout=b'{"MESSAGE":"Permission denied invented-private-log"}\n'))
+    monkeypatch.setattr(helper,"publish_case",lambda *args:pytest.fail("must not replay publication"))
+    before = {path:path.read_bytes() for path in evidence.rglob("*") if path.is_file()}
+    assert helper.inspect_existing(lambda path,owner:path.read_bytes()) == 0
+    output = capsys.readouterr().out
+    assert "invented-private" not in output
+    result = json.loads(output)
+    assert result["journal_markers"]["permission_denied"] is True
+    assert result["proof_predicates"]["case_complete"] is False
+    assert result["credentials_issued"] == 0 and result["evidence_changed"] is False
+    assert before == {path:path.read_bytes() for path in evidence.rglob("*") if path.is_file()}
+
+
+def test_case_summary_omits_unknown_checkpoint_and_private_fields():
+    result = helper.safe_case_summary(dict(complete=False,checkpoint="invented-private-data",reason="invented-private-reason",private="invented"))
+    assert result == dict(complete=False,checkpoint="other")
+
+
 @pytest.mark.parametrize("failure",[None,"trigger","exit","identity","invocation","completion"])
 def test_scheduled_proof_requires_timer_trigger_service_exit_root_and_bound_invocation(failure):
     case = dict(complete=True,unit_invocation_id="a"*32)

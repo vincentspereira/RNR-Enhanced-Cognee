@@ -21,6 +21,7 @@ PACKAGE = BASE / "operator-issuer-candidate-v2"
 ARTIFACT = BASE / "operator-issuer-publication-probe"
 EVIDENCE = BASE / "operator-evidence/issuer-publication-v2"
 FIXTURES = Path("/var/lib/hermes-renewal-qualification")
+PUBLISHED_PROBE_SHA256 = "8e30a2bce14f694930edd8232f856c125e43bef2840bdea9f4864bef9cab7ea1"
 PINS = {"renew_fleet_credentials.py":"a7432a8a6c258b2f81466f51b782dd9b53c2211a5a52fcb863f3a1567ad858bf",
         "qualify_launch_issuer_reconciliation.py":"93977838f5c73e385656a36ee5a54fc011ee5de39937f0f83eb9bd9334ffec95",
         "recover_launch_graph_operator.py":"d7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef"}
@@ -117,7 +118,7 @@ def timer_command(ident):
 
 
 def unit_metadata(unit):
-    process = subprocess.run(["/usr/bin/systemctl","show",unit,"--property=ActiveState,SubState,Result,ExecMainStatus,User,InvocationID,ExecMainStartTimestampMonotonic,LastTriggerUSecMonotonic"],
+    process = subprocess.run(["/usr/bin/systemctl","show",unit,"--property=ActiveState,SubState,Result,ExecMainStatus,ExecMainCode,User,InvocationID,ExecMainStartTimestampMonotonic,LastTriggerUSecMonotonic,CapabilityBoundingSet,NoNewPrivileges,ProtectSystem,ProtectHome,ReadWritePaths"],
         stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=10,env={"PATH":"/usr/bin:/bin","LANG":"C.UTF-8"})
     require(process.returncode == 0 and len(process.stdout) <= 4096,"bounded_unit_metadata_required")
     return dict(line.split("=",1) for line in process.stdout.decode("ascii").splitlines() if "=" in line)
@@ -133,14 +134,87 @@ def scheduled_proof(case,service,timer):
         and int(timer.get("LastTriggerUSecMonotonic","0")) > 0,"scheduled_publication_not_verified")
 
 
+def safe_case_summary(value):
+    allowed_phases = {"new_fixture","prepare_new_owner_fixture","installed_publication_child","complete"}
+    result = {"complete":value.get("complete") is True,"checkpoint":value.get("checkpoint") if value.get("checkpoint") in allowed_phases else "other"}
+    for key in ("installed_publication_component_qualified","refusal_controls_passed","bound_root_completion_verified",
+                "prepared_owner_journal_reconciled","root_keys_withheld_from_children"):
+        if type(value.get(key)) is bool:result[key] = value[key]
+    if type(value.get("qualification_credentials_issued")) is int and 0 <= value["qualification_credentials_issued"] <= 2:
+        result["qualification_credentials_issued"] = value["qualification_credentials_issued"]
+    if value.get("reason") in {"actual_publication_not_verified","bound_completion_not_verified",
+            "fixture_interruption_failed_preserve_evidence","child_refused_review_retained_attempt","operator_resolution_binding_differs"}:
+        result["reason"] = value["reason"]
+    return result
+
+
+def proof_predicates(case,service,timer):
+    def positive(value):
+        return isinstance(value,str) and value.isdecimal() and int(value) > 0
+    invocation = case.get("unit_invocation_id","")
+    return dict(case_complete=case.get("complete") is True,
+        case_invocation_recorded=isinstance(invocation,str) and re.fullmatch(r"[a-f0-9]{32}",invocation) is not None,
+        service_inactive=service.get("ActiveState") == "inactive",service_success=service.get("Result") == "success",
+        service_exit_zero=service.get("ExecMainStatus") == "0",service_user_root=service.get("User") == "root",
+        service_start_recorded=positive(service.get("ExecMainStartTimestampMonotonic")),
+        invocation_matches=service.get("InvocationID","") in {"",invocation},
+        timer_trigger_recorded=positive(timer.get("LastTriggerUSecMonotonic")))
+
+
+def inspect_existing(read):
+    previous = json.loads(read(EVIDENCE / "summary.json",0))
+    require(previous.get("complete") is False and previous.get("reason") == "scheduled_publication_not_verified",
+            "specific_failed_scheduling_attempt_required")
+    ticket = json.loads(read(EVIDENCE / "scheduled-ticket.json",0))
+    ident = ticket.get("id")
+    require(isinstance(ident,str) and re.fullmatch(r"[a-f0-9]{16}",ident),"fixed_fixture_identifier_required")
+    require(ticket == dict(id=ident,source_sha256=PUBLISHED_PROBE_SHA256)
+        and hashlib.sha256((ARTIFACT / "qualify_launch_issuer_publication.py").read_bytes()).hexdigest() == PUBLISHED_PROBE_SHA256,
+        "published_failed_probe_binding_required")
+    unit = "ec-issuer-publication-"+ident
+    require(previous.get("scheduled_unit") == unit+".service","scheduled_unit_binding_required")
+    cases = []
+    scheduled = {}
+    for directory in EVIDENCE.iterdir():
+        if not re.fullmatch(r"[a-f0-9]{16}",directory.name):continue
+        require(len(cases) < 2,"bounded_existing_cases_required")
+        try:value = json.loads(read(directory / "summary.json",0))
+        except FileNotFoundError:continue
+        cases.append(dict(kind="scheduled" if directory.name == ident else "manual",**safe_case_summary(value)))
+        if directory.name == ident:scheduled = value
+    service,timer = unit_metadata(unit+".service"),unit_metadata(unit+".timer")
+    journal = subprocess.run(["/usr/bin/journalctl","--unit="+unit+".service","--no-pager","--lines=40","--output=json"],
+        stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=10,env={"PATH":"/usr/bin:/bin","LANG":"C.UTF-8"})
+    markers = {}
+    if journal.returncode == 0 and len(journal.stdout) <= 65536:
+        messages = []
+        for line in journal.stdout.splitlines():
+            try:message = json.loads(line).get("MESSAGE","")
+            except (ValueError,AttributeError):continue
+            if isinstance(message,str):messages.append(message)
+        for key,needle in {"permission_denied":"Permission denied","read_only_filesystem":"Read-only file system",
+            "namespace_failure":"NAMESPACE","operation_not_permitted":"Operation not permitted",
+            "preflight_refused":"issuer_publication_preflight_refused_no_secret_output"}.items():
+            markers[key] = any(needle in message for message in messages)
+    result = dict(complete=True,stage="retained_scheduling_inspection",source_revision=BASE.name,scheduled_unit=unit+".service",
+        cases=cases,scheduled_case_present=bool(scheduled),proof_predicates=proof_predicates(scheduled,service,timer),
+        service_metadata=service,timer_metadata=timer,journal_markers=markers,
+        credentials_issued=0,profiles_changed=False,services_started=False,timers_created=False,evidence_changed=False,
+        secret_values_printed=False,fleet_launch_approved=False)
+    print(json.dumps(result))
+    return 0
+
+
 def main():
     require(os.geteuid() == 0,"fixed_root_operator_required")
     scheduled = len(sys.argv) == 3 and sys.argv[1] == "--scheduled"
-    require(len(sys.argv) == 1 or scheduled,"fixed_probe_action_required")
+    inspect = sys.argv[1:] == ["--inspect-existing"]
+    require(len(sys.argv) == 1 or scheduled or inspect,"fixed_probe_action_required")
     os.umask(0o077)
     support_path = ARTIFACT / "recover_launch_graph_operator.py" if scheduled else Path(__file__).with_name("recover_launch_graph_operator.py")
     support = definitions(support_path,PINS["recover_launch_graph_operator.py"])
     read,write = support["read_file"],support["private_write"]
+    if inspect:return inspect_existing(read)
     prior = json.loads(read(BASE / "operator-evidence/issuer-reconciliation-v2/summary.json",0))
     require(prior.get("complete") is True and prior.get("installed_issuer_reconciliation_qualified") is True,"completed_reconciliation_required")
     driver = definitions(PACKAGE / "renew_fleet_credentials.py",PINS["renew_fleet_credentials.py"])

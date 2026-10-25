@@ -239,6 +239,26 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, publication batch reached
+one_shot_scheduled_publication but overall verification FAILED at
+`operator-evidence/issuer-publication-v2`: reason
+scheduled_publication_not_verified. The preceding manual case passed its
+publication predicate (otherwise the timer stage could not be reached).
+Transient service `ec-issuer-publication-fee97c4346184bb8.service` was created;
+its actual case outcome and the exact failing verification field are not yet
+known. Preserve both cases, source artifact, timer and all root/owner journals.
+No scheduled success, gateway qualification or fleet admission is claimed.
+
+A new `--inspect-existing` action is prepared. It binds the retained failed
+receipt/ticket to the exact originally published protected source SHA256,
+reads only the two bounded root case receipts, and returns per-predicate
+booleans plus selected unit metadata and fixed journal error markers. It never
+prints raw journals/private fields, starts a unit, issues a credential, enters
+profile trees or writes evidence. Seventeen source tests pass, including a
+no-replay/no-evidence-change/no-private-log-output regression. Actual protected
+inspection is pending. The partial receipt does not identify a cause; inspect
+the retained evidence before selecting a repair or bounded retry.
+
 Continuation, 25 October 2026, installed issuer reconciliation components PASSED
 (owner-run): `operator-evidence/issuer-reconciliation-v2`. Prepared interruption
 resolved as not_published; published interruption resolved as published. Both
