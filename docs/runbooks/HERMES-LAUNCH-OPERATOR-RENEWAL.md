@@ -139,3 +139,12 @@ protected artifact/evidence directories. Its source tests and invalid-token
 native-import checks pass; protected execution remains required. It starts no
 platform adapters, calls no model, edits no existing profiles and does not
 approve the fleet. Do not repeat completed native conversations/publication.
+
+Owner-run protected gateway v2 now PASSED at
+`operator-evidence/gateway-renewal-v2`: real expiry denial, native cached-agent
+replacement, scope authentication and settings preservation; nine memory
+connections, no forbidden attempts. Reuse this synthetic multiplex result.
+Actual profile launch mappings remain unqualified. The read-only
+`inspect_launch_process_bindings.py` prepares bounded owner-only live launch
+observations against the retained registry without activation or root keys.
+It cannot qualify dormant launchers or establish private OS boundaries.

@@ -240,6 +240,42 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation, owner-run protected gateway v2 PASSED:
+`operator-evidence/gateway-renewal-v2/summary.json`, helper SHA256
+a2ce8eb144aaf4fd3e040b6a7436d2561c4bb12f9e6d7eda41aec8b59d9bdfe2. New synthetic profile
+`gateway_3e46328c200449b1`, two ordinary qualification credentials, nine permitted
+memory API connections and zero forbidden attempts. The persistent real
+GatewayRunner retained its instance, reused the unchanged agent, rejected the
+expired token, rebuilt its agent/provider on replacement, authenticated the new
+scope and preserved synthetic settings. No model/credential-store read, memory
+write, existing-profile edit, service/timer change or root-key transfer occurred.
+Reuse this pass. It establishes the headless multiplex synthetic launch surface;
+standalone gateways, actual fleet bindings and production scheduled renewal
+remain unqualified. Original v1 source, fixture and failure remain preserved.
+
+Current public CI was rechecked for exact backend revision 21abf485. Required CI,
+project memory, canonical stack and dashboard remain successful. Full runtime
+and broad CI/CD remain failures; neither is waived and no main merge is implied.
+Public metadata is retained locally in
+`/tmp/ec-launch-evidence-20261024/ci-gateway-renewal-pass-20261025.json`.
+The query for short correction SHA a71ec57c returned no workflow records; that
+is not a CI pass for the launch correction.
+
+Next prepared independent action: `inspect_launch_process_bindings.py`.
+Root reads only the existing protected registry and v2 receipt. Restricted
+NNP/no-groups/no-capabilities owner children inspect their own candidate runtime
+processes; they do not traverse profile trees or read root/peer processes.
+Only fixed classifications, executable-match booleans, PIDs and profile paths
+matching the prior inventory survive into root-private observations. Raw argv,
+environments and unmatched paths are not persisted or printed. Conflicting,
+missing and inaccessible bindings stay unresolved. No launch/default/active
+profile is inferred. Seventeen focused source tests pass. Protected execution
+is pending; dormant launchers, user jobs, per-profile OS isolation, backup
+membership, scope qualification and final switch remain separate open gates.
+Owner attachment verification for the NEW credential export is still pending.
+
+
+
 25 October continuation, latest receipts supersede the prepared/pending statements
 below. Owner-run network diagnostic PASSED on the new disposable profile
 `gateway_network_188840c9b9ee4893`: current credential authenticated, invalid
