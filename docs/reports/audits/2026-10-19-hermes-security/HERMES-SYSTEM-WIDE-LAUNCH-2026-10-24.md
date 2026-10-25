@@ -239,6 +239,43 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, derived legacy credential retirement PASSED
+(owner-run receipt): `candidate-gtnhc4kc/derived-legacy-login-retirement`.
+Two old graph passwords and one old cache login are denied; replacement
+authentication and API readiness pass. Graph users/grants and cache user/rules
+remain. No profiles, canonical memory or keys changed.
+
+Post-retirement actual worker acceptance PASSED at
+`operator-evidence/installed-worker-projection-after-retirement`, helper SHA256
+4f71071381926fd5a8046d698040b43c04fc28c32fdb9ca5407a4520bbff714b.
+New scope `wp_0fa08abb918d6dcc`, record
+`63fccdab-90dc-483d-9097-216d6a61124e`, proved semantic/graph/encrypted-cache
+delivery, peer denial, actual withdrawal and retained retracted history. No
+chat model or profile changes occurred. Preserve and reuse this pass; no replay.
+These receipts supersede the prepared-only batch statements below.
+
+`export_launch_credential_custody.py` is prepared, not executed on host secrets.
+It selects only current authentication fields from six fixed protected config
+groups. Existing encryption/index/backup-signing/age private keys are excluded
+from the export. It encrypts to the existing backup recipient, verifies exact
+decryption through memory pipes, rechecks unchanged configs and retains only
+root-private ciphertext plus sanitized evidence. No plaintext export file,
+external upload, profile access, credential change or service restart occurs.
+The exact existing native age executable is hash pinned, with protected library
+directory checks. Twelve source tests pass. A separate real native age roundtrip
+with a NEW invented identity passed at `/tmp/ec-custody-crypto-1fp80lcq`; that
+source-level crypto probe used no host credentials and did not qualify root
+file guards. Actual export and owner password-manager import remain pending.
+Successful encryption alone cannot establish owner custody.
+
+Issuer source review confirms incomplete root attempts stop automatic issuance.
+The existing started receipt records profile/source hashes but lacks a bound
+child transaction identifier; a generic child-journal pass cannot safely close
+an ambiguous root ledger attempt. Installed root-ledger interruption/recovery,
+active issuer publication, actual scheduled firing, persistent gateway refresh
+and each profile's launch/OS/backup admission remain open. All 45 allowlist
+entries stay disabled. Final fleet switch is not review-ready.
+
 Continuation, 25 October 2026, PostgreSQL legacy login retirement PASSED
 (owner-run receipt): `candidate-gtnhc4kc/postgres-legacy-login-retirement`.
 Exactly two superseded service logins are denied, replacements authenticate
