@@ -239,6 +239,40 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+25 October continuation: owner-run named candidate staging PASSED at
+`operator-evidence/named-candidate-stage-w_ydvbvr`, helper SHA256
+3bfc6b324ba8ba9e0f80cf7c90bcd605f68649a50c00a7e8d47914400f858f0b.
+One authenticated named-profile generation was restored under its isolated
+owner. It remains inactive; main-account staging is deferred. No gateways,
+units or credentials were created by that action. Source profiles are preserved.
+
+Prepared, NOT executed: `prepare_launch_candidate_provider.py`, SHA256
+a21eec3cef6bd37c71467f0c867aaf392700519de2e24aacf837c8fe07d2a175.
+Ten focused local boundary tests passed with zero failures/skips/warnings.
+The one-use helper preserves the isolated placeholder and candidate's original
+settings/environment, admits only the proposed ordinary private scope, keeps
+signing keys in root, installs the pinned provider and tests the native file-only
+secret scope plus actual API projection/history/peer-history denial. It writes
+one invented record and retracts it, preserving history. No gateway, chat model
+or timer starts. A new post-configuration backup, scope approval, real launch
+and scheduled renewal remain separate gates. The previously completed native
+conversations and named-profile backup batches must not replay.
+
+Delivery branch fetched again: FETCH_HEAD equals exact published backend
+21abf4857ca8dce8e0a3aafc725266c8d3754529. Current public GitHub metadata still
+reports Required CI, memory, canonical stack and dashboard success; broad
+pipeline and full runtime failure remain visible. This does not qualify the
+new deployment-helper branch or authorize main merge. The local gh executable
+is absent; the public GitHub REST API supplied this check.
+
+Credential custody remains owner-pending. The encrypted owner pickup is
+`/tmp/ec-owner-custody-9figka48/current-logins.json.age`, expected SHA256
+6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
+The owner requested help locating/saving it; no password-manager import or
+saved-attachment hash verification is claimed. This session could not locate
+that earlier /tmp pickup, including outside the sandbox; its continued host
+availability must be checked locally. No protected ciphertext was regenerated.
+
 
 25 October continuation: REAL named-profile backup/recovery PASSED (owner-run)
 at `operator-evidence/named-profile-backup-24br2v3u`, continued from retained
