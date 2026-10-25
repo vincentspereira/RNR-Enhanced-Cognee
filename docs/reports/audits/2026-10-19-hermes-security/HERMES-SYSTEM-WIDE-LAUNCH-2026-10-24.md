@@ -239,6 +239,29 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, coordinated application rotation PASSED
+(owner-run receipt): `candidate-gtnhc4kc/application-signing-rotation`.
+Exactly three existing qualification bindings were reissued; their scopes,
+roles and lifetimes were preserved. All three replacement credentials
+authenticated, and a fresh token signed with the old key was denied. Settings
+and OAuth were preserved, with owner-only permission hardening retained.
+Encryption/recovery keys did not change. This supersedes the prepared-only
+status below. The receipt explicitly leaves running-gateway reload, unattended
+issuance, complete credential disposition and fleet approval false.
+
+`retire_launch_postgres_logins.py` is prepared, not executed. It disables LOGIN
+for exactly the two superseded PostgreSQL service roles after retained rotation
+and post-rotation projection receipts pass. It refuses active old sessions,
+administrative roles, selected current/operator/backup identities, nonlocal
+connections or changed protected configurations. It never terminates sessions,
+deletes roles, changes grants/data, restarts services or enters profiles. It
+verifies explicit authentication denial for the old logins plus current
+service identity/schema/privilege checks; network failures are not denial proof.
+Failure restores original login flags where possible and verifies them.
+Nine source tests pass using database doubles, including concurrent-config
+failure, denial/network distinction and rollback. Actual protected execution
+is pending. Old graph/cache identities and new-secret custody remain separate.
+
 Continuation, 25 October 2026, protected issuer preparation PASSED (owner-run
 receipt): `operator-evidence/issuer-preparation`. Five source files were verified
 under the protected operator candidate. All 45 policy entries remain disabled;
