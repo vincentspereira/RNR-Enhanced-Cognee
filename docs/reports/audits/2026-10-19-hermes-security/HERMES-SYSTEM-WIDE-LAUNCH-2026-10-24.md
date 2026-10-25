@@ -239,6 +239,36 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, retained inspection confirms BOTH manual and
+scheduled publication cases completed. Each passed refusal controls, prepared
+owner-journal reconciliation, bound root completion and key-withholding checks.
+No credentials were issued or evidence changed by the inspection. Live unit
+properties now show empty identity/invocation, zero start/trigger timestamps
+and default protections; the only failed predicates were root identity and
+start/trigger timestamps. Those defaults do not establish the protections or
+identity used by the completed invocation.
+
+The working explanation is transient unit unloading, pending LoadState/journal
+confirmation. Systemd documents that unloading discards live execution state
+but retains journal evidence ([v255 unit lifecycle](https://www.freedesktop.org/software/systemd/man/255/systemd.unit.html#Unit%20Garbage%20Collection)).
+The prepared `--finish-existing` action requires the frozen original source and
+ticket, both complete bound cases and unchanged disabled fleet admission. It
+uses trusted PID-1 journal fields, exact unit names, a matching service invocation,
+unique successful start jobs on one boot, and at least the configured 15-second
+delay from timer activation to service completion. Message text cannot prove
+success. It rejects untrusted senders, conflicting jobs, other units/invocations,
+ambiguous completion, wrong boots and insufficient timing. Field semantics were
+checked against [v255 journal fields](https://www.freedesktop.org/software/systemd/man/255/systemd.journal-fields.html)
+and [v255 job completion implementation](https://github.com/systemd/systemd/blob/v255/src/core/job.c).
+
+On sufficient evidence it adds only `finish-existing.summary.json`, preserving
+the original failure and all cases/units/journals. Otherwise it returns bounded
+diagnostics without replay or an invented pass. No new credentials, profiles,
+timer/service starts or signing-key reads occur. Thirty source tests pass.
+Actual retained-journal verification is pending; scheduled publication remains
+unqualified until that proof passes. Full fleet renewal/gateway/admission and
+owner custody remain open.
+
 Continuation, 25 October 2026, publication batch reached
 one_shot_scheduled_publication but overall verification FAILED at
 `operator-evidence/issuer-publication-v2`: reason

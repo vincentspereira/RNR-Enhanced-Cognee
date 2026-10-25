@@ -69,6 +69,16 @@ signing key, operator database credential or administrator socket.
 
 ## Evidence and remaining admission
 
+Retained publication inspection confirmed both synthetic cases completed, while
+the original aggregate receipt failed after live transient properties were
+lost/defaulted. Do not replay either case. The prepared publication helper's
+`--finish-existing` mode verifies the original source/ticket and trusted PID-1
+journal completion records, exact unit/invocation binding, successful timer and
+service jobs, one boot and the configured delay. It writes a separate completion
+only if all retained evidence passes; otherwise it returns diagnostics without
+issuing credentials or starting a unit. Scheduled component acceptance remains
+pending that verification. Live unloaded-unit defaults are not execution proof.
+
 25 October continuation: the owner-run protected reconciliation probe passed
 both prepared/not_published and published/published outcomes, preserving active
 environments and refusing duplicate resolution. Its scope is root/owner recovery

@@ -118,7 +118,7 @@ def timer_command(ident):
 
 
 def unit_metadata(unit):
-    process = subprocess.run(["/usr/bin/systemctl","show",unit,"--property=ActiveState,SubState,Result,ExecMainStatus,ExecMainCode,User,InvocationID,ExecMainStartTimestampMonotonic,LastTriggerUSecMonotonic,CapabilityBoundingSet,NoNewPrivileges,ProtectSystem,ProtectHome,ReadWritePaths"],
+    process = subprocess.run(["/usr/bin/systemctl","show",unit,"--property=LoadState,ActiveState,SubState,Result,ExecMainStatus,ExecMainCode,User,InvocationID,ExecMainStartTimestampMonotonic,LastTriggerUSecMonotonic,CapabilityBoundingSet,NoNewPrivileges,ProtectSystem,ProtectHome,ReadWritePaths"],
         stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=10,env={"PATH":"/usr/bin:/bin","LANG":"C.UTF-8"})
     require(process.returncode == 0 and len(process.stdout) <= 4096,"bounded_unit_metadata_required")
     return dict(line.split("=",1) for line in process.stdout.decode("ascii").splitlines() if "=" in line)
@@ -138,7 +138,7 @@ def safe_case_summary(value):
     allowed_phases = {"new_fixture","prepare_new_owner_fixture","installed_publication_child","complete"}
     result = {"complete":value.get("complete") is True,"checkpoint":value.get("checkpoint") if value.get("checkpoint") in allowed_phases else "other"}
     for key in ("installed_publication_component_qualified","refusal_controls_passed","bound_root_completion_verified",
-                "prepared_owner_journal_reconciled","root_keys_withheld_from_children"):
+                "prepared_owner_journal_reconciled","root_keys_withheld_from_children","previous_environment_settings_and_oauth_preserved"):
         if type(value.get(key)) is bool:result[key] = value[key]
     if type(value.get("qualification_credentials_issued")) is int and 0 <= value["qualification_credentials_issued"] <= 2:
         result["qualification_credentials_issued"] = value["qualification_credentials_issued"]
@@ -161,7 +161,54 @@ def proof_predicates(case,service,timer):
         timer_trigger_recorded=positive(timer.get("LastTriggerUSecMonotonic")))
 
 
-def inspect_existing(read):
+def journal_scheduling_proof(rows,unit,invocation):
+    """Only trusted PID-1 records may attest manager job completion.
+
+    Fields/semantics: systemd v255 job.c and systemd.journal-fields(5).
+    Never parse success out of MESSAGE text or expose raw record contents.
+    """
+    require(isinstance(invocation,str) and re.fullmatch(r"[a-f0-9]{32}",invocation),"recorded_invocation_required")
+    events = {"service":{},"timer":{}}
+    conflicts = False
+    for row in rows:
+        if not isinstance(row,dict) or (row.get("_PID"),row.get("_UID"),row.get("_COMM")) != ("1","0","systemd"):continue
+        kind = next((kind for kind in events if row.get("UNIT") == unit+"."+kind),None)
+        if kind is None or row.get("JOB_TYPE") != "start" or "JOB_RESULT" not in row:continue
+        if row.get("JOB_RESULT") != "done":
+            conflicts = True
+            continue
+        boot,stamp = row.get("_BOOT_ID"),row.get("__MONOTONIC_TIMESTAMP")
+        if not (isinstance(boot,str) and re.fullmatch(r"[a-f0-9]{32}",boot)
+                and isinstance(stamp,str) and stamp.isdecimal() and 0 < int(stamp) < 2**64):continue
+        event_invocation = row.get("INVOCATION_ID","")
+        if not isinstance(event_invocation,str):continue
+        key = (boot,int(stamp),event_invocation)
+        events[kind][key] = row
+    unique = len(events["service"]) == len(events["timer"]) == 1
+    same_boot,matched,elapsed = False,False,None
+    if unique:
+        service = next(iter(events["service"]))
+        timer = next(iter(events["timer"]))
+        same_boot = service[0] == timer[0]
+        matched = service[2] == invocation
+        if same_boot:elapsed = service[1]-timer[1]
+    flags = dict(unique_service_completion=len(events["service"]) == 1,
+        unique_timer_activation=len(events["timer"]) == 1,manager_invocation_matches=matched,
+        same_boot=same_boot,configured_delay_elapsed=elapsed is not None and elapsed >= 15000000,
+        no_conflicting_start_failures=not conflicts)
+    return dict(verified=all(flags.values()),predicates=flags,
+        service_success_events=len(events["service"]),timer_success_events=len(events["timer"]),
+        elapsed_milliseconds=elapsed//1000 if elapsed is not None else None)
+
+
+def publication_cases_complete(cases):
+    return (len(cases) == 2 and {row["kind"] for row in cases} == {"manual","scheduled"}
+        and all(row.get(key) is True for row in cases for key in ("complete","installed_publication_component_qualified",
+            "bound_root_completion_verified","root_keys_withheld_from_children","refusal_controls_passed",
+            "prepared_owner_journal_reconciled","previous_environment_settings_and_oauth_preserved")))
+
+
+def inspect_existing(read,write=None,finish=False):
     previous = json.loads(read(EVIDENCE / "summary.json",0))
     require(previous.get("complete") is False and previous.get("reason") == "scheduled_publication_not_verified",
             "specific_failed_scheduling_attempt_required")
@@ -180,41 +227,72 @@ def inspect_existing(read):
         require(len(cases) < 2,"bounded_existing_cases_required")
         try:value = json.loads(read(directory / "summary.json",0))
         except FileNotFoundError:continue
+        if finish:require(value.get("fixture_id") == directory.name,"retained_case_identity_differs")
         cases.append(dict(kind="scheduled" if directory.name == ident else "manual",**safe_case_summary(value)))
         if directory.name == ident:scheduled = value
     service,timer = unit_metadata(unit+".service"),unit_metadata(unit+".timer")
-    journal = subprocess.run(["/usr/bin/journalctl","--unit="+unit+".service","--no-pager","--lines=40","--output=json"],
+    journal = subprocess.run(["/usr/bin/journalctl","--unit="+unit+".service","--unit="+unit+".timer","--no-pager","--lines=100","--output=json"],
         stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=10,env={"PATH":"/usr/bin:/bin","LANG":"C.UTF-8"})
     markers = {}
-    if journal.returncode == 0 and len(journal.stdout) <= 65536:
+    rows = []
+    if journal.returncode == 0 and len(journal.stdout) <= 131072:
         messages = []
         for line in journal.stdout.splitlines():
-            try:message = json.loads(line).get("MESSAGE","")
+            try:
+                row = json.loads(line)
+                message = row.get("MESSAGE","")
             except (ValueError,AttributeError):continue
+            rows.append(row)
             if isinstance(message,str):messages.append(message)
         for key,needle in {"permission_denied":"Permission denied","read_only_filesystem":"Read-only file system",
             "namespace_failure":"NAMESPACE","operation_not_permitted":"Operation not permitted",
             "preflight_refused":"issuer_publication_preflight_refused_no_secret_output"}.items():
             markers[key] = any(needle in message for message in messages)
+    invocation = scheduled.get("unit_invocation_id","")
+    journal_proof = journal_scheduling_proof(rows,unit,invocation) if re.fullmatch(r"[a-f0-9]{32}",invocation) else {"verified":False}
     result = dict(complete=True,stage="retained_scheduling_inspection",source_revision=BASE.name,scheduled_unit=unit+".service",
         cases=cases,scheduled_case_present=bool(scheduled),proof_predicates=proof_predicates(scheduled,service,timer),
-        service_metadata=service,timer_metadata=timer,journal_markers=markers,
+        service_metadata=service,timer_metadata=timer,journal_markers=markers,journal_scheduling_proof=journal_proof,
         credentials_issued=0,profiles_changed=False,services_started=False,timers_created=False,evidence_changed=False,
         secret_values_printed=False,fleet_launch_approved=False)
+    if finish:
+        result["stage"] = "finish_retained_scheduled_publication"
+        # Live properties may already describe unloaded transient units.
+        # Never turn those default values into execution evidence.
+        complete = publication_cases_complete(cases)
+        result["complete"] = complete and journal_proof["verified"]
+        result.update(installed_publication_component_qualified=complete,
+            scheduled_publication_component_qualified=result["complete"],installed_issuer_qualified=False,
+            scheduled_firing_qualified=False,running_gateway_reload_qualified=False,policy_entry_admission_qualified=False,
+            production_renewal_timer_enabled=False,previous_failure_preserved=True,replayed_publication=False)
+        # Read only policy admission metadata. No signing keys/profile access.
+        driver = definitions(PACKAGE / "renew_fleet_credentials.py",PINS["renew_fleet_credentials.py"])
+        driver["protected"](PACKAGE / "renew_fleet_credentials.py")
+        policy_source = driver["sources"]()["fleet_credential_policy.py"]
+        policy = driver["definitions"](policy_source,"retained_publication_policy")["load"](driver["POLICY"])
+        require(not any(row["enabled"] for row in policy["profiles"]),"fleet_must_remain_disabled")
+        result["fleet_policy_disabled"] = True
+        if result["complete"]:
+            require(write is not None,"protected_evidence_writer_required")
+            result["evidence_changed"] = True
+            result["evidence"] = str(EVIDENCE / "finish-existing.summary.json")
+            write(EVIDENCE / "finish-existing.summary.json",json.dumps(result).encode())
+        else:result["category"] = "retained_scheduling_evidence_insufficient_no_replay"
     print(json.dumps(result))
-    return 0
+    return 0 if result["complete"] else 1
 
 
 def main():
     require(os.geteuid() == 0,"fixed_root_operator_required")
     scheduled = len(sys.argv) == 3 and sys.argv[1] == "--scheduled"
     inspect = sys.argv[1:] == ["--inspect-existing"]
-    require(len(sys.argv) == 1 or scheduled or inspect,"fixed_probe_action_required")
+    finish = sys.argv[1:] == ["--finish-existing"]
+    require(len(sys.argv) == 1 or scheduled or inspect or finish,"fixed_probe_action_required")
     os.umask(0o077)
     support_path = ARTIFACT / "recover_launch_graph_operator.py" if scheduled else Path(__file__).with_name("recover_launch_graph_operator.py")
     support = definitions(support_path,PINS["recover_launch_graph_operator.py"])
     read,write = support["read_file"],support["private_write"]
-    if inspect:return inspect_existing(read)
+    if inspect or finish:return inspect_existing(read,write,finish=finish)
     prior = json.loads(read(BASE / "operator-evidence/issuer-reconciliation-v2/summary.json",0))
     require(prior.get("complete") is True and prior.get("installed_issuer_reconciliation_qualified") is True,"completed_reconciliation_required")
     driver = definitions(PACKAGE / "renew_fleet_credentials.py",PINS["renew_fleet_credentials.py"])
