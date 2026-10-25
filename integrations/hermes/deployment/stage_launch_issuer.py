@@ -14,13 +14,14 @@ from pathlib import Path
 import pwd
 import stat
 import subprocess
+import sys
 
 BASE = Path("/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529")
 BINDINGS = BASE / "operator-evidence/token-bindings-o7gaywzr/bindings.private.json"
 DESTINATION = BASE / "operator-issuer-candidate"
 POLICY = Path("/etc/enhanced-cognee/fleet-credentials.json")
 SOURCES = {
-    "renew_fleet_credentials.py":"071a19be8bb0ee562fcac968b1b1ceeeb5faaaa758eeec1c9c7d95349c536716",
+    "renew_fleet_credentials.py":"a7432a8a6c258b2f81466f51b782dd9b53c2211a5a52fcb863f3a1567ad858bf",
     "provision_pilot_access.py":"f2bf3ec50bfd8414011aa322e027f7c266a7102d558c0b7d0518549e8a8b2cc6",
     "renew_pilot_access.py":"8fb4b4dfe3941a15755bf367c982d0aadfad7fcaac94932df9b46202d8583567",
     "fleet_credential_policy.py":"6cbda2192ad6040a8043de53eac1fc2c7ad2191dd9175322e1608d285bab8102",
@@ -60,6 +61,9 @@ def draft(rows,executable,origin,administrative_users):
 def main():
     if os.geteuid() != 0:
         raise ValueError("local_root_operator_required")
+    upgrade = sys.argv[1:] == ["--upgrade-disabled"]
+    if sys.argv[1:] and not upgrade:raise ValueError("fixed_staging_action_required")
+    destination = BASE / "operator-issuer-candidate-v2" if upgrade else DESTINATION
     os.umask(0o077)
     raw = Path(__file__).with_name("recover_launch_graph_operator.py").read_bytes()
     if hashlib.sha256(raw).hexdigest() != SHARED_SHA256:
@@ -91,24 +95,27 @@ def main():
             administrators.add(account.pw_name)
     policy,plans = draft(rows,policy_module["EXECUTABLE"],policy_module["ORIGIN"],administrators)
     policy_module["validate"](policy)
-    if os.path.lexists(POLICY) or os.path.lexists(DESTINATION):
+    if upgrade:
+        policy = policy_module["load"](POLICY)
+        if any(row["enabled"] for row in policy["profiles"]):raise ValueError("disabled_existing_policy_required")
+    if (not upgrade and os.path.lexists(POLICY)) or os.path.lexists(destination):
         raise ValueError("existing_issuer_configuration_preserved")
     # Parent protection is checked without entering any profile path.
-    for directory in (DESTINATION.parent,POLICY.parent):
+    for directory in (destination.parent,POLICY.parent):
         for item in [*reversed(directory.parents),directory]:
             info = item.lstat()
             if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
                 raise ValueError("protected_issuer_destination_required")
-    evidence = BASE / "operator-evidence/issuer-preparation"
+    evidence = BASE / "operator-evidence" / ("issuer-preparation-v2" if upgrade else "issuer-preparation")
     evidence.mkdir(mode=0o700)
     write(evidence / "admission.private.json",json.dumps({"inventory":str(BINDINGS),"profiles":plans}).encode())
-    DESTINATION.mkdir(mode=0o755)
-    DESTINATION.chmod(0o755)
+    destination.mkdir(mode=0o755)
+    destination.chmod(0o755)
     for name,raw in source.items():
-        write(DESTINATION / name,raw)
-        (DESTINATION / name).chmod(0o644)
-    write(POLICY,json.dumps(policy).encode())
-    result = {"complete":False,"evidence":str(evidence),"issuer_candidate":str(DESTINATION),
+        write(destination / name,raw)
+        (destination / name).chmod(0o644)
+    if not upgrade:write(POLICY,json.dumps(policy).encode())
+    result = {"complete":False,"evidence":str(evidence),"issuer_candidate":str(destination),"existing_policy_preserved":upgrade,
         "inventoried_profile_homes":len(plans),"disabled_policy_entries":len(policy["profiles"]),
         "verified_existing_bindings":sum(p["existing_verified_binding"] is not None for p in plans),
         "existing_qualification_bindings":sum(p["existing_verified_binding"] is not None
@@ -117,7 +124,7 @@ def main():
             and "administrative_runtime_identity" in p["blockers"] for p in plans),
         "signing_key_changed":False,"profiles_changed":False,"credentials_issued":0,"timer_enabled":False,
         "installed_issuer_qualified":False,"scheduled_firing_qualified":False,"fleet_launch_approved":False}
-    process = subprocess.run([str(BASE / "runtime/bin/python"),"-I","-B",str(DESTINATION / "renew_fleet_credentials.py")],
+    process = subprocess.run([str(BASE / "runtime/bin/python"),"-I","-B",str(destination / "renew_fleet_credentials.py")],
         capture_output=True,timeout=30,cwd="/",env={"PATH":"/usr/bin:/bin","HOME":"/","LANG":"C.UTF-8","PYTHONDONTWRITEBYTECODE":"1"})
     if process.returncode == 0 and len(process.stdout) <= 16384:
         receipt = json.loads(process.stdout)

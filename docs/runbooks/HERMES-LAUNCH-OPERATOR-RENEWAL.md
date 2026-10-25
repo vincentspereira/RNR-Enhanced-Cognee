@@ -37,6 +37,29 @@ child reconcile primitive can distinguish prepared and published outcomes,
 but a new automated root-ledger reconciliation action is not yet qualified.
 Until that gate passes, interruption recovery requires operator review.
 
+Source continuation, 25 October 2026: the new issuer candidate binds an issued
+token fingerprint to the exact policy identity/path/executable and driver/helper
+hashes in a separate private `.issued.json` record before entering the owner
+child. A finite manual `--reconcile ATTEMPT_ID` action takes the issuer lock,
+loads that binding, and asks the restricted owner child to find exactly one
+matching prepared/published profile journal. It verifies the journal, backup,
+candidate/current environment and current API authentication. It never issues a
+new credential or changes the environment. It writes a separate root
+`.resolved.json`, preserving started/issued/profile evidence. Subsequent issuance
+requires a valid bound completion or resolution. Missing legacy metadata,
+ambiguous journals, changed policy identity, conflicting current state, expired
+authentication and duplicate resolution remain refused for operator review.
+
+`stage_launch_issuer.py --upgrade-disabled` creates a separate
+`operator-issuer-candidate-v2`, retaining the original protected candidate and
+the exact existing disabled policy. No timer or service is enabled. The prepared
+`qualify_launch_issuer_reconciliation.py` combines that staging with two NEW
+synthetic profile interruption cases and bound root-ledger recovery using real
+API authentication and restricted owner children. Its separate fixture paths
+are not fleet enrollment policy entries. Even a passing component receipt does
+not qualify active issuer publication, scheduled firing, a running gateway or
+per-profile OS isolation. Protected execution remains pending.
+
 The `.service.disabled` and `.timer.disabled` files are review templates only.
 They are not systemd units under installed names. Their exact execution identity,
 capability transitions, protected code/policy and writable paths still need

@@ -239,6 +239,38 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, encrypted credential export PASSED (owner-run):
+`candidate-gtnhc4kc/credential-custody-export/current-logins.json.age`, SHA256
+6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
+Six current authentication config groups were encrypted and exact in-memory
+decryption verified. No plaintext file, profile/credential/key change or service
+restart occurred. Owner password-manager import remains unconfirmed; this pass
+does not establish custody. Preserve the encrypted export and do not repeat it.
+
+The prepared v2 issuer records a bound issued-token fingerprint before the
+owner child runs, and adds finite manual root/owner reconciliation. It preserves
+root started/issued evidence and closes known outcomes in a separate resolved
+record, without changing the active environment or issuing another credential.
+Entry/source binding, unique journal/candidate, backup/current environment and
+current API acceptance must match. Changed policy identity, ambiguous/legacy
+metadata, conflicting files, expired authentication and duplicate resolution
+are refused. Automatic issuance remains blocked on incomplete/unbound attempts.
+
+`qualify_launch_issuer_reconciliation.py` is prepared, not executed. One root
+action stages a separate v2 protected package while preserving the old package
+and all 45 disabled policy entries, then creates two NEW owner-only synthetic
+profiles outside ordinary runtime homes. Four ordinary qualification credentials
+exercise prepared and published interruption checkpoints, actual scoped API
+acceptance, bound root-ledger resolution and duplicate-resolution refusal.
+Keys stay in root; no prior fixture/native conversation is replayed. The fixture
+paths are not enrolled policy entries and do not prove a separate-UID boundary.
+No model call, memory write, existing-profile/key/service change or timer
+enablement occurs. Fifty-six source tests pass, including both root/owner
+outcomes, duplicate/ambiguous/conflicting evidence and strict child launch
+boundaries. Installed recovery execution remains pending. Active issuer
+publication, real scheduled firing, persistent gateway refresh, owner custody
+and each profile's launch/OS/backup admission remain open.
+
 Continuation, 25 October 2026, derived legacy credential retirement PASSED
 (owner-run receipt): `candidate-gtnhc4kc/derived-legacy-login-retirement`.
 Two old graph passwords and one old cache login are denied; replacement

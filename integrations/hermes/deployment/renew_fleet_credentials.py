@@ -15,9 +15,11 @@ import json
 import os
 from pathlib import Path
 import pwd
+import re
 import selectors
 import stat
 import subprocess
+import sys
 import time
 import uuid
 
@@ -32,6 +34,130 @@ SOURCES = {
 }
 RECEIPT_FIELDS = {"complete", "credential_published", "preserved_settings_and_oauth", "preserved_previous_environment",
                   "interrupted_attempts_reconciled", "native_reload_qualified", "timer_activation_approved"}
+
+
+def binding_digest(entry):
+    flags = {"enabled","reload_qualified","launch_binding_qualified","backup_qualified","os_boundary_qualified"}
+    return hashlib.sha256(json.dumps({k:v for k,v in entry.items() if k not in flags},sort_keys=True).encode()).hexdigest()
+
+
+def reconciliation_receipt(raw):
+    fields = {"complete","outcome","environment_changed","current_credential_authenticated","native_reload_qualified","timer_activation_approved"}
+    def unique(pairs):
+        value = dict(pairs)
+        if len(value) != len(pairs):raise ValueError("duplicate_reconciliation_field")
+        return value
+    if len(raw) > 16384:raise ValueError("reconciliation_receipt_contract")
+    value = json.loads(raw,object_pairs_hook=unique)
+    if (len(raw) > 16384 or not isinstance(value,dict) or set(value) != fields
+            or not isinstance(value["outcome"],str) or value["outcome"] not in {"published","not_published"}
+            or any(type(value[k]) is not bool for k in fields-{"outcome"})
+            or not value["complete"] or not value["current_credential_authenticated"]
+            or any(value[k] for k in ("environment_changed","native_reload_qualified","timer_activation_approved"))):
+        raise ValueError("reconciliation_receipt_contract")
+    return value
+
+
+def reconcile_child(core,renewal,lifecycle,directory,uid,current,expected):
+    if not isinstance(expected,str) or not re.fullmatch(r"[a-f0-9]{64}",expected):
+        raise ValueError("fixed_issued_token_digest_required")
+    names = [n for n in os.listdir(directory) if re.fullmatch(r"\.cognee-renewal-[a-f0-9]{32}\.json",n)]
+    if len(names) > 128:raise ValueError("bounded_profile_journals_required")
+    matches = []
+    for name in names:
+        journal = json.loads(core["read_private_at"](directory,name,uid)[0])
+        ident = name[len(".cognee-renewal-"):-5]
+        backup,candidate = ".env-before-cognee-renew-"+ident,".env-cognee-renew-"+ident
+        if (not isinstance(journal,dict) or set(journal) != {"backup","candidate","before","after"}
+                or journal["backup"] != backup or journal["candidate"] != candidate
+                or any(not isinstance(journal[k],str) or not re.fullmatch(r"[a-f0-9]{64}",journal[k]) for k in ("before","after"))):
+            raise ValueError("profile_journal_requires_review")
+        try:target = core["read_private_at"](directory,candidate,uid)[0]
+        except FileNotFoundError:
+            if renewal["digest"](current) != journal["after"]:continue
+            target = current
+        if renewal["digest"](target) != journal["after"]:raise ValueError("profile_candidate_changed")
+        token = renewal["environment"](core,target)
+        if hashlib.sha256(token.encode()).hexdigest() == expected:matches.append((name,journal))
+    if len(matches) != 1:raise ValueError("issued_attempt_missing_or_ambiguous")
+    name,journal = matches[0]
+    previous = core["read_private_at"](directory,journal["backup"],uid)[0]
+    if renewal["digest"](previous) != journal["before"]:raise ValueError("profile_backup_changed")
+    active = renewal["digest"](current)
+    if active == journal["after"]:outcome = "published"
+    elif active == journal["before"]:outcome = "not_published"
+    else:raise ValueError("concurrent_profile_change_requires_review")
+    lifecycle["accepted_status"](core,renewal["environment"](core,current))
+    done = name.removesuffix(".json")+".done.json"
+    expected_done = {"journal_sha256":renewal["digest"](json.dumps(journal,sort_keys=True).encode()),"outcome":outcome}
+    try:completed = json.loads(core["read_private_at"](directory,done,uid)[0])
+    except FileNotFoundError:completed = None
+    if completed is None:renewal["finish"](core,directory,name,journal,outcome)
+    elif completed != expected_done:raise ValueError("profile_completion_conflicts")
+    return dict(complete=True,outcome=outcome,environment_changed=False,current_credential_authenticated=True,
+                native_reload_qualified=False,timer_activation_approved=False)
+
+
+def ledger_write(directory,name,value):
+    fd = os.open(name,os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,0o600,dir_fd=directory)
+    with os.fdopen(fd,"w",encoding="ascii") as stream:
+        json.dump(value,stream)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.fsync(directory)
+
+
+def issued_binding(entry,issued):
+    expected = {"schema":1,"profile":entry["name"],"entry_sha256":binding_digest(entry),
+        "source_hashes":SOURCES,"driver_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    if (not isinstance(issued,dict) or set(issued) != set(expected) | {"issued_token_sha256"} or type(issued["schema"]) is not int
+            or any(issued.get(k) != v for k,v in expected.items())
+            or not isinstance(issued.get("issued_token_sha256"),str)
+            or not re.fullmatch(r"[a-f0-9]{64}",issued["issued_token_sha256"])):
+        raise ValueError("issued_attempt_binding_requires_review")
+
+
+def reconcile_root(core,entry,ident,source):
+    if not re.fullmatch(re.escape(entry["name"])+r"-[a-f0-9]{32}",ident):
+        raise ValueError("fixed_operator_attempt_required")
+    directory = core["open_directory"](LEDGER,{0})
+    try:
+        started = json.loads(core["read_private_at"](directory,ident+".started.json",0)[0])
+        issued = json.loads(core["read_private_at"](directory,ident+".issued.json",0)[0])
+        if started != {"profile":entry["name"],"state":"started","source_hashes":SOURCES}:
+            raise ValueError("legacy_or_changed_operator_attempt_requires_review")
+        issued_binding(entry,issued)
+        for suffix in (".done.json",".resolved.json"):
+            try:core["read_private_at"](directory,ident+suffix,0)
+            except FileNotFoundError:continue
+            raise ValueError("operator_attempt_already_closed")
+        report = run_child(entry,{"reconcile_token_sha256":issued["issued_token_sha256"]},source)
+        ledger_write(directory,ident+".resolved.json",dict(issued,reconciliation=report))
+        return report
+    finally:os.close(directory)
+
+
+def attempt_closed(core,entry,path):
+    directory = core["open_directory"](LEDGER,{0})
+    ident = path.name.removesuffix(".started.json")
+    try:
+        if not re.fullmatch(re.escape(entry["name"])+r"-[a-f0-9]{32}",ident):raise ValueError("fixed_operator_attempt_required")
+        try:issued = json.loads(core["read_private_at"](directory,ident+".issued.json",0)[0])
+        except FileNotFoundError:return False
+        issued_binding(entry,issued)
+        try:
+            receipt(core["read_private_at"](directory,ident+".done.json",0)[0])
+            return True
+        except FileNotFoundError:pass
+        try:
+            resolved = json.loads(core["read_private_at"](directory,ident+".resolved.json",0)[0])
+        except FileNotFoundError:return False
+        report = resolved.pop("reconciliation",None)
+        if resolved != issued or issued.get("entry_sha256") != binding_digest(entry):
+            raise ValueError("operator_resolution_binding_differs")
+        reconciliation_receipt(json.dumps(report).encode())
+        return True
+    finally:os.close(directory)
 
 
 def protected(path, *, final_link=False):
@@ -108,7 +234,9 @@ def child_main(core, renewal, lifecycle, entry, bundle):
             original, _ = core["read_private_at"](fd, ".env", account.pw_uid)
             current = renewal["environment"](core, original)
             claims = renewal["token_claims"](core, current)
-            if claims["exp"] - int(time.time()) > 21600:
+            if isinstance(bundle,dict) and set(bundle) == {"reconcile_token_sha256"}:
+                result = reconcile_child(core,renewal,lifecycle,fd,account.pw_uid,original,bundle["reconcile_token_sha256"])
+            elif claims["exp"] - int(time.time()) > 21600:
                 lifecycle["accepted_status"](core, current)
                 result = {"complete": True, "credential_published": False, "preserved_settings_and_oauth": True,
                           "preserved_previous_environment": True, "interrupted_attempts_reconciled": 0,
@@ -179,7 +307,7 @@ def run_child(entry, bundle, source):
                         raise ValueError("child_receipt_budget")
         if process.wait(timeout=max(0.01, deadline-time.monotonic())):
             raise ValueError("child_refused_review_retained_attempt")
-        return receipt(output)
+        return reconciliation_receipt(output) if set(bundle) == {"reconcile_token_sha256"} else receipt(output)
     finally:
         selector.close()
         if process.poll() is None:
@@ -197,8 +325,13 @@ def main():
     os.umask(0o077)
     source = sources()
     policy = definitions(source["fleet_credential_policy.py"], "policy_operator")["load"](POLICY)
+    reconcile_id = None
+    if sys.argv[1:]:
+        if len(sys.argv) != 3 or sys.argv[1] != "--reconcile":raise ValueError("fixed_operator_action_required")
+        reconcile_id = sys.argv[2]
+        if not re.fullmatch(r"[a-z][a-z0-9_-]{0,63}-[a-f0-9]{32}",reconcile_id):raise ValueError("fixed_operator_attempt_required")
     admitted = [entry for entry in policy["profiles"] if entry["enabled"]]
-    if not admitted:
+    if not admitted and reconcile_id is None:
         print(json.dumps({"complete": True, "enabled_profiles": 0, "credentials_published": 0,
                           "native_reload_qualified": False, "timer_activation_approved": False}))
         return 0
@@ -212,10 +345,18 @@ def main():
             raise ValueError("operator_lock_protection")
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         core = definitions(source["provision_pilot_access.py"], "issuer_operator")
+        if reconcile_id is not None:
+            name = reconcile_id[:-33]
+            selected = [entry for entry in policy["profiles"] if entry["name"] == name]
+            if len(selected) != 1:raise ValueError("operator_attempt_policy_binding_missing")
+            report = reconcile_root(core,selected[0],reconcile_id,source)
+            print(json.dumps(dict(complete=True,reconciled_attempts=1,outcome=report["outcome"],credentials_published=0,
+                native_reload_qualified=False,timer_activation_approved=False)))
+            return 0
         reports = []
         for entry in admitted:
             pending = list(LEDGER.glob(entry["name"] + "-*.started.json"))
-            if len(pending) > 512 or any(not p.with_name(p.name.replace(".started.json", ".done.json")).exists() for p in pending):
+            if len(pending) > 512 or any(not attempt_closed(core,entry,p) for p in pending):
                 raise ValueError("incomplete_operator_attempt_requires_review")
             ident = entry["name"] + "-" + uuid.uuid4().hex
             started = LEDGER / (ident + ".started.json")
@@ -233,6 +374,12 @@ def main():
             key = core["load_signing_key"]()
             bundle = core["make_bundle"](key, int(time.time()))
             del key
+            directory = core["open_directory"](LEDGER,{0})
+            try:
+                ledger_write(directory,ident+".issued.json",dict(schema=1,profile=entry["name"],entry_sha256=binding_digest(entry),
+                    source_hashes=SOURCES,driver_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    issued_token_sha256=hashlib.sha256(bundle["token"].encode()).hexdigest()))
+            finally:os.close(directory)
             report = run_child(entry, bundle, source)
             with (LEDGER / (ident + ".done.json")).open("x", encoding="ascii") as stream:
                 json.dump(report, stream)

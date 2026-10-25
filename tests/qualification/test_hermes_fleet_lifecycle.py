@@ -1,5 +1,6 @@
 """Source-only synthetic renewal boundaries; HTTP acceptance is a test double."""
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -49,6 +50,85 @@ def transaction(tmp_path):
         yield core, renewal, lifecycle, fd, bundle, original, tmp_path
     finally:
         os.close(fd)
+
+
+@pytest.mark.parametrize("phase,outcome",[("prepared","not_published"),("published","published")])
+def test_bound_root_ledger_reconciles_exact_interrupted_child_without_new_issuance(transaction,phase,outcome):
+    core,renewal,lifecycle,fd,bundle,original,path = transaction
+    driver = definitions("renew_fleet_credentials")
+    class Interruption(Exception):pass
+    def checkpoint(current):
+        if current == phase:raise Interruption
+    with pytest.raises(Interruption):lifecycle["publish"](core,renewal,fd,bundle,os.geteuid(),checkpoint=checkpoint)
+    ledger = path / "root-ledger-fixture"
+    ledger.mkdir(mode=0o700)
+    driver["LEDGER"] = ledger
+    entry = dict(name="invented",profile=str(path),tenant="qualification",project_id="invented_project")
+    ident = "invented-"+"a"*32
+    issued = dict(schema=1,profile=entry["name"],entry_sha256=driver["binding_digest"](entry),source_hashes=driver["SOURCES"],
+        driver_sha256=hashlib.sha256((BASE / "renew_fleet_credentials.py").read_bytes()).hexdigest(),
+        issued_token_sha256=hashlib.sha256(bundle["token"].encode()).hexdigest())
+    (ledger / (ident+".started.json")).write_text(json.dumps(dict(profile=entry["name"],state="started",source_hashes=driver["SOURCES"])))
+    (ledger / (ident+".issued.json")).write_text(json.dumps(issued))
+    active = (path / ".env").read_bytes()
+    before_names = {p.name for p in path.iterdir()}
+    def run_child(selected,payload,source):
+        assert selected == entry and payload == {"reconcile_token_sha256":issued["issued_token_sha256"]}
+        result = driver["reconcile_child"](core,renewal,lifecycle,fd,os.geteuid(),active,payload["reconcile_token_sha256"])
+        return driver["reconciliation_receipt"](json.dumps(result).encode())
+    driver["run_child"] = run_child
+    def read(directory,name,uid):return (ledger / name).read_bytes(),None
+    root_core = dict(open_directory=lambda *args:os.open(ledger,os.O_RDONLY | os.O_DIRECTORY),read_private_at=read)
+    report = driver["reconcile_root"](root_core,entry,ident,{})
+    assert report["outcome"] == outcome and report["environment_changed"] is False
+    assert driver["attempt_closed"](root_core,entry,ledger / (ident+".started.json"))
+    assert (path / ".env").read_bytes() == active
+    assert before_names <= {p.name for p in path.iterdir()}
+    assert not (ledger / (ident+".done.json")).exists()
+    with pytest.raises(ValueError,match="already_closed"):driver["reconcile_root"](root_core,entry,ident,{})
+    changed = dict(entry,project_id="different")
+    with pytest.raises(ValueError,match="binding"):driver["reconcile_root"](root_core,changed,ident,{})
+
+
+@pytest.mark.parametrize("failure",["wrong_digest","changed_environment","api_refused","changed_candidate"])
+def test_reconciliation_refuses_unbound_conflicting_or_unauthenticated_effects(transaction,failure):
+    core,renewal,lifecycle,fd,bundle,original,path = transaction
+    driver = definitions("renew_fleet_credentials")
+    class Interruption(Exception):pass
+    def checkpoint(current):
+        if current == "prepared":raise Interruption
+    with pytest.raises(Interruption):lifecycle["publish"](core,renewal,fd,bundle,os.geteuid(),checkpoint=checkpoint)
+    digest = hashlib.sha256(bundle["token"].encode()).hexdigest()
+    if failure == "wrong_digest":digest = "f"*64
+    if failure == "changed_environment":(path / ".env").write_bytes(original+b"CONCURRENT=preserve\n")
+    if failure == "api_refused":core["api_status"] = lambda token:(401,{})
+    if failure == "changed_candidate":next(path.glob(".env-cognee-renew-*")).write_bytes(b"CONCURRENT=preserve\n")
+    active = (path / ".env").read_bytes()
+    with pytest.raises(ValueError):driver["reconcile_child"](core,renewal,lifecycle,fd,os.geteuid(),active,digest)
+    assert (path / ".env").read_bytes() == active
+    assert not list(path.glob(".cognee-renewal-*.done.json"))
+
+
+def test_reconciliation_receipt_refuses_duplicate_keys_and_false_acceptance():
+    driver = definitions("renew_fleet_credentials")
+    with pytest.raises(ValueError):driver["reconciliation_receipt"](b'{"complete":true,"complete":false}')
+    value = dict(complete=True,outcome="published",environment_changed=False,current_credential_authenticated=False,
+                 native_reload_qualified=False,timer_activation_approved=False)
+    with pytest.raises(ValueError):driver["reconciliation_receipt"](json.dumps(value).encode())
+
+
+def test_two_matching_issued_journals_remain_ambiguous(transaction):
+    core,renewal,lifecycle,fd,bundle,original,path = transaction
+    driver = definitions("renew_fleet_credentials")
+    class Interruption(Exception):pass
+    def checkpoint(phase):
+        if phase == "prepared":raise Interruption
+    for _ in range(2):
+        with pytest.raises(Interruption):lifecycle["publish"](core,renewal,fd,bundle,os.geteuid(),checkpoint=checkpoint)
+    digest = hashlib.sha256(bundle["token"].encode()).hexdigest()
+    with pytest.raises(ValueError,match="missing_or_ambiguous"):
+        driver["reconcile_child"](core,renewal,lifecycle,fd,os.geteuid(),original,digest)
+    assert (path / ".env").read_bytes() == original
 
 
 def test_preserves_arbitrary_existing_settings_and_auth(transaction):
