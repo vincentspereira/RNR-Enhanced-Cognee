@@ -240,6 +240,41 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: two planned permanent runtime identities were created
+and their invented OS boundary qualification PASSED (owner-run) at
+`operator-evidence/isolated-accounts-2eq6h4nn`. Helper SHA256
+d0425ae9f2598e79a732e41f23ebbc09bcfd77993b91c8cddb4e45fa192e2a94.
+Both restricted owner processes read their own invented markers and were denied
+peer marker/process-environment access, protected operator/recovery file access
+and sudo under the tested NNP/group/capability restrictions. Zero real profiles,
+credentials, gateways or units were installed; existing launchers stayed intact.
+This qualifies two invented filesystem/process boundaries, not real-profile
+admission, backup coverage or scheduled operation. Reuse the pass.
+
+Next prepared batch `qualify_launch_isolated_native_units.py` reuses those exact
+two identities in two finite hardened systemd one-shots. Each creates a NEW
+synthetic fixture within its own home, using invented unusable credentials.
+Root never walks these agent-owned trees. The pinned native GatewayRunner,
+TurnRunner and AIAgent constructors must bind the pinned Enhanced Cognee provider
+and reuse an unchanged agent. No platform adapter starts. DNS, connect and
+connect_ex are blocked; any attempted connection fails the qualification.
+No model/API call, real credential issue, real profile copy or memory write is
+performed. Reuse the previously passed real expiry/reload gate separately.
+
+The operator pins the public native/provider files, verifies actual live unit
+User/Group/NNP/capabilities/filesystem/process restrictions and success/exit,
+then binds a strictly typed journal receipt to that invocation, UID and exact
+probe source hash. Evidence is retained before stopping both completed units.
+Stop failures cannot short-circuit stopping the other unit or become a pass.
+Primary GID membership from systemd initgroups is allowed; all other groups are
+refused. Content-free failure phase/class diagnostics are retained if needed.
+Twenty-five focused source tests pass. Protected execution remains pending.
+No production unit, timer, account, real-data admission or final switch is
+activated by preparing this file. Custody confirmation and fleet migration /
+consistent profile recovery / actual scheduled renewal remain open.
+
+
+
 25 October continuation: protected isolation-plan preparation PASSED at
 `operator-evidence/profile-isolation-plan-p2bahhlh`. Plan SHA256
 b3baaccdda2f3fd7120bf75ff9e2fea7063c14e46bf66cd31277b9113cd2cd3b;
