@@ -240,6 +240,50 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: owner-run hardened native unit qualification PASSED at
+`operator-evidence/isolated-native-units-cj7kqg0b`, helper SHA256
+df3c585821a19a6e7ef978f52d1259c380255b005453fc845c5b487b30f02442.
+Two systemd one-shots qualified the invented isolated native constructor path;
+metadata/UID/invocation/source-bound receipts passed and both units stopped.
+Zero real profiles copied, credentials issued, model/API memory calls or
+platform adapters started. No existing launchers changed. This pass is reusable;
+actual-profile admission and scheduled renewal remain separate open gates.
+
+The existing pilot backup explicitly refuses SQLite and sidecars. That guard
+remains unchanged. New `sqlite_profile_snapshot.py` uses the SQLite backup API
+into RAM, with bounded pages/time, pinned owner-only directory descriptors,
+source/sidecar type checks, source identity recheck and restored quick_check.
+It includes committed WAL transactions and excludes uncommitted changes.
+Only the completed API backup image has its two journal-mode header bytes
+normalized for RAM deserialization, following
+https://sqlite.org/c3ref/deserialize.html. No raw live file is normalized or
+DB/WAL byte copies combined. No named plaintext snapshot archive is written.
+Read-only SQLite access may update SHM bookkeeping; logical data preservation,
+not byte-for-byte sidecar preservation, is the contract. A database snapshot
+does not establish atomic consistency with other profile files/databases.
+
+Next prepared `qualify_launch_sqlite_recovery.py` runs a consolidated two-account
+invented WAL snapshot/encryption/authenticated restore batch. Owner children
+create only fresh invented DB fixtures and encrypt completed RAM snapshots with
+the configured public AGE recipient. Root retains new ciphertext generations;
+root AGE alone uses the existing protected recovery identity for validation.
+No private key is transported to an owner child. Altered ciphertext must fail
+AGE authentication, and each owner restores into a NEW private disposable disk
+DB, verifying committed history, schema/index and permissions. No real profile,
+canonical/API data, service, key, model or credential changes occur. Existing
+pilot backup/timer and all original generations remain intact. This qualifies
+an invented SQLite component, not full real-profile backup/admission.
+
+Fifteen focused source tests pass in the real host UID namespace using invented
+temporary databases and mocked owner transport (no private keys/AGE/services).
+The initial sandbox run refused remapped root-owned ancestors (UID65534);
+security guards were retained and the tests passed outside that remapping.
+Directory traversal uses O_PATH so protected root-owned 0711 parents do not
+require granting list/read permission. Protected two-account recovery execution
+remains pending. New credential-vault custody confirmation is still pending.
+
+
+
 25 October continuation: two planned permanent runtime identities were created
 and their invented OS boundary qualification PASSED (owner-run) at
 `operator-evidence/isolated-accounts-2eq6h4nn`. Helper SHA256
