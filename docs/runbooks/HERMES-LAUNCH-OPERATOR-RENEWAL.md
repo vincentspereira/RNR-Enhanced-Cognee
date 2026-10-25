@@ -129,3 +129,13 @@ root-ledger recovery and actual scheduled firing. Preserve the completed
 5d0e9a49bdf544359ae6deff record. No resume-answer or mutation replay of that
 record is permitted. Each real profile then needs its own mapping, explicit
 launch binding, scope checks, trust boundary, backup and disable/restore path.
+
+25 October gateway probe continuation: the original v1 failed its connection
+count because native hermes_bootstrap uses connect_ex after import. Preserve
+v1 and its failure. Use the separately prepared
+`qualify_launch_gateway_renewal_v2.py` for a NEW invented expiry/reload scope.
+V2 guards connect, connect_ex and DNS, pins the bootstrap source, and uses NEW
+protected artifact/evidence directories. Its source tests and invalid-token
+native-import checks pass; protected execution remains required. It starts no
+platform adapters, calls no model, edits no existing profiles and does not
+approve the fleet. Do not repeat completed native conversations/publication.

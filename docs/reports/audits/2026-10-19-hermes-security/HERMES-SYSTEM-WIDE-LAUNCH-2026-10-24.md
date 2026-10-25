@@ -239,6 +239,35 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+
+25 October continuation, latest receipts supersede the prepared/pending statements
+below. Owner-run network diagnostic PASSED on the new disposable profile
+`gateway_network_188840c9b9ee4893`: current credential authenticated, invalid
+control denied, cache identity changed, memory=1/forbidden=0. Original fixture
+and failure were preserved; no credentials, model calls or memory writes occurred.
+
+A separate source-only transport experiment established the counting defect:
+HTTP 401 before and after native imports, but the original guard counted only
+the first request. The pinned native `hermes_bootstrap.py` switches the transport
+to nonblocking `socket.connect_ex`; the original guard wrapped only `connect`.
+The new `qualify_launch_gateway_renewal_v2.py` guards BOTH methods and DNS with the
+same fixed loopback origin. It additionally pins hermes_bootstrap.py SHA256
+f242036b2d35b92283b9a7e97c7059e537607fc4b02026f657a6d00cb4683f69.
+The equivalent v2 experiment counted both HTTP-401 connections, forbidden=0.
+Nineteen focused v2 tests pass, including refusal before connect_ex delegation.
+These are source/invalid-control checks, not a protected renewal acceptance.
+V2 uses NEW protected artifact/evidence directories and a NEW invented scope;
+original v1 source, fixture and failed evidence remain unchanged. Protected v2
+execution is pending. No completed conversation or publication case is replayed.
+
+Owner-run ciphertext release PASSED: owner pickup
+`/tmp/ec-owner-custody-9figka48/current-logins.json.age`, 1842 bytes, SHA256
+6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
+No plaintext, key read, vault modification or original deletion occurred.
+Owner KeePassXC attachment verification remains PENDING. Fleet launch, actual
+fleet bindings and recurring unattended renewal remain unapproved/unqualified.
+
+
 Continuation, 25 October 2026, protected gateway renewal probe reached its final
 network check but overall FAILED: `operator-evidence/gateway-renewal-v1`, helper
 SHA256 40026aceba617ea663764ea0fee2b373b477c624d3aa69873dee15ccc110815d.
