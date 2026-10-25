@@ -239,6 +239,44 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, protected gateway renewal probe reached its final
+network check but overall FAILED: `operator-evidence/gateway-renewal-v1`, helper
+SHA256 40026aceba617ea663764ea0fee2b373b477c624d3aa69873dee15ccc110815d.
+Receipt phase renewed_gateway_resolution, ValueError/network_boundary_failed.
+The frozen source reaches that check only after real old-token expiry denial,
+new native-agent/provider binding, replacement authentication and settings
+preservation predicates pass. This is control-flow evidence, not an overall
+renewal pass. The receipt omitted connection counters, so it does not identify
+whether a blocked optional attempt or the memory-connection bound caused failure.
+Do not replay the old 90-second attempt or assert a cause from this receipt.
+
+`diagnose_launch_gateway_network.py` is prepared. A restricted owner child reads
+the exact existing synthetic fixture, verifies its fixed synthetic settings and
+current scoped token, and copies that ordinary token to ONE new disposable
+diagnostic profile. Root reads no signing key and issues no credential. The
+original profile remains read-only and is checked unchanged. The diagnostic
+uses the same native construction/cache path and strict memory-only guard,
+plus an invented invalid-token control confined to its new profile. It returns
+bounded connection counters, destination-type/memory-match booleans and public
+source frame locations, never raw destinations, logs, tokens or private paths.
+No expiry wait, model call, platform start or canonical edit occurs. Ten source
+tests pass. Protected diagnostic execution and the original overall gate remain
+pending. A separate invented-invalid-token local transport check returned HTTP
+401 with one permitted memory connection and zero blocked attempts; that checks
+the simple transport path, not the persistent native process failure.
+
+The owner requested local import steps for the NEW rotated credentials.
+`release_launch_encrypted_custody_copy.py` is prepared to release ONLY the exact
+verified `.age` ciphertext into a new mode-0700 owner pickup folder, through an
+NNP/no-groups/no-capabilities owner child. The file is mode 0600, ciphertext SHA
+is rechecked, and all originals remain. No decryption, key read, plaintext file,
+vault operation or external upload occurs. Six source tests pass. The owner can
+attach the encrypted package to the existing KeePassXC vault and verify a saved
+attachment's hash, reusing previous matching AGE-identity custody. See
+`HERMES-ROTATED-CREDENTIAL-CUSTODY.md`. This is encrypted recovery-package custody,
+not automatic population of individual login fields. Release execution and
+owner attachment/import confirmation remain pending.
+
 Continuation, 25 October 2026, retained scheduled publication verification
 PASSED (owner-run):
 `operator-evidence/issuer-publication-v2/finish-existing.summary.json`.
