@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, PostgreSQL legacy login retirement PASSED
+(owner-run receipt): `candidate-gtnhc4kc/postgres-legacy-login-retirement`.
+Exactly two superseded service logins are denied, replacements authenticate
+and no old sessions were present. Roles and grants remain; no profile, key,
+canonical-data or service-restart changes occurred. Reuse this pass.
+
+The next consolidated protected batch is prepared, not executed:
+`retire_launch_derived_logins.py`, followed only on success by
+`qualify_installed_worker_projection.py --post-retirement`. The first preserves
+all graph users/grants, replaces the two old graph passwords with unissued
+random values, and appends off/resetpass to the exact superseded cache user.
+It verifies old positive controls before the change, current generated service
+bindings, current operator/service authentication and old graph/cache denial.
+Graph/cache and API/worker are restarted once; Qdrant/configurations, keys,
+profiles and canonical data are unchanged. Private originals and all attempts
+remain. Rollback restores only exact helper-selected files and preserves
+concurrent differing bytes, reporting incomplete recovery explicitly.
+
+The second uses a separate exclusive evidence directory and NEW invented scope
+to qualify actual worker semantic/graph/encrypted-cache delivery, scope denial
+and withdrawal/history after retirement. All three rotation/retirement receipts
+must pass before any new probe. Earlier installed worker/native passes are not
+replayed or overwritten. Thirty-two focused source tests pass (ten retirement,
+22 worker probe), including concurrent-file preservation and strict prerequisite
+checks. Actual protected execution remains pending. Complete credential custody,
+installed issuer/scheduler, persistent gateway refresh and per-profile admission
+remain open; this batch does not approve a fleet launch.
+
 Continuation, 25 October 2026, coordinated application rotation PASSED
 (owner-run receipt): `candidate-gtnhc4kc/application-signing-rotation`.
 Exactly three existing qualification bindings were reissued; their scopes,

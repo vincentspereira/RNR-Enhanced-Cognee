@@ -105,3 +105,15 @@ def test_post_rotation_probe_requires_strict_completed_rotation_receipts(monkeyp
         "private_write":lambda *args:pytest.fail("must not write before prerequisites")})
     with pytest.raises(ValueError,match="completed_credential_rotations_required"):
         helper.main()
+
+
+@pytest.mark.parametrize("missing",["application-signing-rotation","postgres-legacy-login-retirement","derived-legacy-login-retirement"])
+def test_post_retirement_requires_each_completed_retirement_before_any_new_probe(monkeypatch,missing):
+    monkeypatch.setattr(helper.os,"geteuid",lambda:0)
+    monkeypatch.setattr(sys,"argv",["probe","--post-retirement"])
+    def read(path,owner):
+        return json.dumps({"complete":path.parent.name != missing}).encode()
+    monkeypatch.setattr(helper,"definitions",lambda name:{"read_file":read,
+        "private_write":lambda *args:pytest.fail("must not write before retirement gates")})
+    with pytest.raises(ValueError,match="completed_login_retirements_required"):
+        helper.main()
