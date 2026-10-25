@@ -240,6 +240,70 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: owner-run invented encrypted SQLite recovery PASSED
+for both isolated accounts at `operator-evidence/sqlite-profile-recovery-32r108dg`.
+Helper SHA256 aae1ff7cbaf29f66ef10741198a55f3220e832542ba307c3bddfbdaa64af9be0.
+Two encrypted generations were created and recovered. Existing recovery identity
+was used only by root AGE; no private recovery key crossed into owner children.
+Keys, credentials, real profiles, services and canonical memory remained unchanged.
+This reusable component pass does not qualify a real profile backup.
+
+The new owner-only migration inventory now measures the actual ordinary-account
+source trees. First observation `/tmp/ec-profile-migration-385jwni1` stopped in
+the main tree before named profiles, losing partial metrics; it is retained as
+an incomplete attempt. The corrected observer keeps partial counts and visits
+named profiles first. Its new evidence `/tmp/ec-profile-migration-8khcz4qr`
+accounts for all 43 observed slots, with 42 complete named-profile observations
+and an INCOMPLETE main observation at the 100000-entry budget.
+
+Named profiles: 4286 files, 105008821 logical bytes, 252 SQLite databases;
+maximum 9326320 bytes/profile and 176 entries/profile. All 42 have WAL data.
+No unknown links, special files, hardlinks, unreadable entries, ownership
+mismatches, nested mounts or observed changes were found in those named trees.
+Known privileged environment-key-name inspection completed for all 42 .env
+files with zero known privileged fields; values were never exported. This is
+narrow field-name coverage, not proof that arbitrary content contains no secret.
+All 42 have config.yaml and .env markers.
+
+Main profile partial counts alone: 86903 files, 12379307836 logical bytes,
+33 SQLite databases, 1241 unknown links, two special files and 33304 hardlinked
+files. These are LOWER BOUNDS from an incomplete observation. The main tree
+cannot safely use the bounded named-profile copier. Its backup/link/hardlink /
+rebuildable dependency handling remains open; it is not excluded from the goal.
+No real profile content, settings, SQLite connection or service was changed by
+this metadata inventory. No Windows access or external upload occurred.
+
+Implementation now includes `capture_named_profile.py` and the consolidated
+operator batch `backup_launch_named_profiles.py`. The batch selects exactly
+42 named-profile paths from the pinned protected plan. Root never walks those
+trees. Restricted owner children capture plain files and API-produced standalone
+SQLite snapshots, monitoring all database data_version values and file/directory
+metadata across capture. Links, hardlinks, special files, orphan sidecars,
+reserved manifest names, changing source state and budgets fail closed.
+Named config/.env presence is required. Payloads/internal manifests remain in
+RAM for owner-side AGE encryption with the existing public recipient.
+
+Root writes NEW ciphertext generations and HMAC-signed metadata using existing
+protected keys, reloads/authenticates the stored pair, and uses root AGE to
+decrypt. Owner children validate every archive member/hash before writing any
+restored files, then restore into NEW private disposable trees and verify file
+bytes, SQLite integrity and permissions. Restored profiles are never executed.
+All original generations/sources and disposable restores are retained. A failed
+profile stops the batch, retaining individual started/done receipts; completed
+profiles must not be replayed to repair a later failure. No unattended job is
+enabled and no launch/profile admission is implied. SQLite read bookkeeping
+may change; no source logical writes or configuration changes are performed.
+
+Twenty-five focused tests pass in the real ownership namespace, covering actual
+invented WAL/profile recovery, committed-write/new-file race refusal, traversal /
+link refusal, source budgets, metadata signatures and public-source pipe framing.
+Initial sandbox-only tests rejected UID-remapped root ancestors; guards were
+kept intact and host-namespace tests passed. Protected real named-profile
+backup/restore execution remains pending. Main migration, actual profile
+launch/scope/renewal admission and new credential vault custody remain open.
+
+
+
 25 October continuation: owner-run hardened native unit qualification PASSED at
 `operator-evidence/isolated-native-units-cj7kqg0b`, helper SHA256
 df3c585821a19a6e7ef978f52d1259c380255b005453fc845c5b487b30f02442.
