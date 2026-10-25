@@ -69,6 +69,21 @@ signing key, operator database credential or administrator socket.
 
 ## Evidence and remaining admission
 
+25 October continuation: the owner-run protected reconciliation probe passed
+both prepared/not_published and published/published outcomes, preserving active
+environments and refusing duplicate resolution. Its scope is root/owner recovery
+components on two NEW disposable profiles, not active fleet admission. Reuse it.
+
+The next prepared `qualify_launch_issuer_publication.py` tests the protected
+publication child and bound root completion on NEW invented scopes, first
+manually and then from a separate one-shot systemd timer. It preserves the
+existing disabled policy byte-for-byte. Its fixed qualification cases are not
+enrolled fleet entries. Successful component execution, trigger metadata and
+unit exit would qualify only that synthetic scheduled component path. Full
+policy admission, persistent gateway refresh and recurring fleet operation
+remain separate gates. Protected execution is pending; no timer has yet been
+created by these prepared files.
+
 Source tests cover policy widening, administrative identity refusal, bounded
 typed receipts, prepared/published interruption outcomes, preservation of
 concurrent work and existing settings/OAuth, scope/refusal failure, expiry and

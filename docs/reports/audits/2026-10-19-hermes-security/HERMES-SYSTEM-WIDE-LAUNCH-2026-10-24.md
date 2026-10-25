@@ -239,6 +239,39 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, installed issuer reconciliation components PASSED
+(owner-run): `operator-evidence/issuer-reconciliation-v2`. Prepared interruption
+resolved as not_published; published interruption resolved as published. Both
+preserved the active environment and refused duplicate resolution. Four ordinary
+qualification credentials and two NEW synthetic profiles were used; root keys
+were withheld from owner children. Existing disabled policy, profiles, keys,
+services, memory and model usage were unchanged. Preserve and reuse this pass.
+It does not qualify active fleet issuance, policy admission, scheduling or a
+running gateway. The earlier prepared-only recovery statements are superseded.
+
+`qualify_launch_issuer_publication.py` is prepared, not executed. It reuses the
+exact protected v2 driver and recovery setup code, with two NEW synthetic scopes
+and profiles. Each case signs ordinary 24-hour credentials in root, records the
+bound root attempt before the child runs, and invokes the actual protected
+driver's publication child. It verifies publication/refusal controls, settings
+preservation, prepared-owner-journal reconciliation and bound root completion.
+The second case runs through a separate 15-second one-shot systemd timer,
+requiring actual trigger metadata, root identity, invocation ID and successful
+service exit. Source/ID-bound tickets prevent selecting an arbitrary case.
+
+The transient qualification unit has NoNewPrivileges, strict system protection,
+limited write paths, core dumps disabled and only SETUID/SETGID/CHOWN capabilities
+for root's new-empty-fixture ownership and owner-child transition. Children
+retain zero effective/ambient capabilities and no supplementary groups. All
+artifacts/units/attempts remain; no recurring fleet timer is enabled. The exact
+existing disabled fleet policy must remain byte-identical. No existing profile,
+service/key, memory or model changes occur. Fifteen focused source tests pass;
+native systemd 255.4 supports the selected timer flags. Actual protected
+publication/scheduled component execution is pending. This explicit synthetic
+component path does not admit its fixture paths into fleet policy or establish
+full installed issuer, fleet scheduled firing, gateway refresh or per-profile
+OS/launch/backup admission. Owner password-manager custody also remains open.
+
 Continuation, 25 October 2026, encrypted credential export PASSED (owner-run):
 `candidate-gtnhc4kc/credential-custody-export/current-logins.json.age`, SHA256
 6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
