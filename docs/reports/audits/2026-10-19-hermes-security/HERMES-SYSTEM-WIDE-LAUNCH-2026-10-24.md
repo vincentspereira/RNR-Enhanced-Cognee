@@ -240,6 +240,35 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: corrected protected two-owner observation completed at
+`operator-evidence/launch-process-bindings-amadrm2i`, helper SHA256
+14966268b02b6f93adf384c7a48aac850b82bdf51b0a5a5203fac6f3575c17ec.
+Two candidates still have no explicit inventory/profile or pinned executable
+match; zero conflicts, inaccessible entries and races. No state changed.
+Retain this observation and do not repeat the process scan without new cause.
+
+Implementation now includes `prepare_launch_isolation_plan.py`. It reads the
+retained protected registry and corrected observation, never profile trees or
+keys, and writes a NEW root-only plan. Each observed profile receives a distinct
+proposed restricted account/home and inert systemd launch draft within that
+private JSON. Existing verified identities, readonly roles and explicit capture
+policy are preserved; missing scopes are marked UNCONFIRMED proposals. No
+accounts, UID assignments, credentials, profile copies or units are created or
+installed. Drafts explicitly require multiplex configuration and qualification
+of their exact installed entrypoint, filesystem/process boundary, profile copy,
+backup/restore, scoped API, native reload, scheduled renewal and disable path.
+All enablement/admission flags remain false. This is a migration candidate,
+not the final fleet switch or proof of execution. Eleven focused tests pass;
+the first run found a control-character input rejection gap, which was fixed
+and all eleven then passed. Protected plan preparation remains pending.
+
+The successful synthetic gateway, native conversation, stores/recovery,
+credential rotation and publication evidence remains reusable with its exact
+scope. New credential vault attachment verification remains an owner item.
+The main current config/PM2 launchers and existing bots remain untouched.
+
+
+
 25 October continuation, owner-run process observation completed at
 `operator-evidence/launch-process-bindings-h1iuy4mt`, helper SHA256
 dfd74c764b7396d664f41670b845b7f14341423a26fe42c54eb048f767ad1e03.
