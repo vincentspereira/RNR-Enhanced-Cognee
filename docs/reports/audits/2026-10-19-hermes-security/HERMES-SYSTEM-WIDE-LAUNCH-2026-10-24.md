@@ -239,6 +239,32 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, protected issuer preparation PASSED (owner-run
+receipt): `operator-evidence/issuer-preparation`. Five source files were verified
+under the protected operator candidate. All 45 policy entries remain disabled;
+three existing qualification bindings, including two administrative-owner
+bindings, were retained. The protected disabled issuer preflight passed with
+zero credentials issued, no signing-key/profile change and no timer enabled.
+This supersedes the staging-execution pending statement below; it does not
+qualify active publication, gateway refresh or scheduled firing.
+
+`rotate_launch_application_key.py` is prepared, not executed. It coordinates
+manual signing-key replacement with reissue of exactly those three existing
+qualification bindings, preserving each verified scope, role, capture policy
+and lifetime. Restricted owner-UID children alone enter profiles; root retains
+both signing keys. Children stage private environment backups/candidates and
+guard concurrent edits, then publish during a bounded API stop/start. Root
+checks authenticated replacement tokens and rejection of a fresh old-key token.
+Failure attempts retain evidence and restore prior selections when concurrency
+guards permit; backend rollback is claimed only after key and HTTP verification.
+Encryption/recovery keys, provider settings and OAuth contents are preserved.
+Owner-only permission hardening does not establish separate-UID isolation.
+Thirteen focused source tests pass, including partial-publication rollback and
+concurrent unrelated configuration preservation. These use source fixtures,
+not installed private-host execution. No native conversation was replayed.
+Coordinated key activation, remaining legacy-login retirement/custody, active
+issuer/scheduler/gateway qualification and per-profile admission remain open.
+
 Continuation, 25 October 2026: post-rotation worker acceptance PASSED at
 `operator-evidence/installed-worker-projection-after-rotation`, helper SHA256
 d7edafe7c39c43dd808df961586b5ac83dc4bc2622b7d64c90a26923d22d6ebb.
