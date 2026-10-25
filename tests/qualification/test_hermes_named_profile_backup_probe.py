@@ -91,3 +91,23 @@ def child():
     monkeypatch.setattr(helper.subprocess, 'run', run)
     account = SimpleNamespace(pw_uid=1000, pw_gid=1000, pw_dir='/invented')
     assert helper.owner(support, account, source, packet)['receipt']['files'] == 3
+
+
+def failed_attempt():
+    return dict(complete=False, source_revision=helper.BASE.name,
+        operator_helper_sha256='33a2081c9e83d71875c00ddda94e20007e31bc029051f53a44e3076c061acec5',
+        selected_named_profiles=42, failure_phase='owner_capture', owner_failure_kind='CaptureError',
+        current_profile_id='534e43407c192971', encrypted_signed_generations_created=0,
+        disposable_restores_qualified=0, sqlite_databases_recovered=0)
+
+
+@pytest.mark.parametrize('field,value', [('complete', True), ('encrypted_signed_generations_created', 1),
+    ('disposable_restores_qualified', 1), ('sqlite_databases_recovered', 1),
+    ('encrypted_signed_generations_created', False), ('current_profile_id', 'other'),
+    ('operator_helper_sha256', 'other')])
+def test_continuation_refuses_completed_work_and_wrong_attempt(field, value):
+    report = failed_attempt()
+    helper.zero_generation_attempt(report)
+    report[field] = value
+    with pytest.raises(ValueError):
+        helper.zero_generation_attempt(report)

@@ -29,9 +29,22 @@ BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc7252
 BACKUPS = Path('/var/backups/enhanced-cognee')
 AGE = Path('/usr/local/bin/age')
 IDENTITY = Path('/etc/enhanced-cognee/age-recovery-identity.txt')
-CORE_SHA = 'b5a97acf61b1ced38d6ec8304dc33a2621cc82972ed8bece8dc36df226dde143'
+CORE_SHA = '2d30a49d2286fce465b01446e7a0836884f9ae4cccac5fc06ebaad4d927373f4'
 MAX_PACKET = 32 * 1024 * 1024
 PHASE = 'identity'
+FAILED = BASE / 'operator-evidence/named-profile-backup-5ha0t0os'
+
+
+def zero_generation_attempt(value):
+    require(isinstance(value, dict) and value.get('complete') is False
+            and value.get('source_revision') == BASE.name
+            and value.get('operator_helper_sha256') == '33a2081c9e83d71875c00ddda94e20007e31bc029051f53a44e3076c061acec5'
+            and value.get('selected_named_profiles') == 42
+            and value.get('failure_phase') == 'owner_capture'
+            and value.get('owner_failure_kind') == 'CaptureError'
+            and value.get('current_profile_id') == '534e43407c192971'
+            and all(type(value.get(key)) is int and value[key] == 0 for key in
+                ('encrypted_signed_generations_created', 'disposable_restores_qualified', 'sqlite_databases_recovered')))
 
 
 def require(value):
@@ -150,13 +163,15 @@ def owner(helper, account, source, packet):
 
 
 def main():
-    require(os.geteuid() == 0 and len(sys.argv) == 1)
+    require(os.geteuid() == 0 and sys.argv[1:] == ['--continue-zero-generation-attempt'])
     os.umask(0o077)
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     helper = definitions(Path(__file__).with_name('qualify_launch_isolated_accounts.py'),
         'd0425ae9f2598e79a732e41f23ebbc09bcfd77993b91c8cddb4e45fa192e2a94')
     shared = definitions(Path(__file__).with_name('recover_launch_graph_operator.py'), helper['SUPPORT_SHA'])
     read, write = shared['read_file'], shared['private_write']
+    failed = json.loads(read(FAILED / 'summary.json', 0))
+    zero_generation_attempt(failed)
     prior = json.loads(read(BASE / 'operator-evidence/sqlite-profile-recovery-32r108dg/summary.json', 0))
     require(prior.get('complete') is True and prior.get('invented_encrypted_sqlite_recovery_qualified') is True
             and prior.get('operator_helper_sha256') == 'aae1ff7cbaf29f66ef10741198a55f3220e832542ba307c3bddfbdaa64af9be0')
@@ -169,6 +184,7 @@ def main():
     require(len(selected) == 42 and all(row['source_uid'] == account.pw_uid and row['enabled'] is False
                 and row['profile_id'] == hashlib.sha256((account.pw_name + '\0' + row['source_profile']).encode()).hexdigest()[:16]
                 for row in selected))
+    require(selected[0]['profile_id'] == failed['current_profile_id'])
     driver = definitions(BASE / 'operator-issuer-candidate-v2/renew_fleet_credentials.py',
         'a7432a8a6c258b2f81466f51b782dd9b53c2211a5a52fcb863f3a1567ad858bf')
     for path in (AGE, IDENTITY, BACKUPS):
@@ -183,7 +199,13 @@ def main():
     source = Path(__file__).read_bytes()
     helper['owner_program'](source)
     evidence = Path(tempfile.mkdtemp(prefix='named-profile-backup-', dir=BASE / 'operator-evidence'))
+    # O_EXCL consumes a single operator continuation. Existing/completed work
+    # cannot be replayed by calling this flag again, including after a failure.
+    write(FAILED / 'zero-generation-continuation.started.json', canonical(dict(
+        continuation_evidence=str(evidence), helper_sha256=hashlib.sha256(source).hexdigest(),
+        capture_component_sha256=CORE_SHA, previous_summary_sha256=hashlib.sha256(canonical(failed)).hexdigest())))
     result = dict(complete=False, evidence=str(evidence), source_revision=BASE.name,
+        continued_from=str(FAILED),
         operator_helper_sha256=hashlib.sha256(source).hexdigest(), selected_named_profiles=42,
         encrypted_signed_generations_created=0, disposable_restores_qualified=0, sqlite_databases_recovered=0,
         private_keys_sent_to_owner_children=False, source_logical_writes_performed=False,

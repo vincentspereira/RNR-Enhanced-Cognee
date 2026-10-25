@@ -76,10 +76,11 @@ def capture(profile):
                     try:
                         require(stamp(os.fstat(opened)) == stamp(info))
                         header = os.read(opened, 16)
+                        wal_mode = header == b'SQLite format 3\0' and os.read(opened, 4)[2:4] == b'\x02\x02'
                     finally:
                         os.close(opened)
                     files.append(dict(path=path, name=name, directory=directory, info=info,
-                                      database=header == b'SQLite format 3\0'))
+                                      database=header == b'SQLite format 3\0', wal_mode=wal_mode))
         walk(readable, '', 0)
         database_paths = {row['path'] for row in files if row['database']}
         sidecars = set()
@@ -98,8 +99,29 @@ def capture(profile):
                 row['version'] = connection.execute('PRAGMA data_version').fetchone()[0]
         # Monitor all DBs before capturing any payload. Sidecars are rebuildable
         # SQLite bookkeeping, never independent archive members.
-        for fd, before, names in directory_stamps:
-            require(stamp(os.fstat(fd)) == before and set(os.listdir(fd)) == names)
+        for index, (fd, before, names) in enumerate(directory_stamps):
+            current = stamp(os.fstat(fd))
+            now = set(os.listdir(fd))
+            added = now - names
+            if added:
+                # A cold WAL database may create read-bookkeeping files on
+                # open, even with mode=ro. Admit ONLY new regular owner files
+                # for already identified WAL DBs. No removals or other new
+                # members are allowed. Original payload checks stay unchanged.
+                allowed = {row['name'] + suffix for row in files
+                    if row['directory'] == fd and row['database'] and row['wal_mode']
+                    for suffix in ('-wal', '-shm')}
+                require(names <= now and added <= allowed and current[:5] == before[:5])
+                relative = next(path for path, directory in directories if directory == fd)
+                for name in added:
+                    info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+                    require(stat.S_ISREG(info.st_mode) and info.st_uid == uid
+                            and info.st_nlink == 1 and info.st_dev == os.fstat(root).st_dev
+                            and info.st_size <= MAX_BYTES and not info.st_mode & 0o7000)
+                    sidecars.add(relative + '/' + name if relative else name)
+                directory_stamps[index] = (fd, current, now)
+            else:
+                require(current == before and now == names)
         blobs, manifest, used = {}, [], 0
         for path, _ in directories:
             if path:

@@ -114,3 +114,37 @@ def test_new_plain_file_during_database_open_is_not_silently_omitted(tmp_path, m
     with pytest.raises(helper.CaptureError):
         helper.capture(tmp_path)
     writer.close()
+
+
+def test_cold_wal_reader_bookkeeping_is_captured_without_raw_sidecar_members(tmp_path):
+    path = tmp_path / 'cold.db'
+    writer = sqlite3.connect(path)
+    writer.execute('PRAGMA journal_mode=WAL')
+    writer.execute('CREATE TABLE invented(x)')
+    writer.execute('INSERT INTO invented VALUES (7)')
+    writer.commit()
+    writer.close()
+    assert not (tmp_path / 'cold.db-wal').exists()
+    payload, receipt = helper.capture(tmp_path)
+    destination, report = helper.restore(payload)
+    with sqlite3.connect(Path(destination) / 'cold.db') as database:
+        assert database.execute('SELECT x FROM invented').fetchall() == [(7,)]
+    with tarfile.open(fileobj=io.BytesIO(payload), mode='r:') as archive:
+        assert not any(member.name.endswith(('-wal', '-shm')) for member in archive)
+
+
+def test_new_unrelated_sidecar_is_not_admitted(tmp_path, monkeypatch):
+    path = tmp_path / 'cold.db'
+    writer = sqlite3.connect(path)
+    writer.execute('PRAGMA journal_mode=WAL')
+    writer.execute('CREATE TABLE invented(x)')
+    writer.commit()
+    writer.close()
+    original_connect = sqlite3.connect
+    def connect(*args, **kwargs):
+        if 'mode=ro' in str(args[0]):
+            (tmp_path / 'unrelated-wal').write_bytes(b'invented')
+        return original_connect(*args, **kwargs)
+    monkeypatch.setattr(helper.sqlite3, 'connect', connect)
+    with pytest.raises(helper.CaptureError):
+        helper.capture(tmp_path)

@@ -240,6 +240,54 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: real named-profile batch STOPPED before any generation
+or restore at `operator-evidence/named-profile-backup-5ha0t0os`, original helper
+SHA256 33a2081c9e83d71875c00ddda94e20007e31bc029051f53a44e3076c061acec5.
+Zero ciphertext/signed generations, zero disposable restores, zero recovered
+DBs. Failure was owner_capture/CaptureError on profile ID 534e43407c192971.
+No original source logical writes/configuration/service/model changes occurred.
+Preserve this receipt; it is not a backup pass.
+
+Content-free local diagnosis with the exact native Python/SQLite build
+(SQLite 3.53.1) reproduced directory-guard refusals when opening cold WAL DBs.
+Each reproduced failing directory gained only two known WAL/SHM sidecars for
+already identified DBs, with no removals. The first previously attempted
+profile captured successfully after its initial reader bookkeeping existed.
+The original generic receipt alone does not prove its precise predicate; the
+cold-reader behavior was reproduced on other named profiles. No private file
+names, contents, archives, keys or generations were exported by diagnosis.
+
+The corrected component admits only NEW regular, single-link, owner-matching,
+same-device WAL/SHM files for already identified WAL-mode DBs during monitor
+initialization. It refuses removals, other new entries, unsafe sidecar types /
+ownership/modes, changed directory identity/mode, and every subsequent directory
+change. All plain-file checks and SQLite data_version checks stay intact.
+The root batch pins corrected component SHA256
+2d30a49d2286fce465b01446e7a0836884f9ae4cccac5fc06ebaad4d927373f4.
+Original component and operator bytes are archived privately under
+`/tmp/ec-launch-evidence-20261024/*.before-sqlite-sidecar-fix` and in Git history.
+
+Twenty-nine focused tests pass, including cold WAL creation/recovery, unrelated
+sidecar/new-file refusal, concurrent commit refusal, archive safety, owner pipe
+framing and continuation admission. Exact native-interpreter capture-phase
+checks then passed for all 42 profiles / 252 SQLite DBs, creating ZERO encrypted
+generations or disk restores and exporting no contents. Typed evidence:
+`/tmp/ec-launch-evidence-20261024/native-named-capture-after-sidecar-fix.json`.
+This is capture-phase evidence only; authenticated real recovery remains pending.
+
+The prepared operator continuation is now explicitly
+`backup_launch_named_profiles.py --continue-zero-generation-attempt`.
+It requires the pinned original failure, zero typed generation/restore counters
+and matching first profile/plan. A root-only O_EXCL ticket is appended to the
+original failed evidence before any new capture, binding the corrected source
+and new evidence directory. That ticket prevents any second invocation from
+replaying completed/partial continuation work. Original failure files and all
+future generations remain untouched. Any later failure requires inspecting its
+new receipt, not rerunning this command. Main profile migration, actual profile
+admission/renewal and new credential custody remain open.
+
+
+
 25 October continuation: owner-run invented encrypted SQLite recovery PASSED
 for both isolated accounts at `operator-evidence/sqlite-profile-recovery-32r108dg`.
 Helper SHA256 aae1ff7cbaf29f66ef10741198a55f3220e832542ba307c3bddfbdaa64af9be0.
