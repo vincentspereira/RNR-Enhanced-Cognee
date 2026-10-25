@@ -239,6 +239,54 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Continuation, 25 October 2026, retained scheduled publication verification
+PASSED (owner-run):
+`operator-evidence/issuer-publication-v2/finish-existing.summary.json`.
+Both original publication cases passed; trusted PID-1 journal evidence proves
+one timer activation and one successful service completion, matching the
+recorded invocation on one boot, 16181 ms apart, with no conflicting failures.
+LoadState=not-found confirms that later live metadata described unloaded units,
+not their completed runtime protections. No publication was replayed, credential
+issued, profile changed or unit started. The failed original summary remains.
+Synthetic publication and scheduled-publication components are qualified;
+full fleet issuer/scheduling, running gateway, per-profile admission and new
+credential owner custody remain explicitly unqualified. Reuse this pass.
+
+An unprivileged native prototype at
+`/tmp/ec-gateway-prototype-20261025/gateway-profile-gi_k8l_2` constructed the real
+installed GatewayRunner, TurnRunner and AIAgent classes on a NEW disposable
+profile with invented unusable credentials. It verified the native multiplex
+scope/home, unchanged-agent reuse, credential-driven rebuild and exact old/new
+provider-client token binding, with zero network attempts or model calls. This
+is constructor/cache path evidence, not authenticated host expiry, a private
+OS boundary, a working chat-model route or an actual fleet gateway result.
+Earlier prototypes remain untouched; no native conversation was replayed.
+
+`qualify_launch_gateway_renewal.py` is prepared, not executed. It pins eight
+relevant native modules, the unchanged qualified provider artifact and reviewed
+transaction helpers. Root creates one NEW empty synthetic profile and sends
+only ordinary scoped tokens to a restricted owner child; root signing keys
+never enter child stdin/arguments/environment. The child runs one persistent
+headless GatewayRunner with actual TurnRunner/AIAgent instances, verifies native
+scope binding and cache reuse, transactionally publishes the replacement while
+the old credential is valid, then waits for its real 90-second expiry. It must
+observe the cached old client's HTTP 401 and the next native resolution's new
+agent/provider authenticating the replacement in the same scope. No manual
+scope-refresh call or native/provider source modification is used.
+
+The constructor uses an unusable placeholder chat key and the prior native
+route's public model parameters; no chat-model credentials or OAuth are read.
+Non-memory DNS/connects are blocked, no conversation or platform adapter starts,
+and no model/canonical-memory write occurs. Settings/synthetic auth must remain
+byte-identical. Nineteen focused source tests pass, including key transport,
+NNP/UID/groups, fixed qualification scope, exact source pins, network refusal
+and typed receipts. Actual protected expiry/rebuild execution remains pending.
+Even a pass qualifies only the synthetic headless multiplex path; standalone
+and actual per-profile fleet launch/reload bindings remain open. Existing
+profiles, service runtimes, timers, provider artifacts and completed tests stay
+unchanged. Owner custody confirmation for the NEW encrypted login export is
+pending; previous encryption/recovery-key custody is not being repeated.
+
 Continuation, 25 October 2026, retained inspection confirms BOTH manual and
 scheduled publication cases completed. Each passed refusal controls, prepared
 owner-journal reconciliation, bound root completion and key-withholding checks.

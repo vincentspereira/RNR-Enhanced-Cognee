@@ -69,6 +69,22 @@ signing key, operator database credential or administrator socket.
 
 ## Evidence and remaining admission
 
+25 October retained-journal completion PASSED for the original manual and
+scheduled publication components, with a matching invocation and 16181 ms from
+timer activation to successful service completion. The separate finish receipt
+preserves the original failed summary and replays nothing. Reuse that evidence.
+The unloaded transient units are not the recurring fleet renewal service.
+
+The prepared `qualify_launch_gateway_renewal.py` uses one NEW synthetic profile
+and real native GatewayRunner/TurnRunner/AIAgent objects in one process. It
+requires actual old-token expiry denial and automatic multiplex scope/cache
+rebuilding with the replacement token; chat/model connections and external
+platform adapters are not used. Public native/provider source hashes are pinned
+and keys remain in root. The constructor/cache prototype passed without network
+calls, but protected real-credential expiry execution is pending. Its scope is
+a headless multiplex gateway component, not every existing launch mode or bot.
+Standalone, per-profile launch/OS/backup admission and owner custody stay open.
+
 Retained publication inspection confirmed both synthetic cases completed, while
 the original aggregate receipt failed after live transient properties were
 lost/defaulted. Do not replay either case. The prepared publication helper's
