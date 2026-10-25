@@ -240,6 +240,57 @@ syntax and targeted behavior/security selections passed.
 ## Remaining gates
 
 
+25 October continuation: REAL named-profile backup/recovery PASSED (owner-run)
+at `operator-evidence/named-profile-backup-24br2v3u`, continued from retained
+zero-generation failure `named-profile-backup-5ha0t0os`. Helper SHA256
+a684dc78a62c623598ea1529dad9d9c1f305c9212efcd6f6d71f517e50c7ffcf.
+All 42 selected named profiles have new encrypted/signed generations and
+qualified private disposable restores, recovering 252 SQLite databases.
+No private keys crossed into owner children, no source logical writes or
+configuration changes occurred, and no models/services were invoked/changed.
+SQLite read bookkeeping may change as documented. All source profiles,
+generations, failure records and disposable restores are retained. Reuse this
+pass; the one-use continuation must never replay these completed captures.
+
+This establishes generation-bound named-profile recovery, not live migration,
+API admission or main-profile recovery. The large main tree, actual scope /
+launch / credential renewal gates and new rotated credential vault confirmation
+remain open. Restores are not an automatic semantic import of old conversations
+into Enhanced Cognee; profile history is retained as backup data.
+
+Next implementation `stage_launch_named_candidate.py` authenticates the saved
+42-profile receipt and pinned plan, matches the two already-created accounts,
+explicitly defers the unbacked main account and selects the one backed-up named
+account. It reloads the original signed manifest and ciphertext (capture SHA
+2d30a49d2286fce465b01446e7a0836884f9ae4cccac5fc06ebaad4d927373f4),
+then root AGE decrypts that retained generation. Known privilege-bearing .env
+names are rejected before plaintext is forwarded to the restricted owner.
+This is narrow name coverage, not universal secret classification.
+
+The backward-compatible restorer adds an explicit owner-home option, restricted
+to the executing account's protected passwd HOME; no caller-selected destination
+path is accepted. The owner creates a NEW private inactive candidate, verifies
+archive bytes / database integrity / permissions and preserves archived settings
+and credentials. No copied profile/plugin/config is executed. An O_EXCL ticket
+prevents repeated staging of this account. Failed/new copies remain retained.
+No source tree is walked by root, real source settings changed, token issued,
+unit installed or gateway started. The snapshot is bound to its authenticated
+generation; it is not current live synchronization and needs a final cutover
+consistency check later. Candidate admission stays false.
+
+Forty focused tests pass (invented data only), covering old default restore,
+owner-home destination constraints, manifest identity/ciphertext binding,
+privileged environment refusal and mapping/role refusal. An initial home test
+correctly rejected writable /tmp ancestry; its scratch home was moved into
+ignored protected test scratch rather than relaxing the production guard.
+The new restore component SHA256 is
+e3dd6b934c6975b99d54f9042ed7aa7eb8204a6ba14f04e2d0364f6ecfdc0b48;
+archive schema remains compatible. The completed backup pass retains its exact
+older source hashes and is not rerun by updating the reader's optional API.
+Protected inactive candidate staging remains pending.
+
+
+
 25 October continuation: real named-profile batch STOPPED before any generation
 or restore at `operator-evidence/named-profile-backup-5ha0t0os`, original helper
 SHA256 33a2081c9e83d71875c00ddda94e20007e31bc029051f53a44e3076c061acec5.

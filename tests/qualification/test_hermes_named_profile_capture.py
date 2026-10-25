@@ -148,3 +148,26 @@ def test_new_unrelated_sidecar_is_not_admitted(tmp_path, monkeypatch):
     monkeypatch.setattr(helper.sqlite3, 'connect', connect)
     with pytest.raises(helper.CaptureError):
         helper.capture(tmp_path)
+
+
+def test_candidate_restore_is_new_private_directory_in_its_owners_home(tmp_path, monkeypatch):
+    source = tmp_path / 'source'
+    source.mkdir(mode=0o700)
+    (source / '.env').write_bytes(b'INVENTED_PREFERENCE=preserved\n')
+    payload, receipt = helper.capture(source)
+    import tempfile
+    # An account HOME must have protected ancestors. /tmp is intentionally
+    # rejected by the production owner-home guard, so use ignored test scratch
+    # under this checkout instead of relaxing that guard for a temp fixture.
+    home = Path(tempfile.mkdtemp(prefix='candidate-home-', dir=SOURCE.parents[3] / '.pytest_cache'))
+    from types import SimpleNamespace
+    monkeypatch.setattr(helper.pwd, 'getpwuid', lambda uid: SimpleNamespace(pw_dir=str(home)))
+    destination, proof = helper.restore(payload, owner_home=True)
+    assert Path(destination).parent == home
+    assert (Path(destination) / '.env').read_bytes() == (source / '.env').read_bytes()
+    assert proof['private_restore_verified'] and not proof['restored_profile_executed']
+
+
+def test_caller_cannot_supply_destination_path_via_owner_home(tmp_path):
+    with pytest.raises(helper.CaptureError):
+        helper.restore(b'invented', owner_home='/invented/another-home')

@@ -11,6 +11,7 @@ import io
 import json
 import os
 from pathlib import Path
+import pwd
 import sqlite3
 import stat
 import tarfile
@@ -206,9 +207,9 @@ def capture(profile):
         os.close(root)
 
 
-def restore(payload):
+def restore(payload, *, owner_home=False):
     """Validate completely, then write only into a NEW owner-private tree."""
-    require(os.geteuid() != 0 and isinstance(payload, bytes) and len(payload) <= MAX_ARCHIVE)
+    require(os.geteuid() != 0 and type(owner_home) is bool and isinstance(payload, bytes) and len(payload) <= MAX_ARCHIVE)
     members = {}
     with tarfile.open(fileobj=io.BytesIO(payload), mode='r:') as archive:
         total = 0
@@ -243,7 +244,23 @@ def restore(payload):
         parent = str(Path(entry['path']).parent)
         require(parent == '.' or parent in {row.get('path') for row in manifest['entries'] if row.get('kind') == 'directory'})
     require(names == set(members))
-    destination = Path(tempfile.mkdtemp(prefix='ec-named-profile-restore-', dir='/tmp'))
+    parent = '/tmp'
+    if owner_home:
+        # The caller cannot select another account/path. A candidate restore
+        # is created exclusively under this process owner's protected HOME.
+        parent = pwd.getpwuid(os.geteuid()).pw_dir
+        fd = os.open('/', os.O_PATH | os.O_DIRECTORY)
+        try:
+            for name in Path(parent).parts[1:]:
+                child = os.open(name, os.O_PATH | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+                os.close(fd)
+                fd = child
+                info = os.fstat(fd)
+                require(info.st_uid in {0, os.geteuid()} and not info.st_mode & 0o022)
+            require(os.fstat(fd).st_uid == os.geteuid() and stat.S_IMODE(os.fstat(fd).st_mode) == 0o700)
+        finally:
+            os.close(fd)
+    destination = Path(tempfile.mkdtemp(prefix='ec-named-profile-restore-', dir=parent))
     os.chmod(destination, 0o700)
     # All members were validated first. No links are admitted, no source code
     # or profile startup action is executed from this restored data.
