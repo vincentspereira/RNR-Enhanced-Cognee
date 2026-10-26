@@ -239,6 +239,42 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run consolidated INSPECTION PASSED at
+`operator-evidence/launch-control-inspect-944kxj3a`. Interrupted attempt:
+`operator-evidence/named-provider-batch-wa_1extn`. Actual inventory selection
+is 39 NEW private named scopes plus TWO existing bindings deferred, not an
+assumed 40/1 placement. Thirty profiles have completed provider/peer/recovery
+receipts and retracted version-2 probes; nine are untouched/staged. No active
+profile process remains. Main bounded metadata collected; zero known privileged
+environment fields and no environment-inspection review error. Inspection
+issued no credentials and changed no profiles, canonical records or services.
+The thirty completed cases must never enter the provider setup/write path again.
+
+Command 2 prepared: `launch_control.py resume`. Controller SHA256
+ce6fbd53ee4ccab5ed6c8efe7049369ee302ede78a8329d07acb5e51f6b28356;
+resume worker SHA256
+9d1d87ad5e8695494f2f184b9e32d4112b0aae70315fedf3f0167e1467a1501c.
+Twenty-nine focused local tests passed for exact 30/9 selection, refusal of
+started/ambiguous/mismatched cases, source pins, least-privilege operator-job
+paths, collected-job reattachment, sanitized main buckets, and Ctrl+C detachment
+without stopping the independent job; controller read-only regressions remain
+passing. Protected execution remains pending; no nine-profile pass is claimed.
+
+The root launcher freezes its reviewed public sources and runs one independent
+oneshot operator service. It preserves thirty completed summaries, rechecks the
+nine untouched layouts and only then issues scoped credentials for those nine.
+Nonce/idempotency bindings are synced before owner operations; per-profile
+receipts and progress checkpoints are retained/synced. Ctrl+C in the viewer
+detaches; repeating resume attaches to the SAME job/result, not a new test run.
+Partial failures stop for reconciliation rather than resetting tickets. Root
+keys stay root-only. The temporary operator job has only required UID/GID/chown/
+child-cleanup capabilities, strict system/home protection and explicit writable
+evidence/backup/tmp/nine-home paths. Owner children remain unprivileged with
+no supplementary groups/capabilities. Restores remain in private owner folders
+after service stop (no private-tmp teardown). No bot/gateway/adapter or production
+renewal timer starts. The two existing bindings and real main migration remain
+separate; commands 3/4 require their actual remaining evidence and review gates.
+
 26 October owner INTERRUPTED named-provider batch with Ctrl+C during an owner
 subprocess. A second invocation correctly refused its consumed one-use ticket.
 Completed per-profile summaries/owner receipts may exist even though the batch

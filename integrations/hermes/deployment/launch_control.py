@@ -25,6 +25,7 @@ STAGED = BASE / 'operator-evidence/named-fleet-stage-funaka9d'
 BATCH_SHA = '46aea4874b06ffe23bf21a8a5ce8f08cd695dd63557e46d26c6ebc559900a86c'
 PROVIDER_SHA = 'e54da1d75c89677fe01cd173c965367e2b5ca47fbb7a2cbff4d9ed766d13fc67'
 SUPPORT_SHA = 'd7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef'
+RESUME_SHA = '9d1d87ad5e8695494f2f184b9e32d4112b0aae70315fedf3f0167e1467a1501c'
 
 
 def require(value):
@@ -35,7 +36,7 @@ def require(value):
 def definitions(path,digest):
     raw = path.read_bytes()
     require(len(raw) <= 65536 and hashlib.sha256(raw).hexdigest() == digest)
-    namespace = {'__name__':'verified_launch_control_support','__file__':str(path)}
+    namespace = {'__name__':'verified_launch_control_support','__file__':str(path),'_verified_source_bytes':raw}
     exec(compile(raw,'<verified-public-support>','exec'),namespace)
     return namespace
 
@@ -286,6 +287,18 @@ def active_profile_processes(uids):
     return observations
 
 
+def resumed_attempt(read):
+    try:
+        context = json.loads(read(BASE / 'operator-consolidated-provider-resume/context.json',0))
+    except FileNotFoundError:
+        return None
+    path = Path(context['evidence'])
+    require(context.get('unit') == 'ec-launch-provider-resume-20261026.service'
+        and path.parent == BASE / 'operator-evidence'
+        and re.fullmatch(r'provider-resume-[A-Za-z0-9_-]{6,64}',path.name))
+    return path
+
+
 async def read_record_metadata(read,profiles):
     import asyncpg
     selected = [row for row in profiles if row.get('owner',{}).get('nonce')]
@@ -337,6 +350,9 @@ def inspect():
         profiles_inspected=0,existing_bindings_deferred=len(deferred),credentials_issued=0,
         profiles_changed=False,canonical_memory_edits=False,services_changed=False,fleet_launch_approved=False)
     profiles = []
+    newer_attempt = resumed_attempt(read)
+    if newer_attempt is not None:
+        result['resumed_attempt'] = str(newer_attempt)
     write(evidence / 'started.json',json.dumps(result).encode())
     try:
         active = active_profile_processes({record['uid'] for record,_ in selected})
@@ -350,9 +366,12 @@ def inspect():
             observation = owner_observation(helper,source,account,dict(mode='profile',profile_id=ident,
                 home=account.pw_dir,candidate=record['candidate'],scope=scope))
             per_profile = attempt / ident
+            if newer_attempt is not None and os.path.lexists(newer_attempt / ident):
+                per_profile = newer_attempt / ident
             completed,receipt = False,False
             try:
                 done = json.loads(read(per_profile / 'summary.json',0))
+                require(done.get('profile_id') == ident)
                 completed = all(done.get(key) is True for key in ('complete','candidate_provider_api_qualified','peer_history_denied','post_configuration_backup_qualified'))
             except FileNotFoundError:
                 pass
@@ -362,7 +381,8 @@ def inspect():
             except (FileNotFoundError,ValueError):
                 pass
             item = dict(profile_id=ident,user=account.pw_name,uid=account.pw_uid,scope=scope,
-                owner=observation,completed_summary=completed,owner_receipt_complete=receipt,record=None)
+                owner=observation,completed_summary=completed,owner_receipt_complete=receipt,record=None,
+                qualification_evidence=str(per_profile))
             profiles.append(item)
             write(evidence / (ident+'.private.json'),json.dumps(item).encode())
             result['profiles_inspected'] += 1
@@ -396,8 +416,11 @@ if __name__ == '__main__':
     os.umask(0o077)
     resource.setrlimit(resource.RLIMIT_CORE,(0,0))
     try:
-        require(sys.argv[1:] == ['inspect'])
-        raise SystemExit(inspect())
+        if sys.argv[1:] == ['inspect']:
+            raise SystemExit(inspect())
+        require(sys.argv[1:] in (['resume'],['status']))
+        resume = definitions(Path(__file__).with_name('resume_launch_named_providers.py'),RESUME_SHA)
+        raise SystemExit(resume['launch' if sys.argv[1] == 'resume' else 'status']())
     except Exception:
         print('{"complete":false,"category":"launch_control_preflight_refused_no_secret_output"}')
         raise SystemExit(1)
