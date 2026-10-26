@@ -239,6 +239,14 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October: prepared `inspect_launch_candidate_preflight.py` for bounded,
+read-only diagnosis of the retained unmodified preflight failure. Two local
+tests passed, including permission-denial phase attribution without private
+exception text. Operator execution is pending. No store connections, credential
+issuance, configuration edits or replay of the one-use preparation occur.
+The broad preflight phase alone does not establish a root cause; inspect before
+repair or continuation. Do not weaken protected ancestor/account boundaries.
+
 26 October owner confirmation: NEW rotated credential package attached in
 KeePassXC and saved attachment verified by owner-local PowerShell SHA256:
 6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
