@@ -239,6 +239,24 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner confirmation: NEW rotated credential package attached in
+KeePassXC and saved attachment verified by owner-local PowerShell SHA256:
+6951fd09ed6edcce2a3fc53f1d8f90861e8776c4a3663397091ff3e7327d4322.
+This closes the owner-confirmation custody prerequisite for that package.
+Replacement pickup release passed with protected receipt
+`credential-custody-export/owner-copy-4cf74a74c9e24e799adb012af1fea4ee.summary.json`
+under the retained rotation candidate. No plaintext, credential values or
+private keys are included here. The vault itself was not inspected by the agent.
+
+Owner-run candidate provider preparation did NOT pass: retained evidence
+`operator-evidence/candidate-provider-3ffd_uk3`, helper SHA256
+a21eec3cef6bd37c71467f0c867aaf392700519de2e24aacf837c8fe07d2a175.
+The owner child stopped at preflight; candidate_modified and ordinary credential
+published were false. Three signed qualification credentials were generated.
+No gateway/unit started; source profiles were unchanged. Preserve the one-use
+attempt and diagnose its bounded owner receipt before any continuation.
+Custody confirmation does not close admission, launch, renewal or backup gates.
+
 25 October continuation: owner-run named candidate staging PASSED at
 `operator-evidence/named-candidate-stage-w_ydvbvr`, helper SHA256
 3bfc6b324ba8ba9e0f80cf7c90bcd605f68649a50c00a7e8d47914400f858f0b.
