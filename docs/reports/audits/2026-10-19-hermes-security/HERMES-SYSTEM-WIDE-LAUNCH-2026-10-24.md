@@ -239,6 +239,46 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+The owner's protected inspection of `named-runtime-models-grkvr08r` confirmed
+`preservation` / `ValueError`, after configured route resolution succeeded.
+The original profile was preserved, the ordinary credential binding and new
+encrypted restore passed, and the retained failed native unit has MainPID=0
+and ControlPID=0. The old final predicate combines byte-identical configuration
+with zero denied network attempts; that receipt does not identify which
+part failed. The pinned Hermes pool implementation increments request_count
+and rotates priority during ordinary selection, persisting both under its
+round-robin strategy. This establishes that such metadata can change; the
+actual before/after comparison remains a protected continuation check.
+
+Prepared `launch_control.py finish-model-bindings` preserves every old failure
+and first authenticates the retained generation, then compares its four
+configuration files in RAM through the same candidate's ordinary identity.
+Only ZAI request-count increments totaling at most eight, permutation of the
+existing priority values, JSON formatting/order and a monotonic updated_at
+timestamp may differ. Credentials/fingerprints, OAuth, failure state, provider
+identities, all other auth fields and the other three files must match.
+A mismatched comparison is retained as fixed booleans and stops before any
+native probe or new candidate write. The first binding and restored generation
+are reused; only the 39 untouched candidates receive the still-missing model
+binding, encrypted backup/restore and native construction checks. No completed
+canonical test, binding or restore is replayed. Repeating the command attaches
+to the same finite job/result.
+
+External network access remains denied in native checks. Attempts from exact
+pinned model-metadata modules to the bounded discovery-host set are counted
+as denied metadata discovery; all other non-memory attempts fail the check.
+Three denial controls must pass. No model metadata, context capacity or actual
+chat response is admitted by these constructor checks, and their corresponding
+qualification flags remain false. Native child evidence is bound to its UID,
+systemd invocation and frozen source. All admission policies stay disabled.
+Controller source SHA256 is
+`6310e49d7d8b4128e3b24d73fcf1093e93433ab702e853a05a0513edbfd8003e`;
+observation/comparison source SHA256 is
+`2488f9255af9cefd9230a22eae062c49c845e7a57c366da628937f2a50e7af27`.
+Final relevant local selection: 100 passed, zero failures/errors/skips/warnings.
+Two initial test-harness issues were corrected before that pass. Protected
+continuation execution and fleet admission are still pending.
+
 The owner ran the first protected model-binding repair on 26 October. It
 localized the existing model credential into one isolated candidate and
 qualified that candidate's new encrypted restore, then stopped before the
@@ -293,7 +333,8 @@ visibility; actual agent units still use ProtectHome=yes, no capabilities,
 and only their own runtime home writable. Controller writes are restricted to
 the evidence directory, retained backup directory, /tmp and 40 candidate homes.
 PID-free failed units count as quiescent while remaining failed; they are never
-converted into successful test evidence. Protected repair execution is pending.
+converted into successful test evidence. At preparation, protected repair
+execution was pending; the owner-run result is recorded above.
 The configured source pointer and source .env owner/private mode were checked
 read-only against this policy and accepted, without reading credential values.
 Source pins: repair controller
