@@ -239,6 +239,39 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner INTERRUPTED named-provider batch with Ctrl+C during an owner
+subprocess. A second invocation correctly refused its consumed one-use ticket.
+Completed per-profile summaries/owner receipts may exist even though the batch
+summary was never written; the interrupted profile may have changed its config
+and/or created/retracted an invented record. Do not rerun the old batch, reset
+its tickets or infer either zero work or complete qualification from the trace.
+Previously qualified native records, first candidate and 42 original backups
+remain preserved. No interrupted-record edit is authorized by inspection alone.
+
+Owner requested consolidation into 3-4 operator commands. The target is four
+phases: reconcile protected state, resume eligible qualification with persistent
+checkpoints/progress, batch remaining admission/launch/renewal/main prerequisites,
+then prepare final readiness/switch review. This is a command grouping target,
+not a promise all unresolved gates will pass in four invocations. Only phase 1
+is currently executable; subsequent phases need its actual protected snapshot.
+Do not present missing implementations or closed gates as launch readiness.
+
+Prepared: `launch_control.py inspect`, SHA256
+3870664dd54ac2cf215cbc79d1065b14de84a63a671ab8d8af100b0ec2c4b935.
+Fourteen local tests passed for completed/partial-state classification, unique
+nonce matching, private-file/link guards, excluded-project/named-profile skipping,
+bounded owner framing and parameterized READ-ONLY metadata SQL. Installed
+candidate runtime imported its existing asyncpg driver without connection.
+The operator command uses that runtime, prints progress, retains private owner
+observations and completed receipts, and reads only scoped test-record metadata
+(id/version/state/owner/agent, never payload) in a read-only transaction.
+No credential issuance, canonical edit, profile mutation or service change.
+Main metadata collection is bounded and owner-only, never follows links or reads
+private instructions; only known privileged environment field names, not values,
+are retained. Active processes are observed only for the staged profile UIDs.
+Snapshots/partial inspection output are root-private and retained; another
+Ctrl+C produces a bounded interrupted receipt instead of discarding the snapshot.
+
 26 October owner-run REMAINING NAMED STAGING PASSED at
 `operator-evidence/named-fleet-stage-funaka9d`, helper SHA256
 232db6a6f87705843816880e93995e6466578437e04f204cd6b2ac920006cdeb.
