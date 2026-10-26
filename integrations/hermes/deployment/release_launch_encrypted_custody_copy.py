@@ -17,6 +17,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import uuid
 
 STAGE = Path("/var/lib/enhanced-cognee-rotation/candidate-gtnhc4kc/credential-custody-export")
 SOURCE = STAGE / "current-logins.json.age"
@@ -90,10 +91,12 @@ def main():
         env={"PATH":"/usr/bin:/bin","HOME":account.pw_dir,"LANG":"C.UTF-8","PYTHONDONTWRITEBYTECODE":"1"})
     require(process.returncode == 0 and 0 < len(process.stdout) <= 4096,"owner_copy_failed_no_secret_output")
     receipt = validate_receipt(json.loads(process.stdout),len(ciphertext))
+    # Each replacement pickup gets a separate receipt; retain all earlier proof.
+    receipt_path = STAGE / ('owner-copy-' + uuid.uuid4().hex + '.summary.json')
     result = dict(receipt,source_export_preserved=True,password_manager_custody_confirmed=False,
         credentials_changed=False,keys_read=False,keys_changed=False,profiles_changed=False,services_changed=False,
-        vault_changed=False,fleet_launch_approved=False,evidence=str(STAGE / "owner-copy.summary.json"))
-    write(STAGE / "owner-copy.summary.json",json.dumps(result).encode())
+        vault_changed=False,fleet_launch_approved=False,evidence=str(receipt_path))
+    write(receipt_path,json.dumps(result).encode())
     print(json.dumps(result))
     return 0
 

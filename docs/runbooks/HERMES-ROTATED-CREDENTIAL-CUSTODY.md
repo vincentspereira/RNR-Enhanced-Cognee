@@ -34,6 +34,11 @@ Its authenticated in-memory decryption already passed. Expected ciphertext SHA25
    Never paste decrypted JSON, passwords, keys, vault passwords or screenshots
    containing them. Owner confirmation is separate from host encryption proof.
 
+If a temporary pickup has disappeared, run the updated release helper again.
+It releases the same hash-verified ciphertext into a new private pickup folder
+and writes a uniquely named receipt, retaining earlier receipts. Use the NEW
+`owner_file` returned by that execution; no credentials are rotated or decrypted.
+
 The file picker must reach the owner copy from the machine where KeePassXC runs.
 Hermes does not open another device's vault or add mounts/shares to reach it.
 Use the existing approved owner file-pickup method if the GUI is on another
