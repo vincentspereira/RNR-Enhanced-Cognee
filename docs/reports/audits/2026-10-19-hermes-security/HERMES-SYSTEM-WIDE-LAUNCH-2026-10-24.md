@@ -239,6 +239,29 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run candidate headless native unit PASSED at
+`operator-evidence/candidate-native-unit-s317r31u`, helper SHA256
+f085298baabc75b801ff82a79fcde97244a129b87146c87c48f72c5f7da0acd0.
+One actual candidate UID/unit qualified, ordinary scoped API authenticated,
+settings/OAuth preserved and transient unit stopped. No credentials, keys,
+canonical memory writes, chat calls, adapter starts or existing-launcher edits.
+This is a headless constructor/scope pass, not actual chat-route, production
+launch binding, full fleet admission or scheduled-renewal qualification.
+Do not replay this completed unit probe.
+
+Prepared, not executed: `stage_launch_candidate_issuer.py`. It stages a NEW
+root-owned isolated issuer package with the previously tested traversal fix,
+updates that package's exact public-source pins, and creates one disabled
+candidate policy bound to the verified account/scope. The existing 45-entry
+fleet policy and earlier issuer packages remain unchanged. Six local tests
+passed: source-pin integrity, policy isolation/admission refusal, UID binding
+and real traversal/non-writable-ancestor enforcement. Staging runs only the
+zero-enabled-policy preflight; no signing key read, credential issuance,
+profile write or timer activation occurs. Backup/OS evidence is reused; reload
+and launch admission gates remain false pending their actual qualifications.
+Follow-up installed publication, real reload and scheduled firing must still
+pass before production renewal is enabled.
+
 26 October owner-run POST-CONFIGURATION recovery PASSED at
 `operator-evidence/candidate-profile-backup-tjfy2101`, helper SHA256
 cf10aba63a529bdfffa392fdce2cbc68860133626b1871831e9f60238ab5326c.
