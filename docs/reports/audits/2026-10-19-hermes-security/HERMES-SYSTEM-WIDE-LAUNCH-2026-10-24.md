@@ -239,6 +239,33 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run POST-CONFIGURATION recovery PASSED at
+`operator-evidence/candidate-profile-backup-tjfy2101`, helper SHA256
+cf10aba63a529bdfffa392fdce2cbc68860133626b1871831e9f60238ab5326c.
+Retained generation:
+`/var/backups/enhanced-cognee/hermes_candidate_profile_8fee3dc3b8d1461581f31579112ab2b6.tar.age`.
+Signed ciphertext validated, six SQLite databases recovered, pinned provider
+binding reconstructed. Private keys stayed root-only; no source logical writes,
+configuration edits, service changes or chat calls occurred. SQLite read
+bookkeeping may change. Reuse this completed recovery; do not rerun its helper.
+It proves recovery of this inactive candidate, not scheduled backup coverage
+or recovery of the outstanding main-profile migration.
+
+Prepared, not executed: `qualify_launch_candidate_native_unit.py`, SHA256
+f085298baabc75b801ff82a79fcde97244a129b87146c87c48f72c5f7da0acd0.
+Twenty local tests passed for hardened unit acceptance, source/UID/invocation
+receipt binding, configuration admission and cleanup after stop failure.
+This finite systemd run uses the real backed-up candidate home and its ordinary
+memory credential, real native GatewayRunner/TurnRunner/AIAgent constructors,
+and actual authenticated memory status. Model construction uses an invented
+unused model credential; no chat call or actual chat-route verification is
+claimed. No adapter start, credential issuance, canonical edit, fleet-policy
+change or renewal timer occurs. External secret sources/unreviewed plugins
+are refused. Existing settings/environment/OAuth hashes must remain unchanged;
+native constructor/session bookkeeping may be created under this isolated home.
+The transient unit is stopped after qualification/failure. Installed launch
+qualification, actual profile admission and unattended renewal remain pending.
+
 26 October owner-run candidate continuation PASSED at
 `operator-evidence/candidate-provider-f8uifc8j`, helper SHA256
 e54da1d75c89677fe01cd173c965367e2b5ca47fbb7a2cbff4d9ed766d13fc67.
