@@ -239,6 +239,40 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run ISOLATED ISSUER STAGING PASSED. Protected package
+`operator-isolated-issuer-candidate-v3`, staging helper SHA256
+b12a126bd28c89097e96e2b7fc1e2a9189d41c9dbcc6a1baeebb7841404f37d6.
+New core SHA256 cbee340fcca3f6cb946e0593b2bb0b7b8edcc6f13ccf4850ee5ba2830273533e;
+driver SHA256 945ed77d3791b7bdaefbabc79b7c6e146d4129aefbec881488472f6bffdbd77e.
+Its one candidate policy verified disabled. No credentials, keys, profiles,
+existing fleet policy or timer changed. This is staging, not installed renewal
+or fleet admission qualification.
+
+Prepared, not executed: `qualify_launch_candidate_renewal.py`, SHA256
+f7ce4e8616a323dfecdfd02a5843811bb3812b06941ef7ac214e1de623440e3d.
+Twenty-seven focused local tests passed for timer/service invocation proof,
+polling through initial not-yet-fired inactivity, bounded persistent-process
+receipts, sanitized failures, generated component pins and real owner-side
+transactional publication using invented credentials with a simulated API.
+The latter is a local regression, not private-host API evidence.
+
+The single protected batch retains a real headless GatewayRunner/AIAgent on
+the actual candidate profile, explicitly refreshes its still-valid ordinary
+credential through the installed publication component in a one-shot scheduled
+root job, verifies native agent rebuilding and replacement authentication, then
+creates/restores a NEW encrypted generation justified by that credential change.
+The original generation and every attempt remain retained. Root alone signs
+and uses recovery keys. Owner children alone traverse the profile; only ordinary
+credentials/public sources/recipient cross to them. No chat, adapter, canonical
+memory edit or existing launcher change occurs. Settings/OAuth and both disabled
+policies must remain unchanged. All qualification units are stopped afterward.
+This explicit qualification refresh runs before the production due threshold;
+it does not qualify/enable the production due-time loop, fleet admission, actual
+chat route or a production bot gateway. It does not repeat old expiry tests or
+completed native conversations. A one-use marker prevents automatic replay.
+Installed component/reload/scheduled-publication/recovery receipts are pending
+operator execution; production issuer and renewal flags remain false.
+
 26 October owner-run candidate headless native unit PASSED at
 `operator-evidence/candidate-native-unit-s317r31u`, helper SHA256
 f085298baabc75b801ff82a79fcde97244a129b87146c87c48f72c5f7da0acd0.
