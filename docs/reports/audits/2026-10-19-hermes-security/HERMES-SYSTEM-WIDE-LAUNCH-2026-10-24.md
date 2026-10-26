@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run candidate continuation PASSED at
+`operator-evidence/candidate-provider-f8uifc8j`, helper SHA256
+e54da1d75c89677fe01cd173c965367e2b5ca47fbb7a2cbff4d9ed766d13fc67.
+The protected ancestor traversal fix worked. Candidate provider/API qualified;
+invented record 075cb750-0eb0-4d7a-a17a-59c1aeb89ebf was retracted with history
+preserved and authenticated peer history denied. Ordinary credential published
+only in the isolated candidate. No private signing key crossed to its owner,
+no chat model/gateway/unit ran and original source profiles were unchanged.
+Reuse this completed pass; do not rerun either preparation helper.
+Candidate scope still awaits review; admission and scheduled renewal remain open.
+
+Prepared, not executed: `backup_launch_candidate_profile.py`, SHA256
+cf10aba63a529bdfffa392fdce2cbc68860133626b1871831e9f60238ab5326c.
+Candidate-specific capture component SHA256
+40bbfab7605c3e26d5e075265dc251ca5cb08487c3d84d4b908839ba161ab92a.
+Seven local tests passed for committed SQLite recovery, exact pinned provider
+descriptor reconstruction and forged/unrelated-link/hardlink refusal. The
+original named-profile capture component and its 42 passing generations are
+unchanged. The new format represents only plugins/enhanced_cognee's exact
+protected provider link as a regular descriptor, never traverses its target,
+and recreates that one binding after complete archive validation. No arbitrary
+links or restored profile code execute. Root validates pinned provider files
+and signs/decrypts the new ciphertext; owner children capture and restore.
+Only ordinary profile data/public recipient cross to owner children; private
+recovery/signing keys remain root-only. A separate one-use marker preserves
+all previous generations, failed attempts and completed test records.
+Installed post-configuration recovery remains pending operator execution.
+
 26 October owner-run preflight inspection confirmed PermissionError errno 13
 at directory_open, with no profile edits, credentials or connections. Retained
 receipt: `operator-evidence/candidate-preflight-inspection-65ac2fcff7b1467cab358366d84efe4c.json`.
