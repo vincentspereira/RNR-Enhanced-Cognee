@@ -239,6 +239,35 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run FINISH-EXISTING PUBLICATION PASSED at
+`operator-evidence/candidate-renewal-zh_wxllg/finish-publication.summary.json`.
+No credentials issued and no publication replayed. Protected job/ledger matched
+trusted PID-1 scheduling proof (15685ms delay). Both units verified absent and
+inactive without further stop attempts. Current credential authenticated.
+Renewed-profile recovery passed for NEW retained generation
+`/var/backups/enhanced-cognee/hermes_candidate_renewed_d946c7126923440a8ebc617d95b297c1.tar.age`.
+Both admission policies stayed disabled; private keys stayed root-only.
+Retained timer metadata identifies the original scheduling-check bug:
+LastTriggerUSecMonotonic was formatted `5h 22min 4.025196s`; integer conversion
+was invalid. The journal proof closes that scheduling evidence without retry.
+The original stopped gateway still supplies no reload pass.
+
+Prepared, not executed: `qualify_launch_candidate_reload.py`, SHA256
+e345caf292465cf126c08c2e0b2825048c62a0bee13592446d7fa9a82d0f16ac.
+Fourteen local checks passed for retained-proof admission, exact run/changed
+agent receipt binding, refusal to replay an already-qualified reload, and real
+process cleanup. This targets ONLY the unresolved live headless reload on the
+actual candidate, reusing the completed scheduling proof with NO new timer.
+A fresh ordinary token is necessary for the retained process to observe a real
+file change. Root signs only after the original provider binds/authenticates;
+owner publication keeps scope/settings/OAuth unchanged and preserves previous
+environment/journals. Reload is checked immediately after publication, before
+backup/other evidence steps. A new encrypted generation is then justified by
+that fresh credential change. The one-use action does not repeat completed
+scheduled publication tests, expiry tests or native conversations. Keys remain
+root-only; no chat, platform adapter, canonical edit or launcher change occurs.
+Production issuer/renewal and fleet admission remain false pending their gates.
+
 26 October owner-run renewal batch STOPPED at scheduled_candidate_publication,
 retained `operator-evidence/candidate-renewal-zh_wxllg`, helper SHA256
 f7ce4e8616a323dfecdfd02a5843811bb3812b06941ef7ac214e1de623440e3d.
