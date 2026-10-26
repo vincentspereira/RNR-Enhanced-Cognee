@@ -239,6 +239,56 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run `finish-model-bindings` STOPPED at
+`operator-evidence/named-runtime-finish-zzt_41r_`: the first existing key and
+restore were reused, every one of the four configuration files matched the
+retained generation byte for byte, zero new generations/credential bindings
+were performed, and 39 candidates remained untouched. The content-free child
+receipt proves the remaining failure was 14 unexpected DENIED network attempts;
+all three denial controls passed, two memory-loopback operations occurred,
+and all policy entries stayed disabled. No configuration or OAuth drift was
+observed. The earlier auth-bookkeeping hypothesis did not explain this run.
+
+A separate synthetic reproduction used the exact protected native release,
+invented credentials and new private fixture files, with all DNS/connects
+denied and original credential-tree reads blocked by an audit hook. Its trace
+identified 14 calls from the pinned `hermes_cli.auth_zai_kimi` module to the
+known ZAI hosts. The module's `_probe_single_zai_endpoint` sends one-token ping
+chat requests for endpoint auto-detection; these attempts never connected in
+the diagnostic. Its source SHA256 is
+`6e608768ee258aa9589084bea4d0cbf2adba541eeac32fcd99d6ed913cc61f95`.
+The same native constructor with explicit GLM_BASE_URL bound to its already
+configured URL eliminated those 14 attempts. Under the exact published guard,
+it constructed successfully with zero unexpected attempts, one DENIED
+models.dev metadata lookup, three successful denial controls and zero original
+profile reads. This is synthetic mechanism evidence matching the host count;
+the repaired actual candidate batch still requires its own receipt.
+
+Prepared `launch_control.py pin-model-routes` retains both failed jobs and their
+sources, compares the first candidate with its retained authenticated generation,
+then publishes only missing candidate environment fields. An existing key must
+match the approved ordinary key and is preserved; an existing GLM_BASE_URL must
+match that candidate's exact configured HTTPS origin/path. Conflicting fields
+and already completed publication are refused. The first existing key is reused;
+only 39 missing key bindings are localized. Each of the 40 intentional route
+configuration changes receives a NEW encrypted, signed and restored generation.
+Existing generations and restores remain intact. All 40 native checks still
+require zero unexpected network attempts; no guard or endpoint detection result
+is fabricated. No model response, capacity or production launch is admitted.
+The new finite job stops on one failure; repeating it reattaches to its receipt.
+Source pins: controller
+`6dbf807c3c4eb4cc9da1834fc3cfc13747f9b7a456997a0e66ce076e6b5fe625`,
+route publication
+`edf8349fd53f88b7570c608e28533adef707f5ff8d8b4e4d7a0c03433670dd52`.
+Final relevant local selection: 116 passed, zero failures/errors/skips/warnings.
+
+Current GitHub Actions on exact backend 21abf485 were rechecked: Required CI
+40055830507, Project memory 40055830334, Canonical memory stack 40055830340,
+and Canonical dashboard 40055830325 succeeded. Full-runtime 40055830273 and
+broad CI/CD 40055830266 remain failed; label runs are skipped. No finding is
+suppressed or converted into a pass. Operator source commit d663c66f has zero
+Actions runs returned by the public API, so no hosted CI pass is claimed for it.
+
 The owner's protected inspection of `named-runtime-models-grkvr08r` confirmed
 `preservation` / `ValueError`, after configured route resolution succeeded.
 The original profile was preserved, the ordinary credential binding and new
