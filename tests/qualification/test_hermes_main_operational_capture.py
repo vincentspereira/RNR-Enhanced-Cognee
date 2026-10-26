@@ -11,7 +11,7 @@ import tarfile
 
 import pytest
 
-SOURCE = Path(__file__).resolve().parents[2] / 'integrations/hermes/deployment/capture_main_operational_profile.py'
+SOURCE = Path(__file__).resolve().parents[2] / 'integrations/hermes/deployment/capture_main_operational_profile_v2.py'
 spec = importlib.util.spec_from_file_location('named_profile_capture', SOURCE)
 helper = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(helper)
@@ -220,6 +220,32 @@ def test_unexpected_socket_in_durable_data_is_refused(tmp_path):
         with pytest.raises(helper.CaptureError): helper.capture(tmp_path)
     finally:
         ipc.close()
+
+
+@pytest.mark.parametrize('kind', ['socket', 'regular'])
+def test_only_the_known_live_gateway_socket_is_omitted(tmp_path, kind):
+    gateway = tmp_path / 'gateway.sock'
+    ipc = None
+    if kind == 'socket':
+        ipc = socket.socket(socket.AF_UNIX)
+        ipc.bind(str(gateway))
+    else:
+        gateway.write_bytes(b'invented-durable-regular-data')
+    try:
+        payload, receipt = helper.capture(tmp_path)
+        with tarfile.open(fileobj=io.BytesIO(payload)) as archive:
+            manifest = json.load(archive.extractfile('profile-manifest.json'))
+            if kind == 'socket':
+                assert 'gateway.sock' not in archive.getnames()
+                assert manifest['omitted'] == [{'path':'gateway.sock','reason':'runtime_socket_not_restored'}]
+                assert gateway.exists()
+            else:
+                assert archive.extractfile('gateway.sock').read() == b'invented-durable-regular-data'
+                assert manifest['omitted'] == []
+        original = SOURCE.with_name('capture_main_operational_profile.py')
+        assert hashlib.sha256(original.read_bytes()).hexdigest() == 'dba83feebf9ca9ff40125bc76bcc62bbb4876d27007b91cf0ffcd35895ff9677'
+    finally:
+        if ipc is not None: ipc.close()
 
 
 def test_excluded_project_is_not_opened_or_archived(tmp_path, monkeypatch):

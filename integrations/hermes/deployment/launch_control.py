@@ -30,6 +30,7 @@ RUNTIME_SHA = 'd7494b5d7507322b5a0dd731211d3ef00c66122f90a7544961f06d9f75b6933f'
 REPAIR_SHA = '1e73ee58a276960130c7f118a63bfbd2e1ea1a81c0e2ab33bfd6b83abd936192'
 FINISH_SHA = '6310e49d7d8b4128e3b24d73fcf1093e93433ab702e853a05a0513edbfd8003e'
 ROUTES_SHA = '6dbf807c3c4eb4cc9da1834fc3cfc13747f9b7a456997a0e66ce076e6b5fe625'
+MAIN_BACKUP_SHA = 'a91b128650b80acf8bcc4d369365daad8d0bba8fdd298e80ffa08e6e4d3e0f9a'
 
 
 def require(value):
@@ -434,6 +435,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['pin-model-routes']:
             routes = definitions(Path(__file__).with_name('complete_launch_named_runtime.py'), ROUTES_SHA)
             raise SystemExit(routes['launch']())
+        if sys.argv[1:] == ['backup-main']:
+            main = definitions(Path(__file__).with_name('backup_launch_main_operational.py'), MAIN_BACKUP_SHA)
+            raise SystemExit(main['launch']())
         require(sys.argv[1:] in (['resume'],['status']))
         resume = definitions(Path(__file__).with_name('resume_launch_named_providers.py'),RESUME_SHA)
         raise SystemExit(resume['launch' if sys.argv[1] == 'resume' else 'status']())

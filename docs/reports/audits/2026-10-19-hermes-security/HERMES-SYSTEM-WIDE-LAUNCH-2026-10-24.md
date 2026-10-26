@@ -239,6 +239,47 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+Prepared the independent `launch_control.py backup-main` step while the owner
+qualification command was pending. It runs one finite protected job, captures
+main operational data through the original owner's restricted child, encrypts
+in memory with the existing public AGE recipient, authenticates the ciphertext
+with the existing root-only backup signing key, decrypts in the root process,
+and restores into a NEW private folder under the already planned main isolated
+account. It never replaces that account's existing .hermes marker or starts a
+profile. Private payloads use bounded binary stdin/stdout frames rather than
+large JSON/base64 packets; no plaintext archive is written. Root never walks
+profile trees and no private signing/recovery key enters an owner packet.
+
+Owner-only main metadata inventory opened zero source file contents: 5907
+entries, 419 directories, 381080737 observed regular bytes including sidecars,
+no foreign owners, no hardlinks, no oversized member. Sixteen reviewed omissions
+were recognized; the one remaining special entry was the live top-level
+gateway.sock socket. A V2 capture core adds only that exact SOCK entry to its
+runtime-socket omission list, retaining the original dba83fe... component.
+An ordinary regular file with that name remains durable data and is archived;
+unexpected sockets still refuse capture. The live socket is not removed or
+connected to. All omissions remain recorded inside the encrypted manifest.
+
+The job permits source-owner SQLite read bookkeeping, retaining query_only and
+mode=ro database access, backup-API snapshots and committed-change checks.
+The trusted job's namespace therefore permits source-directory bookkeeping;
+no logical source write is performed by its code. A concurrent logical DB or
+plain-file change refuses the snapshot instead of relaxing consistency. The
+job has a 900-second deadline, 8 GiB aggregate memory cap and 6 GiB address-space
+cap; owner children reduce address space to 4 GiB. Payload/archive/ciphertext
+bounds are 512/600/650 MiB. Partial generation/restore attempts are reported
+and retained; repeat invocation attaches without recapture.
+
+This is deliberately operational-state recovery. main_profile_backup_qualified,
+full_profile_recovery_qualified, executable_rebuild_qualified and admission stay
+false because historical generations, caches, legacy/program trees and their
+rebuild/rebind proof are still separate coverage gates. Root-only source pins:
+operator `a91b128650b80acf8bcc4d369365daad8d0bba8fdd298e80ffa08e6e4d3e0f9a`,
+capture V2 `52838907100b39dc689efb82afea7097b1002283c511d690ffd8d4cdc0b723e3`.
+Final relevant local selection: 53 passed, zero failures/errors/skips/warnings;
+these use invented SQLite/files and controlled transport doubles. Protected
+main capture, actual encryption/restoration and its coverage review are pending.
+
 26 October owner-run `finish-model-bindings` STOPPED at
 `operator-evidence/named-runtime-finish-zzt_41r_`: the first existing key and
 restore were reused, every one of the four configuration files matched the
