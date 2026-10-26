@@ -239,6 +239,41 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run REMAINING NAMED STAGING PASSED at
+`operator-evidence/named-fleet-stage-funaka9d`, helper SHA256
+232db6a6f87705843816880e93995e6466578437e04f204cd6b2ac920006cdeb.
+41 locked accounts created, 41 distinct new UIDs verified, 41 two-way paired
+OS boundaries passed, 41 authenticated inactive copies restored. Existing
+qualified candidate, original source profiles and launchers preserved. No
+credentials, gateways, units or private keys sent to children. All 42 named
+profiles now have generation-bound inactive copies; this is not live cutover,
+provider admission or final synchronization. Main profile remains deferred.
+Do not rerun the staging batch or its completed restores/boundary checks.
+
+Prepared, not executed: `qualify_launch_named_providers.py`, SHA256
+46aea4874b06ffe23bf21a8a5ce8f08cd695dd63557e46d26c6ebc559900a86c.
+Twelve local tests passed for complete accounting of the 41 staged records,
+existing-binding deferral, identity/OS-proof admission, role/scope restrictions,
+duplicate-scope refusal, typed owner receipts and pinned reusable sources.
+Selection derives eligible counts from the pinned inventory rather than
+guessing where its three retained bindings occur. Existing verified bindings
+are deferred for non-widening admission; they are never replaced with proposed
+private scopes. The previously qualified first candidate is excluded/preserved.
+
+The bounded batch reuses the exact e54da1d7 provider preparation child and
+existing recovery components for each eligible new private scope. Root signs
+only ordinary scoped tokens. The owner configures its inactive copy, binds the
+pinned provider through native file-only secret scope, verifies actual own-scope
+memory/semantic/graph operations, then retracts the invented record with history
+preserved. A valid credential for the actual first candidate's different scope
+must be denied the new record's history. Each changed candidate then gets a NEW
+encrypted/signed generation and verified disposable restore. No source profile,
+chat model, gateway, adapter, existing launcher or disabled policy changes.
+Private keys stay root-only. One-use global/per-profile tickets retain partial
+evidence and prevent automatic replay. Shared conversation/expiry/reload and
+42 original-backup passes are reused, not rerun. Per-profile native launch,
+reviewed sharing, renewal coverage and fleet admission remain separate gates.
+
 26 October owner-run LIVE HEADLESS RELOAD PASSED at
 `operator-evidence/candidate-live-reload-o40ee8a4`, helper SHA256
 e345caf292465cf126c08c2e0b2825048c62a0bee13592446d7fa9a82d0f16ac.
