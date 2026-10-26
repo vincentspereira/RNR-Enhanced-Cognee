@@ -239,6 +239,39 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run LIVE HEADLESS RELOAD PASSED at
+`operator-evidence/candidate-live-reload-o40ee8a4`, helper SHA256
+e345caf292465cf126c08c2e0b2825048c62a0bee13592446d7fa9a82d0f16ac.
+The retained actual candidate gateway rebuilt its agent for the replacement
+ordinary credential. Settings/OAuth preserved; both qualification processes
+stopped. No new timer, chat call, adapter, canonical edit or launcher change.
+Two qualification credentials signed (one published ordinary credential plus
+expired refusal control); private signing key stayed root-only. Completed
+scheduling proof was reused, not rerun. NEW encrypted recovery generation:
+`/var/backups/enhanced-cognee/hermes_candidate_renewed_ad79970f99c14197847db702022a3066.tar.age`.
+Recovery passed and both admission policies remained disabled. Reuse this pass;
+do not rerun the live reload helper. It does not establish production due-loop,
+actual chat route, bot adapter binding, full admission or fleet approval.
+
+Prepared, not executed: `stage_launch_named_fleet.py`, SHA256
+232db6a6f87705843816880e93995e6466578437e04f204cd6b2ac920006cdeb.
+Twelve local checks passed for exact 41-profile selection, preservation of the
+current candidate/main, inactive-plan admission, collision refusal and pinned
+owner components. This bounded batch reuses the completed 42-profile encrypted
+backup generations. It creates 41 new locked/nologin identities with distinct
+UIDs and private homes, proves each new identity's paired file/process/operator
+and recovery-key denial in both directions, then authenticates/decrypts each
+generation as root and restores only as its new owner. Root creates/chowns only
+new empty homes; owner children alone traverse their private profile trees.
+No ordinary credential is issued, no original profile is recaptured/edited,
+no bot or gateway starts and no unit is installed. Existing verified bindings
+remain archived unchanged pending their non-widening admission plans. The main
+prepared account remains a synthetic peer only; real main-profile migration is
+deferred. These are historical generation-bound inactive copies, not final live
+cutover synchronization or qualified provider/launch/renewal for all profiles.
+Global/per-profile one-use tickets preserve partial work without automatic
+retry. Account/group/home collisions refuse before any new account is created.
+
 26 October owner-run FINISH-EXISTING PUBLICATION PASSED at
 `operator-evidence/candidate-renewal-zh_wxllg/finish-publication.summary.json`.
 No credentials issued and no publication replayed. Protected job/ledger matched
