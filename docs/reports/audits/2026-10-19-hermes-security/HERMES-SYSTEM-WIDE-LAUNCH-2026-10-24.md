@@ -239,6 +239,34 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run renewal batch STOPPED at scheduled_candidate_publication,
+retained `operator-evidence/candidate-renewal-zh_wxllg`, helper SHA256
+f7ce4e8616a323dfecdfd02a5843811bb3812b06941ef7ac214e1de623440e3d.
+Publication was observed and the candidate ordinary credential CHANGED. Do not
+rerun this helper or issue another credential to repair evidence/cleanup.
+The original result reported incomplete unit cleanup; subsequent read-only
+host inspection confirms BOTH specific units are now not-found/inactive/dead,
+service MainPID=0. PID-1 journal verification passed all six scheduling predicates:
+one matching service completion, one timer activation, correct invocation,
+same boot, 15685ms configured delay and no conflicting start failures.
+Sanitized host observations are retained privately under
+`.archive/2026-10-26-candidate-renewal-diagnosis/`. This is actual host metadata,
+not a synthetic test. The exact protected metadata predicate that failed still
+needs retained-file inspection. Cleanup must check final activity, not infer a
+running unit from a nonzero stop exit after transient-unit collection.
+
+Prepared, not executed: `finish_launch_candidate_publication.py`, SHA256
+ba367a2ac64d4a878e2e1a70c42a4a11ac6225579879ed1d580fc7cc3789292c.
+Fifteen local tests passed for stopped-unit acceptance and strict retained
+attempt/job binding. The one-use action binds trusted journal events to the
+protected root job/ledger, confirms or finishes cleanup only for those units,
+authenticates the current token through the issuer's no-op branch (no signing,
+issuance or publication), and creates/restores the previously unexecuted new
+encrypted generation. Original failures/receipts remain unchanged. Private
+recovery/signing keys remain root-only. Both admission policies stay disabled.
+The original gateway was stopped before reload verification; this finish MUST
+NOT claim retained-process reload or overall production-renewal qualification.
+
 26 October owner-run ISOLATED ISSUER STAGING PASSED. Protected package
 `operator-isolated-issuer-candidate-v3`, staging helper SHA256
 b12a126bd28c89097e96e2b7fc1e2a9189d41c9dbcc6a1baeebb7841404f37d6.
