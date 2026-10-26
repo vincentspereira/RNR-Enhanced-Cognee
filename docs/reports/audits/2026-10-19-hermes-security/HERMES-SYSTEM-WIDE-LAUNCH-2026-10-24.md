@@ -239,6 +239,23 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run preflight inspection confirmed PermissionError errno 13
+at directory_open, with no profile edits, credentials or connections. Retained
+receipt: `operator-evidence/candidate-preflight-inspection-65ac2fcff7b1467cab358366d84efe4c.json`.
+The original directory walker requires O_RDONLY on every ancestor; isolated
+owners cannot list the protected root-owned 0711 parent. Prepared separate
+`prepare_launch_candidate_provider_v2.py --continue-after-directory-fix` uses
+O_PATH for pinned ancestors and opens only the final candidate directory for
+reading, preserving ownership, no-write and no-symlink checks. It requires the
+retained unmodified failure and exact diagnostic receipts and a NEW one-use
+continuation marker. Original helper, marker and evidence remain unchanged.
+Six focused local tests passed, including the real non-listable-ancestor
+regression and refusal of writable/symlink/unapproved-owner ancestors.
+The first test fixture incorrectly retained owner read permission and did not
+reproduce denial; it was corrected to model a non-owner's traverse-only access.
+All invented fixtures are retained privately. Protected execution is pending;
+no candidate provider/API or fleet launch pass is claimed for this fix.
+
 26 October: prepared `inspect_launch_candidate_preflight.py` for bounded,
 read-only diagnosis of the retained unmodified preflight failure. Two local
 tests passed, including permission-denial phase attribution without private
