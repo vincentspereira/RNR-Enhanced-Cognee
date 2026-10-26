@@ -239,6 +239,57 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October configured-route batch STOPPED at
+`operator-evidence/named-runtime-pisfj9fe`: zero qualified, three AuthError
+failures, 37 untouched, zero credentials issued, no model request, no canonical
+edit and no bot adapter. All policies remained disabled. Bounded host-journal
+inspection confirmed all three failures in configured_route_resolution.
+The controller has MainPID=0, ControlPID=0 and a retained failed/exit-code
+state. Its reported operator_job_stopped=false is a quiescence classification
+defect, not evidence of a running job. No reset-failed or replay was performed.
+
+Read-only owner metadata established the missing configuration mechanism:
+the main profile's declared model.key_env has a populated local value, while
+all 40 production named profiles point to an absent local value. Their ZAI
+pool rows contain source/fingerprint/status metadata, not a local model key.
+That shared main credential source is unavailable to the isolated identities.
+No auth/environment files were copied by this diagnosis and no credential value
+or fingerprint was printed, persisted or tested against a provider.
+
+Prepared explicit `launch_control.py repair-model-bindings`: preserve the old
+failed batch/source and reconcile all three quiescent failures; read only the
+currently configured ZAI key through the original owner's restricted child;
+bind that EXISTING ordinary model key to each staged candidate's declared
+variable through private owner pipes; preserve original source profiles;
+reconcile only native ZAI pool metadata, proving other OAuth/provider state
+unchanged; create a new encrypted, signed, restored candidate generation; then
+perform the still-unqualified configured-route/native checks. Root does not
+walk profile trees. Root signing/encryption/recovery keys never enter an owner
+packet. No new model account/key, memory credential or model request is made.
+The ordinary model key never enters an argument, environment, evidence file,
+terminal, workspace archive or log. Repeating this explicit repair attaches to
+the same job/result. Any failure stops immediately with evidence preserved;
+partial model-binding attempts are reported as potentially changed candidates.
+
+The trusted repair controller has only SETUID/SETGID capabilities so it can
+launch owner readers. Original /home/vincentspereira/.hermes is explicitly
+read-only under ProtectSystem=strict. Its source-reader namespace needs home
+visibility; actual agent units still use ProtectHome=yes, no capabilities,
+and only their own runtime home writable. Controller writes are restricted to
+the evidence directory, retained backup directory, /tmp and 40 candidate homes.
+PID-free failed units count as quiescent while remaining failed; they are never
+converted into successful test evidence. Protected repair execution is pending.
+The configured source pointer and source .env owner/private mode were checked
+read-only against this policy and accepted, without reading credential values.
+Source pins: repair controller
+`1e73ee58a276960130c7f118a63bfbd2e1ea1a81c0e2ab33bfd6b83abd936192`,
+model binding component
+`bf24f095bc8ccfb037a4278e3f5efd72c33de14195367d1bb727fc809b454b01`,
+main operational capture
+`dba83feebf9ca9ff40125bc76bcc62bbb4876d27007b91cf0ffcd35895ff9677`.
+Final relevant local regression: 123 passed, no errors/failures/skips/warnings.
+This does not turn the failed host batch into a pass or admit the fleet.
+
 26 October owner-run consolidated RESUME PASSED at
 `operator-evidence/provider-resume-_6q81u24`. All nine untouched profiles passed
 provider/API, peer-history denial and encrypted candidate restore; the thirty
@@ -283,6 +334,24 @@ production dispatch or fleet admission. Installed execution is pending.
 Local validation: 79 relevant tests passed, zero failures/errors/skips/warnings
 (configured-route batch, prior resume/controller and native-unit boundaries).
 This is source-level validation, not execution of the new protected batch.
+
+Independent main recovery implementation: the NEW
+`capture_main_operational_profile.py` preserves the original named capture and
+its source pin. It raises the bounded payload budget to 512 MB / 20,000 entries
+for the main SQLite size, still using owner-only descriptor traversal,
+SQLite backup API, committed-version monitors and plain-file/directory stability
+checks. Its explicit encrypted-manifest omissions retain old generations,
+snapshots, caches, logs, legacy/program environments and named profiles in place;
+only the reviewed runtime socket paths are omitted as sockets. Other links,
+hardlinks and special files are refused. Excluded projects are not opened.
+Full-profile recovery and executable rebuild predicates remain FALSE even after
+an operational restore. No real main backup, profile copy, service action or
+credential copy has executed. The protected AGE/HMAC orchestrator, resource
+limits, coverage/rebuild review and quiet-snapshot execution remain pending.
+Twenty invented-data filesystem/SQLite tests pass, including a database larger
+than the old 16 MB limit, WAL committed/uncommitted behavior, concurrent-change
+refusal, safe omission without traversal, private disposable restore and refusal
+to inflate coverage/count claims. These are separate from installed-host proof.
 
 Exact published backend revision 21abf4857ca8dce8e0a3aafc725266c8d3754529
 was fetched/verified again on 26 October without switching/resetting the dirty

@@ -27,6 +27,7 @@ PROVIDER_SHA = 'e54da1d75c89677fe01cd173c965367e2b5ca47fbb7a2cbff4d9ed766d13fc67
 SUPPORT_SHA = 'd7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef'
 RESUME_SHA = '9d1d87ad5e8695494f2f184b9e32d4112b0aae70315fedf3f0167e1467a1501c'
 RUNTIME_SHA = 'd7494b5d7507322b5a0dd731211d3ef00c66122f90a7544961f06d9f75b6933f'
+REPAIR_SHA = '1e73ee58a276960130c7f118a63bfbd2e1ea1a81c0e2ab33bfd6b83abd936192'
 
 
 def require(value):
@@ -422,6 +423,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['qualify']:
             runtime = definitions(Path(__file__).with_name('qualify_launch_named_runtime.py'), RUNTIME_SHA)
             raise SystemExit(runtime['launch']())
+        if sys.argv[1:] == ['repair-model-bindings']:
+            repair = definitions(Path(__file__).with_name('repair_launch_named_runtime.py'), REPAIR_SHA)
+            raise SystemExit(repair['launch']())
         require(sys.argv[1:] in (['resume'],['status']))
         resume = definitions(Path(__file__).with_name('resume_launch_named_providers.py'),RESUME_SHA)
         raise SystemExit(resume['launch' if sys.argv[1] == 'resume' else 'status']())
