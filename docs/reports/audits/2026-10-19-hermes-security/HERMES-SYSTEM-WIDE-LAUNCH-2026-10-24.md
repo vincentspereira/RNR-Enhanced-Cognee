@@ -239,6 +239,21 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+The owner ran the first protected model-binding repair on 26 October. It
+localized the existing model credential into one isolated candidate and
+qualified that candidate's new encrypted restore, then stopped before the
+native runtime receipt. The returned summary reports zero native profiles
+qualified, one failure, 39 untouched and
+`candidate_model_credentials_may_have_changed=true`; no memory record, chat
+request, platform adapter, service admission or fleet policy was changed.
+The top-level receipt omitted the child failure phase, so the cause is not
+inferred from that summary. A separate read-only inspector now returns only
+the allowlisted phase, exception class, bounded HTTP status, safe binding and
+restore booleans, and service PID/state metadata. It does not print model
+credentials, profile contents or encrypted payloads. Its two focused tests
+pass. The owner should run that inspection before any further runtime attempt;
+the failed receipt, candidate binding and backup are retained.
+
 26 October configured-route batch STOPPED at
 `operator-evidence/named-runtime-pisfj9fe`: zero qualified, three AuthError
 failures, 37 untouched, zero credentials issued, no model request, no canonical
