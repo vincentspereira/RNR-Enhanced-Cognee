@@ -239,6 +239,63 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+26 October owner-run consolidated RESUME PASSED at
+`operator-evidence/provider-resume-_6q81u24`. All nine untouched profiles passed
+provider/API, peer-history denial and encrypted candidate restore; the thirty
+completed profiles were preserved. The worker stopped. Its exact helper SHA256
+is `9d1d87ad5e8695494f2f184b9e32d4112b0aae70315fedf3f0167e1467a1501c`.
+There are now 39 newly qualified private named profiles plus the earlier first
+candidate: 40 named provider/recovery candidates. Two existing qualification
+bindings remain deferred without widening. None is admitted to live bot use.
+No completed native test or canonical correction/retraction was replayed.
+
+Read-only owner configuration metadata on 26 October shows one main profile
+with WhatsApp enabled and multiplexing, and 42 named profiles with no enabled
+platform adapter. The current main and 40 named production configurations use
+ZAI at open.bigmodel.cn with their configured GLM-5.3-Flash model spelling.
+Two named configurations use the existing local qualification routes. The
+earlier successful Codex conversation is shared provider-behavior evidence; it
+does not establish the current ZAI route or production multiplex dispatch.
+Forty independent platform gateways would not reproduce the observed setup.
+Protected per-UID dispatch and main launch binding remain implementation gates.
+
+The main profile also has a roughly 167 MB live SQLite database, older backup
+generations, program environments, links/hardlinks and runtime sockets. The
+16 MB named-profile capture limit cannot cover it. A consistent larger capture
+and explicit coverage/rebuild plan are still required. Preserve all original
+data and historical generations; no automatic exclusion, copy or activation
+has been performed. Main model-provider plugin review is also pending.
+
+Command 3 prepared: `launch_control.py qualify`, a checkpointed finite batch
+using the existing 40 private candidate copies and their own OS identities.
+It resolves each configured primary ZAI route without fallback or model/network
+calls, constructs the actual native gateway/agent with that route, checks cache
+reuse, pinned memory-provider binding and authenticated own-scope status, and
+checks config/environment/auth preservation. It creates no token or canonical
+record and starts no platform adapter. Root reads protected evidence only;
+owner units read their own profiles. Root and owner units have no capabilities.
+The original first-candidate headless pass and all completed provider/recovery
+receipts remain preserved; actual configured-route construction is a new check.
+Repeating qualify reattaches to the same job/result. Three failures stop the
+batch for investigation without an automatic retry. A pass still does not
+qualify actual model responses, per-profile scheduled renewal, main recovery,
+production dispatch or fleet admission. Installed execution is pending.
+Local validation: 79 relevant tests passed, zero failures/errors/skips/warnings
+(configured-route batch, prior resume/controller and native-unit boundaries).
+This is source-level validation, not execution of the new protected batch.
+
+Exact published backend revision 21abf4857ca8dce8e0a3aafc725266c8d3754529
+was fetched/verified again on 26 October without switching/resetting the dirty
+worktree. Current GitHub results still show Required CI 40055830507, Project
+memory 40055830334, Canonical stack 40055830340 and Canonical dashboard
+40055830325 successful. Full runtime 40055830273 and broad pipeline
+40055830266 remain failed; the existing legacy findings are not suppressed.
+
+Automatic approval review rejected an additional disposable route diagnostic
+because it would copy auth/environment files into a workspace archive. That
+diagnostic did not execute. The prepared operator batch instead uses the
+existing protected candidate copies; no additional credential copy is needed.
+
 26 October owner-run consolidated INSPECTION PASSED at
 `operator-evidence/launch-control-inspect-944kxj3a`. Interrupted attempt:
 `operator-evidence/named-provider-batch-wa_1extn`. Actual inventory selection
@@ -288,8 +345,8 @@ Owner requested consolidation into 3-4 operator commands. The target is four
 phases: reconcile protected state, resume eligible qualification with persistent
 checkpoints/progress, batch remaining admission/launch/renewal/main prerequisites,
 then prepare final readiness/switch review. This is a command grouping target,
-not a promise all unresolved gates will pass in four invocations. Only phase 1
-is currently executable; subsequent phases need its actual protected snapshot.
+not a promise all unresolved gates will pass in four invocations. At that point
+only phase 1 was executable; subsequent phases needed its protected snapshot.
 Do not present missing implementations or closed gates as launch readiness.
 
 Prepared: `launch_control.py inspect`, SHA256
