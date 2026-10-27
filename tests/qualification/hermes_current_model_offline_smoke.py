@@ -17,7 +17,7 @@ import tempfile
 from types import SimpleNamespace
 
 DIRECTORY=Path(__file__).resolve().parents[2]/'integrations/hermes/deployment'
-MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model.py'),run_name='offline_current_model_smoke')
+MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='offline_current_model_smoke')
 sys.path.insert(0,str(MODULE['RELEASE']/'repo'))
 PHASE='imports'
 
@@ -57,7 +57,7 @@ def main():
     def response(request):
         data=json.loads(request.content);stage=active['stage'];counter[stage]+=1
         step=counter[stage]
-        assert str(request.url)=='https://open.bigmodel.cn/api/paas/v4/chat/completions'
+        assert str(request.url)=='https://open.bigmodel.cn/api/coding/paas/v4/chat/completions'
         if stage=='capture' and step==1:
             tool=('enhanced_recall',{'query':'Rowan '+ident})
         elif stage=='capture' and step==2:
@@ -89,7 +89,7 @@ def main():
     pwd.getpwuid=lambda uid:SimpleNamespace(pw_name='hermes-runtime',pw_uid=uid,pw_dir=account.pw_dir)
     os.getgroups=lambda:()
     packet=dict(stage='capture',run_id=ident,key='invented-unused-model-key',token='invented-api-token',peer='invented-peer-token',
-        guard=(DIRECTORY/'zai_native_qualification_guard.py').read_text(),
+        guard=(DIRECTORY/'zai_native_qualification_guard_v2.py').read_text(),
         observer=(DIRECTORY/'observe_launch_native_runtime.py').read_text(),record_id=None)
     try:
         PHASE='native_capture'

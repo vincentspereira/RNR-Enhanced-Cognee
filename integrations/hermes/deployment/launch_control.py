@@ -33,6 +33,8 @@ ROUTES_SHA = '6dbf807c3c4eb4cc9da1834fc3cfc13747f9b7a456997a0e66ce076e6b5fe625'
 MAIN_BACKUP_SHA = 'a91b128650b80acf8bcc4d369365daad8d0bba8fdd298e80ffa08e6e4d3e0f9a'
 MAIN_CONTINUE_SHA = '547e5bd40aec13c85b3524e15d5732adbfd59b507464182c47f760f7b20c3a25'
 CURRENT_MODEL_SHA = '4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402'
+CURRENT_MODEL_V2_SHA = 'e21579372b94a1a881908e543342fbfcd7582d593ac579d7f2b23a1d805dbda1'
+PROGRAM_RECOVERY_SHA = 'cada57c71e6b651078401412f7cb93b750f5ac056375dde84b4573e8a35630f6'
 
 
 def require(value):
@@ -419,6 +421,32 @@ def inspect():
     return 0 if result['complete'] else 1
 
 
+def qualify_prerequisites():
+    """Finish both independent finite jobs, reusing any retained result."""
+    require(os.geteuid()==0)
+    support=definitions(Path(__file__).with_name('recover_launch_graph_operator.py'),SUPPORT_SHA)
+    read=support['read_file'];results={}
+    for label,name,digest in [('current_model','qualify_launch_current_model_v2.py',CURRENT_MODEL_V2_SHA),
+        ('program_recovery','qualify_launch_program_recovery.py',PROGRAM_RECOVERY_SHA)]:
+        module=definitions(Path(__file__).with_name(name),digest)
+        try:code=module['launch']()
+        except Exception:code=1
+        try:
+            context=json.loads(read(module['ARTIFACT']/'context.json',0))
+            evidence=Path(context['evidence'])
+            require(evidence.parent==BASE/'operator-evidence')
+            value=json.loads(read(evidence/'summary.json',0))
+            value['complete']=value.get('complete') is True and code==0
+            value['command_exit_code']=code
+        except Exception:
+            value=dict(complete=False,category='component_preflight_or_receipt_incomplete_preserve_evidence',command_exit_code=code)
+        results[label]=value
+    passed=all(value.get('complete') is True for value in results.values())
+    print(json.dumps(dict(complete=passed,phase='qualify_prerequisites',components=results,
+        fleet_launch_approved=False,actual_profile_admission_qualified=False,source_revision=BASE.name)),flush=True)
+    return 0 if passed else 1
+
+
 if __name__ == '__main__':
     os.umask(0o077)
     resource.setrlimit(resource.RLIMIT_CORE,(0,0))
@@ -446,6 +474,14 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['qualify-current-model']:
             model = definitions(Path(__file__).with_name('qualify_launch_current_model.py'), CURRENT_MODEL_SHA)
             raise SystemExit(model['launch']())
+        if sys.argv[1:] == ['continue-current-model']:
+            model = definitions(Path(__file__).with_name('qualify_launch_current_model_v2.py'), CURRENT_MODEL_V2_SHA)
+            raise SystemExit(model['launch']())
+        if sys.argv[1:] == ['qualify-program-recovery']:
+            program = definitions(Path(__file__).with_name('qualify_launch_program_recovery.py'), PROGRAM_RECOVERY_SHA)
+            raise SystemExit(program['launch']())
+        if sys.argv[1:] == ['qualify-prerequisites']:
+            raise SystemExit(qualify_prerequisites())
         require(sys.argv[1:] in (['resume'],['status']))
         resume = definitions(Path(__file__).with_name('resume_launch_named_providers.py'),RESUME_SHA)
         raise SystemExit(resume['launch' if sys.argv[1] == 'resume' else 'status']())

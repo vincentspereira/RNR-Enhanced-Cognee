@@ -115,3 +115,31 @@ def test_canonical_inspection_is_parameterized_metadata_only_and_readonly(monkey
     asyncio.run(HELPER['read_record_metadata'](lambda *args:json.dumps({'ENHANCED_MEMORY_DATABASE_URL':'invented'}).encode(),profiles))
     assert profiles[0]['record'] == dict(id='invented',version=2,state='retracted')
     assert events == ['closed']
+
+
+@pytest.mark.parametrize('model_outcome',[0,1,'preflight_failure'])
+def test_prerequisite_batch_continues_independent_recovery_and_reports_both_results(monkeypatch,capsys,model_outcome):
+    import json
+    scope=HELPER['qualify_prerequisites'].__globals__;events=[]
+    base=HELPER['BASE']
+    def read(path,*args):
+        if path.name=='context.json':return json.dumps({'evidence':str(base/'operator-evidence'/path.parent.name)}).encode()
+        return b'{"complete":true,"fleet_launch_approved":false}'
+    def module(path,digest):
+        if path.name=='recover_launch_graph_operator.py':return {'read_file':read}
+        def launch():
+            events.append(path.name)
+            if path.name=='qualify_launch_current_model_v2.py':
+                if model_outcome=='preflight_failure':raise ValueError('invented fixed refusal')
+                return model_outcome
+            return 0
+        return dict(launch=launch,ARTIFACT=base/path.stem)
+    monkeypatch.setattr(HELPER['os'],'geteuid',lambda:0)
+    monkeypatch.setitem(scope,'definitions',module)
+    result=HELPER['qualify_prerequisites']()
+    value=json.loads(capsys.readouterr().out)
+    assert events==['qualify_launch_current_model_v2.py','qualify_launch_program_recovery.py']
+    assert value['complete'] is (model_outcome==0) and result==(0 if model_outcome==0 else 1)
+    assert value['components']['program_recovery']['complete'] is True
+    assert value['components']['current_model']['complete'] is (model_outcome==0)
+    assert value['fleet_launch_approved'] is False and value['actual_profile_admission_qualified'] is False

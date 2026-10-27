@@ -9,15 +9,15 @@ from types import SimpleNamespace
 import pytest
 
 DIRECTORY=Path(__file__).resolve().parents[2]/'integrations/hermes/deployment'
-GUARD=runpy.run_path(str(DIRECTORY/'zai_native_qualification_guard.py'),run_name='zai_guard_unit_tests')
-MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model.py'),run_name='current_model_unit_tests')
+GUARD=runpy.run_path(str(DIRECTORY/'zai_native_qualification_guard_v2.py'),run_name='zai_guard_unit_tests')
+MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='current_model_unit_tests')
 ERROR=GUARD['GuardError']
 IDENT='a'*32
 
 
 def packet(stage='capture'):
     return dict(stage=stage,run_id=IDENT,key='invented-unused-model-key',token='invented-api-token',peer='invented-peer-token',
-        guard=(DIRECTORY/'zai_native_qualification_guard.py').read_text(),
+        guard=(DIRECTORY/'zai_native_qualification_guard_v2.py').read_text(),
         observer=(DIRECTORY/'observe_launch_native_runtime.py').read_text(),record_id=None if stage=='capture' else 'new-invented-record')
 
 
@@ -217,11 +217,11 @@ def test_frozen_pins_and_bounded_owner_program():
     for name,digest in MODULE['PINS'].items():
         assert hashlib.sha256((DIRECTORY/name).read_bytes()).hexdigest()==digest
     helper=runpy.run_path(str(DIRECTORY/'qualify_launch_isolated_accounts.py'),run_name='current_model_owner_protocol')
-    helper['owner_program']((DIRECTORY/'qualify_launch_current_model.py').read_bytes())
+    helper['owner_program']((DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes())
     assert MODULE['identity'](IDENT)['roles']==['api_client']
     assert MODULE['identity'](IDENT)['project_id']!=MODULE['identity'](IDENT,True)['project_id']
     control=runpy.run_path(str(DIRECTORY/'launch_control.py'),run_name='current_model_dispatch_contract')
-    assert hashlib.sha256((DIRECTORY/'qualify_launch_current_model.py').read_bytes()).hexdigest()==control['CURRENT_MODEL_SHA']
+    assert hashlib.sha256((DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes()).hexdigest()==control['CURRENT_MODEL_V2_SHA']
 
 
 def test_repeating_completed_job_only_watches(monkeypatch):
@@ -231,3 +231,38 @@ def test_repeating_completed_job_only_watches(monkeypatch):
     monkeypatch.setitem(scope,'definitions',lambda *a:{'read_file':object(),'private_write':object()})
     monkeypatch.setitem(scope,'watch',lambda read:events.append('reattach') or 0)
     assert launch()==0 and events==['reattach']
+
+
+@pytest.mark.parametrize('damage',['successful','credentials','phase','source','scope','active_job'])
+def test_continuation_refuses_any_prior_success_effect_or_live_job(monkeypatch,damage):
+    prior=MODULE['BASE']/'operator-evidence/current-model-native-z_rt7ame'
+    value=dict(complete=False,failure_phase='preflight',credentials_issued=0,error_kind='ValueError',
+        operator_helper_sha256='4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402',
+        new_invented_scope='404b12912a5b4abdbd4172ff46422f8b',all_admission_policies_preserved_disabled=True)
+    if damage=='successful':value['complete']=True
+    elif damage=='credentials':value['credentials_issued']=2
+    elif damage=='phase':value['failure_phase']='capture'
+    elif damage=='source':value['operator_helper_sha256']='0'*64
+    elif damage=='scope':value['new_invented_scope']='0'*32
+    def read(path,*unused):
+        if path.name=='summary.json':return json.dumps(value).encode()
+        if path.name=='context.json':return json.dumps(dict(evidence=str(prior),run_id=value['new_invented_scope'])).encode()
+        return (DIRECTORY/'qualify_launch_current_model.py').read_bytes()
+    state=MODULE['retained_zero_call_refusal'].__globals__
+    monkeypatch.setitem(state,'properties',lambda *a:dict(ActiveState='active' if damage=='active_job' else 'inactive',MainPID='0',ControlPID='0'))
+    with pytest.raises(ValueError):MODULE['retained_zero_call_refusal'](read)
+
+
+def test_exact_zero_call_refusal_can_continue_without_replaying_it(monkeypatch):
+    prior=MODULE['BASE']/'operator-evidence/current-model-native-z_rt7ame'
+    value=dict(complete=False,failure_phase='preflight',credentials_issued=0,error_kind='ValueError',
+        operator_helper_sha256='4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402',
+        new_invented_scope='404b12912a5b4abdbd4172ff46422f8b',all_admission_policies_preserved_disabled=True)
+    def read(path,*unused):
+        if path.name=='summary.json':return json.dumps(value).encode()
+        if path.name=='context.json':return json.dumps(dict(evidence=str(prior),run_id=value['new_invented_scope'])).encode()
+        return (DIRECTORY/'qualify_launch_current_model.py').read_bytes()
+    state=MODULE['retained_zero_call_refusal'].__globals__
+    monkeypatch.setitem(state,'properties',lambda *a:dict(ActiveState='inactive',MainPID='0',ControlPID='0'))
+    assert MODULE['retained_zero_call_refusal'](read)==str(prior)
+    assert hashlib.sha256((DIRECTORY/'zai_native_qualification_guard.py').read_bytes()).hexdigest()=='1f579b3cbf88b5b922f3e0ff2cda345e496c639fdec79600bb3b92e3e90f5cde'

@@ -239,6 +239,75 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run current-model job STOPPED at preflight:
+`operator-evidence/current-model-native-z_rt7ame`, zero credentials issued,
+zero model calls, no source profile/launcher change and a stopped operator job.
+The V1 helper incorrectly required /api/paas/v4. A subsequent read-only check of
+the owner's declared route (no .env/auth reads, no credentials, no networking)
+confirmed /api/coding/paas/v4. This was a source assumption error; no endpoint
+fallback or model-account change is authorized or performed.
+
+V2 preserves V1 bytes/evidence and requires that exact zero-call refusal,
+original helper SHA, run identifier and quiescent old job before starting a
+new invented scope. Its environment, minimal fixture config, request hook and
+root preflight all pin the already configured Coding path. No old record or
+completed test is selected. Old qualify-current-model continues to reattach to
+V1; continue-current-model and the consolidated qualify-prerequisites select V2.
+V2 helper SHA256:
+`e21579372b94a1a881908e543342fbfcd7582d593ac579d7f2b23a1d805dbda1`.
+Corrected-route/zero-effect-continuation/controller selection: 61 passed
+(44 model and 17 controller), zero failures/errors/skips/warnings. The actual
+pinned native agent/provider/SDK offline capture and recall also passed on the
+Coding path with invented responses and zero real network operations. Real
+configured-model qualification remains pending the protected V2 run. Earlier
+general-path preparation notes below describe the preserved V1 attempt.
+
+27 October independent protected PROGRAM verification PASSED: all 42,510 regular
+files and 1,064 internal links matched the frozen manifest, covering 2,041,017,426
+program bytes. The program archive was streamed to a discard sink
+(2,084,792,320 archive bytes), with no archive file, profile access or network use.
+Manifest SHA256 is
+`b8b07343b2e16228c9a2673eecd14cebbf88b327c7c0e1b45bebe3c61d5e67ce`.
+This is source-byte verification, not protected recovery or execution evidence.
+
+Prepared `qualify_launch_program_recovery.py` and a strict streaming archive
+core. They create one NEW AGE generation with the existing public recipient,
+authenticate its ciphertext with the existing root-only HMAC key, verify and
+decrypt it as root, and restore into a NEW root-owned program directory. Only
+the fixed protected program tree is walked; no owner profile is traversed.
+No plaintext archive, secret-bearing child packet, live replacement or service
+restart occurs. Every archive member must match the pinned public manifest;
+external links, path traversal, link parents, hardlinks, special members,
+setuid modes, changed source bytes, duplicate/extra members and overwrites are
+refused. Long names and internal links are retained. Partial attempts survive.
+
+A transient isolated unit is prepared to bind the recovered copy at the
+expected /opt location only within that unit, verify its new device/inode
+identities, and import the pinned native program/SDK plus exercise SQLite.
+It uses hermes-runtime with no capabilities, no new privileges, strict filesystem
+protection, inaccessible profile/secret paths, private networking and AF_UNIX
+only. This is PREPARED namespace qualification; it has not run under protected
+operator access. It cannot establish a fresh-machine source build or all main
+profile references. Original program files remain unchanged.
+
+Program-core/AGE-stream/operator/controller selection: 45 passed, zero
+failures/errors/skips/warnings (19 archive, 9 operator, 17 controller).
+The AGE stream check used only a disposable invented test identity, not the
+real recovery key. Root filesystem ownership checks require the unsandboxed
+test view; the sandbox maps root ownership and those initial fixture failures
+were not treated as implementation passes. Production hash verification used
+real Linux metadata and completed for the entire admitted program manifest.
+
+`launch_control.py qualify-prerequisites` now runs/reuses the finite current-model
+and program-recovery jobs and reports both results in one final JSON. It proceeds
+with independent program recovery even if the model component is incomplete.
+Repeating it reattaches to retained jobs without repeating model turns, archive
+generation or restoration. Neither component permits fleet activation. Operator
+helper SHA256:
+`cada57c71e6b651078401412f7cb93b750f5ac056375dde84b4573e8a35630f6`;
+archive core
+`9156fa2e2c0b85b110c1f820f6121ca01f2d29e5a5285c29d28d8c6be6843d9b`.
+
 27 October owner-run MAIN OPERATIONAL RESTORE PASSED at
 `operator-evidence/main-operational-recovery-0xjyrv2b`. One new authenticated
 encrypted generation,
