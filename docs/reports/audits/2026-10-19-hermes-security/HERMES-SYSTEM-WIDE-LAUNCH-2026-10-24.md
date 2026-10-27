@@ -239,6 +239,28 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October production-launch investigation, read-only under the original
+owner UID: 43 accessible source configurations were inspected (main plus
+42 named profiles), without configuration/credential values in output. Every
+profile has a cron directory; directory presence alone does not establish an
+active job. Exactly one platform definition was found, WhatsApp enabled on
+main. No explicit profile-route rows or nonempty token fields for the checked
+Telegram/Discord/Slack/WhatsApp Cloud environment variables were found. Main
+has multiplexing selected; the 42 named source configs have no explicit
+multiplex setting. No file, model or service was changed/called. This covers
+the owner-readable sources, not the separate runtime account or all 45
+protected inventory rows. WhatsApp session credentials were not inspected.
+
+Pinned native source confirms profile routing normally selects profiles inside
+one gateway. Its managed-worker policy admits bypass/config-only sessions or
+an explicitly opted-in local CLI custom-provider route; it is not a general
+cross-UID ZAI/WhatsApp dispatcher. The native CLI also performs boot/update-debt
+checks before parsing --help, so help is not assumed side-effect-free on a real
+profile. Do not start 40 duplicated external frontends or weaken native guards
+to manufacture launch evidence. Preserve the shared frontend and implement/
+qualify an explicit isolated launch/dispatch bridge before admitting the fleet.
+The completed native constructor/cache checks do not close this launch gate.
+
 27 October owner-run V2 IMPLEMENTATION PASSED at
 `operator-evidence/launch-implementation-gtiy7pmb`, helper `409de8a2...`,
 invocation `0a5648ac5ae14f5e9e4ac5576bd0f488`. The inactive main candidate
