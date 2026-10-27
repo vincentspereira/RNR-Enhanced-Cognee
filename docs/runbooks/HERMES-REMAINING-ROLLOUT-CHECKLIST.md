@@ -9,13 +9,21 @@ See [current candidate evidence](HERMES-CONSOLIDATED-CANDIDATE-BATCHES.md).
 The dated unresolved checkpoints below are historical; do not replay them.
 The owner-run [daily backup coverage for all 41 qualified candidates](HERMES-QUALIFIED-FLEET-DAILY-BACKUPS.md)
 and [kernel-authenticated transport under two restricted UIDs](HERMES-ISOLATED-GATEWAY-TRANSPORT.md)
-have now PASSED. The next prepared finite check connects that channel to
-[native DM text authorization and clarification handling](HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md).
-The protected native check is pending; offline same-UID native execution passed.
+have now PASSED. Protected
+[native DM text authorization and clarification handling](HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md)
+also PASSED under two restricted UIDs. The next prepared grouped operation checks
+[native adapter delivery and persistent crash/replay refusal](HERMES-ISOLATED-DELIVERY-RECOVERY.md).
+Its protected four-phase execution is pending; exact-source offline native
+adapter execution and 54 source/security tests passed.
 Production bot/CLI dispatch and explicit launch binding,
 main tools/MCP and served-context coverage, unattended admitted-fleet operation,
 the two deferred existing bindings and final mapping/switch review remain open.
 No whole-fleet activation or main merge is approved by these component passes.
+
+Latest main-source metadata observes six MCP definitions, while the retained
+candidate qualified four. Preserve the current six and unrelated/OAuth settings;
+reconcile them into a new inactive candidate before main tool qualification or
+final switch. No source or candidate configuration was changed by the inspection.
 
 Latest source checkpoint: the restricted text-only service now has a clean
 locked dependency audit, matching real BGE vectors and disposable encrypted

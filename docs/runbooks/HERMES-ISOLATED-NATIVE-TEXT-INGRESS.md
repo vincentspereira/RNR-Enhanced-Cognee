@@ -1,5 +1,17 @@
 # Isolated native DM text ingress
 
+27 October owner-run protected result: PASSED at
+`operator-evidence/isolated-native-text-s9awh1b9`, helper
+`024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9`.
+The receipt binds the same manifest `0ac7793980...` and exact eight native
+source hashes. Native authorization and pending clarification handling passed
+under two distinct restricted UIDs. No original profiles, credentials, keys,
+models, APIs, canonical records, installed services or admission policies
+changed. Preserve this completed pass. Next:
+[one grouped delivery/crash-recovery check](HERMES-ISOLATED-DELIVERY-RECOVERY.md).
+Whole native integration, production dispatch, actual admission and fleet
+approval remain false.
+
 The distinct-UID kernel transport passed on Ubuntu-Hermes. This next finite
 operator check connects that channel to the installed Hermes GatewayRunner's
 actual scoped message handler, sender authorization, help dispatch and pending
@@ -8,7 +20,7 @@ with a new invented profile created by the worker itself. It does not read a
 real profile, issue a credential, start a platform adapter, contact a model or
 memory API, install a service, or change admission policies.
 
-Run this single operation in the owner's Ubuntu-Hermes terminal:
+Historical completed command; repeating it returns retained evidence:
 
 ```bash
 sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py qualify-native-text-ingress
@@ -52,8 +64,8 @@ Source evidence: 72 targeted tests passed, zero failures/errors/skips/warnings:
 17 controller checks. Separate installed Python 3.14.7 offline execution passed
 the six exchanges and real native event conversion using same-UID fixture
 processes, no model/API, zero denied network/profile/subprocess attempts. This
-is not a protected distinct-UID native integration result; that remains pending
-the command above. Two local fixture issues were resolved without weakening
+was not a protected distinct-UID result at preparation time; the owner-run
+receipt above subsequently passed that component. Two local fixture issues were resolved without weakening
 product guards: public Python path discovery was blocked when the public
 component directory was under /home (use retained /tmp public copies instead),
 and the immutable-result test double initially lacked transport definitions.

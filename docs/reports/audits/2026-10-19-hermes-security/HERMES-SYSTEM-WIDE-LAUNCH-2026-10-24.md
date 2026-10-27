@@ -239,6 +239,65 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run NATIVE DM TEXT INGRESS PASSED at
+`operator-evidence/isolated-native-text-s9awh1b9`, helper `024c69cdf3...`.
+The same manifest `0ac7793980...`, three public components and eight exact
+native source hashes were bound. Authorization and pending clarification
+handling passed under two restricted UIDs. No keys, credentials, original
+profile contents, model/API, canonical records or installed service changes
+were reported. Policies remain disabled and full native integration,
+production dispatch, actual admission and fleet approval false. Preserve this
+completed pass; this closes the protected native-pending checkpoint below.
+
+Next implementation: isolated_delivery_journal.py adds private, fixed-profile,
+append-only metadata reservations/transitions with file/directory fsync and
+cross-process exclusive locking. It refuses completed, partial, interrupted,
+conflicting, out-of-order and ambiguous attempts without automatic replay.
+No payload, reply, platform identity or credential is stored; digests are not
+encryption and an owner can alter its own files. Native admission holds no
+global/journal lock across an await, so a later pending reply can enter.
+This remains crash bookkeeping, not exactly-once external delivery.
+
+Validation: 54 targeted tests PASSED, zero failures/errors/skips/warnings
+(20 journal/native-entry, 17 protected operator, 17 controller). Four actual
+Python 3.12 child exits cover saved reservation/handler/send/confirmation stages.
+Actual installed Python 3.14.7 exact-source offline native BasePlatformAdapter
+background/final delivery also PASSED, same UID only, with a local SendResult
+and zero network/original-profile/subprocess attempts. The native code and
+guards were unchanged. The initial sandbox run had 16 ancestor-ownership
+failures; actual-host metadata passed without relaxing ownership checks.
+One fixture TypeError was resolved by implementing the native required
+in-memory get_chat_info interface; its initial result remains distinct.
+
+Prepared qualify-delivery-recovery groups four processes: actual native help
+adapter delivery to a test sink, forced exit 73 after another durable reservation,
+restart refusal then forced exit 74 after an ambiguous send marker, final
+reopen/refusal, and peer-UID OS denial. Nine native source entrypoints and the
+completed native/backup/identity evidence are required. It reads no real profile,
+key or API and sends no external message. Protected execution is PENDING;
+one command returns retained results without replay. This is a process-crash
+check, not a measured power-loss test. See
+[grouped delivery recovery](../../../runbooks/HERMES-ISOLATED-DELIVERY-RECOVERY.md).
+Complete native callbacks/media/groups/approvals, durable outbox reconciliation,
+actual shared frontend, real-profile backup coverage for new journal state,
+main tools/context, admitted operation, deferred mappings and final switch
+review remain open. No fleet activation is claimed.
+
+Delivery fetched again remains exactly 21abf485. GitHub reports no hosted runs
+for deployment helper commit 733c9581; no hosted pass is inferred from the
+local 54-test result. Existing exact-backend restricted gates pass, and broader
+coverage/full-runtime audit failures remain visible. Main is not merged.
+
+Current ordinary-owner read-only main metadata now observes SIX MCP definitions,
+versus FOUR in the retained main candidate qualification. Two use npx, one uvx
+and three have remote endpoints; no server names, URLs, arguments, environment
+values or credentials were retained/output. This is configuration drift relative
+to the dated candidate, not evidence of who changed it. Source and candidate
+remain untouched. Main reconciliation must preserve all six current definitions
+and current OAuth/unrelated settings in a new reviewed inactive candidate;
+the earlier four-definition preservation pass is historical, not current
+full-tool coverage. Do not switch the older candidate over the current source.
+
 27 October owner-run KERNEL TRANSPORT PASSED at
 `operator-evidence/isolated-transport-skxdwk5_`, helper `0fc198a694...`,
 transport `543a712ebe...`, manifest `0ac7793980...`. All three cases passed
