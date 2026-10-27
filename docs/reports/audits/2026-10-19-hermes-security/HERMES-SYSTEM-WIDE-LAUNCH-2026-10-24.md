@@ -239,6 +239,35 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run PROGRAM RECOVERY AND EXECUTION PASSED at
+`operator-evidence/program-recovery-l49l8f7u`. New encrypted generation
+`/var/backups/enhanced-cognee/hermes_program_8600c21ecdec4abb9b86409dae376798.tar.age`
+was authenticated, restored and executed in the isolated mount namespace.
+The receipt verifies all 42,510 regular files, 1,064 links and 2,041,017,426
+program bytes; original program/profile files and services were preserved,
+no credentials were issued or keys changed, and the job stopped. Reuse this
+result; do not create another program generation to repeat it. Fresh-machine
+source build, full profile coverage and actual fleet admission remain false.
+
+The same consolidated owner run stopped the V2 model component at capture:
+`operator-evidence/current-model-native-spnm6ro6`, invented scope
+`e04a048d26af4631b2126bcd27a9174a`, helper `e2157937...`, two ordinary credentials
+issued, ValueError and a stopped job. This receipt does not identify the child
+phase, physical model-request count or committed effects. Do not infer a model,
+network, token-budget or capture-policy cause from this outer ValueError. Do
+not replay the attempt. Its stage receipt and fixed-scope read-only canonical
+metadata must be inspected first. No completed prior record is selected.
+
+Prepared `inspect_launch_current_model_failure.py`: validates the exact retained
+helper/run/evidence and quiescent unit, projects only fixed phase/count/HTTP/
+boolean fields from the existing capture receipt, and queries metadata only
+for this invented project's rows/versions in a read-only transaction. It reads
+no encrypted payload, profile tree, model key or prompt; it issues no credential,
+model call, write or service action. Nine focused projection/privacy/query
+checks pass, zero failures/errors/skips/warnings. If the child receipt was lost
+before validation, that is explicitly reported rather than reconstructed as
+a turn failure or success.
+
 27 October owner-run current-model job STOPPED at preflight:
 `operator-evidence/current-model-native-z_rt7ame`, zero credentials issued,
 zero model calls, no source profile/launcher change and a stopped operator job.
