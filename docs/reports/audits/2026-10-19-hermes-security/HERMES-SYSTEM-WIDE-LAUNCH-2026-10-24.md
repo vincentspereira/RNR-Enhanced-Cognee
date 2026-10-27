@@ -281,9 +281,9 @@ An earlier automatic approval review usage-limit failure did not execute its
 test command; review subsequently succeeded and no approval bypass was used.
 
 Continuation root SHA256:
-`d2be1e0a560fdba0db42782c7029002eb9e4f763f72e12a91a3211ed23f28964`.
+`ddf3b82e294b7b723463a82a66098fb6d52edd370f9fd1344696368b500a0123`.
 Recall-only owner SHA256:
-`d048ffa233f7473f23f57b508c510f71841637d64289cb58bde0d167d01ab1f9`.
+`29903d0cc30b937c9e76ac6aa90ffee8f329d351167142b1ebdf6c3f53b8abb1`.
 Delivery branch fetched again and verified exactly at
 `21abf4857ca8dce8e0a3aafc725266c8d3754529`. Current GitHub Actions results
 still show Required CI, Project memory, Canonical memory stack and Canonical

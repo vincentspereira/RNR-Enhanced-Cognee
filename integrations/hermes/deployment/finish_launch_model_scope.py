@@ -25,7 +25,7 @@ IDENT='b5ceda49da6343159db0687cd0529045'
 UNIT='ec-launch-model-recall-finish-20261027.service'
 FIXTURES=Path('/var/lib/hermes-renewal-qualification')
 CHILD_NAME='qualify_launch_model_recall_child.py'
-CHILD_SHA='d048ffa233f7473f23f57b508c510f71841637d64289cb58bde0d167d01ab1f9'
+CHILD_SHA='29903d0cc30b937c9e76ac6aa90ffee8f329d351167142b1ebdf6c3f53b8abb1'
 DRIVER_SHA='3d8c9d76fe19067289cf53d9587308b315cb23987a41b3db966f2f08a13b1c63'
 CAPTURE_SHA='68e4cee48692fd5759a705153045f489b1d13f87cb41b0699cac1daf99bf7bf4'
 SUPPORT_SHA='d7a83e8a12f7841fc8af0f94421072784c047fee53cf07a76409e9baf141adef'
@@ -259,5 +259,3 @@ if __name__=='__main__':
     except Exception:
         print('{"complete":false,"category":"model_recall_finish_preflight_refused_no_secret_output"}',flush=True)
         raise SystemExit(1)
-
-

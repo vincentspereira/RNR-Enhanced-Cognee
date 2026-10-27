@@ -351,5 +351,3 @@ def safe_report(value):
         if isinstance(codes,list) and len(codes)<=6 and all(type(v) is int and 100<=v<=599 for v in codes):result['http_statuses']=codes
         report[name]=result
     return report
-
-
