@@ -3,7 +3,7 @@
 The main operational restore, protected program restore/execution and all 40
 named constructor/route/restore passes are complete. Reuse their evidence.
 The earlier completed human-answer conversation used Codex and remains valid
-within that scope. Current ZAI native tool behavior is still unqualified.
+within that scope. Current ZAI fresh-process recall still needs qualification.
 
 The V2 model attempt stopped during scope setup with no canonical rows or
 versions. Its generated project IDs were 36 and 41 characters; the backend
@@ -11,24 +11,37 @@ admits at most 32. An authenticated API regression reproduces refusal of those
 IDs and acceptance of the new bounded ones. V3 retains full actor/run IDs and
 uses distinct bounded own/peer project IDs. Existing data is not renamed.
 
-Run this command for the corrected NEW invented model scope only:
+The owner-run V3 attempt reached three successful HTTP 200 model requests with
+the expected returned model and zero unexpected network attempts. It stopped
+at the delivery-readiness poll after native completion, selected capture,
+sensitive-input exclusion and profile preservation had passed. The pinned
+child reads worker_available at the top level, but the actual status API puts
+it inside index. A regression using the actual service status methods confirms
+this contract defect. The failed overall receipt is preserved at
+current-model-native-ydgaddnq; it is not relabeled as an overall pass.
+
+Run this command to finish ONLY recall and cleanup of that captured record:
 
 ```bash
-sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py qualify-model-scope
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py finish-model-scope
 ```
 
-It requires the exact stopped V2 scope failure, its original helper hash and
-its capture-stage receipt. Failed fixtures/evidence remain intact. It freezes
-reviewed root and owner source separately, creates one new synthetic profile,
-and runs a finite protected job. Restricted owner children use the configured
-ordinary ZAI key and two new ordinary memory credentials. Root signing,
-encryption and recovery keys never cross the owner boundary.
+It verifies the exact retained V3 source hashes, late failure checkpoint,
+capture receipt and stopped job. Read-only canonical metadata must identify
+exactly one active version-1 record in that fixed invented scope with exactly
+one history version. Any ambiguous or finished record refuses. It checks the
+correct nested index readiness, freezes reviewed root/owner code, creates a
+fresh empty synthetic recall profile and runs one finite protected job.
+Restricted owner children use the configured ordinary ZAI key and two fresh
+ordinary memory credentials. Root signing, encryption and recovery keys never
+cross the owner boundary. Existing failed fixtures remain unchanged.
 
-The first native process should select an invented Rowan thirteen-day decision
-without saving an invented sensitive canary. A separate process should recall
-the saved decision, deliver its canonical evidence to the model and complete
-its answer. After success, only the new invented record is retracted, retaining
-history. No old completed record or failed scope is edited or replayed.
+The three completed capture requests are reused, with no new capture/remember
+call. A fresh native process must recall the saved Rowan decision, deliver its
+canonical evidence to the model and complete its answer. Only after success,
+that exact invented record is retracted with expected_version=1, history and
+peer denial are checked, and read-only polling verifies completed delivery
+and empty canonical recall. Earlier completed tests are never selected.
 
 Setup diagnostics distinguish route resolution, provider discovery, provider
 initialization and memory status. They include only typed HTTP/errno/public-line
@@ -44,8 +57,9 @@ request are upper bounds. Native guards remain intact. Maximum served context
 is not established by this small test.
 
 Progress prints approximately every 15 seconds. Ctrl+C detaches the current
-view; the finite job continues. Repeating qualify-model-scope attaches to that
-same V3 job and does not repeat turns. Return only its final JSON summary.
+view; the finite job continues. Repeating finish-model-scope attaches to that
+same continuation job and does not repeat turns. Return only its final JSON
+summary. There is no automatic retry after an incomplete continuation.
 
 The program recovery pass is retained at program-recovery-l49l8f7u. Its new
 AGE generation restored all 42,510 files and 1,064 internal links (about 2.04 GB),
@@ -54,9 +68,10 @@ installation, profiles and live services were preserved. This is frozen program
 snapshot recovery, not a fresh-machine source build. Do not create another
 program generation to repeat it.
 
-qualify-prerequisites now selects V3 and collects the retained program result.
-The old qualify-current-model and continue-current-model modes still return
-the original V1/V2 failures. No mode replays those attempts or completed records.
+qualify-prerequisites now selects this recall-only continuation and collects
+the retained program result. Old qualify-current-model, continue-current-model
+and qualify-model-scope modes return the retained V1/V2/V3 results. No mode
+replays those attempts or completed records.
 The prior runbook was archived privately before this update; historical evidence
 and failure details remain in HERMES-SYSTEM-WIDE-LAUNCH-2026-10-24.md.
 

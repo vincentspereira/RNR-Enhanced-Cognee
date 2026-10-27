@@ -239,6 +239,61 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run V3 reached three HTTP 200 requests with the verified
+configured returned model, three network denial controls and no unexpected
+network attempts. Receipt `operator-evidence/current-model-native-ydgaddnq`
+remains an overall FAILURE, at child verification checkpoint [271,237,40].
+All four compared profile files were unchanged. The exact frozen owner source
+`68e4cee4...` establishes that this checkpoint is the bounded readiness poll,
+after the completed native turn, selected capture, sensitive-canary exclusion
+and preservation predicates. The poll incorrectly reads top-level
+`worker_available`; the actual MemoryService/DerivedRecall status contract
+exposes `index.worker_available`. The original capture is not replayed.
+
+Prepared `finish-model-scope` to reuse only those proven capture predicates
+and finish the remaining fresh-process recall/cleanup. It checks the original
+driver/child hashes and matching retained receipts, a stopped old job, and
+read-only canonical metadata for exactly one active version-1 row with one
+history version in the fixed invented scope. A changed/finished row refuses.
+The corrected read-only gate requires matching signed scope, schema/encryption,
+nested running worker/vector/graph state and zero pending deliveries. Root
+checks native/provider pins, retains all policies disabled and sends only
+ordinary credentials to a fresh empty restricted-owner recall fixture.
+
+No capture call is admitted by the new child packet contract. Fresh native
+recall must complete with the canonical evidence actually delivered to the
+model. Only then can the exact invented record be retracted at version 1,
+retaining two history versions and denying peer history. Post-retraction
+readiness and empty canonical recall must also pass. New model requests are
+bounded at six, automatic retries/fallbacks remain disabled, and the three
+original capture requests are reused. Repeated finish commands only attach
+to the same finite job. The former failure and fixture remain unchanged.
+
+Local targeted behavior/security checks: 44 PASSED, zero failures, errors,
+skips or warnings (27 continuation/status/metadata/protocol checks and 17
+controller checks). The pinned native Python agent/provider/SDK recall smoke
+also PASSED with one invented model response, zero real network operations,
+no capture request and a fresh fixture. These are local/synthetic checks,
+not protected installed-model or fleet acceptance. The sandbox-only smoke
+attempt refused creation of the guard's unconnected socket; the approved
+execution outside that sandbox then passed with all real connects/DNS denied.
+An earlier automatic approval review usage-limit failure did not execute its
+test command; review subsequently succeeded and no approval bypass was used.
+
+Continuation root SHA256:
+`d2be1e0a560fdba0db42782c7029002eb9e4f763f72e12a91a3211ed23f28964`.
+Recall-only owner SHA256:
+`d048ffa233f7473f23f57b508c510f71841637d64289cb58bde0d167d01ab1f9`.
+Delivery branch fetched again and verified exactly at
+`21abf4857ca8dce8e0a3aafc725266c8d3754529`. Current GitHub Actions results
+still show Required CI, Project memory, Canonical memory stack and Canonical
+dashboard success; broad pipeline and Full runtime failure remain unresolved
+and visible in the linked CI evidence above. No new hosted qualification is
+claimed for the operator branch. Protected recall continuation is PENDING;
+main reference coverage, actual per-UID/platform dispatch, fleet scheduled
+renewal/reload/admission and final switch review remain open. Fleet launch
+approval and maximum-context proof remain false.
+
 27 October owner-run retained V2 inspection PASSED twice without changing
 state: capture receipt is incomplete at `scope`, error class `other`, and the
 fixed invented project has zero canonical records and zero history versions.
