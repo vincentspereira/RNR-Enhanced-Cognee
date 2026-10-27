@@ -41,6 +41,7 @@ FLEET_REVIEW_SHA = '554ac7b170a2d9e1a98557fc7c943cac27e2f23f3569d6bbccb899629cc2
 COMPLETION_BATCH_SHA = 'd99a819e0c64a5e0d60632f15c8ff3fb57cbf294c4ed33865605702b5796becc'
 COMPLETION_CONTINUE_SHA = '409de8a25e773489874167f325865c11239ef756e0fa342f1396dcf3f0201a5c'
 FLEET_BACKUPS_SHA = 'cfd9eb39d10951d56235b25d111352d6bebe527360007f0fff8bbc65f7a77a13'
+FLEET_BACKUPS_REPAIR_SHA = '19956e7f031a0e70d9758bb8e9aede7c13f631f44ebfb8b7e50727eec8dcb16b'
 
 
 def require(value):
@@ -492,6 +493,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['prepare-fleet-review']:
             review = definitions(Path(__file__).with_name('prepare_launch_fleet_review.py'), FLEET_REVIEW_SHA)
             raise SystemExit(review['main']())
+        if sys.argv[1:] == ['repair-fleet-backups']:
+            backup = definitions(Path(__file__).with_name('repair_launch_fleet_backup.py'), FLEET_BACKUPS_REPAIR_SHA)
+            raise SystemExit(backup['repair']())
         if sys.argv[1:] == ['install-fleet-backups']:
             backup = definitions(Path(__file__).with_name('install_launch_fleet_backups.py'), FLEET_BACKUPS_SHA)
             raise SystemExit(backup['install']())

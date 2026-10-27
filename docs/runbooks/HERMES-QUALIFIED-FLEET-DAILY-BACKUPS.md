@@ -1,5 +1,54 @@
 # Daily encrypted backups for the 41 qualified inactive candidates
 
+27 October first scheduled run FAILED with PermissionError and zero completed
+profiles, retained at `operator-fleet-daily-backups-v1/run-9suhwfa3`, helper
+`cfd9eb39...`. The timer stopped and the blocking marker remains. Repeating
+install-fleet-backups returns the saved failure without repeating effects.
+The main/40-profile recovery and lifecycle passes remain valid and untouched.
+
+The journal confirms the first profile started; settings loading therefore
+passed. The root permission error is inside the first capture's preflight or
+child-launch path. The old receipt omitted errno/line details. It does not
+prove which systemd restriction caused the failure, and this is not a reason
+to remove filesystem, network or owner-isolation protections.
+
+Run the following ONE guarded diagnosis/repair command instead:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py repair-fleet-backups
+```
+
+It requires the exact preserved, stopped failure and no unit overrides. A
+finite transient probe reproduces the public capture preflight and identity
+switch under the same service restrictions. Its owner body reads only its
+own process identity/capabilities, never profile contents, credentials or
+archives. It returns fixed phase/errno/line metadata. Completed probes are
+saved and never started again by a repeated command.
+
+ONLY if the baseline proves a missing effective root identity-switch capability
+and EPERM at child spawn will a second probe test root-only ambient SETUID and
+SETGID, within the SAME two-capability bounding set. Before owner Python starts,
+setpriv explicitly clears all inheritable and ambient capabilities. The child
+must prove zero effective/ambient/inheritable capabilities, no supplementary
+groups and no new privileges. All filesystem, network, device, root-key and
+SUID/SGID restrictions stay. The distinction between ambient and bounding
+capabilities follows the [systemd execution reference](https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html).
+
+After that exact fix is proven, original unit files are preserved and the
+failed timer's enablement is retired using systemctl disable. Its files,
+blocked package and run remain. A NEW V2 package and daily unit/timer install
+and qualify 41 fresh encrypted generations. If any other cause is observed,
+the command returns backup_permission_diagnosed_no_automatic_repair and the
+bounded diagnostic; no replacement schedule or backups are started. Do not
+interpret a diagnostic as an installed repair or backup pass.
+
+Validation: 61 targeted checks passed, including actual unprivileged native
+setpriv execution/capability clearing. Prepared V2 units passed native systemd
+analysis without diagnostics. No protected repair or installed pass is claimed
+until the operator returns its real result.
+
+## Original installation and retained behavior
+
 The owner-run implementation and qualification batches passed for main plus
 40 named candidates. Those exact artifacts, scopes, UIDs, configuration and
 disposable recovery passes are reused. No completed model, renewal, restore or

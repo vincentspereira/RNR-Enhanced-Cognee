@@ -239,6 +239,55 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run FIRST DAILY FLEET BACKUP FAILED at
+`operator-fleet-daily-backups-v1/run-9suhwfa3`, helper `cfd9eb39...`,
+PermissionError, zero of 41 completed profiles. No credential/key changes,
+model/API call, plaintext archive, private key sent to owner, recovery-key read
+or original-profile/launcher changes were reported. The first-profile progress
+event is present in the journal. The worker retained a blocking marker and
+stopped its timer; the second owner invocation returned the same saved result
+without replay. This is separate from the passed main/40-profile lifecycle
+and disposable recovery batches, which remain retained.
+
+Read-only fixed metadata confirms the prepared NoNewPrivileges, SETUID/SETGID
+bounding set, empty ambient set, private devices, SUID/SGID protection,
+network denial and inaccessible root credential paths. Executables have no
+file capabilities. Bounding metadata alone does not prove the actual parent
+effective capabilities. The old error receipt omitted errno/phase detail; the
+specific denied operation is not known. No service restriction was weakened
+on the basis of this coarse failure.
+
+Prepared `repair_launch_fleet_backup.py`, controller action
+repair-fleet-backups. It requires the exact stopped failure, blocked state and
+no unit overrides. A finite content-free transient probe reuses the public
+capture preflight and actual identity-switch launcher, substituting a body
+that reads only its own identity/status. No profile/credential/archive is read
+or created. Fixed phase, errno, public path kind and numeric helper lines are
+retained. Repeated commands reuse stopped probe receipts without rerunning.
+
+The sole automatic repair admitted is demonstrated missing effective root
+identity-switch authority plus EPERM at child spawn, followed by a successful
+root-only ambient SETUID/SETGID probe within the same bounding set. All owner
+inheritable/ambient capabilities are explicitly cleared before Python; the
+probe requires zero effective/ambient/inheritable caps, no extra groups and
+NNP. No filesystem, device, network or root-key restriction is removed. Exact
+old unit files are preserved, the failed timer is disabled, and only then a
+NEW V2 package/schedule may run 41 fresh encrypted generations. Other causes
+return bounded diagnosis with no automatic installation or backup. This is a
+conditional repair, not a claim that effective capabilities caused the host
+failure or that protected recovery has already succeeded.
+
+Validation: 61 checks PASSED (21 repair, 23 backup, 17 controller), zero
+failures/errors/skips/warnings. Actual unprivileged native setpriv capability
+clearing passed without profile reads or service changes. Conditional
+admission/refusal, private exception-message exclusion, stopped-probe reuse,
+exact original-unit preservation, unknown-override refusal and unchanged
+backup/security contracts passed. Prepared V2 service/timer native static
+validation PASSED without diagnostics at
+`/tmp/ec-fleet-backup-repair-unit-check-3d_pikah`. Protected diagnostic/repair
+execution remains PENDING owner-terminal sudo. Daily backup coverage and
+the remaining production launch/admission gates are still open.
+
 27 October production-launch investigation, read-only under the original
 owner UID: 43 accessible source configurations were inspected (main plus
 42 named profiles), without configuration/credential values in output. Every
