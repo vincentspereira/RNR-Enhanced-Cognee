@@ -129,7 +129,7 @@ def test_prerequisite_batch_continues_independent_recovery_and_reports_both_resu
         if path.name=='recover_launch_graph_operator.py':return {'read_file':read}
         def launch():
             events.append(path.name)
-            if path.name=='qualify_launch_current_model_v2.py':
+            if path.name=='qualify_launch_current_model_v3.py':
                 if model_outcome=='preflight_failure':raise ValueError('invented fixed refusal')
                 return model_outcome
             return 0
@@ -138,7 +138,7 @@ def test_prerequisite_batch_continues_independent_recovery_and_reports_both_resu
     monkeypatch.setitem(scope,'definitions',module)
     result=HELPER['qualify_prerequisites']()
     value=json.loads(capsys.readouterr().out)
-    assert events==['qualify_launch_current_model_v2.py','qualify_launch_program_recovery.py']
+    assert events==['qualify_launch_current_model_v3.py','qualify_launch_program_recovery.py']
     assert value['complete'] is (model_outcome==0) and result==(0 if model_outcome==0 else 1)
     assert value['components']['program_recovery']['complete'] is True
     assert value['components']['current_model']['complete'] is (model_outcome==0)

@@ -239,6 +239,50 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run retained V2 inspection PASSED twice without changing
+state: capture receipt is incomplete at `scope`, error class `other`, and the
+fixed invented project has zero canonical records and zero history versions.
+No model call, credential issuance, payload read or write occurred during these
+inspections. The pinned V2 source sets this phase before constructing AIAgent;
+the failed attempt did not reach a native chat turn. Preserve its fixture and
+all previously completed recovery/native evidence.
+
+Source investigation found a concrete qualification contract defect. V2's own
+and peer project IDs were respectively 36 and 41 characters, while the unchanged
+canonical partition validator admits 1-32 characters. Both old identities fail
+the actual validator. Signed HTTP regression tests using the real security/API
+boundary and request-admission method reproduce HTTP 403 before the budget
+store; corrected identities reach status with HTTP 200. The original host
+HTTP status was not retained, so this confirms a blocker without inventing that
+missing diagnostic. The backend guard is preserved; no schema limit is relaxed.
+
+Prepared V3 with separate pinned root/owner source. It preserves full actor/run
+IDs and uses distinct 28-character own and 27-character peer project IDs derived
+from the run nonce. This affects only a NEW invented qualification scope, not
+any existing profile, credential mapping, namespace or canonical row. Its root
+preflight requires the exact retained V2 stopped scope failure and original
+helper hash. V1/V2 sources and evidence remain unchanged; old commands continue
+to return their retained failures. `qualify-model-scope` selects the new finite
+job; the consolidated command selects it and reuses the passed program job.
+
+V3 has explicit route/provider/status checkpoints, typed HTTP/errno/public-line
+diagnostics and a safe observation saved before full child-receipt validation.
+Unknown/private fields and exception text cannot enter those observations.
+This closes the diagnostic-loss problem without changing native handlers,
+fallback policy, endpoint allowlists or physical model-request limits.
+Root signing/recovery keys remain absent from owner packets/arguments/environment.
+Relevant integrated selection: 68 passed (51 model/contract/receipt checks and
+17 controller checks), zero failures/errors/skips/warnings. The pinned native
+agent/provider/SDK offline fixture also completed invented capture and recall
+with the actual backend partition validator and zero real network operations.
+Protected V3 model qualification remains pending, and fleet admission remains
+false. Source hashes: root driver
+`3d8c9d76fe19067289cf53d9587308b315cb23987a41b3db966f2f08a13b1c63`,
+owner component
+`68e4cee48692fd5759a705153045f489b1d13f87cb41b0699cac1daf99bf7bf4`.
+Delivery branch fetched again and remains exactly `21abf485`; local work was
+preserved. Hosted CI is not inferred from these local operator checks.
+
 27 October owner-run PROGRAM RECOVERY AND EXECUTION PASSED at
 `operator-evidence/program-recovery-l49l8f7u`. New encrypted generation
 `/var/backups/enhanced-cognee/hermes_program_8600c21ecdec4abb9b86409dae376798.tar.age`

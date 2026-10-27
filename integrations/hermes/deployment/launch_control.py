@@ -34,6 +34,7 @@ MAIN_BACKUP_SHA = 'a91b128650b80acf8bcc4d369365daad8d0bba8fdd298e80ffa08e6e4d3e0
 MAIN_CONTINUE_SHA = '547e5bd40aec13c85b3524e15d5732adbfd59b507464182c47f760f7b20c3a25'
 CURRENT_MODEL_SHA = '4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402'
 CURRENT_MODEL_V2_SHA = 'e21579372b94a1a881908e543342fbfcd7582d593ac579d7f2b23a1d805dbda1'
+CURRENT_MODEL_V3_SHA = '3d8c9d76fe19067289cf53d9587308b315cb23987a41b3db966f2f08a13b1c63'
 PROGRAM_RECOVERY_SHA = 'cada57c71e6b651078401412f7cb93b750f5ac056375dde84b4573e8a35630f6'
 
 
@@ -426,7 +427,7 @@ def qualify_prerequisites():
     require(os.geteuid()==0)
     support=definitions(Path(__file__).with_name('recover_launch_graph_operator.py'),SUPPORT_SHA)
     read=support['read_file'];results={}
-    for label,name,digest in [('current_model','qualify_launch_current_model_v2.py',CURRENT_MODEL_V2_SHA),
+    for label,name,digest in [('current_model','qualify_launch_current_model_v3.py',CURRENT_MODEL_V3_SHA),
         ('program_recovery','qualify_launch_program_recovery.py',PROGRAM_RECOVERY_SHA)]:
         module=definitions(Path(__file__).with_name(name),digest)
         try:code=module['launch']()
@@ -476,6 +477,9 @@ if __name__ == '__main__':
             raise SystemExit(model['launch']())
         if sys.argv[1:] == ['continue-current-model']:
             model = definitions(Path(__file__).with_name('qualify_launch_current_model_v2.py'), CURRENT_MODEL_V2_SHA)
+            raise SystemExit(model['launch']())
+        if sys.argv[1:] == ['qualify-model-scope']:
+            model = definitions(Path(__file__).with_name('qualify_launch_current_model_v3.py'), CURRENT_MODEL_V3_SHA)
             raise SystemExit(model['launch']())
         if sys.argv[1:] == ['qualify-program-recovery']:
             program = definitions(Path(__file__).with_name('qualify_launch_program_recovery.py'), PROGRAM_RECOVERY_SHA)

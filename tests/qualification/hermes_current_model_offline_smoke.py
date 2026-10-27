@@ -17,7 +17,7 @@ import tempfile
 from types import SimpleNamespace
 
 DIRECTORY=Path(__file__).resolve().parents[2]/'integrations/hermes/deployment'
-MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='offline_current_model_smoke')
+MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_model_child.py'),run_name='offline_current_model_smoke')
 sys.path.insert(0,str(MODULE['RELEASE']/'repo'))
 PHASE='imports'
 
@@ -32,11 +32,13 @@ def main():
     from plugins import memory as loader
     rows={};counter={'capture':0,'recall':0};active={'stage':'capture'};loaded={}
     ident='b'*32
+    contract=runpy.run_path(str(DIRECTORY.parents[2]/'src/multi_tenant.py'),run_name='offline_backend_partition_contract')
+    for peer in (False,True):contract['validate_tenant_id'](MODULE['identity'](ident,peer)['project_id'])
     content='Fictional Rowan '+ident+' uses a thirteen-day review cycle.'
     def memory(method,path,body=None):
         if path=='/v1/memories/status':
             return dict(ready=True,schema_version=3,encryption='AES-256-GCM',tenant_id='qualification',
-                project_id='zai_'+ident,subject='zai_'+ident,active_records=len(rows),pending_change_events=0,worker_available=True)
+                project_id=MODULE['identity'](ident)['project_id'],subject='zai_'+ident,active_records=len(rows),pending_change_events=0,worker_available=True)
         if path=='/v1/memories/recall':return {'results':list(rows.values())}
         if path=='/v1/memories':
             rows['new-invented-record']=dict(id='new-invented-record',version=1,content=body['content'],state='active')

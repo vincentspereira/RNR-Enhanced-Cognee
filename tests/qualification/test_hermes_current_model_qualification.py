@@ -10,7 +10,9 @@ import pytest
 
 DIRECTORY=Path(__file__).resolve().parents[2]/'integrations/hermes/deployment'
 GUARD=runpy.run_path(str(DIRECTORY/'zai_native_qualification_guard_v2.py'),run_name='zai_guard_unit_tests')
-MODULE=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='current_model_unit_tests')
+DRIVER=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v3.py'),run_name='current_model_unit_tests')
+DRIVER['install_child'](DIRECTORY)
+MODULE={**runpy.run_path(str(DIRECTORY/'qualify_launch_model_child.py'),run_name='model_child_unit_tests'),**DRIVER}
 ERROR=GUARD['GuardError']
 IDENT='a'*32
 
@@ -206,7 +208,7 @@ def test_owner_packet_uses_only_private_stdin(monkeypatch):
         assert kw['input'].splitlines()[0]==b'public-source'
         assert json.loads(kw['input'].splitlines()[1])==value
         assert kw['extra_groups']==() and kw['user']==1234 and kw['stderr'] is MODULE['subprocess'].DEVNULL
-        return SimpleNamespace(stdout=b'{"complete":false,"phase":"identity","error_kind":"ValueError","observation":{}}',returncode=1)
+        return SimpleNamespace(stdout=b'{"complete":false,"phase":"identity","error_kind":"ValueError","observation":{},"http_status":null,"errno":null,"helper_lines":[]}',returncode=1)
     monkeypatch.setattr(MODULE['subprocess'],'run',run)
     result=MODULE['owner']({'owner_program':lambda source:('public',b'public-source\n'),'EXECUTABLE':'/fixed/python'},
         b'public',SimpleNamespace(pw_uid=1234,pw_gid=1234,pw_dir='/fixed/home'),value)
@@ -217,11 +219,11 @@ def test_frozen_pins_and_bounded_owner_program():
     for name,digest in MODULE['PINS'].items():
         assert hashlib.sha256((DIRECTORY/name).read_bytes()).hexdigest()==digest
     helper=runpy.run_path(str(DIRECTORY/'qualify_launch_isolated_accounts.py'),run_name='current_model_owner_protocol')
-    helper['owner_program']((DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes())
+    helper['owner_program']((DIRECTORY/'qualify_launch_model_child.py').read_bytes())
     assert MODULE['identity'](IDENT)['roles']==['api_client']
     assert MODULE['identity'](IDENT)['project_id']!=MODULE['identity'](IDENT,True)['project_id']
     control=runpy.run_path(str(DIRECTORY/'launch_control.py'),run_name='current_model_dispatch_contract')
-    assert hashlib.sha256((DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes()).hexdigest()==control['CURRENT_MODEL_V2_SHA']
+    assert hashlib.sha256((DIRECTORY/'qualify_launch_current_model_v3.py').read_bytes()).hexdigest()==control['CURRENT_MODEL_V3_SHA']
 
 
 def test_repeating_completed_job_only_watches(monkeypatch):
@@ -235,34 +237,129 @@ def test_repeating_completed_job_only_watches(monkeypatch):
 
 @pytest.mark.parametrize('damage',['successful','credentials','phase','source','scope','active_job'])
 def test_continuation_refuses_any_prior_success_effect_or_live_job(monkeypatch,damage):
-    prior=MODULE['BASE']/'operator-evidence/current-model-native-z_rt7ame'
-    value=dict(complete=False,failure_phase='preflight',credentials_issued=0,error_kind='ValueError',
-        operator_helper_sha256='4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402',
-        new_invented_scope='404b12912a5b4abdbd4172ff46422f8b',all_admission_policies_preserved_disabled=True)
+    prior=MODULE['BASE']/'operator-evidence/current-model-native-spnm6ro6'
+    value=dict(complete=False,failure_phase='capture',credentials_issued=2,error_kind='ValueError',
+        operator_helper_sha256='e21579372b94a1a881908e543342fbfcd7582d593ac579d7f2b23a1d805dbda1',
+        new_invented_scope='e04a048d26af4631b2126bcd27a9174a',all_admission_policies_preserved_disabled=True)
     if damage=='successful':value['complete']=True
-    elif damage=='credentials':value['credentials_issued']=2
-    elif damage=='phase':value['failure_phase']='capture'
+    elif damage=='credentials':value['credentials_issued']=0
+    elif damage=='phase':value['failure_phase']='recall'
     elif damage=='source':value['operator_helper_sha256']='0'*64
     elif damage=='scope':value['new_invented_scope']='0'*32
     def read(path,*unused):
+        if path.name=='capture.summary.json':return b'{"complete":false,"phase":"scope","error_kind":"other","observation":{},"http_status":null,"errno":null,"helper_lines":[]}'
         if path.name=='summary.json':return json.dumps(value).encode()
         if path.name=='context.json':return json.dumps(dict(evidence=str(prior),run_id=value['new_invented_scope'])).encode()
-        return (DIRECTORY/'qualify_launch_current_model.py').read_bytes()
-    state=MODULE['retained_zero_call_refusal'].__globals__
+        return (DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes()
+    state=MODULE['retained_scope_refusal'].__globals__
     monkeypatch.setitem(state,'properties',lambda *a:dict(ActiveState='active' if damage=='active_job' else 'inactive',MainPID='0',ControlPID='0'))
-    with pytest.raises(ValueError):MODULE['retained_zero_call_refusal'](read)
+    with pytest.raises(ValueError):MODULE['retained_scope_refusal'](read)
 
 
 def test_exact_zero_call_refusal_can_continue_without_replaying_it(monkeypatch):
-    prior=MODULE['BASE']/'operator-evidence/current-model-native-z_rt7ame'
-    value=dict(complete=False,failure_phase='preflight',credentials_issued=0,error_kind='ValueError',
-        operator_helper_sha256='4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402',
-        new_invented_scope='404b12912a5b4abdbd4172ff46422f8b',all_admission_policies_preserved_disabled=True)
+    prior=MODULE['BASE']/'operator-evidence/current-model-native-spnm6ro6'
+    value=dict(complete=False,failure_phase='capture',credentials_issued=2,error_kind='ValueError',
+        operator_helper_sha256='e21579372b94a1a881908e543342fbfcd7582d593ac579d7f2b23a1d805dbda1',
+        new_invented_scope='e04a048d26af4631b2126bcd27a9174a',all_admission_policies_preserved_disabled=True)
     def read(path,*unused):
+        if path.name=='capture.summary.json':return b'{"complete":false,"phase":"scope","error_kind":"other","observation":{},"http_status":null,"errno":null,"helper_lines":[]}'
         if path.name=='summary.json':return json.dumps(value).encode()
         if path.name=='context.json':return json.dumps(dict(evidence=str(prior),run_id=value['new_invented_scope'])).encode()
-        return (DIRECTORY/'qualify_launch_current_model.py').read_bytes()
-    state=MODULE['retained_zero_call_refusal'].__globals__
+        return (DIRECTORY/'qualify_launch_current_model_v2.py').read_bytes()
+    state=MODULE['retained_scope_refusal'].__globals__
     monkeypatch.setitem(state,'properties',lambda *a:dict(ActiveState='inactive',MainPID='0',ControlPID='0'))
-    assert MODULE['retained_zero_call_refusal'](read)==str(prior)
+    assert MODULE['retained_scope_refusal'](read)==str(prior)
     assert hashlib.sha256((DIRECTORY/'zai_native_qualification_guard.py').read_bytes()).hexdigest()=='1f579b3cbf88b5b922f3e0ff2cda345e496c639fdec79600bb3b92e3e90f5cde'
+
+
+@pytest.mark.parametrize('peer',[False,True])
+def test_new_partitions_obey_real_backend_contract_without_changing_actors(peer):
+    from src.multi_tenant import validate_tenant_id
+    from src.memory_service import MemoryScope
+    from src.security.enterprise_auth import principal_from_claims
+    legacy=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='legacy_bad_partition_regression')
+    old=legacy['identity'](IDENT,peer)
+    with pytest.raises(ValueError):validate_tenant_id(old['project_id'])
+    new=MODULE['identity'](IDENT,peer)
+    assert validate_tenant_id(new['project_id'])==new['project_id'] and len(new['project_id'])<=32
+    assert (new['sub'],new['agent_id'],new['roles'],new['capture_policy'])==(old['sub'],old['agent_id'],old['roles'],old['capture_policy'])
+    scope=MemoryScope.from_principal(principal_from_claims(new,'jwt'))
+    assert scope.project==new['project_id'] and scope.subject==new['sub'] and scope.selected_capture is True
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('peer',[False,True])
+async def test_signed_old_projects_refuse_before_budget_store_while_new_projects_reach_status(monkeypatch,peer):
+    import functools
+    import time
+    import httpx
+    import jwt
+    from src.memory_api import create_app
+    from src.memory_service import MemoryService
+    secret='invented-api-contract-signing-key-at-least-32-bytes'
+    monkeypatch.setenv('ENHANCED_JWT_SECRET',secret)
+    monkeypatch.setenv('ENHANCED_ENV','production')
+    monkeypatch.setenv('ENHANCED_REQUIRE_TENANT','1')
+    for key in ('ENHANCED_API_KEY','ENHANCED_OIDC_ISSUER','ENHANCED_OIDC_JWKS_URI','ENHANCED_OIDC_AUDIENCE'):
+        monkeypatch.delenv(key,raising=False)
+    calls=[]
+    class Connection:
+        async def __aenter__(self):return self
+        async def __aexit__(self,*args):pass
+        async def fetchval(self,sql,*args):
+            assert 'request_budgets' in sql
+            calls.append(args);return 1
+    budget=SimpleNamespace(pool=SimpleNamespace(acquire=lambda:Connection()))
+    async def status(scope):return {'ready':True,'project_id':scope.project,'subject':scope.subject}
+    service=SimpleNamespace(admit_request=functools.partial(MemoryService.admit_request,budget),status=status)
+    app=create_app(service)
+    legacy=runpy.run_path(str(DIRECTORY/'qualify_launch_current_model_v2.py'),run_name='legacy_partition_http_regression')
+    now=int(time.time())
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),base_url='http://localhost') as http:
+        old=jwt.encode(dict(legacy['identity'](IDENT,peer),iat=now,exp=now+600),secret,algorithm='HS256')
+        denied=await http.get('/v1/memories/status',headers={'Authorization':'Bearer '+old})
+        assert denied.status_code==403 and calls==[]
+        claims=MODULE['identity'](IDENT,peer)
+        new=jwt.encode(dict(claims,iat=now,exp=now+600),secret,algorithm='HS256')
+        accepted=await http.get('/v1/memories/status',headers={'Authorization':'Bearer '+new})
+        assert accepted.status_code==200 and accepted.json()['project_id']==claims['project_id'] and len(calls)==1
+
+
+def test_invalid_child_receipt_still_preserves_only_safe_diagnostics(monkeypatch):
+    owner=MODULE['owner'];namespace=owner.__globals__;observed=[]
+    private='invented-model-key-never-written-to-evidence'
+    value=dict(complete=False,phase='memory_status',error_kind='MemoryTransportError',http_status=403,errno=None,
+        helper_lines=[150,205],observation={},private_key=private)
+    monkeypatch.setattr(MODULE['subprocess'],'run',lambda *a,**kw:SimpleNamespace(returncode=1,stdout=json.dumps(value).encode()))
+    monkeypatch.setitem(namespace,'OWNER_OBSERVER',lambda stage,value:observed.append((stage,MODULE['safe_report'](value))))
+    with pytest.raises(ValueError):owner({'owner_program':lambda source:('public',b'public\n'),'EXECUTABLE':'/fixed/python'},
+        b'public',SimpleNamespace(pw_uid=1234,pw_gid=1234,pw_dir='/fixed/home'),packet())
+    assert len(observed)==1 and observed[0][1]['http_status']==403
+    assert private not in json.dumps(observed) and observed[0][1]['helper_lines']==[150,205]
+
+
+def test_child_reports_typed_status_errno_and_public_lines_without_exception_text(monkeypatch,capsys):
+    import io
+    child=MODULE['child'];namespace=child.__globals__
+    class MemoryTransportError(RuntimeError):
+        status_code=403
+        errno=13
+    private='invented-private-message-must-not-escape'
+    def operation(packet):raise MemoryTransportError(private)
+    monkeypatch.setitem(namespace,'child_operation',operation)
+    monkeypatch.setitem(namespace,'PHASE','memory_status')
+    monkeypatch.setitem(namespace,'OBSERVATION',{})
+    monkeypatch.setattr(MODULE['sys'],'stdin',SimpleNamespace(buffer=io.BytesIO(b'{}\n')))
+    with pytest.raises(SystemExit) as stopped:child()
+    result=json.loads(capsys.readouterr().out)
+    assert stopped.value.code==1 and result['error_kind']=='MemoryTransportError'
+    assert result['http_status']==403 and result['errno']==13 and result['helper_lines']
+    assert private not in json.dumps(result)
+    MODULE['validate_result'](result,'capture')
+
+
+def test_prevalidation_projection_handles_malformed_private_fields():
+    value=dict(phase={'private':'not-a-phase'},error_kind=['private'],observation={'requests':{'count':True,'http_statuses':['private']}})
+    result=MODULE['safe_report'](value)
+    assert result['phase']==result['error_kind']=='other' and result['requests']=={}
+    assert 'private' not in json.dumps(result)

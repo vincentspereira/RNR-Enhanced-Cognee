@@ -1,63 +1,65 @@
 # Current configured model qualification in Ubuntu-Hermes
 
-The main operational restore and all 40 named constructor/route/restore passes
-are complete. Reuse their evidence; do not rerun them. The earlier completed
-human-answer conversation used Codex and remains valid within that scope. It
-does not prove the current ZAI endpoint's native tool behavior.
+The main operational restore, protected program restore/execution and all 40
+named constructor/route/restore passes are complete. Reuse their evidence.
+The earlier completed human-answer conversation used Codex and remains valid
+within that scope. Current ZAI native tool behavior is still unqualified.
 
-Run this one consolidated command in the owner's Ubuntu-Hermes terminal:
+The V2 model attempt stopped during scope setup with no canonical rows or
+versions. Its generated project IDs were 36 and 41 characters; the backend
+admits at most 32. An authenticated API regression reproduces refusal of those
+IDs and acceptance of the new bounded ones. V3 retains full actor/run IDs and
+uses distinct bounded own/peer project IDs. Existing data is not renamed.
+
+Run this command for the corrected NEW invented model scope only:
 
 ```bash
-sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py qualify-prerequisites
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py qualify-model-scope
 ```
 
-It freezes reviewed source, creates one new synthetic profile, and runs one
-finite root-controlled job. Restricted owner children use the already configured
-ordinary ZAI key and two new ordinary memory credentials. Private operator keys
-never cross that boundary. The model receives only invented Rowan test material.
-Its first native process should select a durable thirteen-day decision without
-storing the invented credential canary. A separate process should recall the
-saved decision, deliver its evidence to the model and complete its answer. After
-success, only the new invented record is retracted, retaining both versions.
-No completed earlier record is selected or changed.
+It requires the exact stopped V2 scope failure, its original helper hash and
+its capture-stage receipt. Failed fixtures/evidence remain intact. It freezes
+reviewed root and owner source separately, creates one new synthetic profile,
+and runs a finite protected job. Restricted owner children use the configured
+ordinary ZAI key and two new ordinary memory credentials. Root signing,
+encryption and recovery keys never cross the owner boundary.
 
-The consolidated command also runs the independent program recovery job. It
-streams the fixed protected program through AGE encryption, authenticates the
-new generation with the existing protected signing key, and restores into a new
-program directory. A transient unit binds that new copy at its expected /opt
-path only within the unit's mount namespace, then checks Python, SQLite, SDK and
-native imports as the restricted runtime identity. It verifies new-copy inodes,
-denies profile/secret access and networking, and never replaces the live program.
-The static program payload is about 2.04 GB; the job requires 8 GiB free space and
-has a 900-second deadline. It reads no agent-owned profile tree.
+The first native process should select an invented Rowan thirteen-day decision
+without saving an invented sensitive canary. A separate process should recall
+the saved decision, deliver its canonical evidence to the model and complete
+its answer. After success, only the new invented record is retracted, retaining
+history. No old completed record or failed scope is edited or replayed.
 
-The first qualify-current-model job stopped in preflight with zero credentials
-and zero model calls because it required the general API path. Read-only owner
-metadata confirms the configured path is /api/coding/paas/v4. V2 requires that
-exact retained zero-call refusal, its original source hash and a stopped job,
-then makes one new invented attempt against the actual configured path. The
-old helper, guard, failed evidence and source configuration remain unchanged.
-Repeating qualify-prerequisites reuses the V2 result and program job. A failure
-in one component does not prevent independent program recovery. The final JSON
-contains both component receipts and leaves admission and fleet approval false.
-Individual continue-current-model and qualify-program-recovery modes attach to
-these same jobs. The old qualify-current-model mode still returns its original
-failure; it does not silently start V2. No mode automatically repeats model turns.
+Setup diagnostics distinguish route resolution, provider discovery, provider
+initialization and memory status. They include only typed HTTP/errno/public-line
+metadata. Root saves a safe observation before validating the full receipt.
+Prompts, replies, keys and exception text are not recorded. Unexpected errors
+remain failures; diagnostics never convert an incomplete turn into a pass.
 
-The configured route is glm-5.3-flash at the existing open.bigmodel.cn Coding API
-path. There is no alternate general API endpoint, account rotation, model
-fallback, retry after an HTTP/transport error, or new subscription. Six physical
-model requests per process and 2048 output tokens per request are upper bounds,
-not a promise that the model will finish within them. Native guards remain in
-place. Maximum served context is not established by this small test.
+The configured route is glm-5.3-flash at the existing open.bigmodel.cn Coding
+path /api/coding/paas/v4. There is no alternate endpoint, account rotation,
+model fallback, automatic retry after an HTTP/transport error, or subscription
+change. Six physical model requests per process and 2048 output tokens per
+request are upper bounds. Native guards remain intact. Maximum served context
+is not established by this small test.
 
-Progress prints approximately every 15 seconds. Ctrl+C detaches the view; the
-finite job continues. Repeating the same command reattaches and returns the same
-retained result without starting model turns again. Return only the final JSON
-summary, never passwords, tokens, keys, prompts or private file contents. If it
-fails, preserve its evidence and inspect the sanitized per-stage summaries.
+Progress prints approximately every 15 seconds. Ctrl+C detaches the current
+view; the finite job continues. Repeating qualify-model-scope attaches to that
+same V3 job and does not repeat turns. Return only its final JSON summary.
 
-This command does not admit real profiles or activate fleet policies. Program
-recovery is a frozen dependency snapshot, not a fresh-machine source build.
-Main reference coverage, production per-UID dispatch, fleet renewal/reload and
-final switch review remain separate requirements.
+The program recovery pass is retained at program-recovery-l49l8f7u. Its new
+AGE generation restored all 42,510 files and 1,064 internal links (about 2.04 GB),
+and the restricted namespace executed the recovered program. The original
+installation, profiles and live services were preserved. This is frozen program
+snapshot recovery, not a fresh-machine source build. Do not create another
+program generation to repeat it.
+
+qualify-prerequisites now selects V3 and collects the retained program result.
+The old qualify-current-model and continue-current-model modes still return
+the original V1/V2 failures. No mode replays those attempts or completed records.
+The prior runbook was archived privately before this update; historical evidence
+and failure details remain in HERMES-SYSTEM-WIDE-LAUNCH-2026-10-24.md.
+
+This command does not admit real profiles or activate fleet policies. Main
+reference coverage, production per-UID dispatch, fleet renewal/reload and final
+switch review remain separate requirements.
