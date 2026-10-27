@@ -1,0 +1,75 @@
+{
+  "environment": "Ubuntu-Hermes",
+  "date": "2026-10-27",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "source_parent": "00ebd903e0641aea9120043136ec399f1944caa6",
+  "public_source_sha256": {
+    "isolated_native_text_ingress.py": "579122e02485597535f71fd6f8f40250a6a231e1dd6e99a4bab7f95689fa88a9",
+    "probe_isolated_native_text_ingress.py": "7afcbc1804bb1eca4d4ff95f244abea615f52074b6f8c4165d478100c84536b3",
+    "qualify_isolated_native_text_ingress.py": "024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9",
+    "launch_control.py": "4999087a6dd46ca10adb2d0ee10a4ad1b447248694e0001debfb64c422efe26c"
+  },
+  "owner_reported_transport_pass": {
+    "evidence": "operator-evidence/isolated-transport-skxdwk5_",
+    "operator_helper_sha256": "0fc198a6942a5b37ad2535504f6544e3652f41a728e3d3a470eebf8b4e007e57",
+    "transport_component_sha256": "543a712ebe8ab95bdd9ab48bb202e71be116e5a51ea138236f0a4baa6acf9711",
+    "binding_manifest_sha256": "0ac7793980b60bceb14fa9b57a49b9db09cafbf729e22f9b1585bea960b29e3b",
+    "distinct_restricted_uids": 2,
+    "completed_cases": 3,
+    "complete": true,
+    "kernel_authenticated_transport_qualified": true
+  },
+  "targeted_source_tests": {
+    "passed": 72,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings": 0,
+    "native_type_doubles_in_unit_tests": true
+  },
+  "installed_native_offline_fixture": {
+    "python": "3.14.7",
+    "same_uid_fixture_only": true,
+    "six_exchanges_passed": true,
+    "real_native_event_conversion": true,
+    "network_attempts": 0,
+    "real_profile_access_attempts": 0,
+    "subprocess_attempts": 0,
+    "model_called": false,
+    "memory_api_called": false
+  },
+  "current_delivery_ci": {
+    "required": {
+      "run": 40055830507,
+      "result": "success"
+    },
+    "memory": {
+      "run": 40055830334,
+      "result": "success"
+    },
+    "canonical_stack": {
+      "run": 40055830340,
+      "result": "success"
+    },
+    "dashboard": {
+      "run": 40055830325,
+      "result": "success"
+    },
+    "broader_ci": {
+      "run": 40055830266,
+      "result": "failure"
+    },
+    "full_runtime": {
+      "run": 40055830273,
+      "result": "failure"
+    }
+  },
+  "protected_distinct_uid_native_check": "prepared_not_executed",
+  "production_dispatch_qualified": false,
+  "native_gateway_integration_qualified": false,
+  "actual_profile_admission_qualified": false,
+  "fleet_launch_approved": false,
+  "all_admission_policies_preserved_disabled": true,
+  "historical_completed_tests_replayed": false
+}

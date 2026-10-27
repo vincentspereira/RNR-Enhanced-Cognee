@@ -1,12 +1,24 @@
 # Isolated gateway transport - local kernel identity qualification
 
+27 October protected result: PASSED at
+`operator-evidence/isolated-transport-skxdwk5_`, exact backend revision
+`21abf4857ca8dce8e0a3aafc725266c8d3754529`. The owner returned a complete
+receipt for helper `0fc198a6942a5b37ad2535504f6544e3652f41a728e3d3a470eebf8b4e007e57`,
+transport `543a712ebe8ab95bdd9ab48bb202e71be116e5a51ea138236f0a4baa6acf9711`
+and binding manifest
+`0ac7793980b60bceb14fa9b57a49b9db09cafbf729e22f9b1585bea960b29e3b`.
+All three cases passed under two distinct restricted UIDs. No real profile
+contents, credentials, keys, models, APIs, services or memory records changed.
+All policies remain disabled. Preserve this pass; do not replay it. The next
+prepared component check is [native DM text ingress](HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md).
+
 Daily candidate backup installation passed for all 41 candidates. Main provider,
 scope/index/OS checks and all 40 named credential/reload/recovery passes are
 retained. This step implements and tests a necessary transport boundary for a
 future shared frontend and separately owned bot runtimes. It does not implement
 the complete native dispatcher or approve production admission.
 
-Run one finite command in the owner's Ubuntu-Hermes terminal:
+Historical command, now completed; repeating it returns the retained receipt:
 
 ```bash
 sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py qualify-isolated-transport

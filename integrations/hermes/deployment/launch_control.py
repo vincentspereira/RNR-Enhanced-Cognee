@@ -43,6 +43,7 @@ COMPLETION_CONTINUE_SHA = '409de8a25e773489874167f325865c11239ef756e0fa342f1396d
 FLEET_BACKUPS_SHA = 'cfd9eb39d10951d56235b25d111352d6bebe527360007f0fff8bbc65f7a77a13'
 FLEET_BACKUPS_REPAIR_SHA = '19956e7f031a0e70d9758bb8e9aede7c13f631f44ebfb8b7e50727eec8dcb16b'
 ISOLATED_TRANSPORT_SHA = '0fc198a6942a5b37ad2535504f6544e3652f41a728e3d3a470eebf8b4e007e57'
+NATIVE_TEXT_INGRESS_SHA = '024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9'
 
 
 def require(value):
@@ -494,6 +495,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['prepare-fleet-review']:
             review = definitions(Path(__file__).with_name('prepare_launch_fleet_review.py'), FLEET_REVIEW_SHA)
             raise SystemExit(review['main']())
+        if sys.argv[1:] == ['qualify-native-text-ingress']:
+            native = definitions(Path(__file__).with_name('qualify_isolated_native_text_ingress.py'), NATIVE_TEXT_INGRESS_SHA)
+            raise SystemExit(native['main']())
         if sys.argv[1:] == ['qualify-isolated-transport']:
             transport = definitions(Path(__file__).with_name('qualify_isolated_gateway_transport.py'), ISOLATED_TRANSPORT_SHA)
             raise SystemExit(transport['main']())

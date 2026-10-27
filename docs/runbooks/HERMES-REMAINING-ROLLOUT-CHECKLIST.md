@@ -7,9 +7,12 @@ scheduling proof passed. The current ZAI model capture/recall, native human
 answer, canonical/derived recovery and custody passes remain retained.
 See [current candidate evidence](HERMES-CONSOLIDATED-CANDIDATE-BATCHES.md).
 The dated unresolved checkpoints below are historical; do not replay them.
-The next prepared operation installs and verifies
-[daily backup coverage for all 41 qualified candidates](HERMES-QUALIFIED-FLEET-DAILY-BACKUPS.md).
-It has not run yet. Production bot/CLI dispatch and explicit launch binding,
+The owner-run [daily backup coverage for all 41 qualified candidates](HERMES-QUALIFIED-FLEET-DAILY-BACKUPS.md)
+and [kernel-authenticated transport under two restricted UIDs](HERMES-ISOLATED-GATEWAY-TRANSPORT.md)
+have now PASSED. The next prepared finite check connects that channel to
+[native DM text authorization and clarification handling](HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md).
+The protected native check is pending; offline same-UID native execution passed.
+Production bot/CLI dispatch and explicit launch binding,
 main tools/MCP and served-context coverage, unattended admitted-fleet operation,
 the two deferred existing bindings and final mapping/switch review remain open.
 No whole-fleet activation or main merge is approved by these component passes.

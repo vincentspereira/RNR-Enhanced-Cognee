@@ -239,6 +239,53 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run KERNEL TRANSPORT PASSED at
+`operator-evidence/isolated-transport-skxdwk5_`, helper `0fc198a694...`,
+transport `543a712ebe...`, manifest `0ac7793980...`. All three cases passed
+under two distinct restricted UIDs. No profile contents, keys, credentials,
+models, APIs, memory edits or installed services were involved. Policies remain
+disabled; production dispatch/native integration/admission/fleet approval
+remain false. This closes the protected transport-pending checkpoint below;
+do not replay the completed command.
+
+Next native component implemented: isolated_native_text_ingress.py converts
+closed text DMs into actual Hermes native events with no internal/local-trust,
+delegated authorization or caller-selected profile/session authority. Existing
+native authorization, secret scoping, commands and clarification handling run
+unchanged. Unsupported native contexts are refused. Serialized dispatch keeps
+bounded non-evicting request reservations through handler errors/cancellation;
+durable restart-safe execution and complete native adapter semantics remain
+unimplemented. No production frontend, listener or adapter is activated.
+
+Validation: 72 targeted checks PASSED, zero failures/errors/skips/warnings
+(42 bridge, 13 protected qualifier, 17 controller). Separate actual installed
+Python 3.14.7 offline same-UID fixture execution PASSED all six invented
+exchanges: authorized help, unauthorized sender, duplicate, help preserving a
+pending clarification, unauthorized answer, then authorized resolution. Actual
+native event conversion passed; network/profile/subprocess counters were zero.
+An earlier fixture-only preservation failure came from importlib inspecting
+the public source directory under /home; copying public components to /tmp
+resolved it without relaxing the profile guard. Three immutable-result test
+fixtures initially failed because their support double lacked definitions;
+the complete support fixture now passes. These failures remain distinct from
+the final source/native passes and do not count as protected host failures.
+
+Prepared qualify-native-text-ingress requires the exact completed transport,
+backup membership, disabled policies and pinned installed native entrypoints.
+It freezes public code, uses two existing restricted UIDs and a new invented
+worker-owned fixture with no real-profile/key/API/model access. Protected
+execution remains PENDING. Repeating complete/failed results never replays them.
+See [finite native check](../../../runbooks/HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md).
+Production frontend/callbacks/media/groups/durable delivery, main tools/context,
+admitted unattended operation, deferred bindings and final mapping/switch
+review remain open. Completed implementation and 40-profile qualification,
+model, native-human-answer, recovery, custody and backup passes are retained.
+
+Delivery was fetched again and still resolves exactly to 21abf485. Current
+GitHub results remain unchanged: required/memory/stack/dashboard PASS; broader
+coverage CI and full-runtime container audit FAIL. The legacy findings remain
+visible; no main merge or audit suppression occurred.
+
 27 October owner-run V2 ROOT IDENTITY REPAIR AND DAILY BACKUP PASSED at
 `operator-fleet-daily-backups-v2/run-54_yvptg`, helper `19956e7f...`. The
 protected root identity-switch correction was qualified with zero owner
