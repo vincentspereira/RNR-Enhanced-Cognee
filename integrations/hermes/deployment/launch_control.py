@@ -38,6 +38,7 @@ CURRENT_MODEL_V3_SHA = '3d8c9d76fe19067289cf53d9587308b315cb23987a41b3db966f2f08
 CURRENT_MODEL_FINISH_SHA = 'ddf3b82e294b7b723463a82a66098fb6d52edd370f9fd1344696368b500a0123'
 PROGRAM_RECOVERY_SHA = 'cada57c71e6b651078401412f7cb93b750f5ac056375dde84b4573e8a35630f6'
 FLEET_REVIEW_SHA = '554ac7b170a2d9e1a98557fc7c943cac27e2f23f3569d6bbccb899629cc2ec69'
+COMPLETION_BATCH_SHA = 'd99a819e0c64a5e0d60632f15c8ff3fb57cbf294c4ed33865605702b5796becc'
 
 
 def require(value):
@@ -489,6 +490,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['prepare-fleet-review']:
             review = definitions(Path(__file__).with_name('prepare_launch_fleet_review.py'), FLEET_REVIEW_SHA)
             raise SystemExit(review['main']())
+        if sys.argv[1:] in (['implementation-batch'], ['qualification-batch']):
+            batch = definitions(Path(__file__).with_name('launch_completion_batch.py'), COMPLETION_BATCH_SHA)
+            raise SystemExit(batch['launch']('implementation' if sys.argv[1] == 'implementation-batch' else 'qualification'))
         if sys.argv[1:] == ['qualify-program-recovery']:
             program = definitions(Path(__file__).with_name('qualify_launch_program_recovery.py'), PROGRAM_RECOVERY_SHA)
             raise SystemExit(program['launch']())

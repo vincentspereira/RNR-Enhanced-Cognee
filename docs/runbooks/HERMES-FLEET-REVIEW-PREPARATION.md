@@ -1,5 +1,12 @@
 # Disabled fleet issuer and main reference preparation
 
+27 October owner-run preparation PASSED at `operator-evidence/fleet-review-mpynoz8c`.
+All 40 distinct-UID policy rows remain disabled; zero credentials, profile or
+service changes occurred. The restored main configuration matches its source,
+with four MCP definitions and one unresolved reference. Reuse this completed
+preparation. Continue with [the consolidated candidate batches](HERMES-CONSOLIDATED-CANDIDATE-BATCHES.md).
+The command below now returns the retained preparation result.
+
 Current protected model capture/recall, all 40 named constructor/route/restore
 checks, main operational snapshot recovery and frozen program restore/execution
 have passed. Reuse their exact evidence. This step prepares remaining fleet

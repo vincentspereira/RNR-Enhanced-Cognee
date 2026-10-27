@@ -239,6 +239,88 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run FLEET REVIEW PREPARATION PASSED at
+`operator-evidence/fleet-review-mpynoz8c`, helper `554ac7b1...`. The disabled
+issuer preflight passed with 40 entries, 40 distinct UIDs and zero admitted
+entries, credentials, timer/service or original-profile changes. Main restored
+configuration matches its retained source, uses the expected model, retains
+four MCP definitions and has one unresolved reference. Enhanced Cognee is
+not yet selected there. Two existing qualification bindings remain deferred.
+All policies stayed disabled; fleet approval and main coverage remained false.
+
+Owner-only structured metadata identified that reference as the filesystem
+MCP argument pointing to the original owner's whole agent-workspace, not an
+assigned-project directory. That workspace was not traversed or copied. The
+prepared inactive main transformation narrows the one exact argument to its
+own private workspace, adds selected memory and preserves all other settings
+and four MCP definitions. An in-memory check against the actual owner config
+passed without source writes, startup actions or private output.
+
+Prepared two consolidated, checkpointed jobs: `implementation-batch` and
+`qualification-batch`. The first verifies retained passes and frozen public
+code, current native/provider pins and protected paths. A restricted reader
+returns only the qualified model fixture's key digest after checking unchanged
+kernel change time against its protected completion receipt; O_NOATIME
+preserves read bookkeeping. The current ordinary key must match. Only the
+inactive main restore is configured, preserving its old placeholder, settings,
+environment and OAuth. A new encrypted signed generation is authenticated,
+decrypted and restored into a NEW private copy with consistent SQLite images,
+fixed provider reconstruction and actual restored-scope API authentication.
+A disabled daily-backup membership draft covers 41 candidates. No production
+timer, profile or existing launcher is activated or replaced.
+
+The second job uses one explicit transient 15-second timer. Main qualification
+writes one NEW invented record, checks own-scope semantic/graph results and
+actual OS denial of peer/operator/recovery files. A separate peer UID receives
+only its own ordinary credential and must deny history. Retraction at version
+1 follows only after that denial, retaining both versions and proving actual
+withdrawal. Existing completed records and the current-model pass are untouched.
+
+The same job qualifies all 40 named candidates, retaining per-profile source
+bindings, progress and completed receipts. Expired credentials require explicit
+operator recovery under disabled gates; existing unattended renewal still
+refuses expiry. Prepared/published journals and old environments are retained.
+Each real native ZAI gateway must reuse its cached agent, observe ordinary
+token replacement, rebuild and bind the new credential, then reuse that agent.
+The resolved ordinary model key must match the shared qualified key. Model
+calls/platform adapters are forbidden. Changed candidates receive new encrypted
+restores; partial effects get best-effort backup. A failure stops later rows
+without replay. PID-1 journal proof and a separate stopped-job finish receipt
+bind actual scheduled publication. This is a one-off candidate component
+qualification, not proof of a live production due-time renewal loop.
+
+Validation: 62 targeted tests PASSED (21 grouped-job/transport/checkpoint
+checks, 24 main/archive/expiry/key-binding checks and 17 controller checks),
+zero failures/errors/skips/warnings. The pinned native ZAI GatewayRunner,
+AIAgent and provider also passed offline cache replacement with two simulated
+memory requests, zero real network operations and zero model requests.
+Initial offline fixture path/observation failures were corrected; they were
+not installed failures or model retries. Tests exercise actual SQLite backup,
+GNU long names, exact provider reconstruction, HMAC tamper refusal, unchanged
+unattended expiry refusal, interruption reconciliation and key-file time guards.
+These are local/synthetic checks. Protected execution of both new jobs is
+PENDING; no corresponding host pass or fleet activation is claimed.
+
+Production cross-UID platform dispatch remains an implementation gate. Main
+MCP/tool program coverage, verified served context, installed daily backup
+membership, final unattended operation/admission and the final mapping/switch
+review remain open. Existing canonical/index/recovery/model/custody passes
+are retained. Backend 21abf485 remains selected; broader legacy/full-runtime
+CI failures remain separate and visible, with no weakened audit or main merge.
+
+27 October refresh fetched `origin/codex/hermes-memory-hardening` without
+changing either checkout; it still resolves to exact backend
+`21abf4857ca8dce8e0a3aafc725266c8d3754529`. Public GitHub Actions results
+remain: Required CI 40055830507 PASS, project memory 40055830334 PASS,
+canonical stack 40055830340 PASS and dashboard 40055830325 PASS. Broad
+CI/CD 40055830266 and full runtime 40055830273 remain FAILED; label automation
+was skipped. These are backend revision results, not hosted qualification
+of the newly prepared operator helpers. The session still cannot use the
+owner's terminal-specific sudo timestamp (`sudo -n` requires a password).
+Both new protected jobs must be run in the owner's local terminal; no new
+protected execution pass is claimed.
+
+
 27 October owner-run CURRENT CONFIGURED MODEL CAPTURE/RECALL PASSED at
 `operator-evidence/model-recall-finish-fdu97vca` on backend `21abf485` with
 helper `ddf3b82e294b7b723463a82a66098fb6d52edd370f9fd1344696368b500a0123`.
