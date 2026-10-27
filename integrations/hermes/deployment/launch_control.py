@@ -31,6 +31,7 @@ REPAIR_SHA = '1e73ee58a276960130c7f118a63bfbd2e1ea1a81c0e2ab33bfd6b83abd936192'
 FINISH_SHA = '6310e49d7d8b4128e3b24d73fcf1093e93433ab702e853a05a0513edbfd8003e'
 ROUTES_SHA = '6dbf807c3c4eb4cc9da1834fc3cfc13747f9b7a456997a0e66ce076e6b5fe625'
 MAIN_BACKUP_SHA = 'a91b128650b80acf8bcc4d369365daad8d0bba8fdd298e80ffa08e6e4d3e0f9a'
+MAIN_CONTINUE_SHA = '547e5bd40aec13c85b3524e15d5732adbfd59b507464182c47f760f7b20c3a25'
 
 
 def require(value):
@@ -437,6 +438,9 @@ if __name__ == '__main__':
             raise SystemExit(routes['launch']())
         if sys.argv[1:] == ['backup-main']:
             main = definitions(Path(__file__).with_name('backup_launch_main_operational.py'), MAIN_BACKUP_SHA)
+            raise SystemExit(main['launch']())
+        if sys.argv[1:] == ['continue-main-backup']:
+            main = definitions(Path(__file__).with_name('continue_launch_main_operational.py'), MAIN_CONTINUE_SHA)
             raise SystemExit(main['launch']())
         require(sys.argv[1:] in (['resume'],['status']))
         resume = definitions(Path(__file__).with_name('resume_launch_named_providers.py'),RESUME_SHA)

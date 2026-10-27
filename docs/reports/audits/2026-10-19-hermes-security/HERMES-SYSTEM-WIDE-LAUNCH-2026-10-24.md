@@ -239,6 +239,76 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run named batch PASSED at
+`operator-evidence/named-runtime-routes-ivk3f5hw`: all 40 selected candidates
+qualified with zero failures/unattempted profiles and the job stopped. All 40
+explicit model routes and refreshed encrypted candidate restores passed; the
+first existing ordinary model key/restore was reused and only 39 missing keys
+were localized. No memory credential was issued, no canonical edit/model chat/
+platform adapter occurred, and every admission policy remained disabled.
+The owner's repeated command returned the same completed evidence without
+replaying checks. Actual chat responses, production dispatch, main coverage
+and fleet unattended renewal remain separate qualifications.
+
+The first main job STOPPED during owner capture at
+`operator-evidence/main-operational-recovery-pi4m1pnq`: zero encrypted generations,
+zero restore attempts, no generation write started, and no candidate restore
+could exist. Its repeated command reattached to that failed receipt. Existing
+helpers/sources and this failed job remain intact.
+
+Owner-only local diagnostics reproduced the capture refusals without writing
+a plaintext archive or exposing private contents. The first was replacement
+of spawn-ledger.json between inventory and read. Pinned process_identity.py
+defines it as machine process identity, not recoverable user data. Public
+gateway/status/watchdog/scale-to-zero sources also establish the exact PID,
+runtime-status and heartbeat artifacts. V3 explicitly records those reviewed
+coordination files and their known atomic temporary names as omissions. It
+compares durable directory membership independently of omitted-file churn,
+retaining identity/type/link checks and strict before/during/after checks on
+every included plain file. Unknown members and changed durable files still
+refuse capture; no arbitrary heartbeat/lock pattern is ignored.
+
+The next diagnostic found live commits to shared-state.db, which holds durable
+room-policy state and is retained. Explicit online mode now pins a read
+transaction only while copying each SQLite database through the backup API,
+then releases it before serializing/checking the image. Completed images pass
+quick_check and hashed restoration. Strict mode remains the default and still
+rejects concurrent commits. Online receipts report observed source changes and
+global_atomic_snapshot_qualified=false; they prove consistent database images,
+not a simultaneous transaction across separate databases. This follows the
+[SQLite online backup API](https://www.sqlite.org/backup.html) and
+[read-snapshot isolation](https://www.sqlite.org/isolation.html). Live bot writers
+are neither stopped nor logically modified by the backup code.
+
+Metadata-only preflight also identified ten valid names beyond USTAR's
+100-character name field. New main archives use GNU long-name records while
+retaining 255-character path bounds, complete validation before restore,
+NoFollow/new-directory writes, and refusal of links, sparse/PAX members,
+traversal and coverage inflation. The original V1/V2 capture components and
+old failed operator remain unchanged.
+
+The final unprivileged owner diagnostic captured the actual main tree in RAM:
+5456 files, 8 consistent SQLite snapshots, 375286108 payload bytes, 24 recorded
+omissions and 14 rebuilt sidecars. It observed no committed DB change in that
+specific run, preserved included plain files, and discarded the plaintext
+archive. This is actual owner capture evidence, not protected encryption or
+restoration. Sanitized diagnostics remain in ignored private local evidence.
+
+Prepared one finite `launch_control.py continue-main-backup` job. It admits
+only the retained zero-generation failure with a quiescent prior unit and
+exact source pins. It uses the reviewed capture variant, existing AGE/HMAC
+custody and binary owner pipes to create a NEW generation and a NEW private
+restore folder under the planned main account. Fixed checkpoint/reason
+diagnostics now survive failed owner calls; exception text and paths do not.
+Main full-coverage, executable-rebuild and admission flags stay false. Source
+pins: operator
+`547e5bd40aec13c85b3524e15d5732adbfd59b507464182c47f760f7b20c3a25`,
+capture V3 `e32266d8a797eeaca2a32247f861cbf725341cce960eeb73d3db57987c99c106`.
+Final relevant local selection: 84 passed, zero failures/errors/skips/warnings.
+Exact delivery branch was fetched and remains 21abf485. Required CI, project
+memory, canonical stack and dashboard still succeed; broad CI/CD/full-runtime
+failures remain visible and unchanged. No main merge or fleet switch is admitted.
+
 Prepared the independent `launch_control.py backup-main` step while the owner
 qualification command was pending. It runs one finite protected job, captures
 main operational data through the original owner's restricted child, encrypts

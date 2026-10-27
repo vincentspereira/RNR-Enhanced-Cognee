@@ -11,7 +11,7 @@ import tarfile
 
 import pytest
 
-SOURCE = Path(__file__).resolve().parents[2] / 'integrations/hermes/deployment/capture_main_operational_profile_v2.py'
+SOURCE = Path(__file__).resolve().parents[2] / 'integrations/hermes/deployment/capture_main_operational_profile_v3.py'
 spec = importlib.util.spec_from_file_location('named_profile_capture', SOURCE)
 helper = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(helper)
@@ -78,6 +78,37 @@ def test_committed_database_change_during_capture_refuses_generation(tmp_path, m
     monkeypatch.setattr(helper.sqlite3, 'connect', connect)
     with pytest.raises(helper.CaptureError):
         helper.capture(tmp_path)
+    writer.close()
+
+
+def test_online_database_read_transaction_preserves_snapshot_during_live_wal_commit(tmp_path,monkeypatch):
+    path=tmp_path/'state.db'
+    writer=sqlite3.connect(path)
+    writer.execute('PRAGMA journal_mode=WAL')
+    writer.execute('CREATE TABLE invented(x)')
+    writer.execute('INSERT INTO invented VALUES (1)')
+    writer.commit()
+    original=sqlite3.connect
+    class ReadSnapshot:
+        def __init__(self, connection): self.connection=connection
+        def __getattr__(self,name): return getattr(self.connection,name)
+        def backup(self,*args,**kwargs):
+            self.connection.backup(*args,**kwargs)
+            writer.execute('INSERT INTO invented VALUES (2)')
+            writer.commit()
+    def connect(*args,**kwargs):
+        connection=original(*args,**kwargs)
+        return ReadSnapshot(connection) if 'mode=ro' in str(args[0]) else connection
+    monkeypatch.setattr(helper.sqlite3,'connect',connect)
+    payload,receipt=helper.capture(tmp_path,online_databases=True)
+    destination,proof=helper.restore(payload)
+    with original(Path(destination)/'state.db') as restored:
+        assert restored.execute('SELECT x FROM invented').fetchall()==[(1,)]
+    assert writer.execute('SELECT x FROM invented').fetchall()==[(1,),(2,)]
+    assert receipt['database_snapshots_consistent'] is True
+    assert receipt['database_versions_stable'] is False and receipt['live_database_changes_observed']==1
+    assert receipt['database_snapshot_mode']==proof['database_snapshot_mode']=='read_transaction_per_database'
+    assert receipt['global_atomic_snapshot_qualified'] is proof['global_atomic_snapshot_qualified'] is False
     writer.close()
 
 
@@ -264,7 +295,76 @@ def test_excluded_project_is_not_opened_or_archived(tmp_path, monkeypatch):
     assert manifest['omitted'] == [{'path':excluded.name, 'reason':'excluded_project_not_traversed'}]
 
 
-@pytest.mark.parametrize('field', ['full_profile_recovery_qualified', 'executable_rebuild_qualified', 'sqlite_databases'])
+def test_live_coordination_updates_do_not_invalidate_durable_state(tmp_path, monkeypatch):
+    (tmp_path/'state').mkdir()
+    paths=['spawn-ledger.json','gateway_state.json','state/gateway.heartbeat','state/dashboard_clients.heartbeat']
+    for name in paths:(tmp_path/name).write_bytes(b'invented-original-runtime-identity')
+    with sqlite3.connect(tmp_path/'state.db') as db:
+        db.execute('CREATE TABLE invented(x)')
+        db.execute('INSERT INTO invented VALUES (7)')
+    original=sqlite3.connect
+    def connect(*args, **kwargs):
+        if 'mode=ro' in str(args[0]):
+            for name in paths:
+                target=tmp_path/name
+                stage=target.with_name('.'+target.stem+'_abcdefgh.tmp')
+                stage.write_bytes(b'invented-replaced-runtime-identity')
+                os.replace(stage,target)
+        return original(*args,**kwargs)
+    monkeypatch.setattr(helper.sqlite3,'connect',connect)
+    archive,receipt=helper.capture(tmp_path)
+    with tarfile.open(fileobj=io.BytesIO(archive)) as bundle:
+        manifest=json.load(bundle.extractfile('profile-manifest.json'))
+        assert all(name not in bundle.getnames() for name in paths)
+        assert {row['path'] for row in manifest['omitted']}==set(paths)
+        assert {row['reason'] for row in manifest['omitted']}=={'live_process_coordination_not_restored'}
+    assert receipt['database_versions_stable'] and receipt['plain_files_stable']
+    assert all((tmp_path/name).read_bytes()==b'invented-replaced-runtime-identity' for name in paths)
+
+
+def test_durable_change_is_refused_even_when_coordination_changes_too(tmp_path,monkeypatch):
+    (tmp_path/'spawn-ledger.json').write_bytes(b'invented-pid')
+    (tmp_path/'config.yaml').write_bytes(b'invented-original-setting')
+    with sqlite3.connect(tmp_path/'state.db') as db:db.execute('CREATE TABLE invented(x)')
+    original=sqlite3.connect
+    def connect(*args,**kwargs):
+        if 'mode=ro' in str(args[0]):
+            (tmp_path/'spawn-ledger.json').write_bytes(b'invented-new-pid')
+            (tmp_path/'config.yaml').write_bytes(b'invented-changed-setting')
+        return original(*args,**kwargs)
+    monkeypatch.setattr(helper.sqlite3,'connect',connect)
+    with pytest.raises(helper.CaptureError) as result:helper.capture(tmp_path)
+    assert result.value.checkpoint=='payload_read'
+    assert result.value.reason=='durable_file_changed_before_read'
+    assert str(result.value)=='main_operational_capture_refused'
+
+
+@pytest.mark.parametrize('name',['spawn-ledger.json','.spawn-ledger_abcdefgh.tmp','state/gateway.heartbeat'])
+def test_runtime_omissions_never_follow_links(tmp_path,name):
+    (tmp_path/'state').mkdir()
+    (tmp_path/name).symlink_to('/invented/not-readable')
+    with pytest.raises(helper.CaptureError):helper.capture(tmp_path)
+
+
+def test_valid_long_filename_round_trips_without_weakening_path_validation(tmp_path):
+    name='invented-'+('x'*141)
+    (tmp_path/name).write_bytes(b'invented-durable-long-name')
+    payload,receipt=helper.capture(tmp_path)
+    destination,proof=helper.restore(payload)
+    assert (Path(destination)/name).read_bytes()==b'invented-durable-long-name'
+    assert proof['private_restore_verified'] and receipt['plaintext_archive_written'] is False
+
+
+def test_oversized_gnu_long_name_refuses_before_any_restore_write(monkeypatch):
+    payload=io.BytesIO()
+    with tarfile.open(fileobj=payload,mode='w',format=tarfile.GNU_FORMAT) as archive:
+        entry=tarfile.TarInfo('x'*256);entry.mode=0o600;archive.addfile(entry,io.BytesIO(b''))
+    monkeypatch.setattr(helper.tempfile,'mkdtemp',lambda **kw:pytest.fail('invalid long name wrote a restore'))
+    with pytest.raises(helper.CaptureError):helper.restore(payload.getvalue())
+
+
+@pytest.mark.parametrize('field', ['full_profile_recovery_qualified', 'executable_rebuild_qualified', 'sqlite_databases',
+                                  'snapshot_database_count','global_atomic_snapshot_qualified'])
 def test_archive_cannot_inflate_coverage_or_database_count(tmp_path, monkeypatch, field):
     (tmp_path / 'invented.txt').write_bytes(b'invented')
     payload, _ = helper.capture(tmp_path)
