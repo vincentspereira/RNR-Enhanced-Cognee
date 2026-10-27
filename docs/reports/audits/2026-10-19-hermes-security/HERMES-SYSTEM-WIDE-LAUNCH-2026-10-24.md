@@ -239,6 +239,65 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run MAIN OPERATIONAL RESTORE PASSED at
+`operator-evidence/main-operational-recovery-0xjyrv2b`. One new authenticated
+encrypted generation,
+`/var/backups/enhanced-cognee/hermes_main_operational_8d91023fa64e44e7be9043ffae8ad0bd.tar.age`,
+restored into one new private candidate and recovered 8 SQLite databases.
+The receipt reports consistent per-database read snapshots, one observed live
+database change, 24 recorded omissions, no logical source write/profile change,
+and a stopped operator job. The repeated command returned the same receipt and
+generation; it did not capture or restore again. Full-profile coverage,
+cross-database atomicity, executable rebuild, main admission and fleet activation
+remain false. Per-database consistency must not be described as global atomicity.
+
+Prepared `launch_control.py qualify-current-model` as one finite protected job.
+It preserves the main restore and all 40 named passes as admission prerequisites,
+then uses one NEW invented Rowan scope in two separate native processes. It
+reads only the currently declared ordinary ZAI key through its owner, pins
+`https://open.bigmodel.cn/api/paas/v4/chat/completions` and `glm-5.3-flash`,
+and gives the child only two fixed ordinary API tokens plus that ordinary model
+key. Existing profiles, source settings, OAuth and launchers are not changed.
+No root signing, encryption or recovery authority enters child packets.
+
+The qualification checks selected durable capture, exclusion of an invented
+sensitive canary, delivery of canonical evidence in a fresh native request,
+completed turns, returned model identity, peer-history denial and retraction
+of only its new invented record with history retained. Each process admits at
+most six physical model requests with 2048 output tokens each. SDK clones share
+the budget; HTTP/transport/route/model errors latch a stop. Redirects, SDK retries,
+fallback accounts and unhooked endpoint probes are refused. Finite read-only
+delivery polling precedes fresh-process recall. Repeated invocation reattaches
+to the original job and cannot replay a failed or completed model turn.
+Maximum served context remains explicitly unverified; no native capability
+guard is weakened or model limit fabricated. This command is PREPARED, not a
+real-model or fleet pass.
+
+Validation: 37 new focused boundary tests and 14 changed-controller regression
+checks passed together (51 passed, zero failures/errors/skips/warnings).
+The actual pinned Hermes AIAgent, memory provider and SDK also
+completed an offline invented-response capture (three requests) and recall
+(one request), with all real DNS/socket operations denied. This offline test
+adapts fixture identity and proves no installed identity or real endpoint result.
+Initial fixture/test harness failures were fixed before those final passes;
+no real model was called during development. The pinned existing auth-state
+comparison still requires unchanged secrets/OAuth and only bounded native
+usage metadata changes. Original failed host tests and completed records remain
+unchanged. Helper SHA256:
+`4a9ba1890c56fcf3806e834ee28c6c28686e6137a4f16c33e08cfa70eb535402`.
+
+Delivery was fetched again on 27 October and remains exactly `21abf485`.
+Current public Actions results still show Required CI, project-memory,
+canonical-stack and dashboard success, with broad CI/CD and full-runtime
+failures retained. Operator-branch tests are local checks, not a new hosted CI
+pass. Sudo remains terminal-specific (`sudo -n` requires a password here), so
+the real protected qualification must be invoked in the owner's terminal.
+Remaining substantive work includes main program/reference recovery coverage,
+actual per-UID production launch/dispatch, fleet scheduled renewal/reload,
+profile admission and final switch review. The existing managed-worker policy
+does not provide the required general cross-UID production dispatch; its CLI
+custom-provider opt-in is not evidence for the main WhatsApp/ZAI launch.
+
 27 October owner-run named batch PASSED at
 `operator-evidence/named-runtime-routes-ivk3f5hw`: all 40 selected candidates
 qualified with zero failures/unattempted profiles and the job stopped. All 40
