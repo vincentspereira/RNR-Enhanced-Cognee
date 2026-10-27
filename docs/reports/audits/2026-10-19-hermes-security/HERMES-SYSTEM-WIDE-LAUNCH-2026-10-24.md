@@ -239,6 +239,51 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run CURRENT CONFIGURED MODEL CAPTURE/RECALL PASSED at
+`operator-evidence/model-recall-finish-fdu97vca` on backend `21abf485` with
+helper `ddf3b82e294b7b723463a82a66098fb6d52edd370f9fd1344696368b500a0123`.
+The three completed capture requests were reused without replay. Fresh-process
+recall completed with one HTTP 200 request, the verified returned model and
+canonical evidence delivered in that request. Three refusal controls passed;
+unexpected network attempts were zero. The exact invented record was retracted
+with history preserved, peer history denied, delivery ready with zero pending
+events and empty canonical recall. The old failed fixture, actual source
+profiles and launchers were unchanged; no private key reached an owner child,
+all policies stayed disabled and the operator job stopped. Reuse this pass.
+It does not establish maximum context, actual profile admission or fleet launch.
+The original capture receipt remains an overall failure with its precise
+completed predicates reused; its late readiness failure was not erased.
+
+Prepared `launch_control.py prepare-fleet-review`: one grouped operator action
+verifies these model/runtime/main/program receipts against frozen sources and
+quiescent units, stages a separate disabled issuer for all 40 verified named
+runtime identities, and checks its zero-publication preflight. Existing policy
+bytes/packages are preserved. Root loads no signing/recovery key or owner
+profile tree. Two restricted owner children inspect only source/restored main
+config.yaml, returning fixed classifications and private configuration digests.
+No environment/OAuth read, configured-target traversal, MCP/plugin execution,
+model call, profile mutation, timer/unit installation or gateway start occurs.
+Partial staging is retained and repeated invocations return the saved result.
+This package is for remaining qualification/review, not fleet activation.
+
+Actual source-side owner metadata confirms the expected ZAI Coding model,
+multiplex enabled, Enhanced Cognee unselected, four MCP definitions and one
+configured reference into the original owner's home. That referenced directory
+was not traversed and no private value/path was retained in public output.
+The revised inspector needs only config.yaml; tests explicitly refuse any
+environment/OAuth read. Restored-main comparison and protected issuer staging
+remain PENDING. Main references/tool coverage, production per-UID dispatch,
+scheduled fleet renewal/reload and final scope/switch approval remain open.
+
+Validation for this next preparation: 46 targeted tests PASSED (29 fleet policy,
+owner/reference, retained-source and interrupted-preparation checks plus 17
+controller checks), zero failures/errors/skips/warnings. Real-owner metadata
+inspection passed using pinned native Python and fixed classifications; it is
+not a restored-identity or deployment pass. A sandbox-only ownership check
+refused remapped root metadata, and approved host execution then verified the
+real ownership guard. Sudo in the agent session still reports a password is
+required; the protected grouped action must run in the owner's terminal.
+
 27 October owner-run V3 reached three HTTP 200 requests with the verified
 configured returned model, three network denial controls and no unexpected
 network attempts. Receipt `operator-evidence/current-model-native-ydgaddnq`

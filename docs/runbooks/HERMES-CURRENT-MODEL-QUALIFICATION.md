@@ -1,9 +1,24 @@
 # Current configured model qualification in Ubuntu-Hermes
 
+27 October owner-run protected continuation PASSED at
+`operator-evidence/model-recall-finish-fdu97vca`, helper
+`ddf3b82e294b7b723463a82a66098fb6d52edd370f9fd1344696368b500a0123`.
+Retained native capture was reused without replay. Fresh native recall completed
+with one HTTP 200 request, the expected returned model and delivered canonical
+evidence. The invented record was retracted with history preserved, peer history
+was denied, pending deliveries drained and canonical recall returned empty.
+No original profile or launcher changed, all policies stayed disabled and the
+operator job stopped. Maximum context and actual fleet admission remain false.
+Do not repeat this completed model qualification.
+
+Continue with [disabled fleet preparation and main reference checks](HERMES-FLEET-REVIEW-PREPARATION.md).
+The instructions below retain the completed continuation's design and command
+for evidence navigation; repeating it only returns the retained result.
+
 The main operational restore, protected program restore/execution and all 40
 named constructor/route/restore passes are complete. Reuse their evidence.
 The earlier completed human-answer conversation used Codex and remains valid
-within that scope. Current ZAI fresh-process recall still needs qualification.
+within that scope. The current ZAI fresh-process recall pass is recorded above.
 
 The V2 model attempt stopped during scope setup with no canonical rows or
 versions. Its generated project IDs were 36 and 41 characters; the backend
