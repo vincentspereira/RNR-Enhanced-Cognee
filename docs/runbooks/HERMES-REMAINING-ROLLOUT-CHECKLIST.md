@@ -11,10 +11,13 @@ The owner-run [daily backup coverage for all 41 qualified candidates](HERMES-QUA
 and [kernel-authenticated transport under two restricted UIDs](HERMES-ISOLATED-GATEWAY-TRANSPORT.md)
 have now PASSED. Protected
 [native DM text authorization and clarification handling](HERMES-ISOLATED-NATIVE-TEXT-INGRESS.md)
-also PASSED under two restricted UIDs. The next prepared grouped operation checks
-[native adapter delivery and persistent crash/replay refusal](HERMES-ISOLATED-DELIVERY-RECOVERY.md).
-Its protected four-phase execution is pending; exact-source offline native
-adapter execution and 54 source/security tests passed.
+also PASSED under two restricted UIDs. Protected
+[native adapter delivery and persistent crash/replay refusal](HERMES-ISOLATED-DELIVERY-RECOVERY.md)
+subsequently PASSED all four phases at isolated-delivery-807r2x1g. The next
+prepared grouped operation reconciles
+[current main settings into a new inactive copy and verifies recovery](HERMES-CURRENT-MAIN-RECONCILIATION.md).
+Its protected execution is pending; 83 source/security tests and a read-only
+six-definition preparation against installed helpers passed.
 Production bot/CLI dispatch and explicit launch binding,
 main tools/MCP and served-context coverage, unattended admitted-fleet operation,
 the two deferred existing bindings and final mapping/switch review remain open.
@@ -24,6 +27,10 @@ Latest main-source metadata observes six MCP definitions, while the retained
 candidate qualified four. Preserve the current six and unrelated/OAuth settings;
 reconcile them into a new inactive candidate before main tool qualification or
 final switch. No source or candidate configuration was changed by the inspection.
+Strict live-source capture currently refuses a changing telemetry file. Its
+writer/purpose remain unresolved and its guard is unchanged. The prepared
+settings reconciliation reuses the older candidate's operational state; full
+current live-state refresh remains a separate admission gate.
 
 Latest source checkpoint: the restricted text-only service now has a clean
 locked dependency audit, matching real BGE vectors and disposable encrypted

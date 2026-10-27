@@ -1,5 +1,17 @@
 # Isolated native adapter and crash recovery qualification
 
+27 October owner-run protected result: PASSED at
+`operator-evidence/isolated-delivery-807r2x1g`, helper
+`d325f3f4f5c82aa672cc7f390491a0ee2018729e63c9a1576878bec2f402790d`.
+All four phases completed, including two forced exits, durable non-replay,
+native base-adapter text processing and peer-UID OS denial. The original native
+pass and manifest `0ac7793980...` were reused. No original profile, key,
+credential, service, external send, model/API or canonical record changed.
+All policies remain disabled; full native integration, production dispatch,
+actual admission and fleet approval remain false. Do not replay this pass.
+Next prepared grouped operation:
+[current main settings reconciliation](HERMES-CURRENT-MAIN-RECONCILIATION.md).
+
 Native DM ingress, authorization and pending clarification passed under two
 restricted UIDs at `isolated-native-text-s9awh1b9`. This next grouped check uses
 that evidence and the exact disabled policy/backup membership without repeating
@@ -7,7 +19,7 @@ the completed test. It implements persistent duplicate refusal and exercises
 Hermes' native adapter background processing/final-delivery path with invented
 data and an in-memory platform result. No live WhatsApp send is authorized here.
 
-Run once in the owner's Ubuntu-Hermes terminal. In the same terminal where the
+Historical completed command. In the same terminal where the
 two launch variables were set:
 
 ```bash
@@ -62,7 +74,8 @@ controller). Four actual Python 3.12 child exits verify each saved journal stage
 An exact-source installed Python 3.14.7 offline fixture also passed native adapter
 background/final delivery, using the ordinary user's identity and an in-memory
 send. Network/profile/subprocess attempt counters were zero. These are source
-and same-UID fixture results; the protected four-phase result remains pending.
+and same-UID fixture results at preparation time; the protected four-phase
+receipt above subsequently passed.
 The initial 16 journal checks failed under sandbox-remapped ancestor ownership;
 the same checks passed against actual host metadata without loosening guards.
 The first native sink fixture lacked abstract get_chat_info; implementing that

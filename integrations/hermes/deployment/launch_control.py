@@ -45,6 +45,7 @@ FLEET_BACKUPS_REPAIR_SHA = '19956e7f031a0e70d9758bb8e9aede7c13f631f44ebfb8b7e507
 ISOLATED_TRANSPORT_SHA = '0fc198a6942a5b37ad2535504f6544e3652f41a728e3d3a470eebf8b4e007e57'
 NATIVE_TEXT_INGRESS_SHA = '024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9'
 DELIVERY_RECOVERY_SHA = 'd325f3f4f5c82aa672cc7f390491a0ee2018729e63c9a1576878bec2f402790d'
+CURRENT_MAIN_SHA = 'a97d14c49ca7ebc41b9935e2f296479226c76f37d690eee0203ccb3e5cb7efea'
 
 
 def require(value):
@@ -496,6 +497,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['prepare-fleet-review']:
             review = definitions(Path(__file__).with_name('prepare_launch_fleet_review.py'), FLEET_REVIEW_SHA)
             raise SystemExit(review['main']())
+        if sys.argv[1:] == ['reconcile-main-candidate']:
+            current = definitions(Path(__file__).with_name('reconcile_current_main_candidate.py'), CURRENT_MAIN_SHA)
+            raise SystemExit(current['launch']())
         if sys.argv[1:] == ['qualify-delivery-recovery']:
             delivery = definitions(Path(__file__).with_name('qualify_isolated_delivery_recovery.py'), DELIVERY_RECOVERY_SHA)
             raise SystemExit(delivery['main']())

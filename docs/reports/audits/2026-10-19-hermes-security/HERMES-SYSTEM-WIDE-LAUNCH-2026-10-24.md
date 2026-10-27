@@ -239,6 +239,63 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run DELIVERY/PROCESS-CRASH COMPONENT PASSED at
+`operator-evidence/isolated-delivery-807r2x1g`, helper `d325f3f4f5...`,
+same manifest `0ac7793980...`. All four phases completed, including two actual
+forced exits, native base-adapter text processing, durable non-replay and
+peer-UID journal denial. Five exact public components and the previous native
+pass were bound. No real profile/key/credential/service, external send,
+model/API or canonical record changed. All policies remain disabled; full
+native integration, production dispatch, actual admission and fleet approval
+remain false. This closes the protected delivery-pending checkpoint below.
+Do not replay this or the completed historical memory records.
+
+Current main reconciliation implemented: preserve the source and prior inactive
+candidate; create a NEW private copy with every current MCP definition and
+current OAuth/environment settings, select Enhanced Cognee and rebind only the
+reviewed filesystem root to its own workspace. Dynamic definition counts replace
+the old four-server assumption. Reject duplicate YAML, cycles/nonfinite values,
+ambiguous roots, cross-profile routing, privileged backend fields and an
+undeclared existing scope token. Rebase only the same reviewed reference in
+the disposable restore. Unknown original-home references stay unresolved.
+
+Validation: 83 targeted tests PASSED, zero failures/errors/skips/warnings
+(29 configuration, 21 owner, 16 operator and 17 controller). Actual private-file
+tests verify original preservation, symlink refusal and non-overwrite of a
+concurrent edit. Operator/crypto workflows use test doubles; no installed
+recovery pass is inferred. An initial stale-source test lacked file-existence
+modelling for its in-memory filesystem and was corrected without changing
+product guards. A separate installed Python 3.14.7 pure preparation PASSED
+against all six actual current definitions and hash-verified installed helpers;
+no file write, credential issuance or network occurred. All twelve required
+new/installed public helper hashes were checked and matched.
+
+Full live-source preflight and a content-free diagnostic both STOPPED at
+payload_read/durable_file_changed_before_read. A changing eight-byte regular
+file in the telemetry area was identified by metadata; its writer/purpose are
+unresolved. No filename/content, key or raw instruction was published, no
+plaintext archive or encrypted generation was written, and the strict capture
+guard/source were unchanged apart from possible SQLite read bookkeeping.
+Do not omit this unknown file or claim a current operational refresh.
+
+Prepared reconcile-main-candidate groups a detached finite job: encrypted
+current configuration capsule, signed prior-candidate generation, NEW-copy
+configuration/fixed-scope status checks, signed configured-copy generation,
+disposable SQLite/provider/workspace-rebase recovery, and final source freshness/
+policy verification. Source/previous profiles, launchers, daily registry and
+admission policies remain unchanged. Three new encrypted generations are
+expected; root keys stay root and ordinary children alone access profile data.
+Its current_source_operational_refresh_qualified remains false even on success
+because older operational state is reused. Protected execution is PENDING.
+See [grouped current-main operation](../../../runbooks/HERMES-CURRENT-MAIN-RECONCILIATION.md).
+
+The full live-state refresh, remaining two owner-home references and complete
+MCP/tool/context qualification, shared frontend/callback/outbox handling,
+admitted operation, deferred mappings and final switch review remain open.
+Delivery fetched again still equals 21abf485; current exact-source GitHub
+required/memory/stack/dashboard passes and broader/full-runtime failures are
+unchanged. No main merge or audit suppression occurred.
+
 27 October owner-run NATIVE DM TEXT INGRESS PASSED at
 `operator-evidence/isolated-native-text-s9awh1b9`, helper `024c69cdf3...`.
 The same manifest `0ac7793980...`, three public components and eight exact
