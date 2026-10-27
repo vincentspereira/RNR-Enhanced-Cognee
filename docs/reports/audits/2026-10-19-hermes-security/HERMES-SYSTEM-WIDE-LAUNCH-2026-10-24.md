@@ -239,6 +239,44 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run IMPLEMENTATION BATCH STOPPED at
+`operator-evidence/launch-implementation-ryrn0iw5`, helper `d99a819e...`,
+invocation `00d4a00f4da24badb5279bd6f258efc0`. The restricted child reported
+ValueError at main_configuration_preflight. Two ordinary signed credentials
+were generated, but no successful configuration/backup receipt exists; the
+controller conservatively reports that the inactive candidate may have changed.
+Zero canonical edits, chat calls, original-profile or launcher changes were
+reported. Policies stayed disabled and the job stopped. The second owner
+invocation returned the same receipt without repeating effects. Qualification
+did not start because the first command failed.
+
+A read-only owner-side source check found a concrete refusal condition: the
+explicit model config selects the previously qualified open.bigmodel.cn Coding
+endpoint, while GLM_BASE_URL uses api.z.ai with the same Coding path. The old
+environment_update refuses independently set differing endpoints. A local
+regression reproduces that refusal. The coarse host receipt does not identify
+the exact failed predicate, so the continuation still rechecks unchanged config,
+old key, known alias, unpublished candidate and placeholder before effects.
+
+Prepared a separate V2 frozen package and distinct finite jobs, exposed as
+continue-implementation-batch and continue-qualification-batch. The original
+V1 files, context, issuance evidence and stopped job remain preserved.
+The root adapter reuses the exact frozen V1 driver, adding only the known
+environment correction and fixed continuation admission. Root keys remain
+root-only. Only the inactive main copy can change; its full old environment
+is retained. Changed model keys, unknown endpoints, duplicate bindings,
+unexpected partial effects, running prior jobs or an already started V1
+qualification are refused. No completed native/model probe is replayed.
+
+Validation: 84 targeted tests PASSED, zero failures/errors/skips/warnings,
+including 22 continuation/endpoint/real-publication checks and the previous
+62 batch/main/security/controller regressions. Initial new-fixture failures
+were a marker permission and credential-variable assertion, corrected without
+changing production file guards. A read-only in-memory transformation of the
+actual current owner environment also PASSED with zero file changes/network/
+model operations. This is not protected candidate execution. Both new jobs
+remain PENDING owner-terminal execution; fleet activation remains false.
+
 27 October owner-run FLEET REVIEW PREPARATION PASSED at
 `operator-evidence/fleet-review-mpynoz8c`, helper `554ac7b1...`. The disabled
 issuer preflight passed with 40 entries, 40 distinct UIDs and zero admitted

@@ -1,5 +1,44 @@
 # Consolidated inactive candidate implementation and qualification
 
+27 October implementation stopped at `main_configuration_preflight`, with
+zero model calls, source-profile or launcher changes. Evidence is retained at
+`operator-evidence/launch-implementation-ryrn0iw5`. Qualification never started.
+Repeating the original command returns that saved failure without replay.
+
+The source configuration selects the already qualified Coding endpoint at
+open.bigmodel.cn, while its environment uses the public api.z.ai Coding alias.
+The original helper refuses this mismatch. A separate explicit continuation
+package preserves the original frozen code and evidence. It accepts only this
+known Coding alias, retains the complete old candidate environment and model
+key, and preserves every unrelated binding. Other endpoints, changed keys and
+duplicate fields remain refused. Original profiles stay unchanged.
+
+Run the following block instead of repeating the original failed batch:
+
+```bash
+ec_launch_python=/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python
+ec_launch_control=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py
+sudo "$ec_launch_python" -I "$ec_launch_control" continue-implementation-batch &&
+sudo "$ec_launch_python" -I "$ec_launch_control" continue-qualification-batch
+```
+
+The continuation requires the exact stopped prior refusal, disabled policies,
+no prior configuration/backup completion receipt and no prior qualification
+job. The restricted owner rechecks the unchanged restored configuration,
+unpublished layout and preserved model key before any publication. A fresh
+package and distinct systemd jobs retain both attempts. Unexpected partial
+effects stop the continuation. It never retries a failed continuation or
+replays completed probes automatically.
+
+Validation: 84 targeted tests passed, including actual private file publication,
+environment/config backups, placeholder preservation and fixed provider linking.
+The previous alias refusal is reproduced and arbitrary endpoints, key changes,
+partial effects and wrong prior receipts are refused. A read-only in-memory
+check against the current owner environment also passed; no source file,
+credential or model was changed/called. Protected execution remains pending.
+
+## Original batch and retained component scope
+
 The protected fleet-review preparation passed with 40 disabled entries and
 distinct runtime UIDs. The main restore matches its source configuration.
 Prior current-model capture/recall, native named-route checks, encrypted
