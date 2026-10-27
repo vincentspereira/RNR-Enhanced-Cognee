@@ -1,5 +1,24 @@
 # Consolidated inactive candidate implementation and qualification
 
+27 October V2 implementation and qualification PASSED on the owner's host.
+Implementation evidence: `operator-evidence/launch-implementation-gtiy7pmb`;
+qualification: `operator-evidence/launch-qualification-5hdczb81`, both helper
+`409de8a2...`. Main provider configuration, eight recovered SQLite databases,
+authenticated restored scope and the 41-member backup draft passed. All 40
+named candidates passed expired-credential recovery, ordinary replacement,
+retained native gateway reload and fresh encrypted disposable restores.
+Main invented-record semantic/graph retrieval, peer/OS denials and retraction
+with history passed. PID-1 journal scheduling proof passed; both jobs stopped.
+The qualification issued 162 ordinary signed credentials, including 80 for
+expired recovery, 80 for replacement and two for the separate peer probe.
+No chat call, platform adapter, original profile or launcher change occurred.
+All admission policies and production renewal remain disabled. Reuse these
+passes; the commands below now return their retained results.
+
+Continue with [the daily fleet backup installation](HERMES-QUALIFIED-FLEET-DAILY-BACKUPS.md).
+That new operation is prepared and source-tested, not yet installed or passed.
+The earlier failed checkpoint and implementation details below are retained.
+
 27 October implementation stopped at `main_configuration_preflight`, with
 zero model calls, source-profile or launcher changes. Evidence is retained at
 `operator-evidence/launch-implementation-ryrn0iw5`. Qualification never started.

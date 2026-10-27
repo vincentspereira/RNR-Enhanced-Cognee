@@ -239,6 +239,59 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run V2 IMPLEMENTATION PASSED at
+`operator-evidence/launch-implementation-gtiy7pmb`, helper `409de8a2...`,
+invocation `0a5648ac5ae14f5e9e4ac5576bd0f488`. The inactive main candidate
+selected the pinned provider, rebound the filesystem MCP root, preserved all
+four MCP definitions and unrelated settings/OAuth, and authenticated its fixed
+scope. The qualified ordinary model key was reused. New generation
+`hermes_main_memory_candidate_a99b5b6abccf488b845d0cfd9adfca67.tar.age`
+restored eight SQLite databases, the pinned provider and authenticated scope.
+Two ordinary credentials were issued and a 41-candidate backup draft prepared.
+Zero original profile/launcher changes, canonical edits, chat calls, adapters
+or private keys sent to owners were reported. The job stopped successfully.
+
+Owner-run V2 QUALIFICATION PASSED at
+`operator-evidence/launch-qualification-5hdczb81`, same helper, all 40 selected
+profiles qualified, zero failed or unattempted. All 40 expired candidate
+credentials were recovered explicitly; each then passed ordinary replacement,
+retained native ZAI gateway cache reuse/rebuild and new encrypted disposable
+restoration. The 162 ordinary signed credentials comprise 80 expired-recovery,
+80 replacement and two separate-peer probe values. Main own-scope API/actual
+semantic/graph checks, peer history and OS denials passed. Its ONE new invented
+record was retracted with history preserved; no live private memories changed.
+The capture/recall/native human-answer passes were never replayed. PID-1 proof
+verified unique timer activation, successful service invocation, same boot,
+configured delay and no conflicting failures (elapsed 348165 ms). Both jobs
+stopped. All policies remain disabled; production renewal, dispatch, main tool
+coverage, actual admission and fleet approval are still false.
+
+Next implementation: `install_launch_fleet_backups.py` and controller action
+`install-fleet-backups` prepare one root-owned installed daily job for main plus
+40 candidates. Exact protected passes, members, frozen code and actual native/
+provider hashes are checked. Each owner captures only its own tree using the
+already recovered SQLite/provider code; root authenticates newly written AGE
+ciphertext with retained hashes/HMAC. No root tree traversal, recovery-key read,
+decryption, model/API call, renewal, deletion or upload occurs. The first real
+timer firing produces 41 NEW generations, not replayed restores. It retains
+per-profile checkpoints, partial generations and immutable run receipts.
+Failure blocks later effects and stops the new timer. Existing backup jobs and
+all profile/launch/admission settings are preserved. The new backup timer is
+enabled only by the explicit owner operator action; its first scheduled pass
+and next daily firing are required before reporting installed coverage.
+
+Validation: 40 targeted checks PASSED (23 backup and 17 controller), zero
+failures/errors/skips/warnings. Tests cover exact qualified membership,
+ciphertext/HMAC tamper detection, 41-member completion/stop-on-first-failure,
+blocked repeat effects, no-replay installation and trusted scheduled proof.
+One initial invented root-lock fixture needed ownership metadata adaptation;
+production ownership checks were unchanged. Native systemd-analyze verify also
+PASSED with no diagnostics and zero services started, retained under
+`/tmp/ec-fleet-backup-unit-check-jxfmk42o`. Protected installation/execution of
+this NEW daily job remains PENDING. Main MCP/tools and served context, actual
+production dispatch/launch binding, admitted unattended operation, the two
+deferred bindings and final mapping/switch review remain open.
+
 27 October owner-run IMPLEMENTATION BATCH STOPPED at
 `operator-evidence/launch-implementation-ryrn0iw5`, helper `d99a819e...`,
 invocation `00d4a00f4da24badb5279bd6f258efc0`. The restricted child reported

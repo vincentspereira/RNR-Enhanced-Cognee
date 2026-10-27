@@ -1,5 +1,19 @@
 # Remaining Hermes memory rollout work
 
+27 October Ubuntu-Hermes update: the grouped inactive main implementation and
+all 40 named credential/reload/recovery qualifications PASSED. Main provider
+selection, eight-database recovery, own/peer/OS/index checks and trusted
+scheduling proof passed. The current ZAI model capture/recall, native human
+answer, canonical/derived recovery and custody passes remain retained.
+See [current candidate evidence](HERMES-CONSOLIDATED-CANDIDATE-BATCHES.md).
+The dated unresolved checkpoints below are historical; do not replay them.
+The next prepared operation installs and verifies
+[daily backup coverage for all 41 qualified candidates](HERMES-QUALIFIED-FLEET-DAILY-BACKUPS.md).
+It has not run yet. Production bot/CLI dispatch and explicit launch binding,
+main tools/MCP and served-context coverage, unattended admitted-fleet operation,
+the two deferred existing bindings and final mapping/switch review remain open.
+No whole-fleet activation or main merge is approved by these component passes.
+
 Latest source checkpoint: the restricted text-only service now has a clean
 locked dependency audit, matching real BGE vectors and disposable encrypted
 recovery evidence. The full legacy lock retains three filelock findings.
