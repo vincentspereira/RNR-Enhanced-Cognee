@@ -239,6 +239,70 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+27 October owner-run V2 ROOT IDENTITY REPAIR AND DAILY BACKUP PASSED at
+`operator-fleet-daily-backups-v2/run-54_yvptg`, helper `19956e7f...`. The
+protected root identity-switch correction was qualified with zero owner
+capabilities. All 41 candidates completed; 41 new signed encrypted generations
+passed readback authentication. No credential/key change, model/API call,
+recovery-key read, private key sent to owners, plaintext archive, restore
+replay or original-profile/launcher change was reported. Existing disposable
+restore evidence was reused. The installed daily timer is enabled, interval
+86400 seconds, and trusted PID-1 scheduling proof passed with unique service/
+timer events, matching invocation, same boot and no conflicting failures
+(elapsed 52172 ms). The service stopped; its timer remains scheduled.
+All policies remain disabled and fleet approval false. Preserve the stopped,
+blocked V1 package and its disabled timer; do not replay the successful V2 run.
+
+Next independent implementation: isolated_gateway_transport.py implements a
+bounded Linux Unix-stream channel with fixed profile binding and actual
+per-message SCM_CREDENTIALS checks. The listener-creator credential is checked
+separately from the payload sender, supporting root-created descriptors passed
+to restricted workers without mistaking root listener ownership for worker
+identity. Every read is authenticated; duplicate/unknown fields, arbitrary
+scope/key/UID overrides, malformed/oversized text/frames, foreign descriptors
+and deadlines are handled with fixed categories and no payload logging.
+This initial component handles text request/response/cancel envelopes only.
+It does not integrate native session/approval/media behavior or the shared
+WhatsApp frontend and does not close the production-dispatch gate.
+
+Prepared qualify-isolated-transport: one finite root operator action reusing
+the completed backup and exact membership evidence. It freezes public code,
+then uses TWO existing restricted candidate UIDs for invented sender/worker
+roles with root-created anonymous descriptors. Positive round trip, actual
+wrong sender UID and wrong fixed-profile denial are checked. Real/effective/
+saved UID/GID, no groups, NNP and zero effective/ambient/inheritable capabilities
+are required. No private profile contents, credentials, model/API, memory
+records, accounts, adapters or installed service changes occur. These are
+synthetic transport roles, not a deployed frontend/dispatcher. Repeated commands
+return retained results without replay; fixed child phase/errno diagnostics
+and cleanup preserve interrupted evidence.
+
+Validation: 65 targeted tests PASSED (25 real local-socket/wire security,
+23 qualification/admission/receipt and 17 controller), zero failures/errors/
+skips/warnings. Local checks include actual forged-root credential denial,
+per-message UID mismatch, unsolicited-descriptor cleanup, bound framing and
+private-data-safe errors. Public owner source compiles and fits the native
+frame budget. A separate actual installed Python 3.14.7 smoke also PASSED
+with zero capabilities/NNP, same-UID anonymous socket round trip, zero profile
+reads, model calls or external connections. Three native child-protocol fixtures
+also passed using explicit same-UID listener/group adaptations only in tests.
+Their first attempted fixture substitution matched a docstring as well as
+code; it was narrowed before any fixture process ran. Production source
+identity guards were unchanged by that test correction. Exact selected identity snapshots
+are retained privately and bound to immutable context/receipts by SHA-256;
+tampered identity evidence is refused without replay. Local sockets use the
+same unprivileged UID, not installed cross-UID evidence; the distinct-UID
+protected qualification remains PENDING.
+Native frontend/worker integration, main tools/context, admitted unattended
+operation, deferred bindings and final mapping/switch review remain open.
+
+Delivery/CI refresh still resolves to exact backend `21abf4857ca8dce8e0a3aafc725266c8d3754529`.
+Required CI 40055830507, project memory 40055830334, canonical stack
+40055830340 and dashboard 40055830325 remain PASSED. Broad CI/CD
+40055830266 and full runtime 40055830273 remain FAILED and visible.
+These backend results do not claim hosted qualification of the new transport.
+
+
 27 October owner-run FIRST DAILY FLEET BACKUP FAILED at
 `operator-fleet-daily-backups-v1/run-9suhwfa3`, helper `cfd9eb39...`,
 PermissionError, zero of 41 completed profiles. No credential/key changes,

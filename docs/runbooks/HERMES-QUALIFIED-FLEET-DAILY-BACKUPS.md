@@ -1,5 +1,23 @@
 # Daily encrypted backups for the 41 qualified inactive candidates
 
+27 October owner-run V2 REPAIR AND DAILY BACKUP PASSED at
+`operator-fleet-daily-backups-v2/run-54_yvptg`, helper `19956e7f...`.
+The protected identity-switch repair probe qualified with zero owner-process
+capabilities. All 41 candidates produced fresh signed encrypted generations.
+The first real scheduled run and next daily schedule passed, with an enabled
+daily timer, 86400-second interval and trusted PID-1 invocation proof (elapsed
+52172 ms). The service stopped successfully; its timer remains scheduled.
+No model/API call, credential/key change, private key sent to owner, recovery
+key read, plaintext archive, restore replay or original-profile change occurred.
+Previous disposable recovery evidence was reused. All admission policies stay
+disabled. This closes candidate daily-backup installation, not fleet launch.
+The failed V1 package/units/run remain preserved and its timer is disabled.
+
+Do not repeat this completed backup qualification. The command below returns
+the retained V2 result. Continue with
+[the isolated gateway transport qualification](HERMES-ISOLATED-GATEWAY-TRANSPORT.md).
+The historical failure and repair procedure below remain for provenance.
+
 27 October first scheduled run FAILED with PermissionError and zero completed
 profiles, retained at `operator-fleet-daily-backups-v1/run-9suhwfa3`, helper
 `cfd9eb39...`. The timer stopped and the blocking marker remains. Repeating
