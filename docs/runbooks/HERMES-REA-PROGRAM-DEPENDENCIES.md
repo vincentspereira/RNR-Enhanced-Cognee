@@ -1,5 +1,86 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October protected DEPENDENCY QUALIFICATION PASSED at
+rea-owner-receipt-finish-zy8t6r38, helper
+2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f.
+The owner-run result verifies Java version, headless Ghidra import, private receipt
+read under its original owner, unchanged receipt timestamps and trusted PID-1
+invocation. Public/disposable staging, readback and programme execution were
+reused without replay. All prior failures remain preserved. No source profile,
+candidate, credential, launcher, key, registry or admission policy changed.
+This closes dependency execution, not full REA MCP/tool acceptance.
+
+The current-source review confirms approvals.timeout changed from 900 to 600
+seconds and one further field remains redacted. Keep the current 600-second
+limit; do not restore 900 just to equal the old snapshot. The unknown change is
+NOT assumed harmless and settings are not accepted for fleet use.
+
+The next ONE grouped job narrows the remaining field, conditionally prepares a
+NEW inactive main copy, then verifies its signed encrypted configured recovery:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/prepare_main_after_rea.py
+```
+
+The job first revalidates the exact protected dependency pass and source/code
+pins. It rechecks the admitted model key without a model request, captures fresh
+settings, and compares them under the restricted main UID to the authenticated
+qualified snapshot. The only admitted differences for inactive preparation are
+the observed 900-to-600 approval WAIT duration and bounded offered-toolset
+bookkeeping. Registry platform keys must be in the pinned public canonical
+platform registry, old/current platform sets must match, and affected platforms
+must already have explicit tool-selection lists. Selected tools and disabled-tool
+settings must remain exactly equal. All other fields, including approval modes,
+providers, gateway routing, MCP definitions, listeners, private fields and schema/
+version changes, must remain typed-equal. Nothing is accepted for fleet runtime.
+
+The review now knows all canonical public platform names (including api_server)
+and standard legacy container names. Values outside the existing fixed non-secret
+whitelist remain opaque. Any other difference returns only safe field/type
+metadata and stops BEFORE signed generations or credentials. A denied comparison
+is retained and never automatically retried. Do not infer acceptance from a
+container name or an existing current setting.
+
+If the narrow policy passes, the SAME job reuses the protected Ghidra/Java copies
+and the qualified nine-database operational archive. It restores a NEW main
+candidate, preserves fresh settings/OAuth and the qualified model binding, selects
+the pinned memory provider, rebinds only its workspace and the two reviewed REA
+program paths, and publishes two ordinary fixed-scope credentials in that private
+copy. It creates a signed encrypted configured generation, restores another NEW
+disposable copy, verifies all databases/provider/current-auth/environment/scope,
+and rechecks exact source fingerprints. Root never walks owner profiles and no
+signing/recovery/backend key crosses into a child. Source and earlier candidates,
+launcher/registry state and all disabled policies remain unchanged.
+
+Java/Ghidra, native/model conversations and completed memory tests are NOT replayed.
+The operational snapshot is reused, not a fresh capture of active main databases;
+final live-state reconciliation remains necessary before promotion. The job
+starts only its finite protected operator unit, no real REA server, gateway,
+platform adapter or chat request. Fleet acceptance and main tool coverage remain
+false even after an inactive candidate restore pass. Ctrl+C detaches; repetition
+reattaches/returns the retained result without reissuing credentials.
+
+Twenty-seven focused tests pass with zero failures/errors/skips/warnings. They
+cover the exact approval-limit transition; registry preservation with explicit
+unchanged selections; refusal of changed modes, selected/disabled tools, implicit
+selections, new platforms, schema/version/scalar/unrelated changes; authenticated
+capsule/archive parsing; private-output suppression; immutable dependency-pass
+requirements; no issuance before assessment; early/late source drift; full grouped
+restore flow; and retained results without replay. Service/crypto/restore work in
+unit tests uses invented doubles. Native Python 3.14.7 compiles both helpers;
+source/library/registry pins and the child protocol pass. A RAM-only public-schema
+preview passes; it reads no private profile and is not a protected execution.
+
+The protected job is pending because agent-session sudo still needs the owner's
+terminal. Return only its final JSON. Relevant delivery CI remains passed in four
+workflows at exact 21abf485, with two broader CI/full-runtime failures still open.
+Current main recovery/settings disposition, full six-MCP/context acceptance,
+production dispatch/bindings, admitted renewal, deferred profiles and final fleet
+switch review remain outstanding. No whole-fleet launch or main merge is claimed.
+
+## Earlier receipt recovery and failed attempts (preserved)
+
+
 28 October latest protected group stopped at isolated_program_execution,
 rea-settings-programs-x1l5absn, helper
 049ad94d989b8c0039c967d65341338642483ad472f79b76604d380e7f216e3b.

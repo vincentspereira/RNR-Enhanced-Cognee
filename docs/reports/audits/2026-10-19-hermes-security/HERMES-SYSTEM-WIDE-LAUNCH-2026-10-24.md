@@ -239,6 +239,26 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October protected REA dependency qualification PASSED at
+rea-owner-receipt-finish-zy8t6r38 (helper 2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f):
+Java/version and headless Ghidra import, owner-only unchanged receipt and trusted
+PID-1 invocation proof. Completed staging/readback/execution reused; no programme,
+memory/native/model test replay or profile/key/credential/launcher/policy changes.
+Full REA tool/server coverage remains distinct and unresolved.
+
+Current approval wait is 600 seconds versus the archived 900; one other change
+is still redacted. Prepared prepare_main_after_rea.py preserves the current wait
+only for a NEW inactive copy. It permits bounded offered-toolset bookkeeping
+only with explicit unchanged selections, rejects all other typed differences
+before issuance, reuses the dependency pass and conditionally verifies signed
+configured-candidate nine-database recovery. Twenty-seven focused tests and native
+compilation pass (workflow/crypto/restore doubles are separate from host evidence).
+Protected execution needs the owner terminal. No source or old candidate changes,
+fleet admission or fresh main operational capture is claimed. See
+HERMES-REA-PROGRAM-DEPENDENCIES.md and 2026-10-28-main-after-rea-preparation.json.
+All broader tool/context/dispatch/renewal/deferred/final-review gates remain open.
+
+
 28 October rea-settings-programs-x1l5absn STOPPED with PermissionError while
 collecting isolated programme evidence. Actual parent capabilities are only
 SETUID/SETGID and the retained runtime directory is 0700 under UID 992. The public

@@ -1,5 +1,20 @@
 # Remaining Hermes memory rollout work
 
+28 October protected Java/Ghidra dependency execution is now QUALIFIED at
+rea-owner-receipt-finish-zy8t6r38. Owner-only receipt recovery, unchanged timestamps
+and trusted PID-1 proof passed; copies/readback/execution were reused without a
+replay. Keep this pass. Full REA MCP/tool acceptance is still separate.
+Current approvals.timeout is 600 seconds (previously 900); one further change
+remains redacted. The prepared [guarded main candidate and encrypted recovery job](HERMES-REA-PROGRAM-DEPENDENCIES.md)
+preserves that current limit only under a narrow inactive-preparation policy.
+All other unreviewed changes stop before issuance; no fleet policy is admitted.
+Twenty-seven focused tests/native compilation pass; protected execution pending.
+Main candidate recovery, full MCP/context, production routing, admitted renewal,
+deferred bindings, final live-state reconciliation and fleet review remain open.
+
+## Earlier checkpoints (preserved)
+
+
 28 October dependency proof service has trusted PID-1 start/success/stop
 metadata and the exact driver hash, but parent evidence collection failed with
 PermissionError at rea-settings-programs-x1l5absn. The parent lacks DAC override;
