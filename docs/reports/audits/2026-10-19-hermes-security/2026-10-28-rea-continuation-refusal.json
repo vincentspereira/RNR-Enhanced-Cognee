@@ -1,0 +1,57 @@
+{
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "inspect_rea_continuation_failure.py": "96a7b2541541f7be5c1f2b05eee0d78e8aba706218166c9ed9e8e6c53dc92e6d",
+    "launch_control.py": "82d8d2325feced4c4525456b31c83c8fa01d4fe4da166aa0f2d4ed0545493170"
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "b4e7326668e4f39c4dfa049f101a6aa48b038b06",
+  "fleet_launch_approved": false,
+  "independently_observed": {
+    "all_public_runtime_pins_match": true,
+    "invocation_matches_owner_report": true,
+    "native_public_components_matching": 16,
+    "private_failed_predicate": "unconfirmed",
+    "provider_public_components_matching": 3,
+    "public_model_helpers_match": true,
+    "sudo_noninteractive": "password_required",
+    "unit_exit_status": 1,
+    "unit_result": "exit-code",
+    "unit_stopped": true
+  },
+  "inspection": {
+    "credentials_issued": 0,
+    "effectful_retry": false,
+    "keys_or_key_hashes_printed": false,
+    "mode": "inspect-rea-continuation",
+    "model_called": false,
+    "prepared": true,
+    "protected_execution_complete": false,
+    "unchanged_readonly_guards": true
+  },
+  "owner_reported_attempt": {
+    "all_admission_policies_preserved_disabled": true,
+    "complete": false,
+    "credentials_issued": 0,
+    "encrypted_generations_created": 0,
+    "evidence": "operator-evidence/rea-main-programs-yhw1c8p4",
+    "operator_helper_sha256": "bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41",
+    "operator_job_stopped": true,
+    "previous_candidates_changed": false,
+    "source_profiles_changed": false,
+    "source_programs_changed": false
+  },
+  "recorded_utc": "2026-10-28T11:00:46.721453+00:00",
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "actual_frozen_model_comparisons_exercised": true,
+    "development_collection_error_corrected": true,
+    "development_fixture_read_errors_corrected": 3,
+    "errors": 0,
+    "failed": 0,
+    "owner_receipts": "invented_doubles",
+    "passed": 56,
+    "skipped": 0,
+    "warnings": 0
+  }
+}

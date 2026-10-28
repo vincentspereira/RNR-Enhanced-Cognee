@@ -1,5 +1,50 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest protected V2 result: STOPPED at
+rea-main-programs-yhw1c8p4, helper bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41.
+The owner reports zero credentials and zero encrypted generations. The operator
+job is stopped, all admission policies remain disabled, and source profiles,
+source programs, previous candidates, launchers and the registry remain unchanged.
+The terminal result omits the exact failing checkpoint. Do not infer a changed
+model key or repeat the effectful job from this summary.
+
+Read-only host inspection verified all 19 installed native/provider public
+components still match qualification pins. The two public model-binding helpers
+also match their exact frozen hashes. That narrows the investigation but does
+not establish private model-key equality or identify the failed predicate.
+
+Run one READ-ONLY protected inspection:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py inspect-rea-continuation
+```
+
+It first requires the exact stopped, zero-credential, zero-generation attempt
+and no program staging/archive markers. It reads the original checkpoint
+receipts. Only if they locate failure inside model binding does it repeat the
+unchanged frozen READ-ONLY checks: public runtime bytes, current explicit source
+route, completed model receipt and owner-only untouched fixture digest. It
+suppresses the original private binding-receipt write and returns fixed booleans
+and public helper frame labels/line numbers only. No key, key digest, raw
+exception, environment contents or child stdout is published. Ordinary source
+read bookkeeping may change; profile bytes are never written. Both original
+summary files are verified unchanged before the new sanitized report is saved.
+No credential is issued, model/API called, timer/service started or effectful
+phase retried. A comparison failure remains a failure; no guard is bypassed.
+Complete=true means inspection completed, not that model binding or launch passed.
+
+Fifty-six focused diagnostic/controller/continuation tests pass with zero final
+failures/errors/skips/warnings. The diagnostic tests exercise the exact frozen
+model-binding function with invented owner receipts; they cover key mismatch,
+changed fixture, endpoint/shape failure, owner refusal, runtime drift, preserved
+failed attempts and no private output/write. They are not a protected host pass.
+Protected inspection still needs the owner terminal because sudo requires a
+password in the agent session. Return only its final JSON. Existing successful
+memory/model/native/recovery tests and both stopped REA attempts stay preserved.
+
+## Previous continuation preparation (protected attempt above failed)
+
+
 28 October latest owner-run inspection PASSED at rea-preflight-inspection-mbyg0554.
 All eight identity predicates passed. The retained source comparison found
 .env and auth.json changed; config.yaml still matched. The original failure

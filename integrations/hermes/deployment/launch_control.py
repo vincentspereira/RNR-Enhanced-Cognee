@@ -50,6 +50,7 @@ LIVE_MAIN_SHA = 'eab1072a0906d6bf48d6bc6e7450948130187abf88fd591fb3f8db286971387
 REA_PROGRAMS_SHA = 'fa213db654f35502ba5bd32b07ae64dea59a6ecb36cd88188eb8805b94d31534'
 REA_FAILURE_INSPECTION_SHA = '03af5e44f43b2b7f3d1e1944653335347a1d6990cf056e15ee6282385b458e29'
 REA_CONTINUATION_SHA = 'bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41'
+REA_CONTINUATION_INSPECTION_SHA = '96a7b2541541f7be5c1f2b05eee0d78e8aba706218166c9ed9e8e6c53dc92e6d'
 
 
 def require(value):
@@ -506,6 +507,9 @@ if __name__ == '__main__':
             raise SystemExit(current['launch']())
         if sys.argv[1:] == ['inspect-rea-failure']:
             inspection = definitions(Path(__file__).with_name('inspect_rea_program_failure.py'), REA_FAILURE_INSPECTION_SHA)
+            raise SystemExit(inspection['main']())
+        if sys.argv[1:] == ['inspect-rea-continuation']:
+            inspection = definitions(Path(__file__).with_name('inspect_rea_continuation_failure.py'), REA_CONTINUATION_INSPECTION_SHA)
             raise SystemExit(inspection['main']())
         if sys.argv[1:] == ['continue-rea-programs']:
             rea = definitions(Path(__file__).with_name('continue_rea_main_programs.py'), REA_CONTINUATION_SHA)
