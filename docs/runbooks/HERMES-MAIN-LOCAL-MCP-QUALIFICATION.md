@@ -1,5 +1,59 @@
 # Qualify the cached local MCP components without fleet activation
 
+28 October protected REA finish STOPPED before REA startup at
+main-local-mcp-rea-finish-evjjlpz3, public_code_pins, helper
+483a4d97d8f6756d87047a0a7d1851db31c3dff77a94a1b8c076aa2ce412915e.
+Zero new copies, credentials, model/API calls or platform sends; prior Filesystem,
+public-copy and main recovery passes remain preserved. The failed operator stopped.
+
+Exact read-only diagnosis: all five public hashes, owners, link counts and
+permissions match. The helper's 16 MiB SCRIPT bound was incorrectly applied to
+/usr/bin/node, a 123,655,872-byte executable. Protocol, REA entry, REA main and SDK
+checks pass; Node alone failed solely because of that size predicate. This was a
+qualification-helper error, not an altered binary or a REA runtime failure.
+
+Run this ONE corrected continuation in the owner's Ubuntu-Hermes sudo terminal:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/continue_main_rea_mcp.py
+```
+
+Only the fixed Node path/hash gets an exact 123,655,872-byte bound, streamed in
+64 KiB blocks. Root ownership, non-writable ancestors, no symlink/hardlink,
+expected SHA and stable descriptor/name/inode/metadata checks remain enforced.
+The old 16 MiB validator is unchanged for all scripts. There is no permission,
+capability, vendor code, schema or Hermes guard change. The REA reader remains
+bounded at its pinned SDK's 10 MiB limit; the earlier isolated 207-tool catalogue
+pass is reused and was not replayed during this correction.
+
+The continuation requires the exact stopped V1 size refusal, zero-effect flags,
+and absence of its proof-driver directory, proof unit and REA component receipt.
+It loads the pinned V1 finisher into a NEW namespace and freezes the wrapper into
+a NEW V2 artifact/unit. Original source/frozen contexts and failure bytes remain
+untouched; the worker verifies the earlier V1 context/manifests/summaries unchanged
+at exit. The same qualified protocol/proof/unit/journal logic then runs ONLY REA
+under the actual main restricted UID. Filesystem, package copies/readback,
+Java/Ghidra and old native/model/memory tests are not replayed.
+
+Fifty-two focused tests pass, zero failures/errors/skips/warnings. They cover the
+exact executable bound and unsafe metadata refusal, unchanged script validation,
+strict stopped/zero-effect/no-proof admission, previous-failure preservation,
+REA-only execution, the >2 MiB catalogue regression and earlier no-replay guards.
+Service/protocol tests use invented fixtures. Separately, native Python 3.14.7
+compiled the new wrapper and the EXACT corrected preflight PASSED against all
+five actual public host artifacts. No server/profile/secret was accessed by that
+check. Protected V2 execution remains pending because agent-session sudo still
+requires the owner's terminal; return only the final JSON.
+
+Filesystem/main recovery passes remain valid. Actual main tool/context/native
+binding, Fetch/remotes, production dispatch, admitted renewal, deferred profiles,
+final fresh main state and fleet switch review remain open. All admission policies
+stay disabled. Delivery is still exact 21abf485; four relevant CI runs pass and two
+broader runs remain failed. No main merge or fleet activation is claimed. See
+2026-10-28-rea-node-size-continuation.json for sanitized evidence.
+
+## Earlier reader correction and partial passes (preserved)
+
 28 October protected partial result at main-local-mcp-hi_qvtkz: Filesystem
 MCP PASSED all 14-tool catalogue/invented read/write/outside-root-denial checks.
 Both protected public package copies and full readback PASSED. REA returned only

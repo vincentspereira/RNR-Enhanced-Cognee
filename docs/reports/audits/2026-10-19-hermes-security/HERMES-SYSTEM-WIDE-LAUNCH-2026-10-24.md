@@ -239,6 +239,20 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October REA finish stopped before REA at public_code_pins,
+main-local-mcp-rea-finish-evjjlpz3. All five hashes/owners/permissions match; the
+qualification helper incorrectly applied its 16 MiB script cap to the
+123,655,872-byte Node executable. The [exact-size Node continuation](HERMES-MAIN-LOCAL-MCP-QUALIFICATION.md)
+changes only that fixed binary's size bound and preserves every integrity guard.
+The exact corrected preflight passes all five real artifacts; 52 focused tests
+and native compilation pass. Protected V2 REA-only execution is pending in the
+owner's terminal. No Filesystem/package/Ghidra/model pass was replayed; all prior
+failures and disabled policies remain retained. Main tools/context/native launch,
+Fetch/remotes, production dispatch, admitted renewal and final fleet review remain
+open. No fleet approval is claimed.
+
+## Earlier checkpoints (preserved)
+
 28 October protected Filesystem MCP and both public package readback checks
 PASSED at main-local-mcp-hi_qvtkz. REA's group remained failed. A local isolated
 diagnostic identifies the qualification reader's 2 MiB cap: REA initializes and
