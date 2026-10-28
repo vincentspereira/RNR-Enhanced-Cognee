@@ -1,5 +1,78 @@
 # Qualify the cached local MCP components without fleet activation
 
+28 October protected partial result at main-local-mcp-hi_qvtkz: Filesystem
+MCP PASSED all 14-tool catalogue/invented read/write/outside-root-denial checks.
+Both protected public package copies and full readback PASSED. REA returned only
+ValueError; its overall group remains failed. Both units stopped, no credential,
+key, model/API, source profile or policy changed. Preserve this exact partial
+result; do not rerun qualify_main_local_mcp.py or the completed Filesystem proof.
+
+A separate ordinary-owner local diagnostic reproduces REA's failure precisely:
+initialize succeeds, then tools/list reaches 2,162,688 pending bytes and exceeds
+the qualification reader's 2,097,152-byte cap. The same protected package supplies
+207 full-schema tools, with canonical catalogue result size 3,158,382 bytes in
+the diagnostic. REA's exact pinned SDK sets its default stdio buffer to
+10,485,760 bytes. The new REA-only reader uses that finite pinned budget, keeps
+all original handshake/schema/count checks and publishes no raw catalogue.
+Vendor bytes/schemas, source configuration and Hermes guards remain unchanged.
+No compact/off schema setting or claimed context size is used to force a pass.
+
+The corrected reader PASSED locally with all 207 tools, no stderr, no next page,
+zero effective/inheritable/ambient capabilities, no-new-privileges, private
+user/PID/network namespaces and Landlock default-deny filesystem/TCP rules.
+Private-profile reads were kernel-denied. This is an ordinary-owner diagnostic,
+NOT the actual restricted main UID/systemd qualification. Early private-mount
+setup attempts failed before REA ran; Landlock was used instead. A diagnostic
+OpenSSL public-configuration read restriction was corrected; it is not reported
+as a production defect. No startup wrapper or top-level-await workaround is used.
+All failed setup artifacts remain local, unmodified and unpublished.
+
+Run this ONE protected finish group in the owner's sudo terminal:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/finish_main_rea_mcp.py
+```
+
+It requires the exact stopped failed attempt, Filesystem component pass,
+protected-copy readback receipts and existing main configured recovery pass.
+It reuses those passes without copying archives or replaying Filesystem. Named
+public entrypoint/SDK/Node/protocol pins and root-owned non-writable ancestors
+are checked; this does not claim a repeated complete package readback or upstream
+authenticity. The same qualified unit/journal implementation runs ONLY REA in a
+NEW empty-home unit under the actual main restricted UID. Its kernel private
+network, AF_UNIX-only families, IP denial, hidden profiles/keys, zero capabilities,
+no-new-privileges and cgroup cleanup remain identical to the previous group.
+The operator itself needs no capabilities; neither process receives secrets.
+
+The old public protocol is loaded as definitions only, with a 10 MiB reader
+budget solely in the new REA namespace. A new probe source is frozen under the
+legacy unit driver's private artifact filename; original scripts/artifacts stay
+byte-for-byte unchanged. REA receives only initialize/tools-list requests and no
+tool calls, binary analysis, Java/Ghidra import/version probe, model or API work.
+Root accepts only the new REA receipt bound to its trusted manager PID, UID and
+invocation, then merges the unchanged older Filesystem pass with its provenance.
+Original failed/main receipts and all disabled policies are checked unchanged.
+The immutable finish returns on repetition; a failure is retained without retry.
+
+Sixty focused tests pass, zero failures/errors/skips/warnings. They cover exact
+partial-pass admission, a real fixture subprocess with >2 MiB full schemas,
+oversize refusal, no model/tool calls, trusted receipt counters, no Filesystem
+replay/archive recopy, immutable result handling and prior security controls.
+Service/stdio regression tests use invented fixtures; the separate 207-tool
+local diagnostic above used the actual protected REA distribution. Native
+Python 3.14.7 compilation and actual public protocol/SDK pin checks pass.
+Protected execution is pending: agent-session sudo still requires a password.
+
+Main tool/context and native candidate-launch acceptance, Fetch/remote MCPs,
+production dispatch, admitted renewal, deferred bindings, final fresh main state
+and fleet review remain open. All policies remain disabled. Delivery fetch is
+still exact 21abf485; four relevant CI runs passed, two broader/full-runtime runs
+remain failed. No audit was suppressed and no new helper hosted-CI pass, main
+merge or fleet activation is claimed. Sanitized evidence:
+2026-10-28-rea-catalogue-reader-reconciliation.json.
+
+## Earlier component preparation (preserved)
+
 The owner-run main candidate/configured recovery PASSED on 28 October at
 main-rea-reviewed-lsamkulo. Six MCP definitions and current settings/OAuth were
 preserved, nine SQLite databases recovered and unresolved filesystem references

@@ -1,0 +1,112 @@
+{
+  "ci": {
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "new_helper_hosted_ci_pass_claimed": false,
+    "provenance": "current_public_github_api_exact_delivery_revision",
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "corrected_local_diagnostic": {
+    "actual_main_uid_qualified": false,
+    "catalogue_canonical_result_json_bytes": 3158382,
+    "complete": true,
+    "hermes_guards_changed": false,
+    "no_next_cursor": true,
+    "private_profile_reads_kernel_denied": true,
+    "reply_limit_bytes": 10485760,
+    "startup_wrapper_used": false,
+    "stderr_bytes": 0,
+    "tools_count": 207,
+    "vendor_schemas_changed": false
+  },
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "local_reproduction": {
+    "capabilities_zero": true,
+    "failing_method": "tools/list",
+    "initialize_passed": true,
+    "no_model_or_memory_requests": true,
+    "old_reply_limit_bytes": 2097152,
+    "pending_bytes_at_refusal": 2162688,
+    "private_profile_reads_kernel_denied": true,
+    "stderr_bytes": 0,
+    "surface": "ordinary_owner_private_user_pid_network_namespaces_and_landlock_diagnostic_only"
+  },
+  "prepared_sources": {
+    "finish_main_rea_mcp.py": "483a4d97d8f6756d87047a0a7d1851db31c3dff77a94a1b8c076aa2ce412915e",
+    "probe_rea_catalogue.py": "50fb6723553d1fd7098d0e5c0c5054cb3ff1c1ff6a6d2248b45a3ea667e405e7"
+  },
+  "protected_finish": {
+    "credentials_issued": 0,
+    "executed": false,
+    "filesystem_replayed": false,
+    "fleet_launch_approved": false,
+    "full_public_readback_replayed": false,
+    "java_ghidra_proof_replayed": false,
+    "main_tool_program_coverage_qualified": false,
+    "new_package_copies": 0,
+    "private_keys_sent_to_child": false,
+    "reason": "sudo_requires_owner_terminal"
+  },
+  "protected_partial": {
+    "all_admission_policies_preserved_disabled": true,
+    "complete": false,
+    "credentials_issued": 0,
+    "evidence_basename": "main-local-mcp-hi_qvtkz",
+    "filesystem": {
+      "complete": true,
+      "invented_write_read_passed": true,
+      "outside_root_denied": true,
+      "tools_called": 4,
+      "tools_count": 14
+    },
+    "memory_api_called": false,
+    "model_called": false,
+    "operator_helper_sha256": "d9ecbb88b03fa32a0867ac2cfe827a23edf69eac2ca4bf7eb00632ccfc795983",
+    "operator_job_stopped": true,
+    "provenance": "owner_supplied_final_json_and_matching_local_helper_sha256",
+    "public_program_readback_passed": [
+      "filesystem",
+      "rea"
+    ],
+    "qualification_unit_stopped": true,
+    "rea": {
+      "complete": false,
+      "error_kind": "ValueError"
+    },
+    "source_profiles_changed": false
+  },
+  "public_sdk": {
+    "source_sha256": "bc81a674f25546e2a631a5f3c9cb1829654bbfcdd40cb89823aab5fb719211e5",
+    "stdio_default_max_buffer_bytes": 10485760
+  },
+  "recorded_date": "2026-10-28",
+  "remaining": [
+    "protected_rea_catalogue_finish",
+    "fetch_and_remote_mcp_acceptance",
+    "actual_native_candidate_mcp_binding_and_served_context",
+    "production_dispatch",
+    "admitted_renewal",
+    "deferred_bindings",
+    "final_fresh_main_state",
+    "final_fleet_switch_review"
+  ],
+  "source_tests": {
+    "errors": 0,
+    "failed": 0,
+    "native_compile_and_public_pins_passed": true,
+    "native_python": "3.14.7",
+    "passed": 60,
+    "regression_services_and_protocol": "invented_fixtures",
+    "skipped": 0,
+    "warnings": 0
+  }
+}

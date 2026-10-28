@@ -239,6 +239,20 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October protected Filesystem MCP and both public package readback checks
+PASSED at main-local-mcp-hi_qvtkz. REA's group remained failed. A local isolated
+diagnostic identifies the qualification reader's 2 MiB cap: REA initializes and
+then returns a roughly 3.16 MB full-schema catalogue of 207 tools. The bounded
+10 MiB reader from its exact pinned SDK PASSED locally; no schemas or Hermes
+guards changed. The [REA-only finish](HERMES-MAIN-LOCAL-MCP-QUALIFICATION.md)
+reuses Filesystem/copy/main recovery passes and retains the old failure. Sixty
+focused tests and native/public-pin checks pass. Actual main-UID protected REA
+execution is pending in the owner's sudo terminal; all admission stays closed.
+Full tools/context/native launch, Fetch/remotes, production dispatch, admitted
+renewal, deferred bindings, fresh final main state and fleet review remain open.
+
+## Earlier checkpoints (preserved)
+
 28 October OWNER-RUN MAIN CANDIDATE AND CONFIGURED RECOVERY PASSED at
 main-rea-reviewed-lsamkulo, helper
 fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51.
