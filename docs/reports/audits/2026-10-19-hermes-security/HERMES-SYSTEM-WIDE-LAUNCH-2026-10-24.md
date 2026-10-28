@@ -239,6 +239,23 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October owner-run REA batch STOPPED at rea-main-programs-s784o2c_,
+helper fa213db654f3..., ValueError/identity, stopped job, zero credentials,
+no source/profile/program/candidate/registry changes reported. The broad child
+phase also covers initial source comparison; do not infer a UID/capability
+failure or source drift yet. Frozen helper hashes and owner-side file reads
+verify, but expected fingerprints and protected process evidence require root.
+The prepared inspect-rea-failure operation is read-only, checks this exact
+zero-effect failure and unchanged guards, and returns identity predicates,
+file-match flags and bounded public frames without secret values or hashes.
+No service restart, program staging, token issue, model/API or effectful retry.
+Thirty-one relevant tests pass with no failures/errors/skips/warnings; native
+Python 3.14.7 compiles all three changed/new files and verifies expected
+same-user supplementary-group refusal before private-file reads. This negative
+control is distinct from protected-host diagnosis. Root inspection is pending
+because sudo requires the owner's terminal. The live-state/program readback
+passes remain preserved; actual cause, REA execution and fleet gates remain open.
+
 28 October owner-run LIVE MAIN STATE/ENCRYPTED RECOVERY PASSED at
 operator-evidence/main-live-gk1v63p6, helper eab1072a0906...: three signed
 ciphertext generations, nine source/restored SQLite databases, current settings/

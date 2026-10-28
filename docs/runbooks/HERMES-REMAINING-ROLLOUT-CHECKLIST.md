@@ -1,4 +1,13 @@
 # Remaining Hermes memory rollout work
+28 October latest REA batch result: STOPPED before credentials/staging, at
+rea-main-programs-s784o2c_. Original profiles, REA/Ghidra/Java installations,
+candidates and disabled policies are preserved. The broad identity label also
+covers source-fingerprint comparison; the failing predicate is not confirmed.
+The next action is the [read-only retained REA preflight inspection](HERMES-REA-PROGRAM-DEPENDENCIES.md),
+not a batch replay. Thirty-one relevant diagnostic/controller tests and native
+compilation/negative control pass. Protected inspection remains pending; the
+nine-database live-state recovery and prior program readback passes stay valid.
+
 
 28 October latest owner-run PASS: live main state and configured encrypted
 recovery at main-live-gk1v63p6, including nine SQLite databases, current settings/
