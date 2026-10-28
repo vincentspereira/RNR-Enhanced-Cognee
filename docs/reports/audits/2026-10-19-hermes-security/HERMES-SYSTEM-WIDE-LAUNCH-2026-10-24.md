@@ -239,6 +239,24 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October rea-settings-programs-x1l5absn STOPPED with PermissionError while
+collecting isolated programme evidence. Actual parent capabilities are only
+SETUID/SETGID and the retained runtime directory is 0700 under UID 992. The public
+proof driver hash matches; PID-1 records establish unique ordered start/success/
+stop, same invocation/current boot, no conflicting start failure. Programme
+execution must not be replayed. Owner-only receipt recovery is still pending.
+
+Prepared finish_rea_dependency_review.py reuses staged/readback/execution evidence,
+reads the fixed receipt under its owner with strict timestamp/no-link/no-atime
+checks, and refreshes only safe field metadata. approvals.timeout and one redacted
+change are not accepted. Twenty-two focused tests and native compilation pass;
+the new journal verifier also passes the actual retained manager events. Child/
+crypto workflow doubles remain distinct from protected receipt recovery. Old
+failure files stay unchanged; completion is a separate additive record. See
+HERMES-REA-PROGRAM-DEPENDENCIES.md and 2026-10-28-rea-owner-receipt-recovery.json.
+All profile/fleet acceptance gates remain explicit and closed where unresolved.
+
+
 28 October protected V3 comparison STOPPED at rea-main-programs-1oj9htt6:
 source capsule and authenticated archive checks completed, settings changed in
 other_settings while model/memory/gateway/MCP matched. Zero credential/generation/

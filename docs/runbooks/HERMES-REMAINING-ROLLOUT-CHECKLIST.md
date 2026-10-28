@@ -1,5 +1,19 @@
 # Remaining Hermes memory rollout work
 
+28 October dependency proof service has trusted PID-1 start/success/stop
+metadata and the exact driver hash, but parent evidence collection failed with
+PermissionError at rea-settings-programs-x1l5absn. The parent lacks DAC override;
+the 0700 receipt directory belongs to the restricted UID. Keep that boundary.
+The prepared [owner-read finish](HERMES-REA-PROGRAM-DEPENDENCIES.md) validates the
+retained receipt as its owner and reuses copies/readback/execution without a
+replay. It refreshes safe settings metadata, accepts no settings and activates
+no profile. Twenty-two focused tests/native compilation pass; private receipt
+recovery remains pending. approvals.timeout and one redacted change still need
+disposition. Broader candidate/tool/production/renewal/final-switch gates remain.
+
+## Earlier checkpoints (preserved)
+
+
 28 October V3 configuration comparison at rea-main-programs-1oj9htt6
 STOPPED on a meaningful change in other_settings. Core model/memory/gateway/MCP
 sections matched. Zero credentials, generations or program staging; all prior

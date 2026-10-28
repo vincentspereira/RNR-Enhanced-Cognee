@@ -1,0 +1,93 @@
+{
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "finish_rea_dependency_review.py": "2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f",
+    "finish_rea_review_owner.py": "12ea43d478806175719ae45d6ffcf35ed4aa0b51c4c5d6d7c8c18717d3964ea4"
+  },
+  "diagnosis": {
+    "capabilities_or_permissions_broadened": false,
+    "failure": "parent_cannot_traverse_owner_private_receipt_directory_without_DAC_override",
+    "fix": "read_fixed_retained_receipt_as_its_original_owner",
+    "settings_disposition": "pending"
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "a13c69f9aa4a90c82d2fd8192cff611c14d5e6bf",
+  "fleet_launch_approved": false,
+  "independently_observed": {
+    "manager_invocation": "e88c25dbc8bc44728c107fcd307f47f9",
+    "no_conflicting_start_failure": true,
+    "parent_capabilities": [
+      "CAP_SETGID",
+      "CAP_SETUID"
+    ],
+    "private_receipt_read": false,
+    "proof_id": "03053e75993f4b73aa063fc2890e5970",
+    "public_driver_sha256": "e8d5f1b1478f40bac936c7227fcad35a41978865f78bae585c0fd4ad3a2fd9d9",
+    "runtime_directory_gid": 984,
+    "runtime_directory_mode": "0700",
+    "runtime_directory_uid": 992,
+    "same_invocation_and_current_boot": true,
+    "trusted_pid1_execution_proof_verified": true,
+    "unique_ordered_start_completion_stop": true
+  },
+  "owner_reported_attempt": {
+    "complete": false,
+    "credentials_issued": 0,
+    "encrypted_generations_created": 0,
+    "error_kind": "PermissionError",
+    "evidence": "operator-evidence/rea-settings-programs-x1l5absn",
+    "failure_phase": "isolated_program_execution",
+    "observed_changed_public_field": [
+      "approvals",
+      "timeout"
+    ],
+    "operator_helper_sha256": "049ad94d989b8c0039c967d65341338642483ad472f79b76604d380e7f216e3b",
+    "operator_job_stopped": true,
+    "previous_candidates_changed": false,
+    "program_diagnostic": {
+      "receipt_available": false
+    },
+    "redacted_changed_fields": 1,
+    "settings_accepted": false,
+    "source_profiles_changed": false
+  },
+  "preparation": {
+    "blocker": "sudo_requires_owner_terminal",
+    "entry": "finish_rea_dependency_review.py",
+    "new_credentials": 0,
+    "prepared": true,
+    "programs_replayed": false,
+    "protected_execution_complete": false,
+    "require_receipt_unchanged_since_pid1_completion": true,
+    "reuse_completed_staging_readback_execution": true,
+    "services_started": false,
+    "settings_accepted": false
+  },
+  "recorded_utc": "2026-10-28T12:26:23.325425+00:00",
+  "remaining_gates": [
+    "owner_receipt_recovery",
+    "settings_disposition_and_current_candidate_recovery",
+    "full_current_MCP_and_served_context_acceptance",
+    "production_dispatch_and_launch_binding",
+    "admitted_unattended_renewal",
+    "deferred_bindings",
+    "final_fleet_switch_review"
+  ],
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "actual_trusted_journal_verifier_passed": true,
+    "child_protocol_verified": true,
+    "development_workflow_fixture_omissions_corrected": 2,
+    "errors": 0,
+    "failed": 0,
+    "native_compiled_files": 2,
+    "native_python": "3.14.7",
+    "owner_read_posix_tests": "real_files_O_NOATIME_mode_link_time_checks",
+    "passed": 22,
+    "private_host_receipt_pass_claimed": false,
+    "skipped": 0,
+    "source_and_public_schema_pins_verified": true,
+    "warnings": 0,
+    "workflow_crypto_service_receipts": "invented_doubles"
+  }
+}

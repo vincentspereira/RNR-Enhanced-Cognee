@@ -1,5 +1,81 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest protected group stopped at isolated_program_execution,
+rea-settings-programs-x1l5absn, helper
+049ad94d989b8c0039c967d65341338642483ad472f79b76604d380e7f216e3b.
+The reported PermissionError is in the parent receipt path. The actual parent
+has CAP_SETUID/CAP_SETGID only, no DAC override, while the retained RuntimeDirectory
+is owned by UID 992/GID 984 with mode 0700. Root must read it through that owner,
+not broaden capabilities, chmod/chown the directory, or repeat the proof.
+
+Independent public-host evidence now verifies the completed proof service:
+proof ID 03053e75993f4b73aa063fc2890e5970, invocation
+e88c25dbc8bc44728c107fcd307f47f9. Exact public driver hash matches the frozen
+probe. Trusted PID-1 metadata records one ordered start, successful oneshot
+completion and stop, in the current boot and same invocation, with no conflicting
+start failures. The source's exit-zero path requires Java version and Ghidra
+headless import success. Private receipt recovery is STILL PENDING, so do not
+turn this manager evidence alone into a completed dependency qualification.
+Protected public/disposable copies were staged and read back before execution;
+reuse that completed work. Do not rerun review_rea_settings_and_programs.py.
+
+Run this ONE finite finish action; it starts no service or Java/Ghidra process:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/finish_rea_dependency_review.py
+```
+
+The finisher requires the exact stopped PermissionError attempt and existing
+staging receipts, immutable public driver and trusted manager events. A dropped-
+privilege child reads ONLY the fixed retained receipt as its original restricted
+UID, using no-follow descriptors and O_NOATIME. It requires owner/mode/link/size
+checks, stable inode/content metadata and kernel mtime/ctime no later than PID-1
+completion. Duplicate JSON keys, extra data, non-boolean flags or modified
+receipts fail closed. Signing/recovery/backend keys are withheld from children.
+Root validates the closed receipt/staging schemas before recording the component
+pass. It reuses the original copies, readback and execution; no archive is rebuilt,
+no programme re-executed and no isolation setting/capability is weakened.
+
+The previous safe settings review observed approvals.timeout changed between
+integers plus one redacted change. Neither change is accepted. The same finish
+action refreshes that review against the authenticated qualified archive. It
+adds ONLY the public known_builtin_toolsets/known_plugin_toolsets field registry,
+verified against pinned Hermes tools_config.py AST keys. Their values stay
+opaque; only standard public platform paths/types can be reported. It also
+permits bounded non-secret approvals.timeout numeric values (0..86400 seconds)
+for review. All arbitrary names, provider/credential values and instructions
+remain suppressed. Root revalidates every published field/value. Current source
+fingerprints must still match at completion; no source/candidate/policy is edited.
+
+The dependency component receipt is retained independently if refreshed settings
+review later fails. The original failure summaries and staging/review records
+remain byte-for-byte unchanged. Completion adds a new separate evidence directory
+and an additive owner-receipt-finish.summary.json link under the old evidence.
+Repeating a completed finisher returns that immutable result without replay;
+later settings changes require a fresh review. Complete=true covers this finish,
+NOT settings acceptance, full REA tool coverage or fleet admission.
+
+Twenty-two focused tests pass, zero final failures/errors/skips/warnings. Real
+owner-file tests verify O_NOATIME preservation and reject late changes, hardlinks,
+symlinks, wrong modes, duplicate/extra JSON fields and boolean counters. Journal
+tests reject forged, failed, ambiguous, cross-boot, mismatched or unordered events.
+Workflow tests use invented service/crypto/child receipts and prove no programme
+replay, preservation of prior failures and immutable completed-return behavior.
+Two development workflow-fixture omissions were corrected; no production guard
+was relaxed. Native Python 3.14.7 compiles both helpers; source/defaults/tool-
+registry pins and the child protocol pass. The new journal verifier has also
+PASSED against the actual retained public manager records; the owner receipt
+has not been read by this agent. Sudo still requires the owner terminal.
+
+Zero new credentials, signed generations, API/model calls, candidate edits,
+launchers or fleet activation are performed. All previous memory/native/model/
+recovery passes remain retained. Settings disposition, configured main candidate
+recovery, full MCP/context, production dispatch, admitted renewal, deferred
+bindings and final switch review remain open. Return only the final JSON.
+
+## Earlier settings/dependency preparation and failed attempt (preserved)
+
+
 28 October latest protected V3 result: configuration comparison STOPPED at
 rea-main-programs-1oj9htt6, helper
 914ae91644bebb8e07094fed59c176b1c02e043750d6fc286eef3a6624bbc5e9.
