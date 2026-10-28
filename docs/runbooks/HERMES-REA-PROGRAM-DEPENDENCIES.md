@@ -1,5 +1,75 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest protected inspection PASSED at
+rea-continuation-inspection-wxp7kgjd. Its markers prove the stopped V2 job
+completed model binding and entered current_settings_capture. No later phase
+started, no credential or encrypted generation was published, and the inspector
+correctly did not repeat model binding. Both failed attempts remain unchanged.
+This narrows the failure to capture/validation; it does not yet prove which
+capture predicate failed or that the source change was formatting only.
+
+The actual current reader/parser/capture receipt passes an owner-side RAM-only
+preview with all six MCP definitions. Encryption in that preview was an invented
+double; it neither accessed a protected baseline nor proved encrypted recovery.
+The former validator also required the current config.yaml bytes to equal the
+historical source bytes. A strict typed comparison against the authenticated
+qualified candidate is now prepared to distinguish formatting from changed
+settings without bypassing a meaningful configuration change.
+
+Run ONE grouped reconciliation:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py reconcile-rea-capture
+```
+
+V3 requires both exact stopped failures and the latest protected inspection. It
+retains the existing model-key check, captures fresh settings as encrypted bytes,
+and authenticates/decrypts the qualified live generation. The original restricted
+main UID receives that archive and the fresh settings only through a private
+pipe. It reads two bounded archive members in RAM, checks manifest/config binding
+and compares the complete parsed configuration after the already reviewed memory
+selection/workspace transform. JSON canonicalization retains scalar types, so
+true and 1 cannot compare equal. Comments, mapping order and YAML presentation
+may differ; all actual settings must match. Arbitrary keys/values/private hashes
+are never returned; a mismatch reports only fixed changed-section labels.
+
+A meaningful difference stops BEFORE any signed generation, program staging or
+credential issuance, with category rea_configuration_changed_requires_review_no_effectful_retry.
+If the typed settings match, the SAME command stages and verifies the pinned
+public Ghidra/Java copies, executes their restricted offline proof, creates a
+NEW inactive candidate preserving fresh settings/OAuth, and verifies its signed
+encrypted nine-database/provider/scope recovery. It creates no real REA server,
+chat request or production adapter. It records the current checkpoint and failure
+phase for any later refusal. No automatic retry, promotion or fleet activation
+is enabled; repeating the command only reattaches/returns its retained result.
+
+Current source fingerprints remain exact from capture through completion; this
+replaces historical byte equality with mandatory authenticated typed equality,
+not a general permission to accept configuration changes. The completed live
+operational snapshot is reused, with no fresh database capture/global-atomic or
+full-profile recovery claim. Original sources, programs, prior candidates,
+policies, daily backup registry and prior evidence remain preserved. Protected
+signing/recovery/backend keys never cross into owner children.
+
+Thirty-five relevant reconciliation/controller tests pass, with zero failures,
+errors, skips or warnings. They cover formatting-only success; model, MCP,
+unknown-setting and scalar-type changes; bad digest/duplicate/link archives;
+both stopped-failure admission gates; zero staging/issuance before equality;
+early/late drift; restored-state preservation; and exact controller/helper pins.
+Archive/service/issuer tests use invented fixtures/doubles. Three runtime files
+compile in installed Python 3.14.7; all dependency pins and the restricted child
+protocol pass. Protected V3 execution remains pending because this session's
+sudo requires the owner terminal. All completed native/model/memory passes stay
+retained, including the finished older test which must never be replayed.
+
+The delivery branch still points to exact revision 21abf485. Four relevant CI
+workflows pass; broader CI/full-runtime workflows remain failed. Full current
+MCP/tool/context acceptance, production routing, admitted unattended renewal,
+deferred bindings and final scope/launcher/switch review remain open.
+
+## Earlier failure and inspection checkpoints (preserved)
+
+
 28 October latest protected V2 result: STOPPED at
 rea-main-programs-yhw1c8p4, helper bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41.
 The owner reports zero credentials and zero encrypted generations. The operator

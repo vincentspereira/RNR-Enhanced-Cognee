@@ -51,6 +51,7 @@ REA_PROGRAMS_SHA = 'fa213db654f35502ba5bd32b07ae64dea59a6ecb36cd88188eb8805b94d3
 REA_FAILURE_INSPECTION_SHA = '03af5e44f43b2b7f3d1e1944653335347a1d6990cf056e15ee6282385b458e29'
 REA_CONTINUATION_SHA = 'bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41'
 REA_CONTINUATION_INSPECTION_SHA = '96a7b2541541f7be5c1f2b05eee0d78e8aba706218166c9ed9e8e6c53dc92e6d'
+REA_CONFIGURATION_RECONCILIATION_SHA = '914ae91644bebb8e07094fed59c176b1c02e043750d6fc286eef3a6624bbc5e9'
 
 
 def require(value):
@@ -508,6 +509,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['inspect-rea-failure']:
             inspection = definitions(Path(__file__).with_name('inspect_rea_program_failure.py'), REA_FAILURE_INSPECTION_SHA)
             raise SystemExit(inspection['main']())
+        if sys.argv[1:] == ['reconcile-rea-capture']:
+            rea = definitions(Path(__file__).with_name('reconcile_rea_configuration.py'), REA_CONFIGURATION_RECONCILIATION_SHA)
+            raise SystemExit(rea['launch']())
         if sys.argv[1:] == ['inspect-rea-continuation']:
             inspection = definitions(Path(__file__).with_name('inspect_rea_continuation_failure.py'), REA_CONTINUATION_INSPECTION_SHA)
             raise SystemExit(inspection['main']())

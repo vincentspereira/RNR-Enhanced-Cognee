@@ -1,0 +1,97 @@
+{
+  "ci": {
+    "broader_failed_runs": [
+      40055830266,
+      40055830273
+    ],
+    "exact_delivery_revision_verified": true,
+    "new_helper_hosted_pass_claimed": false,
+    "relevant_success_runs": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "launch_control.py": "de10a7c1c6a04e4e2db905c7b6e119bf9b59aa40e9ce54e30073a0eaca098ccc",
+    "rea_candidate_owner_v3.py": "acc61a7c0bd4b7b8b6faa1f2865c81b71c773d12531e0e05ec2bbd99fc9b4494",
+    "reconcile_rea_configuration.py": "914ae91644bebb8e07094fed59c176b1c02e043750d6fc286eef3a6624bbc5e9"
+  },
+  "diagnosis": {
+    "exact_capture_predicate": "unconfirmed",
+    "failure_region": "current_settings_capture_or_validation",
+    "formatting_only_change_on_protected_host": "unconfirmed",
+    "model_binding_completed_before_capture": true
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "1ec4afabbcbede94ac1239592d8d61784d75655b",
+  "fleet_launch_approved": false,
+  "keys_rotated": false,
+  "local_preview": {
+    "actual_current_reader_parser_receipt_passed": true,
+    "encryption": "invented_double",
+    "mcp_definitions": 6,
+    "profile_bytes_written": false,
+    "protected_baseline_compared": false
+  },
+  "owner_reported_inspection": {
+    "checkpoint_markers": {
+      "configured_backup": false,
+      "configured_restore": false,
+      "current_settings_capture": true,
+      "isolated_program_execution": false,
+      "model_binding": true,
+      "new_candidate": false,
+      "public_programs": false,
+      "source_freshness": false
+    },
+    "complete": true,
+    "credentials_issued": 0,
+    "effectful_retry": false,
+    "evidence": "operator-evidence/rea-continuation-inspection-wxp7kgjd",
+    "previous_evidence": "operator-evidence/rea-main-programs-yhw1c8p4",
+    "profiles_changed": false,
+    "readonly_model_binding": {
+      "inspection_complete": false,
+      "not_reexecuted": true
+    },
+    "services_started": false
+  },
+  "preparation": {
+    "blocker": "sudo_requires_owner_terminal",
+    "fresh_source_fingerprints": "exact_through_completion",
+    "historical_config_byte_equality": "replaced_with_authenticated_typed_configuration_equality",
+    "meaningful_difference": "stop_before_signed_generations_programs_or_credentials",
+    "mode": "reconcile-rea-capture",
+    "operational_snapshot": "reuse_completed_nine_database_live_snapshot",
+    "prepared": true,
+    "protected_execution_complete": false,
+    "requires_both_stopped_failures": true,
+    "requires_latest_inspection": true,
+    "source_operational_state_refreshed": false
+  },
+  "recorded_utc": "2026-10-28T11:27:17.974054+00:00",
+  "remaining_gates": [
+    "protected_REA_capture_reconciliation_and_candidate_recovery",
+    "full_current_MCP_and_served_context_acceptance",
+    "production_dispatch_and_launch_binding",
+    "admitted_unattended_renewal",
+    "deferred_bindings",
+    "final_fleet_switch_review"
+  ],
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "archive_service_issuer_operations": "invented_fixtures_and_doubles",
+    "child_protocol_verified": true,
+    "errors": 0,
+    "failed": 0,
+    "native_compiled_files": 3,
+    "native_python": "3.14.7",
+    "passed": 35,
+    "skipped": 0,
+    "source_pins_verified": true,
+    "warnings": 0
+  }
+}

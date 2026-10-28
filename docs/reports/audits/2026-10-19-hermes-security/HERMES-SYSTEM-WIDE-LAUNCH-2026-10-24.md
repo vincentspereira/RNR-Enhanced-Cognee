@@ -239,6 +239,25 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October owner-run rea-continuation-inspection-wxp7kgjd PASSED inspection:
+model_binding/current_settings_capture markers true, all later markers false.
+Model binding completed before the stopped V2 capture/validation failure; the
+inspection did not repeat it. Zero credentials/generations and no effectful retry.
+The exact capture predicate is still unconfirmed. A current-source RAM-only
+reader/receipt preview passes with invented encryption and six MCP definitions;
+it does not compare a protected baseline or prove host recovery.
+
+Prepared reconcile-rea-capture uses the authenticated qualified archive and
+strict typed full-configuration equality before new signed generations, staging
+or issuance. Formatting-only changes may pass; meaningful settings changes stop
+with fixed section labels. If equal, the same command completes restricted REA
+dependency proof and NEW configured nine-database recovery, preserving earlier
+state. Thirty-five relevant source tests and native compilation pass; protected
+execution still requires the owner terminal. See HERMES-REA-PROGRAM-DEPENDENCIES.md
+and 2026-10-28-rea-capture-reconciliation.json. No completed memory/model/native
+pass is replayed. All admission policies and broader unresolved gates remain.
+
+
 28 October confirmed REA inspection: owner-run
 operator-evidence/rea-preflight-inspection-mbyg0554 reports all eight identity
 predicates true, .env/auth.json mismatch and config.yaml match. This identifies

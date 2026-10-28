@@ -1,5 +1,18 @@
 # Remaining Hermes memory rollout work
 
+28 October latest inspection at rea-continuation-inspection-wxp7kgjd
+locates the V2 failure in current-settings capture, after model binding passed.
+No program staging, credential or generation occurred. Both failures are retained.
+The new [grouped REA capture reconciliation](HERMES-REA-PROGRAM-DEPENDENCIES.md)
+requires authenticated typed configuration equality before staging/issuance;
+formatting alone may differ, changed settings stop for review. If equal, the
+same command finishes dependency execution and NEW candidate encrypted recovery.
+Thirty-five source tests and native compilation pass. Protected execution and
+all broader fleet acceptance gates remain pending; no fleet approval is claimed.
+
+## Earlier checkpoints (preserved)
+
+
 28 October confirmed REA diagnosis: all protected identity checks pass;
 source .env and auth.json drifted while config.yaml matched. The zero-effect
 failure and previous recovery passes are retained. The guarded
