@@ -1,5 +1,19 @@
 # Remaining Hermes memory rollout work
 
+28 October V3 configuration comparison at rea-main-programs-1oj9htt6
+STOPPED on a meaningful change in other_settings. Core model/memory/gateway/MCP
+sections matched. Zero credentials, generations or program staging; all prior
+state and disabled policies preserved. Do not bypass this review gate.
+The new [grouped settings review and independent REA dependency proof](HERMES-REA-PROGRAM-DEPENDENCIES.md)
+reports only schema-approved field metadata and qualifies pinned Ghidra/Java
+without accepting settings or activating profiles. Twenty-nine focused tests
+and native compilation pass; protected execution remains pending. Candidate
+recovery, full tool/context acceptance, production dispatch, admitted renewal,
+deferred bindings and final fleet switch review remain open.
+
+## Earlier checkpoints (preserved)
+
+
 28 October latest inspection at rea-continuation-inspection-wxp7kgjd
 locates the V2 failure in current-settings capture, after model binding passed.
 No program staging, credential or generation occurred. Both failures are retained.

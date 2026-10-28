@@ -239,6 +239,24 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October protected V3 comparison STOPPED at rea-main-programs-1oj9htt6:
+source capsule and authenticated archive checks completed, settings changed in
+other_settings while model/memory/gateway/MCP matched. Zero credential/generation/
+program effects, old state preserved, job stopped and all policies disabled.
+Exact changed fields remain unconfirmed. Do not accept this change by inference.
+
+Prepared review_rea_settings_and_programs.py combines a root-revalidated public-
+schema-only field review with independent offline pinned Ghidra/Java component
+qualification. It accepts no settings, changes no candidate and issues no token.
+Twenty-nine focused tests pass (zero failures/errors/skips/warnings), with
+invented program/service doubles. Native Python 3.14.7 compilation and frozen
+parent/default-schema pins pass. Protected execution requires the owner terminal.
+Dependency qualification is separated from the configuration review so safe
+independent work can progress; full REA/MCP/fleet acceptance remains open. See
+HERMES-REA-PROGRAM-DEPENDENCIES.md and 2026-10-28-rea-settings-review-preparation.json.
+All completed memory/native/model/recovery passes and earlier failures remain.
+
+
 28 October owner-run rea-continuation-inspection-wxp7kgjd PASSED inspection:
 model_binding/current_settings_capture markers true, all later markers false.
 Model binding completed before the stopped V2 capture/validation failure; the

@@ -1,5 +1,83 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest protected V3 result: configuration comparison STOPPED at
+rea-main-programs-1oj9htt6, helper
+914ae91644bebb8e07094fed59c176b1c02e043750d6fc286eef3a6624bbc5e9.
+The authenticated typed comparison passed its integrity checks and found a real
+change in other_settings. Model, memory, gateway and MCP sections matched after
+the reviewed transform. No credential, signed generation or program was staged;
+source profiles/programs, prior candidates, registry and disabled policies remain
+unchanged. The operator job is stopped. The exact changed fields are not yet
+known; do not guess that the change is harmless or override this guard.
+
+The next ONE grouped command combines bounded settings review with independent
+qualification of the pinned public dependencies:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/review_rea_settings_and_programs.py
+```
+
+Use this prepared direct operator entry. It preserves the existing controller
+and its restricted child-frame size boundary. It freezes a new root-owned job,
+detaches safely on Ctrl+C and returns its retained result on repetition. It
+requires the exact stopped zero-effect V3 configuration refusal, verifying the
+original summaries unchanged throughout. It accepts no settings and enables no
+profile, gateway, renewal policy or final fleet switch.
+
+For review, an owner child captures current settings as encrypted bytes in RAM;
+root authenticates/decrypts the completed qualified archive. Only the original
+restricted main UID receives the plaintext comparison inputs through a private
+pipe. The child compares full typed settings using the existing transformation.
+It publishes changed field paths only when present in the exact pinned public
+Hermes defaults schema. Arbitrary private names and changed subtrees are counted,
+not named. Most values are omitted entirely. A fixed whitelist permits only
+bounded numeric budget/version values, selected display booleans and cli/tui/
+layout enums. Keys, passwords, provider values, private names, instructions and
+raw exceptions are never published. Root independently validates every returned
+path, type and permitted value before storing/printing the report. The public
+schema is read as an AST, never imported or executed. Settings acceptance stays
+false even when this review component completes.
+
+The job independently stages both exact existing public Ghidra/Java archives,
+verifies every protected/disposable byte, link and permission, and runs the
+unchanged finite restricted-UID Java/headless-Ghidra proof with an empty private
+HOME, private network and inaccessible real profiles/backend/backups. It imports
+only /usr/bin/true into a retained invented project, with analysis disabled.
+Existing identical protected copies are reused only after full verification;
+differing data is refused. New program sources/archives are not downloaded or
+recaptured. Real REA MCP servers, platforms and chat models are never started.
+Root never walks owner trees or executes these binaries as root. The exact
+previous proof source and isolation settings are retained.
+
+No canonical memory edits, API/model calls, credentials, candidate changes or
+signed backup generations occur in this job. It stores a new sanitized report
+and public dependency copies/proof projects only. Source fingerprints are
+checked again at completion. If source settings drift later, the dependency
+component pass remains explicitly recorded while the overall job fails; the
+proof must be reused rather than replayed. Failure receipts expose bounded
+Java/Ghidra flags, never raw process output. Complete=true covers this grouped
+review/dependency job, NOT settings acceptance or candidate/fleet qualification.
+
+Twenty-nine focused tests pass, zero failures/errors/skips/warnings. They cover
+private-field/value suppression; whitelist validation at root; exact stopped
+admission; reused verified program copies; preserved old artifacts; independent
+proof despite unaccepted settings; late source drift; fixed probe diagnostics;
+and retained job return without restart. Service/issuer/program execution in
+these tests uses invented doubles, not protected host evidence. Both new helpers
+compile in installed Python 3.14.7; immutable parent/defaults pins and the child
+protocol pass. Protected execution is pending because this session's sudo still
+requires the owner terminal. Return only the final JSON summary.
+
+The completed memory/native/model/recovery passes and all failed REA attempts
+remain preserved. Settings disposition, NEW main candidate configured recovery,
+full six-MCP/tool/context acceptance, production dispatch and launch bindings,
+admitted unattended renewal, deferred profiles and final switch review remain
+open. The delivery revision remains 21abf485; four relevant CI workflows pass,
+while broader CI/full-runtime failures remain visible. No fleet approval.
+
+## Earlier capture reconciliation (stopped result above supersedes readiness)
+
+
 28 October latest protected inspection PASSED at
 rea-continuation-inspection-wxp7kgjd. Its markers prove the stopped V2 job
 completed model binding and entered current_settings_capture. No later phase

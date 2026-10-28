@@ -1,0 +1,93 @@
+{
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "review_rea_configuration_owner.py": "f939d2a152e249149cb432e9678a7fdb4e6faada883f1c7c3205494fa0497c3e",
+    "review_rea_settings_and_programs.py": "049ad94d989b8c0039c967d65341338642483ad472f79b76604d380e7f216e3b"
+  },
+  "diagnosis": {
+    "changed_section": "other_settings",
+    "core_sections_unchanged_at_comparison": true,
+    "exact_changed_fields": "unconfirmed",
+    "meaningful_configuration_difference_confirmed": true
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "a7923545269aacd7c3dc695be98cc9d3ab99189d",
+  "fleet_launch_approved": false,
+  "independently_observed": {
+    "current_public_schema_field_types_only_inspected": true,
+    "exit_status": 1,
+    "invocation_matches_owner_report": true,
+    "operator_service_stopped": true,
+    "private_values_printed": false,
+    "public_defaults_sha256": "93c989bcd0a4c3aff116ad2534375ece02bce4b79b9e9166dfacf834f09bc63b",
+    "sudo_noninteractive": "password_required",
+    "unit_result": "exit-code"
+  },
+  "owner_reported_attempt": {
+    "all_admission_policies_preserved_disabled": true,
+    "candidate_promoted": false,
+    "checkpoint": "configuration_equivalence",
+    "complete": false,
+    "configuration_comparison": {
+      "changed_sections": [
+        "other_settings"
+      ],
+      "complete": true,
+      "configuration_semantically_equivalent": false,
+      "source_capsule_verified": true
+    },
+    "credentials_issued": 0,
+    "encrypted_generations_created": 0,
+    "evidence": "operator-evidence/rea-main-programs-1oj9htt6",
+    "operator_helper_sha256": "914ae91644bebb8e07094fed59c176b1c02e043750d6fc286eef3a6624bbc5e9",
+    "operator_job_stopped": true,
+    "previous_candidates_changed": false,
+    "source_profiles_changed": false,
+    "source_programs_changed": false
+  },
+  "preparation": {
+    "blocker": "sudo_requires_owner_terminal",
+    "candidate_changed": false,
+    "chat_model_called": false,
+    "configuration_guard_preserved": true,
+    "credentials_issued": 0,
+    "entry": "review_rea_settings_and_programs.py",
+    "independent_program_qualification": true,
+    "prepared": true,
+    "private_keys_sent_to_owner": false,
+    "private_schema_names": "redacted",
+    "private_values": "omitted",
+    "protected_execution_complete": false,
+    "settings_accepted": false
+  },
+  "previous_ci_status": {
+    "broader_workflows_failed": 2,
+    "legacy_failures_resolved": false,
+    "new_helper_hosted_pass_claimed": false,
+    "relevant_workflows_passed": 4,
+    "revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529"
+  },
+  "recorded_utc": "2026-10-28T11:52:12.484066+00:00",
+  "remaining_gates": [
+    "protected_settings_review_and_REA_dependency_execution",
+    "settings_disposition_and_new_candidate_recovery",
+    "full_current_MCP_and_served_context_acceptance",
+    "production_dispatch_and_launch_binding",
+    "admitted_unattended_renewal",
+    "deferred_bindings",
+    "final_fleet_switch_review"
+  ],
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "child_protocol_verified": true,
+    "errors": 0,
+    "exact_frozen_helper_and_schema_pins_verified": true,
+    "failed": 0,
+    "native_compiled_files": 2,
+    "native_python": "3.14.7",
+    "passed": 29,
+    "program_service_execution": "invented_doubles",
+    "skipped": 0,
+    "warnings": 0
+  }
+}
