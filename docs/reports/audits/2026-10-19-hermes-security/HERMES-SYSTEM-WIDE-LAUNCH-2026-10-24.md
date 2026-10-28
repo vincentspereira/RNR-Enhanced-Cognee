@@ -239,6 +239,39 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October owner-run CURRENT MAIN SETTINGS/RECOVERY PASSED at
+operator-evidence/main-current-j0zy5ttp, helper a97d14c49ca7...: all six MCP
+entries/current OAuth/environment settings preserved, three encrypted
+signed generations, configured disposable restore, eight SQLite databases and
+source-current completion. New inactive copy only; no promotion/registry,
+production renewal/dispatch, source edit or fleet approval. The old operational
+state was reused, so the live-state refresh gate remained false.
+
+The strict capture refusal is diagnosed: the public telemetry plugin writes a
+derived dashboard display file and an append-only diagnostic log. Their exact
+source hashes are pinned; neither is read back as runtime guard configuration.
+V4 adds only these reviewed runtime outputs/atomic display temps to explicit
+omissions, preserving all durable-file/SQLite guards and original V3 evidence.
+Native Python 3.14.7 capture now passes for 5,915 files/448,114,418 payload bytes,
+nine SQLite databases, 16 rebuilt sidecars and 34 recorded omissions. The archive
+was RAM-only; this is not encrypted restore proof. Forty-six final relevant
+source/controller/security tests pass without errors/skips/warnings. Earlier
+sandbox/fixture diagnostic failures were corrected; no host failure was relabeled.
+
+One grouped protected refresh is prepared at launch_control.py
+refresh-main-live-state. It requires the retained settings/delivery passes and
+creates new signed encrypted live-source/configured generations and disposable
+restores, retaining all prior candidates and disabled policies. Protected
+execution remains pending because sudo -n requires the owner's terminal.
+See HERMES-MAIN-LIVE-STATE-REFRESH.md. Remaining program references are Ghidra
+and Java; no MCP/program was launched. Production dispatch, full main tool/context
+coverage, admitted renewal, deferred mappings and final switch remain open.
+
+Delivery was fetched again and still resolves to 21abf4857ca8dce8e0a3aafc725266c8d3754529.
+GitHub API still reports Required CI, project memory, canonical stack and
+canonical dashboard success. Broader CI/CD coverage and full-runtime qualification
+remain failed; no audit was suppressed or full legacy lock installed.
+
 27 October owner-run DELIVERY/PROCESS-CRASH COMPONENT PASSED at
 `operator-evidence/isolated-delivery-807r2x1g`, helper `d325f3f4f5...`,
 same manifest `0ac7793980...`. All four phases completed, including two actual

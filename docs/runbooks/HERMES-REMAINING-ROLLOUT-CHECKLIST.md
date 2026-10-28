@@ -1,5 +1,27 @@
 # Remaining Hermes memory rollout work
 
+28 October Ubuntu-Hermes: current main configuration/recovery PASSED at
+main-current-j0zy5ttp with all six MCP definitions preserved. The retained
+40-profile qualification and 41-profile scheduled backup passes remain valid
+for their recorded scopes. No completed native/model/memory test was replayed.
+
+The changing telemetry items are now verified display/log outputs, not guard
+configuration. V4 preserves durable configuration and database checks; native
+RAM-only capture passes for 5,915 files and nine SQLite databases. The grouped
+[live main refresh and encrypted recovery](HERMES-MAIN-LIVE-STATE-REFRESH.md) is
+implemented and source-tested (46 relevant tests), with protected execution
+pending. The prior current-settings pass reused older operational state and
+remains distinct from this new capture/restore qualification.
+
+Production dispatch/callback/outbox integration, actual launch binding,
+Ghidra/Java and full current MCP/tool/context coverage, admitted unattended
+operation, deferred bindings and final mapping/switch review are still open.
+All admission policies remain disabled. The four relevant delivery CI workflows
+still pass at exact revision 21abf485; broader coverage/full-runtime workflows
+remain failed. No main merge or whole-fleet activation is claimed.
+
+## Historical checkpoints (retain their dates and scopes)
+
 27 October Ubuntu-Hermes update: the grouped inactive main implementation and
 all 40 named credential/reload/recovery qualifications PASSED. Main provider
 selection, eight-database recovery, own/peer/OS/index checks and trusted

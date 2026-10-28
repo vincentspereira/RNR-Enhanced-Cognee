@@ -46,6 +46,7 @@ ISOLATED_TRANSPORT_SHA = '0fc198a6942a5b37ad2535504f6544e3652f41a728e3d3a470eebf
 NATIVE_TEXT_INGRESS_SHA = '024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9'
 DELIVERY_RECOVERY_SHA = 'd325f3f4f5c82aa672cc7f390491a0ee2018729e63c9a1576878bec2f402790d'
 CURRENT_MAIN_SHA = 'a97d14c49ca7ebc41b9935e2f296479226c76f37d690eee0203ccb3e5cb7efea'
+LIVE_MAIN_SHA = 'eab1072a0906d6bf48d6bc6e7450948130187abf88fd591fb3f8db286971387a'
 
 
 def require(value):
@@ -500,6 +501,9 @@ if __name__ == '__main__':
         if sys.argv[1:] == ['reconcile-main-candidate']:
             current = definitions(Path(__file__).with_name('reconcile_current_main_candidate.py'), CURRENT_MAIN_SHA)
             raise SystemExit(current['launch']())
+        if sys.argv[1:] == ['refresh-main-live-state']:
+            live = definitions(Path(__file__).with_name('refresh_live_main_candidate.py'), LIVE_MAIN_SHA)
+            raise SystemExit(live['launch']())
         if sys.argv[1:] == ['qualify-delivery-recovery']:
             delivery = definitions(Path(__file__).with_name('qualify_isolated_delivery_recovery.py'), DELIVERY_RECOVERY_SHA)
             raise SystemExit(delivery['main']())

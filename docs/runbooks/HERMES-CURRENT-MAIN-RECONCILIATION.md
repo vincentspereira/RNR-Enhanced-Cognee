@@ -1,5 +1,26 @@
 # Current main configuration reconciliation into a new inactive copy
 
+28 October owner-run PASS: operator-evidence/main-current-j0zy5ttp, helper
+SHA256 a97d14c49ca7ebc41b9935e2f296479226c76f37d690eee0203ccb3e5cb7efea.
+All six current MCP definitions and current settings/OAuth were preserved.
+Three signed encrypted generations and the configured disposable restore
+passed, with eight SQLite databases recovered and source settings still current
+at completion. The job stopped; no candidate promotion, daily registry change,
+production launcher/renewal activation or fleet approval occurred. This closes
+the pending protected configuration/recovery checkpoint below. Do not replay it.
+
+The two remaining references are GHIDRA_INSTALL_DIR and JAVA_HOME program
+dependencies. Their metadata identifies Ghidra 12.1.4 PUBLIC and Adoptium Java
+21.0.13. No dependency was copied/executed or qualified for the restricted UID.
+
+The telemetry writer/purpose has now been identified and the reviewed native
+live-state capture passes. The grouped [live-state refresh and encrypted
+recovery](HERMES-MAIN-LIVE-STATE-REFRESH.md) is prepared; its protected execution
+remains pending. The successful settings-only receipt correctly reports
+current_source_operational_refresh_qualified=false and must not be relabeled.
+
+## Prior preparation and historical capture checkpoint
+
 Protected native text, adapter and process-crash component checks passed. The
 current original main profile now has six MCP definitions; the older inactive
 main candidate had four. Its model still matches the qualified ZAI Coding route.

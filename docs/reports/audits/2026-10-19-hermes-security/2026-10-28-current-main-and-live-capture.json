@@ -1,0 +1,105 @@
+{
+  "ci": {
+    "broader_ci": "failure",
+    "dashboard": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055830325",
+    "exact_delivery_revision_verified": true,
+    "full_runtime": "failure",
+    "memory": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055830334",
+    "new_helper_hosted_ci": "not_established",
+    "relevant_workflows": "success",
+    "required": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055830507",
+    "stack": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/40055830340"
+  },
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "capture_main_operational_profile_v4.py": "6cbac482f00b1f56d461648854042e8849f58ff24a404217eb54d43b740f6245",
+    "launch_control.py": "5757078d403716ac2d0974dad6cd4fbd9cddf7355ab2c2bc8928e4489801774d",
+    "main_live_reconciliation_owner.py": "291f6e5f81a027c89473fedfc7bdf3275d2f00678bd3f655e47e74df7725b2b2",
+    "refresh_live_main_candidate.py": "eab1072a0906d6bf48d6bc6e7450948130187abf88fd591fb3f8db286971387a"
+  },
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "direct_native_ram_capture": {
+    "archive_bytes": 454860800,
+    "complete": true,
+    "elapsed_seconds": 3.176,
+    "encrypted_generation_created": false,
+    "evidence": "/tmp/ec-main-reviewed-capture-03m5azsp.json",
+    "fleet_launch_approved": false,
+    "plaintext_archive_written": false,
+    "receipt": {
+      "database_snapshot_mode": "read_transaction_per_database",
+      "database_snapshots_consistent": true,
+      "database_versions_stable": true,
+      "executable_rebuild_qualified": false,
+      "files": 5915,
+      "full_profile_recovery_qualified": false,
+      "global_atomic_snapshot_qualified": false,
+      "live_database_changes_observed": 0,
+      "omitted_entries": 34,
+      "plain_files_stable": true,
+      "plaintext_archive_written": false,
+      "sidecars_rebuilt": 16,
+      "source_bytes": 448114418,
+      "source_logical_writes_performed": false,
+      "source_profiles_preserved": true,
+      "sqlite_databases": 9,
+      "sqlite_read_bookkeeping_may_change": true
+    },
+    "source_logical_writes": false,
+    "stage": "reviewed_live_capture_native_diagnostic",
+    "telemetry_writer_verified": true
+  },
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "new_operator_execution": {
+    "all_admission_policies_preserved_disabled": true,
+    "automatic_retry": false,
+    "command_mode": "refresh-main-live-state",
+    "complete": false,
+    "prepared": true,
+    "reason": "sudo_requires_password_in_operator_terminal"
+  },
+  "owner_reported_current_configuration_pass": {
+    "candidate_promoted": false,
+    "complete": true,
+    "configured_candidate_restore_qualified": true,
+    "current_settings_and_oauth_preserved": true,
+    "current_source_operational_refresh_qualified": false,
+    "daily_backup_registry_changed": false,
+    "encrypted_generations_created": 3,
+    "evidence": "operator-evidence/main-current-j0zy5ttp",
+    "fleet_launch_approved": false,
+    "mcp_definitions_preserved": 6,
+    "operator_helper_sha256": "a97d14c49ca7ebc41b9935e2f296479226c76f37d690eee0203ccb3e5cb7efea",
+    "operator_job_stopped": true,
+    "source_current_at_completion": true,
+    "sqlite_databases_recovered": 8
+  },
+  "recorded_utc": "2026-10-28T00:32:27.018052+00:00",
+  "remaining_gates": [
+    "protected_live_source_and_configured_encrypted_restore",
+    "Ghidra_Java_and_current_MCP_tool_coverage",
+    "served_chat_context_capabilities",
+    "production_shared_frontend_and_restricted_native_worker_dispatch",
+    "admitted_unattended_renewal_and_deferred_profile_mappings",
+    "final_scope_launcher_switch_and_conditional_merge_review"
+  ],
+  "source_branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "source_tests": {
+    "errors": 0,
+    "failed": 0,
+    "initial_diagnostic_failures": "Sandbox UID mapping, fixture socket length and source-versus-installed pin origin corrected; telemetry log identified as second runtime output.",
+    "installed_public_dependency_pins_verified": 13,
+    "native_python": "3.14.7",
+    "native_syntax_files": 4,
+    "passed": 46,
+    "python": "3.12.13",
+    "selection": [
+      "tests/qualification/test_main_live_snapshot.py",
+      "tests/qualification/test_hermes_launch_control.py"
+    ],
+    "skipped": 0,
+    "warnings": 0,
+    "workflow_and_crypto_doubles_are_not_installed_proof": true
+  }
+}
