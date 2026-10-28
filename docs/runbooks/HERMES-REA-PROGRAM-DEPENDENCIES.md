@@ -1,5 +1,71 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest protected main preparation STOPPED safely at
+main-rea-reviewed-pq0i9j79, settings_assessment. Zero credentials and encrypted
+generations were created; source profiles, earlier candidates and disabled
+admission policies were preserved. The completed Java/Ghidra dependency pass
+remains valid and MUST NOT be replayed.
+
+The newly identified difference is a Telegram home-channel configuration added
+to the current source. Read-only local metadata observes exactly enabled (true)
+and home_channel, with public home fields platform/chat_id/name/user_id and no
+token/custom adapter option. No channel/user IDs, names or credential values are
+published. The earlier approval wait remains 600 seconds versus archived 900.
+Preserve the current source data; these observations do not authorize a Telegram
+connection, message send or production routing change.
+
+The NEW grouped inactive-preparation helper validates the exact stopped
+zero-effect attempt, reuses the dependency pass, captures current settings and
+conditionally prepares/recover-verifies a NEW inactive main copy:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/prepare_main_with_telegram.py
+```
+
+Only a newly added Telegram enabled/home_channel record is admitted for copying,
+with bounded string fields from the exact pinned native HomeChannel schema.
+Tokens, custom options, changed existing Telegram settings, other platform
+changes and every other unadmitted typed difference still stop before issuance.
+The comparison normalizes this data in RAM only; actual enabled/home fields are
+preserved verbatim, not disabled or rewritten in the source or candidate.
+Offered-tool registries and the 900-to-600 wait retain the prior narrow controls.
+Fleet settings acceptance remains false in every outcome.
+
+If assessment and source stability pass, the same job uses the qualified old
+nine-database operational archive and fresh settings/OAuth/model binding,
+rebinds workspace/REA program paths and the pinned memory provider, publishes
+two ordinary fixed-scope credentials only in the new private copy, then creates
+signed encrypted generations and proves a NEW disposable configured restore.
+Source fingerprints, prior pass/failure bytes and disabled policies are checked
+again. The old operational snapshot is reused; this is not a fresh main database
+capture or a final live-state reconciliation. No Java/Ghidra, native/model turn
+or completed memory test is replayed.
+
+The job starts only its finite operator unit. It starts no Telegram/platform
+adapter, model conversation, REA MCP server or production gateway; no external
+platform connection/send occurs. Source/previous candidate/launcher/backup
+registry state remains unchanged. Telegram activation, actual admission,
+production dispatch, full MCP/tool coverage and fleet approval stay false.
+The immutable result is returned on repetition; Ctrl+C detaches the view.
+
+Forty-eight focused tests pass: 21 new inactive-Telegram/refusal/group controls
+and 27 prior preparation controls, zero failures/errors/skips/warnings. Crypto,
+service and grouped restore tests use invented doubles. Actual native Python
+3.14.7 compiles both new helpers and loads the pinned installed public parent,
+policy and six-field HomeChannel schema; no private profile or service is used
+by that check. Protected execution of the NEW group remains pending because
+agent-session sudo requires the owner's local terminal. Delivery fetch remains
+exact 21abf4857ca8dce8e0a3aafc725266c8d3754529; current GitHub API confirms the
+four relevant workflows passed, two broader pipeline/full-runtime runs failed,
+and three label runs skipped. No new helper hosted-CI pass is claimed.
+
+Full six-MCP/context acceptance, production dispatch/bindings, admitted renewal,
+deferred profile bindings, final fresh main-state reconciliation and the final
+fleet switch review remain open. See
+2026-10-28-main-telegram-inactive-preparation.json for sanitized evidence.
+
+## Earlier preparation and dependency receipts (preserved)
+
 28 October protected DEPENDENCY QUALIFICATION PASSED at
 rea-owner-receipt-finish-zy8t6r38, helper
 2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f.

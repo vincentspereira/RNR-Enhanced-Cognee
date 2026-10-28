@@ -239,6 +239,24 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October protected prepare_main_after_rea stopped at settings_assessment,
+main-rea-reviewed-pq0i9j79: zero credentials/generations, source/previous
+candidates/policies preserved. New public difference: platforms.telegram
+(enabled/home_channel); private channel/name/identity values are suppressed.
+Prepared prepare_main_with_telegram.py preserves only the narrowly validated
+new home record in a NEW INACTIVE copy, retaining current enabled data without
+starting an adapter or accepting production routing. All unrelated differences
+still stop before issuance. The same job reuses the completed REA dependency
+proof and old nine-database operational archive, preserves fresh settings/OAuth,
+then verifies signed encrypted configured-candidate recovery. No completed
+programme/model/memory test is replayed. Forty-eight focused tests and native
+Python 3.14.7/public-schema checks pass; grouped crypto/service checks are doubles.
+NEW protected execution remains pending in the owner's sudo terminal. Delivery
+fetch is still exact 21abf485; four relevant CI runs passed, two broad runs failed,
+three label runs skipped. Broader context/MCP/dispatch/renewal/deferred/live-state/
+final switch gates remain open. See HERMES-REA-PROGRAM-DEPENDENCIES.md and
+2026-10-28-main-telegram-inactive-preparation.json. No fleet approval is claimed.
+
 28 October protected REA dependency qualification PASSED at
 rea-owner-receipt-finish-zy8t6r38 (helper 2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f):
 Java/version and headless Ghidra import, owner-only unchanged receipt and trusted

@@ -1,5 +1,19 @@
 # Remaining Hermes memory rollout work
 
+28 October latest protected main preparation stopped before credentials or
+generations at main-rea-reviewed-pq0i9j79. The additional setting is a new
+Telegram enabled/home-channel record. Preserve it as current configuration data;
+Telegram activation, messages and fleet routing are not qualified. The
+[grouped inactive copy and encrypted recovery action](HERMES-REA-PROGRAM-DEPENDENCIES.md)
+now permits only that bounded public shape, retains strict controls for all
+other changes and reuses the completed Java/Ghidra proof without replay.
+Forty-eight focused tests and native Python/public-schema checks pass. The NEW
+protected action is pending; source/old candidates and all admission gates stay
+preserved. Full MCP/context, production dispatch, admitted renewal, deferred
+bindings, final live main state and fleet switch review remain open.
+
+## Earlier checkpoints (preserved)
+
 28 October protected Java/Ghidra dependency execution is now QUALIFIED at
 rea-owner-receipt-finish-zy8t6r38. Owner-only receipt recovery, unchanged timestamps
 and trusted PID-1 proof passed; copies/readback/execution were reused without a
