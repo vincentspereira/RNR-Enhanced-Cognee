@@ -1,5 +1,26 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October OWNER-RUN MAIN CANDIDATE AND CONFIGURED RECOVERY PASSED at
+main-rea-reviewed-lsamkulo, helper
+fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51.
+The current settings/OAuth and Telegram home record were preserved in a NEW
+inactive main candidate. All six MCP definitions survived, nine SQLite databases
+recovered and unresolved filesystem references reached zero. Two ordinary
+fixed-scope credentials and two signed encrypted generations were created.
+Current source fingerprints matched at completion. Source profiles, earlier
+candidates, launchers and backup registry were preserved; all admission policies
+remain disabled. The completed Java/Ghidra dependency proof was reused without
+replay. No model, platform adapter, external platform connection or send ran.
+
+This pass reused the qualified operational snapshot, so it does not establish
+fresh main operational state at a future switch, full MCP/server/tool behavior,
+served context, native production dispatch, admitted renewal or fleet approval.
+Do not rerun either main preparation or the completed Java/Ghidra proof.
+See 2026-10-28-main-telegram-candidate-pass.json and the next
+[offline local MCP component group](HERMES-MAIN-LOCAL-MCP-QUALIFICATION.md).
+
+## Earlier preparation (preserved)
+
 28 October latest protected main preparation STOPPED safely at
 main-rea-reviewed-pq0i9j79, settings_assessment. Zero credentials and encrypted
 generations were created; source profiles, earlier candidates and disabled
