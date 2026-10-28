@@ -239,6 +239,37 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October owner-run LIVE MAIN STATE/ENCRYPTED RECOVERY PASSED at
+operator-evidence/main-live-gk1v63p6, helper eab1072a0906...: three signed
+ciphertext generations, nine source/restored SQLite databases, current settings/
+OAuth, six MCP definitions and stable durable files. Read transactions are per
+database; global atomic/full-home/executable recovery remain false. Older
+operational state was not reused. Source and previous candidates are preserved;
+no promotion, registry, production renewal/dispatch, model/MCP/platform start or
+fleet admission occurred. The operator job stopped. Preserve this completed pass.
+
+Owner clarification: the two program paths are required by the installed REA
+plugin. Local public metadata shows rea 0.2.0 and pinned rea-agents@6.7.0.
+Owner-only public snapshots, new disposable restores and full byte/link/mode
+readback passed for Ghidra 12.1.4 (5219 files, 905891804 bytes) and Adoptium
+Java 21.0.13 (249 files, 205 links, 361757417 bytes). No program execution,
+private profile read or network occurred in those checks. New copies normalize
+six existing Windows executable source modes; source distributions are unchanged.
+Installed-byte hashes are pinned, without claiming independent upstream
+publisher authentication. No Windows filesystem/interop or new plugin is used.
+
+Prepared one protected qualify-rea-programs job: verify the live-state pass,
+stage root-owned public copies and disposable program recovery, execute Java/
+Ghidra only under an isolated restricted identity with an empty HOME, then
+restore/rebind/encrypt/recover a new inactive main candidate. Keep REA command,
+arguments, timeout, settings and OAuth. Root never walks owner trees, no binary
+runs as root, and signing/recovery/backend keys stay protected. All admission
+policies and existing launchers/backup registry remain unchanged. Sixty-seven
+relevant source/security/controller tests pass without failures/errors/skips/
+warnings; native syntax, two installed parent hashes and protocol budget pass.
+Protected execution remains pending because sudo needs the owner's terminal.
+Full MCP/context and production dispatch/admission/final-review gates remain open.
+
 28 October owner-run CURRENT MAIN SETTINGS/RECOVERY PASSED at
 operator-evidence/main-current-j0zy5ttp, helper a97d14c49ca7...: all six MCP
 entries/current OAuth/environment settings preserved, three encrypted

@@ -1,5 +1,21 @@
 # Refresh live main state into a new recoverable inactive candidate
 
+28 October owner-run PASS: operator-evidence/main-live-gk1v63p6, helper
+SHA256 eab1072a0906d6bf48d6bc6e7450948130187abf88fd591fb3f8db286971387a.
+Three signed encrypted generations, nine SQLite databases, current settings/
+OAuth and all six MCP definitions passed. Durable files were stable and the
+configured disposable restore passed. No prior operational state was reused;
+current_source_operational_refresh_qualified=true. All policies remain disabled;
+no candidate promotion, daily registry change, model, MCP server or platform
+activation occurred. The operator job stopped. This closes the protected
+execution checkpoint below. Do not repeat it to reconstruct evidence.
+
+Next grouped work preserves the owner's REA plugin and stages its existing
+[Ghidra/Java program dependencies](HERMES-REA-PROGRAM-DEPENDENCIES.md) for the
+restricted main identity. All prior failed diagnostics remain retained.
+
+## Historical preparation (completed by the owner-run receipt above)
+
 28 October 2026, Ubuntu-Hermes. The owner-run current-settings reconciliation
 PASSED at operator-evidence/main-current-j0zy5ttp. Six MCP definitions and
 current settings/OAuth were preserved; the new configured candidate and its

@@ -1,5 +1,22 @@
 # Remaining Hermes memory rollout work
 
+28 October latest owner-run PASS: live main state and configured encrypted
+recovery at main-live-gk1v63p6, including nine SQLite databases, current settings/
+OAuth and six MCP definitions. The current-source operational refresh gate is
+closed; no previous operational state was reused. All admission policies remain
+disabled and no source/candidate promotion/registry change occurred.
+
+The owner identifies Ghidra and Java as REA plugin dependencies. Actual local
+metadata observes rea 0.2.0 and pinned rea-agents@6.7.0. Preserve the plugin,
+command, arguments, timeout and existing versions. Both public distributions
+have source-side snapshot/disposable-restore/readback passes. The grouped
+[protected REA dependency and candidate recovery job](HERMES-REA-PROGRAM-DEPENDENCIES.md)
+is implemented and passes 68 relevant checks; its protected execution is pending.
+The earlier settings-only and RAM-only checkpoints below retain their scopes.
+Production dispatch, full MCP/context coverage, admitted renewal, deferred
+bindings and final switch review remain open. No fleet approval is claimed.
+
+
 28 October Ubuntu-Hermes: current main configuration/recovery PASSED at
 main-current-j0zy5ttp with all six MCP definitions preserved. The retained
 40-profile qualification and 41-profile scheduled backup passes remain valid

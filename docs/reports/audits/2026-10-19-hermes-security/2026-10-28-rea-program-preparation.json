@@ -1,0 +1,127 @@
+{
+  "branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "ci": {
+    "broader_ci": "failure",
+    "canonical_dashboard": "success",
+    "canonical_stack": "success",
+    "full_runtime": "failure",
+    "new_helpers_hosted_ci": "not_established",
+    "project_memory": "success",
+    "required": "success"
+  },
+  "completed_memory_tests_replayed": false,
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "direct_native_public_program_readback": {
+    "ghidra": {
+      "full_manifest_readback_passed": true,
+      "restored_payload_bytes_verified": 905891804
+    },
+    "java": {
+      "full_manifest_readback_passed": true,
+      "restored_payload_bytes_verified": 361757417
+    }
+  },
+  "direct_public_program_snapshot_restore": {
+    "ghidra": {
+      "archive_bytes": 911738880,
+      "archive_sha256": "490242e4126843ff11a6c7ea090927b2316e58efe3bfaf005ee582ef3cac0e7e",
+      "disposable_restore_verified": true,
+      "files": 5219,
+      "links": 0,
+      "metadata": {
+        "minimum_java": "21",
+        "name": "Ghidra",
+        "version": "12.1.4"
+      },
+      "program": "ghidra",
+      "program_executed": false,
+      "source_bytes": 905891804,
+      "source_preserved": true
+    },
+    "java": {
+      "archive_bytes": 362168320,
+      "archive_sha256": "8293b7cf98ee35897d16b4c1c637c5b3be5d258e74fcb6ae1ee8eb2ea1d0d573",
+      "disposable_restore_verified": true,
+      "files": 249,
+      "links": 205,
+      "metadata": {
+        "name": "Eclipse Adoptium",
+        "version": "21.0.13"
+      },
+      "program": "java",
+      "program_executed": false,
+      "source_bytes": 361757417,
+      "source_preserved": true
+    }
+  },
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "local_public_plugin_metadata": {
+    "command_and_arguments_preserved": true,
+    "pinned_mcp_package": "rea-agents@6.7.0",
+    "plugin": "rea",
+    "plugin_version": "0.2.0"
+  },
+  "new_operator_batch": {
+    "actual_profile_admission_qualified": false,
+    "all_admission_policies_preserved_disabled": true,
+    "blocker": "sudo_requires_password_in_owner_terminal",
+    "full_mcp_tool_coverage_qualified": false,
+    "mode": "qualify-rea-programs",
+    "prepared": true,
+    "production_dispatch_qualified": false,
+    "protected_execution_complete": false
+  },
+  "owner_clarification": "Ghidra and Java are dependencies of the installed official Hermes REA plugin.",
+  "owner_reported_live_recovery_pass": {
+    "all_admission_policies_preserved_disabled": true,
+    "candidate_promoted": false,
+    "complete": true,
+    "configured_candidate_restore_qualified": true,
+    "current_settings_and_oauth_preserved": true,
+    "current_source_operational_refresh_qualified": true,
+    "daily_backup_registry_changed": false,
+    "durable_plain_files_stable": true,
+    "encrypted_generations_created": 3,
+    "evidence": "operator-evidence/main-live-gk1v63p6",
+    "fleet_launch_approved": false,
+    "global_atomic_snapshot_qualified": false,
+    "mcp_definitions_preserved": 6,
+    "operator_helper_sha256": "eab1072a0906d6bf48d6bc6e7450948130187abf88fd591fb3f8db286971387a",
+    "operator_job_stopped": true,
+    "previous_operational_state_reused": false,
+    "source_profiles_changed": false,
+    "source_sqlite_databases": 9,
+    "sqlite_databases_recovered": 9
+  },
+  "public_program_provenance": "Exact installed bytes bound by snapshot SHA256; independent upstream publisher authentication not established.",
+  "recorded_utc": "2026-10-28T01:05:29.456248+00:00",
+  "remaining": [
+    "protected_REA_dependency_execution_and_new_candidate_recovery",
+    "full_MCP_tools_and_served_context",
+    "production_frontend_restricted_worker_dispatch_and_delivery",
+    "admitted_unattended_renewal_and_deferred_mappings",
+    "final_scope_launcher_switch_review"
+  ],
+  "source_sha256": {
+    "launch_control.py": "63a74aa2a9e68083e334b7daf8a4111d6b4c95c55a9b9eeb39ecdaa788c1c006",
+    "probe_rea_public_programs.py": "e8d5f1b1478f40bac936c7227fcad35a41978865f78bae585c0fd4ad3a2fd9d9",
+    "public_program_snapshot.py": "b180a6e83e9a00a7e287645adb3ea82db4455319029c44e2dc2d20e10087a42c",
+    "rea_candidate_owner.py": "25ed007609af9d86b6f0386e340ef7265ef325e3f8d295185bfd809f7468128f",
+    "stage_rea_main_programs.py": "fa213db654f35502ba5bd32b07ae64dea59a6ecb36cd88188eb8805b94d31534"
+  },
+  "validation": {
+    "earlier_failures": "One invented fixture file-count assertion corrected; no-follow source ancestry now explicitly supports existing owner-owned group-writable tools directory without relaxing protected destination checks.",
+    "errors": 0,
+    "failed": 0,
+    "installed_parent_pins_verified": 2,
+    "native_python": "3.14.7",
+    "native_syntax_files": 5,
+    "owner_protocol_budget_passed": true,
+    "service_and_crypto_workflow_doubles_are_not_installed_proof": true,
+    "skipped": 0,
+    "source_tests_passed": 68,
+    "test_python": "3.12.13",
+    "warnings": 0
+  }
+}
