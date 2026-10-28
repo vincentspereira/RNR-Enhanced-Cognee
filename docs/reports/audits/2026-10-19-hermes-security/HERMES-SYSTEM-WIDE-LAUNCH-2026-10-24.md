@@ -239,6 +239,28 @@ syntax and targeted behavior/security selections passed.
 
 ## Remaining gates
 
+28 October confirmed REA inspection: owner-run
+operator-evidence/rea-preflight-inspection-mbyg0554 reports all eight identity
+predicates true, .env/auth.json mismatch and config.yaml match. This identifies
+source drift, not an identity failure. No source values or hashes are published;
+the cause of the file changes remains unknown. Original zero-effect failure
+rea-main-programs-s784o2c_ is retained.
+
+A NEW explicit continue-rea-programs implementation captures current encrypted
+settings, preserves current OAuth, retains the qualified model binding, reuses
+the completed live operational snapshot and exact existing public Ghidra/Java
+archives, and prepares restricted dependency execution plus NEW configured
+candidate recovery. It refuses further source/config/model drift. Forty
+focused tests pass (zero failures/errors/skips/warnings), using invented service/
+restore/issuer doubles. Three runtime files compile in installed Python 3.14.7.
+Protected execution remains pending because sudo requires the owner terminal.
+See HERMES-REA-PROGRAM-DEPENDENCIES.md and
+2026-10-28-rea-current-settings-continuation.json. No source profile, old
+candidate, backend key, launcher, admission or registry is changed by preparation.
+No completed native/model/memory pass was replayed. Full MCP/context, production
+routing, admitted renewal, deferred bindings and final switch review remain open.
+
+
 28 October owner-run REA batch STOPPED at rea-main-programs-s784o2c_,
 helper fa213db654f3..., ValueError/identity, stopped job, zero credentials,
 no source/profile/program/candidate/registry changes reported. The broad child

@@ -1,4 +1,18 @@
 # Remaining Hermes memory rollout work
+
+28 October confirmed REA diagnosis: all protected identity checks pass;
+source .env and auth.json drifted while config.yaml matched. The zero-effect
+failure and previous recovery passes are retained. The guarded
+[current-settings REA continuation](HERMES-REA-PROGRAM-DEPENDENCIES.md) now
+captures fresh encrypted settings and preserves current OAuth in a NEW inactive
+copy, reusing the qualified nine-database snapshot. Forty relevant tests and
+native compilation pass; protected staging/execution/recovery remain pending
+until the owner runs continue-rea-programs. No completed tests are replayed.
+Production dispatch, full MCP/context acceptance, admitted renewal, deferred
+bindings and final switch review remain open; no fleet approval is claimed.
+
+## Earlier checkpoints (preserved)
+
 28 October latest REA batch result: STOPPED before credentials/staging, at
 rea-main-programs-s784o2c_. Original profiles, REA/Ghidra/Java installations,
 candidates and disabled policies are preserved. The broad identity label also

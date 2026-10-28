@@ -1,5 +1,60 @@
 # Preserve REA dependencies in the restricted main candidate
 
+28 October latest owner-run inspection PASSED at rea-preflight-inspection-mbyg0554.
+All eight identity predicates passed. The retained source comparison found
+.env and auth.json changed; config.yaml still matched. The original failure
+is preserved. Why those two files changed is not established by this bounded
+inspection. No profile contents or fingerprints are published.
+
+The new explicit continuation is prepared and source-tested. Its protected
+execution is pending; this agent session still requires the owner terminal
+for sudo. Run this ONE grouped command:
+
+```bash
+sudo /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment/launch_control.py continue-rea-programs
+```
+
+The job verifies the exact stopped zero-effect failure and its protected
+inspection. It rechecks the previously qualified model key without a model
+request, captures current three-file settings into a NEW signed encrypted
+capsule, and requires config.yaml still to match the qualified configuration.
+It then stages the existing pinned Ghidra/Java archives, verifies disposable
+copies, executes the finite dependency probe under the restricted UID with no
+network, and restores a NEW inactive main candidate. Current settings and OAuth
+are applied from the fresh capsule; the old candidate token is retained in its
+before-file, never passed to the first-publication preparer. It rebinds only the
+reviewed workspace and REA dependency paths, publishes two ordinary fixed-scope
+qualification credentials, creates a configured signed encrypted generation,
+and verifies disposable nine-database/provider/scope recovery and current OAuth.
+Exact fresh source fingerprints are checked before effects and at completion.
+Further source drift, changed model authority or changed configuration fails
+closed and retains evidence. No signing/recovery/backend key enters a child.
+
+This continuation refreshes current settings while REUSING the qualified live
+operational snapshot from main-live-gk1v63p6. It does not recapture live databases
+or establish a global atomic snapshot. Existing source profiles, previous
+candidates, source programs, launcher/admission policies and backup registry are
+preserved. It does not start a real REA MCP server or call a chat model. Full
+six-MCP/tool acceptance and served-context coverage remain separate gates.
+
+Forty focused continuation/controller tests passed with zero failures/errors/
+skips/warnings. They include current-auth preservation, rejection of config or
+model-key drift, early/late source-change refusal, unchanged disabled policies,
+no credentials before admission, exact helper hashes and explicit controller
+dispatch. Restore/service/issuer tests use invented doubles. Installed native
+Python 3.14.7 compiles all three new/changed runtime files. Earlier read-only
+source-contract and RAM-only transformation previews passed; neither is a
+protected execution result. The exact delivery branch remains 21abf485 and four
+relevant CI workflows pass; broader CI/full-runtime failures remain visible.
+
+Ctrl+C detaches. Repeating continue-rea-programs reattaches or returns the
+retained result without replay. A failed result requires reconciliation. Return
+only the final JSON. Completed memory/native/model tests are never replayed.
+All fleet admission policies remain disabled; fleet approval remains false.
+
+## Historical checkpoints (preserved)
+
+
 28 October retained REA batch STOPPED at rea-main-programs-s784o2c_, helper
 fa213db654f35502ba5bd32b07ae64dea59a6ecb36cd88188eb8805b94d31534.
 The operator job stopped with zero credentials issued and no source/profile/

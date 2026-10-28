@@ -1,0 +1,84 @@
+{
+  "ci": {
+    "broader_failed_runs": [
+      40055830266,
+      40055830273
+    ],
+    "exact_revision_verified": true,
+    "legacy_failures_resolved": false,
+    "new_helper_hosted_pass_claimed": false,
+    "relevant_success_runs": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "continue_rea_main_programs.py": "bce3399d071eb69f9d1a4a95dd52a6aab255d67f6dd96a1a71d739fcf85e3a41",
+    "launch_control.py": "889061f0625ce9bb1802774495c2ec94498daaa3e2e7e14c5430b74dc20bc76c",
+    "rea_candidate_owner_v2.py": "9a8d06da15adeeb66840e3bc64988377a4bb463239e0845ff59c1d8d88f844db"
+  },
+  "diagnosis": {
+    "guards_weakened": false,
+    "predicate": "source_configuration_drift",
+    "reason_for_source_changes": "unconfirmed"
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "1dd1432d210cf2b448e38cdeb1106f0303b93c90",
+  "fleet_launch_approved": false,
+  "model_called": false,
+  "owner_reported_inspection": {
+    "complete": true,
+    "credentials_issued": 0,
+    "effectful_retry": false,
+    "evidence": "operator-evidence/rea-preflight-inspection-mbyg0554",
+    "identity_predicates_passed": 8,
+    "prior_failure_preserved": true,
+    "profiles_changed": false,
+    "programs_staged": false,
+    "services_started": false,
+    "source_files_equal": {
+      ".env": false,
+      "auth.json": false,
+      "config.yaml": true
+    }
+  },
+  "preparation": {
+    "blocker": "sudo_requires_owner_terminal",
+    "current_settings_capsule": "new_signed_encrypted_generation",
+    "fresh_operational_capture": false,
+    "mode": "continue-rea-programs",
+    "old_versions_unchanged": true,
+    "original_failure_preserved": true,
+    "prepared": true,
+    "prior_operational_snapshot": "reuse_qualified_nine_database_snapshot",
+    "protected_execution_complete": false
+  },
+  "recorded_utc": "2026-10-28T10:42:16.570962+00:00",
+  "remaining_gates": [
+    "protected_REA_programs_and_candidate_recovery",
+    "full_current_MCP_and_served_context_acceptance",
+    "production_dispatch_and_launch_binding",
+    "admitted_unattended_renewal",
+    "deferred_bindings",
+    "final_fleet_switch_review"
+  ],
+  "source_profiles_changed": false,
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "errors": 0,
+    "exact_dependencies_verified": true,
+    "failed": 0,
+    "native_python": "3.14.7",
+    "native_syntax_files": 3,
+    "passed": 40,
+    "prior_ram_only_transformation_preview_passed": true,
+    "prior_readonly_source_contract_preview_passed": true,
+    "protected_host_test_pass_claimed": false,
+    "service_restore_issuer_operations": "invented_doubles",
+    "skipped": 0,
+    "warnings": 0
+  }
+}
