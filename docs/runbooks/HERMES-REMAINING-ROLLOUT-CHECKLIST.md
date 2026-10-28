@@ -1,5 +1,53 @@
 # Remaining Hermes memory rollout work
 
+28 October native managed-launch support is PREPARED, not installed. A NEW
+ordinary-owner supported-PM build, exact frozen Fetch lock, sealed 464,097,280-byte
+public payload and 5,005-member disposable restore passed. The relocated resident
+PM and native uvx resolver passed with no network and zero capabilities. Fetch
+initialize/catalogue, private-address denials and raw public retrieval passed;
+HTML extraction and actual native server binding remain unqualified. OSV found
+zero findings for 50 exact public dependencies in these NEW environments only.
+Thirty-seven focused security tests and native compilation pass.
+
+The [single guarded PM installation and restricted-identity group](HERMES-MANAGED-MCP-RUNTIME.md)
+is ready. Its actual read-only public preflight passed; execution awaits the
+owner's sudo terminal. It adds missing pinned components and retains original
+facts, interpreters, code and settings. No service or bot is started, and active
+restricted bots cause refusal. The owner confirms concurrent fleet work is
+preparation only. Current inspection found no processes under 43 restricted
+accounts; older roster labels are not treated as current acceptance. All prior
+Filesystem/REA/Java/Ghidra/model/memory passes and failures remain preserved.
+Full native MCP/main tools/context, production dispatch/binding, admitted renewal,
+deferred bindings, fresh main state and final switch review remain open.
+No main merge or fleet activation is claimed. See
+2026-10-28-managed-mcp-runtime-preparation.json for sanitized evidence.
+
+## Earlier checkpoints (preserved)
+
+28 October protected REA continuation PASSED at
+main-local-mcp-rea-finish-esoknsn8 under the actual restricted main identity.
+Initialize and the full 207-tool catalogue passed with the bounded 10 MiB
+reader. Filesystem's 14-tool catalogue/read/write/outside-root-denial pass and
+both protected public package copies were reused. No Filesystem, Java/Ghidra,
+model, memory or earlier completed native test was replayed. The unit stopped;
+credentials, profiles, policies and launchers were unchanged. This closes the
+local Filesystem/REA component checks, not their full native Hermes launch.
+
+Read-only inspection found a separate native packaging blocker: the protected
+release lacks pm-runtime/pm-runtime.json and its independent PM environment;
+its Python fact contains only entry='.' without the lock identity/digest, and
+uv is absent from the managed store. Hermes resolves bare npx/uvx through PM,
+so shell PATH checks alone do not establish native launcher readiness. The
+unchanged public PM is being used in a NEW isolated ordinary-owner build to
+prepare pinned tools, an independent manager and locked Fetch dependencies.
+No running protected runtime is changed by that build. Native launch, Fetch/
+remote acceptance, full main tools/context, production dispatch, admitted renewal,
+deferred profiles, fresh final main state and switch review remain open.
+All fleet admission policies remain disabled. See the sanitized
+2026-10-28-main-local-mcp-components-pass.json receipt.
+
+## Earlier checkpoints (preserved)
+
 28 October REA finish stopped before REA at public_code_pins,
 main-local-mcp-rea-finish-evjjlpz3. All five hashes/owners/permissions match; the
 qualification helper incorrectly applied its 16 MiB script cap to the

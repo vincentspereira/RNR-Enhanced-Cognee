@@ -1,0 +1,56 @@
+{
+  "environment": "Ubuntu-Hermes",
+  "recorded_date": "2026-10-28",
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "provenance": "owner_supplied_final_json_and_matching_local_helper_sha256",
+  "protected_result": {
+    "complete": true,
+    "evidence_basename": "main-local-mcp-rea-finish-esoknsn8",
+    "invocation_id": "a870aa93cd4c4710a03afa20acc0c2a2",
+    "operator_helper_sha256": "49a76c14ee0a38578478126366809dc9879ff3693e7431b9f335c9a74508abf4",
+    "rea_catalogue_qualified": true,
+    "local_mcp_components_qualified": true,
+    "rea_tools_count": 207,
+    "rea_tools_called": 0,
+    "rea_catalogue_result_bytes": 3158368,
+    "reply_limit_bytes": 10485760,
+    "filesystem_pass_reused": true,
+    "filesystem_tools_count": 14,
+    "filesystem_tools_called": 4,
+    "filesystem_write_read_and_outside_root_denial": true,
+    "network_isolated": true,
+    "qualification_unit_stopped": true,
+    "operator_job_stopped": true,
+    "new_package_copies": 0,
+    "protected_public_programs_reused": 2,
+    "credentials_issued": 0,
+    "keys_read": false,
+    "memory_api_called": false,
+    "model_called": false,
+    "external_platform_sends": 0,
+    "source_profiles_changed": false,
+    "previous_candidates_changed": false,
+    "filesystem_replayed": false,
+    "full_public_readback_replayed": false,
+    "java_ghidra_proof_replayed": false,
+    "all_admission_policies_preserved_disabled": true
+  },
+  "fleet_launch_approved": false,
+  "native_gateway_integration_qualified": false,
+  "main_tool_program_coverage_qualified": false,
+  "ci": {
+    "checked_again": true,
+    "delivery_revision_verified": true,
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ],
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "new_helper_hosted_ci_pass_claimed": false
+  }
+}
