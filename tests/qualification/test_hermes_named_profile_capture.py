@@ -157,9 +157,9 @@ def test_candidate_restore_is_new_private_directory_in_its_owners_home(tmp_path,
     payload, receipt = helper.capture(source)
     import tempfile
     # An account HOME must have protected ancestors. /tmp is intentionally
-    # rejected by the production owner-home guard, so use ignored test scratch
-    # under this checkout instead of relaxing that guard for a temp fixture.
-    home = Path(tempfile.mkdtemp(prefix='candidate-home-', dir=SOURCE.parents[3] / '.pytest_cache'))
+    # rejected by the production owner-home guard. Use a fresh directory in
+    # the actual user's protected home, without weakening the guard.
+    home = Path(tempfile.mkdtemp(prefix='cognee-candidate-home-', dir=Path.home()))
     from types import SimpleNamespace
     monkeypatch.setattr(helper.pwd, 'getpwuid', lambda uid: SimpleNamespace(pw_dir=str(home)))
     destination, proof = helper.restore(payload, owner_home=True)

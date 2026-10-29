@@ -4,7 +4,6 @@ Synthetic vectors only (not embeddings or semantic-quality evidence). Storage
 is isolated under Hermes scratch. Never substitute a SQL or mock engine here.
 """
 import json
-from pathlib import Path
 from types import SimpleNamespace as NS
 import tempfile
 import unittest
@@ -12,7 +11,6 @@ import warnings
 
 from src.db_adapters.vector_lancedb import _LanceDBClient
 
-SCRATCH = Path.home() / ".hermes/cache/scratch"
 
 
 def condition(key, value):
@@ -26,7 +24,7 @@ def filtered(key, value):
 class RealLanceIdentityTests(unittest.TestCase):
     def setUp(self):
         import lancedb  # A missing real engine must fail, not silently pass.
-        self.tmp = tempfile.TemporaryDirectory(dir=SCRATCH, prefix="enhanced-lance-filter-")
+        self.tmp = tempfile.TemporaryDirectory(prefix="enhanced-lance-filter-")
         self.addCleanup(self.tmp.cleanup)
         self.client = _LanceDBClient(self.tmp.name)
         self.client.create_collection("memories", NS(size=2, distance="Cosine"))

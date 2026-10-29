@@ -1,6 +1,4 @@
 """Real Qdrant models must not lose constraints during narrow translation."""
-import tempfile
-from pathlib import Path
 from types import SimpleNamespace as NS
 
 import pytest
@@ -21,24 +19,20 @@ from qdrant_client.models import (
 from src.db_adapters import _vector_filter
 from src.db_adapters.vector_lancedb import _LanceDBClient
 
-SCRATCH = Path('/home/vincentspereira/.hermes/cache/scratch')
-
-
 def condition(key='agent_id', value='wanted-space'):
     return FieldCondition(key=key, match=MatchValue(value=value))
 
 
 @pytest.fixture
-def client():
-    with tempfile.TemporaryDirectory(prefix='source-filter-fix1-', dir=SCRATCH) as base:
-        adapter = _LanceDBClient(str(Path(base) / 'lance'))
-        adapter.create_collection('memory', NS(size=2, distance='Cosine'))
-        adapter.upsert('memory', [
-            NS(id='wanted', vector=[0.8, 0.2], payload={'kind': 'memory', 'agent_id': 'wanted-space'}),
-            NS(id='other', vector=[1.0, 0.0], payload={'kind': 'memory', 'agent_id': 'other-space'}),
-        ])
-        yield adapter
-        adapter.close()
+def client(tmp_path):
+    adapter = _LanceDBClient(str(tmp_path / 'lance'))
+    adapter.create_collection('memory', NS(size=2, distance='Cosine'))
+    adapter.upsert('memory', [
+        NS(id='wanted', vector=[0.8, 0.2], payload={'kind': 'memory', 'agent_id': 'wanted-space'}),
+        NS(id='other', vector=[1.0, 0.0], payload={'kind': 'memory', 'agent_id': 'other-space'}),
+    ])
+    yield adapter
+    adapter.close()
 
 
 def rows(client):

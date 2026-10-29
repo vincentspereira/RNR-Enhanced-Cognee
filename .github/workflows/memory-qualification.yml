@@ -76,6 +76,7 @@ jobs:
       - name: Run real database, local recall and provider contract checks
         env:
           HF_HUB_OFFLINE: '1'
+          RNR_QUALIFICATION_PG_CONTAINER: ${{ job.services.postgres.id }}
         run: |
           python -m pytest tests/qualification/ tests/unit/test_capability_boundaries.py tests/unit/test_sqlite_text_cache.py -q -p no:cacheprovider --override-ini=addopts= --junitxml=memory-qualification.xml
       - name: Build restricted service image

@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import runpy
 import subprocess
+import shutil
 import tarfile
 
 import pytest
@@ -94,17 +95,19 @@ def test_unauthenticated_manifest_never_creates_program_files(tmp_path):
 
 def test_actual_age_binary_streams_invented_program_into_new_restoration(tmp_path):
     root,raw=source(tmp_path);identity=tmp_path/'invented-test-identity';encrypted=tmp_path/'invented-program.age'
-    subprocess.run(['/usr/local/bin/age-keygen','--output',str(identity)],stdout=subprocess.DEVNULL,
+    keygen=shutil.which('age-keygen');age=shutil.which('age')
+    assert keygen and age, 'The real age and age-keygen binaries are required'
+    subprocess.run([keygen,'--output',str(identity)],stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,check=True,timeout=10)
-    recipient=subprocess.run(['/usr/local/bin/age-keygen','-y',str(identity)],stdout=subprocess.PIPE,
+    recipient=subprocess.run([keygen,'-y',str(identity)],stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,check=True,timeout=10).stdout.decode().strip()
     with encrypted.open('xb') as out:
-        process=subprocess.Popen(['/usr/local/bin/age','--encrypt','--recipient',recipient],stdin=subprocess.PIPE,
+        process=subprocess.Popen([age,'--encrypt','--recipient',recipient],stdin=subprocess.PIPE,
             stdout=out,stderr=subprocess.DEVNULL)
         captured=CORE['capture'](root,raw,process.stdin,uid=os.geteuid());process.stdin.close()
         assert process.wait(timeout=10)==0
     with encrypted.open('rb') as incoming:
-        process=subprocess.Popen(['/usr/local/bin/age','--decrypt','--identity',str(identity)],stdin=incoming,
+        process=subprocess.Popen([age,'--decrypt','--identity',str(identity)],stdin=incoming,
             stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
         restored=CORE['restore'](process.stdout,tmp_path/'age-restored-program',hashlib.sha256(raw).hexdigest(),uid=os.geteuid())
         while process.stdout.read(65536):pass

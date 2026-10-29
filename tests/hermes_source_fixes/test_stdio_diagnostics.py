@@ -46,6 +46,7 @@ class StdioDiagnosticsTests(unittest.TestCase):
             "sys": sys, "init_enhanced_stack": init,
             "init_sprint8_modules": sprint, "cleanup_enhanced_stack": cleanup,
             "mcp": SimpleNamespace(run_stdio_async=stdio),
+            "_STDIO_OUTPUT": None,
         }
         execute_nodes([main], namespace)
         out, err = io.StringIO(), io.StringIO()
@@ -60,15 +61,18 @@ class StdioDiagnosticsTests(unittest.TestCase):
     def test_environment_load_diagnostic_uses_stderr(self):
         tree = ast.parse(SERVER.read_text())
         env = next(n for n in tree.body if isinstance(n, ast.If)
-                   and isinstance(n.test, ast.Call)
-                   and isinstance(n.test.func, ast.Attribute)
-                   and n.test.func.attr == "exists")
+                   and any(isinstance(child, ast.Call)
+                           and isinstance(child.func, ast.Attribute)
+                           and child.func.attr == "exists"
+                           for child in ast.walk(n.test)))
         path = SimpleNamespace(exists=lambda: True)
         loaded = []
         out, err = io.StringIO(), io.StringIO()
         with patch.dict("sys.modules", {"dotenv": SimpleNamespace(load_dotenv=loaded.append)}):
             with redirect_stdout(out), redirect_stderr(err):
-                execute_nodes([env], {"env_path": path, "sys": sys})
+                execute_nodes([env], {"env_path": path, "sys": sys,
+                                      "_STDIO_OUTPUT": out,
+                                      "os": SimpleNamespace(getenv=lambda *args: "1")})
         self.assertEqual(loaded, [path])
         self.assertEqual(out.getvalue(), "")
         self.assertIn("OK Loaded environment from:", err.getvalue())
@@ -80,14 +84,16 @@ class StdioDiagnosticsTests(unittest.TestCase):
             with self.subTest(cloud_error=cloud_error):
                 served = []
 
-                def serve(**kwargs):
+                async def serve(**kwargs):
                     served.append(kwargs)
                     if cloud_error:
                         raise RuntimeError("fixture cloud failure")
 
                 def run(coro):
-                    coro.close()
-                    raise KeyboardInterrupt
+                    if coro.cr_code.co_name == "main":
+                        coro.close()
+                        raise KeyboardInterrupt
+                    return asyncio.run(coro)
 
                 async def main():
                     pass
