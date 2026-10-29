@@ -1,0 +1,51 @@
+{
+  "recorded_date": "2026-10-29",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "worktree_branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "subject": "Native MCP binding qualification group prepared for owner-terminal execution",
+  "design": {
+    "surface": "actual restricted main identity (ecbot_5592956882ea9a13) in hardened transient units",
+    "stage_catalogue": {
+      "posture": "networked, matching production native launches (npx/uvx resolve public packages on cache miss)",
+      "behavior": "the identity reads only its own Hermes config.yaml through a bounded unique-key YAML loader, resolves every definition through the release's own _resolve_stdio_command, launches it, handshakes, counts tools, and probes only the Fetch private-address refusals",
+      "boundary": "config values never cross the identity boundary; receipts carry counts, flags, resolution class and error kinds only"
+    },
+    "stage_fetch_public": {
+      "posture": "networked; only when a Fetch definition exists in the live profile",
+      "behavior": "two private-address refusals, the authorized public example.com retrieval in raw mode, and the default-mode converted-Markdown structural check already qualified at candidate level",
+      "if_absent": "recorded as fetch_binding_deferred; candidate-level Fetch qualification stands"
+    },
+    "guard": "the worker refuses while any restricted bot process is active, and only proceeds when the launcher entry remains disabled and all admission policies are unchanged"
+  },
+  "prerequisites_verified": {
+    "reconciliation_v3_complete": true,
+    "resident_pm_runtime_qualified": true,
+    "native_managed_launcher_selection_qualified": true,
+    "managed_uv_binary_runs": "uv 0.12.3 (x86_64-unknown-linux-gnu)",
+    "managed_python_runs": "Python 3.14.7",
+    "offline_resolution_probe": "bare npx, uvx, node, uv all resolve to the managed release launchers; absolute paths pass through; no env keys added",
+    "support_chain_retained": true,
+    "restricted_bot_processes_at_preparation": 0
+  },
+  "sources": {
+    "probe_native_mcp_binding.py": "941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d",
+    "qualify_native_mcp_binding.py": "b2a7a833523b13f86cadf207c3790ac90147d18bc6836c58d1aab70e13310c5e",
+    "protocol_reused": "probe_main_local_mcp.py 415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07 (reply bound raised to 10 MiB for the REA catalogue)",
+    "installer_reused": "install_managed_mcp_runtime.py a877fd6dd3688ea77d42ae02c94b060340b5a3c217f85df85ec035f987822711 (public_read + no_active_candidates)"
+  },
+  "source_validation": {
+    "tests_passed": 54,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "warnings": 0,
+    "new_in_this_group": 9,
+    "native_compilation_passed": true
+  },
+  "execution": {
+    "status": "pending owner sudo terminal",
+    "idempotent": "reattaching with the same command resumes the watch without replay; a failed attempt is retained and requires inspection",
+    "boundaries": ["no model call", "no memory API call", "no platform adapter", "no credential issued", "no key read", "no profile or candidate changed", "fleet admission stays disabled", "fleet_launch_approved false"]
+  }
+}

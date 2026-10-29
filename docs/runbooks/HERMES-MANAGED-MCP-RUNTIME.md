@@ -1,5 +1,22 @@
 # Restore native managed MCP launcher support without fleet activation
 
+29 October 2026 next gate PREPARED: the native MCP binding qualification
+group is ready for the owner's sudo terminal. The operator unit verifies the
+completed reconciliation and unchanged disabled policies, stages the pinned
+driver and protocol publicly, and starts hardened transient units running
+the driver as the actual restricted main identity. The identity reads only
+its own Hermes config through a bounded unique-key loader, resolves every
+preserved definition through the release's own _resolve_stdio_command,
+launches it exactly as the native gateway would (networked, matching
+production), handshakes and counts tools, and probes only the Fetch
+private-address refusals. If a Fetch definition exists, a second unit
+performs the authorized public example.com retrieval in raw and default
+modes. Config values never cross the identity boundary; receipts carry
+counts, flags, resolution class and error kinds only. An offline probe
+confirmed bare npx/uvx/node/uv all resolve to the managed release launchers,
+and the managed uv 0.12.3 and Python 3.14.7 binaries run. Fifty-four focused
+tests pass. Receipt: `2026-10-29-native-mcp-binding-preparation.json`.
+
 29 October 2026 COMPLETE: the owner executed the corrected reconciliation. It
 verified every payload member against the sealed archive, corrected 233
 directory modes to their archived 0755 values, and the restricted-identity
