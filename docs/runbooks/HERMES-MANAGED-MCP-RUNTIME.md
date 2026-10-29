@@ -1,5 +1,24 @@
 # Restore native managed MCP launcher support without fleet activation
 
+29 October 2026 update: the owner executed the protected installation. It
+published every archive member, the pm-runtime marker and the merged facts,
+then failed its restricted-identity proof at checkpoint
+restricted_native_pm_proof: the operator umask had stripped group/other bits
+from created directories, leaving the new payload directories at 0700, so the
+UID-992 proof child could not read pm-runtime/pm-runtime.json. Content was
+unaffected; the failure, its artifact and its proof home are retained and the
+installer refuses automatic retry by design. A reconciliation helper now
+verifies the whole live tree member-by-member against the sealed archive,
+corrects ONLY the payload directory modes to their archived 0755 values,
+reruns the identical restricted proof with captured output, and writes a v2
+receipt while preserving the v1 attempt. Read-only checks confirmed the
+correction is safe: verified_tools is read-only without an install lock, the
+unpublished .install.lock is writer-side state, and tree_digest ignores mode
+bits. 43 focused tests pass; the helper's read-only stages passed a dry run
+(5,005 members, 3,719 file digests). Receipt:
+`2026-10-29-managed-runtime-install-reconciliation.json`. Execution awaits
+the owner's sudo terminal; zero restricted bot processes at preparation.
+
 29 October 2026 addendum: the retained Fetch HTML-extraction failure was
 root-caused to a stale probe expectation, not the server. The served
 example.com copy was reworded, and with Node present Mozilla Readability moves

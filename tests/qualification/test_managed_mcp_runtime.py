@@ -25,6 +25,7 @@ m = load('install_managed_mcp_runtime')
 b = load('build_managed_mcp_candidate')
 fetch = load('probe_fetch_candidate')
 qualify = load('qualify_managed_pm_payload')
+reconcile = load('reconcile_managed_mcp_runtime')
 
 
 def archive(extra=()):
@@ -192,3 +193,67 @@ def test_html_extraction_qualified_when_converted_body_is_retained():
                  'Contents of https://invented.invalid/:words',
                  'Contents of https://example.com/:   '):
         assert not fetch.expected_html_body(text)
+
+
+def reconciliation_rows():
+    return {
+        'pm-runtime': member('pm-runtime', tarfile.DIRTYPE, mode=0o755),
+        'pm-runtime/pm-runtime.json': member('pm-runtime/pm-runtime.json'),
+        'python': member('python', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64': member('python/uv-0.12.3-linux-x64', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64/bin': member('python/uv-0.12.3-linux-x64/bin', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64/bin/uv': member('python/uv-0.12.3-linux-x64/bin/uv', mode=0o755),
+        'python/.install.lock': member('python/.install.lock'),
+    }
+
+
+def test_plan_mode_corrections_detects_umask_stripped_directories():
+    rows = reconciliation_rows()
+    observed = {'pm-runtime': 0o700, 'python': 0o755,
+                'python/uv-0.12.3-linux-x64': 0o700,
+                'python/uv-0.12.3-linux-x64/bin': 0o755}
+    assert reconcile.plan_mode_corrections(rows, observed) == [
+        ('pm-runtime', 0o755), ('python/uv-0.12.3-linux-x64', 0o755)]
+
+
+def test_plan_mode_corrections_requires_every_directory_observed():
+    rows = reconciliation_rows()
+    partial = {'pm-runtime': 0o755, 'python': 0o755,
+               'python/uv-0.12.3-linux-x64': 0o755}
+    with pytest.raises(ValueError):
+        reconcile.plan_mode_corrections(rows, partial)
+
+
+def test_merged_facts_bytes_reproduces_installer_merge():
+    before = {'schema': 1, 'packages': {'python': {'entry': '.'}, 'node': {'entry': 'n'}}}
+    staged = {'schema': 1, 'packages': {
+        'python': {'entry': 'python-3.14.7+20260901-linux-x64'},
+        'uv': {'entry': 'uv-0.12.3-linux-x64'}}}
+    merged = json.loads(reconcile.merged_facts_bytes(before, staged))
+    assert merged['packages']['python']['entry'] == 'python-3.14.7+20260901-linux-x64'
+    assert merged['packages']['uv']['entry'] == 'uv-0.12.3-linux-x64'
+    assert merged['packages']['node'] == {'entry': 'n'}
+    bad = {'schema': 1, 'packages': {'uv': {}}}
+    with pytest.raises(ValueError):
+        reconcile.merged_facts_bytes(before, bad)
+
+
+def test_reconciliation_helper_refuses_changed_v1_source(tmp_path):
+    original = reconcile.V1_HELPER
+    try:
+        reconcile.V1_HELPER = tmp_path / 'install_managed_mcp_runtime.py'
+        reconcile.V1_HELPER.write_text('# tampered fixture\n')
+        with pytest.raises(ValueError):
+            reconcile.load_v1()
+    finally:
+        reconcile.V1_HELPER = original
+
+
+def test_reconciliation_proof_captures_output_on_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile.os, 'chown', lambda *a, **k: None)
+    failed = SimpleNamespace(returncode=1, stdout=b'', stderr=b'permission denied: pm-runtime.json')
+    monkeypatch.setattr(reconcile.subprocess, 'run', lambda *a, **k: failed)
+    with pytest.raises(ValueError):
+        reconcile.proof(tmp_path / 'home', reconcile.load_v1(), tmp_path)
+    assert (tmp_path / 'proof-returncode.txt').read_text().strip() == '1'
+    assert 'permission denied' in (tmp_path / 'proof-stderr.txt').read_text()
