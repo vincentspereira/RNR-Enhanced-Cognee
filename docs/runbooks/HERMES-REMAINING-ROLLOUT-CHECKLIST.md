@@ -1,15 +1,20 @@
 # Remaining Hermes memory rollout work
 
 29 October 2026 PREPARED: the native MCP binding qualification group awaits
-the owner's sudo terminal. It runs the pinned driver as the actual restricted
-main identity; the identity reads only its own Hermes config, resolves every
-preserved definition through the release's native launcher resolution, and
-launches each server exactly as production would (networked posture recorded
-honestly). A second unit, if a Fetch definition exists, completes the
-authorized public example.com raw and default-mode retrieval. Config values
-never cross the identity boundary; receipts carry counts, flags and error
-kinds only. 54 focused tests pass; the offline resolution probe confirmed
-managed npx/uvx/node/uv selection. Receipt:
+the owner's sudo terminal. The first attempt (v1) stopped itself in the
+operator's verification phase with zero effects: it tried to read a helper
+from the owner's 0750 home, which the capability-less operator unit cannot
+traverse; it is retained. The corrected v2 freezes every staged source,
+including the pinned installer, into the artifact at launch and the worker
+loads nothing from the worktree. It runs the pinned driver as the actual
+restricted main identity; the identity reads only its own Hermes config,
+resolves every preserved definition through the release's native launcher
+resolution, and launches each server exactly as production would (networked
+posture recorded honestly). A second unit, if a Fetch definition exists,
+completes the authorized public example.com raw and default-mode retrieval.
+Config values never cross the identity boundary; receipts carry counts,
+flags and error kinds only. 54 focused tests pass; the offline resolution
+probe confirmed managed npx/uvx/node/uv selection. Receipt:
 `2026-10-29-native-mcp-binding-preparation.json`. After this gate: full main
 tools/context and current served capability, production launcher bindings
 for live fleet processes, admitted credential renewal/reload, then the fresh

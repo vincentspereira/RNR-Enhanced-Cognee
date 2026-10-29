@@ -27,8 +27,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-native-mcp-binding-v1'
-OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v1-20261029.service'
+ARTIFACT = BASE / 'operator-native-mcp-binding-v2'
+OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v2-20261029.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -82,10 +82,11 @@ def stopped(state):
 
 def retained_runtime():
     """The managed-launch packaging gate closed with the completed reconciliation."""
-    spec = importlib.util.spec_from_file_location('install_v1', INSTALLER)
+    raw = (ARTIFACT / 'install_managed_mcp_runtime.py').read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == INSTALLER_SHA)
+    spec = importlib.util.spec_from_file_location('install_v1', ARTIFACT / 'install_managed_mcp_runtime.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    require(hashlib.sha256((INSTALLER).read_bytes()).hexdigest() == INSTALLER_SHA)
     summary = json.loads(module.public_read(RECONCILE_ARTIFACT / 'summary.json'))
     require(summary.get('complete') is True
             and summary.get('checkpoint') == 'complete'
@@ -348,9 +349,11 @@ def launch():
     ARTIFACT.chmod(0o755)
     sources = {'qualify_native_mcp_binding.py': source,
                'probe_native_mcp_binding.py': DRIVER.read_bytes(),
-               'probe_main_local_mcp.py': PROTOCOL.read_bytes()}
+               'probe_main_local_mcp.py': PROTOCOL.read_bytes(),
+               'install_managed_mcp_runtime.py': INSTALLER.read_bytes()}
     require(hashlib.sha256(sources['probe_native_mcp_binding.py']).hexdigest() == DRIVER_SHA)
     require(hashlib.sha256(sources['probe_main_local_mcp.py']).hexdigest() == PROTOCOL_SHA)
+    require(hashlib.sha256(sources['install_managed_mcp_runtime.py']).hexdigest() == INSTALLER_SHA)
     for name, raw in sources.items():
         write(ARTIFACT / name, raw)
         (ARTIFACT / name).chmod(0o644)
