@@ -272,7 +272,7 @@ class PhaseIntegrationValidator:
                 execution_time=datetime.now(timezone.utc) - start_time,
                 details={"error": str(e)},
                 issues_found=[f"Memory architecture test failed: {str(e)}"],
-                recommendations["Review memory component configurations"]
+                recommendations=["Review memory component configurations"]
             )
 
     async def _test_agent_categorization_integration(self) -> IntegrationTestResult:

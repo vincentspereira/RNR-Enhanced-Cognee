@@ -1,0 +1,32 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+RNR Enhanced Cognee Test Suite
+Coverage Target: 98%
+Test Requirements: 100% success, 0 warnings, 0 skipped
+rootdir: /home/vincentspereira/Projects/AI-Agents/RNR-Enhanced-Cognee
+configfile: pytest.ini
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 74 items
+
+tests/qualification/test_canonical_adapters.py ..                        [  2%]
+tests/qualification/test_cross_language_project_clients.py ...           [  6%]
+tests/qualification/test_dashboard_browser.py .                          [  8%]
+tests/qualification/test_default_index_stack.py .                        [  9%]
+tests/qualification/test_encrypted_backup.py .                           [ 10%]
+tests/qualification/test_hermes_operator_upgrade.py ..                   [ 13%]
+tests/qualification/test_hermes_provider_contract.py ...........         [ 28%]
+tests/qualification/test_index_pipeline.py ..........                    [ 41%]
+tests/qualification/test_legacy_memory_migration.py .....                [ 48%]
+tests/qualification/test_legacy_scoped_mutations.py .                    [ 50%]
+tests/qualification/test_memory_daemon.py ...                            [ 54%]
+tests/qualification/test_memory_evidence.py ...........                  [ 68%]
+tests/qualification/test_memory_key_rotation.py ..                       [ 71%]
+tests/qualification/test_memory_reviewer.py .                            [ 72%]
+tests/qualification/test_memory_service_postgres.py ....                 [ 78%]
+tests/qualification/test_project_memory_mcp.py .                         [ 79%]
+tests/qualification/test_retrieval_quality.py .                          [ 81%]
+tests/qualification/test_selected_capture_and_library.py ..............  [100%]
+
+--- generated xml file: /tmp/rnr-20261020-approved-backup-qualification.xml ----
+============================= 74 passed in 28.19s ==============================

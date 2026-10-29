@@ -269,43 +269,12 @@ def log_database_configuration(logger) -> None:
 
 
 def cleanup_old_logs(logs_dir, max_files) -> bool:
+    """Preserve existing logs; automatic deletion is intentionally disabled.
+
+    Kept as a compatibility hook for callers. Retention and erasure must be
+    handled by an explicitly approved operator workflow, never a package import.
     """
-    Removes old log files, keeping only the most recent ones.
-
-    Args:
-        logs_dir: Directory containing log files
-        max_files: Maximum number of log files to keep
-    """
-    logger = structlog.get_logger()
-    try:
-        # Get all .log files in the directory (excluding README and other files)
-        log_files = [f for f in logs_dir.glob("*.log") if f.is_file()]
-
-        # Sort log files by modification time (newest first)
-        log_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-
-        # Remove old files that exceed the maximum
-        if len(log_files) > max_files:
-            deleted_count = 0
-            for old_file in log_files[max_files:]:
-                try:
-                    old_file.unlink()
-                    deleted_count += 1
-                    # Only log individual files in non-CLI mode
-                    if os.getenv("COGNEE_CLI_MODE") != "true":
-                        logger.info(f"Deleted old log file: {old_file}")
-                except Exception as e:
-                    # Always log errors
-                    logger.error(f"Failed to delete old log file {old_file}: {e}")
-
-            # In CLI mode, show compact summary
-            if os.getenv("COGNEE_CLI_MODE") == "true" and deleted_count > 0:
-                logger.info(f"Cleaned up {deleted_count} old log files")
-
-        return True
-    except Exception as e:
-        logger.error(f"Error cleaning up log files: {e}")
-        return False
+    return True
 
 
 def setup_logging(log_level=None, name=None) -> bool:
@@ -547,7 +516,7 @@ def setup_logging(log_level=None, name=None) -> bool:
             "ignore", category=SAWarning, module="dlt.destinations.impl.sqlalchemy.load_jobs"
         )
 
-    # Clean up old log files, keeping only the most recent ones
+    # Compatibility hook preserves logs; retention is an operator workflow.
     if log_file_enabled and logs_dir is not None:
         cleanup_old_logs(logs_dir, MAX_LOG_FILES)
 

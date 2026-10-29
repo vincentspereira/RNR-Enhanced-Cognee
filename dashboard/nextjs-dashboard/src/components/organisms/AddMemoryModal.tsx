@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useRef } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, Loader2, Sparkles } from "lucide-react";
@@ -20,7 +20,7 @@ const memorySchema = z.object({
     .max(10000, "Content must be less than 10,000 characters"),
   // Default comes from useForm defaultValues; zod .default() here would make
   // the schema's input/output types diverge and break the resolver typing.
-  agent_id: z.string().min(1, "Agent ID is required"),
+  agent_id: z.string().optional(),
   memory_type: z.string().optional(),
   memory_concept: z.string().optional(),
   before_state: z.string().optional(),
@@ -65,36 +65,28 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<MemoryFormData>({
     resolver: zodResolver(memorySchema),
     defaultValues: {
-      agent_id: "default",
+      agent_id: "Assigned by your access token",
     },
   });
 
-  const content = watch("content") || "";
+  const writeIdentity = useRef<string | null>(null);
+  const content = useWatch({ control, name: "content", defaultValue: "" }) || "";
   const contentLength = content.length;
 
   const onSubmit = async (data: MemoryFormData) => {
     try {
-      // Parse files and facts
-      const files = data.files
-        ? data.files.split(",").map((f) => f.trim()).filter(Boolean)
-        : undefined;
-
-      const facts = data.facts
-        ? data.facts.split("\n").map((f) => f.trim()).filter(Boolean)
-        : undefined;
-
       await createMemory({
         content: data.content,
-        agent_id: data.agent_id,
-        memory_type: data.memory_type,
-        memory_concept: data.memory_concept,
+        idempotency_key: writeIdentity.current ?? (writeIdentity.current = crypto.randomUUID()),
+        memory_type: data.memory_type || "general",
+        memory_concept: data.memory_concept || undefined,
       });
 
       toast.success("Memory added successfully", {
@@ -109,6 +101,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
         queryKey: queryKeys.analytics.systemStats(),
       });
 
+      writeIdentity.current = null;
       reset();
       onClose();
     } catch (error) {
@@ -197,7 +190,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+        <form onSubmit={(event) => { void handleSubmit(onSubmit)(event); }} className="p-6 space-y-6">
           {/* Content */}
           <div>
             <label
@@ -243,18 +236,11 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
               >
                 Memory Type
               </label>
-              <select
-                id="memory_type"
-                {...register("memory_type")}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Select type...</option>
-                {MEMORY_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
-                ))}
-              </select>
+              <Input id="memory_type" {...register("memory_type")} list="memory-category-suggestions"
+                placeholder="Any project category (default: general)" />
+              <datalist id="memory-category-suggestions">
+                {MEMORY_TYPES.map((type) => <option key={type} value={type} />)}
+              </datalist>
             </div>
 
             {/* Memory Concept */}
@@ -285,7 +271,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
             <button
               type="button"
               onClick={handleAutoCategorize}
-              disabled={isAutoCategorizing || !content}
+              disabled title="Automatic categorization is not configured"
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isAutoCategorizing ? (
@@ -306,7 +292,7 @@ export function AddMemoryModal({ isOpen, onClose }: AddMemoryModalProps) {
               Agent ID <span className="text-red-500">*</span>
             </label>
             <Input
-              id="agent_id"
+              id="agent_id" disabled
               {...register("agent_id")}
               placeholder="default"
               error={errors.agent_id?.message}

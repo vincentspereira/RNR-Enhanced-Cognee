@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -33,19 +34,22 @@ import (
 
 // Options configures a Client.
 type Options struct {
-	BaseURL    string        // defaults to ENHANCED_COGNEE_URL env or http://localhost:8080
-	APIKey     string        // optional; defaults to ENHANCED_API_KEY env
-	TenantID   string        // optional; defaults to ENHANCED_TENANT_ID env
-	HTTPClient *http.Client  // optional; defaults to net/http default with 30s timeout
-	Timeout    time.Duration // optional; defaults to 30s
+	BaseURL     string        // defaults to ENHANCED_COGNEE_URL env or http://localhost:8080
+	APIKey      string        // optional; defaults to ENHANCED_API_KEY env
+	AccessToken string        // scoped Bearer token; mutually exclusive with APIKey
+	TenantID    string        // optional; defaults to ENHANCED_TENANT_ID env
+	HTTPClient  *http.Client  // optional; defaults to net/http default with 30s timeout
+	Timeout     time.Duration // optional; defaults to 30s
 }
 
 // Client is the RNR Enhanced Cognee MCP HTTP client.
 type Client struct {
-	baseURL  string
-	apiKey   string
-	tenantID string
-	hc       *http.Client
+	explicitBaseURL bool
+	baseURL         string
+	apiKey          string
+	accessToken     string
+	tenantID        string
+	hc              *http.Client
 }
 
 // NewClient constructs a Client. Returns an error only if no valid base URL
@@ -55,14 +59,29 @@ func NewClient(opts Options) (*Client, error) {
 	if base == "" {
 		base = os.Getenv("ENHANCED_COGNEE_URL")
 	}
+	explicitBase := base != ""
 	if base == "" {
 		base = "http://localhost:8080"
 	}
 	base = strings.TrimRight(base, "/")
+	parsed, err := url.Parse(base)
+	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Hostname() == "" || parsed.User != nil || parsed.RawQuery != "" || parsed.Fragment != "" {
+		return nil, errors.New("base URL must use HTTP or HTTPS without embedded credentials, query or fragment")
+	}
+	accessToken := opts.AccessToken
+	if accessToken == "" {
+		accessToken = os.Getenv("ENHANCED_COGNEE_ACCESS_TOKEN")
+	}
 
 	apiKey := opts.APIKey
-	if apiKey == "" {
+	if apiKey == "" && accessToken == "" {
 		apiKey = os.Getenv("ENHANCED_API_KEY")
+	}
+	if apiKey != "" && accessToken != "" {
+		return nil, errors.New("use either APIKey or AccessToken")
+	}
+	if (apiKey != "" || accessToken != "") && parsed.Scheme == "http" && parsed.Hostname() != "localhost" && parsed.Hostname() != "127.0.0.1" && parsed.Hostname() != "::1" {
+		return nil, errors.New("authenticated remote services require HTTPS")
 	}
 	tenantID := opts.TenantID
 	if tenantID == "" {
@@ -75,14 +94,28 @@ func NewClient(opts Options) (*Client, error) {
 		if timeout == 0 {
 			timeout = 30 * time.Second
 		}
-		hc = &http.Client{Timeout: timeout}
+		transport := http.DefaultTransport.(*http.Transport).Clone()
+		transport.Proxy = nil
+		hc = &http.Client{Timeout: timeout, Transport: transport}
 	}
+	// Clone a supplied client so redirect policy never mutates the caller's client.
+	clone := *hc
+	if clone.Timeout <= 0 {
+		clone.Timeout = opts.Timeout
+		if clone.Timeout <= 0 {
+			clone.Timeout = 30 * time.Second
+		}
+	}
+	clone.CheckRedirect = func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }
+	hc = &clone
 
 	return &Client{
-		baseURL:  base,
-		apiKey:   apiKey,
-		tenantID: tenantID,
-		hc:       hc,
+		explicitBaseURL: explicitBase,
+		baseURL:         base,
+		apiKey:          apiKey,
+		accessToken:     accessToken,
+		tenantID:        tenantID,
+		hc:              hc,
 	}, nil
 }
 
@@ -220,6 +253,9 @@ func (c *Client) doJSON(ctx context.Context, method, path string, body, out inte
 	if c.apiKey != "" {
 		req.Header.Set("X-API-Key", c.apiKey)
 	}
+	if c.accessToken != "" {
+		req.Header.Set("Authorization", "Bearer "+c.accessToken)
+	}
 	if c.tenantID != "" {
 		req.Header.Set("X-Tenant-ID", c.tenantID)
 	}
@@ -230,7 +266,13 @@ func (c *Client) doJSON(ctx context.Context, method, path string, body, out inte
 	}
 	defer resp.Body.Close()
 
-	respBody, _ := io.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(io.LimitReader(resp.Body, 1024*1024+1))
+	if err != nil {
+		return fmt.Errorf("read response: %w", err)
+	}
+	if len(respBody) > 1024*1024 {
+		return errors.New("response exceeds the 1 MiB client limit")
+	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return &Error{Status: resp.StatusCode, Body: string(respBody)}

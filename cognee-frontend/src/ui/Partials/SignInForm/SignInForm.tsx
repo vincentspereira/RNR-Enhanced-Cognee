@@ -15,7 +15,7 @@ const errorsMap = {
   LOGIN_BAD_CREDENTIALS: "Invalid username or password",
 };
 
-export default function SignInForm({ onSignInSuccess = () => window.location.href = "/", submitButtonText = "Sign in" }) {
+export default function SignInForm({ onSignInSuccess = () => window.location.replace(new URL("/", window.location.origin).href), submitButtonText = "Sign in" }) {
   const {
     value: isSigningIn,
     setTrue: disableSignIn,

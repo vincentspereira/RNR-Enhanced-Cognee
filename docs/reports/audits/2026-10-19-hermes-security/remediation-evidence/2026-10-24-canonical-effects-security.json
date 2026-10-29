@@ -1,0 +1,180 @@
+{
+  "source_parent": "f63cdd52d92c6b0d7058fcf80cbce635bff15d7f",
+  "owner_installed_observation": {
+    "canonical_version": 4,
+    "record_retracted": true,
+    "pending_clarification_present": false,
+    "history_versions_verified": 4,
+    "model_called": false,
+    "memory_records_written": false,
+    "oauth_store_read": false,
+    "complete": true,
+    "original_pilot_settings_and_credentials_preserved": true,
+    "stage": "read_only_existing_attempt",
+    "observed_run_id": "5d0e9a49bdf544359ae6deff",
+    "observed_phase": "retracted_with_history",
+    "peer_http_status": 404,
+    "ordinary_credentials_issued": 2,
+    "credentials_persisted": false,
+    "model_failure_cause_established": false,
+    "native_followup_qualified": false,
+    "automatic_retry": false,
+    "fleet_launch_approved": false
+  },
+  "canonical_effects_verified": true,
+  "native_completion_predicate_verified": false,
+  "repeat_mutations_required": false,
+  "source_qualification": {
+    "batch": "source",
+    "complete": true,
+    "lanes": [
+      {
+        "name": "units",
+        "exit_code": 0,
+        "retained_fixtures": "/tmp/ecq-s0d4kitg",
+        "tests": 4344,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 4344,
+        "complete": true
+      },
+      {
+        "name": "hermes-and-recovery",
+        "exit_code": 0,
+        "retained_fixtures": "/tmp/ecq-uigtp5dc",
+        "tests": 1330,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 1330,
+        "complete": true
+      }
+    ],
+    "created_utc": "2026-10-24T02:00:53.820462+00:00",
+    "installed_host_qualified": false,
+    "fleet_launch_approved": false
+  },
+  "source_test_warnings_reported": 0,
+  "coverage_measured": false,
+  "full_audit_before": [
+    {
+      "name": "black",
+      "version": "26.3.1",
+      "findings": 1
+    },
+    {
+      "name": "filelock",
+      "version": "3.32.7",
+      "findings": 3
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.41.1",
+      "findings": 1
+    },
+    {
+      "name": "pypdf",
+      "version": "6.21.1",
+      "findings": 3
+    },
+    {
+      "name": "setuptools",
+      "version": "84.0.0",
+      "findings": 1
+    },
+    {
+      "name": "virtualenv",
+      "version": "21.14.5",
+      "findings": 8
+    }
+  ],
+  "full_audit_after": [
+    {
+      "name": "filelock",
+      "version": "3.32.7",
+      "findings": 3
+    },
+    {
+      "name": "virtualenv",
+      "version": "21.14.5",
+      "findings": 8
+    }
+  ],
+  "index_audit": [
+    {
+      "name": "pillow",
+      "version": "12.3.0",
+      "findings": 37
+    }
+  ],
+  "audit_warnings_preserved": true,
+  "changed_distributions": [
+    {
+      "name": "black",
+      "before": "26.3.1",
+      "after": "26.10.1"
+    },
+    {
+      "name": "opentelemetry-api",
+      "before": "1.41.1",
+      "after": "1.45.1"
+    },
+    {
+      "name": "opentelemetry-sdk",
+      "before": "1.41.1",
+      "after": "1.45.1"
+    },
+    {
+      "name": "opentelemetry-semantic-conventions",
+      "before": "0.62b1",
+      "after": "0.66b1"
+    },
+    {
+      "name": "pypdf",
+      "before": "6.21.1",
+      "after": "6.21.2"
+    },
+    {
+      "name": "setuptools",
+      "before": "84.0.0",
+      "after": "84.2.1"
+    }
+  ],
+  "installed_runtime_upgraded": false,
+  "existing_venv_changed": false,
+  "validation": {
+    "pdf_roundtrip": true,
+    "black_semantic_ast_preserved": true,
+    "tracing_in_memory": true,
+    "isolated_overlay_compatibility_checked_packages": 13,
+    "wheel_build": true,
+    "wheel_boundary": true
+  },
+  "all_patches_experiment": {
+    "admitted": false,
+    "full_audit_findings": 0,
+    "litellm_selected": "1.103.7",
+    "existing_litellm": "1.106.0",
+    "limits_major_changed": true,
+    "preserve_litellm_resolution_succeeds": false
+  },
+  "fresh_source_security_findings_remaining": 11,
+  "restricted_index_findings_remaining": 37,
+  "staged_secret_scan_findings": 0,
+  "fleet_launch_approved": false,
+  "sources": [
+    {
+      "path": "requirements.txt",
+      "sha256": "912d8b51ea4e1ed00664c92f00a1f864f8ec848510bd9f2b68e722d27e9b728f"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "244dddfc80cb9cbffa74f0875944113e215fc8f0996f031fd4bd45c78917c6d2"
+    },
+    {
+      "path": "requirements-full.lock",
+      "sha256": "9f8987d96ec2ec6a1d42f45065203c17634e57ebfe19c50e8cba49af006dc607"
+    }
+  ]
+}

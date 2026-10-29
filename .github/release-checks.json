@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "repository": "vincentspereira/RNR-Enhanced-Cognee",
+  "branch": "main",
+  "app_id": 15368,
+  "app_slug": "github-actions",
+  "required_checks": [
+    "Required CI (unit tests)",
+    "default-stack",
+    "canonical-browser",
+    "frontend (cognee-frontend)",
+    "frontend (dashboard/nextjs-dashboard)"
+  ]
+}

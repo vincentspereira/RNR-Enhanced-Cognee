@@ -1,0 +1,43 @@
+# Restricted noninteractive Hermes/project memory service. Build from repo root.
+# Both public inputs are pinned; the final image has no shell/package manager.
+ARG MEMORY_PYTHON_IMAGE=python:3.12.15-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+ARG MEMORY_BASE_IMAGE=gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2
+FROM ${MEMORY_BASE_IMAGE} AS runtime-base
+FROM ${MEMORY_PYTHON_IMAGE} AS build
+ARG MEMORY_PYTHON_IMAGE
+ARG MEMORY_BASE_IMAGE
+WORKDIR /app
+# The pinned Python input predates this available Debian xz security update.
+# Pin the corrected library version; only its library payload/inventory reaches
+# the final image. APT verifies the repository signatures and package hashes.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --only-upgrade liblzma5=5.8.1-1+deb13u2
+COPY requirements-build.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock
+COPY requirements-index.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-index.lock
+RUN python -m pip check && python -m pip uninstall -y pip
+COPY --from=runtime-base / /base-runtime/
+COPY docker/assemble_memory_runtime.py /assemble_memory_runtime.py
+RUN RNR_BUILD_RUNTIME_ASSEMBLY=1 python /assemble_memory_runtime.py \
+    --destination /memory-runtime --base-root /base-runtime \
+    --python-reference "$MEMORY_PYTHON_IMAGE" --base-reference "$MEMORY_BASE_IMAGE"
+
+FROM runtime-base AS runtime
+COPY --from=build /memory-runtime/ /
+WORKDIR /app
+ENV ENHANCED_ENV=production ENHANCED_REQUIRE_TENANT=1
+COPY src/memory_api.py src/memory_service.py src/memory_contracts.py src/memory_keys.py src/memory_key_rotation.py src/legacy_memory_migration.py src/local_embeddings.py src/encryption_manager.py src/multi_tenant.py src/mcp_security.py /app/src/
+COPY src/security/auth.py src/security/enterprise_auth.py src/security/http_boundary.py src/security/request_context.py /app/src/security/
+COPY src/security/memory_admission.py /app/src/security/
+COPY src/security/tool_policy.py /app/src/security/
+COPY src/memory_library.py src/memory_admin.py /app/src/
+COPY src/memory_daemon.py /app/src/
+COPY src/canonical_adapters.py src/memory_queries.py src/recall_service.py src/index_contracts.py src/index_sinks.py src/index_outbox.py src/index_runtime.py /app/src/
+USER 65532:65532
+ENV PATH=/usr/local/bin:/usr/bin:/bin PYTHONPATH=/app PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 COGNEE_TELEMETRY_ENABLED=0 HF_HUB_OFFLINE=1 COGNEE_LOG_FILE=false ENHANCED_LOAD_DOTENV=0
+ENTRYPOINT []
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=3)"]
+CMD ["python", "-m", "uvicorn", "src.memory_api:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log", "--ws", "none"]

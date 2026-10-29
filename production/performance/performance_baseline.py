@@ -3,6 +3,8 @@ Production Performance Baseline Establishment
 Implements comprehensive performance baseline creation and SLA management
 """
 
+import pytest
+
 import os
 import json
 import time

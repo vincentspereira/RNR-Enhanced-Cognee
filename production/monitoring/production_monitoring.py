@@ -293,7 +293,7 @@ class ProductionMonitoringFramework:
                         1 if success else 0,
                         {
                             "component": "health_check",
-                            "check_id": check_id,
+                            "check_id": health_check.check_id,
                             "endpoint": health_check.endpoint
                         }
                     )
@@ -306,7 +306,7 @@ class ProductionMonitoringFramework:
                                 response_time_ms,
                                 {
                                     "component": "health_check",
-                                    "check_id": check_id
+                                    "check_id": health_check.check_id
                                 }
                             )
                         except ValueError:
@@ -342,7 +342,7 @@ class ProductionMonitoringFramework:
                 timestamp=datetime.now(timezone.utc),
                 labels={
                     "component": "health_check",
-                    "check_id": check_id,
+                    "check_id": health_check.check_id,
                     "endpoint": health_check.endpoint
                 },
                 annotations={

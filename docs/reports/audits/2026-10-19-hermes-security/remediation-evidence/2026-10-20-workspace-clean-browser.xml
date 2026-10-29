@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="9.184" timestamp="2026-10-20T11:56:45.254418+01:00" hostname="Ubuntu-Workspace"><testcase classname="tests.qualification.test_dashboard_browser" name="test_built_dashboard_real_browser" time="8.419" /></testsuite></testsuites>

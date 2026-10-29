@@ -27,6 +27,9 @@ downloads/
 eggs/
 .eggs/
 lib/
+# Dashboard TypeScript libraries are maintained source, not Python build output.
+!dashboard/nextjs-dashboard/src/lib/
+!dashboard/nextjs-dashboard/src/lib/**
 lib64/
 parts/
 sdist/
@@ -250,6 +253,9 @@ backups/
 fix_*.py
 *_COPY*
 *_backup.*
+!src/memory_backup.py
+!tests/qualification/test_encrypted_backup.py
+!tests/qualification/test_hermes_pilot_profile_backup.py
 
 # Database files (should not be in git)
 *.db
@@ -315,6 +321,8 @@ docs/TASKS-PHASE-*.md
 
 # Enhanced Cognee local config (machine-specific)
 .enhanced-cognee-config.json
+.venv-deployment/
+.qualification-tools/
 
 # Transient benchmark run output (baselines are committed under tests/benchmarks/baselines/)
 tests/benchmarks/output/
@@ -336,3 +344,16 @@ installer/build/_pyinstaller/
 # Local agent instruction files (not published)
 CLAUDE.md
 AGENTS.md
+
+# Publish only reviewed portable root guidance; personal/nested files stay local.
+!/AGENTS.md
+
+# Local owner instructions and private infrastructure context
+docs/reports/audits/2026-10-19-hermes-security/OWNER-DECISIONS-2026-10-20.md
+
+# Preserve detailed owner annotations locally
+docs/reports/audits/2026-10-19-hermes-security/OWNER-ANNOTATED-PLAN-*.md
+# Reviewed invented-data evidence; private runtime logs remain ignored.
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-qualification.log
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-graph-recovery.log
+!docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/2026-10-20-canonical-browser.log

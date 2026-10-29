@@ -1,2 +1,10 @@
 .next
 node_modules
+.git
+.env
+.env.*
+secrets
+*.key
+*.pem
+*.log
+*.bak

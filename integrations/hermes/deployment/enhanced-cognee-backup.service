@@ -1,0 +1,32 @@
+[Unit]
+Description=Encrypted Enhanced Cognee database backup
+
+[Service]
+Type=oneshot
+# System unit, separate from the Hermes user and its writable checkout.
+# Owner selected /var/backups/enhanced-cognee inside Ubuntu-Hermes.
+# Operator prepares that root-owned 0700 directory before installation.
+User=root
+Group=root
+LoadCredential=backup.json:/etc/enhanced-cognee/backup.json
+WorkingDirectory=/opt/enhanced-cognee-memory
+ExecStart=/opt/enhanced-cognee-memory/runtime/bin/python -m src.memory_daemon backup
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/backups/enhanced-cognee
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+AmbientCapabilities=
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=32
+TimeoutStartSec=15min

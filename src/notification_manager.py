@@ -268,44 +268,18 @@ class NotificationManager:
 
     @staticmethod
     async def _post_json(url: str, payload: Dict[str, Any]) -> int:
-        """
-        POST *payload* as JSON to *url*.
-
-        Tries aiohttp first; falls back to urllib.request (sync, run in executor).
-        Returns the HTTP status code, or 0 on connection failure.
-        """
-        import asyncio
-
-        body = json.dumps(payload, ensure_ascii=True).encode("utf-8")
-        headers = {"Content-Type": "application/json"}
-
+        """Send only to an operator-approved HTTPS origin, without redirects."""
+        from src.security.capabilities import validate_destination
         try:
-            import aiohttp
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    url, data=body, headers=headers, timeout=aiohttp.ClientTimeout(total=10)
-                ) as resp:
-                    return resp.status
-        except ImportError:
-            pass
-        except Exception as exc:
-            logger.debug("_post_json aiohttp failed for %s: %s", url, exc)
+            validate_destination(url)
+            import httpx
+            async with httpx.AsyncClient(timeout=10, follow_redirects=False, trust_env=False) as client:
+                response = await client.post(url, content=json.dumps(payload, ensure_ascii=True).encode(),
+                                             headers={"Content-Type": "application/json"})
+                return response.status_code
+        except Exception:
+            logger.debug("Notification delivery unavailable or denied")
             return 0
-
-        # Fallback: urllib.request (blocking) run in a thread executor
-        def _sync_post() -> int:
-            req = urllib.request.Request(url, data=body, headers=headers, method="POST")
-            try:
-                with urllib.request.urlopen(req, timeout=10) as resp:
-                    return int(resp.status)
-            except urllib.error.HTTPError as http_err:
-                return http_err.code
-            except Exception:
-                return 0
-
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, _sync_post)
 
 
 # ---------------------------------------------------------------------------

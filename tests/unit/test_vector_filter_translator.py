@@ -204,21 +204,42 @@ class TestLanceWhere:
     def test_empty_filter_returns_empty_string(self):
         assert _vector_filter.to_lance_where(_vector_filter._NormalisedFilter()) == ""
 
-    def test_single_condition_emits_like_clause(self):
+    def test_single_condition_requires_scan_and_emits_exact_id_prefilter(self):
         norm = _vector_filter._NormalisedFilter(
             must=(_vector_filter._EqualityCondition("user_id", "u1"),)
         )
-        where = _vector_filter.to_lance_where(norm)
-        assert "payload LIKE" in where
-        assert "user_id" in where and "u1" in where
+        # JSON-text LIKE is unsafe: missing scan must fail closed, not widen.
+        with pytest.raises(NotImplementedError, match="complete ID/payload scan"):
+            _vector_filter.to_lance_where(norm)
+        rows = [
+            {"id": "exact", "payload": '{"user_id": "u1"}'},
+            {"id": "escaped", "payload": '{"user_id":"\\u00751"}'},
+            {"id": "other", "payload": '{"user_id":"u2"}'},
+            {"id": "nested", "payload": '{"nested":{"user_id":"u1"}}'},
+            {"id": "substring", "payload": '{"user_id":"u10"}'},
+            {"id": "malformed", "payload": 'not JSON'},
+        ]
+        where = _vector_filter.to_lance_where(norm, rows)
+        assert where == "id IN ('exact','escaped')"
+        assert "payload" not in where and "LIKE" not in where
+        assert _vector_filter.to_lance_where(norm, rows[2:]) == "false"
+        assert _vector_filter.to_lance_where(norm, []) == "false"
 
-    def test_single_quote_in_value_is_doubled(self):
+    def test_quoted_value_matches_structurally_and_matching_id_is_escaped(self):
         norm = _vector_filter._NormalisedFilter(
             must=(_vector_filter._EqualityCondition("k", "o'brien"),)
         )
-        where = _vector_filter.to_lance_where(norm)
-        # SQL single-quote literal escape doubles the quote
+        rows = [
+            {"id": "row-o'brien", "payload": {"k": "o'brien"}},
+            {"id": "wrong", "payload": {"k": "o'brien%"}},
+            {"id": "nested", "payload": {"nested": {"k": "o'brien"}}},
+        ]
+        where = _vector_filter.to_lance_where(norm, rows)
+        # Values are compared as data; only selected IDs enter the SQL literal.
         assert "o''brien" in where
+        assert where == "id IN ('row-o''brien')"
+        assert "LIKE" not in where and "wrong" not in where and "nested" not in where
+        assert _vector_filter.to_lance_where(norm, rows[1:]) == "false"
 
 
 # ---------------------------------------------------------------------------

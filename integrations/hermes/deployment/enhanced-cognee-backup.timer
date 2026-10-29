@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily encrypted Enhanced Cognee database backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=15min
+Unit=enhanced-cognee-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -12,10 +12,10 @@
 
 from __future__ import annotations
 
-import os
+from pathlib import Path
+import subprocess
+import sys
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from src import db_factory
 from src.db_adapters import cache_redis_compat
@@ -56,50 +56,34 @@ class TestRedisCompatDispatch:
 class TestLocustfileImports:
     """Confirm the load-test workload spec is structurally sound."""
 
-    @pytest.mark.skipif(
-        not os.getenv("ENHANCED_RUN_LOCUST_IMPORT"),
-        reason=(
-            "Executing the locustfile in-process triggers locust/gevent "
-            "monkey-patching that can deadlock under pytest-asyncio (this "
-            "hung the whole CI unit run). Syntax is validated by "
-            "test_locustfile_parses_without_locust; set "
-            "ENHANCED_RUN_LOCUST_IMPORT=1 to run the full import check."
-        ),
-    )
     def test_locustfile_imports(self):
-        # Locust is a heavy dependency to require for the unit-test
-        # suite; only run this check if it happens to be installed.
-        locust = pytest.importorskip("locust")
+        # Locust patches gevent/socket state during import. Keep that state out
+        # of pytest's asyncio process, and fail rather than hang on a regression.
+        script = """
+import importlib.util
+import sys
+from locust import HttpUser
 
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "_loadtest_locustfile",
-            "tests/load/locustfile.py",
+spec = importlib.util.spec_from_file_location("_loadtest_locustfile", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+expected = (
+    "ReadHeavyUser", "WriteHeavyUser", "MixedWorkloadUser", "HealthCheckUser",
+    "SemanticSearchUser", "KnowledgeGraphUser", "GDPRWorkflowUser", "BackupVerifyUser",
+)
+for name in expected:
+    cls = getattr(module, name)
+    assert issubclass(cls, HttpUser), f"{name} must subclass locust.HttpUser"
+    assert cls.tasks, f"{name} must expose at least one workload task"
+print("Validated all eight Locust workload classes")
+"""
+        workload = Path(__file__).resolve().parents[1] / "load" / "locustfile.py"
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(workload)],
+            capture_output=True, text=True, timeout=30, check=False,
         )
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        # Expected User classes -- both the default-mix ones (existing)
-        # and the Phase 5 extended scenarios (new).
-        expected = [
-            "ReadHeavyUser",
-            "WriteHeavyUser",
-            "MixedWorkloadUser",
-            "HealthCheckUser",
-            "SemanticSearchUser",
-            "KnowledgeGraphUser",
-            "GDPRWorkflowUser",
-            "BackupVerifyUser",
-        ]
-        for cls_name in expected:
-            assert hasattr(module, cls_name), (
-                f"locustfile missing {cls_name}; tests/load/README.md "
-                f"says it should be there"
-            )
-            cls = getattr(module, cls_name)
-            assert issubclass(cls, locust.HttpUser), (
-                f"{cls_name} must subclass locust.HttpUser"
-            )
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert "Validated all eight Locust workload classes" in result.stdout
 
     def test_locustfile_parses_without_locust(self):
         """Without locust installed, py_compile still validates syntax."""

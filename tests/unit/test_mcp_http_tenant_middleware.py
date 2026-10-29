@@ -73,8 +73,8 @@ class TestTenantHeader:
         r3 = client.get("/_probe/tenant")
         assert r3.json()["tenant"] is None
 
-    def test_tenant_id_sanitised(self, test_client_with_probe):
-        """Dash in the header becomes underscore in TenantContext."""
+    def test_ambiguous_tenant_id_rejected(self, test_client_with_probe):
+        """External tenant names must not silently alias another namespace."""
         client, captured = test_client_with_probe
         resp = client.get("/_probe/tenant", headers={"X-Tenant-ID": "acme-corp"})
-        assert resp.json()["tenant"] == "acme_corp"
+        assert resp.status_code == 400

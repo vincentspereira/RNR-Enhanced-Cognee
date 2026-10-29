@@ -96,10 +96,11 @@ CREATE INDEX IF NOT EXISTS idx_embeddings_memory_category
     ON shared_memory.embeddings (memory_category);
 CREATE INDEX IF NOT EXISTS idx_embeddings_created_at
     ON shared_memory.embeddings (created_at);
-CREATE INDEX IF NOT EXISTS idx_embeddings_vector_cosine
-    ON shared_memory.embeddings
-    USING ivfflat (embedding vector_cosine_ops)
-    WITH (lists = 100);
+-- pgvector's full-precision ANN indexes support at most 2000 dimensions.
+-- Preserve this legacy 2560-dimensional model and its full-precision data;
+-- semantic_search below uses exact distance ordering. Do not create an invalid
+-- index or silently round existing vectors. A different indexing/model profile
+-- requires its own quality and query-plan qualification.
 
 -- Entities ------------------------------------------------------------------
 

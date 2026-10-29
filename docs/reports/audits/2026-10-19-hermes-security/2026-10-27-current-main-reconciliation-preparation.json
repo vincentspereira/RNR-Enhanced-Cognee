@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-27",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "source_parent": "54f812a1d303cb7f82a061733acc9e0e240a6f3c",
+  "public_source_sha256": {
+    "current_main_configuration.py": "ac8d938c6bb895672d97e63c712e148fb05498206765d1bbf124386fa7a2d2e7",
+    "main_current_reconciliation_owner.py": "29098052c9d7d87974acfdb72db7942038eb1c70282e248771240ac3da259284",
+    "reconcile_current_main_candidate.py": "a97d14c49ca7ebc41b9935e2f296479226c76f37d690eee0203ccb3e5cb7efea",
+    "launch_control.py": "ab082f44a5a7f042f6a72d38ccf2bd78993c1428de4f7da87de24afd7ec55214"
+  },
+  "owner_reported_delivery_pass": {
+    "complete": true,
+    "evidence": "operator-evidence/isolated-delivery-807r2x1g",
+    "operator_helper_sha256": "d325f3f4f5c82aa672cc7f390491a0ee2018729e63c9a1576878bec2f402790d",
+    "component_hashes": {
+      "isolated_gateway_transport.py": "543a712ebe8ab95bdd9ab48bb202e71be116e5a51ea138236f0a4baa6acf9711",
+      "isolated_native_text_ingress.py": "579122e02485597535f71fd6f8f40250a6a231e1dd6e99a4bab7f95689fa88a9",
+      "probe_isolated_native_text_ingress.py": "7afcbc1804bb1eca4d4ff95f244abea615f52074b6f8c4165d478100c84536b3",
+      "isolated_delivery_journal.py": "e047170f33f87ab7788c29d8ad4c41d9748a6a641341404d7c3d6e8f241551d4",
+      "probe_isolated_delivery_recovery.py": "690f21e53e757da388ce5bdb11b5a9f1cb1878bb6b923413bd9396dbedcf8d7d"
+    },
+    "binding_manifest_sha256": "0ac7793980b60bceb14fa9b57a49b9db09cafbf729e22f9b1585bea960b29e3b",
+    "completed_phases": 4,
+    "durable_no_replay_component_qualified": true,
+    "native_base_adapter_text_component_qualified": true,
+    "peer_journal_os_denial_qualified": true,
+    "two_actual_forced_process_exits": true,
+    "all_admission_policies_preserved_disabled": true,
+    "credentials_issued": 0,
+    "keys_read": false,
+    "source_profiles_changed": false,
+    "external_platform_sends": 0,
+    "model_called": false,
+    "memory_api_called": false
+  },
+  "source_tests": {
+    "passed": 83,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings": 0,
+    "configuration": 29,
+    "owner": 21,
+    "operator": 16,
+    "controller": 17,
+    "operator_workflow_and_crypto_results": "test_doubles"
+  },
+  "installed_pure_preparation": {
+    "python": "3.14.7",
+    "current_mcp_definitions_preserved": 6,
+    "pinned_installed_helpers_used": true,
+    "public_helper_hashes_matched": 12,
+    "source_changed": false,
+    "files_written": false,
+    "credentials_issued": 0,
+    "network_called": false
+  },
+  "live_source_capture_preflight": {
+    "attempts": 2,
+    "complete": false,
+    "checkpoint": "payload_read",
+    "category": "durable_file_changed_before_read",
+    "changing_file_directory_class": "telemetry",
+    "bytes_observed": 8,
+    "writer_unresolved": true,
+    "guards_unchanged": true,
+    "private_names_or_contents_published": false,
+    "plaintext_archives_written": 0,
+    "encrypted_generations_created": 0
+  },
+  "preparation_limitations": {
+    "previous_operational_state_reused": true,
+    "current_source_operational_refresh_qualified": false,
+    "original_owner_home_references_remaining": 2,
+    "mcp_servers_executed": 0,
+    "new_candidate_promoted": false,
+    "daily_backup_registry_changed": false
+  },
+  "exact_delivery_ci": {
+    "required": {
+      "run": 40055830507,
+      "result": "success"
+    },
+    "memory": {
+      "run": 40055830334,
+      "result": "success"
+    },
+    "canonical_stack": {
+      "run": 40055830340,
+      "result": "success"
+    },
+    "dashboard": {
+      "run": 40055830325,
+      "result": "success"
+    },
+    "broader_ci": {
+      "run": 40055830266,
+      "result": "failure"
+    },
+    "full_runtime": {
+      "run": 40055830273,
+      "result": "failure"
+    }
+  },
+  "protected_current_main_reconciliation": "prepared_not_executed",
+  "production_dispatch_qualified": false,
+  "native_gateway_integration_qualified": false,
+  "actual_profile_admission_qualified": false,
+  "fleet_launch_approved": false,
+  "completed_historical_memory_tests_replayed": false
+}

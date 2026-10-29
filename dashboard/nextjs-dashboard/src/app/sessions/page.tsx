@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useSessions } from "@/lib/hooks";
 import { Card, CardContent, Skeleton } from "@/components/atoms";
@@ -29,6 +30,7 @@ function useSessionMemories(sessionId: string | null) {
 }
 
 export default function SessionsPage() {
+  const router = useRouter();
   const { data: sessions, isLoading, error } = useSessions({ limit: 20 });
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
@@ -82,7 +84,7 @@ export default function SessionsPage() {
                 memories={sessionMemories || []}
                 onMemoryClick={(memoryId) => {
                   if (typeof window !== "undefined") {
-                    window.location.href = `/memories/${memoryId}`;
+                    router.push(`/memories/${memoryId}`);
                   }
                 }}
               />

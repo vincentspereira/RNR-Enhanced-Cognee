@@ -9,6 +9,12 @@
 # (the Dockerfile also runs `chmod +x /app/entrypoint.sh` as a safety net).
 set -e
 
+# A container must fail closed until its operator supplies authentication and
+# an assigned tenant. Development mode requires an explicit override.
+: "${ENHANCED_ENV:=production}"
+: "${ENHANCED_REQUIRE_TENANT:=1}"
+export ENHANCED_ENV ENHANCED_REQUIRE_TENANT
+
 PORT="${PORT:-8080}"
 
 if [ "${ENHANCED_RUN_MIGRATIONS}" = "1" ]; then

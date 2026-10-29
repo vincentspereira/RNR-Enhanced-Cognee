@@ -1,0 +1,93 @@
+{
+  "ci": {
+    "broader_failed_runs": [
+      40055830266,
+      40055830273
+    ],
+    "exact_revision_fetched_and_verified": true,
+    "new_helper_hosted_pass_claimed": false,
+    "relevant_success_runs": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "assess_rea_candidate_settings_owner.py": "23ae2a66c8bf3ee1c16fc116988894fb12f3b0c36212c341d3f5c8abc0853699",
+    "prepare_main_after_rea.py": "782ad784bd24249041710ac4679a536a5f6d23ac769ea0d6bbed52033cc39c83"
+  },
+  "environment": "Ubuntu-Hermes",
+  "feature_parent_revision": "195e689a876e112d653fb487e223a82c6fa42439",
+  "fleet_launch_approved": false,
+  "owner_reported_dependency_pass": {
+    "complete": true,
+    "credentials_issued": 0,
+    "encrypted_generations_created": 0,
+    "evidence": "operator-evidence/rea-owner-receipt-finish-zy8t6r38",
+    "fleet_launch_approved": false,
+    "ghidra_headless_import_passed": true,
+    "java_version_verified": true,
+    "operator_helper_sha256": "2efb314da94bdc813a58a32d6a0c2a8f2949b76d993db4a26d4418fc921abf5f",
+    "owner_read_verified": true,
+    "programs_replayed": false,
+    "rea_dependency_execution_qualified": true,
+    "receipt_unchanged_since_completion": true,
+    "retained_program_execution_reused": true,
+    "settings_accepted": false,
+    "source_profiles_changed": false
+  },
+  "preparation": {
+    "all_other_differences": "stop_before_generations_or_credentials",
+    "blocker": "sudo_requires_owner_terminal",
+    "conditional_on_narrow_settings_assessment": true,
+    "dependency_execution": "reuse_completed_pass_never_replay",
+    "entry": "prepare_main_after_rea.py",
+    "fleet_settings_accepted": false,
+    "inactive_allowed_changes": [
+      "observed_approval_wait_900_to_600",
+      "offered_toolset_registry_with_explicit_unchanged_selections"
+    ],
+    "old_candidates_changed": false,
+    "operational_state": "reuse_qualified_nine_database_snapshot",
+    "planned_new_ordinary_credentials": 2,
+    "prepared": true,
+    "protected_execution_complete": false,
+    "source_operational_refresh": false,
+    "source_profiles_changed": false
+  },
+  "recorded_utc": "2026-10-28T14:36:08.589545+00:00",
+  "remaining_gates": [
+    "settings_assessment_and_new_inactive_main_candidate_recovery",
+    "full_current_MCP_and_served_context_acceptance",
+    "production_dispatch_and_launch_binding",
+    "admitted_unattended_renewal",
+    "deferred_bindings",
+    "final_live_state_reconciliation",
+    "final_fleet_switch_review"
+  ],
+  "settings_review": {
+    "critical_sections_equal": true,
+    "current_approval_timeout_seconds": 600,
+    "fleet_settings_accepted": false,
+    "previous_approval_timeout_seconds": 900,
+    "redacted_changed_fields": 1,
+    "source_current_at_owner_run_completion": true
+  },
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "capsule_archive_and_transform": "actual_code_with_invented_data",
+    "errors": 0,
+    "failed": 0,
+    "native_compiled_files": 2,
+    "native_python": "3.14.7",
+    "passed": 27,
+    "private_profiles_read_by_preview": false,
+    "public_schema_source_copy_preview": true,
+    "skipped": 0,
+    "source_library_registry_and_child_protocol_verified": true,
+    "warnings": 0,
+    "workflow_crypto_restore": "invented_doubles"
+  }
+}

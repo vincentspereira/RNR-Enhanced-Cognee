@@ -1,0 +1,9 @@
+{
+  "scope": "Late-run sample of the five-minute Python qualification process only; excludes PostgreSQL/Qdrant/ArcadeDB/Valkey and browser/other workloads",
+  "VmRSS": "710068 kB",
+  "VmHWM": "710068 kB",
+  "Threads": "31",
+  "user_cpu_seconds": 219.5,
+  "system_cpu_seconds": 17.01,
+  "whole_stack_resource_qualification": false
+}

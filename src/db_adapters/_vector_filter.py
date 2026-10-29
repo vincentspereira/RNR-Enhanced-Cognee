@@ -10,7 +10,7 @@ contract so each adapter doesn't have to re-implement the same five
 duck-type checks.
 
 What it covers:
-  - Normalise a qdrant Filter / FilterSelector / FieldCondition into an
+  - Normalise a qdrant Filter / FieldCondition into an
     internal ``_NormalisedFilter`` (a list of ``_EqualityCondition``s).
   - Translate that normalised form into the matching backend dialect:
       * ``to_python_predicate(normalised)`` -- callable(payload) -> bool
@@ -24,9 +24,10 @@ What it covers:
       * ``to_milvus_expr(normalised)`` -- a Milvus filter expression string.
 
 What it deliberately rejects (raises ``NotImplementedError``):
-  - ``should`` and ``must_not`` clauses
+  - Scalar clauses, nonempty ``should`` / ``must_not``, and ``min_should``
   - More than one ``must`` condition
-  - Anything other than ``match=MatchValue(value=...)`` on a string key
+  - Anything other than ``match=MatchValue(value=...)`` on a string key,
+    including FieldCondition co-constraints (range, geo, count, empty/null)
 
 The errors all point at this module and explain how the caller should
 pre-filter (e.g. query first, pass IDs) so the limitation isn't a
@@ -36,6 +37,7 @@ silent footgun.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from inspect import getattr_static
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
@@ -64,31 +66,46 @@ def normalise(qdrant_filter: Any) -> _NormalisedFilter:
 
     Accepted shapes (defensive duck-typing, no qdrant import required):
       * ``None`` -> empty filter (caller should treat as "match all").
-      * A ``Filter`` object exposing ``.must`` / ``.should`` / ``.must_not``
-        attributes (qdrant client v1.x).
+      * An empty ``Filter``, or one ``must=[FieldCondition(...)]`` with
+        no other constraints. None/empty should/must_not lists are no-ops.
       * A ``FieldCondition`` object exposing ``.key`` / ``.match.value`` --
         for callers that pass a single condition directly. Detected via
         a string-typed ``.key`` so MagicMock auto-attrs on a Filter
         stub don't accidentally enter this path.
 
     Raises ``NotImplementedError`` for compound forms (multiple
-    conditions, ``should`` / ``must_not``) with a clear pointer to
+    conditions, ``should`` / ``must_not`` / ``min_should``) with a clear pointer to
     the supported narrow shape.
     """
     if qdrant_filter is None:
         return _NormalisedFilter()
 
-    # Prefer the Filter shape (has must/should/must_not as list-like).
-    # If any of those resolve to a list/tuple/None, we treat the input
-    # as a Filter; otherwise we fall through to the FieldCondition path.
-    must_raw = getattr(qdrant_filter, "must", _MISSING)
-    should_raw = getattr(qdrant_filter, "should", _MISSING)
-    must_not_raw = getattr(qdrant_filter, "must_not", _MISSING)
+    # Inspect declared attributes, not MagicMock's fabricated auto-attributes.
+    # Qdrant permits scalar clauses, but our narrower contract does not.
+    must_raw = _explicit_attribute(qdrant_filter, "must")
+    should_raw = _explicit_attribute(qdrant_filter, "should")
+    must_not_raw = _explicit_attribute(qdrant_filter, "must_not")
+    min_should_raw = _explicit_attribute(qdrant_filter, "min_should")
+    if min_should_raw is not _MISSING and min_should_raw is not None:
+        raise NotImplementedError(
+            "Vector adapter filter translator: `min_should` is not supported."
+        )
     looks_like_filter = any(
-        _is_clause_value(v) for v in (must_raw, should_raw, must_not_raw)
+        v is not _MISSING for v in (must_raw, should_raw, must_not_raw)
     )
 
     if looks_like_filter:
+        _reject_unsupported_fields(
+            qdrant_filter, ("must", "should", "must_not", "min_should")
+        )
+        for name, raw in (
+            ("must", must_raw), ("should", should_raw), ("must_not", must_not_raw)
+        ):
+            if raw is not _MISSING and not _is_clause_value(raw):
+                raise NotImplementedError(
+                    f"Vector adapter filter translator: `{name}` must be a list "
+                    "or None; scalar clauses are not supported."
+                )
         must = list(must_raw) if _is_listlike(must_raw) else []
         should = list(should_raw) if _is_listlike(should_raw) else []
         must_not = list(must_not_raw) if _is_listlike(must_not_raw) else []
@@ -132,22 +149,55 @@ def normalise(qdrant_filter: Any) -> _NormalisedFilter:
 _MISSING = object()
 
 
+def _explicit_attribute(obj: Any, name: str) -> Any:
+    """Read only real attributes; mock auto-attributes are not constraints."""
+    if getattr_static(obj, name, _MISSING) is _MISSING:
+        return _MISSING
+    return getattr(obj, name)
+
+
 def _is_clause_value(value: Any) -> bool:
-    """A clause value is None or list/tuple. Excludes MagicMock auto-attrs."""
+    """A supported clause value is None or a list, never a scalar/tuple."""
     if value is _MISSING:
         return False
-    return value is None or isinstance(value, (list, tuple))
+    return value is None or isinstance(value, list)
 
 
 def _is_listlike(value: Any) -> bool:
-    return isinstance(value, (list, tuple))
+    return isinstance(value, list)
+
+
+def _reject_unsupported_fields(
+    obj: Any, supported: tuple[str, ...], known: tuple[str, ...] = ()
+) -> None:
+    """Do not drop declared model constraints, including future model fields."""
+    fields = getattr(type(obj), "model_fields", None)
+    names = set(known)
+    if isinstance(fields, dict):
+        names.update(fields)
+        names.update(name for name in vars(obj) if not name.startswith("_"))
+    for name in sorted(names.difference(supported)):
+        value = _explicit_attribute(obj, name)
+        if value is not _MISSING and value is not None:
+            raise NotImplementedError(
+                f"Vector adapter filter translator: `{name}` is not supported."
+            )
 
 
 def _extract_condition(cond: Any) -> _EqualityCondition:
-    key = getattr(cond, "key", None)
-    match = getattr(cond, "match", None)
-    value = getattr(match, "value", None) if match is not None else None
-    if key is None or value is None:
+    _reject_unsupported_fields(
+        cond, ("key", "match"),
+        ("range", "geo_bounding_box", "geo_radius", "geo_polygon",
+         "values_count", "is_empty", "is_null"),
+    )
+    key = _explicit_attribute(cond, "key")
+    match = _explicit_attribute(cond, "match")
+    _reject_unsupported_fields(match, ("value",))
+    value = (
+        _explicit_attribute(match, "value")
+        if match is not _MISSING and match is not None else _MISSING
+    )
+    if key is _MISSING or key is None or type(value) not in (bool, int, str):
         raise NotImplementedError(
             "Vector adapter filter translator: only "
             "`FieldCondition(key=..., match=MatchValue(value=...))` "
@@ -285,23 +335,38 @@ def to_milvus_expr(normalised: _NormalisedFilter) -> str:
     return " and ".join(pieces)
 
 
-def to_lance_where(normalised: _NormalisedFilter) -> str:
-    """Translate to a LanceDB SQL ``WHERE`` clause fragment.
+def to_lance_where(
+    normalised: _NormalisedFilter,
+    payload_rows: Optional[List[Dict[str, Any]]] = None,
+) -> str:
+    """Resolve exact top-level JSON equality to a LanceDB ID prefilter.
 
-    LanceDB's ``table.search(...).where(<sql>)`` accepts a SQL-ish
-    filter. The ``payload`` column is a JSON-encoded text column;
-    we match on its full text via ``LIKE``.
+    The adapter stores JSON *text*, not Lance binary JSON. LIKE cannot
+    implement identity equality: spacing, escapes, wildcards and nested keys
+    change its meaning. Decode a complete ID/payload scan instead, then pass
+    only matching IDs to the real engine before vector ranking/limiting.
+
+    Nonempty filters require the scan; never silently widen to match-all or
+    fall back to substring matching. This costs O(collection size).
     """
     if not normalised.must:
         return ""
-    pieces: List[str] = []
-    for cond in normalised.must:
-        safe_key = str(cond.key).replace("'", "''")
-        safe_value = str(cond.value).replace("'", "''")
-        # Match the substring '"key":"value"' inside the JSON-encoded
-        # payload column. Keep the quoting consistent with how the
-        # adapter writes the column.
-        pieces.append(
-            f"payload LIKE '%\"{safe_key}\":\"{safe_value}\"%'"
+    if payload_rows is None:
+        raise NotImplementedError(
+            "LanceDB JSON-text equality requires a complete ID/payload scan; "
+            "pass payload_rows to to_lance_where(). LIKE is not identity equality."
         )
-    return " AND ".join(pieces)
+    ids = []
+    for row in payload_rows:
+        payload = _payload_to_dict(row.get("payload"))
+        # Python equates True with 1 and False with 0; JSON identities do not.
+        if all(
+            type(payload.get(cond.key)) is type(cond.value)
+            and payload.get(cond.key) == cond.value
+            for cond in normalised.must
+        ):
+            ids.append(str(row["id"]))
+    if not ids:
+        return "false"
+    literals = ["'" + ident.replace("'", "''") + "'" for ident in ids]
+    return "id IN (" + ",".join(literals) + ")"

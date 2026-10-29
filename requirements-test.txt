@@ -1,44 +1,6 @@
-# Testing Requirements for RNR Enhanced Cognee
-# Install with: pip install -r requirements-test.txt
-
-# Core Testing Framework
-pytest==8.0.0
-pytest-asyncio==0.23.4
-pytest-cov==4.1.0
-pytest-mock==3.15.1
-
-# Coverage
-coverage==7.14.0
-
-# Async Testing
-asyncio==3.4.3
-
-# Mocking
-pytest-mock==3.15.1
-
-# Type Checking (for test development)
-mypy==1.8.0
-
-# Linting
-pylint==3.0.3
-
-# Code Formatting
-black==24.1.1
-
-# Import Sorting
-isort==5.13.2
-
-# Security Checks
-bandit==1.9.4
-
-# Performance Profiling
-pytest-profiling==1.8.1
-
-# HTML Coverage Reports
-pytest-html==4.2.0
-
-# JSON Schema Validation
-jsonschema==4.26.0
-
-# Timezone Support
-tzdata==2024.1
+# Complete unit-test environment on Python 3.12.
+# Install in a dedicated environment:
+#   python -m pip install --require-hashes -r requirements-test.txt
+# Keep the application and test-only dependencies at compatible locked versions.
+-r requirements-full.lock
+-r requirements-unit-optional.lock
