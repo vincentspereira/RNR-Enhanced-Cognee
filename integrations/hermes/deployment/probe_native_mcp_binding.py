@@ -151,12 +151,20 @@ def definitions(raw):
             key for key in config if isinstance(key, str)))[:240])
     if not 1 <= len(servers) <= 16:
         raise ValueError('mcp_servers_count:%d' % len(servers))
-    rows, fetch = {}, None
+    rows, fetch, remotes = {}, None, []
     for name, row in servers.items():
-        if not isinstance(row, dict):
-            raise ValueError('server:%s:not_mapping' % name[:64])
         if not (isinstance(name, str) and 0 < len(name) <= 64):
             raise ValueError('server:name_invalid')
+        if not isinstance(row, dict):
+            raise ValueError('server:%s:not_mapping' % name[:64])
+        if 'url' in row:
+            # Remote HTTP MCP: binding means connecting to an external endpoint
+            # with profile credentials, which needs an explicit owner gate.
+            if not (isinstance(row.get('url'), str) and 0 < len(row['url']) <= 2048):
+                raise ValueError('server:%s:url_invalid' % name[:64])
+            rows[name] = dict(name=name, kind='remote')
+            remotes.append(name)
+            continue
         command = row.get('command')
         if not (isinstance(command, str) and 0 < len(command) <= 256):
             raise ValueError('server:%s:command_invalid' % name[:64])
@@ -168,11 +176,11 @@ def definitions(raw):
         if not (isinstance(env, dict) and all(isinstance(k, str) and isinstance(v, str)
                                               and 0 < len(k) <= 128 for k, v in env.items())):
             raise ValueError('server:%s:env_invalid' % name[:64])
-        rows[name] = dict(name=name, command=command, args=args, env=env)
+        rows[name] = dict(name=name, kind='stdio', command=command, args=args, env=env)
         if any(FETCH_PACKAGE in arg for arg in [command] + args):
             require(fetch is None, 'multiple_fetch_definitions_refused')
             fetch = name
-    return rows, fetch
+    return rows, fetch, remotes
 
 
 def launch(row, env_base, home, scope):
@@ -197,8 +205,16 @@ def launch(row, env_base, home, scope):
 
 
 def run_catalogue(servers, fetch, home, scope, env_base):
-    results = {}
+    results, deferred = {}, []
     for name, row in sorted(servers.items()):
+        if row['kind'] == 'remote':
+            # Accounted, not launched: an external endpoint send needs the
+            # owner's explicit qualification gate.
+            deferred.append(name)
+            results[name] = {'complete': True, 'binding': 'remote',
+                             'remote_binding_qualified': False,
+                             'deferred_reason': 'external_endpoint_requires_owner_gate'}
+            continue
         entry = None
         try:
             client, entry, names = launch(row, env_base, home, scope)
@@ -211,16 +227,19 @@ def run_catalogue(servers, fetch, home, scope, env_base):
             finally:
                 client.close()
             entry['complete'] = True
+            entry['binding'] = 'stdio'
         except Exception as exc:
             if entry is None:
-                entry = {'complete': False, 'resolved_via': None, 'initialize_passed': False,
-                         'tools_list_passed': False, 'tools_count': 0, 'private_denials': 0,
-                         'env_key_count': len(row['env'])}
+                entry = {'complete': False, 'binding': 'stdio', 'resolved_via': None,
+                         'initialize_passed': False, 'tools_list_passed': False,
+                         'tools_count': 0, 'private_denials': 0, 'env_key_count': 0}
+                if row.get('env') is not None:
+                    entry['env_key_count'] = len(row['env'])
             entry['error_kind'] = type(exc).__name__ if type(exc).__name__ in {
                 'ValueError', 'TimeoutError', 'OSError', 'PermissionError',
                 'JSONDecodeError', 'BrokenPipeError'} else 'other'
         results[name] = entry
-    return results
+    return results, deferred
 
 
 def run_fetch_public(row, fetch, home, scope, env_base):
@@ -264,13 +283,14 @@ def main():
     require(home.is_dir() and home.stat().st_uid == os.getuid())
     os.environ['HERMES_DISABLE_LAZY_INSTALLS'] = '1'
     path, raw, diag = resolve_config()
-    servers, fetch = definitions(raw)
+    servers, fetch, remotes = definitions(raw)
     if stage == 'catalogue':
-        results = run_catalogue(servers, fetch, home, scope, dict(os.environ))
+        results, deferred = run_catalogue(servers, fetch, home, scope, dict(os.environ))
         complete = all(row['complete'] for row in results.values())
         print(json.dumps({'stage': stage, 'complete': complete, 'invocation_id': invocation,
             'config_path': str(path), 'config_sha256': hashlib.sha256(raw).hexdigest(),
-            'fetch_server': fetch, 'definition_count': len(servers), 'servers': results}), flush=True)
+            'fetch_server': fetch, 'definition_count': len(servers),
+            'remote_definitions_deferred': deferred, 'servers': results}), flush=True)
         return 0 if complete else 1
     require(fetch in servers)
     result = run_fetch_public(servers[fetch], fetch, home, scope, dict(os.environ))

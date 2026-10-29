@@ -27,8 +27,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-native-mcp-binding-v4'
-OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v4-20261029.service'
+ARTIFACT = BASE / 'operator-native-mcp-binding-v5'
+OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v5-20261029.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -38,7 +38,7 @@ RECONCILE_ARTIFACT = BASE / 'operator-managed-mcp-runtime-v3'
 PROTOCOL = DEPLOY / 'probe_main_local_mcp.py'
 PROTOCOL_SHA = '415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07'
 DRIVER = DEPLOY / 'probe_native_mcp_binding.py'
-DRIVER_SHA = '0942dfdb33cc16b107b5fce407ac18513bf25c06f7e676c1b78bfaa18777ce11'
+DRIVER_SHA = 'a54f321c30b64924a3b72d0b779f90997ec89674f65e192d6643cd02c3e062d5'
 RELEASE = Path('/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1')
 PROGRAM_ROOT = Path('/opt/hermes-runtime/programs')
 FIELDS = ['LoadState', 'ActiveState', 'SubState', 'Result', 'ExecMainStatus', 'ExecMainPID',
@@ -107,24 +107,36 @@ def validate_catalogue(value, invocation):
             and value.get('invocation_id') == invocation
             and type(value.get('complete')) is bool
             and isinstance(value.get('definition_count'), int)
-            and 1 <= value['definition_count'] <= 8
+            and 1 <= value['definition_count'] <= 16
             and isinstance(value.get('servers'), dict)
             and len(value['servers']) == value['definition_count']
-            and re.fullmatch('[a-f0-9]{64}', str(value.get('config_sha256'))))
+            and isinstance(value.get('config_path'), str)
+            and re.fullmatch('[a-f0-9]{64}', str(value.get('config_sha256')))
+            and isinstance(value.get('remote_definitions_deferred'), list)
+            and all(isinstance(name, str) and 0 < len(name) <= 64
+                    for name in value['remote_definitions_deferred'])
+            and set(value['remote_definitions_deferred']) <= set(value['servers']))
     for name, row in value['servers'].items():
         require(isinstance(name, str) and 0 < len(name) <= 64 and isinstance(row, dict)
-                and type(row.get('complete')) is bool
+                and type(row.get('complete')) is bool)
+        if row.get('binding') == 'remote':
+            require(row['complete'] is True
+                    and row.get('remote_binding_qualified') is False
+                    and row.get('deferred_reason') == 'external_endpoint_requires_owner_gate'
+                    and 'url' not in row and 'headers' not in row)
+            continue
+        require(row.get('binding') == 'stdio'
                 and row.get('resolved_via') in {'managed', 'passthrough', 'path', None}
                 and type(row.get('env_key_count')) is int)
         if row['complete']:
             require(row['initialize_passed'] is row['tools_list_passed'] is True
                     and type(row['tools_count']) is int and 1 <= row['tools_count'] <= 512
-                    and row.get('resolved_via') in {'managed', 'passthrough', 'path'}
                     and type(row.get('private_denials')) is int
                     and row['private_denials'] in {0, 2})
         else:
-            require(set(row) <= {'complete', 'resolved_via', 'initialize_passed', 'tools_list_passed',
-                                 'tools_count', 'private_denials', 'env_key_count', 'error_kind'}
+            require(set(row) <= {'complete', 'binding', 'resolved_via', 'initialize_passed',
+                                 'tools_list_passed', 'tools_count', 'private_denials',
+                                 'env_key_count', 'error_kind'}
                     and row.get('error_kind') in {'ValueError', 'TimeoutError', 'OSError',
                                                   'PermissionError', 'JSONDecodeError',
                                                   'BrokenPipeError', 'other'})
@@ -271,6 +283,10 @@ def worker():
         result['checkpoint'] = 'complete' if catalogue['complete'] else 'catalogue_failure'
         result['complete'] = bool(catalogue['complete'])
         result['native_mcp_binding_qualified'] = bool(catalogue['complete'])
+        deferred = catalogue.get('remote_definitions_deferred', [])
+        result['remote_definitions_deferred'] = deferred
+        result['remote_binding_deferred'] = bool(deferred)
+        result['native_remote_binding_qualified'] = False
         result['native_launch_network_used'] = True
         result['retained_copy_reuse'] = False
         result['qualification_unit_stopped'] = True
