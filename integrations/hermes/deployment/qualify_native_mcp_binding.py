@@ -27,8 +27,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-native-mcp-binding-v5'
-OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v5-20261029.service'
+ARTIFACT = BASE / 'operator-native-mcp-binding-v6'
+OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v6-20261029.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -220,7 +220,7 @@ def run_stage(unit, stage, account, validate, networked):
         require(state.get('User') == account.pw_name
                 and state.get('NoNewPrivileges') == 'yes'
                 and state.get('CapabilityBoundingSet') == state.get('AmbientCapabilities') == ''
-                and state.get('PrivateNetwork') == ('yes' if not networked else ''))
+                and state.get('PrivateNetwork') == ('yes' if not networked else 'no'))
         process = subprocess.run(['/usr/bin/journalctl', '--no-pager', '--output=json',
                                   '--lines=16', '--unit=' + unit],
                                  stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True, timeout=15)

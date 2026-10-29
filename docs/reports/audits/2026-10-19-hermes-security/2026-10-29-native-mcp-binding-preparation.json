@@ -30,7 +30,7 @@
   },
   "sources": {
     "probe_native_mcp_binding.py": "a54f321c30b64924a3b72d0b779f90997ec89674f65e192d6643cd02c3e062d5",
-    "qualify_native_mcp_binding.py": "fc58e601499c39eb085e1122163ccb598d9d29207417ccc250c2c325e32c10f2",
+    "qualify_native_mcp_binding.py": "cb75f5d3e8b7bbd5756f04f99a2a413ac2e7ae90db6e99274f40e5250eba54b5",
     "superseded_revisions": [
       {"sha256": "3e04a6eb3bfab260538a95bf700dc7ae09addd1177637446f5ca40093d62e3be",
        "superseded_by": "installer frozen into the artifact (0750 home traversal denied to the capability-less operator)"},
@@ -81,7 +81,23 @@
       "category_detail": "server:context7:command_invalid",
       "effects_applied": "the catalogue child unit ran under the actual restricted identity, read its own config successfully, pinpointed the failing definition, and was stopped; no tool call, model call or write occurred",
       "diagnostic_finding": "the live main profile contains remote HTTP MCP definitions (context7) that have no stdio command; the driver's stdio-only shape check refused them",
-      "correction": "remote definitions are classified and accounted with an explicit external-endpoint owner gate instead of being launched: the stage qualifies the stdio definitions and records remote bindings as deferred with names only, never url or header values; the v5 artifact and unit names are fresh",
+      "correction": "remote definitions are classified and accounted with an explicit external-endpoint owner gate instead of being launched: the stage qualifies the stdio definitions and records remote bindings as deferred with names only, never url or header values",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v5": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "the catalogue child unit ran to completion under the actual restricted identity and its receipt recorded complete=true; the operator then refused on its own post-run property check and stopped",
+      "catalogue_receipt_finding": {
+        "definition_count_live": 4,
+        "fetch": "resolved_via=managed, complete, initialize and tools_list passed, 1 tool, 2 private-address denials",
+        "filesystem": "resolved_via=managed, complete, initialize and tools_list passed, 14 tools",
+        "remote_definitions_deferred": ["context7", "deepwiki"],
+        "config_sha256": "0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289"
+      },
+      "cause": "the operator's networked-stage property check expected PrivateNetwork to be empty, but systemd always reports the default 'no' for unset properties",
+      "correction": "the networked stage accepts PrivateNetwork=no (the property is only required to be 'yes' for the isolated catalogue variant); the v6 artifact and unit names are fresh, and the fetch-public stage still lies ahead",
       "preserved": true
     }
   },
