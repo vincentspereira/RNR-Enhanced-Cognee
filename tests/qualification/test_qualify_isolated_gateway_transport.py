@@ -122,6 +122,10 @@ def test_native_child_protocol_runs_with_same_uid_fixture_only(monkeypatch,case)
     # Adapt ONLY fixture listener ownership/groups and launching the current
     # identity. Product admission still requires two distinct restricted UIDs.
     uid,gid=os.getuid(),os.getgid()
+    # This is a same-user protocol fixture, not a test of the installed
+    # Hermes interpreter. The production pin and installed-host gate remain.
+    import sys
+    monkeypatch.setitem(QUAL['spawn'].__globals__, 'EXECUTABLE', sys.executable)
     front_uid=uid+1 if case=='wrong_sender' else uid
     accounts={'ecbot_'+'1'*16:SimpleNamespace(pw_uid=front_uid,pw_gid=gid,pw_dir='/tmp'),
               'ecbot_'+'2'*16:SimpleNamespace(pw_uid=uid,pw_gid=gid,pw_dir='/tmp')}

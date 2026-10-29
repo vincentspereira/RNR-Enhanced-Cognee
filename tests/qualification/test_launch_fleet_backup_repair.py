@@ -82,7 +82,15 @@ def test_owner_subprocess_only_inserts_capability_drop_for_exact_reviewed_launch
     assert REPAIR['OwnerSubprocess'].arguments(command)==command
 
 
-def test_actual_unprivileged_native_launch_clears_caps_without_reading_any_profile():
+def test_actual_unprivileged_native_launch_clears_caps_without_reading_any_profile(monkeypatch):
+    # Keep the wrapper's exact production launcher check, then substitute the
+    # current interpreter only for this same-user kernel capability fixture.
+    import sys
+    real_run = subprocess.run
+    def run_fixture(args, **kwargs):
+        assert args[5] == row()['entry']['executable']
+        return real_run(args[:5] + [sys.executable] + args[6:], **kwargs)
+    monkeypatch.setattr(subprocess, 'run', run_fixture)
     code="import json,os; s=dict(x.split(':',1) for x in open('/proc/self/status') if ':' in x); print(json.dumps({'uid':os.geteuid(),'nnp':s['NoNewPrivs'].strip(),'caps':[s[k].strip() for k in ['CapEff','CapAmb','CapInh']]}))"
     process=REPAIR['OwnerSubprocess']().run(['/usr/bin/setpriv','--no-new-privs','--',row()['entry']['executable'],'-I','-B','-c',code],
         cwd='/',env={'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'},stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=15)
