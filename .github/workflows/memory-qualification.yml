@@ -33,6 +33,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Exact historical deployment artifact tests need their pinned commits.
+      - name: Check out pinned public Hermes source for source-only fixtures
+        uses: actions/checkout@v4
+        with:
+          repository: NousResearch/hermes-agent
+          ref: 4d04303818b61bf3aa09278af48356315515965b
+          path: .qualification/hermes-public/repo
+          persist-credentials: false
       - name: Install free operator backup tools
         run: sudo apt-get update && sudo apt-get install -y age postgresql-client
       - uses: actions/setup-python@v5
@@ -77,6 +84,7 @@ jobs:
         env:
           HF_HUB_OFFLINE: '1'
           RNR_QUALIFICATION_PG_CONTAINER: ${{ job.services.postgres.id }}
+          RNR_HERMES_PUBLIC_SOURCE_FIXTURE: ${{ github.workspace }}/.qualification/hermes-public
         run: |
           python -m pytest tests/qualification/ tests/unit/test_capability_boundaries.py tests/unit/test_sqlite_text_cache.py -q -p no:cacheprovider --override-ini=addopts= --junitxml=memory-qualification.xml
       - name: Build restricted service image

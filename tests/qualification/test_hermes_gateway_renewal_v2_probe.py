@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -11,6 +12,14 @@ SOURCE = Path(__file__).resolve().parents[2] / "integrations/hermes/deployment/q
 spec = importlib.util.spec_from_file_location("gateway_renewal_probe",SOURCE)
 helper = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(helper)
+
+
+@pytest.fixture(autouse=True)
+def public_source_fixture(monkeypatch):
+    # CI may supply a hash-checked public checkout; this is not installed-host proof.
+    if path := os.environ.get("RNR_HERMES_PUBLIC_SOURCE_FIXTURE"):
+        monkeypatch.setattr(helper, "RELEASE", Path(path))
+        monkeypatch.setattr(helper, "PROVIDER", SOURCE.parents[1] / "enhanced_cognee")
 
 
 def good():

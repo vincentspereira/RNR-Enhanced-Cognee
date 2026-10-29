@@ -337,6 +337,9 @@ jobs:
           fi
           # Ensure the package itself is installed for `import src.*` to work
           pip install -e .
+          # Exercise the optional cache and load-test integrations using the
+          # same hash-pinned dependencies as the required unit workflow.
+          pip install --require-hashes -r requirements-unit-optional.lock
           # Sanity check that the key DB clients made it in
           python -c "import neo4j, redis, psycopg2, qdrant_client; print('DB clients OK:', neo4j.__version__, redis.__version__, psycopg2.__version__)"
 
