@@ -111,7 +111,33 @@
     "native_compilation_passed": true
   },
   "execution": {
-    "status": "pending owner sudo terminal",
+    "status": "complete",
+    "executed_by": "owner sudo terminal, 2026-10-29",
+    "evidence": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-evidence/native-mcp-binding-ggu1psf5",
+    "operator_helper_sha256": "cb75f5d3e8b7bbd5756f04f99a2a413ac2e7ae90db6e99274f40e5250eba54b5",
+    "catalogue": {
+      "complete": true,
+      "definition_count_live": 4,
+      "config_path": "/var/lib/enhanced-cognee-profiles/5592956882ea9a13/.hermes/config.yaml",
+      "config_sha256": "0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289",
+      "fetch": "resolved_via=managed (uvx), initialize and tools_list passed, 1 tool, 2 private-address denials",
+      "filesystem": "resolved_via=managed (npx), initialize and tools_list passed, 14 tools",
+      "remote_definitions_deferred": ["context7", "deepwiki"]
+    },
+    "fetch_public": {
+      "complete": true,
+      "raw_passed": true,
+      "default_extraction_qualified": true,
+      "private_denials": 2
+    },
+    "gate_result": {
+      "native_mcp_binding_qualified": true,
+      "native_fetch_binding_qualified": true,
+      "native_remote_binding_qualified": false,
+      "remote_binding_deferred": true,
+      "remote_definitions_deferred": ["context7", "deepwiki"],
+      "note": "local stdio definitions bind natively and Fetch completes public retrieval; remote endpoint qualification is an explicit owner gate"
+    },
     "idempotent": "reattaching with the same command resumes the watch without replay; a failed attempt is retained and requires inspection",
     "boundaries": [
       "no model call",

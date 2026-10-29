@@ -1,5 +1,27 @@
 # Remaining Hermes memory rollout work
 
+29 October 2026 COMPLETE: the native MCP binding gate is CLOSED. The v6
+operator ran both stages under the actual restricted main identity. The
+catalogue read the live main profile config (4 definitions: fetch,
+filesystem, context7, deepwiki), resolved the stdio definitions through the
+release's native managed launchers, and bound them: Fetch via managed uvx
+(1 tool, 2 private-address denials) and Filesystem via managed npx (14
+tools). The live profile holds remote HTTP endpoints context7 and deepwiki,
+which are accounted and explicitly DEFERRED: connecting to external
+endpoints with profile credentials needs the owner's qualification gate; the
+receipts carry names only, never url or header values. The fetch-public
+stage then completed the authorized public example.com retrieval in raw and
+default modes through the native binding (converted-Markdown structural
+check qualified). Evidence:
+`operator-evidence/native-mcp-binding-ggu1psf5`; sanitized record
+`2026-10-29-native-mcp-binding-preparation.json` (v1-v5 retained attempts
+documented). Still open: full main tools/context and current served
+capability (including the unverified maximum-context capture), production
+launcher bindings for live fleet processes, admitted credential
+renewal/reload, fresh main-state reconciliation with backup/rollback
+membership, the remote-endpoint owner gate, and one concrete fleet-switch
+review. Admission stays disabled; no fleet activation or main merge.
+
 29 October 2026 PREPARED: the native MCP binding qualification group awaits
 the owner's sudo terminal. The first attempt (v1) stopped itself in the
 operator's verification phase with zero effects: it tried to read a helper
