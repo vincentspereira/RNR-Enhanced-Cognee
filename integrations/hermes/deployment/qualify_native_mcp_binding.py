@@ -38,6 +38,7 @@ RECONCILE_ARTIFACT = BASE / 'operator-managed-mcp-runtime-v3'
 PROTOCOL = DEPLOY / 'probe_main_local_mcp.py'
 PROTOCOL_SHA = '415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07'
 DRIVER = DEPLOY / 'probe_native_mcp_binding.py'
+DRIVER_SHA = '941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d'
 RELEASE = Path('/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1')
 PROGRAM_ROOT = Path('/opt/hermes-runtime/programs')
 FIELDS = ['LoadState', 'ActiveState', 'SubState', 'Result', 'ExecMainStatus', 'ExecMainPID',
@@ -348,8 +349,7 @@ def launch():
     sources = {'qualify_native_mcp_binding.py': source,
                'probe_native_mcp_binding.py': DRIVER.read_bytes(),
                'probe_main_local_mcp.py': PROTOCOL.read_bytes()}
-    require(hashlib.sha256(sources['probe_native_mcp_binding.py']).hexdigest()
-            != hashlib.sha256(sources['probe_main_local_mcp.py']).hexdigest())
+    require(hashlib.sha256(sources['probe_native_mcp_binding.py']).hexdigest() == DRIVER_SHA)
     require(hashlib.sha256(sources['probe_main_local_mcp.py']).hexdigest() == PROTOCOL_SHA)
     for name, raw in sources.items():
         write(ARTIFACT / name, raw)
