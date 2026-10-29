@@ -30,7 +30,7 @@
   },
   "sources": {
     "probe_native_mcp_binding.py": "941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d",
-    "qualify_native_mcp_binding.py": "b2a7a833523b13f86cadf207c3790ac90147d18bc6836c58d1aab70e13310c5e",
+    "qualify_native_mcp_binding.py": "3e04a6eb3bfab260538a95bf700dc7ae09addd1177637446f5ca40093d62e3be",
     "protocol_reused": "probe_main_local_mcp.py 415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07 (reply bound raised to 10 MiB for the REA catalogue)",
     "installer_reused": "install_managed_mcp_runtime.py a877fd6dd3688ea77d42ae02c94b060340b5a3c217f85df85ec035f987822711 (public_read + no_active_candidates)"
   },
@@ -46,6 +46,15 @@
   "execution": {
     "status": "pending owner sudo terminal",
     "idempotent": "reattaching with the same command resumes the watch without replay; a failed attempt is retained and requires inspection",
-    "boundaries": ["no model call", "no memory API call", "no platform adapter", "no credential issued", "no key read", "no profile or candidate changed", "fleet admission stays disabled", "fleet_launch_approved false"]
+    "boundaries": [
+      "no model call",
+      "no memory API call",
+      "no platform adapter",
+      "no credential issued",
+      "no key read",
+      "no profile or candidate changed",
+      "fleet admission stays disabled",
+      "fleet_launch_approved false"
+    ]
   }
 }
