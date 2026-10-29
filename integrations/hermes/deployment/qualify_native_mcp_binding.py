@@ -343,7 +343,6 @@ def launch():
     driver_before = c['legacy']()['policies'](read)
     entry, _ = c['legacy']()['fixed_entry'](read)
     require(entry['user'] == 'ecbot_5592956882ea9a13' and entry['enabled'] is False)
-    retained_runtime()
     require(not os.path.lexists(ARTIFACT) and metadata(OPERATOR_UNIT).get('LoadState') == 'not-found')
     ARTIFACT.mkdir(mode=0o755)
     ARTIFACT.chmod(0o755)
@@ -359,6 +358,9 @@ def launch():
         (ARTIFACT / name).chmod(0o644)
     write(ARTIFACT / 'sources.json', canonical({name: hashlib.sha256(raw).hexdigest()
                                                 for name, raw in sources.items()}))
+    # Now that the pinned installer is frozen into the artifact, verify the
+    # retained runtime state and the inactive-bot guard before starting the unit.
+    retained_runtime()
     evidence = Path(tempfile.mkdtemp(prefix='native-mcp-binding-', dir=BASE / 'operator-evidence'))
     write(ARTIFACT / 'context.private.json',
           canonical(dict(source_sha256=digest, evidence=str(evidence), id=uuid.uuid4().hex)))
