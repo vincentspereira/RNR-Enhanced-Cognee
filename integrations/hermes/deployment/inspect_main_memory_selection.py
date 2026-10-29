@@ -22,8 +22,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-main-memory-selection-v1'
-OPERATOR_UNIT = 'ec-main-memory-selection-v1-20261029.service'
+ARTIFACT = BASE / 'operator-main-memory-selection-v2'
+OPERATOR_UNIT = 'ec-main-memory-selection-v2-20261029.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -153,6 +153,10 @@ def worker():
         probe = (ARTIFACT / 'probe_main_memory_selection.py').read_bytes()
         (public / 'probe.py').write_bytes(probe)
         (public / 'probe.py').chmod(0o644)
+        # The child cannot read the artifact tree; stage the pinned binding
+        # support beside the probe in the public directory.
+        (public / 'binding_support.py').write_bytes((ARTIFACT / 'probe_native_mcp_binding.py').read_bytes())
+        (public / 'binding_support.py').chmod(0o644)
         home = Path('/run') / ('ec-main-memory-sel-' + uuid.uuid4().hex[:16])
         settings = dict(Type='oneshot', RemainAfterExit='yes', User=account.pw_name,
                         Group=str(account.pw_gid), NoNewPrivileges='yes',
@@ -167,7 +171,7 @@ def worker():
         args = ['/usr/bin/systemd-run', '--quiet', '--no-block', '--unit=' + unit]
         args += ['--property=' + key + '=' + value for key, value in settings.items()]
         args += [str(RELEASE / 'venv/bin/python'), '-I', '-B', str(public / 'probe.py'),
-                 'inspect', str(home), str(ARTIFACT / 'probe_native_mcp_binding.py')]
+                 'inspect', str(home), str(public / 'binding_support.py')]
         subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, timeout=15)
         deadline = time.monotonic() + 120
         while time.monotonic() < deadline:
