@@ -1,0 +1,159 @@
+{
+  "source_parent_revision": "06037eb7b6d60eecc3be3921c3012d86d8e56a75",
+  "full_runtime_pillow": "13.0.0",
+  "full_lock_only_pillow_distribution_changed": true,
+  "pillow_png_recovery_and_resize_smoke_passed": true,
+  "isolated_package_compatibility_passed": true,
+  "units": {
+    "name": "units-pillow13",
+    "exit_code": 0,
+    "tests": 4344,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 4344,
+    "complete": true
+  },
+  "audits": {
+    "full": {
+      "affected_packages": [
+        {
+          "name": "black",
+          "version": "26.3.1",
+          "advisory_count": 1,
+          "ids": [
+            "GHSA-cg8m-r9f2-5wm2"
+          ]
+        },
+        {
+          "name": "filelock",
+          "version": "3.32.7",
+          "advisory_count": 3,
+          "ids": [
+            "GHSA-v4x8-3wr5-3wq8",
+            "GHSA-9vhv-jxww-xfm5",
+            "GHSA-567q-5qvw-pf92"
+          ]
+        },
+        {
+          "name": "opentelemetry-api",
+          "version": "1.41.1",
+          "advisory_count": 1,
+          "ids": [
+            "GHSA-xcq7-p3pf-p88h"
+          ]
+        },
+        {
+          "name": "pypdf",
+          "version": "6.21.1",
+          "advisory_count": 3,
+          "ids": [
+            "GHSA-6c7f-9265-g8fw",
+            "GHSA-jr96-gvgh-j3r4",
+            "GHSA-gmh7-3g9r-mjh5"
+          ]
+        },
+        {
+          "name": "setuptools",
+          "version": "84.0.0",
+          "advisory_count": 1,
+          "ids": [
+            "GHSA-xmj3-9gf7-h52w"
+          ]
+        },
+        {
+          "name": "virtualenv",
+          "version": "21.14.5",
+          "advisory_count": 8,
+          "ids": [
+            "GHSA-vxj4-q4g9-crj7",
+            "GHSA-c978-59m8-c77v",
+            "GHSA-494p-63j8-28p3",
+            "GHSA-6w3r-xr62-4xcp",
+            "GHSA-qmx5-4p3x-wvqf",
+            "GHSA-fc2g-4w5p-6whm",
+            "GHSA-cx28-75q4-x26q",
+            "GHSA-394h-qwmc-48pf"
+          ]
+        }
+      ],
+      "advisories": 17,
+      "complete_and_clean": false
+    },
+    "index": {
+      "affected_packages": [
+        {
+          "name": "pillow",
+          "version": "12.3.0",
+          "advisory_count": 37,
+          "ids": [
+            "GHSA-p4wg-p73j-c528",
+            "GHSA-65qm-jvmh-6pqg",
+            "GHSA-58r4-6rv3-gfh8",
+            "GHSA-pchr-8j38-3x4p",
+            "GHSA-q45j-58j2-45rg",
+            "GHSA-462x-pgg6-55fp",
+            "GHSA-c6hw-5grf-ff96",
+            "GHSA-vx6w-vv9f-6gvg",
+            "GHSA-7mwm-ghpf-9vrm",
+            "GHSA-w889-685w-c8fh",
+            "GHSA-j4m9-6w36-pw47",
+            "GHSA-27h8-gf7j-v5hc",
+            "GHSA-fc9g-5qg7-mf45",
+            "GHSA-cp9v-662q-vvx9",
+            "GHSA-22hg-r758-rrw9",
+            "GHSA-74r2-7ff9-mjj2",
+            "GHSA-xgh8-jp6q-p5x8",
+            "GHSA-254f-3936-288h",
+            "GHSA-jg86-v3jv-hrpm",
+            "GHSA-f2g6-542v-9j58",
+            "GHSA-5xm2-6676-qcp9",
+            "GHSA-gg2r-wvfm-q9rx",
+            "GHSA-332p-7hrc-92wf",
+            "GHSA-4rr5-89j8-mwwm",
+            "GHSA-24rc-8hj2-v98c",
+            "GHSA-4rm8-3hmm-39fg",
+            "GHSA-mrfp-p49p-3hf2",
+            "GHSA-3j72-p6qg-6xp7",
+            "GHSA-v9pv-5gc8-w2m6",
+            "GHSA-g4qv-2jxx-769h",
+            "GHSA-g842-9rc4-69pw",
+            "GHSA-9v9v-9qvf-h2hj",
+            "GHSA-g7cr-3p24-7wf7",
+            "GHSA-p8hx-v2p6-rp84",
+            "GHSA-78g4-xqwv-q3g8",
+            "GHSA-654x-cwwv-5j9c",
+            "GHSA-5x8w-8jj5-q52h"
+          ]
+        }
+      ],
+      "advisories": 37,
+      "complete_and_clean": false
+    }
+  },
+  "runtime_upgrade_performed": false,
+  "service_dependency_conflict_resolved": false,
+  "fleet_launch_approved": false,
+  "hashes": [
+    {
+      "path": "requirements.txt",
+      "sha256": "cbfecc66d86a4c3c8f04385cd8c85dcde416019e1cdd5a5264945add0528b802"
+    },
+    {
+      "path": "requirements-full.lock",
+      "sha256": "d7f89e15c0f45a915f230ce93d3b8081289d28157223a4f2e609ac6bb819f3a5"
+    },
+    {
+      "path": "requirements-memory.in",
+      "sha256": "7b24e67f966a1959474ac430f0d5a2d442302a51ea1bb67219e0b620c8bda6c2"
+    },
+    {
+      "path": "requirements-memory.lock",
+      "sha256": "b6fb279f7a8085fcf0b813ea1b2fe910830af3f078239b3a708e7313e4ef7a85"
+    },
+    {
+      "path": "requirements-index.lock",
+      "sha256": "c508a44cba6da54173be9a0f8d81577aa1dd0cc059856b911c2ab19f5e83fae4"
+    }
+  ]
+}

@@ -43,6 +43,10 @@ def upgrade() -> None:
         )
     """))
 
+    # Existing Docker installations predate expire_at. Add it before creating
+    # the baseline index so they can reach later compatibility revisions.
+    conn.execute(sa.text("ALTER TABLE shared_memory.documents ADD COLUMN IF NOT EXISTS expire_at TIMESTAMPTZ"))
+
     conn.execute(sa.text("""
         CREATE INDEX IF NOT EXISTS idx_documents_agent_id
         ON shared_memory.documents (agent_id)

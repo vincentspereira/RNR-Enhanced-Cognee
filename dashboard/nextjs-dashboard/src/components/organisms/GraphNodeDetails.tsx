@@ -4,7 +4,6 @@ import React from "react";
 import { X } from "lucide-react";
 import { IconButton } from "@/components/ui/elements/IconButton";
 import { useNodeDetails } from "@/lib/hooks/useGraphData";
-import type { GraphNode } from "@/lib/api/neo4j";
 
 export interface GraphNodeDetailsProps {
   nodeId: string | null;
@@ -66,7 +65,7 @@ export function GraphNodeDetails({
           <h3 className="text-lg font-semibold text-slate-200 mb-1">{node.label}</h3>
           <p className="text-sm text-slate-400 capitalize">Type: {node.type}</p>
         </div>
-        <IconButton onClick={onClose} size="sm" icon={<X className="w-4 h-4" />} />
+        <IconButton onClick={onClose} aria-label="Close node details" size="sm" icon={<X className="w-4 h-4" />} />
       </div>
 
       {/* Properties */}

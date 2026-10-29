@@ -121,6 +121,7 @@ def client(server_app):
 
 
 def _bearer(secret: str, **claims) -> dict:
+    claims.setdefault("tenant", "test_scope")
     token = REAL_JWT.encode(claims, secret, algorithm="HS256")
     return {"Authorization": f"Bearer {token}"}
 
@@ -192,7 +193,7 @@ class TestToolsRBAC:
 class TestToolsDispatch:
     def test_unknown_tool_404(self, client):
         resp = client.post("/tools/does_not_exist", json={"arguments": {}})
-        assert resp.status_code == 404
+        assert resp.status_code == 403
 
     def test_sdk_envelope_shape_unwrapped(self, client, fake_backend):
         resp = client.post(
@@ -218,6 +219,13 @@ class TestToolsDispatch:
         assert resp.status_code == 200
         assert resp.json() == {"result": "ok:health"}
 
+    def test_tool_failure_is_not_http_success(self, client, fake_backend):
+        from unittest.mock import AsyncMock
+        fake_backend.call_tool = AsyncMock(return_value=([], {"result": "ERR database unavailable"}))
+        response = client.post("/tools/add_memory", json={"content": "synthetic"})
+        assert response.status_code == 503
+        assert "database unavailable" not in response.text
+
 
 # ---------------------------------------------------------------------------
 # The real SDK class against the real route (in-process via ASGITransport)
@@ -235,11 +243,9 @@ async def _sdk_over_asgi(server_app, token):
     import httpx
     from enhanced_cognee_client import EnhancedCogneeClient
 
-    sdk = EnhancedCogneeClient(host="testserver", port=80, api_key=token)
+    sdk = EnhancedCogneeClient(base_url="https://testserver", access_token=token)
+    headers = dict(sdk._client.headers)
     await sdk._client.aclose()  # discard the auto-created socket client
-    headers = {"Content-Type": "application/json"}
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
     sdk._client = httpx.AsyncClient(
         transport=httpx.ASGITransport(app=server_app),
         base_url=sdk._base_url,
@@ -258,7 +264,7 @@ class TestSdkAgainstRoute:
             assert res == {"result": "ok:add_memory"}
             assert fake_backend.last_name == "add_memory"
             assert fake_backend.last_args == {
-                "content": "x", "user_id": "default", "agent_id": "a", "metadata": None,
+                "content": "x", "agent_id": "a",
             }
         finally:
             await sdk.close()

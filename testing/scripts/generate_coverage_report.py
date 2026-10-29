@@ -6,6 +6,8 @@ Generates comprehensive code coverage reports with multiple output formats,
 visualization, and detailed analysis for all test categories.
 """
 
+import csv
+
 import os
 import sys
 import json
@@ -212,7 +214,7 @@ class CoverageReportGenerator:
         # General recommendations
         if len(aggregated_data["categories"]) > 0:
             lowest_coverage = min(
-                ((data["coverage"] / data["target"]) * 100) if data["target"] > 0 else 0)
+                ((data["coverage"] / data["target"]) * 100 if data["target"] > 0 else 0)
                 for data in aggregated_data["categories"].values()
                 if data["coverage"] > 0
             )
@@ -425,7 +427,7 @@ class CoverageReportGenerator:
                         max: 100
                     }}
                 }}
-            }}});
+            }});
     </script>
 </body>
 </html>
@@ -584,38 +586,20 @@ class CoverageReportGenerator:
         else:
             return "coverage-critical"
 
-    def _get_historical_data_for_category(self, category: str) -> float:
-        """Mock historical data for trend chart"""
-        base_coverage = {
-            "unit": 75, 78, 82, 85, 88, 92, 95, 93, 96, 98,
-            "integration": 60, 65, 70, 75, 80, 85, 88, 90, 93, 95,
-            "system": 50, 55, 60, 65, 70, 75, 78, 82, 85, 88,
-            "performance": 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
-            "security": 30, 35, 40, 45, 50, 55, 60, 65, 70, 75
-        }
-        return base_coverage.get(category, 50)[random.randint(0, 9)]
+    def _get_historical_data_for_category(self, category: str) -> Optional[float]:
+        """Return only a recorded observation; missing evidence stays unknown."""
+        for entry in reversed(self.load_coverage_history()):
+            value = entry.get("categories", {}).get(category, {}).get("coverage")
+            if isinstance(value, (int, float)):
+                return value
+        return None
 
     def _get_heatmap_data(self, categories: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Generate heatmap data for visualization"""
-        heatmap_data = []
-        categories_list = list(categories.keys())
-
-        for i, category in enumerate(categories_list):
-            data = categories[category]
-            # Generate week-based heatmap data
-            for week in range(1, 13):
-                coverage = data.get("coverage", 0)
-                # Simulate variation in weekly coverage
-                variation = random.uniform(-5, 5)
-                adjusted_coverage = max(0, min(100, coverage + variation))
-
-                heatmap_data.append({
-                    "x": week,
-                    "y": i,
-                    "v": adjusted_coverage
-                })
-
-        return heatmap_data
+        """Use actual history only; never invent weekly variation."""
+        return [{"x": i, "y": category, "v": data["coverage"]}
+                for i, entry in enumerate(self.load_coverage_history())
+                for category, data in entry.get("categories", {}).items()
+                if category in categories and isinstance(data.get("coverage"), (int, float))]
 
     def generate_csv_report(self, aggregated_data: Dict[str, Any], output_file: str):
         """Generate CSV coverage report"""
@@ -639,7 +623,7 @@ class CoverageReportGenerator:
         output_path = self.reports_dir / output_file
         with open(output_path, 'w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(csv_data)
+            writer.writerows(csv_data)
 
         print(f"CSV report saved to: {output_path}")
 
@@ -666,11 +650,11 @@ class CoverageReportGenerator:
         # Category Breakdown
         lines.append("CATEGORY BREAKDOWN")
         lines.append("-" * 40)
-        lines.append(f"{'Category':<15} {'Target':<10} {'Coverage':<12} {'Status':<12}}")
+        lines.append(f"{'Category':<15} {'Target':<10} {'Coverage':<12} {'Status':<12}")
         lines.append("-" * 55)
 
         for category, data in aggregated_data["categories"].items():
-            lines.append(f"{category:<15} {data['target']:<10}% {data.get('coverage', 0):<12}% {data.get('status', 'unknown'):<12}}")
+            lines.append(f"{category:<15} {data['target']:<10}% {data.get('coverage', 0):<12}% {data.get('status', 'unknown'):<12}")
 
         lines.append("")
 
@@ -684,7 +668,7 @@ class CoverageReportGenerator:
 
         output_path = self.reports_dir / output_file
         with open(output_path, 'w') as f:
-            f.writelines(line)
+            f.write("\n".join(lines) + "\n")
 
         print(f"Text report saved to: {output_path}")
 
@@ -887,5 +871,5 @@ def main():
     print(f"Reports generated in: {args.reports_dir}")
 
 
-if __name__main__":
+if __name__ == "__main__":
     main()

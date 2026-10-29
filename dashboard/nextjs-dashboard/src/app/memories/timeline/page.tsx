@@ -10,7 +10,7 @@ import type { MemoryResponse } from "@/lib/api/types";
 
 export default function TimelinePage() {
   const { filters } = useMemoryFilters();
-  const [selectedMemoryId, setSelectedMemoryId] = useState<string | null>(null);
+  const [, setSelectedMemoryId] = useState<string | null>(null);
 
   // Fetch memories
   const { data: memories = [], isLoading, error } = useQuery<MemoryResponse[]>({

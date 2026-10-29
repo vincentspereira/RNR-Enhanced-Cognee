@@ -1,0 +1,56 @@
+{
+  "source_parent": "d275ab5e0309bde2bef13a7a76d2c8e94808397d",
+  "environment": "Ubuntu-Workspace",
+  "owner_native_inspection_passed": true,
+  "owner_native_attempt": {
+    "complete": false,
+    "failure_stage": "native_question",
+    "native_substage": "question_preservation",
+    "native_failure_category": "condition_or_native_error",
+    "native_http_status": null
+  },
+  "local_closed_client_reproduced": true,
+  "original_host_exception_proven": false,
+  "provider_and_service_changed": false,
+  "original_pilot_changed": false,
+  "regression": {
+    "name": "hermes-and-recovery",
+    "exit_code": 0,
+    "retained_fixtures": "/tmp/ecq-1wqyqkq8",
+    "tests": 1259,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 1259,
+    "complete": true
+  },
+  "launch_lifecycle_cases": 6,
+  "launch_harness_cases": 50,
+  "pytest_warnings_reported": 0,
+  "coverage_measured": false,
+  "secret_scan_findings": 0,
+  "installed_host_executed_from_workspace": false,
+  "fleet_launch_approved": false,
+  "sources": [
+    {
+      "path": "integrations/hermes/deployment/qualify_launch_candidate.py",
+      "sha256": "5e144532ba46d11f6892745b165e5933dffb682e2636607550d3cde209ac9c89"
+    },
+    {
+      "path": "scripts/qualification/run_hermes_launch_native.sh",
+      "sha256": "52a830bc50afb10e97ec2f4c4b7e96cfdb8f96af8e0beabb6291b54c201c0bbf"
+    },
+    {
+      "path": "tests/qualification/test_hermes_launch_lifecycle.py",
+      "sha256": "d51ca3fc616c6bfac40c6c0dd4131bf001880ba054ee0f27b6c14f843e69f8ec"
+    }
+  ],
+  "earlier_commit_checks": {
+    "Required_CI": "success",
+    "Security_Audit": "failure",
+    "memory_qualification": "failure",
+    "full_runtime": "failure",
+    "other_legacy_jobs": "failure_or_skipped"
+  },
+  "intermediate_fixture_failures_preserved": "/tmp/ec-native-lifecycle-fix-20261024"
+}

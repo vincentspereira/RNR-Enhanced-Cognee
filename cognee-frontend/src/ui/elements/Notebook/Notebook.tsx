@@ -2,7 +2,7 @@
 
 import { v4 as uuid4 } from "uuid";
 import classNames from "classnames";
-import { Fragment, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { Component, Fragment, MouseEvent, RefObject, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { useModal } from "@/ui/elements/Modal";
 import { CaretIcon, CloseIcon, PlusIcon } from "@/ui/Icons";
@@ -20,6 +20,23 @@ interface NotebookProps {
 }
 
 export default function Notebook({ notebook, updateNotebook, runCell }: NotebookProps) {
+  const [closedCells, setClosedCells] = useState(new Set<string>());
+
+  const toggleCellOpen = useCallback((id: string) => {
+    setClosedCells((prev) => {
+      const newState = new Set(prev);
+
+      if (newState.has(id)) {
+        newState.delete(id)
+      } else {
+        newState.add(id);
+      }
+
+      return newState;
+    });
+  }, []);
+
+
   useEffect(() => {
     if (notebook.cells.length === 0) {
       const newCell: Cell = {
@@ -32,7 +49,6 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
        ...notebook,
         cells: [newCell],
       });
-      toggleCellOpen(newCell.id)
     }
   }, [notebook, updateNotebook]);
 
@@ -57,7 +73,6 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
       ],
     };
 
-    toggleCellOpen(newCell.id);
     updateNotebook(newNotebook);
   }, [notebook, updateNotebook]);
 
@@ -131,22 +146,6 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
     }
   }, [notebook, updateNotebook]);
 
-  const [openCells, setOpenCells] = useState(new Set(notebook.cells.map((c: Cell) => c.id)));
-
-  const toggleCellOpen = (id: string) => {
-    setOpenCells((prev) => {
-      const newState = new Set(prev);
-
-      if (newState.has(id)) {
-        newState.delete(id)
-      } else {
-        newState.add(id);
-      }
-
-      return newState;
-    });
-  };
-
   return (
     <>
       <div className="bg-white rounded-xl flex flex-col gap-0.5 px-7 py-5 flex-1">
@@ -160,7 +159,7 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
                   <>
                     <div className="absolute left-[-1.35rem] top-2.5">
                       <IconButton className="p-[0.25rem] m-[-0.25rem]" onClick={toggleCellOpen.bind(null, cell.id)}>
-                        <CaretIcon className={classNames("transition-transform", openCells.has(cell.id) ? "rotate-0" : "rotate-180")} />
+                        <CaretIcon className={classNames("transition-transform", !closedCells.has(cell.id) ? "rotate-0" : "rotate-180")} />
                       </IconButton>
                     </div>
 
@@ -174,7 +173,7 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
                       className="rounded-tl-xl rounded-tr-xl"
                     />
 
-                    {openCells.has(cell.id) && (
+                    {!closedCells.has(cell.id) && (
                       <>
                         <TextArea
                           value={cell.content}
@@ -206,7 +205,7 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
                   <>
                     <div className="absolute left-[-1.35rem] top-2.5">
                       <IconButton className="p-[0.25rem] m-[-0.25rem]" onClick={toggleCellOpen.bind(null, cell.id)}>
-                        <CaretIcon className={classNames("transition-transform", openCells.has(cell.id) ? "rotate-0" : "rotate-180")} />
+                        <CaretIcon className={classNames("transition-transform", !closedCells.has(cell.id) ? "rotate-0" : "rotate-180")} />
                       </IconButton>
                     </div>
 
@@ -219,7 +218,7 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
                       className="rounded-tl-xl rounded-tr-xl"
                     />
 
-                    {openCells.has(cell.id) && (
+                    {!closedCells.has(cell.id) && (
                       <TextArea
                         value={cell.content}
                         onChange={handleCellInputChange.bind(null, notebook, cell)}
@@ -279,150 +278,73 @@ export default function Notebook({ notebook, updateNotebook, runCell }: Notebook
 }
 
 
-function CellResult({ content }: { content: [] }) {
-  const parsedContent = [];
+class ResultBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    return this.state.failed ? <p role="alert">This result could not be displayed.</p> : this.props.children;
+  }
+}
 
+function resultObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isTriplet(value: unknown): value is Triplet {
+  if (!Array.isArray(value) || value.length !== 3) return false;
+  const [source, relation, target] = value;
+  return resultObject(source) && resultObject(relation) && resultObject(target)
+    && typeof source.id === "string" && typeof target.id === "string"
+    && typeof relation.relationship_name === "string";
+}
+
+function CellResult({ content }: { content: unknown[] }) {
+  return content.slice(0, 1000).map((line, index) => (
+    <ResultBoundary key={index}>
+      <ResultLine line={line} />
+    </ResultBoundary>
+  ));
+}
+
+function ResultLine({ line, depth = 0 }: { line: unknown; depth?: number }) {
   const graphRef = useRef<GraphVisualizationAPI>(null);
   const graphControls = useRef<GraphControlsAPI>({
-    setSelectedNode: () => {},
-    getSelectedNode: () => null,
+    setSelectedNode: () => {}, getSelectedNode: () => null,
   });
-
-  for (const line of content) {
-    try {
-      if (Array.isArray(line)) {
-        // Insights search returns uncommon graph data structure
-        if (Array.from(line).length > 0 && Array.isArray(line[0]) && line[0][1]["relationship_name"]) {
-          parsedContent.push(
-            <div key={line[0][1]["relationship_name"]} className="w-full h-full bg-white">
-              <span className="text-sm pl-2 mb-4">reasoning graph</span>
-              <GraphVisualization
-                data={transformInsightsGraphData(line)}
-                ref={graphRef as RefObject<GraphVisualizationAPI>}
-                graphControls={graphControls}
-                className="min-h-80"
-              />
-            </div>
-          );
-          continue;
-        }
-
-        // @ts-expect-error line can be Array or string
-        for (const item of line) {
-          if (
-            typeof item === "object" && item["search_result"] && (typeof(item["search_result"]) === "string"
-            || (Array.isArray(item["search_result"]) && typeof(item["search_result"][0]) === "string"))
-          ) {
-            parsedContent.push(
-              <div key={String(item["search_result"])} className="w-full h-full bg-white">
-                <span className="text-sm pl-2 mb-4">query response (dataset: {item["dataset_name"]})</span>
-                <span className="block px-2 py-2 whitespace-normal">{item["search_result"]}</span>
-              </div>
-            );
-          } else if (typeof(item) === "object" && item["search_result"] && typeof(item["search_result"]) === "object") {
-            parsedContent.push(
-              <pre className="px-2 w-full h-full bg-white text-sm" key={String(item).slice(0, -10)}>
-                {JSON.stringify(item, null, 2)}
-              </pre>
-            )
-          } else if (typeof(item) === "string") {
-            parsedContent.push(
-              <pre className="px-2 w-full h-full bg-white text-sm whitespace-normal" key={item.slice(0, -10)}>
-                {item}
-              </pre>
-            );
-          } else if (typeof(item) === "object" && !(item["search_result"] || item["graphs"])) {
-            parsedContent.push(
-              <pre className="px-2 w-full h-full bg-white text-sm" key={String(item).slice(0, -10)}>
-                {JSON.stringify(item, null, 2)}
-              </pre>
-            )
-          }
-
-          if (typeof item === "object" && item["graphs"] && typeof item["graphs"] === "object") {
-            Object.entries<{ nodes: []; edges: []; }>(item["graphs"]).forEach(([datasetName, graph]) => {
-              parsedContent.push(
-                <div key={datasetName} className="w-full h-full bg-white">
-                  <span className="text-sm pl-2 mb-4">reasoning graph (datasets: {datasetName})</span>
-                  <GraphVisualization
-                    data={transformToVisualizationData(graph)}
-                    ref={graphRef as RefObject<GraphVisualizationAPI>}
-                    graphControls={graphControls}
-                    className="min-h-80"
-                  />
-                </div>
-              );
-            });
-          }
-        }
-      }
-
-      if (typeof(line) === "object" && line["result"] && typeof(line["result"]) === "string") {
-        const datasets = Array.from(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          new Set(Object.values(line["datasets"]).map((dataset: any) => dataset.name))
-        ).join(", ");
-
-        parsedContent.push(
-          <div key={line["result"]} className="w-full h-full bg-white">
-            <span className="text-sm pl-2 mb-4">query response (datasets: {datasets})</span>
-            <span className="block px-2 py-2 whitespace-normal">{line["result"]}</span>
-          </div>
-        );
-      }
-      if (typeof(line) === "object" && line["graphs"]) {
-        Object.entries<{ nodes: []; edges: []; }>(line["graphs"]).forEach(([datasetName, graph]) => {
-          parsedContent.push(
-            <div key={datasetName} className="w-full h-full bg-white">
-              <span className="text-sm pl-2 mb-4">reasoning graph (datasets: {datasetName})</span>
-              <GraphVisualization
-                data={transformToVisualizationData(graph)}
-                ref={graphRef as RefObject<GraphVisualizationAPI>}
-                graphControls={graphControls}
-                className="min-h-80"
-              />
-            </div>
-          );
-        });
-      }
-
-      if (typeof(line) === "object" && line["result"] && typeof(line["result"]) === "object") {
-        parsedContent.push(
-          <pre className="px-2 w-full h-full bg-white text-sm" key={String(line).slice(0, -10)}>
-            {JSON.stringify(line["result"], null, 2)}
-          </pre>
-        )
-      }
-      if (typeof(line) === "string") {
-        parsedContent.push(
-          <pre className="px-2 w-full h-full bg-white text-sm whitespace-normal" key={String(line).slice(0, -10)}>
-            {line}
-          </pre>
-        )
-      }
-    } catch (error) {
-      console.error(error);
-      parsedContent.push(
-        <pre className="px-2 w-full h-full bg-white text-sm whitespace-normal" key={String(line).slice(0, -10)}>
-          {line}
-        </pre>
-      );
+  if (depth > 8) return <p>Result nesting limit reached.</p>;
+  if (Array.isArray(line)) {
+    if (line.length && line.every(isTriplet)) {
+      return <div className="w-full h-full bg-white">
+        <span className="text-sm pl-2 mb-4">reasoning graph</span>
+        <GraphVisualization data={transformInsightsGraphData(line)}
+          ref={graphRef as RefObject<GraphVisualizationAPI>} graphControls={graphControls} className="min-h-80" />
+      </div>;
     }
+    return line.slice(0, 1000).map((item, index) => <ResultLine key={index} line={item} depth={depth + 1} />);
   }
-
-  return parsedContent.map((item, index) => (
-    <div key={index} className="px-2 py-1">
-      {item}
-    </div>
-  ));
-
-};
-
-function transformToVisualizationData(graph: { nodes: [], edges: [] }) {
-  return {
-    nodes: graph.nodes,
-    links: graph.edges,
-  };
+  if (typeof line === "string") return <pre className="px-2 text-sm whitespace-normal">{line}</pre>;
+  if (!resultObject(line)) return null;
+  const value = line.search_result ?? line.result;
+  const datasets = resultObject(line.datasets) ? Object.values(line.datasets)
+    .filter(resultObject).map(item => typeof item.name === "string" ? item.name : "").filter(Boolean).join(", ")
+    : typeof line.dataset_name === "string" ? line.dataset_name : "";
+  const graphs = resultObject(line.graphs) ? line.graphs : {};
+  return <>
+    {value !== undefined && <div className="w-full h-full bg-white">
+      <span className="text-sm pl-2 mb-4">query response{datasets ? ` (datasets: ${datasets})` : ""}</span>
+      <pre className="px-2 text-sm whitespace-normal">{typeof value === "string" ? value : JSON.stringify(value, null, 2)}</pre>
+    </div>}
+    {Object.entries(graphs).slice(0, 100).map(([name, graph]) => {
+      if (!resultObject(graph) || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) return null;
+      return <div key={name} className="w-full h-full bg-white">
+        <span className="text-sm pl-2 mb-4">reasoning graph (datasets: {name})</span>
+        <GraphVisualization data={{ nodes: graph.nodes, links: graph.edges }}
+          ref={graphRef as RefObject<GraphVisualizationAPI>} graphControls={graphControls} className="min-h-80" />
+      </div>;
+    })}
+    {value === undefined && !Object.keys(graphs).length &&
+      <pre className="px-2 text-sm whitespace-normal">{JSON.stringify(line, null, 2)}</pre>}
+  </>;
 }
 
 type Triplet = [{

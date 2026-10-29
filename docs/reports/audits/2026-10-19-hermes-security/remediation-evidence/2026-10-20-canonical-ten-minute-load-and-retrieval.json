@@ -1,0 +1,68 @@
+{
+  "source_commit": "30c62b89a8d7f814f274ee49a1229e491f17aefa",
+  "scope": "Synthetic Workspace fixtures; not installed Hermes or production capacity",
+  "real_store_check": {
+    "actual_stores": [
+      "PostgreSQL",
+      "Qdrant",
+      "ArcadeDB",
+      "Valkey"
+    ],
+    "source_grounded_hops": 2,
+    "partial_delivery_recovered": true,
+    "stale_graph_denied": true,
+    "derived_retraction_cleaned": true,
+    "graph_transaction_rollback": true,
+    "fresh_namespace_rebuild": true,
+    "history_retained": true,
+    "fixtures_preserved": true,
+    "bounded_load": {
+      "enabled": true,
+      "requested_seconds": 600,
+      "actual_seconds": 600.31,
+      "concurrent_projects": 4,
+      "completed_rounds": 1323,
+      "corrected_records": 5292,
+      "semantic_queries": 6615,
+      "graph_queries": 5292,
+      "scope_leaks": 0,
+      "round_p95_ms": 631.91,
+      "pending_events": 0,
+      "retained_history": true,
+      "failures": 0
+    }
+  },
+  "retrieval_evaluation": {
+    "fixtures": 12,
+    "graph_reasoning_tested": false,
+    "language": "English",
+    "median_query_ms": 47.84,
+    "p95_query_ms": 56.67,
+    "ranks": {
+      "Alder recovery": 1,
+      "Aspen approval": 1,
+      "Birch database": 1,
+      "Cedar reviews": 1,
+      "Elm languages": 1,
+      "Hazel delivery": 1,
+      "Juniper retry": 1,
+      "Maple backup": 1,
+      "Oak upload": 1,
+      "Pine timezone": 1,
+      "Rowan access": 1,
+      "Willow retention": 1
+    },
+    "scope_leaks": 0,
+    "top_three_hits": 12
+  },
+  "test_result": {
+    "tests": 2,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "seconds": 606.881,
+  "raw_log_sha256": "9a3bd69f6a7ffc7ab9393e4a9f49d7a38ee4627ef48fcdb55d6d0624e1757599",
+  "whole_stack_resource_usage_qualified": false,
+  "forty_two_simultaneous_chat_models_qualified": false
+}

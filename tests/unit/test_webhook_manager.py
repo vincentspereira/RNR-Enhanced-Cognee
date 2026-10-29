@@ -212,6 +212,11 @@ class TestSignPayload:
 # ---------------------------------------------------------------------------
 
 class TestDeliverOnce:
+    @pytest.fixture(autouse=True)
+    def approved_test_destination(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_CAPABILITIES", "notifications")
+        monkeypatch.setenv("ENHANCED_OUTBOUND_ORIGINS", '["https://example.com"]')
+
     @pytest.fixture
     def mgr(self):
         return WebhookManager()

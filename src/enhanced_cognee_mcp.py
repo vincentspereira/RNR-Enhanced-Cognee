@@ -30,6 +30,7 @@ from src.db_factory import (
     get_vector_client,
 )
 from src.secure_config import require_secret
+from src.multi_tenant import tenant_scoped_key, tenant_scoped_graph, tenant_scoped_collection
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,6 +39,8 @@ logger = logging.getLogger(__name__)
 # Configuration from environment
 class EnhancedConfig:
     def __init__(self):
+        from src.canonical_adapters import canonical_mode
+        self.canonical_mode = canonical_mode()
         # Default to enabled. Set ENHANCED_COGNEE_MODE=false only when you
         # want to import the module without bringing up DB connections
         # (e.g. for unit tests that mock the storage layer entirely).
@@ -48,7 +51,7 @@ class EnhancedConfig:
         self.postgres_port = int(os.getenv("POSTGRES_PORT", "25432"))  # Enhanced port
         self.postgres_db = os.getenv("POSTGRES_DB", "cognee_db")
         self.postgres_user = os.getenv("POSTGRES_USER", "cognee_user")
-        self.postgres_password = require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
+        self.postgres_password = "" if self.canonical_mode else require_secret("POSTGRES_PASSWORD", dev_default="cognee_password")
 
         self.qdrant_host = os.getenv("QDRANT_HOST", "localhost")
         self.qdrant_port = int(os.getenv("QDRANT_PORT", "26333"))  # Enhanced port
@@ -57,7 +60,7 @@ class EnhancedConfig:
 
         self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:27687")  # Enhanced port
         self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-        self.neo4j_password = require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
+        self.neo4j_password = "" if self.canonical_mode else require_secret("NEO4J_PASSWORD", dev_default="cognee_password")
         self.neo4j_database = os.getenv("NEO4J_DATABASE", "neo4j")
 
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
@@ -333,7 +336,6 @@ class EnhancedCogneeMCPServer:
         self.app.state.server = self
         self._install_cors_middleware()
         self._install_security_middleware()
-        self._install_tenant_middleware()
         self._install_metrics_middleware()
         # Registered last -> outermost middleware, so it observes the final
         # status code (including 401/403 from the auth layer).
@@ -366,106 +368,11 @@ class EnhancedCogneeMCPServer:
         )
 
     def _install_security_middleware(self) -> None:
-        """Authenticate + authorize every request, and cap payload size.
+        """Install the shared authenticated and bounded HTTP boundary."""
+        from src.security.http_boundary import SecurityBoundary
+        self.app.add_middleware(SecurityBoundary)
 
-        Authentication resolves a Principal from the request (Bearer OIDC/JWT or
-        ``X-API-Key``); authorization enforces the per-route permission defined
-        in ``src.security.enterprise_auth``. The resolved Principal is stored on
-        ``request.state.principal`` for downstream handlers and the audit log.
 
-        Fail-open in dev (no auth configured -> implicit local admin), fail-closed
-        in production. ``/health*`` (and ``/metrics`` unless
-        ``ENHANCED_METRICS_PUBLIC=0``) stay public so probes / scrapers work
-        without credentials. Per-tool rate limiting is applied at the route level
-        (the middleware can't know which tool was invoked from the path alone).
-        """
-        from src.mcp_security import _payload_byte_cap
-        from src.security.enterprise_auth import (
-            AuthError,
-            authenticate_request,
-            authorize,
-            route_required_permission,
-        )
-
-        @self.app.middleware("http")
-        async def _security_scope(request, call_next):
-            path = request.url.path
-            public_paths = {"/health", "/health/live", "/health/ready"}
-            # /metrics stays public by default for Prometheus scraping; set
-            # ENHANCED_METRICS_PUBLIC=0 to require authentication on it too.
-            if os.getenv("ENHANCED_METRICS_PUBLIC", "1").strip().lower() in (
-                "1", "true", "yes", "on",
-            ):
-                public_paths.add("/metrics")
-
-            if path not in public_paths:
-                try:
-                    principal = authenticate_request(request.headers)
-                    request.state.principal = principal
-                    authorize(
-                        principal,
-                        route_required_permission(request.method, path),
-                    )
-                except AuthError as e:
-                    return JSONResponse(
-                        status_code=e.status_code,
-                        content={"detail": e.detail},
-                    )
-
-            cap = _payload_byte_cap()
-            if cap is not None:
-                content_length = request.headers.get("content-length")
-                if content_length:
-                    try:
-                        size = int(content_length)
-                    except ValueError:
-                        size = 0
-                    if size > cap:
-                        return JSONResponse(
-                            status_code=413,
-                            content={
-                                "detail": (
-                                    f"Payload size {size} bytes exceeds "
-                                    f"ENHANCED_MAX_PAYLOAD_BYTES cap of {cap} bytes."
-                                )
-                            },
-                        )
-
-            return await call_next(request)
-
-    def _install_tenant_middleware(self) -> None:
-        """Extract X-Tenant-ID header into the TenantContext for the request.
-
-        FastAPI's middleware runs in the request's context, so any
-        downstream call to a storage helper sees the tenant set here.
-        Returns the response untouched.
-        """
-        from src.multi_tenant import TenantContext, tenant_required
-
-        @self.app.middleware("http")
-        async def _tenant_scope(request, call_next):
-            path = request.url.path
-            exempt = {"/health", "/health/live", "/health/ready", "/metrics"}
-            tenant_id = request.headers.get("x-tenant-id") or request.headers.get(
-                "X-Tenant-ID"
-            )
-            # Enforced by default in production (see multi_tenant.tenant_required);
-            # explicit ENHANCED_REQUIRE_TENANT always wins.
-            require_tenant = tenant_required()
-            if not tenant_id and require_tenant and path not in exempt:
-                return JSONResponse(
-                    status_code=400,
-                    content={
-                        "detail": (
-                            "X-Tenant-ID header is required "
-                            "(ENHANCED_REQUIRE_TENANT=1)."
-                        )
-                    },
-                )
-            if tenant_id:
-                async with TenantContext(tenant_id):
-                    return await call_next(request)
-            return await call_next(request)
 
     def _install_metrics_middleware(self) -> None:
         """Count HTTP requests by (method, status class) for the /metrics endpoint."""
@@ -690,7 +597,7 @@ class EnhancedCogneeMCPServer:
             )
 
             # Test connection
-            with self.neo4j_driver.session(database=config.neo4j_database) as session:
+            with self.neo4j_driver.session(database=tenant_scoped_graph(config.neo4j_database)) as session:
                 result = session.run("RETURN 1")
                 result.single()
 
@@ -796,16 +703,17 @@ class EnhancedCogneeMCPServer:
                     points=[point]
                 )
 
-            # Cache in Redis
-            await self.redis_client.setex(
-                f"memory:{entry.id}",
-                timedelta(hours=1),
-                json.dumps({
-                    "content": entry.content,
-                    "agent_id": entry.agent_id,
-                    "memory_category": entry.memory_category
-                })
-            )
+            # Cache is derived and optional; never misreport a committed SQL write.
+            if self.redis_client is not None:
+                try:
+                    await self.redis_client.setex(
+                        tenant_scoped_key(f"memory:{entry.id}"),
+                        timedelta(hours=1),
+                        json.dumps({"content": entry.content, "agent_id": entry.agent_id,
+                                    "memory_category": entry.memory_category}),
+                    )
+                except Exception:
+                    logger.warning("Cache update unavailable; canonical memory is stored")
 
             logger.info(f"Added memory entry {entry.id} for agent {entry.agent_id}")
             return entry.id
@@ -912,7 +820,7 @@ class EnhancedCogneeMCPServer:
                                 collection_name = self._get_collection_name(category_name, "")
                                 # Check if collection exists before searching
                                 try:
-                                    self.qdrant_client.get_collection(collection_name)
+                                    self.qdrant_client.get_collection(tenant_scoped_collection(collection_name))
                                     collection_names.append(collection_name)
                                 except Exception:
                                     logger.debug(f"Collection {collection_name} does not exist, skipping")
@@ -924,7 +832,7 @@ class EnhancedCogneeMCPServer:
                 for collection_name in collection_names:
                     try:
                         search_result = self.qdrant_client.search(
-                            collection_name=collection_name,
+                            collection_name=tenant_scoped_collection(collection_name),
                             query_vector=query.embedding,
                             query_filter=self._build_qdrant_filter(query),
                             limit=query.limit,
@@ -996,7 +904,7 @@ class EnhancedCogneeMCPServer:
     async def add_knowledge_relation(self, relation: KnowledgeRelation) -> str:
         """Add knowledge graph relation using Neo4j"""
         try:
-            with self.neo4j_driver.session(database=config.neo4j_database) as session:
+            with self.neo4j_driver.session(database=tenant_scoped_graph(config.neo4j_database)) as session:
                 # Create nodes if they don't exist
                 session.run("""
                     MERGE (source:Entity {name: $source_name})
@@ -1063,7 +971,7 @@ class EnhancedCogneeMCPServer:
             )
 
             # Neo4j stats
-            with self.neo4j_driver.session(database=config.neo4j_database) as session:
+            with self.neo4j_driver.session(database=tenant_scoped_graph(config.neo4j_database)) as session:
                 result = session.run("MATCH (n:Entity) RETURN COUNT(n) as entity_count")
                 stats["total_entities"] = result.single()["entity_count"]
 
@@ -1314,7 +1222,7 @@ class EnhancedCogneeMCPServer:
                 # Best-effort cache invalidation; ignore failures
                 if self.redis_client:
                     try:
-                        await self.redis_client.delete(f"memory:{req.memory_id}")
+                        await self.redis_client.delete(tenant_scoped_key(f"memory:{req.memory_id}"))
                     except Exception:
                         pass
                 return {"updated": affected, "memory_id": req.memory_id}
@@ -1341,7 +1249,7 @@ class EnhancedCogneeMCPServer:
                         affected = 0
                 if self.redis_client:
                     try:
-                        await self.redis_client.delete(f"memory:{req.memory_id}")
+                        await self.redis_client.delete(tenant_scoped_key(f"memory:{req.memory_id}"))
                     except Exception:
                         pass
                 return {"deleted": affected, "memory_id": req.memory_id}
@@ -1427,6 +1335,10 @@ class EnhancedCogneeMCPServer:
             except Exception as e:
                 msg = str(e)
                 low = msg.lower()
+                if "tool did not complete" in low:
+                    raise HTTPException(status_code=503, detail="ERR Tool did not complete successfully")
+                if "permission denied" in low or "capability '" in low:
+                    raise HTTPException(status_code=403, detail="ERR Tool execution is not permitted")
                 if "unknown tool" in low or "not found" in low:
                     raise HTTPException(
                         status_code=404,
@@ -1440,7 +1352,11 @@ class EnhancedCogneeMCPServer:
                     detail=f"ERR tool '{tool_name}' failed: {msg}",
                 )
 
-            return _serialize_tool_result(raw)
+            from src.security.tool_results import tool_result_failed
+            payload = _serialize_tool_result(raw)
+            if tool_result_failed(raw) or tool_result_failed(payload):
+                raise HTTPException(status_code=503, detail="ERR Tool did not complete successfully")
+            return payload
 
         @self.app.get("/stats")
         async def get_stats_endpoint():
@@ -1545,6 +1461,11 @@ class EnhancedCogneeMCPServer:
 # include_router wrapper silently dropped all middleware).
 server = EnhancedCogneeMCPServer()
 app = server.app
+if config.canonical_mode:
+    # The historical import path remains usable, but its published app and
+    # lifecycle use the canonical service exclusively. No legacy DB startup.
+    from src.memory_api import app as canonical_app
+    app = canonical_app
 
 if __name__ == "__main__":
     import uvicorn

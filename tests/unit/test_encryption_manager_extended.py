@@ -220,12 +220,25 @@ class TestEncryptionManagerWithPool:
         assert result == "plaintext value"
 
     def test_decrypt_disabled_returns_ciphertext(self):
-        """Decrypt when disabled returns input unchanged."""
+        """Protected data must not be treated as decrypted without cryptography."""
         from src.encryption_manager import EncryptionManager
         em = EncryptionManager()
         em._enabled = False
-        result = em.decrypt("enc:someciphertext")
-        assert result == "enc:someciphertext"
+        with pytest.raises(RuntimeError, match="cannot be read"):
+            em.decrypt("enc:someciphertext")
+
+    def test_production_requires_persistent_key(self, monkeypatch):
+        from src.encryption_manager import EncryptionManager
+        monkeypatch.setenv("ENHANCED_ENV", "production")
+        with pytest.raises(ValueError, match="persistent"):
+            EncryptionManager()
+
+    def test_production_refuses_unavailable_crypto(self, monkeypatch):
+        import src.encryption_manager as module
+        monkeypatch.setenv("ENHANCED_ENV", "production")
+        monkeypatch.setattr(module, "_CRYPTO_AVAILABLE", False)
+        with pytest.raises(RuntimeError, match="unavailable"):
+            module.EncryptionManager(master_key="fixture")
 
     def test_decrypt_no_prefix_returns_plaintext(self):
         """Line 128: ciphertext without enc: prefix is returned unchanged."""
@@ -236,7 +249,7 @@ class TestEncryptionManagerWithPool:
         result = em.decrypt("no prefix here")
         assert result == "no prefix here"
 
-    def test_encrypt_exception_returns_plaintext(self):
+    def test_encrypt_exception_rejects_plaintext(self):
         """Lines 112-114: encrypt() exception caught, returns plaintext."""
         from src.encryption_manager import EncryptionManager
         em = EncryptionManager()
@@ -245,10 +258,10 @@ class TestEncryptionManagerWithPool:
         # Force the AES-256-GCM cipher to raise (encrypt() now uses _aesgcm)
         em._aesgcm = MagicMock()
         em._aesgcm.encrypt.side_effect = RuntimeError("aesgcm boom")
-        result = em.encrypt("something")
-        assert result == "something"
+        with pytest.raises(RuntimeError, match="plaintext was not accepted"):
+            em.encrypt("something")
 
-    def test_decrypt_exception_returns_ciphertext(self):
+    def test_decrypt_exception_rejects_ciphertext(self):
         """Lines 134-136: decrypt() exception caught, returns ciphertext."""
         from src.encryption_manager import EncryptionManager
         em = EncryptionManager()
@@ -257,8 +270,8 @@ class TestEncryptionManagerWithPool:
         em._fernet = MagicMock()
         em._fernet.decrypt.side_effect = RuntimeError("decrypt boom")
         ciphertext = "enc:invaliddatahere"
-        result = em.decrypt(ciphertext)
-        assert result == ciphertext
+        with pytest.raises(ValueError, match="authentication failed"):
+            em.decrypt(ciphertext)
 
     # ------------------------------------------------------------------
     # AES-256-GCM (current default) + legacy Fernet backward compatibility
@@ -296,7 +309,7 @@ class TestEncryptionManagerWithPool:
         legacy = _ENC_PREFIX + Fernet(key.encode()).encrypt(b"legacy data").decode("ascii")
         assert em.decrypt(legacy) == "legacy data"
 
-    def test_decrypt_tampered_gcm_returns_ciphertext(self):
+    def test_decrypt_tampered_gcm_rejected(self):
         """AES-GCM authentication: a flipped byte fails and returns input."""
         import base64 as _b64
         from src.encryption_manager import EncryptionManager, _GCM_PREFIX
@@ -307,7 +320,8 @@ class TestEncryptionManagerWithPool:
         raw = bytearray(_b64.urlsafe_b64decode(encrypted[len(_GCM_PREFIX):]))
         raw[-1] ^= 0xFF  # flip a byte in the ciphertext/tag
         tampered = _GCM_PREFIX + _b64.urlsafe_b64encode(bytes(raw)).decode("ascii")
-        assert em.decrypt(tampered) == tampered
+        with pytest.raises(ValueError, match="authentication failed"):
+            em.decrypt(tampered)
 
     def test_aes_key_derivation_is_32_bytes_and_deterministic(self):
         """HKDF derives a dedicated 256-bit key, stable for a given master key."""

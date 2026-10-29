@@ -1,0 +1,860 @@
+{
+  "note": "Static permission/capability inventory. This does not prove all optional legacy side effects or storage scopes. Hermes uses six separate canonical API tools.",
+  "registered_tools": 122,
+  "tools": [
+    {
+      "tool": "cognify",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "search",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "health",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_data",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "add_memory",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "search_memories",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memories",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "update_memory",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "delete_memory",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_agents",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "expire_memories",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory_age_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "set_memory_ttl",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "archive_category",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "check_duplicate",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "auto_deduplicate",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_deduplication_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "summarize_category",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_summary_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_performance_metrics",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_slow_queries",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_prometheus_metrics",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "set_memory_sharing",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "check_memory_access",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_shared_memories",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "create_shared_space",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "publish_memory_event",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_sync_status",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "sync_agent_state",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "create_backup",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "restore_backup",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_backups",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "verify_backup",
+      "required_permission": "SYSTEM_MONITOR",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "rollback_restore",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "schedule_task",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_tasks",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "cancel_task",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "deduplicate",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "schedule_deduplication",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "deduplication_report",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "summarize_old_memories",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "schedule_summarization",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "summary_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "detect_language",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_supported_languages",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "search_by_language",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_language_distribution",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "cross_language_search",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_search_facets",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "intelligent_summarize",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "auto_summarize_old_memories",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "cluster_memories",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "advanced_search",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "expand_search_query",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_search_analytics",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_summarization_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "remember",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "recall",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "forget_memory",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "improve",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "save_interaction",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "cognify_status",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "ingest_url",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": "web_import",
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "ingest_db",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": "database_import",
+      "unqualified_global_pipeline": true,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "translate_text",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "regex_extract_entities",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "extract_graph_v2",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_loaders",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_llm_cost_report",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "set_cost_budget",
+      "required_permission": "SYSTEM_CONFIG",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "search_quick",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory_detail",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_related",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "start_session",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "end_session",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_session_context",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_session_history",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "query_audit_log",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory_history",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "revert_memory",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory_provenance",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "verify_memory",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "set_memory_confidence",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_confidence_report",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "find_consolidation_candidates",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "consolidate_memories",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_consolidation_report",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "promote_memory_tier",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_tier_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "compact_knowledge_graph",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_graph_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_delete_user_data",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_export_user_data",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_record_consent",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_check_consent",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_list_consents",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "gdpr_verify_tenant_isolation",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_loader_plugins",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "load_document_with_plugin",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": "file_import",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "register_webhook",
+      "required_permission": "SYSTEM_CONFIG",
+      "explicit_capability": "notifications",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "list_webhooks",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "test_webhook",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": "notifications",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "disable_webhook",
+      "required_permission": "SYSTEM_CONFIG",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "encrypt_memory",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_encryption_stats",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "rotate_encryption_key",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "add_observation",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_observations",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "update_observation",
+      "required_permission": "MEMORY_WRITE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "delete_observation",
+      "required_permission": "MEMORY_DELETE",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "configure_slack_notifications",
+      "required_permission": "SYSTEM_CONFIG",
+      "explicit_capability": "notifications",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "configure_discord_notifications",
+      "required_permission": "SYSTEM_CONFIG",
+      "explicit_capability": "notifications",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "test_notification_channel",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": "notifications",
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_memory_importance",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "update_importance_scores",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_top_important_memories",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "rerank_search_results",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "undo_last",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "get_undo_history",
+      "required_permission": "MEMORY_READ",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    },
+    {
+      "tool": "redo_last",
+      "required_permission": "SYSTEM_ADMIN",
+      "explicit_capability": null,
+      "unqualified_global_pipeline": false,
+      "admitted_to_native_hermes_profile": false
+    }
+  ]
+}

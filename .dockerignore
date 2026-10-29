@@ -4,6 +4,21 @@
 
 # --- Version control / CI ---
 .git
+.archive
+.env
+.env.*
+*.key
+*.pem
+secrets/
+**/secrets/
+**/.env
+**/.env.*
+**/.local.env
+**/.prod.env
+**/.cognee_system/
+**/.data_storage/
+**/.cognee_cache/
+**/.data/
 .github
 .gitattributes
 
@@ -47,6 +62,11 @@ test_security_events.log
 *.db-wal
 *.sqlite
 *.sqlite3
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/*.sqlite
+**/*.sqlite3
 backups/
 lancedb_data/
 graphify-out/

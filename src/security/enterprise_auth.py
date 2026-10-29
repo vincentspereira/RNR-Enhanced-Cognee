@@ -249,13 +249,14 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
                 options={
                     "verify_aud": bool(audience),
                     "verify_iss": bool(issuer),
+                    "require": ["exp", "sub"] if _is_production() else [],
                 },
             )
             return oidc_claims
         except AuthError:
             raise
         except Exception as exc:
-            raise AuthError(401, f"OIDC token verification failed: {exc}")
+            raise AuthError(401, "OIDC token verification failed.") from exc
 
     secret = os.getenv("ENHANCED_JWT_SECRET")
     if secret:
@@ -267,11 +268,11 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
                 secret,
                 algorithms=algorithms,
                 audience=audience or None,
-                options={"verify_aud": bool(audience)},
+                options={"verify_aud": bool(audience), "require": ["exp", "sub"] if _is_production() else []},
             )
             return hs_claims
         except Exception as exc:
-            raise AuthError(401, f"JWT verification failed: {exc}")
+            raise AuthError(401, "JWT verification failed.") from exc
 
     raise AuthError(
         401,
@@ -286,12 +287,13 @@ def verify_bearer_token(token: str) -> Dict[str, Any]:
 
 # Synonyms for each role, so tokens minted by external IdPs map cleanly.
 _ROLE_SYNONYMS = {
+    Role.MEMORY_REVIEWER: {"memory_reviewer"},
     Role.ADMIN: {"admin", "administrator", "superuser", "owner", "root"},
     Role.USER: {"user", "member", "editor", "write", "writer", "contributor"},
     Role.API_CLIENT: {"api", "api_client", "apiclient", "service", "service_account", "client"},
     Role.READONLY: {"readonly", "read-only", "read_only", "read", "viewer", "reader", "guest"},
 }
-_ROLE_RANK = {Role.ADMIN: 3, Role.USER: 2, Role.API_CLIENT: 1, Role.READONLY: 0}
+_ROLE_RANK = {Role.ADMIN: 4, Role.MEMORY_REVIEWER: 3, Role.USER: 2, Role.API_CLIENT: 1, Role.READONLY: 0}
 
 
 def coerce_role(value: Any) -> Optional[Role]:
@@ -449,6 +451,8 @@ _ROUTE_PERMISSIONS: Dict[Tuple[str, str], Permission] = {
     ("POST", "/mcp/delete_memory"): Permission.MEMORY_DELETE,
     ("GET", "/mcp/list_agents"): Permission.MEMORY_READ,
     ("GET", "/stats"): Permission.SYSTEM_MONITOR,
+    ("POST", "/v1/memories/recall"): Permission.MEMORY_READ,
+    ("POST", "/v1/memories/connections"): Permission.MEMORY_READ,
 }
 
 
@@ -456,77 +460,169 @@ def route_required_permission(method: str, path: str) -> Optional[Permission]:
     """Permission required for an HTTP route (None = authenticated access only).
 
     Public probe/metrics paths return None. Known routes use the explicit map.
-    Unknown routes fall back to a conservative heuristic (delete verbs require
-    MEMORY_DELETE) but otherwise require no specific permission so custom routes
-    are not silently broken -- authentication still applies to them.
+    Unknown data routes require read, write or delete permission by HTTP method.
     """
     if path in PUBLIC_PATHS:
         return None
+    if path.startswith("/v1/memories/") and (path.endswith(("/share", "/library")) or path.startswith("/v1/memories/library/")):
+        return Permission.MEMORY_ADMIN
     exact = _ROUTE_PERMISSIONS.get((method.upper(), path))
     if exact is not None:
         return exact
     # Generic MCP tool dispatch: POST /tools/{tool_name}. Reuse the SAME
     # per-tool permission table the stdio surface uses (TOOL_PERMISSIONS) so a
     # destructive tool (delete/forget/backup/restore/rotate/gdpr_delete) is NOT
-    # reachable with read-only credentials over HTTP. Tools absent from the
-    # table are read/introspection-tier and require authentication only -- this
-    # is the same contract enforced on the stdio surface (single source of
-    # truth). Without this branch the heuristic below would leave
+    # reachable with read-only credentials over HTTP. Unmapped tools fail
+    # closed on both transports. Without this branch the heuristic would leave
     # create_backup / rotate_encryption_key / restore_backup requiring only
     # authentication, a privilege gap.
     if method.upper() == "POST" and path.startswith("/tools/"):
         tool_name = path[len("/tools/"):].strip("/")
         return tool_required_permission(tool_name)
+    if method.upper() == "POST" and path.startswith("/mcp/"):
+        return tool_required_permission(path[len("/mcp/"):].strip("/"))
     lowered = path.lower()
     if method.upper() == "DELETE" or "delete" in lowered:
         return Permission.MEMORY_DELETE
-    return None
+    if method.upper() in ("POST", "PUT", "PATCH"):
+        return Permission.MEMORY_WRITE
+    return Permission.MEMORY_READ
 
 
-# MCP tool name -> required permission for the stdio surface. Tools not listed
-# require no specific permission (read-ish / introspection tools).
+# MCP tool name -> explicit required permission. Unmapped tools fail closed.
 TOOL_PERMISSIONS: Dict[str, Permission] = {
-    # Writes
     "add_memory": Permission.MEMORY_WRITE,
-    "update_memory": Permission.MEMORY_WRITE,
     "add_observation": Permission.MEMORY_WRITE,
-    "update_observation": Permission.MEMORY_WRITE,
-    "save_interaction": Permission.MEMORY_WRITE,
+    "advanced_search": Permission.SYSTEM_ADMIN,
+    "archive_category": Permission.MEMORY_DELETE,
+    "auto_deduplicate": Permission.MEMORY_DELETE,
+    "auto_summarize_old_memories": Permission.SYSTEM_ADMIN,
+    "cancel_task": Permission.SYSTEM_ADMIN,
+    "check_duplicate": Permission.MEMORY_READ,
+    "check_memory_access": Permission.MEMORY_READ,
+    "cluster_memories": Permission.MEMORY_WRITE,
     "cognify": Permission.MEMORY_WRITE,
-    "ingest_url": Permission.MEMORY_WRITE,
-    "ingest_db": Permission.MEMORY_WRITE,
+    "cognify_status": Permission.MEMORY_READ,
+    "compact_knowledge_graph": Permission.MEMORY_DELETE,
+    "configure_discord_notifications": Permission.SYSTEM_CONFIG,
+    "configure_slack_notifications": Permission.SYSTEM_CONFIG,
     "consolidate_memories": Permission.MEMORY_WRITE,
-    "promote_memory_tier": Permission.MEMORY_WRITE,
-    "set_memory_confidence": Permission.MEMORY_WRITE,
-    "set_memory_ttl": Permission.MEMORY_WRITE,
-    "set_memory_sharing": Permission.MEMORY_WRITE,
-    "encrypt_memory": Permission.MEMORY_WRITE,
-    # Deletes / destructive
+    "create_backup": Permission.SYSTEM_ADMIN,
+    "create_shared_space": Permission.SYSTEM_ADMIN,
+    "cross_language_search": Permission.MEMORY_READ,
+    "deduplicate": Permission.MEMORY_DELETE,
+    "deduplication_report": Permission.MEMORY_READ,
     "delete_memory": Permission.MEMORY_DELETE,
     "delete_observation": Permission.MEMORY_DELETE,
-    "forget_memory": Permission.MEMORY_DELETE,
-    "archive_category": Permission.MEMORY_DELETE,
-    "expire_memories": Permission.MEMORY_DELETE,
-    "deduplicate": Permission.MEMORY_DELETE,
-    "auto_deduplicate": Permission.MEMORY_DELETE,
-    "compact_knowledge_graph": Permission.MEMORY_DELETE,
-    # System / admin
-    "create_backup": Permission.SYSTEM_ADMIN,
-    "restore_backup": Permission.SYSTEM_ADMIN,
-    "rollback_restore": Permission.SYSTEM_ADMIN,
-    "verify_backup": Permission.SYSTEM_MONITOR,
-    "rotate_encryption_key": Permission.SYSTEM_ADMIN,
-    "gdpr_delete_user_data": Permission.SYSTEM_ADMIN,
-    "set_cost_budget": Permission.SYSTEM_CONFIG,
-    "configure_slack_notifications": Permission.SYSTEM_CONFIG,
-    "configure_discord_notifications": Permission.SYSTEM_CONFIG,
-    "register_webhook": Permission.SYSTEM_CONFIG,
+    "detect_language": Permission.MEMORY_READ,
     "disable_webhook": Permission.SYSTEM_CONFIG,
+    "encrypt_memory": Permission.MEMORY_WRITE,
+    "end_session": Permission.MEMORY_WRITE,
+    "expand_search_query": Permission.MEMORY_READ,
+    "expire_memories": Permission.MEMORY_DELETE,
+    "extract_graph_v2": Permission.SYSTEM_ADMIN,
+    "find_consolidation_candidates": Permission.MEMORY_READ,
+    "forget_memory": Permission.MEMORY_DELETE,
+    "gdpr_check_consent": Permission.MEMORY_READ,
+    "gdpr_delete_user_data": Permission.SYSTEM_ADMIN,
+    "gdpr_export_user_data": Permission.SYSTEM_ADMIN,
+    "gdpr_list_consents": Permission.SYSTEM_ADMIN,
+    "gdpr_record_consent": Permission.SYSTEM_ADMIN,
+    "gdpr_verify_tenant_isolation": Permission.SYSTEM_ADMIN,
+    "get_confidence_report": Permission.MEMORY_READ,
+    "get_consolidation_report": Permission.MEMORY_READ,
+    "get_deduplication_stats": Permission.MEMORY_READ,
+    "get_encryption_stats": Permission.MEMORY_READ,
+    "get_graph_stats": Permission.MEMORY_READ,
+    "get_language_distribution": Permission.MEMORY_READ,
+    "get_llm_cost_report": Permission.MEMORY_READ,
+    "get_memories": Permission.MEMORY_READ,
+    "get_memory": Permission.MEMORY_READ,
+    "get_memory_age_stats": Permission.MEMORY_READ,
+    "get_memory_detail": Permission.MEMORY_READ,
+    "get_memory_history": Permission.MEMORY_READ,
+    "get_memory_importance": Permission.MEMORY_READ,
+    "get_memory_provenance": Permission.MEMORY_READ,
+    "get_observations": Permission.MEMORY_READ,
+    "get_performance_metrics": Permission.MEMORY_READ,
+    "get_prometheus_metrics": Permission.MEMORY_READ,
+    "get_related": Permission.MEMORY_READ,
+    "get_search_analytics": Permission.MEMORY_READ,
+    "get_search_facets": Permission.MEMORY_READ,
+    "get_session_context": Permission.MEMORY_READ,
+    "get_session_history": Permission.MEMORY_READ,
+    "get_shared_memories": Permission.MEMORY_READ,
+    "get_slow_queries": Permission.MEMORY_READ,
+    "get_stats": Permission.MEMORY_READ,
+    "get_summarization_stats": Permission.MEMORY_READ,
+    "get_summary_stats": Permission.MEMORY_READ,
+    "get_supported_languages": Permission.MEMORY_READ,
+    "get_sync_status": Permission.MEMORY_READ,
+    "get_tier_stats": Permission.MEMORY_READ,
+    "get_top_important_memories": Permission.MEMORY_READ,
+    "get_undo_history": Permission.MEMORY_READ,
+    "health": Permission.MEMORY_READ,
+    "improve": Permission.SYSTEM_ADMIN,
+    "ingest_db": Permission.MEMORY_WRITE,
+    "ingest_url": Permission.MEMORY_WRITE,
+    "intelligent_summarize": Permission.MEMORY_WRITE,
+    "list_agents": Permission.MEMORY_READ,
+    "list_backups": Permission.MEMORY_READ,
+    "list_data": Permission.MEMORY_READ,
+    "list_loader_plugins": Permission.MEMORY_READ,
+    "list_loaders": Permission.MEMORY_READ,
+    "list_tasks": Permission.MEMORY_READ,
+    "list_webhooks": Permission.SYSTEM_ADMIN,
+    "load_document_with_plugin": Permission.SYSTEM_ADMIN,
+    "promote_memory_tier": Permission.MEMORY_WRITE,
+    "publish_memory_event": Permission.SYSTEM_ADMIN,
+    "query_audit_log": Permission.SYSTEM_ADMIN,
+    "recall": Permission.MEMORY_READ,
+    "redo_last": Permission.SYSTEM_ADMIN,
+    "regex_extract_entities": Permission.SYSTEM_ADMIN,
+    "register_webhook": Permission.SYSTEM_CONFIG,
+    "remember": Permission.MEMORY_WRITE,
+    "rerank_search_results": Permission.MEMORY_READ,
+    "restore_backup": Permission.SYSTEM_ADMIN,
+    "revert_memory": Permission.SYSTEM_ADMIN,
+    "rollback_restore": Permission.SYSTEM_ADMIN,
+    "rotate_encryption_key": Permission.SYSTEM_ADMIN,
+    "save_interaction": Permission.MEMORY_WRITE,
+    "schedule_deduplication": Permission.SYSTEM_ADMIN,
+    "schedule_summarization": Permission.SYSTEM_ADMIN,
+    "schedule_task": Permission.SYSTEM_ADMIN,
+    "search": Permission.MEMORY_READ,
+    "search_by_language": Permission.MEMORY_READ,
+    "search_memories": Permission.MEMORY_READ,
+    "search_quick": Permission.MEMORY_READ,
+    "set_cost_budget": Permission.SYSTEM_CONFIG,
+    "set_memory_confidence": Permission.MEMORY_WRITE,
+    "set_memory_sharing": Permission.MEMORY_WRITE,
+    "set_memory_ttl": Permission.MEMORY_WRITE,
+    "start_session": Permission.MEMORY_WRITE,
+    "summarize_category": Permission.MEMORY_WRITE,
+    "summarize_old_memories": Permission.SYSTEM_ADMIN,
+    "summary_stats": Permission.MEMORY_READ,
+    "sync_agent_state": Permission.SYSTEM_ADMIN,
+    "test_notification_channel": Permission.SYSTEM_ADMIN,
+    "test_webhook": Permission.SYSTEM_ADMIN,
+    "translate_text": Permission.SYSTEM_ADMIN,
+    "undo_last": Permission.SYSTEM_ADMIN,
+    "update_importance_scores": Permission.SYSTEM_ADMIN,
+    "update_memory": Permission.MEMORY_WRITE,
+    "update_observation": Permission.MEMORY_WRITE,
+    "verify_backup": Permission.SYSTEM_MONITOR,
+    "verify_memory": Permission.SYSTEM_ADMIN,
 }
 
 
 def tool_required_permission(tool_name: str) -> Optional[Permission]:
-    return TOOL_PERMISSIONS.get(tool_name)
+    from src.security.tool_policy import policy_for
+    policy_for(tool_name)
+    try:
+        return TOOL_PERMISSIONS[tool_name]
+    except KeyError as exc:
+        raise AuthError(403, "Tool has no declared permission policy.") from exc
 
 
 def authorize(principal: Optional[Principal], permission: Optional[Permission]) -> None:
@@ -557,12 +653,16 @@ def local_principal() -> Principal:
     Role comes from ``ENHANCED_MCP_ROLE`` (default admin). This lets an operator
     lock a deployment down (e.g. ENHANCED_MCP_ROLE=readonly) without code edits.
     """
-    role = coerce_role(os.getenv("ENHANCED_MCP_ROLE", "admin")) or Role.ADMIN
+    role = coerce_role(os.getenv("ENHANCED_MCP_ROLE", "admin"))
+    if role is None:
+        raise AuthError(503, "Invalid local MCP role configuration.")
     return Principal(
-        subject="mcp-stdio",
+        subject=os.getenv("ENHANCED_MCP_SUBJECT", "mcp-stdio"),
         role=role,
         permissions=_permissions_for_role(role),
         auth_method="stdio",
+        tenant_id=os.getenv("ENHANCED_MCP_TENANT") or None,
+        claims={"agent_id": os.getenv("ENHANCED_MCP_AGENT", "mcp-stdio")},
     )
 
 

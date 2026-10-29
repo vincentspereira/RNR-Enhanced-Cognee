@@ -17,6 +17,7 @@ All output is ASCII-only (no Unicode symbols, no emojis).
 
 from .client import EnhancedCogneeClient
 from .exceptions import AuthError, ConnectionError, EnhancedCogneeError, ToolError
+from .project_memory import MemoryRequestError, ProjectMemoryClient
 
 __all__ = [
     "EnhancedCogneeClient",
@@ -24,6 +25,8 @@ __all__ = [
     "ConnectionError",
     "AuthError",
     "ToolError",
+    "MemoryRequestError",
+    "ProjectMemoryClient",
 ]
 
 __version__ = "1.0.0"
