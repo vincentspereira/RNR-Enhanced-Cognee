@@ -179,3 +179,16 @@ def test_fetch_network_error_cannot_masquerade_as_private_refusal(value):
 def test_fetch_requires_actual_private_address_guard():
     assert fetch.private_denial({'isError': True, 'content': [
         {'type': 'text', 'text': 'Refused: not a public address'}]})
+
+
+def test_html_extraction_qualified_when_converted_body_is_retained():
+    converted = ('Contents of https://example.com/:\n'
+                 'This domain is for use in documentation examples without'
+                 ' needing permission.')
+    assert fetch.expected_html_body(converted)
+    for text in ('', None, 42,
+                 '<error>Page failed to be simplified from HTML</error>',
+                 'Contents of https://example.com/:<html><body>raw</body></html>',
+                 'Contents of https://invented.invalid/:words',
+                 'Contents of https://example.com/:   '):
+        assert not fetch.expected_html_body(text)

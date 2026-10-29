@@ -1,5 +1,21 @@
 # Restore native managed MCP launcher support without fleet activation
 
+29 October 2026 addendum: the retained Fetch HTML-extraction failure was
+root-caused to a stale probe expectation, not the server. The served
+example.com copy was reworded, and with Node present Mozilla Readability moves
+the page heading into article metadata, so the earlier default-mode phrase
+check could not pass even though conversion was correct in both extractor
+paths. The probe now verifies conversion structurally (fixed URL prefix, HTML
+actually converted away, simplification-failure marker absent, non-empty
+body). The retained frozen build passed the full probe again, including the
+new default-mode check: initialize, one-tool catalogue, two private-address
+refusals, raw retrieval and converted-Markdown extraction. Thirty-eight
+focused tests pass; native 3.14.7 compilation passes. Sanitized receipt:
+`2026-10-29-fetch-html-extraction-qualified.json`. This qualifies the
+ordinary-owner candidate build only; native Hermes Fetch binding remains
+unqualified until the protected runtime has its managed PM components and the
+binding group runs. The earlier failure record is preserved, not replayed.
+
 28 October 2026, Ubuntu-Hermes. Delivery remains exact
 21abf4857ca8dce8e0a3aafc725266c8d3754529. The protected Filesystem/REA component
 passes are complete; do not replay them. Native Hermes launcher binding is a

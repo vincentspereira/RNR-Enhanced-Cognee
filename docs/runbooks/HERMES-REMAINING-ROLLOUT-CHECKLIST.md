@@ -1,5 +1,20 @@
 # Remaining Hermes memory rollout work
 
+29 October 2026: the Fetch candidate's default HTML-to-Markdown extraction is
+now QUALIFIED at the ordinary-owner candidate level. The retained failure was
+root-caused to a stale page-copy expectation (example.com's body text was
+reworded; the Node extractor also legitimately moves the heading into article
+metadata), not a server defect. The probe now checks conversion structurally.
+The full probe passed again on the retained frozen build: initialize, one-tool
+catalogue, two private-address refusals, raw retrieval and converted-Markdown
+extraction. 38 focused tests and native 3.14.7 compilation pass. Receipt:
+`2026-10-29-fetch-html-extraction-qualified.json`. Native Hermes Fetch
+binding, remote acceptance and fleet use remain open. The protected managed PM
+runtime installation is unchanged and still awaits the owner's sudo terminal;
+its read-only preflight was re-verified PASS on 29 October 2026 (all five
+helper hashes, sealed archive SHA256, four protected pins and inactive
+restricted accounts rechecked).
+
 28 October native managed-launch support is PREPARED, not installed. A NEW
 ordinary-owner supported-PM build, exact frozen Fetch lock, sealed 464,097,280-byte
 public payload and 5,005-member disposable restore passed. The relocated resident
