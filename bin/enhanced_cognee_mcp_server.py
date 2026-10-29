@@ -434,6 +434,8 @@ memory_manager = None
 async def init_enhanced_stack():
     """Initialize Enhanced database connections"""
     global postgres_pool, qdrant_client, neo4j_driver, redis_client, memory_manager
+    global memory_deduplicator, memory_summarizer, performance_analytics
+    global cross_agent_sharing, realtime_sync
 
     logger.info("Initializing RNR Enhanced Cognee stack...")
 
