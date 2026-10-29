@@ -93,12 +93,45 @@ def safe_config(raw):
     return value
 
 
-def own_config():
-    account = pwd.getpwuid(os.getuid())
-    path = Path(account.pw_dir) / '.hermes' / 'config.yaml'
-    info = path.lstat()
-    require(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid())
-    return path, path.read_bytes()
+def config_candidates():
+    """Config paths in the account's own Hermes layout, resolver-first.
+
+    Mirrors hermes_constants: the OS account home (never the foreign process
+    HOME a harness may set) plus its literal data-dir suffix, then any
+    sibling .hermes* data directories.
+    """
+    account = Path(pwd.getpwuid(os.getuid()).pw_dir)
+    suffix = os.environ.get('HERMES_DATA_DIR_SUFFIX', '')
+    candidates = [account / ('.hermes' + suffix) / 'config.yaml']
+    try:
+        for entry in sorted(account.glob('.hermes*'))[:16]:
+            candidate = entry / 'config.yaml'
+            if candidate not in candidates:
+                candidates.append(candidate)
+    except OSError:
+        pass
+    return account, candidates
+
+
+def resolve_config():
+    account, candidates = config_candidates()
+    diag = {'account_home': str(account), 'candidates': [], 'home_top_entries': []}
+    try:
+        diag['home_top_entries'] = sorted(entry.name for entry in account.iterdir())[:64]
+    except OSError as exc:
+        diag['home_top_entries'] = ['iter-error:' + type(exc).__name__]
+    for candidate in candidates:
+        row = {'path': str(candidate), 'exists': False, 'regular': False}
+        try:
+            info = candidate.lstat()
+            row['exists'] = True
+            row['regular'] = stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid()
+        except OSError:
+            pass
+        diag['candidates'].append(row)
+        if row['regular']:
+            return candidate, candidate.read_bytes(), diag
+    require(False, 'profile_config_not_found')
 
 
 def definitions(raw):
@@ -211,14 +244,14 @@ def main():
     home = Path(rundir)
     require(home.is_dir() and home.stat().st_uid == os.getuid())
     os.environ['HERMES_DISABLE_LAZY_INSTALLS'] = '1'
-    path, raw = own_config()
+    path, raw, diag = resolve_config()
     servers, fetch = definitions(raw)
     if stage == 'catalogue':
         results = run_catalogue(servers, fetch, home, scope, dict(os.environ))
         complete = all(row['complete'] for row in results.values())
         print(json.dumps({'stage': stage, 'complete': complete, 'invocation_id': invocation,
-            'config_sha256': hashlib.sha256(raw).hexdigest(), 'fetch_server': fetch,
-            'definition_count': len(servers), 'servers': results}), flush=True)
+            'config_path': str(path), 'config_sha256': hashlib.sha256(raw).hexdigest(),
+            'fetch_server': fetch, 'definition_count': len(servers), 'servers': results}), flush=True)
         return 0 if complete else 1
     require(fetch in servers)
     result = run_fetch_public(servers[fetch], fetch, home, scope, dict(os.environ))
@@ -230,6 +263,14 @@ def main():
 if __name__ == '__main__':
     try:
         raise SystemExit(main())
-    except Exception:
-        print('{"stage":"preflight","complete":false,"error_kind":"preflight_refused"}', flush=True)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        diag = {}
+        try:
+            _, _, diag = resolve_config()
+        except Exception:
+            pass
+        print(json.dumps({'stage': 'preflight', 'complete': False,
+                          'error_kind': type(exc).__name__, 'diag': diag}), flush=True)
         raise SystemExit(1)

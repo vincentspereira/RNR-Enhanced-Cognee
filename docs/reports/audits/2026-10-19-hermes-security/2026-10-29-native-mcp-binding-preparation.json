@@ -29,13 +29,15 @@
     "restricted_bot_processes_at_preparation": 0
   },
   "sources": {
-    "probe_native_mcp_binding.py": "941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d",
-    "qualify_native_mcp_binding.py": "4b31d7037ca958c49ca88b4b0e3e587d417b2d254094c328db0c824d9b670af8",
+    "probe_native_mcp_binding.py": "96f3ec91d9c41d2fa5331e4200873b77826de4a8a040c3b41eb29a93e9682a0f",
+    "qualify_native_mcp_binding.py": "786f9ed36f2b28cfa8d87c5e2a584896e34e6ee31f2f7e155d434843cf11d1cf",
     "superseded_revisions": [
       {"sha256": "3e04a6eb3bfab260538a95bf700dc7ae09addd1177637446f5ca40093d62e3be",
        "superseded_by": "installer frozen into the artifact (0750 home traversal denied to the capability-less operator)"},
       {"sha256": "74e2ec56279129053a3f3ecb38053fe1744b9356a9e39857eb3bd1267dfbc1bc",
-       "superseded_by": "launch ordering: retained_runtime read the frozen installer before the artifact existed; the freeze now precedes verification and both owner-terminal refusals created no state"}
+       "superseded_by": "launch ordering: retained_runtime read the frozen installer before the artifact existed; the freeze now precedes verification and both owner-terminal refusals created no state"},
+      {"sha256": "4b31d7037ca958c49ca88b4b0e3e587d417b2d254094c328db0c824d9b670af8",
+       "superseded_by": "driver config resolution now mirrors hermes_constants (account home plus data-dir suffix, then sibling .hermes* directories) with a bounded name-only preflight diagnostic; superseded driver 941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d assumed a fixed config path"}
     ],
     "protocol_reused": "probe_main_local_mcp.py 415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07 (reply bound raised to 10 MiB for the REA catalogue)",
     "installer_reused": "install_managed_mcp_runtime.py a877fd6dd3688ea77d42ae02c94b060340b5a3c217f85df85ec035f987822711 (public_read + no_active_candidates; frozen into the artifact at launch because the capability-less operator unit cannot traverse the 0750 owner home)"
@@ -48,6 +50,15 @@
       "effects_applied": "none; the operator stopped itself before any child unit existed",
       "cause": "the v1 worker read the installer from the owner worktree; /home/vincentspereira is mode 0750 and the hardened operator unit strips every capability, so traversal was denied",
       "correction": "the installer is now hash-pinned and frozen into the artifact at launch and the worker loads it from there; the v2 artifact and unit names are fresh",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v2": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "the catalogue child unit started under the actual restricted identity, crashed in its own preflight, and was stopped; no tool call, model call or write occurred",
+      "cause": "the driver assumed the profile config at <account-home>/.hermes/config.yaml; Hermes resolves the account's data dir with an optional HERMES_DATA_DIR_SUFFIX and profiles may repoint HOME, so the assumed path need not exist",
+      "correction": "the driver now resolves the config the way hermes_constants does (account home plus data-dir suffix, then sibling .hermes* directories) and on any preflight failure prints a bounded name-only diagnostic (candidate paths, existence, top-level home entry names) to the journal; the v3 artifact and unit names are fresh",
       "preserved": true
     }
   },

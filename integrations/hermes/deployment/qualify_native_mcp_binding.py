@@ -27,8 +27,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-native-mcp-binding-v2'
-OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v2-20261029.service'
+ARTIFACT = BASE / 'operator-native-mcp-binding-v3'
+OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v3-20261029.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -38,7 +38,7 @@ RECONCILE_ARTIFACT = BASE / 'operator-managed-mcp-runtime-v3'
 PROTOCOL = DEPLOY / 'probe_main_local_mcp.py'
 PROTOCOL_SHA = '415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07'
 DRIVER = DEPLOY / 'probe_native_mcp_binding.py'
-DRIVER_SHA = '941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d'
+DRIVER_SHA = '96f3ec91d9c41d2fa5331e4200873b77826de4a8a040c3b41eb29a93e9682a0f'
 RELEASE = Path('/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1')
 PROGRAM_ROOT = Path('/opt/hermes-runtime/programs')
 FIELDS = ['LoadState', 'ActiveState', 'SubState', 'Result', 'ExecMainStatus', 'ExecMainPID',
