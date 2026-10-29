@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling>=1.25,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "enhanced-cognee-hermes"
+version = "0.1.0"
+description = "Profile-bound native Hermes MemoryProvider for the local Enhanced Cognee source runtime"
+readme = "enhanced_cognee_hermes/README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy==2.5.4",
+  "onnxruntime==1.31.0",
+  "tokenizers==0.23.3",
+  "lancedb==0.40.0",
+  "pyarrow==26.0.0",
+]
+
+[project.entry-points."hermes_agent.memory_providers"]
+enhanced-cognee = "enhanced_cognee_hermes:register"
+
+[tool.hatch.build.targets.wheel]
+packages = ["enhanced_cognee_hermes"]
