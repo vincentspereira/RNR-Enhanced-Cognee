@@ -1,5 +1,22 @@
 # Remaining Hermes memory rollout work
 
+29 October 2026 FINDING: the live main profile's memory provider is ALREADY
+enhanced_cognee (read-only inspection under the actual restricted identity;
+config hash 0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289,
+4 MCP definitions). No controlled switch is needed for the main profile;
+the remaining main-profile gates are served capability and maximum-context
+capture. The live remote HTTP endpoints (context7, deepwiki) remain deferred
+behind the owner external-endpoint gate; the owner has since AUTHORIZED
+their qualification, which will be prepared on the binding machinery.
+Separately, a redacted git-history credential scan found NO structural
+provider keys; audit item F22's candidates are accounted for as upstream
+defaults, templates and invented fixtures, with three fingerprints recorded
+for an optional owner glance
+(`2026-10-29-git-history-key-scan.txt`). The actionable exposure remains
+the stack credentials in the agent-readable .env (staged rotation) and the
+provider-side model/Telegram keys. See
+`2026-10-29-main-memory-selection.json`.
+
 29 October 2026 COMPLETE: the native MCP binding gate is CLOSED. The v6
 operator ran both stages under the actual restricted main identity. The
 catalogue read the live main profile config (4 definitions: fetch,
