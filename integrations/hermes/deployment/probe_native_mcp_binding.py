@@ -51,29 +51,34 @@ def private_denial(value, texts):
 
 def safe_config(raw):
     """Bounded unique-key YAML load of the profile's own settings."""
+    import datetime
     import yaml
-    require(isinstance(raw, bytes) and 0 < len(raw) <= 262144 and b'\x00' not in raw)
+    require(isinstance(raw, bytes) and 0 < len(raw) <= 262144 and b'\x00' not in raw,
+            'config_size_or_nul')
     active = set()
 
-    def validate(value, depth=0):
-        require(depth <= 32 and len(active) <= 4096)
+    def validate(value, depth=0, path='config'):
+        require(depth <= 32 and len(active) <= 4096, 'tree_bounds:' + path[:200])
         if isinstance(value, (dict, list)):
-            require(id(value) not in active)
+            require(id(value) not in active, 'tree_cycle:' + path[:200])
             active.add(id(value))
             try:
                 if isinstance(value, dict):
-                    require(all(isinstance(key, str) for key in value))
+                    require(all(isinstance(key, str) for key in value),
+                            'tree_key_type:' + path[:200])
                     for key, child in value.items():
-                        validate(key, depth + 1)
-                        validate(child, depth + 1)
+                        validate(key, depth + 1, (path + '/key')[:200])
+                        validate(child, depth + 1, (path + '/' + key)[:200])
                 else:
-                    for child in value:
-                        validate(child, depth + 1)
+                    for index, child in enumerate(value):
+                        validate(child, depth + 1, (path + '[%d]' % index)[:200])
             finally:
                 active.discard(id(value))
         else:
             require(value is None or type(value) in {bool, int, str}
-                    or type(value) is float and math.isfinite(value))
+                    or type(value) is float and math.isfinite(value)
+                    or type(value) in (datetime.date, datetime.datetime),
+                    'scalar_type:' + path[:200])
 
     class UniqueLoader(yaml.SafeLoader):
         def construct_mapping(self, node, deep=False):
@@ -81,14 +86,15 @@ def safe_config(raw):
             result = {}
             for key_node, value_node in node.value:
                 key = self.construct_object(key_node, deep=deep)
-                require(isinstance(key, str) and key not in result)
+                require(isinstance(key, str) and key not in result,
+                        'duplicate_or_nonstring_key')
                 result[key] = self.construct_object(value_node, deep=deep)
             return result
     try:
         value = yaml.load(raw, Loader=UniqueLoader)
     except (yaml.YAMLError, UnicodeError):
-        raise ValueError('profile_config_yaml_refused') from None
-    require(isinstance(value, dict))
+        raise ValueError('config_yaml_unreadable') from None
+    require(isinstance(value, dict), 'config_top_type')
     validate(value)
     return value
 
@@ -135,20 +141,33 @@ def resolve_config():
 
 
 def definitions(raw):
-    config = safe_config(raw)
+    try:
+        config = safe_config(raw)
+    except ValueError as exc:
+        raise ValueError('parse:' + str(exc)) from None
     servers = config.get('mcp_servers')
-    require(isinstance(servers, dict) and 1 <= len(servers) <= 8)
+    if not isinstance(servers, dict):
+        raise ValueError('mcp_servers_missing_keys:' + ','.join(sorted(
+            key for key in config if isinstance(key, str)))[:240])
+    if not 1 <= len(servers) <= 16:
+        raise ValueError('mcp_servers_count:%d' % len(servers))
     rows, fetch = {}, None
     for name, row in servers.items():
-        require(isinstance(row, dict) and isinstance(name, str) and 0 < len(name) <= 64)
+        if not isinstance(row, dict):
+            raise ValueError('server:%s:not_mapping' % name[:64])
+        if not (isinstance(name, str) and 0 < len(name) <= 64):
+            raise ValueError('server:name_invalid')
         command = row.get('command')
-        require(isinstance(command, str) and 0 < len(command) <= 256)
+        if not (isinstance(command, str) and 0 < len(command) <= 256):
+            raise ValueError('server:%s:command_invalid' % name[:64])
         args = row.get('args', [])
-        require(isinstance(args, list) and len(args) <= 32
-                and all(isinstance(a, str) and len(a) <= 4096 for a in args))
+        if not (isinstance(args, list) and len(args) <= 32
+                and all(isinstance(a, str) and len(a) <= 4096 for a in args)):
+            raise ValueError('server:%s:args_invalid' % name[:64])
         env = row.get('env', {})
-        require(isinstance(env, dict) and all(isinstance(k, str) and isinstance(v, str)
-                                              and 0 < len(k) <= 128 for k, v in env.items()))
+        if not (isinstance(env, dict) and all(isinstance(k, str) and isinstance(v, str)
+                                              and 0 < len(k) <= 128 for k, v in env.items())):
+            raise ValueError('server:%s:env_invalid' % name[:64])
         rows[name] = dict(name=name, command=command, args=args, env=env)
         if any(FETCH_PACKAGE in arg for arg in [command] + args):
             require(fetch is None, 'multiple_fetch_definitions_refused')
@@ -266,11 +285,13 @@ if __name__ == '__main__':
     except SystemExit:
         raise
     except Exception as exc:
+        detail = str(exc)[:200] if isinstance(exc, ValueError) else ''
         diag = {}
         try:
             _, _, diag = resolve_config()
         except Exception:
             pass
         print(json.dumps({'stage': 'preflight', 'complete': False,
-                          'error_kind': type(exc).__name__, 'diag': diag}), flush=True)
+                          'error_kind': type(exc).__name__, 'detail': detail,
+                          'diag': diag}), flush=True)
         raise SystemExit(1)
