@@ -38,20 +38,33 @@
   },
   "reconciliation_helper": {
     "source": "integrations/hermes/deployment/reconcile_managed_mcp_runtime.py",
-    "sha256": "ad12507a6480e6c890b71956ae684ab28afdd4755e823bbb319c1bb83d516c8d",
+    "sha256": "5bdb2d8a8be87e27ceba925e2c437eac1cd1b1e54403eb4d3fd485374dc5f4b6",
+    "sha256_first_revision_superseded": "ad12507a6480e6c890b71956ae684ab28afdd4755e823bbb319c1bb83d516c8d",
     "design": [
-      "refuses unless the retained v1 summary is exactly the known partial state",
+      "refuses unless the retained v1 summary is the known publication-stage partial or the v2 summary is the known verification-stage refusal",
       "verifies the pinned v1 installer source hash before reusing its code",
-      "re-admits the sealed archive (hash, admission, per-file digests) and verifies the whole live tree member-by-member, refusing any unexpected file, mode, owner or entry",
-      "reconstructs and compares the merged facts.json bytes",
+      "re-admits the sealed archive (hash, admission, per-file digests) and verifies the published payload member-by-member, refusing any unexpected file, mode, owner or entry",
+      "verifies the merged live facts.json bytes separately instead of comparing them to the archive's staged copy",
+      "walks only the three payload subtrees; the store root legitimately keeps pre-release tools (ffmpeg, node, npm, ripgrep)",
       "corrects only payload directory modes to their archived 0755 values and re-verifies",
       "reruns the identical restricted-identity proof with stdout/stderr captured into the artifact regardless of outcome",
-      "records a v2 receipt; the v1 artifact, the retained proof home and every failure stay untouched",
+      "records its receipt under operator-managed-mcp-runtime-v3; the v1 partial publication and the v2 verification refusal stay retained and untouched",
       "idempotent on its own completed receipt; never retries a failed attempt automatically"
     ],
-    "tests": {"passed": 43, "failures": 0, "errors": 0, "skips": 0, "warnings": 0, "new": 5},
-    "dry_run_readonly_stages": {"v1_source_verified": true, "archive_members": 5005, "file_digests": 3719, "pass": true},
+    "tests": {"passed": 47, "failures": 0, "errors": 0, "skips": 0, "warnings": 0, "new": 9},
+    "dry_run_readonly_stages": {"v1_source_verified": true, "archive_members": 5005, "file_digests": 3719, "pass": true,
+      "walk_root_coverage": "no archive member lies outside the payload subtrees"},
     "execution": "pending owner sudo terminal; zero restricted bot processes at preparation"
+  },
+  "retained_reconciliation_attempts": {
+    "operator-managed-mcp-runtime-v2": {
+      "checkpoint": "archive_and_live_tree_verification",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "none (refusal preceded the correction stage)",
+      "cause": "the first revision wrongly size/hash-compared the merged live facts.json against the archive's staged copy, and its tree walk covered the whole store, flagging legitimate pre-release tools as unexpected entries",
+      "preserved": true
+    }
   },
   "boundaries": {
     "fleet_launch_approved": false,

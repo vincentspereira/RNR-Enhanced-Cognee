@@ -257,3 +257,63 @@ def test_reconciliation_proof_captures_output_on_failure(tmp_path, monkeypatch):
         reconcile.proof(tmp_path / 'home', reconcile.load_v1(), tmp_path)
     assert (tmp_path / 'proof-returncode.txt').read_text().strip() == '1'
     assert 'permission denied' in (tmp_path / 'proof-stderr.txt').read_text()
+
+
+def live_state_fixture(tmp_path):
+    """A store with pre-release tools, payload dirs hit by the umask defect."""
+    root = tmp_path / 'release'
+    for relative, mode in [('python/bin', 0o755), ('python/node-26.7.0-linux-x64', 0o755),
+                           ('python', 0o755), ('pm-runtime', 0o700),
+                           ('python/uv-0.12.3-linux-x64', 0o700),
+                           ('python/uv-0.12.3-linux-x64/bin', 0o700)]:
+        path = root / relative
+        path.mkdir(parents=True, exist_ok=True)
+        path.chmod(mode)
+    (root / 'pm-runtime/pm-runtime.json').write_bytes(b'{}')
+    (root / 'python/facts.json').write_bytes(b'{"merged": true, "packages": {}}')
+    (root / 'python/facts.json').chmod(0o644)
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').write_bytes(b'')
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').chmod(0o755)
+    rows = reconciliation_rows()
+    rows['pm-runtime/pm-runtime.json'].size = 2
+    rows['python/facts.json'] = member('python/facts.json')
+    roots = ['pm-runtime', 'python/uv-0.12.3-linux-x64']
+    return rows, root, roots
+
+
+def test_live_state_flags_stripped_dirs_and_ignores_store_extras(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    modes, hashes = reconcile.live_state(rows, root, roots)
+    assert modes['pm-runtime'] == 0o700
+    assert modes['python'] == 0o755
+    assert modes['python/uv-0.12.3-linux-x64'] == 0o700
+    assert 'python/facts.json' not in hashes
+    assert 'python/uv-0.12.3-linux-x64/bin/uv' in hashes
+    corrections = dict(reconcile.plan_mode_corrections(rows, modes))
+    assert corrections == {'pm-runtime': 0o755, 'python/uv-0.12.3-linux-x64': 0o755,
+                           'python/uv-0.12.3-linux-x64/bin': 0o755}
+
+
+def test_live_state_refuses_unexpected_payload_entry(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'pm-runtime/unreviewed').write_bytes(b'x')
+    with pytest.raises(ValueError):
+        reconcile.live_state(rows, root, roots)
+
+
+def test_live_state_refuses_wrong_payload_file_mode(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').chmod(0o600)
+    with pytest.raises(ValueError):
+        reconcile.live_state(rows, root, roots)
+
+
+def test_live_state_accepts_separately_verified_facts_bytes(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'python/facts.json').write_bytes(b'{"merged": true, "packages": {"uv": 1}}')
+    modes, hashes = reconcile.live_state(rows, root, roots)
+    assert 'python/facts.json' not in hashes

@@ -4,12 +4,15 @@
 published all 5,005 members plus the marker and merged facts correctly, then
 failed only its restricted-identity proof because the operator umask left the
 new directories at 0700 and the UID-992 proof child could not read the
-pm-runtime marker. The attempt, its artifact and proof home are retained; no
-service, profile, credential or bot changed. A reconciliation helper now
-verifies the live tree against the sealed archive, corrects only the payload
-directory modes to their archived 0755 values, and reruns the identical proof
-with captured output into a v2 receipt (43 focused tests pass; read-only dry
-run passed). It awaits the owner's sudo terminal. Receipt:
+pm-runtime marker. The first reconciliation attempt refused in its read-only
+verification stage (it compared the merged facts against the staged copy and
+walked the whole store) and applied nothing; it is retained as evidence. The
+corrected helper verifies the payload member-by-member, checks the merged
+facts bytes separately, walks only the payload subtrees, corrects only the
+payload directory modes to their archived 0755 values, and reruns the
+identical proof with captured output into a v3 receipt (47 focused tests,
+fixture reproductions of both refusal causes; read-only dry runs passed). It
+awaits the owner's sudo terminal. Receipt:
 `2026-10-29-managed-runtime-install-reconciliation.json`.
 
 29 October 2026: the Fetch candidate's default HTML-to-Markdown extraction is
