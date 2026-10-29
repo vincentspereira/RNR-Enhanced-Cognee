@@ -54,7 +54,32 @@
     "tests": {"passed": 47, "failures": 0, "errors": 0, "skips": 0, "warnings": 0, "new": 9},
     "dry_run_readonly_stages": {"v1_source_verified": true, "archive_members": 5005, "file_digests": 3719, "pass": true,
       "walk_root_coverage": "no archive member lies outside the payload subtrees"},
-    "execution": "pending owner sudo terminal; zero restricted bot processes at preparation"
+    "execution": {
+      "status": "complete",
+      "executed_by": "owner sudo terminal, 2026-10-29",
+      "receipt": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-managed-mcp-runtime-v3/summary.json",
+      "directories_corrected": 233,
+      "payload_subtrees_verified": ["pm-runtime", "python/python-3.14.7+20260901-linux-x64", "python/uv-0.12.3-linux-x64"],
+      "proof": {
+        "complete": true,
+        "resident_pm_runtime_qualified": true,
+        "native_managed_launcher_selection_qualified": true,
+        "tool_digests_verified": ["python", "uv"],
+        "restricted_identity_verified": true,
+        "network_namespace_isolated": true,
+        "native_mcp_server_binding_qualified": false,
+        "profiles_read": false,
+        "model_called": false,
+        "memory_api_called": false
+      },
+      "retained_proof_home": "/var/tmp/ec-managed-pm-reconcile-8dc946343a96f60165e1bb2c",
+      "independent_post_checks": {
+        "marker_readable_by_ordinary_user": true,
+        "payload_dirs_mode_0755": true,
+        "managed_uv_binary_runs": "uv 0.12.3 (x86_64-unknown-linux-gnu)",
+        "managed_python_runs": "Python 3.14.7"
+      }
+    }
   },
   "retained_reconciliation_attempts": {
     "operator-managed-mcp-runtime-v2": {

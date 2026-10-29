@@ -1,6 +1,26 @@
 # Remaining Hermes memory rollout work
 
-29 October 2026 update: the owner ran the protected PM installation. It
+29 October 2026 COMPLETE: the native managed-launch packaging gate is CLOSED.
+The owner ran the corrected reconciliation: every payload member verified
+against the sealed archive, 233 directory modes corrected to their archived
+0755 values, and the restricted-identity proof PASSED under the actual UID
+992/GID 984 (zero capabilities, private network namespace): resident PM
+runtime qualified, native uvx/npx launcher selection qualified, python and uv
+digests verified. The managed uv 0.12.3 and Python 3.14.7 binaries run and
+the pm-runtime marker is readable by restricted identities. Retained: the v1
+partial publication (umask directory-mode defect), the v2 verification
+refusal (over-strict checks, zero effects), the completed v3 receipt.
+Sanitized record: `2026-10-29-managed-runtime-install-reconciliation.json`.
+Next gate: actual native MCP-server binding for all six preserved main
+definitions (Fetch native binding plus remote acceptance; the candidate-level
+HTML extraction qualification is already recorded), full main tools/context
+and current served capability, production launcher bindings, admitted
+credential renewal/reload, then the fresh main-state and fleet-switch review.
+No service, profile, credential, policy or bot changed; admission stays
+disabled.
+
+29 October 2026 (installation history, retained): the owner ran the
+protected PM installation. It
 published all 5,005 members plus the marker and merged facts correctly, then
 failed only its restricted-identity proof because the operator umask left the
 new directories at 0700 and the UID-992 proof child could not read the

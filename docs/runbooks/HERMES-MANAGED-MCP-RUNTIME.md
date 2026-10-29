@@ -1,6 +1,26 @@
 # Restore native managed MCP launcher support without fleet activation
 
-29 October 2026 update: the owner executed the protected installation. It
+29 October 2026 COMPLETE: the owner executed the corrected reconciliation. It
+verified every payload member against the sealed archive, corrected 233
+directory modes to their archived 0755 values, and the restricted-identity
+proof PASSED under the actual UID 992/GID 984 with zero capabilities and a
+private network namespace: resident PM runtime qualified, native managed
+uvx/npx launcher selection qualified, python and uv tool digests verified.
+The managed uv 0.12.3 and Python 3.14.7 binaries run; the pm-runtime marker
+is readable by restricted identities. Receipts: retained v1 partial
+publication, retained v2 verification refusal, completed
+operator-managed-mcp-runtime-v3; sanitized record
+`2026-10-29-managed-runtime-install-reconciliation.json`. The managed-launch
+packaging gate is CLOSED. Still separate and open: actual native MCP-server
+binding for all six preserved definitions (including Fetch remote acceptance
+and the already-candidate-qualified HTML extraction), full main
+tools/context and current served capability, production launcher bindings,
+admitted credential renewal/reload, and the final fleet-switch review. No
+service, profile, credential, policy or bot was changed by the installation
+or reconciliation; fleet admission policies remain disabled.
+
+29 October 2026 update (superseded detail, retained): the owner executed the
+protected installation. It
 published every archive member, the pm-runtime marker and the merged facts,
 then failed its restricted-identity proof at checkpoint
 restricted_native_pm_proof: the operator umask had stripped group/other bits
