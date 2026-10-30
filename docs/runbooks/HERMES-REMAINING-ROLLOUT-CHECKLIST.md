@@ -1,5 +1,15 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 CANARY PROFILES FOUND: the two enhanced-cognee-test profiles
+in the gateway home are not dummies — both are issuer-provisioned (Oct 25:
+.env with a scoped token, .env-before-issuer backups, prepared/published
+receipts, renewal lock), with empty memories/sessions and the standard
+persona. RECOMMENDATION to the owner: keep both as the memory canaries
+(first wired, first verified); they are not part of the 40 roles. This also
+means the issuer flow has already provisioned real gateway profiles once —
+the activation path is renewal/re-issue for the canaries plus issuance for
+the roles, not a new provisioner build. Renewal flow inspection is next.
+
 30 October 2026 ACTIVATION DESIGN (gateway fleet): the token publication
 targets are confirmed — the gateway home carries ~/.hermes/.env (0600,
 vincentspereira) for the app-level default profile, and every role profile
