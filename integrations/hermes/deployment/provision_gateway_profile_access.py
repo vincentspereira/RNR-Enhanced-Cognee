@@ -150,28 +150,39 @@ def qualify_access(token, identity, expect_fresh):
 
 
 def publish(env_path: Path, original: bytes, updated: bytes, uid: int):
-    """Backup, atomic replace, readback. Refuses if the file changed meanwhile."""
+    """Backup, atomic replace, readback — every created file chowned to uid.
+
+    The operator runs as root, so files created here must be explicitly
+    handed to the gateway identity; a root-owned .env would blind the
+    gateway to its own credentials."""
     import stat as stat_module
     info = env_path.lstat()
     require(stat_module.S_ISREG(info.st_mode) and info.st_uid == uid
             and info.st_nlink == 1 and not info.st_mode & 0o022,
             "gateway_env_protection_review")
+    group = env_path.stat().st_gid
     directory_fd = os.open(env_path.parent, os.O_RDONLY | os.O_DIRECTORY)
     try:
+        def create(name, content):
+            fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                         0o600, dir_fd=directory_fd)
+            try:
+                os.fchown(fd, uid, group)
+                with os.fdopen(fd, "wb") as stream:
+                    stream.write(content)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+            except BaseException:
+                os.close(fd)
+                raise
         backup = ".env-before-gateway-" + uuid.uuid4().hex
-        backup_fd = os.open(backup, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                            0o600, dir_fd=directory_fd)
-        with os.fdopen(backup_fd, "wb") as stream:
-            stream.write(original)
-            stream.flush()
-            os.fsync(stream.fileno())
+        create(backup, original)
+        require(os.stat(backup, dir_fd=directory_fd).st_uid == uid,
+                "gateway_backup_owner_invalid")
         stage = ".env-gateway-" + uuid.uuid4().hex
-        stage_fd = os.open(stage, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                           0o600, dir_fd=directory_fd)
-        with os.fdopen(stage_fd, "wb") as stream:
-            stream.write(updated)
-            stream.flush()
-            os.fsync(stream.fileno())
+        create(stage, updated)
+        require(os.stat(stage, dir_fd=directory_fd).st_uid == uid,
+                "gateway_stage_owner_invalid")
         original_fd = os.open(env_path.name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory_fd)
         try:
             current = os.read(original_fd, MAX_ENV + 1)
@@ -183,7 +194,9 @@ def publish(env_path: Path, original: bytes, updated: bytes, uid: int):
         os.fsync(directory_fd)
         readback_fd = os.open(env_path.name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory_fd)
         try:
-            require(os.read(readback_fd, MAX_ENV + 1) == updated, "gateway_env_readback_failed")
+            readback_info = os.fstat(readback_fd)
+            require(os.read(readback_fd, MAX_ENV + 1) == updated
+                    and readback_info.st_uid == uid, "gateway_env_readback_failed")
         finally:
             os.close(readback_fd)
         return backup
