@@ -1,5 +1,15 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 PER-PROFILE PLUGIN DISCOVERY FIXED: memory plugins resolve
+per profile (profile isolation scans the profile's own plugins directory),
+so role profiles did not see the gateway-home plugin install. The provider
+plugin is now staged into ALL 42 profile directories (39 staged, 3 already
+covered), and discovery verified for five sampled roles across role
+families. Owner-side effect: every role's Memory Provider dropdown now
+includes Enhanced Cognee (refresh the settings page; a role session open
+since before staging may need close/reopen). Stage 8 can proceed; no
+further restarts required for this.
+
 30 October 2026 STAGE 8 READY: all 40 role tokens issued and API-verified
 (30-day expiry, ~Nov 29; the batch command re-run is the renewal), the
 gateway restarted with the provider selected, and the per-role Memory
