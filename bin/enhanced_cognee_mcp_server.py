@@ -8049,7 +8049,31 @@ if __name__ == "__main__":
         default=os.environ.get("COGNEE_SERVICE_API_KEY", ""),
         help="API key for the remote Cognee instance (used with --serve-url).",
     )
+    parser.add_argument(
+        "--tool-groups",
+        default="",
+        help=(
+            "Comma-separated tool groups to advertise (memory_read, graph, "
+            "ingest, analysis, memory_write, ops_readonly). Empty advertises "
+            "all tools (operator CLI use). Unlisted tools are never "
+            "advertised when a selection is active."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.tool_groups:
+        from mcp_tool_groups import apply_to_registry
+        try:
+            summary = apply_to_registry(mcp._tool_manager._tools, args.tool_groups)
+        except ValueError as group_error:
+            print(f"ERR tool group selection refused: {group_error}", file=sys.stderr)
+            sys.exit(3)
+        print(
+            "OK tool groups applied: {} ({} tools advertised, {} removed)".format(
+                summary["groups"], summary["selected"], summary["removed"]
+            ),
+            file=sys.stderr,
+        )
 
     # Cloud connectivity toggle (optional, opt-in only)
     if args.serve_url:
