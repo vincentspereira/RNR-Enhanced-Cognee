@@ -23,9 +23,9 @@ PROVISIONER = Path(__file__).resolve().parent / "provision_gateway_profile_acces
 MAX_ENV = 65536
 
 
-def require(value):
+def require(value, category="fleet_batch_provision_refused"):
     if not value:
-        raise ValueError("fleet_batch_provision_refused")
+        raise ValueError(category)
 
 
 def role_names():
