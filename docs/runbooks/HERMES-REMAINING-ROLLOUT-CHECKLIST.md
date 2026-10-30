@@ -1,5 +1,21 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 MILESTONE: ENHANCED COGNEE IS LIVE AS THE DEFAULT
+ASSISTANT'S EXTENDED MEMORY. Verified in the owner's Desktop against the
+fleet gateway: the provider appears in and is selected by the Memory
+Provider dropdown for the default profile; an explicit remember stored
+record 28f557e8 (the first write attempt was refused by a policy gate and
+the adjusted retry passed — guardrails enforcing on live writes); and a
+fresh session received automatic recall injection and answered the test
+phrase exactly. Token for the default profile: issuer-signed, expires
+2026-11-06 (weekly renewal cadence until the fleet lifecycle policy
+lands). Remaining for the full goal: wire the 42 role profiles in Stage 8
+batches (per-role tokens via the provisioner's --profile flag, provider
+selection per role, the memory-wiring addendum), the remote-endpoint and
+MCP phase-two work, served-capability and maximum-context verification,
+the credential rotation execution, and the fleet-switch review. The owner
+is holding Stage 8 until memory wiring is confirmed per role.
+
 30 October 2026 CANARY PROFILES FOUND: the two enhanced-cognee-test profiles
 in the gateway home are not dummies — both are issuer-provisioned (Oct 25:
 .env with a scoped token, .env-before-issuer backups, prepared/published
