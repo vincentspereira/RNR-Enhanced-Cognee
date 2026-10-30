@@ -25,6 +25,9 @@ RENEWAL_ROOT = Path("/opt/enhanced-cognee-memory/fleet-renewal")
 SERVICE = Path("/etc/systemd/system/ec-hermes-memory-token-renew.service")
 TIMER = Path("/etc/systemd/system/ec-hermes-memory-token-renew.timer")
 UNIT_NAME = "ec-hermes-memory-token-renew"
+# The first installed provisioner refused the unattended job (SUDO_USER-only
+# operator check); the upgrade path accepts exactly that pinned predecessor.
+PREVIOUS_PROVISIONER_SHA = "06ad220901f054b43a40e4ca7a6fae1b35f01e1be85ca2e905450fd5fb41903b"
 SOURCES = {}  # filled in main from the live files below
 
 
@@ -43,20 +46,36 @@ def pinned_sources():
     return files
 
 
-def install_files(sources):
+def install_files(sources, upgrade):
     existing = RENEWAL_ROOT.is_dir() and any(RENEWAL_ROOT.iterdir())
-    if existing:
+    if not existing:
+        RENEWAL_ROOT.mkdir(mode=0o755)
+        for name, row in sources.items():
+            target = RENEWAL_ROOT / name
+            target.write_bytes(row["raw"])
+            target.chmod(0o644)
+        return True
+    if not upgrade:
         for name, row in sources.items():
             current = (RENEWAL_ROOT / name).read_bytes()
             require(hashlib.sha256(current).hexdigest() == row["sha256"],
-                    "existing_install_differs_refusing_overwrite")
+                    "existing_install_differs_use_upgrade")
         return False
-    RENEWAL_ROOT.mkdir(mode=0o755)
+    # Upgrade: each file must match its pinned predecessor (or already be
+    # current) before replacement; state.json and backups stay untouched.
+    for name, row in sources.items():
+        current = (RENEWAL_ROOT / name).read_bytes()
+        digest = hashlib.sha256(current).hexdigest()
+        allowed = {row["sha256"]}
+        if name == "provision_gateway_profile_access.py":
+            allowed.add(PREVIOUS_PROVISIONER_SHA)
+        require(digest in allowed, "upgrade_source_unknown:" + name)
     for name, row in sources.items():
         target = RENEWAL_ROOT / name
-        target.write_bytes(row["raw"])
-        target.chmod(0o644)
-    return True
+        if hashlib.sha256(target.read_bytes()).hexdigest() != row["sha256"]:
+            target.write_bytes(row["raw"])
+            target.chmod(0o644)
+    return False
 
 
 def install_units():
@@ -99,9 +118,11 @@ def systemctl(*args, timeout=60):
 def main():
     require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
             and os.uname().nodename == "Ubuntu-Hermes", "owner_sudo_on_gateway_host")
+    require(sys.argv[1:] in ([], ["--upgrade"]), "usage: [--upgrade]")
+    upgrade = sys.argv[1:] == ["--upgrade"]
     require(VENV_PYTHON.is_file(), "deployment_venv_missing")
     sources = pinned_sources()
-    created = install_files(sources)
+    created = install_files(sources, upgrade)
     install_units()
     code, _ = systemctl("daemon-reload")
     require(code == 0, "daemon_reload_failed")

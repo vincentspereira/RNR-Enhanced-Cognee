@@ -208,14 +208,31 @@ def publish(env_path: Path, original: bytes, updated: bytes, uid: int):
         os.close(directory_fd)
 
 
+RENEWAL_UNIT = "ec-hermes-memory-token-renew.service"
+
+
+def unattended_job_context(cgroup_text: str | None = None) -> bool:
+    """True when running inside the pinned renewal service's cgroup.
+
+    The owner-approved unattended job has no SUDO_USER; its systemd cgroup
+    membership is the provenance signal (not spoofable via environment)."""
+    try:
+        text = cgroup_text if cgroup_text is not None else \
+            Path("/proc/self/cgroup").read_text()
+    except OSError:
+        return False
+    return RENEWAL_UNIT in text
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True)
     parser.add_argument("--ttl-hours", type=int, default=168)
     parser.add_argument("--fresh-namespace", action="store_true")
     args = parser.parse_args()
-    require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
-            and os.uname().nodename == "Ubuntu-Hermes",
+    require(os.geteuid() == 0 and os.uname().nodename == "Ubuntu-Hermes"
+            and (os.environ.get("SUDO_USER") == "vincentspereira"
+                 or unattended_job_context()),
             "run_as_owner_sudo_on_gateway_host")
     require(re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", args.profile) is not None
             and 1 <= args.ttl_hours <= 8760, "gateway_profile_or_ttl_invalid")
