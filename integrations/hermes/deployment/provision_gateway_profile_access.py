@@ -196,7 +196,7 @@ def main():
     parser.add_argument("--fresh-namespace", action="store_true")
     args = parser.parse_args()
     require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
-            and os.environ.get("WSL_DISTRO_NAME") == "Ubuntu-Hermes",
+            and os.uname().nodename == "Ubuntu-Hermes",
             "run_as_owner_sudo_on_gateway_host")
     require(re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", args.profile) is not None
             and 1 <= args.ttl_hours <= 8760, "gateway_profile_or_ttl_invalid")
