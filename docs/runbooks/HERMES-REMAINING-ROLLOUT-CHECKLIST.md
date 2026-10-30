@@ -1,5 +1,21 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 STAGE 8 READY: all 40 role tokens issued and API-verified
+(30-day expiry, ~Nov 29; the batch command re-run is the renewal), the
+gateway restarted with the provider selected, and the per-role Memory
+Provider dropdowns now include Enhanced Cognee. Two batch-issuer defects
+were found and fixed on the first run: root-owned receipts (now chowned to
+the gateway identity) and hyphenated role names refused by the backend's
+canonical space-ID rule (roles address underscored space ids; default
+unaffected). Hyphenated names mapping to canonical ids must stay in the
+tests. The owner approved: 30-day rotation + automated renewal as the end
+state (the unattended-renewal design is a fleet-review decision), remote
+endpoint and MCP phase-two work after Stage 8, and providing the
+memory-wiring addendum to the fleet activation bot. Owner decisions still
+parked: ArcadeDB operator credential reset (folded into the stack
+rotation), historical exposed-key disposition (scan closed F22), fleet
+admission enablement and main merge at the final review.
+
 30 October 2026 MILESTONE: ENHANCED COGNEE IS LIVE AS THE DEFAULT
 ASSISTANT'S EXTENDED MEMORY. Verified in the owner's Desktop against the
 fleet gateway: the provider appears in and is selected by the Memory
