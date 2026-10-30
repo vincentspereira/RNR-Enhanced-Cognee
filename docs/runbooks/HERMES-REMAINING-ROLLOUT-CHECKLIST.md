@@ -1,5 +1,20 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 RENEWAL AUTOMATION OPERATIONAL: the approved weekly timer
+is installed and verified end-to-end. First unattended run: default
+renewed to 2026-11-29T23:30:32Z, 40 roles correctly skipped (outside the
+7-day window), zero failures; next fire Mon 2026-11-02 04:01 GMT. One
+correction was needed: the provisioner initially refused the unattended
+context (SUDO_USER absent under systemd); it now also accepts membership
+in the renewal service cgroup, and the installer gained a provenance-
+checked --upgrade path. State file (sanitized, no token values):
+/opt/enhanced-cognee-memory/fleet-renewal/state.json. Remaining queue:
+MCP phase two (role-scoped tool groups; recon done, build next),
+remote-endpoint qualification (context7, deepwiki), maximum-context
+verification, credential rotation execution (incl. ArcadeDB reset), and
+the final fleet-switch review. Canary retirement after the first month of
+fleet operation.
+
 30 October 2026 PER-PROFILE PLUGIN DISCOVERY FIXED: memory plugins resolve
 per profile (profile isolation scans the profile's own plugins directory),
 so role profiles did not see the gateway-home plugin install. The provider
