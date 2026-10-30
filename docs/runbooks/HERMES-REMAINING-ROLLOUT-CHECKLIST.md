@@ -1,5 +1,22 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 ACTIVATION DESIGN (gateway fleet): the token publication
+targets are confirmed — the gateway home carries ~/.hermes/.env (0600,
+vincentspereira) for the app-level default profile, and every role profile
+has its own .env overlay (exactly what agent.secret_scope reads, per-profile
+private memory spaces via per-profile tokens). The gateway config
+(~/.hermes/config.yaml) has no memory section yet; activation adds
+memory.provider: enhanced_cognee and requires a gateway restart at an
+owner-chosen window. The retained pilot provisioner (342 lines, phased:
+identity, profile preflight, environment backup/publication/readback,
+issuer-signed expiring tokens) is hardcoded to the old pilot home and
+profile, so a gateway-profile variant is the immediate build: same audited
+flow, new targets (home .env for default; profiles/<role>/.env per role),
+identity claims tenant=hermes_gateway with project_id per profile. The
+plugin is staged and discoverable; the API is on the provider default
+origin. Everything else (served-capability verification, max-context,
+remote endpoints, role batches) follows activation.
+
 30 October 2026 ARCHITECTURE RECONCILED: the owner's Hermes Agent Desktop
 manages the fleet through an SSH gateway to THIS host (127.0.0.1:2222 as
 vincentspereira; Hermes from ~/agent-workspace/hermes-agent, upstream
