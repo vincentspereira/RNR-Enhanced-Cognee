@@ -8,7 +8,9 @@ scope checks, atomic environment publication with a retained backup and
 readback. Unlike the pilot, an existing token line is replaced in place
 (not refused), the TTL is selectable, and the fresh-namespace assertion is
 opt-in for first issuance. Never prints the token; only the operator runs
-it; no fleet-admission machinery is enabled.
+it; no fleet-admission machinery is enabled. Requires an interpreter with
+python-dotenv (the deployment venv): the .env parser is the same audited
+third-party code the pilot flow used.
 """
 from __future__ import annotations
 import argparse
@@ -232,7 +234,11 @@ if __name__ == "__main__":
     except SystemExit:
         raise
     except Exception as exc:
-        detail = str(exc)[:160] if isinstance(exc, ValueError) else ""
+        detail = ""
+        if isinstance(exc, ValueError):
+            detail = str(exc)[:160]
+        elif isinstance(exc, ModuleNotFoundError):
+            detail = "missing module: " + str(exc).replace("No module named ", "")[:120]
         print(json.dumps({"complete": False, "category": "gateway_provision_refused",
                           "error_kind": type(exc).__name__, "detail": detail}), flush=True)
         raise SystemExit(1)
