@@ -49,7 +49,11 @@ def load_signer():
 
 
 def identity_for(profile):
-    marker = "default" if profile == "default" else profile
+    """Profile 'code-implementer' addresses memory space 'code_implementer':
+    the backend requires canonical IDs ([a-z][a-z0-9_]{0,31}, no hyphens)."""
+    marker = profile.replace("-", "_")
+    require(re.fullmatch(r"[a-z][a-z0-9_]{0,31}", marker) is not None,
+            "gateway_project_id_invalid")
     return {"sub": "hermes_gateway_" + marker, "agent_id": "hermes_gateway_" + marker,
             "tenant": "hermes_gateway", "project_id": marker,
             "roles": ["api_client"], "capture_policy": "selected"}

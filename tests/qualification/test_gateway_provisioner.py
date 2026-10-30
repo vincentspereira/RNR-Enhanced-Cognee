@@ -70,12 +70,23 @@ def test_identity_scopes_default_and_roles_separately():
     default = prov.identity_for("default")
     role = prov.identity_for("code-implementer")
     assert default["project_id"] == "default" and default["sub"].endswith("_default")
-    assert role["project_id"] == "code-implementer"
+    assert role["project_id"] == "code_implementer"
+    assert role["sub"] == "hermes_gateway_code_implementer"
     assert default["sub"] != role["sub"]
     for identity in (default, role):
         assert identity["tenant"] == "hermes_gateway"
         assert identity["roles"] == ["api_client"]
         assert identity["capture_policy"] == "selected"
+
+
+def test_identity_maps_hyphenated_roles_to_canonical_space_ids():
+    for role in ("ai-safety-guardrails", "customer-feedback-analyst",
+                 "deep-research-specialist", "ecommerce-kdp-publisher"):
+        identity = prov.identity_for(role)
+        assert "-" not in identity["project_id"]
+        assert len(identity["project_id"]) <= 32
+        import re
+        assert re.fullmatch(r"[a-z][a-z0-9_]{0,31}", identity["project_id"])
 
 
 def test_denial_checks_cover_unauthenticated_expired_and_altered():

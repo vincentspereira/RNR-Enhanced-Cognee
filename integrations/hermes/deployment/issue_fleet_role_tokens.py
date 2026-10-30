@@ -18,6 +18,7 @@ import sys
 
 HOME = Path("/home/vincentspereira/.hermes")
 PROFILES = HOME / "profiles"
+ALLOWED_UID = 1000
 EXCLUDED = {"enhanced-cognee-test", "enhanced-cognee-test-two", "default"}
 PROVISIONER = Path(__file__).resolve().parent / "provision_gateway_profile_access.py"
 MAX_ENV = 65536
@@ -83,8 +84,13 @@ def main():
                "receipts": receipts}
     out = HOME / "fleet-token-receipts.json"
     fd = os.open(out, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as stream:
-        stream.write(json.dumps(summary, indent=1, sort_keys=True) + "\n")
+    try:
+        os.fchown(fd, ALLOWED_UID, ALLOWED_UID)
+        with os.fdopen(fd, "w") as stream:
+            stream.write(json.dumps(summary, indent=1, sort_keys=True) + "\n")
+    except BaseException:
+        os.close(fd)
+        raise
     print(json.dumps({"summary_file": str(out), "roles_total": len(roles),
                       "roles_failed": failed, "complete": not failed}), flush=True)
     return 0 if not failed else 1
