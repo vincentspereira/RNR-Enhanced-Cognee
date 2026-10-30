@@ -1,5 +1,29 @@
 # Remaining Hermes memory rollout work
 
+30 October 2026 ARCHITECTURE RECONCILED: the owner's Hermes Agent Desktop
+manages the fleet through an SSH gateway to THIS host (127.0.0.1:2222 as
+vincentspereira; Hermes from ~/agent-workspace/hermes-agent, upstream
+checkout bf0203a794). The fleet's 42 role profiles live in
+/home/vincentspereira/.hermes/profiles/. The Desktop's provider dropdown
+(Built-in only, Byterover, Retaindb) reflects that gateway installation,
+which had no Enhanced Cognee provider. The provider plugin is now STAGED at
+/home/vincentspereira/.hermes/plugins/memory/enhanced_cognee/ (plugin.yaml
+c23230082be650ae142c4e3d8e30350ea5f3d18af5b879996328caf59d4dca48,
+__init__.py fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061,
+client.py 8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64),
+which activates nothing until memory.provider is set and the gateway
+restarts. The memory API already listens on 127.0.0.1:28080, the provider's
+default origin. The provider serves EIGHT tools under the official
+memory-provider contract (distinct from the ~120-tool MCP server).
+Remaining activation steps: issue one scoped ENHANCED_COGNEE_ACCESS_TOKEN
+for the default profile (issuer machinery is deliberately disabled for
+fleet admission, so the single-profile issuance path is being prepared),
+set memory.provider: enhanced_cognee in the gateway config, restart the
+gateway at an owner-chosen window, select the provider for default in the
+Desktop, verify served tools and capture/recall, then roll out to the roles
+in batches with per-profile tokens. The clarified 8-tool provider versus
+the ~120-tool MCP server distinction is recorded here.
+
 29 October 2026 FINDING: the live main profile's memory provider is ALREADY
 enhanced_cognee (read-only inspection under the actual restricted identity;
 config hash 0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289,
