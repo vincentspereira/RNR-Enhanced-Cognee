@@ -48,29 +48,34 @@ def systemctl(*args, timeout=90):
 
 
 def locate_code_roots():
-    """Every directory holding the service's src/memory_api.py."""
+    """Every directory holding the service's src/memory_api.py: paths named
+    by the unit AND the site-packages of every interpreter the unit names."""
     code, out = systemctl("cat", SERVICE)
     require(code == 0, "unit_cat_failed")
     require(len(out) <= 65536, "unit_oversized")
-    roots, unit_lines = [], []
+    roots, interpreters, unit_lines = [], [RUNTIME_PYTHON], []
     for line in out.splitlines():
         unit_lines.append(line)
         if line.startswith("WorkingDirectory="):
-            value = line.split("=", 1)[1].strip().strip('"')
-            roots.append(Path(value))
+            roots.append(Path(line.split("=", 1)[1].strip().strip('"')))
         if line.startswith("Environment=") and "PYTHONPATH" in line:
             for entry in line.split("=", 1)[1].split(":"):
                 entry = entry.strip().strip('"').replace("PYTHONPATH=", "")
                 if entry:
                     roots.append(Path(entry))
+        if line.startswith("ExecStart="):
+            parts = line.split("=", 1)[1].strip().split()
+            if parts:
+                interpreters.append(Path(parts[0]))
     found = []
     for candidate in roots:
         if (candidate / "src" / "memory_api.py").is_file():
             found.append(candidate / "src")
-    for site_src in sorted(RUNTIME_PYTHON.parent.parent.glob(
-            "lib/python*/site-packages/src")):
-        if (site_src / "memory_api.py").is_file() and site_src not in found:
-            found.append(site_src)
+    for interpreter in interpreters:
+        for site_src in sorted(Path(interpreter).parent.parent.glob(
+                "lib/python*/site-packages/src")):
+            if (site_src / "memory_api.py").is_file() and site_src not in found:
+                found.append(site_src)
     if not found:
         raise ValueError("service_code_root_not_found")
     return found, unit_lines
@@ -89,17 +94,27 @@ def health_ready(deadline_seconds=30):
 
 
 def ingest_route_live():
-    """The new route must exist: unauthenticated POST yields 401/422, never
-    405 (old code answers 405 because /v1/memories/{id} swallows the path)."""
+    """AUTHENTICATED probe: the boundary's 401 fires before routing, so an
+    unauthenticated check proves nothing. With a real role token an empty
+    body must reach validation (422); old code answers 405 because
+    /v1/memories/{record_id} swallows the path."""
     import urllib.error
+    env = Path("/home/vincentspereira/.hermes/profiles/web-researcher/.env")
+    token = ""
+    for line in env.read_text().splitlines():
+        if line.startswith("ENHANCED_COGNEE_ACCESS_TOKEN="):
+            token = line.split("=", 1)[1].strip()
+    if not token:
+        raise ValueError("probe_token_missing")
     request = urllib.request.Request("http://127.0.0.1:28080/v1/memories/ingest",
                                      data=b"{}", method="POST",
-                                     headers={"Content-Type": "application/json"})
+                                     headers={"Authorization": "Bearer " + token,
+                                              "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(request, timeout=5) as response:
-            return response.status in (401, 422)
+            return response.status in (200, 422)
     except urllib.error.HTTPError as exc:
-        return exc.code in (401, 422)
+        return exc.code in (200, 422)
     except Exception:
         return False
 
