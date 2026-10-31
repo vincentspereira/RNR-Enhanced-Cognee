@@ -27,7 +27,7 @@ PROFILES = HOME / "profiles"
 INSTALL = HOME / "mcp-servers/enhanced-cognee/server.py"
 PY = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
 PROTOCOL_SHA = "415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07"
-HOME_GROUPS = "memory_read,ingest,analysis,coordination"
+HOME_GROUPS = "memory_read,ingest,analysis"
 BACKENDS = ["enhanced-cognee-api.service", "enhanced-cognee-postgres.service",
             "enhanced-cognee-qdrant.service", "enhanced-cognee-graph.service",
             "enhanced-cognee-cache.service"]

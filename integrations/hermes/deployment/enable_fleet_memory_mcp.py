@@ -28,13 +28,13 @@ DEFAULT_GROUPS = "memory_read"
 HOME_CONFIG = HOME / "config.yaml"
 # The main Hermes assistant (app-level default profile, gateway home
 # config) acts as the fleet's chief coordinator: full toolset.
-HOME_GROUPS = "memory_read,ingest,analysis,coordination"
+HOME_GROUPS = "memory_read,ingest,analysis"
 # Full per-table enablement (owner-approved 31 Oct): analysis for every
 # role marked N or G in the matrix; ingest where N or G; coordination for
 # the four coordinators; the ops family stays read-only by design.
 _INGEST_ANALYSIS = "memory_read,ingest,analysis"
 _ANALYSIS_ONLY = "memory_read,analysis"
-_COORDINATION = "memory_read,analysis,coordination"
+_COORDINATION = "memory_read,analysis"  # library ops are reviewer-gated by design
 ROLE_GROUPS = {
     # Research and content: ingest + analysis
     "web-researcher": _INGEST_ANALYSIS,
@@ -69,7 +69,7 @@ ROLE_GROUPS = {
     "security-specialist": _ANALYSIS_ONLY,
     "governance-privacy": _ANALYSIS_ONLY,
     "ai-safety-guardrails": _ANALYSIS_ONLY,
-    # Coordination: analysis + shared-space publication
+    # Coordination roles: analysis (library publication stays reviewer-gated)
     "chief-of-staff": _COORDINATION,
     "project-orchestrator": _COORDINATION,
     "cross-project-collaborator": _COORDINATION,

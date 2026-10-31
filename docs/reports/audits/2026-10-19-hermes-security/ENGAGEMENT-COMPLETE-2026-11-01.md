@@ -209,3 +209,32 @@ git-history scan closed audit F22: no structural provider keys; three
 fingerprints recorded as defaults/templates). All owner-terminal
 actions used fixed prepared commands; the agent never held a secret
 value.
+
+## 5. Post-completion comprehensive testing (1 November 2026)
+
+Two suites, both green:
+
+- Consolidated verifier: 56/56 (backends, API, main assistant, all 40
+  roles live-proven per matrix, timers, all five rotation receipts).
+- Functional suite (20 checks, real paths and tokens): memory CRUD
+  (write, get, version-checked correction with history, semantic recall,
+  retraction), MCP read tools (exact advertisement, live status, graph
+  traversal), ingestion (document chunked and stored; private-address
+  refused), analysis (real GLM-5.3-Flash summarize with token
+  accounting, translate returned-not-stored, Cyrillic detect-language,
+  report-only consolidation, budget state), coordination, worker/graph
+  health (pending drained, source-linked graph), and clean state after.
+
+Governance correction found and applied by the testing itself: the
+library publication endpoints are permission-gated to memory:admin
+(the fleet-memory reviewed-sharing design - a separate reviewer
+credential, never given to an agent). Exposing publish/revoke tools to
+coordinator role tokens was a wiring error on my side; the API's 403
+refusal was the architecture working correctly. The coordination group
+was removed from role enablement (coordinators and the main assistant
+now carry memory_read[,ingest],analysis; the three library tools remain
+in the server for use with a future reviewer credential only). The
+functional suite now asserts the refusal itself as the expected
+behavior. If direct bot publication is ever wanted, the correct path is
+an owner-issued reviewer credential or a reviewed-proposal endpoint -
+an explicit owner decision, not a silent permission change.
