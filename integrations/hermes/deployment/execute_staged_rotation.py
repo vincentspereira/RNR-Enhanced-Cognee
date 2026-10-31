@@ -904,9 +904,22 @@ def apply_arcadedb(logins, stamp, candidate):
         for name, secret in staged.items():
             as_name = "root" if name == root_mapped else name
             if not arcade_auth_ok(as_name, secret):
-                raise ValueError("arcade_auth_verify_failed:%s:%s" % (
-                    name, json.dumps(_arcade_auth_matrix(
-                        staged, root_mapped))))
+                log = subprocess.run(
+                    ["/usr/bin/journalctl", "-u", "enhanced-cognee-graph.service",
+                     "--no-pager", "-n", "25", "--output=cat"],
+                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=15)
+                log_lines = [line for line in
+                             log.stdout.decode("utf-8", "replace").splitlines()
+                             if any(word in line.lower() for word in
+                                    ("user", "password", "auth", "hash", "error",
+                                     "exception", "invalid"))][:10]
+                stat_after = users_file.stat()
+                raise ValueError("arcade_auth_verify_failed:%s:%s:file=%s:%s" % (
+                    name, json.dumps(_arcade_auth_matrix(staged, root_mapped)),
+                    json.dumps({"uid": stat_after.st_uid, "gid": stat_after.st_gid,
+                                "mode": oct(stat_after.st_mode & 0o777),
+                                "bytes": stat_after.st_size}),
+                    json.dumps(log_lines)))
     except Exception:
         restore = users_file.with_name(users_file.name
                                        + ".before-rotation-" + stamp)
