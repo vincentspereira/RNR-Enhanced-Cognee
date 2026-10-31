@@ -896,7 +896,22 @@ def apply_arcadedb(logins, stamp, candidate):
         users_file.chmod(0o600)
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
                 "graph_restart_failed")
-        time.sleep(8)
+        # ArcadeDB boots slowly; a starting server answers 403 to
+        # everything. Wait until the healthy anonymous answer (200 on
+        # the info route) returns before verifying credentials.
+        ready = False
+        for _ in range(30):
+            time.sleep(2)
+            try:
+                import urllib.request as _u
+                with _u.urlopen(ARCADE_HTTP + "/api/v1/server",
+                                timeout=5) as response:
+                    if response.status == 200:
+                        ready = True
+                        break
+            except Exception:
+                continue
+        require(ready, "graph_not_ready_after_60s")
         # The staged user mapped onto root authenticates AS root (its
         # secret is root's new password); every other staged name
         # authenticates under its own name.
