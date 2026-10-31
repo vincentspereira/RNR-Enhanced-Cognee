@@ -10,9 +10,7 @@ Coverage:
 
 from __future__ import annotations
 
-import asyncio
-import sys
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -73,15 +71,11 @@ class TestNewGraphFactoryDispatch:
 class TestNewCacheFactoryDispatch:
     def test_memcached(self, monkeypatch):
         monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "memcached")
-        # Skip if pymemcache isn't installed in the test environment;
-        # the factory dispatch line itself is what we want to cover.
-        pymemcache = pytest.importorskip("pymemcache")
         client = db_factory.get_cache_client()
         assert type(client).__name__ == "_MemcachedAsyncClient"
 
     def test_sync_memcached(self, monkeypatch):
         monkeypatch.setenv("ENHANCED_CACHE_PROVIDER", "memcached")
-        pytest.importorskip("pymemcache")
         client = db_factory.get_sync_cache_client()
         assert type(client).__name__ == "_MemcachedAsyncClient"
 
@@ -204,12 +198,6 @@ class TestNetworkXInMemory:
 # ===========================================================================
 
 
-@pytest.mark.skipif(
-    "pymemcache" not in sys.modules and not pytest.importorskip(
-        "pymemcache", reason="pymemcache not installed"
-    ),
-    reason="pymemcache not installed",
-)
 class TestMemcached:
     @pytest.mark.asyncio
     async def test_ping(self, monkeypatch):
@@ -286,8 +274,7 @@ class TestSQLiteRelational:
 
     @pytest.mark.asyncio
     async def test_acquire_yields_connection(self):
-        # Use a real :memory: SQLite via aiosqlite if available
-        aiosqlite = pytest.importorskip("aiosqlite")
+        # Exercise a real in-memory SQLite connection.
         pool = await relational_sqlite.create_pool(database=":memory:")
         async with pool.acquire() as conn:
             assert type(conn).__name__ == "_SQLiteConnection"
@@ -297,7 +284,6 @@ class TestSQLiteRelational:
 
     @pytest.mark.asyncio
     async def test_fetch_and_execute(self):
-        pytest.importorskip("aiosqlite")
         pool = await relational_sqlite.create_pool(database=":memory:")
         async with pool.acquire() as conn:
             await conn.execute("CREATE TABLE t (id INTEGER, name TEXT)")

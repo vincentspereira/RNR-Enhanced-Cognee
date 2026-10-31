@@ -84,6 +84,17 @@ class TestRateLimitError:
 # ---------------------------------------------------------------------------
 
 class TestTokenBucket:
+    def test_wall_clock_correction_cannot_change_refill(self, monkeypatch):
+        from src.llm.rate_limiter import TokenBucket
+        elapsed_clock = [100.0]
+        monkeypatch.setattr("src.llm.rate_limiter.time.monotonic", lambda: elapsed_clock[0])
+        monkeypatch.setattr("src.llm.rate_limiter.time.time", lambda: -999999.0)
+        bucket = TokenBucket(capacity=100, tokens=0, refill_rate=10.0)
+        elapsed_clock[0] = 103.0
+        assert bucket.available_tokens == 30
+        elapsed_clock[0] = 102.0
+        assert bucket.available_tokens == 30
+
     def test_init(self):
         from src.llm.rate_limiter import TokenBucket
         bucket = TokenBucket(capacity=100, tokens=100, refill_rate=1.0)
@@ -111,14 +122,14 @@ class TestTokenBucket:
         from src.llm.rate_limiter import TokenBucket
         bucket = TokenBucket(capacity=100, tokens=0, refill_rate=10.0)
         # Simulate time passage by backdating last_refill
-        bucket.last_refill = time.time() - 5.0  # 5 seconds ago, 50 tokens should be added
+        bucket.last_refill = time.monotonic() - 5.0  # 5 seconds ago, 50 tokens should be added
         bucket._refill()
         assert bucket.tokens == pytest.approx(50, abs=2)
 
     def test_refill_does_not_exceed_capacity(self):
         from src.llm.rate_limiter import TokenBucket
         bucket = TokenBucket(capacity=10, tokens=10, refill_rate=100.0)
-        bucket.last_refill = time.time() - 10.0
+        bucket.last_refill = time.monotonic() - 10.0
         bucket._refill()
         assert bucket.tokens <= bucket.capacity
 
@@ -488,7 +499,7 @@ class TestGetQueueStatus:
         limiter.request_queues[queue_key].append({
             "tokens": 100,
             "priority": RequestPriority.HIGH,
-            "timestamp": time.time() - 5
+            "timestamp": time.monotonic() - 5
         })
         status = await limiter.get_queue_status(Provider.ANTHROPIC, "key")
         assert status["queue_length"] == 1

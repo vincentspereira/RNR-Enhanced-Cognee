@@ -1,0 +1,35 @@
+# REVIEW TEMPLATE ONLY. Not installed, qualified or enabled.
+[Unit]
+Description=Allowlisted ordinary Enhanced Cognee credential renewal
+After=enhanced-cognee-api.service
+Requires=enhanced-cognee-api.service
+ConditionPathExists=/etc/enhanced-cognee/fleet-credentials.json
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/opt/enhanced-cognee-memory/python/bin/python3.12 -I /opt/enhanced-cognee-memory/operator/renew_fleet_credentials.py
+WorkingDirectory=/
+UMask=0077
+StateDirectory=enhanced-cognee-renewal
+StateDirectoryMode=0700
+Restart=no
+TimeoutStartSec=15min
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=strict
+# Extend only for separately admitted restricted launch identities.
+ReadWritePaths=/var/lib/enhanced-cognee-renewal /var/lib/hermes-runtime
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID
+AmbientCapabilities=CAP_SETUID CAP_SETGID
+TasksMax=32
+MemoryMax=256M

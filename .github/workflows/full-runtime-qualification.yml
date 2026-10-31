@@ -1,0 +1,33 @@
+name: Full runtime qualification
+
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the actual full runtime
+        run: docker build -t rnr-cognee-full:qualification .
+      - name: Verify production imports and the real MCP protocol
+        run: |
+          docker run -i --name full-runtime-qualification --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges --memory 3g -e ENHANCED_ENV=production -e ENHANCED_REQUIRE_TENANT=1 -e POSTGRES_PASSWORD=synthetic-only -e ARCADEDB_PASSWORD=synthetic-only -e NEO4J_PASSWORD=synthetic-only -e REDIS_PASSWORD=synthetic-only -e COGNEE_LOG_FILE=false -e ENHANCED_LOAD_DOTENV=0 -e HF_HUB_OFFLINE=1 -e LITELLM_LOCAL_MODEL_COST_MAP=True --entrypoint python rnr-cognee-full:qualification - < tests/qualification/full_runtime_smoke.py > full-runtime-qualification.log 2>&1
+      - name: Gate high and critical container findings
+        if: always()
+        run: |
+          docker run --name full-image-scanner -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --timeout 15m --severity HIGH,CRITICAL --exit-code 1 --format json rnr-cognee-full:qualification > full-image-vulnerabilities.json
+      - name: Upload runtime and vulnerability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-runtime-qualification
+          path: |
+            full-runtime-qualification.log
+            full-image-vulnerabilities.json

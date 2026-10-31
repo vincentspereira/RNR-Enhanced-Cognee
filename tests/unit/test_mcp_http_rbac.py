@@ -85,6 +85,7 @@ def client(monkeypatch):
 
 
 def _bearer(secret: str, **claims) -> dict:
+    claims.setdefault("tenant", "test_scope")
     token = REAL_JWT.encode(claims, secret, algorithm="HS256")
     return {"Authorization": f"Bearer {token}"}
 
@@ -181,8 +182,9 @@ class TestPublicPaths:
         resp = client.get("/health/live")  # no key
         assert resp.status_code == 200
 
-    def test_metrics_public_by_default(self, client, monkeypatch):
+    def test_metrics_public_when_explicitly_enabled(self, client, monkeypatch):
         monkeypatch.setenv("ENHANCED_API_KEY", "sk-secret")
+        monkeypatch.setenv("ENHANCED_METRICS_PUBLIC", "1")
         resp = client.get("/metrics")  # no key
         assert resp.status_code == 200
 

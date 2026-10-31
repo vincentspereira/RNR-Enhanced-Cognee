@@ -1,0 +1,45 @@
+{
+  "owner_decision": {
+    "date": "2026-10-20",
+    "distro": "Ubuntu-Hermes",
+    "backup_directory": "/var/backups/enhanced-cognee",
+    "cloud_upload_configured": false,
+    "automatic_retention_deletion": false
+  },
+  "implementation": {
+    "private_role_specific_credentials": true,
+    "memory_decryption_key_needed": false,
+    "age_private_recovery_key_needed": false,
+    "ambient_directory_override_admitted": false,
+    "system_unit_syntax_check_exit_code": 0,
+    "syntax_check_limit": "Temporary accessible runtime paths; not an installed system service"
+  },
+  "qualification": {
+    "tests": "74",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "28.178"
+  },
+  "native_wheel": {
+    "name": "rnr_enhanced_cognee_memory-1.1.0-py3-none-any.whl",
+    "sha256": "3a4efb36c2a6541c57bdbf563164df08abd67fa68590fb0ce68ca2f21eaf690c",
+    "outside_checkout_import": "passed",
+    "pip_compatibility": "55 installed packages passed"
+  },
+  "deployment": {
+    "installed_inside_Hermes": false,
+    "directory_created_inside_Hermes": false,
+    "timer_enabled": false,
+    "blocker": "WSL control executable still returns Exec format error from this session"
+  },
+  "remaining_owner_evidence": [
+    "Exposed credentials revoked or replaced",
+    "Recovery copies held in password manager"
+  ],
+  "remaining_operator_work": [
+    "Install root-owned runtime and private service credentials in Ubuntu-Hermes",
+    "Create approved root-owned 0700 directory; use 0600 backup files",
+    "Verify first backup and fresh-database restore in Ubuntu-Hermes before enabling timer"
+  ]
+}

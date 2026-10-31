@@ -17,7 +17,7 @@ export default function SignUpPage() {
         <AuthForm
           authUrl="/v1/auth/register"
           submitButtonText="Sign up"
-          onSignInSuccess={() => window.location.href = "/auth/login"}
+          onSignInSuccess={() => window.location.replace(new URL("/auth/login", window.location.origin).href)}
         />
 
         <p className="text-center mt-2 text-sm">

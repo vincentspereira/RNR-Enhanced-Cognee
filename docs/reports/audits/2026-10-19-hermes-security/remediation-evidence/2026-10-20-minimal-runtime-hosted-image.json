@@ -1,0 +1,41 @@
+{
+  "source_commit": "91a3c467f6af0d8b330536fb1fe9142dd4d06d79",
+  "workflow_run": 39387234569,
+  "workflow_url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39387234569",
+  "conclusion": "success",
+  "exact_image_id": "sha256:91de18171da94cbb0e72574236bbe36de60293279db1c3db8a0276e6c395de1d",
+  "scope": "Restricted canonical API and index-worker image, linux/amd64",
+  "scanner": "Trivy 0.76.0",
+  "severity_counts": {
+    "CRITICAL": 0,
+    "HIGH": 0,
+    "MEDIUM": 26,
+    "LOW": 10,
+    "UNKNOWN": 0
+  },
+  "package_counts": {
+    "debian": 21,
+    "python-pkg": 48
+  },
+  "real_store_tests": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_smoke_passed": true,
+  "actual_api_worker_restart_recovery_passed": true,
+  "gate_suppression_used": false,
+  "private_deployment_qualified": false,
+  "all_project_phases_complete": false,
+  "previous_restricted_image_id": "sha256:f2d16586d01917ee3ff5a0db9237569a54d760df47c60c12d71902aeaf39cdec",
+  "previous_high_matches": 44,
+  "original_scan_sha256": "39470d09b0e945282c90cab5b9a522174b824374551b9959211fac52af0266e7",
+  "retained_scan_encoding": "ASCII JSON escapes only; no field or finding filtered",
+  "remaining_findings_with_a_listed_fixed_version": 0,
+  "xz_security_update": {
+    "package": "liblzma5",
+    "version": "5.8.1-1+deb13u2",
+    "advisory": "https://security-tracker.debian.org/tracker/DSA-6549-1"
+  }
+}

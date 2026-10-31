@@ -1,0 +1,55 @@
+{
+  "completed_memory_tests_replayed": false,
+  "component_sha256": {
+    "diagnose_rea_owner_preflight.py": "bbeaaacd7e06679081484a4d5a15cf7f101a55ca1462dbd3e89084ea18596328",
+    "inspect_rea_program_failure.py": "03af5e44f43b2b7f3d1e1944653335347a1d6990cf056e15ee6282385b458e29",
+    "launch_control.py": "c55d7ce2f5d3324cb5d3b21e11d2c5b5931d38406a5f321fd52e31ac84a987d1"
+  },
+  "diagnosis": {
+    "actual_failed_predicate": "unconfirmed",
+    "broad_label_also_covers_source_comparison": true,
+    "current_owner_file_reads_succeeded": 3,
+    "frozen_public_hashes_verified": true,
+    "guards_changed": false
+  },
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "inspection": {
+    "blocker": "sudo_requires_owner_terminal",
+    "effectful_retry": false,
+    "mode": "inspect-rea-failure",
+    "prepared": true,
+    "protected_execution_complete": false,
+    "readonly": true
+  },
+  "owner_reported_failure": {
+    "all_admission_policies_preserved_disabled": true,
+    "candidate_promoted": false,
+    "complete": false,
+    "credentials_issued": 0,
+    "daily_backup_registry_changed": false,
+    "evidence": "operator-evidence/rea-main-programs-s784o2c_",
+    "operator_helper_sha256": "fa213db654f35502ba5bd32b07ae64dea59a6ecb36cd88188eb8805b94d31534",
+    "operator_job_stopped": true,
+    "owner_diagnostic": {
+      "error_kind": "ValueError",
+      "phase": "identity"
+    },
+    "source_profiles_changed": false,
+    "source_programs_changed": false
+  },
+  "prior_live_recovery_pass_preserved": true,
+  "recorded_utc": "2026-10-28T01:22:29.337131+00:00",
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "errors": 0,
+    "failed": 0,
+    "native_python": "3.14.7",
+    "native_syntax_files": 3,
+    "negative_control_is_not_protected_failure_diagnosis": true,
+    "passed": 31,
+    "same_uid_negative_control": "expected_supplementary_group_refusal_before_private_file_reads",
+    "skipped": 0,
+    "warnings": 0
+  }
+}

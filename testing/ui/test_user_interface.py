@@ -457,7 +457,7 @@ def accessibility_rules():
         ),
         AccessibilityRule(
             rule_id="wcag-2-3-1-focus-visible",
-            description "Keyboard focus indicator should be visible",
+            description="Keyboard focus indicator should be visible",
             wcag_level="AA",
             automated_check=True
         )
@@ -1173,9 +1173,9 @@ class TestVisualRegression:
                     for prop in ["color", "fontSize", "fontFamily"]:
                         if expected_props.get(prop) and actual_props.get(prop):
                             # Allow minor variations for dynamic theming
-                            assert expected_props[prop] == actual_props[prop] or \
-                                   prop == "color",  # Colors may vary with themes
-                                f"Inconsistent {prop} for {selector} on {page_url}"
+                            assert (
+                                expected_props[prop] == actual_props[prop] or prop == "color"
+                            ), f"Inconsistent {prop} for {selector} on {page_url}"
 
 
 # Test configuration and utilities

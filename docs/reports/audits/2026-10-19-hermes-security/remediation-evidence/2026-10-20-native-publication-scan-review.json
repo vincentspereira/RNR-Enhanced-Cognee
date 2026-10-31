@@ -1,0 +1,13 @@
+{
+  "scanner_exit_code": 1,
+  "findings": [
+    {
+      "rule": "generic-api-key",
+      "patch_line": 460,
+      "verified_source_sha256_false_positive": true
+    }
+  ],
+  "all_findings_reviewed": true,
+  "credential_findings_confirmed": 0,
+  "suppression_rules_added": false
+}

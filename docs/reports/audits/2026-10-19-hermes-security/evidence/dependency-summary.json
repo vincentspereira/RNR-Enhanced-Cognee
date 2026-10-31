@@ -1,0 +1,5458 @@
+{
+  "pip-audit-installed": {
+    "packages": 158,
+    "flagged_package_versions": 7,
+    "package_advisory_pairs": 24,
+    "findings": [
+      {
+        "name": "aiohttp",
+        "version": "3.14.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3547",
+            "aliases": [
+              "GHSA-mq44-7p77-q5h7",
+              "CVE-2026-59881"
+            ],
+            "fix_versions": [
+              "3.14.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3546",
+            "aliases": [
+              "CVE-2026-69243",
+              "GHSA-mfx4-hv73-q22v"
+            ],
+            "fix_versions": [
+              "3.14.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3545",
+            "aliases": [
+              "CVE-2026-69244",
+              "GHSA-cq5v-8q36-5273"
+            ],
+            "fix_versions": [
+              "3.14.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "diskcache",
+        "version": "5.6.3",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2447",
+            "aliases": [
+              "CVE-2025-69872",
+              "GHSA-w8v5-vhqr-4h9v"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "fsspec",
+        "version": "2025.3.2",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4217",
+            "aliases": [
+              "GHSA-27vj-qcqg-25rc",
+              "CVE-2026-104851"
+            ],
+            "fix_versions": [
+              "2026.6.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "litellm",
+        "version": "1.92.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4066",
+            "aliases": [
+              "CVE-2026-84377",
+              "GHSA-3cv6-jpf6-8222"
+            ],
+            "fix_versions": [
+              "1.88.6",
+              "1.89.7",
+              "1.90.7",
+              "1.91.5",
+              "1.92.2",
+              "1.93.2",
+              "1.94.3",
+              "1.95.1",
+              "1.96.2"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "multidict",
+        "version": "6.7.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4244",
+            "aliases": [
+              "CVE-2026-104874",
+              "GHSA-54p9-h82j-f925"
+            ],
+            "fix_versions": [
+              "6.9.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pypdf",
+        "version": "6.14.2",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3656",
+            "aliases": [
+              "GHSA-fwg2-594c-jp42",
+              "CVE-2026-71852"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3655",
+            "aliases": [
+              "GHSA-fp3f-mc75-235c",
+              "CVE-2026-71870"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3912",
+            "aliases": [
+              "GHSA-fc8x-2rww-xw9m",
+              "CVE-2026-82398"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3910",
+            "aliases": [
+              "CVE-2026-84310",
+              "GHSA-23w6-3w8w-8484"
+            ],
+            "fix_versions": [
+              "6.16.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3911",
+            "aliases": [
+              "GHSA-763m-79hh-57f2",
+              "CVE-2026-84311"
+            ],
+            "fix_versions": [
+              "6.16.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3913",
+            "aliases": [
+              "GHSA-jp53-mhqp-8xcg",
+              "CVE-2026-84309"
+            ],
+            "fix_versions": [
+              "6.16.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4153",
+            "aliases": [
+              "CVE-2026-102994",
+              "GHSA-5jq2-8x83-x246"
+            ],
+            "fix_versions": [
+              "6.18.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4154",
+            "aliases": [
+              "GHSA-fp3h-c4fm-7vvf",
+              "CVE-2026-102995"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4160",
+            "aliases": [
+              "GHSA-w23x-9jrw-r45c",
+              "CVE-2026-103000"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4159",
+            "aliases": [
+              "GHSA-v247-6f48-mgcj",
+              "CVE-2026-102999"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4156",
+            "aliases": [
+              "GHSA-jw7q-gvrg-4vj3",
+              "CVE-2026-102997"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4155",
+            "aliases": [
+              "CVE-2026-102996",
+              "GHSA-g9cg-prrw-2r8q"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4158",
+            "aliases": [
+              "CVE-2026-102993",
+              "GHSA-qv6h-rv94-w285"
+            ],
+            "fix_versions": [
+              "6.17.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4157",
+            "aliases": [
+              "CVE-2026-102998",
+              "GHSA-php9-fj8v-98fj"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "urllib3",
+        "version": "2.7.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4177",
+            "aliases": [
+              "CVE-2026-97689",
+              "GHSA-vxq7-64xx-v4gw"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4176",
+            "aliases": [
+              "CVE-2026-97688",
+              "GHSA-gh4c-6fx4-qh6g"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4175",
+            "aliases": [
+              "GHSA-8988-9cw3-xx77",
+              "CVE-2026-97687"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "cognee",
+        "skip_reason": "Dependency not found on PyPI and could not be audited: cognee (1.0.9+enhanced)"
+      }
+    ]
+  },
+  "pip-audit-docker": {
+    "packages": 21,
+    "flagged_package_versions": 3,
+    "package_advisory_pairs": 12,
+    "findings": [
+      {
+        "name": "python-dotenv",
+        "version": "1.0.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2270",
+            "aliases": [
+              "CVE-2026-28684",
+              "GHSA-mf9w-mj56-hr94"
+            ],
+            "fix_versions": [
+              "1.2.2"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "python-multipart",
+        "version": "0.0.9",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-1851",
+            "aliases": [
+              "GHSA-59g5-xgcq-4qw3",
+              "CVE-2024-53981"
+            ],
+            "fix_versions": [
+              "0.0.18"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-1852",
+            "aliases": [
+              "CVE-2026-24486",
+              "GHSA-wp53-j4wj-2cfg"
+            ],
+            "fix_versions": [
+              "0.0.22"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3038",
+            "aliases": [
+              "CVE-2026-40347",
+              "GHSA-mj87-hwqh-73pj"
+            ],
+            "fix_versions": [
+              "0.0.26"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3039",
+            "aliases": [
+              "GHSA-pp6c-gr5w-3c5g",
+              "CVE-2026-42561"
+            ],
+            "fix_versions": [
+              "0.0.27"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3040",
+            "aliases": [
+              "CVE-2026-53540",
+              "GHSA-v9pg-7xvm-68hf"
+            ],
+            "fix_versions": [
+              "0.0.31"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3036",
+            "aliases": [
+              "CVE-2026-53539",
+              "GHSA-5rvq-cxj2-64vf"
+            ],
+            "fix_versions": [
+              "0.0.30"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3037",
+            "aliases": [
+              "GHSA-6jv3-5f52-599m",
+              "CVE-2026-53538"
+            ],
+            "fix_versions": [
+              "0.0.30"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "python-jose",
+        "version": "3.3.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2024-233",
+            "aliases": [
+              "GHSA-cjwg-qfpm-7377",
+              "CVE-2024-33664"
+            ],
+            "fix_versions": [
+              "3.4.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2024-232",
+            "aliases": [
+              "CVE-2024-33663",
+              "GHSA-6c5p-j8vq-pqhj"
+            ],
+            "fix_versions": [
+              "3.4.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2025-185",
+            "aliases": [
+              "CVE-2024-29370"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-4298",
+            "aliases": [
+              "GHSA-3qf3-8w2g-rqmx",
+              "CVE-2026-85394"
+            ],
+            "fix_versions": []
+          }
+        ]
+      }
+    ],
+    "skipped": []
+  },
+  "pip-audit-uv-lock-group-0": {
+    "packages": 538,
+    "flagged_package_versions": 36,
+    "package_advisory_pairs": 166,
+    "findings": [
+      {
+        "name": "accelerate",
+        "version": "1.14.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3804",
+            "aliases": [
+              "CVE-2026-69112",
+              "GHSA-4j2p-28q2-5m79"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "aiohttp",
+        "version": "3.14.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3547",
+            "aliases": [
+              "CVE-2026-59881",
+              "GHSA-mq44-7p77-q5h7"
+            ],
+            "fix_versions": [
+              "3.14.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3546",
+            "aliases": [
+              "CVE-2026-69243",
+              "GHSA-mfx4-hv73-q22v"
+            ],
+            "fix_versions": [
+              "3.14.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3545",
+            "aliases": [
+              "CVE-2026-69244",
+              "GHSA-cq5v-8q36-5273"
+            ],
+            "fix_versions": [
+              "3.14.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "asyncmy",
+        "version": "0.2.11",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-286",
+            "aliases": [
+              "CVE-2025-65896",
+              "GHSA-qhqw-rrw9-25rm"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "banks",
+        "version": "2.4.5",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4201",
+            "aliases": [
+              "CVE-2026-107716",
+              "GHSA-556j-vv39-8rqv"
+            ],
+            "fix_versions": [
+              "2.5.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4202",
+            "aliases": [
+              "CVE-2026-107717",
+              "GHSA-hmq2-7hp6-7crh"
+            ],
+            "fix_versions": [
+              "2.5.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "chromadb",
+        "version": "0.6.3",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3814",
+            "aliases": [
+              "GHSA-36p7-vc44-83pf",
+              "CVE-2026-45833"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-3815",
+            "aliases": [
+              "CVE-2026-45831",
+              "GHSA-xph7-9rjv-w5fr"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-3813",
+            "aliases": [
+              "CVE-2026-45830",
+              "GHSA-2wm9-hf6c-p5cr"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "cryptography",
+        "version": "45.0.7",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2141",
+            "aliases": [
+              "GHSA-r6ph-v2qm-q3c2",
+              "CVE-2026-26007"
+            ],
+            "fix_versions": [
+              "46.0.5"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-35",
+            "aliases": [
+              "CVE-2026-34073",
+              "GHSA-m959-cc7f-wv43"
+            ],
+            "fix_versions": [
+              "46.0.6"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-36",
+            "aliases": [
+              "CVE-2026-39892",
+              "GHSA-p423-j2cm-9vmq"
+            ],
+            "fix_versions": [
+              "46.0.7"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3554",
+            "aliases": [
+              "GHSA-m2h6-j472-rp4c",
+              "CVE-2026-69248"
+            ],
+            "fix_versions": [
+              "49.0.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3552",
+            "aliases": [
+              "CVE-2026-69247",
+              "GHSA-g6cj-pr64-35w5"
+            ],
+            "fix_versions": [
+              "50.0.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3553",
+            "aliases": [
+              "CVE-2026-69249",
+              "GHSA-jwv3-5hgf-82ww"
+            ],
+            "fix_versions": [
+              "49.0.0"
+            ]
+          },
+          {
+            "id": "GHSA-537c-gmf6-5ccf",
+            "aliases": [],
+            "fix_versions": [
+              "48.0.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "diskcache",
+        "version": "5.6.3",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2447",
+            "aliases": [
+              "CVE-2025-69872",
+              "GHSA-w8v5-vhqr-4h9v"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "docling",
+        "version": "2.70.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2143",
+            "aliases": [
+              "CVE-2026-44017",
+              "GHSA-cjqg-rq2h-2fvj"
+            ],
+            "fix_versions": [
+              "2.91.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2144",
+            "aliases": [
+              "CVE-2026-44018",
+              "GHSA-r3xg-rg9j-67fv"
+            ],
+            "fix_versions": [
+              "2.91.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2146",
+            "aliases": [
+              "GHSA-q29v-xc37-wh5m",
+              "CVE-2026-47214"
+            ],
+            "fix_versions": [
+              "2.94.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-240",
+            "aliases": [
+              "CVE-2026-44020",
+              "GHSA-m88r-rg27-5xfg"
+            ],
+            "fix_versions": [
+              "2.74.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4195",
+            "aliases": [
+              "CVE-2026-105749",
+              "GHSA-cgc7-9qp3-86m3"
+            ],
+            "fix_versions": [
+              "2.131.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4194",
+            "aliases": [
+              "GHSA-3cr3-8m4c-fpxw",
+              "CVE-2026-105747"
+            ],
+            "fix_versions": [
+              "2.131.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4192",
+            "aliases": [
+              "GHSA-9jxx-vjrv-h2rq",
+              "CVE-2026-105745"
+            ],
+            "fix_versions": [
+              "2.131.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4208",
+            "aliases": [
+              "GHSA-p944-4xh2-x776",
+              "CVE-2026-105748"
+            ],
+            "fix_versions": [
+              "2.131.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "docling-core",
+        "version": "2.60.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2456",
+            "aliases": [
+              "CVE-2026-44019",
+              "GHSA-j5xp-7m2f-49jv"
+            ],
+            "fix_versions": [
+              "2.74.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2457",
+            "aliases": [
+              "CVE-2026-44023",
+              "GHSA-jmmv-h3mp-59v8"
+            ],
+            "fix_versions": [
+              "2.74.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "fsspec",
+        "version": "2025.3.2",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4217",
+            "aliases": [
+              "CVE-2026-104851",
+              "GHSA-27vj-qcqg-25rc"
+            ],
+            "fix_versions": [
+              "2026.6.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "gitpython",
+        "version": "3.1.51",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3984",
+            "aliases": [
+              "CVE-2026-87819",
+              "GHSA-g5vv-9gxw-82hx"
+            ],
+            "fix_versions": [
+              "3.1.60"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3982",
+            "aliases": [
+              "GHSA-239g-whfq-7xj9",
+              "CVE-2026-87817"
+            ],
+            "fix_versions": [
+              "3.1.60"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3981",
+            "aliases": [
+              "CVE-2026-69097",
+              "GHSA-3rp5-jjmw-4wv2"
+            ],
+            "fix_versions": [
+              "3.1.53"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3995",
+            "aliases": [
+              "GHSA-fjr4-x663-mwxc",
+              "CVE-2026-73624"
+            ],
+            "fix_versions": [
+              "3.1.54"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3951",
+            "aliases": [
+              "GHSA-94p4-4cq8-9g67",
+              "CVE-2026-73622"
+            ],
+            "fix_versions": [
+              "3.1.55"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3783",
+            "aliases": [
+              "GHSA-jm78-9fvv-mhgr",
+              "CVE-2026-76221"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3785",
+            "aliases": [
+              "GHSA-7833-fr7j-v32q",
+              "CVE-2026-78675"
+            ],
+            "fix_versions": [
+              "3.1.59"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3786",
+            "aliases": [
+              "GHSA-284h-m62q-gf8w",
+              "CVE-2026-78676"
+            ],
+            "fix_versions": [
+              "3.1.59"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3787",
+            "aliases": [
+              "CVE-2026-78677",
+              "GHSA-8mcc-hrx5-hvxc"
+            ],
+            "fix_versions": [
+              "3.1.59"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3788",
+            "aliases": [
+              "GHSA-5xxx-qhh7-9287",
+              "CVE-2026-78678"
+            ],
+            "fix_versions": [
+              "3.1.59"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3784",
+            "aliases": [
+              "CVE-2026-76222",
+              "GHSA-hmq2-w58f-27jc"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3837",
+            "aliases": [
+              "CVE-2026-78679",
+              "GHSA-3wxw-xv34-2frg"
+            ],
+            "fix_versions": [
+              "3.1.59"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3840",
+            "aliases": [
+              "CVE-2026-76218",
+              "GHSA-9rj7-rf2p-w77r"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3838",
+            "aliases": [
+              "GHSA-4gmw-gg2m-w46p",
+              "CVE-2026-76219"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3841",
+            "aliases": [
+              "GHSA-hh9p-6wh2-4mfc",
+              "CVE-2026-76217"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3843",
+            "aliases": [
+              "GHSA-wvpp-8hx9-p66j",
+              "CVE-2026-76220"
+            ],
+            "fix_versions": [
+              "3.1.58"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3949",
+            "aliases": [
+              "GHSA-3f7w-8rr8-f37f",
+              "CVE-2026-73620"
+            ],
+            "fix_versions": [
+              "3.1.57"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3953",
+            "aliases": [
+              "GHSA-r9mr-m37c-5fr3",
+              "CVE-2026-73625"
+            ],
+            "fix_versions": [
+              "3.1.54"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3952",
+            "aliases": [
+              "GHSA-6p8h-3wgx-97gf",
+              "CVE-2026-73623"
+            ],
+            "fix_versions": [
+              "3.1.54"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3950",
+            "aliases": [
+              "GHSA-p538-c434-8v24",
+              "CVE-2026-73621"
+            ],
+            "fix_versions": [
+              "3.1.56"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3948",
+            "aliases": [
+              "CVE-2026-73619",
+              "GHSA-539m-9xh6-q6rr"
+            ],
+            "fix_versions": [
+              "3.1.57"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "h2",
+        "version": "4.3.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3628",
+            "aliases": [
+              "GHSA-6hr6-w5qg-qmwg",
+              "CVE-2026-71554"
+            ],
+            "fix_versions": [
+              "4.4.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "jupyter-server",
+        "version": "2.20.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4054",
+            "aliases": [
+              "CVE-2026-86049",
+              "GHSA-c3mw-737p-c7g2"
+            ],
+            "fix_versions": [
+              "2.21.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "jupyterlab",
+        "version": "4.6.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3671",
+            "aliases": [
+              "CVE-2026-73415",
+              "GHSA-gx64-gj6p-pc4c"
+            ],
+            "fix_versions": [
+              "4.5.10",
+              "4.6.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3672",
+            "aliases": [
+              "CVE-2026-73417",
+              "GHSA-pppj-hq3g-57pj"
+            ],
+            "fix_versions": [
+              "4.5.10",
+              "4.6.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3670",
+            "aliases": [
+              "GHSA-89vp-jrxv-24w8",
+              "CVE-2026-73416"
+            ],
+            "fix_versions": [
+              "4.5.10",
+              "4.6.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4055",
+            "aliases": [
+              "GHSA-3325-v43h-43rv",
+              "CVE-2026-102904"
+            ],
+            "fix_versions": [
+              "4.5.11",
+              "4.6.4"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4056",
+            "aliases": [
+              "GHSA-3jqq-pw4j-pqcj",
+              "CVE-2026-102830"
+            ],
+            "fix_versions": [
+              "4.5.11",
+              "4.6.4"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4057",
+            "aliases": [
+              "CVE-2026-102831",
+              "GHSA-6966-vjj6-99xv"
+            ],
+            "fix_versions": [
+              "4.5.11",
+              "4.6.4"
+            ]
+          },
+          {
+            "id": "GHSA-h5v5-8746-g7mm",
+            "aliases": [],
+            "fix_versions": [
+              "4.5.10",
+              "4.6.2"
+            ]
+          },
+          {
+            "id": "CVE-2026-73626",
+            "aliases": [
+              "GHSA-whvh-wf3x-g77j"
+            ],
+            "fix_versions": [
+              "4.5.10",
+              "4.6.2"
+            ]
+          },
+          {
+            "id": "CVE-2026-102832",
+            "aliases": [
+              "GHSA-jwrc-gm9j-263p"
+            ],
+            "fix_versions": [
+              "4.5.11",
+              "4.6.4"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "langchain-text-splitters",
+        "version": "0.3.11",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-77",
+            "aliases": [
+              "GHSA-fv5p-p927-qmxr",
+              "CVE-2026-41481"
+            ],
+            "fix_versions": [
+              "1.1.2"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "litellm",
+        "version": "1.92.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4066",
+            "aliases": [
+              "GHSA-3cv6-jpf6-8222",
+              "CVE-2026-84377"
+            ],
+            "fix_versions": [
+              "1.88.6",
+              "1.89.7",
+              "1.90.7",
+              "1.91.5",
+              "1.92.2",
+              "1.93.2",
+              "1.94.3",
+              "1.95.1",
+              "1.96.2"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "lxml",
+        "version": "4.9.4",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-87",
+            "aliases": [
+              "CVE-2026-41066",
+              "GHSA-vfmq-68hx-4jfw"
+            ],
+            "fix_versions": [
+              "6.1.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "mkdocs-material",
+        "version": "9.7.6",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3864",
+            "aliases": [
+              "CVE-2026-73295",
+              "GHSA-xvg9-69gf-fjrf"
+            ],
+            "fix_versions": [
+              "9.7.7"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "multidict",
+        "version": "6.7.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4244",
+            "aliases": [
+              "CVE-2026-104874",
+              "GHSA-54p9-h82j-f925"
+            ],
+            "fix_versions": [
+              "6.9.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "nltk",
+        "version": "3.10.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3726",
+            "aliases": [
+              "CVE-2026-62383",
+              "GHSA-3hhw-38pf-pxj6"
+            ],
+            "fix_versions": [
+              "3.10.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3736",
+            "aliases": [
+              "GHSA-3gq4-3j92-5w49",
+              "CVE-2026-79674"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3739",
+            "aliases": [
+              "CVE-2026-81724",
+              "GHSA-cw6x-m8jw-qmrh"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3738",
+            "aliases": [
+              "GHSA-ww6m-cw3f-q94g",
+              "CVE-2026-81722"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3735",
+            "aliases": [
+              "CVE-2026-79657",
+              "GHSA-x99w-6fgc-pmfw"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3737",
+            "aliases": [
+              "CVE-2026-79676",
+              "GHSA-p4rw-rvv2-7xwr"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3741",
+            "aliases": [
+              "CVE-2026-81727",
+              "GHSA-f794-5jv7-7672"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3740",
+            "aliases": [
+              "CVE-2026-81726",
+              "GHSA-8mgp-746c-j5xp"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-3733",
+            "aliases": [
+              "GHSA-6ww7-3frv-cqxh",
+              "CVE-2026-78682"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3749",
+            "aliases": [
+              "CVE-2026-79675",
+              "GHSA-m4rf-3fr8-xwx3"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3748",
+            "aliases": [
+              "CVE-2026-78681",
+              "GHSA-97qj-x29f-37w7"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3751",
+            "aliases": [
+              "CVE-2026-80206",
+              "GHSA-w3v8-gmh9-3wv7"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3752",
+            "aliases": [
+              "CVE-2026-81725",
+              "GHSA-8mpw-7fpc-4gqj"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3790",
+            "aliases": [
+              "GHSA-cv22-g7mw-8v73",
+              "CVE-2026-71514"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3789",
+            "aliases": [
+              "GHSA-f833-7jw8-xwrv",
+              "CVE-2026-62384"
+            ],
+            "fix_versions": [
+              "3.10.2"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3868",
+            "aliases": [
+              "GHSA-6hwm-xvph-95vm",
+              "CVE-2026-78680"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3871",
+            "aliases": [
+              "CVE-2026-81723",
+              "GHSA-vp2x-qp44-57v7"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3867",
+            "aliases": [
+              "CVE-2026-71513",
+              "GHSA-5gh2-94qg-qppq"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3870",
+            "aliases": [
+              "CVE-2026-72818",
+              "GHSA-qx2g-xrx7-vfh8"
+            ],
+            "fix_versions": [
+              "3.10.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3869",
+            "aliases": [
+              "GHSA-ff5c-cp5c-9wjf",
+              "CVE-2026-12876"
+            ],
+            "fix_versions": [
+              "3.10.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "notebook",
+        "version": "7.6.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4112",
+            "aliases": [
+              "GHSA-6966-vjj6-99xv",
+              "PYSEC-2026-4058",
+              "PYSEC-2026-4060",
+              "CVE-2026-102831",
+              "PYSEC-2026-4057"
+            ],
+            "fix_versions": [
+              "7.6.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "oauthlib",
+        "version": "3.3.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4114",
+            "aliases": [
+              "GHSA-xpv3-w29h-x7cv",
+              "CVE-2026-49265"
+            ],
+            "fix_versions": [
+              "4.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pillow",
+        "version": "11.3.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2249",
+            "aliases": [
+              "GHSA-cfh3-3jmp-rvhc",
+              "CVE-2026-25990"
+            ],
+            "fix_versions": [
+              "12.1.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2250",
+            "aliases": [
+              "CVE-2026-40192",
+              "GHSA-whj4-6x5x-4v2j"
+            ],
+            "fix_versions": [
+              "12.2.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-165",
+            "aliases": [
+              "CVE-2026-42308",
+              "GHSA-wjx4-4jcj-g98j"
+            ],
+            "fix_versions": [
+              "12.2.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2251",
+            "aliases": [
+              "CVE-2026-42309",
+              "GHSA-5xmw-vc9v-4wf2"
+            ],
+            "fix_versions": [
+              "12.2.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2874",
+            "aliases": [
+              "CVE-2026-42310",
+              "GHSA-r73j-pqj5-w3x7"
+            ],
+            "fix_versions": [
+              "12.2.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2252",
+            "aliases": [
+              "CVE-2026-42311",
+              "GHSA-pwv6-vv43-88gr"
+            ],
+            "fix_versions": [
+              "12.2.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2253",
+            "aliases": [
+              "GHSA-8v84-f9pq-wr9x",
+              "BIT-pillow-2026-54059",
+              "CVE-2026-54059"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2255",
+            "aliases": [
+              "GHSA-45hq-cxwh-f6vc",
+              "BIT-pillow-2026-55379",
+              "CVE-2026-55379"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2257",
+            "aliases": [
+              "GHSA-4x4j-2g7c-83w6",
+              "CVE-2026-55798"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2256",
+            "aliases": [
+              "CVE-2026-55380",
+              "BIT-pillow-2026-55380",
+              "GHSA-phj9-mv4w-65pm"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2254",
+            "aliases": [
+              "GHSA-5x94-69rx-g8h2",
+              "CVE-2026-54060",
+              "BIT-pillow-2026-54060"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3453",
+            "aliases": [
+              "CVE-2026-59205",
+              "GHSA-9hw9-ch79-4vh6",
+              "BIT-pillow-2026-59205"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3451",
+            "aliases": [
+              "CVE-2026-59199",
+              "BIT-pillow-2026-59199",
+              "GHSA-6r8x-57c9-28j4"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3493",
+            "aliases": [
+              "GHSA-62p4-gmf7-7g93",
+              "CVE-2026-54058"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3454",
+            "aliases": [
+              "GHSA-xj96-63gp-2gmr",
+              "CVE-2026-59197"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3494",
+            "aliases": [
+              "GHSA-fj7v-r99m-22gq",
+              "CVE-2026-59198"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3495",
+            "aliases": [
+              "GHSA-jjj6-mw9f-p565",
+              "CVE-2026-59200"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3496",
+            "aliases": [
+              "GHSA-vjc4-5qp5-m44j",
+              "CVE-2026-59204"
+            ],
+            "fix_versions": [
+              "12.3.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pyjwt",
+        "version": "2.13.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4145",
+            "aliases": [
+              "GHSA-ffc3-869f-jxw9",
+              "CVE-2026-102268"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4146",
+            "aliases": [
+              "GHSA-gvp8-978c-rx2q",
+              "CVE-2026-103001"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-4149",
+            "aliases": [
+              "CVE-2026-102271",
+              "GHSA-p4g4-x82p-q773"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4152",
+            "aliases": [
+              "CVE-2026-102274",
+              "GHSA-w6j9-cwv2-h6wq"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4144",
+            "aliases": [
+              "GHSA-9v7f-9g4p-ffgj",
+              "CVE-2026-102267"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4143",
+            "aliases": [
+              "GHSA-9j54-fg26-wv3r",
+              "CVE-2026-102266"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4148",
+            "aliases": [
+              "CVE-2026-102270",
+              "GHSA-jwrc-g2q2-pq5p"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4140",
+            "aliases": [
+              "GHSA-2gx3-rcp4-g85q",
+              "CVE-2026-101917"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4141",
+            "aliases": [
+              "CVE-2026-101918",
+              "GHSA-42vr-xj54-vc7v"
+            ],
+            "fix_versions": [
+              "2.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4147",
+            "aliases": [
+              "CVE-2026-102269",
+              "GHSA-hxm8-2xgr-2p9m"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4151",
+            "aliases": [
+              "CVE-2026-102273",
+              "GHSA-w2cx-738m-mc7w"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4150",
+            "aliases": [
+              "GHSA-r6x4-923q-g947",
+              "CVE-2026-102272"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4142",
+            "aliases": [
+              "CVE-2026-102265",
+              "GHSA-8wjv-2p76-3863"
+            ],
+            "fix_versions": [
+              "2.14.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4183",
+            "aliases": [
+              "GHSA-x33g-cr3x-6449",
+              "CVE-2026-102275"
+            ],
+            "fix_versions": [
+              "2.15.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pyopenssl",
+        "version": "25.3.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-2268",
+            "aliases": [
+              "GHSA-vp96-hxj8-p424",
+              "CVE-2026-27448"
+            ],
+            "fix_versions": [
+              "26.0.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2269",
+            "aliases": [
+              "CVE-2026-27459",
+              "GHSA-5pwr-322w-8jr4"
+            ],
+            "fix_versions": [
+              "26.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pypdf",
+        "version": "6.14.2",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3656",
+            "aliases": [
+              "CVE-2026-71852",
+              "GHSA-fwg2-594c-jp42"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3655",
+            "aliases": [
+              "CVE-2026-71870",
+              "GHSA-fp3f-mc75-235c"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3912",
+            "aliases": [
+              "GHSA-fc8x-2rww-xw9m",
+              "CVE-2026-82398"
+            ],
+            "fix_versions": [
+              "6.15.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3910",
+            "aliases": [
+              "GHSA-23w6-3w8w-8484",
+              "CVE-2026-84310"
+            ],
+            "fix_versions": [
+              "6.16.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3911",
+            "aliases": [
+              "CVE-2026-84311",
+              "GHSA-763m-79hh-57f2"
+            ],
+            "fix_versions": [
+              "6.16.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3913",
+            "aliases": [
+              "GHSA-jp53-mhqp-8xcg",
+              "CVE-2026-84309"
+            ],
+            "fix_versions": [
+              "6.16.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4153",
+            "aliases": [
+              "GHSA-5jq2-8x83-x246",
+              "CVE-2026-102994"
+            ],
+            "fix_versions": [
+              "6.18.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4154",
+            "aliases": [
+              "CVE-2026-102995",
+              "GHSA-fp3h-c4fm-7vvf"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4160",
+            "aliases": [
+              "CVE-2026-103000",
+              "GHSA-w23x-9jrw-r45c"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4159",
+            "aliases": [
+              "GHSA-v247-6f48-mgcj",
+              "CVE-2026-102999"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4156",
+            "aliases": [
+              "CVE-2026-102997",
+              "GHSA-jw7q-gvrg-4vj3"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4155",
+            "aliases": [
+              "CVE-2026-102996",
+              "GHSA-g9cg-prrw-2r8q"
+            ],
+            "fix_versions": [
+              "6.18.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4158",
+            "aliases": [
+              "CVE-2026-102993",
+              "GHSA-qv6h-rv94-w285"
+            ],
+            "fix_versions": [
+              "6.17.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4157",
+            "aliases": [
+              "GHSA-php9-fj8v-98fj",
+              "CVE-2026-102998"
+            ],
+            "fix_versions": [
+              "6.19.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pytest",
+        "version": "7.4.4",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-1845",
+            "aliases": [
+              "CVE-2025-71176",
+              "GHSA-6w46-j5rx-g56g"
+            ],
+            "fix_versions": [
+              "9.0.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "snowflake-connector-python",
+        "version": "3.18.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3920",
+            "aliases": [
+              "GHSA-5cc2-282f-jjq2",
+              "CVE-2026-15925"
+            ],
+            "fix_versions": [
+              "3.18.1",
+              "4.7.1"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4301",
+            "aliases": [
+              "GHSA-qqj6-54q6-cxv6",
+              "CVE-2026-86597"
+            ],
+            "fix_versions": [
+              "4.7.3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "soupsieve",
+        "version": "2.8.4",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4170",
+            "aliases": [
+              "CVE-2026-86000",
+              "GHSA-gjv8-xp57-g29c"
+            ],
+            "fix_versions": [
+              "2.9.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4171",
+            "aliases": [
+              "CVE-2026-85999",
+              "GHSA-j934-xhv5-fg8f"
+            ],
+            "fix_versions": [
+              "2.9.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "thrift",
+        "version": "0.20.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3926",
+            "aliases": [
+              "GHSA-8wv5-x4w7-5gww",
+              "CVE-2026-43871",
+              "BIT-thrift-2026-43871"
+            ],
+            "fix_versions": [
+              "0.24.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3927",
+            "aliases": [
+              "CVE-2026-66053",
+              "BIT-thrift-2026-66053",
+              "GHSA-hwrj-9rr4-24xh"
+            ],
+            "fix_versions": [
+              "0.24.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3925",
+            "aliases": [
+              "CVE-2026-41608",
+              "BIT-thrift-2026-41608",
+              "GHSA-6pjx-3pjc-mrj8"
+            ],
+            "fix_versions": [
+              "0.24.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "tinytag",
+        "version": "2.2.1",
+        "advisories": [
+          {
+            "id": "CVE-2026-104266",
+            "aliases": [
+              "GHSA-24cc-9352-h2pg"
+            ],
+            "fix_versions": [
+              "2.3.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "tornado",
+        "version": "6.5.7",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3928",
+            "aliases": [
+              "GHSA-mpf4-983q-p7j4",
+              "CVE-2026-82397"
+            ],
+            "fix_versions": [
+              "6.5.8"
+            ]
+          },
+          {
+            "id": "GHSA-chx6-46f5-w4vp",
+            "aliases": [],
+            "fix_versions": [
+              "6.5.9"
+            ]
+          },
+          {
+            "id": "GHSA-c2m8-h5v5-343r",
+            "aliases": [],
+            "fix_versions": [
+              "6.5.9"
+            ]
+          },
+          {
+            "id": "GHSA-3hv7-mjh2-fv65",
+            "aliases": [],
+            "fix_versions": [
+              "6.5.9"
+            ]
+          },
+          {
+            "id": "GHSA-wwv5-g3v4-889x",
+            "aliases": [],
+            "fix_versions": [
+              "6.5.8"
+            ]
+          },
+          {
+            "id": "GHSA-8423-8fgw-73vq",
+            "aliases": [],
+            "fix_versions": [
+              "6.5.8"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "transformers",
+        "version": "4.57.6",
+        "advisories": [
+          {
+            "id": "PYSEC-2025-217",
+            "aliases": [
+              "CVE-2025-14929"
+            ],
+            "fix_versions": []
+          },
+          {
+            "id": "PYSEC-2026-2288",
+            "aliases": [
+              "CVE-2026-1839",
+              "GHSA-69w3-r845-3855"
+            ],
+            "fix_versions": [
+              "5.0.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2289",
+            "aliases": [
+              "GHSA-29pf-2h5f-8g72",
+              "CVE-2026-4372"
+            ],
+            "fix_versions": [
+              "5.3.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-2290",
+            "aliases": [
+              "GHSA-fgcw-684q-jj6r",
+              "CVE-2026-5241"
+            ],
+            "fix_versions": [
+              "5.5.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-3929",
+            "aliases": [
+              "GHSA-xrqw-3rrv-vx5w",
+              "CVE-2026-9856"
+            ],
+            "fix_versions": [
+              "5.10.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4174",
+            "aliases": [
+              "GHSA-x9r9-c232-4q39",
+              "CVE-2026-80047"
+            ],
+            "fix_versions": []
+          }
+        ]
+      },
+      {
+        "name": "unstructured",
+        "version": "0.18.32",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3930",
+            "aliases": [
+              "CVE-2026-71428",
+              "GHSA-4mvj-m6j5-pmf7"
+            ],
+            "fix_versions": [
+              "0.24.0"
+            ]
+          },
+          {
+            "id": "CVE-2026-104250",
+            "aliases": [
+              "GHSA-v5mq-3xhg-98m9"
+            ],
+            "fix_versions": [
+              "0.24.1"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "urllib3",
+        "version": "2.7.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4177",
+            "aliases": [
+              "CVE-2026-97689",
+              "GHSA-vxq7-64xx-v4gw"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4176",
+            "aliases": [
+              "GHSA-gh4c-6fx4-qh6g",
+              "CVE-2026-97688"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4175",
+            "aliases": [
+              "GHSA-8988-9cw3-xx77",
+              "CVE-2026-97687"
+            ],
+            "fix_versions": [
+              "2.8.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "virtualenv",
+        "version": "21.6.1",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-4011",
+            "aliases": [
+              "GHSA-94p9-xgh2-xp45",
+              "CVE-2026-102930"
+            ],
+            "fix_versions": [
+              "21.7.12"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4012",
+            "aliases": [
+              "GHSA-9h9j-4vrj-gf7g",
+              "CVE-2026-102938"
+            ],
+            "fix_versions": [
+              "21.7.11"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4014",
+            "aliases": [
+              "GHSA-x78j-v8h9-3j2q",
+              "CVE-2026-102937"
+            ],
+            "fix_versions": [
+              "21.7.12"
+            ]
+          },
+          {
+            "id": "PYSEC-2026-4013",
+            "aliases": [
+              "CVE-2026-102925",
+              "GHSA-p58f-9548-mpm2"
+            ],
+            "fix_versions": [
+              "21.7.13"
+            ]
+          }
+        ]
+      }
+    ],
+    "skipped": []
+  },
+  "pip-audit-uv-lock-group-1": {
+    "packages": 14,
+    "flagged_package_versions": 2,
+    "package_advisory_pairs": 3,
+    "findings": [
+      {
+        "name": "lxml",
+        "version": "5.4.0",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-87",
+            "aliases": [
+              "CVE-2026-41066",
+              "GHSA-vfmq-68hx-4jfw"
+            ],
+            "fix_versions": [
+              "6.1.0"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "unstructured",
+        "version": "0.21.5",
+        "advisories": [
+          {
+            "id": "PYSEC-2026-3930",
+            "aliases": [
+              "CVE-2026-71428",
+              "GHSA-4mvj-m6j5-pmf7"
+            ],
+            "fix_versions": [
+              "0.24.0"
+            ]
+          },
+          {
+            "id": "CVE-2026-104250",
+            "aliases": [
+              "GHSA-v5mq-3xhg-98m9"
+            ],
+            "fix_versions": [
+              "0.24.1"
+            ]
+          }
+        ]
+      }
+    ],
+    "skipped": []
+  },
+  "pip-audit-uv-lock-group-2": {
+    "packages": 4,
+    "flagged_package_versions": 0,
+    "package_advisory_pairs": 0,
+    "findings": [],
+    "skipped": []
+  },
+  "npm": [
+    {
+      "root": "cognee-frontend",
+      "unique_package_version_advisory_pairs": 95,
+      "severity": {
+        "moderate": 36,
+        "low": 5,
+        "high": 52,
+        "critical": 2
+      },
+      "findings": [
+        {
+          "path": "node_modules/@auth0/nextjs-auth0",
+          "name": "@auth0/nextjs-auth0",
+          "version": "4.13.1",
+          "dev": false,
+          "id": 1116890,
+          "severity": "moderate",
+          "title": "Auth0 Next.js SDK has Improper Proxy Cache Lookup",
+          "url": "https://github.com/advisories/GHSA-xq8m-7c5p-c2r6",
+          "range": ">=4.12.0 <=4.17.0"
+        },
+        {
+          "path": "node_modules/@babel/core",
+          "name": "@babel/core",
+          "version": "7.28.5",
+          "dev": true,
+          "id": 1123528,
+          "severity": "low",
+          "title": "@babel/core: Arbitrary File Read via sourceMappingURL Comment",
+          "url": "https://github.com/advisories/GHSA-4x5r-pxfx-6jf8",
+          "range": "<=7.29.0"
+        },
+        {
+          "path": "node_modules/@humanfs/node",
+          "name": "@humanfs/node",
+          "version": "0.16.7",
+          "dev": true,
+          "id": 1158499,
+          "severity": "moderate",
+          "title": "humanfs: Recursive copy follows symlinked files and copies data from outside the source tree",
+          "url": "https://github.com/advisories/GHSA-p498-v437-472g",
+          "range": "<0.16.8"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1130589,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+          "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+          "range": ">=2.0.0 <2.1.3"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1130736,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+          "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+          "range": ">=2.0.0 <2.1.4"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1115541,
+          "severity": "moderate",
+          "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+          "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v",
+          "range": ">=2.0.0 <2.0.3"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1123896,
+          "severity": "high",
+          "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+          "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+          "range": ">=2.0.0 <2.1.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240109,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": ">=2.0.0 <2.1.5"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240101,
+          "severity": "moderate",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": ">=2.0.0 <2.1.7"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240105,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": ">=2.0.0 <2.1.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113465,
+          "severity": "high",
+          "title": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+          "url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26",
+          "range": ">=9.0.0 <9.0.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113544,
+          "severity": "high",
+          "title": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+          "url": "https://github.com/advisories/GHSA-7r86-cg39-jmmj",
+          "range": ">=9.0.0 <9.0.7"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113552,
+          "severity": "high",
+          "title": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+          "url": "https://github.com/advisories/GHSA-23c5-xmqv-rm74",
+          "range": ">=9.0.0 <9.0.7"
+        },
+        {
+          "path": "node_modules/ajv",
+          "name": "ajv",
+          "version": "6.12.6",
+          "dev": true,
+          "id": 1113714,
+          "severity": "moderate",
+          "title": "ajv has ReDoS when using `$data` option",
+          "url": "https://github.com/advisories/GHSA-2g4f-4pwh-qvx6",
+          "range": "<6.14.0"
+        },
+        {
+          "path": "node_modules/baseline-browser-mapping",
+          "name": "baseline-browser-mapping",
+          "version": "2.8.31",
+          "dev": false,
+          "id": 1193686,
+          "severity": "moderate",
+          "title": "baseline-browser-mapping process termination on invalid input causes denial of service",
+          "url": "https://github.com/advisories/GHSA-w5vr-8v7q-w6rv",
+          "range": ">=2.0.0 <2.11.0"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1130588,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+          "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+          "range": "<1.1.17"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1130737,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+          "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+          "range": "<1.1.18"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1115540,
+          "severity": "moderate",
+          "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+          "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v",
+          "range": "<1.1.13"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1123897,
+          "severity": "high",
+          "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+          "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+          "range": "<1.1.16"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240108,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": "<1.1.19"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240100,
+          "severity": "moderate",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": "<1.1.21"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240104,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": "<1.1.20"
+        },
+        {
+          "path": "node_modules/braces",
+          "name": "braces",
+          "version": "3.0.3",
+          "dev": true,
+          "id": 1240992,
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "range": "<=3.0.3"
+        },
+        {
+          "path": "node_modules/browserslist",
+          "name": "browserslist",
+          "version": "4.28.0",
+          "dev": true,
+          "id": 1153171,
+          "severity": "high",
+          "title": "Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM",
+          "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx",
+          "range": "<=4.28.6"
+        },
+        {
+          "path": "node_modules/browserslist",
+          "name": "browserslist",
+          "version": "4.28.0",
+          "dev": true,
+          "id": 1153172,
+          "severity": "high",
+          "title": "Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)",
+          "url": "https://github.com/advisories/GHSA-73wf-gq98-2v4g",
+          "range": "<=4.28.6"
+        },
+        {
+          "path": "node_modules/flatted",
+          "name": "flatted",
+          "version": "3.3.3",
+          "dev": true,
+          "id": 1114526,
+          "severity": "high",
+          "title": "flatted vulnerable to unbounded recursion DoS in parse() revive phase",
+          "url": "https://github.com/advisories/GHSA-25h7-pfq9-p65f",
+          "range": "<3.4.0"
+        },
+        {
+          "path": "node_modules/flatted",
+          "name": "flatted",
+          "version": "3.3.3",
+          "dev": true,
+          "id": 1241196,
+          "severity": "high",
+          "title": "Prototype Pollution via parse() in NodeJS flatted",
+          "url": "https://github.com/advisories/GHSA-rf6f-7fwh-wjgh",
+          "range": "<=3.4.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1121860,
+          "severity": "moderate",
+          "title": "JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases",
+          "url": "https://github.com/advisories/GHSA-h67p-54hq-rp68",
+          "range": ">=4.0.0 <=4.1.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1123911,
+          "severity": "high",
+          "title": "js-yaml: YAML merge-key chains can force quadratic CPU consumption",
+          "url": "https://github.com/advisories/GHSA-52cp-r559-cp3m",
+          "range": ">=4.0.0 <4.3.0"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1138115,
+          "severity": "high",
+          "title": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) \u2014 CVE-2026-59870 fix not backported",
+          "url": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj",
+          "range": ">=4.0.0 <4.3.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1193727,
+          "severity": "high",
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "range": ">=4.0.0 <4.3.2"
+        },
+        {
+          "path": "node_modules/lodash-es",
+          "name": "lodash-es",
+          "version": "4.17.21",
+          "dev": false,
+          "id": 1120368,
+          "severity": "moderate",
+          "title": "Lodash has Prototype Pollution Vulnerability in `_.unset` and `_.omit` functions",
+          "url": "https://github.com/advisories/GHSA-xxjr-mmjv-4gpg",
+          "range": ">=4.0.0 <=4.17.22"
+        },
+        {
+          "path": "node_modules/lodash-es",
+          "name": "lodash-es",
+          "version": "4.17.21",
+          "dev": false,
+          "id": 1115805,
+          "severity": "high",
+          "title": "lodash vulnerable to Code Injection via `_.template` imports key names",
+          "url": "https://github.com/advisories/GHSA-r5fr-rjxr-66jc",
+          "range": ">=4.0.0 <=4.17.23"
+        },
+        {
+          "path": "node_modules/lodash-es",
+          "name": "lodash-es",
+          "version": "4.17.21",
+          "dev": false,
+          "id": 1115809,
+          "severity": "moderate",
+          "title": "lodash vulnerable to Prototype Pollution via array path bypass in `_.unset` and `_.omit`",
+          "url": "https://github.com/advisories/GHSA-f23m-r3pf-42rh",
+          "range": "<=4.17.23"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113459,
+          "severity": "high",
+          "title": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+          "url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26",
+          "range": "<3.1.3"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113538,
+          "severity": "high",
+          "title": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+          "url": "https://github.com/advisories/GHSA-7r86-cg39-jmmj",
+          "range": "<3.1.3"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113546,
+          "severity": "high",
+          "title": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+          "url": "https://github.com/advisories/GHSA-23c5-xmqv-rm74",
+          "range": "<3.1.4"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1138811,
+          "severity": "high",
+          "title": "nanoid: non-secure generators can loop indefinitely with negative size",
+          "url": "https://github.com/advisories/GHSA-28wg-ghj8-5hjv",
+          "range": "<3.3.16"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1139427,
+          "severity": "high",
+          "title": "nanoid: custom generators can loop indefinitely when size is zero",
+          "url": "https://github.com/advisories/GHSA-2v37-7h3g-55p8",
+          "range": "<3.3.18"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1153189,
+          "severity": "high",
+          "title": "nanoid: Integer Overflow or Wraparound",
+          "url": "https://github.com/advisories/GHSA-xwg4-73v4-xw9w",
+          "range": "<3.3.12"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1117930,
+          "severity": "high",
+          "title": "Next.js Vulnerable to Denial of Service with Server Components",
+          "url": "https://github.com/advisories/GHSA-8h8q-6873-q5fj",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118938,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in App Router applications via segment-prefetch routes - Incomplete Fix Follow-Up",
+          "url": "https://github.com/advisories/GHSA-26hh-7cqf-hhc6",
+          "range": ">=16.0.0 <16.2.6"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118941,
+          "severity": "low",
+          "title": "Next.js's Middleware / Proxy redirects can be cache-poisoned",
+          "url": "https://github.com/advisories/GHSA-3g8h-86w9-wvmq",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118943,
+          "severity": "moderate",
+          "title": "Next.js vulnerable to cross-site scripting in App Router applications using CSP nonces",
+          "url": "https://github.com/advisories/GHSA-ffhc-5mcf-pf4q",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118945,
+          "severity": "low",
+          "title": "Next.js vulnerable to cache poisoning via collisions in React Server Component cache-busting",
+          "url": "https://github.com/advisories/GHSA-vfv6-92ff-j949",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118947,
+          "severity": "moderate",
+          "title": "Next.js has cross-site scripting in beforeInteractive scripts with untrusted input",
+          "url": "https://github.com/advisories/GHSA-gx5p-jg67-6x7h",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118949,
+          "severity": "high",
+          "title": "Next.js vulnerable to Denial of Service via connection exhaustion in applications using Cache Components",
+          "url": "https://github.com/advisories/GHSA-mg66-mrh9-m8jx",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118951,
+          "severity": "moderate",
+          "title": "Next.js has a Denial of Service in the Image Optimization API",
+          "url": "https://github.com/advisories/GHSA-h64f-5h5j-jqjh",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118953,
+          "severity": "high",
+          "title": "Next.js vulnerable to server-side request forgery in applications using WebSocket upgrades",
+          "url": "https://github.com/advisories/GHSA-c4j6-fc7j-m34r",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118955,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass through dynamic route parameter injection",
+          "url": "https://github.com/advisories/GHSA-492v-c6pp-mqqv",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118957,
+          "severity": "moderate",
+          "title": "Next.js vulnerable to cache poisoning in React Server Component responses",
+          "url": "https://github.com/advisories/GHSA-wfc6-r584-vfw7",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118959,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in App Router applications via segment-prefetch routes",
+          "url": "https://github.com/advisories/GHSA-267c-6grr-h53f",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1118961,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in Pages Router applications using i18n",
+          "url": "https://github.com/advisories/GHSA-36qx-fr4f-26g5",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1112592,
+          "severity": "moderate",
+          "title": "Next.js self-hosted applications vulnerable to DoS via Image Optimizer remotePatterns configuration",
+          "url": "https://github.com/advisories/GHSA-9g9p-9gw9-jx7f",
+          "range": ">=15.6.0-canary.0 <16.1.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1112645,
+          "severity": "high",
+          "title": "Next.js HTTP request deserialization can lead to DoS when using insecure React Server Components",
+          "url": "https://github.com/advisories/GHSA-h25m-26qc-wcjf",
+          "range": ">=16.1.0-canary.0 <16.1.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1114898,
+          "severity": "moderate",
+          "title": "Next.js: HTTP request smuggling in rewrites",
+          "url": "https://github.com/advisories/GHSA-ggv3-7p47-pfv8",
+          "range": ">=16.0.0-beta.0 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1114941,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded next/image disk cache growth can exhaust storage",
+          "url": "https://github.com/advisories/GHSA-3x4c-7xq6-9pq8",
+          "range": ">=16.0.0-beta.0 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1114942,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded postponed resume buffering can lead to DoS",
+          "url": "https://github.com/advisories/GHSA-h27x-g6w4-24gq",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1114943,
+          "severity": "moderate",
+          "title": "Next.js: null origin can bypass Server Actions CSRF checks",
+          "url": "https://github.com/advisories/GHSA-mq59-m269-xvcx",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1115360,
+          "severity": "low",
+          "title": "Next.js: null origin can bypass dev HMR websocket CSRF checks",
+          "url": "https://github.com/advisories/GHSA-jcc7-9wpm-mj36",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1116305,
+          "severity": "moderate",
+          "title": "Next.js has Unbounded Memory Consumption via PPR Resume Endpoint ",
+          "url": "https://github.com/advisories/GHSA-5f7q-jpqc-wp7h",
+          "range": ">=16.0.0-beta.0 <16.1.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1116375,
+          "severity": "high",
+          "title": "Next.js has a Denial of Service with Server Components",
+          "url": "https://github.com/advisories/GHSA-q4gf-8mx6-v5v3",
+          "range": ">=16.0.0-beta.0 <16.2.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124184,
+          "severity": "high",
+          "title": "Next.js: Server-Side Request Forgery in Server Actions on custom servers",
+          "url": "https://github.com/advisories/GHSA-89xv-2m56-2m9x",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124186,
+          "severity": "moderate",
+          "title": "Next.js: Cache confusion of response bodies for requests with bodies",
+          "url": "https://github.com/advisories/GHSA-68g3-v927-f742",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124170,
+          "severity": "high",
+          "title": "Next.js: Middleware / Proxy bypass in App Router applications using Turbopack and single locale",
+          "url": "https://github.com/advisories/GHSA-6gpp-xcg3-4w24",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124171,
+          "severity": "high",
+          "title": "Next.js: Denial of Service in App Router using Server Actions",
+          "url": "https://github.com/advisories/GHSA-m99w-x7hq-7vfj",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124188,
+          "severity": "moderate",
+          "title": "Next.js: Cache confusion of response bodies for requests with bodies containing invalid UTF-8 byte sequences",
+          "url": "https://github.com/advisories/GHSA-4633-3j49-mh5q",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124190,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded Server Action payload in Edge runtime",
+          "url": "https://github.com/advisories/GHSA-4c39-4ccg-62r3",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124192,
+          "severity": "high",
+          "title": "Next.js: Server-Side Request Forgery in rewrites via attacker-controlled destination hostname",
+          "url": "https://github.com/advisories/GHSA-p9j2-gv94-2wf4",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124194,
+          "severity": "moderate",
+          "title": "Next.js: Denial of Service in the Image Optimization API using SVGs",
+          "url": "https://github.com/advisories/GHSA-q8wf-6r8g-63ch",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1124196,
+          "severity": "moderate",
+          "title": "Next.js: Unauthenticated disclosure of internal Server Function endpoints",
+          "url": "https://github.com/advisories/GHSA-955p-x3mx-jcvp",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1241496,
+          "severity": "high",
+          "title": "Next.js has Server-Side Request Forgery in Image Optimization",
+          "url": "https://github.com/advisories/GHSA-cjq9-62q9-8jv4",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1193676,
+          "severity": "critical",
+          "title": "Next.js: Unauthenticated Remote Code Execution on windows-hosted servers",
+          "url": "https://github.com/advisories/GHSA-p293-qw3h-jr36",
+          "range": ">=16.0.0 <16.3.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1193732,
+          "severity": "critical",
+          "title": "Next.js: Unauthenticated Remote Code Execution in Image Optimization API when AVIF files are used",
+          "url": "https://github.com/advisories/GHSA-2xp9-vwfh-vxw4",
+          "range": ">=16.0.0 <16.3.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1241493,
+          "severity": "moderate",
+          "title": "Next.js has information disclosure in App Router metadata image routes via dynamicParams bypass",
+          "url": "https://github.com/advisories/GHSA-f87g-xv8r-7p7x",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1241495,
+          "severity": "moderate",
+          "title": "Next.js has cache poisoning in SSG/ISR rendering that leads to cross-user content substitution and persistent denial of service",
+          "url": "https://github.com/advisories/GHSA-mcj8-r9mp-w47p",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1241490,
+          "severity": "moderate",
+          "title": "Next.js has cache poisoning of SSG and ISR pages in self-hosted applications",
+          "url": "https://github.com/advisories/GHSA-4jqv-mc3x-m676",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.1",
+          "dev": false,
+          "id": 1241492,
+          "severity": "low",
+          "title": "Next.js has information disclosure in development server's Model Context Protocol endpoint",
+          "url": "https://github.com/advisories/GHSA-39w2-rjm5-chcv",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1130709,
+          "severity": "moderate",
+          "title": "PostCSS: incomplete fix of GHSA-6g55-p6wh-862q \u2014 attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset",
+          "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp",
+          "range": "<=8.5.22"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1117015,
+          "severity": "moderate",
+          "title": "PostCSS has XSS via Unescaped </style> in its CSS Stringify Output",
+          "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93",
+          "range": "<8.5.10"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1124252,
+          "severity": "high",
+          "title": "PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments",
+          "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q",
+          "range": "<=8.5.11"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1139510,
+          "severity": "high",
+          "title": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+          "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+          "range": "<=8.5.17"
+        },
+        {
+          "path": "node_modules/picomatch",
+          "name": "picomatch",
+          "version": "2.3.1",
+          "dev": true,
+          "id": 1115549,
+          "severity": "moderate",
+          "title": "Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching",
+          "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p",
+          "range": "<2.3.2"
+        },
+        {
+          "path": "node_modules/picomatch",
+          "name": "picomatch",
+          "version": "2.3.1",
+          "dev": true,
+          "id": 1115552,
+          "severity": "high",
+          "title": "Picomatch has a ReDoS vulnerability via extglob quantifiers",
+          "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj",
+          "range": "<2.3.2"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1130709,
+          "severity": "moderate",
+          "title": "PostCSS: incomplete fix of GHSA-6g55-p6wh-862q \u2014 attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset",
+          "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp",
+          "range": "<=8.5.22"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1117015,
+          "severity": "moderate",
+          "title": "PostCSS has XSS via Unescaped </style> in its CSS Stringify Output",
+          "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93",
+          "range": "<8.5.10"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1124252,
+          "severity": "high",
+          "title": "PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments",
+          "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q",
+          "range": "<=8.5.11"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1139510,
+          "severity": "high",
+          "title": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+          "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+          "range": "<=8.5.17"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1124066,
+          "severity": "high",
+          "title": "sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591",
+          "url": "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
+          "range": "<0.35.0"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1193725,
+          "severity": "high",
+          "title": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+          "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+          "range": "<0.35.4"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1241331,
+          "severity": "high",
+          "title": "sharp : Vulnerability in librsvg dependency CVE-2026-96889",
+          "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+          "range": "<0.35.5"
+        },
+        {
+          "path": "node_modules/source-map-js",
+          "name": "source-map-js",
+          "version": "1.2.1",
+          "dev": false,
+          "id": 1241209,
+          "severity": "high",
+          "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+          "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+          "range": ">=1.0.0 <1.2.2"
+        },
+        {
+          "path": "node_modules/tinyglobby/node_modules/picomatch",
+          "name": "picomatch",
+          "version": "4.0.3",
+          "dev": true,
+          "id": 1115551,
+          "severity": "moderate",
+          "title": "Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching",
+          "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p",
+          "range": ">=4.0.0 <4.0.4"
+        },
+        {
+          "path": "node_modules/tinyglobby/node_modules/picomatch",
+          "name": "picomatch",
+          "version": "4.0.3",
+          "dev": true,
+          "id": 1115554,
+          "severity": "high",
+          "title": "Picomatch has a ReDoS vulnerability via extglob quantifiers",
+          "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj",
+          "range": ">=4.0.0 <4.0.4"
+        },
+        {
+          "path": "node_modules/uuid",
+          "name": "uuid",
+          "version": "9.0.1",
+          "dev": false,
+          "id": 1119441,
+          "severity": "moderate",
+          "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+          "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+          "range": "<11.1.1"
+        }
+      ]
+    },
+    {
+      "root": "dashboard/nextjs-dashboard",
+      "unique_package_version_advisory_pairs": 183,
+      "severity": {
+        "low": 17,
+        "moderate": 84,
+        "high": 78,
+        "critical": 4
+      },
+      "findings": [
+        {
+          "path": "node_modules/@babel/core",
+          "name": "@babel/core",
+          "version": "7.29.0",
+          "dev": true,
+          "id": 1123528,
+          "severity": "low",
+          "title": "@babel/core: Arbitrary File Read via sourceMappingURL Comment",
+          "url": "https://github.com/advisories/GHSA-4x5r-pxfx-6jf8",
+          "range": "<=7.29.0"
+        },
+        {
+          "path": "node_modules/@humanfs/node",
+          "name": "@humanfs/node",
+          "version": "0.16.7",
+          "dev": true,
+          "id": 1158499,
+          "severity": "moderate",
+          "title": "humanfs: Recursive copy follows symlinked files and copies data from outside the source tree",
+          "url": "https://github.com/advisories/GHSA-p498-v437-472g",
+          "range": "<0.16.8"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1130589,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+          "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+          "range": ">=2.0.0 <2.1.3"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1130736,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+          "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+          "range": ">=2.0.0 <2.1.4"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1115541,
+          "severity": "moderate",
+          "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+          "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v",
+          "range": ">=2.0.0 <2.0.3"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1123896,
+          "severity": "high",
+          "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+          "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+          "range": ">=2.0.0 <2.1.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240109,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": ">=2.0.0 <2.1.5"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240101,
+          "severity": "moderate",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": ">=2.0.0 <2.1.7"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "2.0.2",
+          "dev": true,
+          "id": 1240105,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": ">=2.0.0 <2.1.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113465,
+          "severity": "high",
+          "title": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+          "url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26",
+          "range": ">=9.0.0 <9.0.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113544,
+          "severity": "high",
+          "title": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+          "url": "https://github.com/advisories/GHSA-7r86-cg39-jmmj",
+          "range": ">=9.0.0 <9.0.7"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "name": "minimatch",
+          "version": "9.0.5",
+          "dev": true,
+          "id": 1113552,
+          "severity": "high",
+          "title": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+          "url": "https://github.com/advisories/GHSA-23c5-xmqv-rm74",
+          "range": ">=9.0.0 <9.0.7"
+        },
+        {
+          "path": "node_modules/@vitest/mocker",
+          "name": "@vitest/mocker",
+          "version": "4.0.18",
+          "dev": true,
+          "id": 1193684,
+          "severity": "moderate",
+          "title": "Vitest: Path Traversal / Arbitrary File Read via @vitest/mocker Redirect Mock",
+          "url": "https://github.com/advisories/GHSA-82fw-gwwq-j7x9",
+          "range": ">=2.1.0 <4.1.11"
+        },
+        {
+          "path": "node_modules/ajv",
+          "name": "ajv",
+          "version": "6.12.6",
+          "dev": true,
+          "id": 1113714,
+          "severity": "moderate",
+          "title": "ajv has ReDoS when using `$data` option",
+          "url": "https://github.com/advisories/GHSA-2g4f-4pwh-qvx6",
+          "range": "<6.14.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1118607,
+          "severity": "high",
+          "title": "Axios has prototype pollution read-side gadgets in HTTP adapter that allow credential injection and request hijacking",
+          "url": "https://github.com/advisories/GHSA-q8qp-cvcw-x6jj",
+          "range": ">=1.0.0 <1.15.2"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1119404,
+          "severity": "moderate",
+          "title": "Axios has Unrestricted Cloud Metadata Exfiltration via Header Injection Chain",
+          "url": "https://github.com/advisories/GHSA-fvcv-3m26-pcqx",
+          "range": ">=1.0.0 <1.15.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120125,
+          "severity": "moderate",
+          "title": "Axios: unbounded recursion in toFormData causes DoS via deeply nested request data",
+          "url": "https://github.com/advisories/GHSA-62hf-57xw-28j9",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120547,
+          "severity": "high",
+          "title": "Axios: Regular Expression Denial of Service (ReDoS) via Cookie Name Injection",
+          "url": "https://github.com/advisories/GHSA-hfxv-24rg-xrqf",
+          "range": ">=1.0.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120643,
+          "severity": "high",
+          "title": "Allocation of Resources Without Limits or Throttling in Axios",
+          "url": "https://github.com/advisories/GHSA-777c-7fjr-54vf",
+          "range": ">=1.7.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120645,
+          "severity": "high",
+          "title": "Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-to-HTTPS Redirect in Axios Node.js HTTP Adapter",
+          "url": "https://github.com/advisories/GHSA-p92q-9vqr-4j8v",
+          "range": ">=1.0.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120647,
+          "severity": "high",
+          "title": "Axios: Proxy-Authorization header leaks to redirect target when proxy is re-evaluated to direct connection",
+          "url": "https://github.com/advisories/GHSA-j5f8-grm9-p9fc",
+          "range": ">=1.0.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120649,
+          "severity": "high",
+          "title": "axios Vulnerable to Credential Theft and Response Hijacking via Prototype Pollution Gadget in Config Merge",
+          "url": "https://github.com/advisories/GHSA-3g43-6gmg-66jw",
+          "range": ">=1.0.0 <1.15.2"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120650,
+          "severity": "high",
+          "title": "axios Vulnerable to Full Man-in-the-Middle via Prototype Pollution Gadget in `config.proxy`",
+          "url": "https://github.com/advisories/GHSA-35jp-ww65-95wh",
+          "range": ">=1.0.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1120652,
+          "severity": "moderate",
+          "title": "axios has DoS & Header Injection via Prototype Pollution Read-Side Gadgets in axios merge functions",
+          "url": "https://github.com/advisories/GHSA-898c-q2cr-xwhg",
+          "range": ">=1.0.0 <1.16.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1116673,
+          "severity": "moderate",
+          "title": "Axios has a NO_PROXY Hostname Normalization Bypass that Leads to SSRF",
+          "url": "https://github.com/advisories/GHSA-3p68-rc4w-qgx5",
+          "range": ">=1.0.0 <1.15.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117574,
+          "severity": "moderate",
+          "title": "Axios: Authentication Bypass via Prototype Pollution Gadget in `validateStatus` Merge Strategy",
+          "url": "https://github.com/advisories/GHSA-w9j2-pvgh-6h63",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117576,
+          "severity": "high",
+          "title": "Axios: Incomplete Fix for CVE-2025-62718 \u2014 NO_PROXY Protection Bypassed via RFC 1122 Loopback Subnet (127.0.0.0/8) in Axios 1.15.0",
+          "url": "https://github.com/advisories/GHSA-pmwg-cvhr-8vh7",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117577,
+          "severity": "moderate",
+          "title": "Axios: Invisible JSON Response Tampering via Prototype Pollution Gadget in `parseReviver`",
+          "url": "https://github.com/advisories/GHSA-3w6x-2g7m-8v23",
+          "range": ">=1.0.0 <1.15.2"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117580,
+          "severity": "low",
+          "title": "Axios: Null Byte Injection via Reverse-Encoding in AxiosURLSearchParams",
+          "url": "https://github.com/advisories/GHSA-xhjh-pmcv-23jw",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117581,
+          "severity": "moderate",
+          "title": "Axios: CRLF Injection in multipart/form-data body via unsanitized blob.type in formDataToStream",
+          "url": "https://github.com/advisories/GHSA-445q-vr5w-6q77",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117583,
+          "severity": "moderate",
+          "title": "Axios: no_proxy bypass via IP alias allows SSRF",
+          "url": "https://github.com/advisories/GHSA-m7pr-hjqh-92cm",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117587,
+          "severity": "moderate",
+          "title": "Axios' HTTP adapter-streamed uploads bypass maxBodyLength when maxRedirects: 0",
+          "url": "https://github.com/advisories/GHSA-5c9x-8gcm-mpgx",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117589,
+          "severity": "moderate",
+          "title": "Axios: HTTP adapter streamed responses bypass maxContentLength",
+          "url": "https://github.com/advisories/GHSA-vf2m-468p-8v99",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117591,
+          "severity": "high",
+          "title": "Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltration, and Request Hijacking",
+          "url": "https://github.com/advisories/GHSA-pf86-5x62-jrwf",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117593,
+          "severity": "high",
+          "title": "Axios: Header Injection via Prototype Pollution",
+          "url": "https://github.com/advisories/GHSA-6chq-wfr3-2hj9",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117595,
+          "severity": "moderate",
+          "title": "Axios: XSRF Token Cross-Origin Leakage via Prototype Pollution Gadget in `withXSRFToken` Boolean Coercion",
+          "url": "https://github.com/advisories/GHSA-xx6v-rp6x-q39c",
+          "range": ">=1.0.0 <1.15.1"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1117858,
+          "severity": "high",
+          "title": "Axios is Vulnerable to Denial of Service via __proto__ Key in mergeConfig",
+          "url": "https://github.com/advisories/GHSA-43fc-jf86-j433",
+          "range": ">=1.0.0 <=1.13.4"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1147949,
+          "severity": "moderate",
+          "title": "Axios: Prototype pollution gadgets can alter axios request construction",
+          "url": "https://github.com/advisories/GHSA-mmx7-hfxf-jppx",
+          "range": ">=1.0.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1147950,
+          "severity": "moderate",
+          "title": "Axios: Deep formToJSON Key Recursion Can Cause Denial of Service",
+          "url": "https://github.com/advisories/GHSA-pmv8-rq9r-6j72",
+          "range": ">=1.0.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1153175,
+          "severity": "moderate",
+          "title": "Axios: HTTP/2 streamed uploads bypass `maxBodyLength`",
+          "url": "https://github.com/advisories/GHSA-mwf2-3pr3-8698",
+          "range": ">=1.13.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1153180,
+          "severity": "moderate",
+          "title": "Axios: Nested axios option objects can consume polluted prototype values",
+          "url": "https://github.com/advisories/GHSA-7q8q-rj6j-mhjq",
+          "range": ">=1.0.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1153182,
+          "severity": "moderate",
+          "title": "Axios: Fetch adapter `ReadableStream` uploads bypass `maxBodyLength`",
+          "url": "https://github.com/advisories/GHSA-jqh4-m9w3-8hp9",
+          "range": ">=1.7.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1153185,
+          "severity": "moderate",
+          "title": "Axios: Excessive recursion in formDataToJSON can cause denial of service",
+          "url": "https://github.com/advisories/GHSA-42h9-826w-cgv3",
+          "range": ">=1.0.0 <1.18.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240600,
+          "severity": "moderate",
+          "title": "Axios: Prototype pollution gadget in fetch adapter can alter outbound requests",
+          "url": "https://github.com/advisories/GHSA-vh66-26gq-q6x8",
+          "range": ">=1.7.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240601,
+          "severity": "moderate",
+          "title": "Axios: Prototype-Pollution Gadget in the Default Instance Allows Inherited Object.prototype.method to Override HTTP Method",
+          "url": "https://github.com/advisories/GHSA-9fr6-4gfg-395g",
+          "range": ">=1.0.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240607,
+          "severity": "high",
+          "title": "Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls",
+          "url": "https://github.com/advisories/GHSA-3pq3-5fj3-cg6v",
+          "range": ">=1.13.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240608,
+          "severity": "high",
+          "title": "Axios: Denial of Service via Unhandled 'error' Event in HTTP/2 ClientHttp2Session Initialization",
+          "url": "https://github.com/advisories/GHSA-542g-h47m-68v8",
+          "range": ">=1.13.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240626,
+          "severity": "moderate",
+          "title": "Axios: Header Injection via Inherited headers After Minimal Interceptor",
+          "url": "https://github.com/advisories/GHSA-j8rh-479h-cp32",
+          "range": ">=1.0.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/axios",
+          "name": "axios",
+          "version": "1.13.4",
+          "dev": false,
+          "id": 1240627,
+          "severity": "moderate",
+          "title": "Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders",
+          "url": "https://github.com/advisories/GHSA-4hqw-qxg8-jxx2",
+          "range": ">=1.12.0 <1.20.0"
+        },
+        {
+          "path": "node_modules/baseline-browser-mapping",
+          "name": "baseline-browser-mapping",
+          "version": "2.9.19",
+          "dev": false,
+          "id": 1193686,
+          "severity": "moderate",
+          "title": "baseline-browser-mapping process termination on invalid input causes denial of service",
+          "url": "https://github.com/advisories/GHSA-w5vr-8v7q-w6rv",
+          "range": ">=2.0.0 <2.11.0"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1130588,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+          "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+          "range": "<1.1.17"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1130737,
+          "severity": "high",
+          "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+          "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+          "range": "<1.1.18"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1115540,
+          "severity": "moderate",
+          "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+          "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v",
+          "range": "<1.1.13"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1123897,
+          "severity": "high",
+          "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+          "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+          "range": "<1.1.16"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240108,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": "<1.1.19"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240100,
+          "severity": "moderate",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": "<1.1.21"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "name": "brace-expansion",
+          "version": "1.1.12",
+          "dev": true,
+          "id": 1240104,
+          "severity": "high",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": "<1.1.20"
+        },
+        {
+          "path": "node_modules/braces",
+          "name": "braces",
+          "version": "3.0.3",
+          "dev": true,
+          "id": 1240992,
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "range": "<=3.0.3"
+        },
+        {
+          "path": "node_modules/browserslist",
+          "name": "browserslist",
+          "version": "4.28.1",
+          "dev": true,
+          "id": 1153171,
+          "severity": "high",
+          "title": "Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM",
+          "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx",
+          "range": "<=4.28.6"
+        },
+        {
+          "path": "node_modules/browserslist",
+          "name": "browserslist",
+          "version": "4.28.1",
+          "dev": true,
+          "id": 1153172,
+          "severity": "high",
+          "title": "Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)",
+          "url": "https://github.com/advisories/GHSA-73wf-gq98-2v4g",
+          "range": "<=4.28.6"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1120802,
+          "severity": "moderate",
+          "title": "DOMPurify: Cross-realm IN_PLACE sanitization leaves executable markup intact via realm-bound `instanceof` checks",
+          "url": "https://github.com/advisories/GHSA-hpcv-96wg-7vj8",
+          "range": "<=3.4.5"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1120803,
+          "severity": "moderate",
+          "title": "DOMPurify: IN_PLACE mode preserves attributes of a clobbered root element, allowing XSS via attacker-controlled root DOM",
+          "url": "https://github.com/advisories/GHSA-r47g-fvhr-h676",
+          "range": "<=3.4.5"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1120813,
+          "severity": "moderate",
+          "title": "DOMPurify IN_PLACE Sanitization Bypass via Attached Shadow Root Inside <template>.content",
+          "url": "https://github.com/advisories/GHSA-rp9w-3fw7-7cwq",
+          "range": "<=3.4.6"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1115668,
+          "severity": "moderate",
+          "title": "DOMPurify contains a Cross-site Scripting vulnerability",
+          "url": "https://github.com/advisories/GHSA-v2wj-7wpq-c8vv",
+          "range": ">=3.1.3 <=3.3.1"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1117138,
+          "severity": "moderate",
+          "title": "DOMPurify: FORBID_TAGS bypassed by function-based ADD_TAGS predicate (asymmetry with FORBID_ATTR fix)",
+          "url": "https://github.com/advisories/GHSA-h7mw-gpvr-xq4m",
+          "range": "<3.4.0"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1117139,
+          "severity": "moderate",
+          "title": "DOMPurify has a SAFE_FOR_TEMPLATES bypass in RETURN_DOM mode",
+          "url": "https://github.com/advisories/GHSA-crv5-9vww-q3g8",
+          "range": ">=1.0.10 <3.4.0"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1117140,
+          "severity": "moderate",
+          "title": "DOMPurify: Prototype Pollution to XSS Bypass via CUSTOM_ELEMENT_HANDLING Fallback",
+          "url": "https://github.com/advisories/GHSA-v9jr-rg53-9pgp",
+          "range": ">=3.0.1 <3.4.0"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124233,
+          "severity": "moderate",
+          "title": "DOMPurify: Permanent `ALLOWED_ATTR` pollution via `setConfig()` bypassing the hook clone-guard (incomplete fix of the 3.4.7 hook-pollution patch)",
+          "url": "https://github.com/advisories/GHSA-cmwh-pvxp-8882",
+          "range": "<=3.4.10"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124234,
+          "severity": "low",
+          "title": "DOMPurify: Trusted Types policy survives `clearConfig()` and can poison later `RETURN_TRUSTED_TYPE` output",
+          "url": "https://github.com/advisories/GHSA-vxr8-fq34-vvx9",
+          "range": "<3.4.9"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124235,
+          "severity": "low",
+          "title": "DOMPurify: SAFE_FOR_TEMPLATES bypass - template expressions survive sanitization inside <template> content when using DOM output modes",
+          "url": "https://github.com/advisories/GHSA-gvmj-g25r-r7wr",
+          "range": ">=3.0.0 <=3.4.7"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124236,
+          "severity": "low",
+          "title": "DOMPurify: `IN_PLACE` mode trusts attacker-controlled `nodeName` on live non-form nodes, allowing script retention and XSS via attacker-supplied DOM objects",
+          "url": "https://github.com/advisories/GHSA-x4vx-rjvf-j5p4",
+          "range": "<=3.4.6"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124237,
+          "severity": "moderate",
+          "title": "DOMPurify: Hook mutation of `data.allowedTags` / `data.allowedAttributes` permanently pollutes `DEFAULT_ALLOWED_TAGS` / `DEFAULT_ALLOWED_ATTR`",
+          "url": "https://github.com/advisories/GHSA-76mc-f452-cxcm",
+          "range": "<3.4.7"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124238,
+          "severity": "moderate",
+          "title": "DOMPurify's ADD_TAGS function form bypasses FORBID_TAGS due to short-circuit evaluation",
+          "url": "https://github.com/advisories/GHSA-39q2-94rc-95cp",
+          "range": "<=3.3.3"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124239,
+          "severity": "moderate",
+          "title": "DOMPurify ADD_ATTR predicate skips URI validation",
+          "url": "https://github.com/advisories/GHSA-cjmm-f4jc-qw8r",
+          "range": "<=3.3.1"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124240,
+          "severity": "moderate",
+          "title": "DOMPurify USE_PROFILES prototype pollution allows event handlers",
+          "url": "https://github.com/advisories/GHSA-cj63-jhhr-wcxv",
+          "range": "<=3.3.1"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1124241,
+          "severity": "moderate",
+          "title": "DOMPurify is vulnerable to mutation-XSS via Re-Contextualization ",
+          "url": "https://github.com/advisories/GHSA-h8r8-wccr-v5f2",
+          "range": "<3.3.2"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1240978,
+          "severity": "low",
+          "title": "DOMPurify: `CUSTOM_ELEMENT_HANDLING` bypasses `afterSanitizeElements` for allowed custom elements.",
+          "url": "https://github.com/advisories/GHSA-c2j3-45gr-mqc4",
+          "range": "<=3.4.11"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1138538,
+          "severity": "moderate",
+          "title": "DOMPurify: IN_PLACE hook removal leaves a detached subtree executable, causing XSS",
+          "url": "https://github.com/advisories/GHSA-55q2-fjhq-7xh7",
+          "range": "<=3.4.12"
+        },
+        {
+          "path": "node_modules/dompurify",
+          "name": "dompurify",
+          "version": "3.3.1",
+          "dev": false,
+          "id": 1241204,
+          "severity": "low",
+          "title": "DOMPurify: IN_PLACE returns a force-removed rawtext root whose text carries attacker markup \u2014 pure HTML reparse executes",
+          "url": "https://github.com/advisories/GHSA-6688-9rhm-gjv2",
+          "range": "<=3.4.15"
+        },
+        {
+          "path": "node_modules/esbuild",
+          "name": "esbuild",
+          "version": "0.27.3",
+          "dev": true,
+          "id": 1120680,
+          "severity": "low",
+          "title": "esbuild allows arbitrary file read when running the development server on Windows",
+          "url": "https://github.com/advisories/GHSA-g7r4-m6w7-qqqr",
+          "range": ">=0.27.3 <0.28.1"
+        },
+        {
+          "path": "node_modules/fflate",
+          "name": "fflate",
+          "version": "0.8.2",
+          "dev": false,
+          "id": 1164782,
+          "severity": "moderate",
+          "title": "fflate unzipSync can enter an infinite loop when parsing malformed ZIP64 archives",
+          "url": "https://github.com/advisories/GHSA-px8p-9vwx-vf98",
+          "range": ">=0.8.0 <0.8.3"
+        },
+        {
+          "path": "node_modules/flatted",
+          "name": "flatted",
+          "version": "3.3.3",
+          "dev": true,
+          "id": 1114526,
+          "severity": "high",
+          "title": "flatted vulnerable to unbounded recursion DoS in parse() revive phase",
+          "url": "https://github.com/advisories/GHSA-25h7-pfq9-p65f",
+          "range": "<3.4.0"
+        },
+        {
+          "path": "node_modules/flatted",
+          "name": "flatted",
+          "version": "3.3.3",
+          "dev": true,
+          "id": 1241196,
+          "severity": "high",
+          "title": "Prototype Pollution via parse() in NodeJS flatted",
+          "url": "https://github.com/advisories/GHSA-rf6f-7fwh-wjgh",
+          "range": "<=3.4.1"
+        },
+        {
+          "path": "node_modules/follow-redirects",
+          "name": "follow-redirects",
+          "version": "1.15.11",
+          "dev": false,
+          "id": 1116560,
+          "severity": "moderate",
+          "title": "follow-redirects leaks Custom Authentication Headers to Cross-Domain Redirect Targets",
+          "url": "https://github.com/advisories/GHSA-r4q5-vmmm-2653",
+          "range": "<=1.15.11"
+        },
+        {
+          "path": "node_modules/form-data",
+          "name": "form-data",
+          "version": "4.0.5",
+          "dev": false,
+          "id": 1120743,
+          "severity": "high",
+          "title": "form-data: CRLF injection in form-data via unescaped multipart field names and filenames",
+          "url": "https://github.com/advisories/GHSA-hmw2-7cc7-3qxx",
+          "range": ">=4.0.0 <4.0.6"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1121860,
+          "severity": "moderate",
+          "title": "JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases",
+          "url": "https://github.com/advisories/GHSA-h67p-54hq-rp68",
+          "range": ">=4.0.0 <=4.1.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1123911,
+          "severity": "high",
+          "title": "js-yaml: YAML merge-key chains can force quadratic CPU consumption",
+          "url": "https://github.com/advisories/GHSA-52cp-r559-cp3m",
+          "range": ">=4.0.0 <4.3.0"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1138115,
+          "severity": "high",
+          "title": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) \u2014 CVE-2026-59870 fix not backported",
+          "url": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj",
+          "range": ">=4.0.0 <4.3.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "name": "js-yaml",
+          "version": "4.1.1",
+          "dev": true,
+          "id": 1193727,
+          "severity": "high",
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "range": ">=4.0.0 <4.3.2"
+        },
+        {
+          "path": "node_modules/jspdf",
+          "name": "jspdf",
+          "version": "4.1.0",
+          "dev": false,
+          "id": 1113310,
+          "severity": "high",
+          "title": "jsPDF has a PDF Object Injection via Unsanitized Input in addJS Method",
+          "url": "https://github.com/advisories/GHSA-9vjf-qc39-jprp",
+          "range": "<4.2.0"
+        },
+        {
+          "path": "node_modules/jspdf",
+          "name": "jspdf",
+          "version": "4.1.0",
+          "dev": false,
+          "id": 1113324,
+          "severity": "high",
+          "title": "jsPDF Affected by Client-Side/Server-Side Denial of Service via Malicious GIF Dimensions",
+          "url": "https://github.com/advisories/GHSA-67pg-wm7f-q7fj",
+          "range": "<4.2.0"
+        },
+        {
+          "path": "node_modules/jspdf",
+          "name": "jspdf",
+          "version": "4.1.0",
+          "dev": false,
+          "id": 1114396,
+          "severity": "high",
+          "title": "jsPDF has a PDF Injection in AcroForm module allows Arbitrary JavaScript Execution (RadioButton.createOption and \"AS\" property)",
+          "url": "https://github.com/advisories/GHSA-p5xg-68wr-hm3m",
+          "range": "<4.2.0"
+        },
+        {
+          "path": "node_modules/jspdf",
+          "name": "jspdf",
+          "version": "4.1.0",
+          "dev": false,
+          "id": 1114950,
+          "severity": "high",
+          "title": "jsPDF has a PDF Object Injection via FreeText color",
+          "url": "https://github.com/advisories/GHSA-7x6v-j9x4-qf24",
+          "range": "<=4.2.0"
+        },
+        {
+          "path": "node_modules/jspdf",
+          "name": "jspdf",
+          "version": "4.1.0",
+          "dev": false,
+          "id": 1114974,
+          "severity": "critical",
+          "title": "jsPDF has HTML Injection in New Window paths",
+          "url": "https://github.com/advisories/GHSA-wfv2-pwc8-crg5",
+          "range": "<=4.2.0"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113459,
+          "severity": "high",
+          "title": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+          "url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26",
+          "range": "<3.1.3"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113538,
+          "severity": "high",
+          "title": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+          "url": "https://github.com/advisories/GHSA-7r86-cg39-jmmj",
+          "range": "<3.1.3"
+        },
+        {
+          "path": "node_modules/minimatch",
+          "name": "minimatch",
+          "version": "3.1.2",
+          "dev": true,
+          "id": 1113546,
+          "severity": "high",
+          "title": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+          "url": "https://github.com/advisories/GHSA-23c5-xmqv-rm74",
+          "range": "<3.1.4"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1138811,
+          "severity": "high",
+          "title": "nanoid: non-secure generators can loop indefinitely with negative size",
+          "url": "https://github.com/advisories/GHSA-28wg-ghj8-5hjv",
+          "range": "<3.3.16"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1139427,
+          "severity": "high",
+          "title": "nanoid: custom generators can loop indefinitely when size is zero",
+          "url": "https://github.com/advisories/GHSA-2v37-7h3g-55p8",
+          "range": "<3.3.18"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "name": "nanoid",
+          "version": "3.3.11",
+          "dev": false,
+          "id": 1153189,
+          "severity": "high",
+          "title": "nanoid: Integer Overflow or Wraparound",
+          "url": "https://github.com/advisories/GHSA-xwg4-73v4-xw9w",
+          "range": "<3.3.12"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1117930,
+          "severity": "high",
+          "title": "Next.js Vulnerable to Denial of Service with Server Components",
+          "url": "https://github.com/advisories/GHSA-8h8q-6873-q5fj",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118938,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in App Router applications via segment-prefetch routes - Incomplete Fix Follow-Up",
+          "url": "https://github.com/advisories/GHSA-26hh-7cqf-hhc6",
+          "range": ">=16.0.0 <16.2.6"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118941,
+          "severity": "low",
+          "title": "Next.js's Middleware / Proxy redirects can be cache-poisoned",
+          "url": "https://github.com/advisories/GHSA-3g8h-86w9-wvmq",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118943,
+          "severity": "moderate",
+          "title": "Next.js vulnerable to cross-site scripting in App Router applications using CSP nonces",
+          "url": "https://github.com/advisories/GHSA-ffhc-5mcf-pf4q",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118945,
+          "severity": "low",
+          "title": "Next.js vulnerable to cache poisoning via collisions in React Server Component cache-busting",
+          "url": "https://github.com/advisories/GHSA-vfv6-92ff-j949",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118947,
+          "severity": "moderate",
+          "title": "Next.js has cross-site scripting in beforeInteractive scripts with untrusted input",
+          "url": "https://github.com/advisories/GHSA-gx5p-jg67-6x7h",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118949,
+          "severity": "high",
+          "title": "Next.js vulnerable to Denial of Service via connection exhaustion in applications using Cache Components",
+          "url": "https://github.com/advisories/GHSA-mg66-mrh9-m8jx",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118951,
+          "severity": "moderate",
+          "title": "Next.js has a Denial of Service in the Image Optimization API",
+          "url": "https://github.com/advisories/GHSA-h64f-5h5j-jqjh",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118953,
+          "severity": "high",
+          "title": "Next.js vulnerable to server-side request forgery in applications using WebSocket upgrades",
+          "url": "https://github.com/advisories/GHSA-c4j6-fc7j-m34r",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118955,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass through dynamic route parameter injection",
+          "url": "https://github.com/advisories/GHSA-492v-c6pp-mqqv",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118957,
+          "severity": "moderate",
+          "title": "Next.js vulnerable to cache poisoning in React Server Component responses",
+          "url": "https://github.com/advisories/GHSA-wfc6-r584-vfw7",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118959,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in App Router applications via segment-prefetch routes",
+          "url": "https://github.com/advisories/GHSA-267c-6grr-h53f",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1118961,
+          "severity": "high",
+          "title": "Next.js has a Middleware / Proxy bypass in Pages Router applications using i18n",
+          "url": "https://github.com/advisories/GHSA-36qx-fr4f-26g5",
+          "range": ">=16.0.0 <16.2.5"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1114898,
+          "severity": "moderate",
+          "title": "Next.js: HTTP request smuggling in rewrites",
+          "url": "https://github.com/advisories/GHSA-ggv3-7p47-pfv8",
+          "range": ">=16.0.0-beta.0 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1114941,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded next/image disk cache growth can exhaust storage",
+          "url": "https://github.com/advisories/GHSA-3x4c-7xq6-9pq8",
+          "range": ">=16.0.0-beta.0 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1114942,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded postponed resume buffering can lead to DoS",
+          "url": "https://github.com/advisories/GHSA-h27x-g6w4-24gq",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1114943,
+          "severity": "moderate",
+          "title": "Next.js: null origin can bypass Server Actions CSRF checks",
+          "url": "https://github.com/advisories/GHSA-mq59-m269-xvcx",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1115360,
+          "severity": "low",
+          "title": "Next.js: null origin can bypass dev HMR websocket CSRF checks",
+          "url": "https://github.com/advisories/GHSA-jcc7-9wpm-mj36",
+          "range": ">=16.0.1 <16.1.7"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1116375,
+          "severity": "high",
+          "title": "Next.js has a Denial of Service with Server Components",
+          "url": "https://github.com/advisories/GHSA-q4gf-8mx6-v5v3",
+          "range": ">=16.0.0-beta.0 <16.2.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124184,
+          "severity": "high",
+          "title": "Next.js: Server-Side Request Forgery in Server Actions on custom servers",
+          "url": "https://github.com/advisories/GHSA-89xv-2m56-2m9x",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124186,
+          "severity": "moderate",
+          "title": "Next.js: Cache confusion of response bodies for requests with bodies",
+          "url": "https://github.com/advisories/GHSA-68g3-v927-f742",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124170,
+          "severity": "high",
+          "title": "Next.js: Middleware / Proxy bypass in App Router applications using Turbopack and single locale",
+          "url": "https://github.com/advisories/GHSA-6gpp-xcg3-4w24",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124171,
+          "severity": "high",
+          "title": "Next.js: Denial of Service in App Router using Server Actions",
+          "url": "https://github.com/advisories/GHSA-m99w-x7hq-7vfj",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124188,
+          "severity": "moderate",
+          "title": "Next.js: Cache confusion of response bodies for requests with bodies containing invalid UTF-8 byte sequences",
+          "url": "https://github.com/advisories/GHSA-4633-3j49-mh5q",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124190,
+          "severity": "moderate",
+          "title": "Next.js: Unbounded Server Action payload in Edge runtime",
+          "url": "https://github.com/advisories/GHSA-4c39-4ccg-62r3",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124192,
+          "severity": "high",
+          "title": "Next.js: Server-Side Request Forgery in rewrites via attacker-controlled destination hostname",
+          "url": "https://github.com/advisories/GHSA-p9j2-gv94-2wf4",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124194,
+          "severity": "moderate",
+          "title": "Next.js: Denial of Service in the Image Optimization API using SVGs",
+          "url": "https://github.com/advisories/GHSA-q8wf-6r8g-63ch",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1124196,
+          "severity": "moderate",
+          "title": "Next.js: Unauthenticated disclosure of internal Server Function endpoints",
+          "url": "https://github.com/advisories/GHSA-955p-x3mx-jcvp",
+          "range": ">=16.0.0 <16.2.11"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1241496,
+          "severity": "high",
+          "title": "Next.js has Server-Side Request Forgery in Image Optimization",
+          "url": "https://github.com/advisories/GHSA-cjq9-62q9-8jv4",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1193676,
+          "severity": "critical",
+          "title": "Next.js: Unauthenticated Remote Code Execution on windows-hosted servers",
+          "url": "https://github.com/advisories/GHSA-p293-qw3h-jr36",
+          "range": ">=16.0.0 <16.3.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1193732,
+          "severity": "critical",
+          "title": "Next.js: Unauthenticated Remote Code Execution in Image Optimization API when AVIF files are used",
+          "url": "https://github.com/advisories/GHSA-2xp9-vwfh-vxw4",
+          "range": ">=16.0.0 <16.3.3"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1241493,
+          "severity": "moderate",
+          "title": "Next.js has information disclosure in App Router metadata image routes via dynamicParams bypass",
+          "url": "https://github.com/advisories/GHSA-f87g-xv8r-7p7x",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1241495,
+          "severity": "moderate",
+          "title": "Next.js has cache poisoning in SSG/ISR rendering that leads to cross-user content substitution and persistent denial of service",
+          "url": "https://github.com/advisories/GHSA-mcj8-r9mp-w47p",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1241490,
+          "severity": "moderate",
+          "title": "Next.js has cache poisoning of SSG and ISR pages in self-hosted applications",
+          "url": "https://github.com/advisories/GHSA-4jqv-mc3x-m676",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next",
+          "name": "next",
+          "version": "16.1.6",
+          "dev": false,
+          "id": 1241492,
+          "severity": "low",
+          "title": "Next.js has information disclosure in development server's Model Context Protocol endpoint",
+          "url": "https://github.com/advisories/GHSA-39w2-rjm5-chcv",
+          "range": ">=16.0.0 <16.3.8"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1130709,
+          "severity": "moderate",
+          "title": "PostCSS: incomplete fix of GHSA-6g55-p6wh-862q \u2014 attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset",
+          "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp",
+          "range": "<=8.5.22"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1117015,
+          "severity": "moderate",
+          "title": "PostCSS has XSS via Unescaped </style> in its CSS Stringify Output",
+          "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93",
+          "range": "<8.5.10"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1124252,
+          "severity": "high",
+          "title": "PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments",
+          "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q",
+          "range": "<=8.5.11"
+        },
+        {
+          "path": "node_modules/next/node_modules/postcss",
+          "name": "postcss",
+          "version": "8.4.31",
+          "dev": false,
+          "id": 1139510,
+          "severity": "high",
+          "title": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+          "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+          "range": "<=8.5.17"
+        },
+        {
+          "path": "node_modules/picomatch",
+          "name": "picomatch",
+          "version": "2.3.1",
+          "dev": true,
+          "id": 1115549,
+          "severity": "moderate",
+          "title": "Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching",
+          "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p",
+          "range": "<2.3.2"
+        },
+        {
+          "path": "node_modules/picomatch",
+          "name": "picomatch",
+          "version": "2.3.1",
+          "dev": true,
+          "id": 1115552,
+          "severity": "high",
+          "title": "Picomatch has a ReDoS vulnerability via extglob quantifiers",
+          "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj",
+          "range": "<2.3.2"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1130709,
+          "severity": "moderate",
+          "title": "PostCSS: incomplete fix of GHSA-6g55-p6wh-862q \u2014 attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset",
+          "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp",
+          "range": "<=8.5.22"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1117015,
+          "severity": "moderate",
+          "title": "PostCSS has XSS via Unescaped </style> in its CSS Stringify Output",
+          "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93",
+          "range": "<8.5.10"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1124252,
+          "severity": "high",
+          "title": "PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments",
+          "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q",
+          "range": "<=8.5.11"
+        },
+        {
+          "path": "node_modules/postcss",
+          "name": "postcss",
+          "version": "8.5.6",
+          "dev": true,
+          "id": 1139510,
+          "severity": "high",
+          "title": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+          "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+          "range": "<=8.5.17"
+        },
+        {
+          "path": "node_modules/rollup",
+          "name": "rollup",
+          "version": "4.57.1",
+          "dev": true,
+          "id": 1113515,
+          "severity": "high",
+          "title": "Rollup 4 has Arbitrary File Write via Path Traversal",
+          "url": "https://github.com/advisories/GHSA-mw96-cpmx-2vgc",
+          "range": ">=4.0.0 <4.59.0"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1124066,
+          "severity": "high",
+          "title": "sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591",
+          "url": "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
+          "range": "<0.35.0"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1193725,
+          "severity": "high",
+          "title": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+          "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+          "range": "<0.35.4"
+        },
+        {
+          "path": "node_modules/sharp",
+          "name": "sharp",
+          "version": "0.34.5",
+          "dev": false,
+          "id": 1241331,
+          "severity": "high",
+          "title": "sharp : Vulnerability in librsvg dependency CVE-2026-96889",
+          "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+          "range": "<0.35.5"
+        },
+        {
+          "path": "node_modules/source-map-js",
+          "name": "source-map-js",
+          "version": "1.2.1",
+          "dev": false,
+          "id": 1241209,
+          "severity": "high",
+          "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+          "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+          "range": ">=1.0.0 <1.2.2"
+        },
+        {
+          "path": "node_modules/vitest/node_modules/picomatch",
+          "name": "picomatch",
+          "version": "4.0.3",
+          "dev": true,
+          "id": 1115551,
+          "severity": "moderate",
+          "title": "Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching",
+          "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p",
+          "range": ">=4.0.0 <4.0.4"
+        },
+        {
+          "path": "node_modules/vitest/node_modules/picomatch",
+          "name": "picomatch",
+          "version": "4.0.3",
+          "dev": true,
+          "id": 1115554,
+          "severity": "high",
+          "title": "Picomatch has a ReDoS vulnerability via extglob quantifiers",
+          "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj",
+          "range": ">=4.0.0 <4.0.4"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114591,
+          "severity": "high",
+          "title": "Undici: Malicious WebSocket 64-bit length overflows parser and crashes the client",
+          "url": "https://github.com/advisories/GHSA-f269-vfmq-vjvj",
+          "range": ">=7.0.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114593,
+          "severity": "moderate",
+          "title": "Undici has an HTTP Request/Response Smuggling issue",
+          "url": "https://github.com/advisories/GHSA-2mjp-6q6p-2qxm",
+          "range": ">=7.0.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114637,
+          "severity": "high",
+          "title": "Undici has Unbounded Memory Consumption in WebSocket permessage-deflate Decompression",
+          "url": "https://github.com/advisories/GHSA-vrm6-8vpv-qv8q",
+          "range": ">=7.0.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114639,
+          "severity": "high",
+          "title": "Undici has Unhandled Exception in WebSocket Client Due to Invalid server_max_window_bits Validation",
+          "url": "https://github.com/advisories/GHSA-v9p9-hfj2-hcw8",
+          "range": ">=7.0.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114641,
+          "severity": "moderate",
+          "title": "Undici has CRLF Injection in undici via `upgrade` option",
+          "url": "https://github.com/advisories/GHSA-4992-7rv2-5pvq",
+          "range": ">=7.0.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1114643,
+          "severity": "moderate",
+          "title": "Undici has Unbounded Memory Consumption in its DeduplicationHandler via Response Buffering that leads to DoS",
+          "url": "https://github.com/advisories/GHSA-phc3-fgpg-7m6h",
+          "range": ">=7.17.0 <7.24.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1130715,
+          "severity": "moderate",
+          "title": "undici vulnerable to downstream response desynchronization via retry interceptor",
+          "url": "https://github.com/advisories/GHSA-8xcm-r25x-g524",
+          "range": ">=7.0.0 <7.29.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1130718,
+          "severity": "high",
+          "title": "undici vulnerable to cross-user information disclosure and parse-time crash via degenerate private cache directives",
+          "url": "https://github.com/advisories/GHSA-4cwx-7wf7-3272",
+          "range": ">=7.0.0 <7.29.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1130726,
+          "severity": "moderate",
+          "title": "undici vulnerable to CRLF Injection via blob-like body 'type' property",
+          "url": "https://github.com/advisories/GHSA-m8rv-5g2x-5cg5",
+          "range": ">=7.0.0 <7.29.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1130729,
+          "severity": "moderate",
+          "title": "undici vulnerable to cross-user information disclosure via whitespace around equals in Cache-Control directives",
+          "url": "https://github.com/advisories/GHSA-jr45-8vmc-qm54",
+          "range": ">=7.0.0 <7.29.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1130731,
+          "severity": "moderate",
+          "title": "undici vulnerable to cookie attribute injection via unsanitized domain and unparsed setCookie fields",
+          "url": "https://github.com/advisories/GHSA-v3r7-h72x-cjcm",
+          "range": ">=7.0.0 <7.29.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1121241,
+          "severity": "moderate",
+          "title": "undici vulnerable to HTTP header injection via Set-Cookie percent-decoding",
+          "url": "https://github.com/advisories/GHSA-p88m-4jfj-68fv",
+          "range": ">=7.0.0 <7.28.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1121244,
+          "severity": "high",
+          "title": "undici WebSocket client vulnerable to denial of service via fragment count bypass",
+          "url": "https://github.com/advisories/GHSA-vxpw-j846-p89q",
+          "range": ">=7.0.0 <7.28.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1121254,
+          "severity": "low",
+          "title": "undici vulnerable to Set-Cookie SameSite attribute downgrade via permissive substring matching",
+          "url": "https://github.com/advisories/GHSA-g8m3-5g58-fq7m",
+          "range": ">=7.0.0 <7.28.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1121428,
+          "severity": "moderate",
+          "title": "undici vulnerable to cross-user information disclosure via shared cache whitespace bypass",
+          "url": "https://github.com/advisories/GHSA-pr7r-676h-xcf6",
+          "range": ">=7.0.0 <7.28.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1137242,
+          "severity": "low",
+          "title": "undici vulnerable to HTTP response queue poisoning via keep-alive socket reuse",
+          "url": "https://github.com/advisories/GHSA-35p6-xmwp-9g52",
+          "range": ">=7.0.0 <7.28.0"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240036,
+          "severity": "moderate",
+          "title": "undici vulnerable to Denial of Service via orphaned RetryHandler response body",
+          "url": "https://github.com/advisories/GHSA-pmjh-fq2x-6v4x",
+          "range": ">=7.11.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240038,
+          "severity": "low",
+          "title": "undici vulnerable to downstream response splitting via retry interceptor",
+          "url": "https://github.com/advisories/GHSA-r53p-7pc4-xj5r",
+          "range": ">=7.0.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240041,
+          "severity": "high",
+          "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+          "url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+          "range": ">=7.0.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240044,
+          "severity": "moderate",
+          "title": "undici vulnerable to Denial of Service via unbounded decompression of compressed responses",
+          "url": "https://github.com/advisories/GHSA-3xpg-4rpp-hhhm",
+          "range": ">=7.15.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240046,
+          "severity": "moderate",
+          "title": "undici vulnerable to cross-user cookie disclosure via Set-Cookie caching in shared caches",
+          "url": "https://github.com/advisories/GHSA-2jfj-6hjv-fm6j",
+          "range": ">=7.0.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240048,
+          "severity": "low",
+          "title": "undici vulnerable to response truncation via oversized chunked responses in the dump interceptor",
+          "url": "https://github.com/advisories/GHSA-2gqq-gqf2-x968",
+          "range": ">=7.1.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240052,
+          "severity": "low",
+          "title": "undici vulnerable to caching and replay of unsafe HTTP method responses",
+          "url": "https://github.com/advisories/GHSA-8436-99hf-9mmv",
+          "range": ">=7.0.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/undici",
+          "name": "undici",
+          "version": "7.21.0",
+          "dev": true,
+          "id": 1240055,
+          "severity": "moderate",
+          "title": "undici vulnerable to Denial of Service via WebSocketStream unclean close",
+          "url": "https://github.com/advisories/GHSA-rx4f-c7p8-82vq",
+          "range": ">=7.0.0 <7.29.1"
+        },
+        {
+          "path": "node_modules/vite",
+          "name": "vite",
+          "version": "7.3.1",
+          "dev": true,
+          "id": 1120785,
+          "severity": "moderate",
+          "title": "launch-editor: NTLMv2 hash disclosure via UNC path handling on Windows",
+          "url": "https://github.com/advisories/GHSA-v6wh-96g9-6wx3",
+          "range": ">=7.0.0 <=7.3.4"
+        },
+        {
+          "path": "node_modules/vite",
+          "name": "vite",
+          "version": "7.3.1",
+          "dev": true,
+          "id": 1116230,
+          "severity": "moderate",
+          "title": "Vite Vulnerable to Path Traversal in Optimized Deps `.map` Handling",
+          "url": "https://github.com/advisories/GHSA-4w7w-66w2-5vf9",
+          "range": ">=7.0.0 <=7.3.1"
+        },
+        {
+          "path": "node_modules/vite",
+          "name": "vite",
+          "version": "7.3.1",
+          "dev": true,
+          "id": 1116232,
+          "severity": "high",
+          "title": "Vite: `server.fs.deny` bypassed with queries",
+          "url": "https://github.com/advisories/GHSA-v2wj-q39q-566r",
+          "range": ">=7.1.0 <=7.3.1"
+        },
+        {
+          "path": "node_modules/vite",
+          "name": "vite",
+          "version": "7.3.1",
+          "dev": true,
+          "id": 1116235,
+          "severity": "high",
+          "title": "Vite Vulnerable to Arbitrary File Read via Vite Dev Server WebSocket",
+          "url": "https://github.com/advisories/GHSA-p9ff-h696-f583",
+          "range": ">=7.0.0 <=7.3.1"
+        },
+        {
+          "path": "node_modules/vite",
+          "name": "vite",
+          "version": "7.3.1",
+          "dev": true,
+          "id": 1123526,
+          "severity": "high",
+          "title": "vite: `server.fs.deny` bypass on Windows alternate paths",
+          "url": "https://github.com/advisories/GHSA-fx2h-pf6j-xcff",
+          "range": ">=7.0.0 <=7.3.4"
+        },
+        {
+          "path": "node_modules/vitest",
+          "name": "vitest",
+          "version": "4.0.18",
+          "dev": true,
+          "id": 1139529,
+          "severity": "critical",
+          "title": "When Vitest UI server is listening, arbitrary file can be read and executed",
+          "url": "https://github.com/advisories/GHSA-5xrq-8626-4rwp",
+          "range": ">=4.0.0 <4.1.0"
+        },
+        {
+          "path": "node_modules/vitest",
+          "name": "vitest",
+          "version": "4.0.18",
+          "dev": true,
+          "id": 1193683,
+          "severity": "moderate",
+          "title": "Vitest: Path Traversal / Arbitrary File Read via @vitest/mocker Redirect Mock",
+          "url": "https://github.com/advisories/GHSA-82fw-gwwq-j7x9",
+          "range": ">=2.1.0 <4.1.11"
+        }
+      ]
+    },
+    {
+      "root": "clients/node",
+      "unique_package_version_advisory_pairs": 0,
+      "severity": {},
+      "findings": []
+    }
+  ]
+}

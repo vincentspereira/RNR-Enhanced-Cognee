@@ -1,0 +1,3 @@
+# Hashed bootstrap tools shared by the service image builds.
+pip>=26.2.1,<27
+hatchling>=1.27.0,<2

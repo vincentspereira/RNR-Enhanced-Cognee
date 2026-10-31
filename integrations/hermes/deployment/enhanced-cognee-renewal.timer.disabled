@@ -1,0 +1,12 @@
+# REVIEW TEMPLATE ONLY. Keep disabled until exact installed acceptance passes.
+[Unit]
+Description=Renew admitted Enhanced Cognee credentials before expiry
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+Unit=enhanced-cognee-renewal.service
+
+[Install]
+WantedBy=timers.target

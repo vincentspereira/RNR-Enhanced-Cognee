@@ -1,0 +1,63 @@
+2026-10-20 01:18:53,327 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:53,479 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+...........2026-10-20 01:18:54,233 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,240 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:54,363 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,369 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+....2026-10-20 01:18:54,516 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,601 - src.realtime_sync - INFO - Synced 1 memories from source_agent to target_agent
+...........2026-10-20 01:18:54,621 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,630 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:54,721 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,722 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,722 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,722 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,722 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:54,723 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,730 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,730 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,730 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:54,799 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:54,822 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:54,831 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:55,708 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:55,715 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:55,837 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:55,871 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:55,879 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:55,897 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories "HTTP/1.1 401 Unauthorized"
+2026-10-20 01:18:55,898 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories "HTTP/1.1 403 Forbidden"
+2026-10-20 01:18:55,904 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories "HTTP/1.1 403 Forbidden"
+2026-10-20 01:18:55,905 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories "HTTP/1.1 403 Forbidden"
+2026-10-20 01:18:55,927 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories "HTTP/1.1 200 OK"
+2026-10-20 01:18:55,938 - httpx - INFO - HTTP Request: GET http://qualification/v1/memories/status "HTTP/1.1 200 OK"
+2026-10-20 01:18:55,939 - httpx - INFO - HTTP Request: GET http://qualification/v1/memories/status "HTTP/1.1 401 Unauthorized"
+2026-10-20 01:18:55,954 - httpx - INFO - HTTP Request: GET http://qualification/v1/memories/139720a2-9948-4722-a661-89331af41266 "HTTP/1.1 404 Not Found"
+2026-10-20 01:18:55,969 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories/recall "HTTP/1.1 200 OK"
+2026-10-20 01:18:55,970 - httpx - INFO - HTTP Request: POST http://qualification/v1/memories/139720a2-9948-4722-a661-89331af41266/share "HTTP/1.1 403 Forbidden"
+.2026-10-20 01:18:55,976 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,710 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:56,853 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,869 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+Retrieval evaluation: {"fixtures": 12, "graph_reasoning_tested": false, "language": "English", "median_query_ms": 39.51, "p95_query_ms": 50.34, "ranks": {"Alder recovery": 1, "Aspen approval": 1, "Birch database": 1, "Cedar reviews": 1, "Elm languages": 1, "Hazel delivery": 1, "Juniper retry": 1, "Maple backup": 1, "Oak upload": 1, "Pine timezone": 1, "Rowan access": 1, "Willow retention": 1}, "scope_leaks": 0, "top_three_hits": 12}
+...........2026-10-20 01:18:56,299 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,328 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+.2026-10-20 01:18:56,485 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,550 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+..2026-10-20 01:18:56,618 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,624 - src.encryption_manager - DEBUG - EncryptionManager initialized with AES-256-GCM
+2026-10-20 01:18:56,644 - httpx - INFO - HTTP Request: POST http://fixture/v1/memories "HTTP/1.1 409 Conflict"
+2026-10-20 01:18:56,649 - httpx - INFO - HTTP Request: POST http://fixture/v1/memories "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 01:18:56,654 - httpx - INFO - HTTP Request: POST http://fixture/v1/memories "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 01:18:56,655 - httpx - INFO - HTTP Request: POST http://fixture/v1/memories/library/membership "HTTP/1.1 403 Forbidden"
+2026-10-20 01:18:56,666 - httpx - INFO - HTTP Request: POST http://fixture/v1/memories/library/membership "HTTP/1.1 200 OK"
+..............2026-10-20 01:18:56,686 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,687 - httpx - INFO - HTTP Request: GET https://approved/page "HTTP/1.1 200 OK"
+.2026-10-20 01:18:56,688 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,689 - httpx - INFO - HTTP Request: GET https://approved/page "HTTP/1.1 302 Found"
+.2026-10-20 01:18:56,690 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,691 - httpx - INFO - HTTP Request: GET https://approved/page "HTTP/1.1 200 OK"
+.2026-10-20 01:18:56,692 - asyncio - DEBUG - Using selector: EpollSelector
+2026-10-20 01:18:56,693 - httpx - INFO - HTTP Request: GET https://approved/page "HTTP/1.1 200 OK"
+....
+69 passed in 5.70s

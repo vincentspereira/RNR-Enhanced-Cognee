@@ -70,6 +70,28 @@ class TestClientInitCustom:
         client = EnhancedCogneeClient(host="myhost", port=1234)
         assert client._base_url == "http://myhost:1234"
 
+    @pytest.mark.asyncio
+    async def test_credential_headers_and_omitted_identity(self):
+        async with EnhancedCogneeClient(api_key="synthetic-operator") as operator:
+            assert operator._client.headers["X-API-Key"] == "synthetic-operator"
+            assert "Authorization" not in operator._client.headers
+        async with EnhancedCogneeClient(base_url="https://approved", access_token="synthetic-scoped") as scoped:
+            assert scoped._client.headers["Authorization"] == "Bearer synthetic-scoped"
+            scoped._client.post = AsyncMock(return_value=_make_mock_response({"status": "OK"}))
+            await scoped.add_memory("Synthetic fixture")
+            body = json.loads(scoped._client.post.call_args.kwargs["content"])
+            assert body == {"arguments": {"content": "Synthetic fixture"}}
+
+    @pytest.mark.parametrize("kwargs", [
+        {"api_key": "one", "access_token": "two"},
+        {"base_url": "http://remote", "access_token": "synthetic"},
+        {"base_url": "https://user:pass@approved"},
+        {"base_url": "https://approved/?token=synthetic"},
+    ])
+    def test_ambiguous_or_unsafe_credential_destination_is_refused(self, kwargs):
+        with pytest.raises(ValueError):
+            EnhancedCogneeClient(**kwargs)
+
 
 # ---------------------------------------------------------------------------
 # 3. Successful _call round-trip

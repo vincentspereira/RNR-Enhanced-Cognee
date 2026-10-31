@@ -1,0 +1,40 @@
+{
+  "run_url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371928694",
+  "source_commit": "cf9030f02bf71280fc9af553da38e53e9dd4a070",
+  "overall_result": "success",
+  "unit_and_canonical_zero_skip_gates": "passed",
+  "suites": {
+    "junit.xml": {
+      "tests": 4285,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 37.205,
+      "xml_sha256": "1ba001e9a9fab6872ac8e8788fee3d43ce07dd91ed850af1260b6317432d88fc"
+    },
+    "upstream-security.xml": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.685,
+      "xml_sha256": "16a335a3f4daf4b27a1d5c609df274c323de823b0fecfdb54afef588545c55be"
+    },
+    "schema-qualification.xml": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.641,
+      "xml_sha256": "daed3fdcd784ad2756ea7baca0bd71bba5b0987f0e2f317c2578955a4f6b60c4"
+    },
+    "canonical-qualification.xml": {
+      "tests": 64,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.758,
+      "xml_sha256": "6e364743363a0cdf795bc34ae203d09c0e996aa9bc9aa08b0344fa96ef473b0e"
+    }
+  }
+}

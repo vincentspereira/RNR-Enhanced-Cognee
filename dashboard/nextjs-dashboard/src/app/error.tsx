@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AlertTriangle, Home, Bug } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 
@@ -11,6 +12,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const router = useRouter();
   useEffect(() => {
     // Log error to error reporting service
     console.error("Application error:", error);
@@ -59,7 +61,7 @@ export default function Error({
             </Button>
             <Button
               variant="outline"
-              onClick={() => (window.location.href = "/")}
+              onClick={() => router.push("/")}
               className="flex-1 sm:flex-none"
             >
               <Home className="w-4 h-4 mr-2" />

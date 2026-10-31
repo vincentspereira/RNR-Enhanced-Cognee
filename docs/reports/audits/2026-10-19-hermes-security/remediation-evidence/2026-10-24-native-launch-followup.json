@@ -1,0 +1,44 @@
+{
+  "source_parent": "2b2d5bc897d63a1bd83299954d01264c8c0d5fec",
+  "environment": "Ubuntu-Workspace",
+  "owner_native_report": {
+    "complete": false,
+    "failure_stage": "native_question",
+    "candidate_staged": true,
+    "fleet_launch_approved": false
+  },
+  "original_native_substage_proven": false,
+  "helper_contract_error_confirmed": true,
+  "corrected_encryption_status": "AES-256-GCM",
+  "regression": {
+    "name": "hermes-and-recovery",
+    "exit_code": 0,
+    "retained_fixtures": "/tmp/ecq-afghceia",
+    "tests": 1253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 1253,
+    "complete": true
+  },
+  "test_warnings": 0,
+  "coverage_measured": false,
+  "secret_scan_findings": 0,
+  "installed_host_executed": false,
+  "fleet_launch_approved": false,
+  "dependency_release_blocker_unresolved": true,
+  "sources": [
+    {
+      "path": "integrations/hermes/deployment/qualify_launch_candidate.py",
+      "sha256": "c828a23e36bf36a1b7dd1f2a8016845fe455bdb8536f70ae859fc33bf3169b57"
+    },
+    {
+      "path": "scripts/qualification/run_hermes_launch_native.sh",
+      "sha256": "4ca2423ad4ae4dba1f26779147d5e632132b38db903832c9711a214fdcf47250"
+    },
+    {
+      "path": "tests/qualification/test_hermes_launch_batch.py",
+      "sha256": "2c43e38f0f4de35fb326aa71277d8039be4359ec41cd16717b9336565689cf98"
+    }
+  ]
+}

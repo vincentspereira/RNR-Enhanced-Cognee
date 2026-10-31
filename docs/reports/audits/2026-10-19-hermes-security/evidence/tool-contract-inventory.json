@@ -1,0 +1,856 @@
+[
+  {
+    "name": "cognify",
+    "line": 749,
+    "signature": "data: str",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "search",
+    "line": 818,
+    "signature": "query: str, limit: int=10, search_type: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_stats",
+    "line": 887,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "health",
+    "line": 948,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_data",
+    "line": 1006,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "add_memory",
+    "line": 1058,
+    "signature": "content: str, user_id: str='default', agent_id: str='claude-code', metadata: Optional[str]=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "search_memories",
+    "line": 1211,
+    "signature": "query: str, limit: int=10, user_id: str='default', agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_memories",
+    "line": 1326,
+    "signature": "user_id: str='default', agent_id: Optional[str]=None, limit: int=50",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_memory",
+    "line": 1395,
+    "signature": "memory_id: str",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "update_memory",
+    "line": 1451,
+    "signature": "memory_id: str, content: str",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "delete_memory",
+    "line": 1530,
+    "signature": "memory_id: str, agent_id: str='claude-code', confirm_token: Optional[str]=None",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "list_agents",
+    "line": 1631,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "expire_memories",
+    "line": 1683,
+    "signature": "days: int=90, dry_run: bool=False, agent_id: str='claude-code', confirm_token: Optional[str]=None",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_memory_age_stats",
+    "line": 1814,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "set_memory_ttl",
+    "line": 1867,
+    "signature": "memory_id: str, ttl_days: int",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "archive_category",
+    "line": 1927,
+    "signature": "category: str, days: int=180, agent_id: str='system'",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "check_duplicate",
+    "line": 2032,
+    "signature": "content: str, agent_id: str='default'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "auto_deduplicate",
+    "line": 2077,
+    "signature": "agent_id: str=None",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_deduplication_stats",
+    "line": 2154,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "summarize_category",
+    "line": 2205,
+    "signature": "category: str, days: int=30",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_summary_stats",
+    "line": 2283,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_performance_metrics",
+    "line": 2333,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_slow_queries",
+    "line": 2406,
+    "signature": "threshold_ms: float=1000, limit: int=10",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_prometheus_metrics",
+    "line": 2460,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "set_memory_sharing",
+    "line": 2501,
+    "signature": "memory_id: str, policy: str, allowed_agents: str=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "check_memory_access",
+    "line": 2581,
+    "signature": "memory_id: str, agent_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_shared_memories",
+    "line": 2630,
+    "signature": "agent_id: str, limit: int=50",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "create_shared_space",
+    "line": 2686,
+    "signature": "space_name: str, member_agents: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "publish_memory_event",
+    "line": 2764,
+    "signature": "event_type: str, memory_id: str, agent_id: str, data: str='{}'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_sync_status",
+    "line": 2805,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "sync_agent_state",
+    "line": 2851,
+    "signature": "source_agent: str, target_agent: str, category: str=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "create_backup",
+    "line": 3240,
+    "signature": "backup_type: str='manual', databases: Optional[str]=None, compress: bool=True, description: str='', agent_id: str='system', auto_verify: bool=True",
+    "permission": "Permission.SYSTEM_ADMIN",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "restore_backup",
+    "line": 3358,
+    "signature": "backup_id: str, databases: Optional[str]=None, validate: bool=True",
+    "permission": "Permission.SYSTEM_ADMIN",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_backups",
+    "line": 3468,
+    "signature": "backup_type: Optional[str]=None, limit: int=50",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "verify_backup",
+    "line": 3525,
+    "signature": "backup_id: str",
+    "permission": "Permission.SYSTEM_MONITOR",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "rollback_restore",
+    "line": 3591,
+    "signature": "",
+    "permission": "Permission.SYSTEM_ADMIN",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "schedule_task",
+    "line": 3641,
+    "signature": "task_name: str, schedule: str, enabled: bool=True",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_tasks",
+    "line": 3688,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "cancel_task",
+    "line": 3727,
+    "signature": "task_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "deduplicate",
+    "line": 3768,
+    "signature": "agent_id: Optional[str]=None, dry_run: bool=True",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "schedule_deduplication",
+    "line": 3814,
+    "signature": "schedule: str='weekly'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "deduplication_report",
+    "line": 3841,
+    "signature": "deduplication_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "summarize_old_memories",
+    "line": 3885,
+    "signature": "days: int=30, min_length: int=1000, dry_run: bool=False",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "schedule_summarization",
+    "line": 3937,
+    "signature": "schedule: str='monthly'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "summary_stats",
+    "line": 3964,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "detect_language",
+    "line": 4000,
+    "signature": "text: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_supported_languages",
+    "line": 4035,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "search_by_language",
+    "line": 4060,
+    "signature": "query: str, user_id: str='default', agent_id: str='claude-code', language: str=None, limit: int=10",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_language_distribution",
+    "line": 4144,
+    "signature": "user_id: str='default', agent_id: str='claude-code'",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "cross_language_search",
+    "line": 4207,
+    "signature": "query: str, user_id: str='default', agent_id: str='claude-code', limit: int=10",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_search_facets",
+    "line": 4297,
+    "signature": "user_id: str='default', agent_id: str='claude-code'",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "intelligent_summarize",
+    "line": 4362,
+    "signature": "memory_id: str, strategy: str='standard', llm_provider: str='openai'",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "auto_summarize_old_memories",
+    "line": 4434,
+    "signature": "days_old: int=30, min_length: int=500, dry_run: bool=False, strategy: str='standard'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "cluster_memories",
+    "line": 4496,
+    "signature": "category: Optional[str]=None, agent_id: Optional[str]=None, limit: int=100",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "advanced_search",
+    "line": 4571,
+    "signature": "query: str, user_id: str='default', agent_id: Optional[str]=None, limit: int=20, rerank: bool=True, strategy: str='combined', expand_query: bool=True",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "expand_search_query",
+    "line": 4640,
+    "signature": "query: str, max_expansions: int=5",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_search_analytics",
+    "line": 4676,
+    "signature": "days_back: int=30",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_summarization_stats",
+    "line": 4716,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "remember",
+    "line": 4765,
+    "signature": "data: str, dataset_name: str='main_dataset', session_id: Optional[str]=None, run_in_background: bool=False",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "recall",
+    "line": 4832,
+    "signature": "query: str, search_type: str='GRAPH_COMPLETION', dataset_name: Optional[str]=None, session_id: Optional[str]=None, top_k: int=10",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "forget_memory",
+    "line": 4919,
+    "signature": "data_id: Optional[str]=None, dataset: Optional[str]=None, everything: bool=False",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "improve",
+    "line": 4977,
+    "signature": "dataset: str='main_dataset', session_ids: Optional[str]=None, run_in_background: bool=False",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "save_interaction",
+    "line": 5045,
+    "signature": "data: str, dataset_name: str='main_dataset'",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "cognify_status",
+    "line": 5083,
+    "signature": "dataset_name: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "ingest_url",
+    "line": 5116,
+    "signature": "url: str, dataset_name: str='web', tavily_api_key: Optional[str]=None, schedule: Optional[str]=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "ingest_db",
+    "line": 5191,
+    "signature": "connection_string: str, dataset_name: str='db', query: Optional[str]=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "translate_text",
+    "line": 5249,
+    "signature": "text: str, target_language: str='en', provider: str='llm', source_language: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "regex_extract_entities",
+    "line": 5301,
+    "signature": "text: str, config_path: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "extract_graph_v2",
+    "line": 5351,
+    "signature": "text: str, n_rounds: int=2",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_loaders",
+    "line": 5430,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_llm_cost_report",
+    "line": 5492,
+    "signature": "agent_id: Optional[str]=None, days_back: int=30, group_by: str='agent'",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "set_cost_budget",
+    "line": 5540,
+    "signature": "agent_id: str, monthly_usd: float",
+    "permission": "Permission.SYSTEM_CONFIG",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "search_quick",
+    "line": 5587,
+    "signature": "query: str, agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_memory_detail",
+    "line": 5651,
+    "signature": "memory_id: str",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "get_related",
+    "line": 5722,
+    "signature": "memory_id: str, limit: int=5",
+    "permission": null,
+    "literal_shared_table_sql": true
+  },
+  {
+    "name": "start_session",
+    "line": 5806,
+    "signature": "user_id: str='default', agent_id: str='claude-code', metadata: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "end_session",
+    "line": 5852,
+    "signature": "session_id: str, summary: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_session_context",
+    "line": 5891,
+    "signature": "session_id: str, include_memories: bool=True, limit: int=20",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_session_history",
+    "line": 5948,
+    "signature": "user_id: str='default', agent_id: str='claude-code', limit: int=10, active_only: bool=False",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "query_audit_log",
+    "line": 6008,
+    "signature": "agent_id: Optional[str]=None, operation_type: Optional[str]=None, status: Optional[str]=None, hours_back: int=24, limit: int=50",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_memory_history",
+    "line": 6097,
+    "signature": "memory_id: str, limit: int=20",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "revert_memory",
+    "line": 6149,
+    "signature": "memory_id: str, version_number: int, agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_memory_provenance",
+    "line": 6195,
+    "signature": "memory_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "verify_memory",
+    "line": 6252,
+    "signature": "memory_id: str, agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "set_memory_confidence",
+    "line": 6312,
+    "signature": "memory_id: str, score: float",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_confidence_report",
+    "line": 6355,
+    "signature": "agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "find_consolidation_candidates",
+    "line": 6403,
+    "signature": "agent_id: Optional[str]=None, limit: int=20",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "consolidate_memories",
+    "line": 6460,
+    "signature": "memory_ids: str, agent_id: Optional[str]=None, summary_content: Optional[str]=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_consolidation_report",
+    "line": 6513,
+    "signature": "agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "promote_memory_tier",
+    "line": 6561,
+    "signature": "memory_id: str, agent_id: Optional[str]=None",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_tier_stats",
+    "line": 6601,
+    "signature": "agent_id: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "compact_knowledge_graph",
+    "line": 6648,
+    "signature": "",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_graph_stats",
+    "line": 6690,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_delete_user_data",
+    "line": 6736,
+    "signature": "user_id: str, dry_run: bool=True, requester: Optional[str]=None",
+    "permission": "Permission.SYSTEM_ADMIN",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_export_user_data",
+    "line": 6802,
+    "signature": "user_id: str, include_versions: bool=True",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_record_consent",
+    "line": 6868,
+    "signature": "user_id: str, category: str, granted: bool",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_check_consent",
+    "line": 6912,
+    "signature": "user_id: str, category: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_list_consents",
+    "line": 6957,
+    "signature": "user_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "gdpr_verify_tenant_isolation",
+    "line": 6996,
+    "signature": "tenant_id: str, sample_size: int=50",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_loader_plugins",
+    "line": 7060,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "load_document_with_plugin",
+    "line": 7107,
+    "signature": "source: str, loader_name: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "register_webhook",
+    "line": 7169,
+    "signature": "url: str, secret: str, events: Optional[str]=None, name: Optional[str]=None",
+    "permission": "Permission.SYSTEM_CONFIG",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "list_webhooks",
+    "line": 7229,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "test_webhook",
+    "line": 7265,
+    "signature": "webhook_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "disable_webhook",
+    "line": 7307,
+    "signature": "webhook_id: str",
+    "permission": "Permission.SYSTEM_CONFIG",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "encrypt_memory",
+    "line": 7346,
+    "signature": "memory_id: str",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_encryption_stats",
+    "line": 7380,
+    "signature": "",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "rotate_encryption_key",
+    "line": 7405,
+    "signature": "new_key: Optional[str]=None",
+    "permission": "Permission.SYSTEM_ADMIN",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "add_observation",
+    "line": 7452,
+    "signature": "memory_id: str, entity: str, attribute: str, value: str, agent_id: str='system', confidence: float=1.0",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_observations",
+    "line": 7505,
+    "signature": "memory_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "update_observation",
+    "line": 7527,
+    "signature": "observation_id: str, value: str, confidence: float=1.0",
+    "permission": "Permission.MEMORY_WRITE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "delete_observation",
+    "line": 7565,
+    "signature": "observation_id: str",
+    "permission": "Permission.MEMORY_DELETE",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "configure_slack_notifications",
+    "line": 7597,
+    "signature": "channel_id: str, webhook_url: str, events: Optional[str]=None",
+    "permission": "Permission.SYSTEM_CONFIG",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "configure_discord_notifications",
+    "line": 7643,
+    "signature": "channel_id: str, webhook_url: str, events: Optional[str]=None",
+    "permission": "Permission.SYSTEM_CONFIG",
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "test_notification_channel",
+    "line": 7687,
+    "signature": "channel_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_memory_importance",
+    "line": 7721,
+    "signature": "memory_id: str",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "update_importance_scores",
+    "line": 7753,
+    "signature": "agent_id: Optional[str]=None, limit: int=100",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_top_important_memories",
+    "line": 7790,
+    "signature": "agent_id: Optional[str]=None, top_n: int=10",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "rerank_search_results",
+    "line": 7827,
+    "signature": "results_json: str, query: str=''",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "undo_last",
+    "line": 7871,
+    "signature": "agent_id: str='claude-code', undo_id: Optional[str]=None, reason: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "get_undo_history",
+    "line": 7910,
+    "signature": "agent_id: Optional[str]=None, limit: int=20",
+    "permission": null,
+    "literal_shared_table_sql": false
+  },
+  {
+    "name": "redo_last",
+    "line": 7942,
+    "signature": "agent_id: str='claude-code', reason: Optional[str]=None",
+    "permission": null,
+    "literal_shared_table_sql": false
+  }
+]

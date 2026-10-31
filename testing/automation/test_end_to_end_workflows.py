@@ -852,7 +852,7 @@ def workflow_scenarios():
                 ),
                 WorkflowStep(
                     step_id="step_005",
-                    name "Create Default Agent",
+                    name="Create Default Agent",
                     action="api_call",
                     parameters={
                         "endpoint": "/api/v1/agents",
@@ -1112,7 +1112,7 @@ class TestWorkflowExecution:
                         "data": {}
                     },
                     expected_result={"success": False},  # Expect failure
-                    max_retries: 2
+                    max_retries=2
                 ),
                 WorkflowStep(
                     step_id="recovery_step_001",

@@ -7,8 +7,10 @@ __version__ = get_cognee_version()
 
 # Load environment variable settings has to be before setting up logging for LOG_LEVEL value
 import dotenv
+import os
 
-dotenv.load_dotenv(override=True)
+if os.getenv("ENHANCED_LOAD_DOTENV", "0") == "1":
+    dotenv.load_dotenv(override=False)
 
 # NOTE: Log level can be set with the LOG_LEVEL env variable
 from cognee.shared.logging_utils import setup_logging

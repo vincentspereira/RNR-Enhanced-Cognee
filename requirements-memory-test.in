@@ -1,0 +1,4 @@
+# Test framework for the isolated canonical memory-service lane, not deployment.
+-c requirements-index.lock
+pytest==9.1.1
+pytest-asyncio==1.4.0

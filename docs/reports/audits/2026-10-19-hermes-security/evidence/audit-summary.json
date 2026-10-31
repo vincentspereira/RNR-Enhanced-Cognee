@@ -1,0 +1,78 @@
+{
+  "audit_date": "2026-10-19",
+  "timezone": "Europe/London",
+  "source_revision": "e25bd6356e38970c525e0258bdac983cd4079d29",
+  "tracked_files": 2611,
+  "python_files": 1766,
+  "unit_tests": {
+    "initial": {
+      "passed": 4088,
+      "failed": 83,
+      "skipped": 14
+    },
+    "temporary_dependency_overlay": {
+      "passed": 4183,
+      "failed": 0,
+      "skipped": 2
+    },
+    "network_guard": true,
+    "python": "3.12.3",
+    "temporary_extra_packages": [
+      "neo4j==5.25.0",
+      "psycopg2-binary==2.9.12",
+      "watchdog==3.0.0"
+    ]
+  },
+  "security_probes": 11,
+  "registered_tools": 122,
+  "mapped_tools": 33,
+  "unmapped_tools": 89,
+  "direct_shared_table_sql_tool_bodies": 20,
+  "history_commits_scanned": 13416,
+  "syntax_error_files": 8,
+  "finding_count": 27,
+  "finding_status": "Recommendations; no production fixes implemented",
+  "video": {
+    "id": "FOx9_Jtrd2E",
+    "title": "Give Hermes Agent Graph Memory in Two Commands",
+    "duration_seconds": 355,
+    "transcript_segments": 149,
+    "retrieval": "youtube-transcript-api",
+    "visual_frames_reviewed": false,
+    "paid_tool_calls": 0,
+    "video_audio_downloads": 0
+  },
+  "limitations": [
+    "No Docker build or running infrastructure test",
+    "No live WSL-Hermes inspection or connectivity test",
+    "No credential validity test",
+    "No deployed exposure or exploitability established",
+    "No frontend browser E2E or Go/Rust SDK runtime qualification",
+    "No audit of external production configuration or remote branch protection"
+  ],
+  "source_sha256": {
+    "src/enhanced_cognee_mcp.py": "c8d32ccacafcf8a8e08378051d135072f81605ac31c1448b3d87f6a1615ad309",
+    "src/security/enterprise_auth.py": "6f2ca83bb1f1240a4f03ad4736f874bf03c9055adc43068ff61a456fff93cff2",
+    "src/security/auth.py": "a7fa5c13750d16380e82dfb5c74cb764e3a45435bb7c6ce2d4b88c88b40a0581",
+    "src/multi_tenant.py": "6389d3ad79e399683fcab6fcbb4f7f056f25d99acd265d30ea19faad8fa5e579",
+    "src/mcp_security.py": "447ba49eb5eccd94c91825565322eaf5c296735639d3aafb251ab8cca87d9f37",
+    "src/mcp_memory_tools.py": "82662b61227558e9c341f65a70f6c792455a93b6d0d0b079f99389ffcaf3a30d",
+    "src/encryption_manager.py": "e5b51690c26dfe7e970238e36d721e672694ed0147468eef480ea427bfef11a2",
+    "src/gdpr_manager.py": "efb687b52b4eff8c83e67a73a4bc4547ec616d557e1fb81975e4fab6087db1f0",
+    "src/plugin_loader.py": "7253e8b23de3de2aa186de8520cdb34c4026afa038ad8ef37512412bf2f3baff",
+    "src/webhook_manager.py": "5ef19d3253db7f50bffd723f6d376f061c68cef2dcd6da03dc84eee15cefbc59",
+    "bin/enhanced_cognee_mcp_server.py": "4134c42e1e685a8255873f44cfaae48f49dab6e4382ff3d33f92f58759d20f1e",
+    "dashboard/dashboard_api.py": "ddcc4fc0824e10b5839003ff6557c4ac1be27c8afbe9e36109cf934ed1bde2c1",
+    "sdk_pkg/enhanced_cognee_client/client.py": "2cb3d6e3a54a8d512cd987009b0a15b3ba9e6bd8de2a9057013fdd796238f0af",
+    "requirements.txt": "baa70a6747a4101884a0c4b036299421e6a1543ad4aa82d7f8924ffc111fcbf7",
+    "pyproject.toml": "b22a80c46c47911a9bb1d1a201f0a393542a8a68bafc0944cfadba114e4b566f",
+    "uv.lock": "0d7d8bbb1aad105a620cf504313a39765ee15e8f243918597a5f3f4c1b273c06",
+    "docker/Dockerfile.production": "08a3b52a7d6bef287ae2a55dd3c83dc3863a60a794712d19b27a5ea83034539c",
+    "docker/Dockerfile.enhanced-cognee": "542909869abc90eef79e21db2430c9d03b7458ec3372ac62da090cfd661eb274",
+    "docker/docker-compose-enhanced-cognee.yml": "79f896821078c9f952bd8b693a31349ac2551d809b7cfdad3d01de6dad2c249f",
+    "docker/init-scripts/01-init-pgvector.sql": "af066df10635ba5ab8e2fbce18da4de0fb07c8edbfe1e42b439b272df35e34c5",
+    "alembic_enhanced/versions/0001_enhanced_cognee_baseline.py": "59e052c4cb933b7fc7dd130f69006263d08a722aa0394fdcc9d3dc1dccce38b8",
+    "cognee-frontend/package-lock.json": "5ddab0b6371f3dc6b4f82316bc1a0fc9e0a5870525a10f5102a6ec6bbaa365e5",
+    "dashboard/nextjs-dashboard/package-lock.json": "085dd0f9a3231a9e73254892b392c8326462ed753dec226a89c86be1e9df3293"
+  }
+}

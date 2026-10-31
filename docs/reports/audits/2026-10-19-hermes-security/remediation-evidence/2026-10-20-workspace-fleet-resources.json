@@ -1,0 +1,115 @@
+{
+  "source_commit": "16ee6a954bdfef9d8ee2cd9e155285d88a55710c",
+  "workload_source_sha256": "c9b626036ba0701ee9057386183633ad8496f3032f817d97ae981c0c0531d960",
+  "qualification": {
+    "actual_stores": [
+      "PostgreSQL",
+      "Qdrant",
+      "ArcadeDB",
+      "Valkey"
+    ],
+    "source_grounded_hops": 2,
+    "partial_delivery_recovered": true,
+    "stale_graph_denied": true,
+    "derived_retraction_cleaned": true,
+    "graph_transaction_rollback": true,
+    "fresh_namespace_rebuild": true,
+    "history_retained": true,
+    "fixtures_preserved": true,
+    "bounded_load": {
+      "enabled": true,
+      "requested_seconds": 900,
+      "actual_seconds": 901.34,
+      "concurrent_projects": 42,
+      "completed_rounds": 150,
+      "corrected_records": 6300,
+      "semantic_queries": 6450,
+      "graph_queries": 6300,
+      "scope_leaks": 0,
+      "round_p95_ms": 8923.14,
+      "pending_events": 0,
+      "retained_history": true,
+      "failures": 0,
+      "local_embedding_method_calls": 12792,
+      "chat_model_calls": 0,
+      "storage_before": {
+        "database_bytes": 8649751,
+        "current_records": 4,
+        "retained_versions": 6
+      },
+      "storage_after": {
+        "database_bytes": 110083095,
+        "current_records": 46,
+        "retained_versions": 6348
+      }
+    }
+  },
+  "resources": {
+    "workload_exit_code": 0,
+    "seconds": 906.8,
+    "samples": 438,
+    "interval_seconds": 2,
+    "services": {
+      "postgres": {
+        "initial_rss_bytes": 352210944,
+        "peak_rss_bytes": 676839424,
+        "peak_pss_bytes": 188871680,
+        "cpu_seconds_observed": 367.3399999999968,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 1,
+        "last_rss_bytes": 676839424
+      },
+      "qdrant": {
+        "initial_rss_bytes": 110039040,
+        "peak_rss_bytes": 124325888,
+        "peak_pss_bytes": 122967040,
+        "cpu_seconds_observed": 21.829999999999977,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 124309504
+      },
+      "arcadedb": {
+        "initial_rss_bytes": 197005312,
+        "peak_rss_bytes": 217853952,
+        "peak_pss_bytes": 205336576,
+        "cpu_seconds_observed": 85.08999999999999,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 198156288
+      },
+      "valkey": {
+        "initial_rss_bytes": 14090240,
+        "peak_rss_bytes": 14614528,
+        "peak_pss_bytes": 7566336,
+        "cpu_seconds_observed": 1.5900000000000012,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 14614528
+      },
+      "workload": {
+        "initial_rss_bytes": 9490432,
+        "peak_rss_bytes": 459689984,
+        "peak_pss_bytes": 449140736,
+        "cpu_seconds_observed": 770.2500000000002,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 459689984
+      }
+    },
+    "scope": "Explicit Linux fixture process trees plus qualification workload; no chat server, Hermes or GPU",
+    "limits": [
+      "RSS double-counts shared pages",
+      "PSS requires read permission",
+      "Short-lived processes between samples can be missed",
+      "CPU is observed lifetime deltas",
+      "No production capacity or memory-leak conclusion"
+    ]
+  },
+  "limits": [
+    "Concurrent project-space service/library fixture, not 42 simultaneous Hermes or chat sessions",
+    "No HTTP request throughput or production latency certification",
+    "Other laptop workloads including frontend builds ran during the observation",
+    "Per-process reads are not atomic; one PostgreSQL PSS sample was incomplete",
+    "History/event retention explains storage growth; this is not a memory leak test"
+  ]
+}

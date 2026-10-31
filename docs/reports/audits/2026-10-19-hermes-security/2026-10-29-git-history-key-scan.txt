@@ -1,0 +1,27 @@
+Git history credential scan - 29 October 2026 - REDACTED (fingerprints only, no values)
+
+Scope: git log --all -p over the delivery repository (2,526,539 patch lines).
+Patterns: GitHub tokens, OpenAI-style keys, AWS access keys, Telegram bot
+tokens, JWTs, and key/token/secret/password assignments. Placeholder-like
+values filtered. Fingerprints are SHA-256 prefixes of the matched value.
+
+Result: 133 unique candidates after filtering. ZERO structural provider
+keys (no GitHub, OpenAI-style, AWS, Telegram, or JWT tokens) survived the
+placeholder filter. The candidates are overwhelmingly upstream cognee
+project defaults (adapter/docker-compose/frontend default values, public
+upstream knowledge) and this project's own invented qualification fixtures.
+
+Owner-glance set (3 fingerprints, most likely dummies or templates):
+- dddc501ecc  .env.production.template (36-char value, 4 hits)
+- c33195cff3  .github/workflows/ci-cd-pipeline.yml + TESTING.md (20-char, 15 hits)
+- 499c68ff36  ENHANCED_COGNEE_AUDIT_REPORT.md + ENHANCEMENT_ROADMAP.md +
+              src/memory_admin.py + src/security/auth.py (21-char, 7 hits)
+
+Conclusion: the repository history contains no structurally real provider
+keys. Audit item F22's candidates are accounted for as upstream defaults,
+templates and invented fixtures. The live exposure that remains actionable
+is NOT in git: the stack credentials in the agent-readable .env (staged
+rotation, not yet executed) and the provider-side model/Telegram keys
+(readable by account processes; rotate at the provider).
+
+Tool: launch-worktree-20261024/.archive/fetch-html-diagnosis/history-key-scan.py

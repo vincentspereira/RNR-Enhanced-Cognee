@@ -51,8 +51,8 @@ UTC = timezone.utc
 
 
 class MemoryProvenanceTracker:
-    f"""
-    Read and write provenance JSONB on {_t_docs()}.
+    """
+    Read and write provenance JSONB on the request's scoped documents table.
     All updates are non-destructive merges: existing keys are preserved
     unless explicitly overridden.
     """
@@ -101,6 +101,10 @@ class MemoryProvenanceTracker:
         if content_for_checksum:
             prov["checksum"] = self._sha256(content_for_checksum)
         if extra:
+            # Custom attributes cannot overwrite recorded origin or verification.
+            reserved = set(prov) | {"checksum", "source_url", "verification_type"}
+            if reserved.intersection(extra):
+                raise ValueError("Source attributes cannot override recorded provenance")
             prov.update(extra)
 
         try:
@@ -173,10 +177,10 @@ class MemoryProvenanceTracker:
             async with self.pool.acquire() as conn:
                 # Use jsonb_set to append to the transformations array atomically
                 await conn.execute(
-                    """
-                    UPDATE shared_memory.documents
+                    f"""
+                    UPDATE {_t_docs()}
                        SET provenance = jsonb_set(
-                               COALESCE(provenance, '{"transformations":[]}'::jsonb),
+                               COALESCE(provenance, '{{"transformations":[]}}'::jsonb),
                                '{{transformations}}',
                                (COALESCE(provenance->'transformations', '[]'::jsonb)
                                 || $1::jsonb)
@@ -198,10 +202,11 @@ class MemoryProvenanceTracker:
         self,
         memory_id: str,
         verified_by: Optional[str] = None,
+        expected_checksum: Optional[str] = None,
     ) -> bool:
         """
-        Mark the memory as provenance-verified.
-        Returns True on success.
+        Record checksum integrity only after a matching stored baseline.
+        A compare-and-set prevents a concurrent content change acquiring this flag.
         """
         if not self.pool:
             return False
@@ -209,23 +214,37 @@ class MemoryProvenanceTracker:
         now = datetime.now(UTC).isoformat()
         try:
             async with self.pool.acquire() as conn:
-                await conn.execute(
+                row = await conn.fetchrow(
+                    f"SELECT content, provenance FROM {_t_docs()} WHERE id=$1", memory_id)
+                if row is None or not row["provenance"]:
+                    return False
+                provenance = json.loads(row["provenance"]) if isinstance(row["provenance"], str) else dict(row["provenance"])
+                checksum = provenance.get("checksum")
+                if not checksum or checksum != self._sha256(row["content"]):
+                    return False
+                if expected_checksum is not None and expected_checksum != checksum:
+                    return False
+                result = await conn.execute(
                     f"""
                     UPDATE {_t_docs()}
                        SET provenance = provenance
                                       || jsonb_build_object(
                                              'verified',     true,
                                              'verified_at',  $1::text,
-                                             'verified_by',  $2::text
+                                             'verified_by',  $2::text,
+                                             'verification_type', 'checksum_integrity'
                                          ),
                            updated_at = NOW()
                      WHERE id = $3
+                       AND provenance->>'checksum'=$4 AND content=$5
                     """,
                     now,
                     verified_by or "system",
                     memory_id,
+                    checksum,
+                    row["content"],
                 )
-            return True
+            return isinstance(result, str) and result == "UPDATE 1"
         except Exception as exc:
             logger.error("mark_verified failed for %s: %s", memory_id, exc)
             return False

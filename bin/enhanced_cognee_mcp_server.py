@@ -3,7 +3,7 @@
 RNR Enhanced Cognee MCP Server
 ===========================
 Version:  1.0.9-enhanced (Phase 4 hardened)
-Tools:    70 MCP tools across 9 functional areas
+Tools:    122 registered MCP tools (see qualification evidence for readiness)
 Backends: PostgreSQL+pgVector | Qdrant | Neo4j | Redis
 
 Functional areas
@@ -40,15 +40,24 @@ from pathlib import Path
 from typing import Optional
 
 # Add project to path
-project_root = Path(__file__).parent
+project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "bin"))
+
+# Keep the protocol handle separate before imports configure their loggers.
+# HTTP registry imports leave process stdout untouched.
+_STDIO_OUTPUT = sys.stdout if __name__ == "__main__" else None
+if _STDIO_OUTPUT is not None:
+    sys.stdout = sys.stderr
+
+from src.multi_tenant import tenant_scoped_table as _scoped_table
 
 # Load environment variables
 env_path = project_root / ".env"
-if env_path.exists():
+if _STDIO_OUTPUT is not None and env_path.exists() and os.getenv("ENHANCED_LOAD_DOTENV", "1") == "1":
     from dotenv import load_dotenv
     load_dotenv(env_path)
-    print(f"OK Loaded environment from: {env_path}")
+    print(f"OK Loaded environment from: {env_path}", file=sys.stderr)
 
 # Configure logging
 logging.basicConfig(
@@ -58,7 +67,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Import MCP framework
-from mcp.server import FastMCP
+from mcp.server.fastmcp import FastMCP
 
 # Create MCP server
 mcp = FastMCP("RNR Enhanced Cognee")
@@ -109,24 +118,35 @@ def _guarded_tool(*dargs, **dkwargs):
     def wrap(fn):
         tool_name = getattr(fn, "__name__", "tool")
 
-        def _authorize():
+        def _authorize(args, kwargs):
             try:
                 from src.security.enterprise_auth import (
                     AuthError,
                     authorize,
                     local_principal,
-                    stdio_rbac_enforced,
                     tool_required_permission,
                 )
-            except Exception:
-                return  # enterprise auth unavailable -> do not block tools
-            if not stdio_rbac_enforced():
-                return
+            except ImportError as exc:
+                raise RuntimeError("Security policy is unavailable; refusing tool execution") from exc
+            from src.security.request_context import current_principal, validate_identity_fields
+            from src.security.capabilities import check_tool_capability
+            caller = current_principal() or local_principal()
             try:
-                authorize(local_principal(), tool_required_permission(tool_name))
+                authorize(caller, tool_required_permission(tool_name))
+                bound = _inspect.signature(fn).bind_partial(*args, **kwargs)
+                validate_identity_fields(bound.arguments, caller)
+                from src.security.auth import Role
+                if caller.role != Role.ADMIN:
+                    expected = {"agent_id": caller.claims.get("agent_id") or caller.subject,
+                                "user_id": caller.subject, "tenant_id": caller.tenant_id}
+                    for field, value in expected.items():
+                        if field in _inspect.signature(fn).parameters and bound.arguments.get(field) is None:
+                            bound.arguments[field] = value
+                check_tool_capability(tool_name, caller)
             except AuthError as exc:
                 # Surface as the project's standard authorization error type.
                 raise AuthorizationError(f"ERR {exc.detail}")
+            return caller, bound
 
         def _audit(status, started, agent_id, err=None):
             try:
@@ -152,13 +172,19 @@ def _guarded_tool(*dargs, **dkwargs):
             async def awrapper(*args, **kwargs):
                 started = _time.monotonic()
                 agent_id = kwargs.get("agent_id") or "claude-code"
-                _authorize()
+                caller, bound = _authorize(args, kwargs)
+                from src.security.request_context import storage_call_context
                 try:
-                    result = await fn(*args, **kwargs)
+                    with storage_call_context(caller):
+                        result = await fn(*bound.args, **bound.kwargs)
                 except Exception as exc:
                     _audit("failure", started, agent_id, str(exc))
                     raise
-                _audit("success", started, agent_id)
+                from src.security.tool_results import tool_result_failed
+                failed = tool_result_failed(result)
+                _audit("failure" if failed else "success", started, agent_id)
+                if failed:
+                    raise RuntimeError("ERR Tool did not complete successfully")
                 return result
 
             return decorator(awrapper)
@@ -167,13 +193,19 @@ def _guarded_tool(*dargs, **dkwargs):
         def swrapper(*args, **kwargs):
             started = _time.monotonic()
             agent_id = kwargs.get("agent_id") or "claude-code"
-            _authorize()
+            caller, bound = _authorize(args, kwargs)
+            from src.security.request_context import storage_call_context
             try:
-                result = fn(*args, **kwargs)
+                with storage_call_context(caller):
+                    result = fn(*bound.args, **bound.kwargs)
             except Exception as exc:
                 _audit("failure", started, agent_id, str(exc))
                 raise
-            _audit("success", started, agent_id)
+            from src.security.tool_results import tool_result_failed
+            failed = tool_result_failed(result)
+            _audit("failure" if failed else "success", started, agent_id)
+            if failed:
+                raise RuntimeError("ERR Tool did not complete successfully")
             return result
 
         return decorator(swrapper)
@@ -768,11 +800,7 @@ async def cognify(data: str) -> str:
         if postgres_pool:
             async with postgres_pool.acquire() as conn:
                 doc_id = str(uuid.uuid4())
-                await conn.execute("""
-                    INSERT INTO shared_memory.documents (id, title, content, created_at)
-                    VALUES ($1, $2, $3, $4)
-                    ON CONFLICT (id) DO NOTHING
-                """, doc_id, "RNR Enhanced Cognee Memory", data, datetime.now(UTC).replace(tzinfo=None))
+                await conn.execute(('\n                    INSERT INTO ' + _scoped_table('shared_memory.documents') + ' (id, title, content, created_at)\n                    VALUES ($1, $2, $3, $4)\n                    ON CONFLICT (id) DO NOTHING\n                '), doc_id, "RNR Enhanced Cognee Memory", data, datetime.now(UTC).replace(tzinfo=None))
 
                 logger.info(f"OK Added document: {doc_id}")
 
@@ -846,13 +874,7 @@ async def search(query: str, limit: int = 10, search_type: Optional[str] = None)
     try:
         if postgres_pool:
             async with postgres_pool.acquire() as conn:
-                rows = await conn.fetch("""
-                    SELECT id, title, content, created_at
-                    FROM shared_memory.documents
-                    WHERE content ILIKE $1
-                    ORDER BY created_at DESC
-                    LIMIT $2
-                """, f"%{query}%", limit)
+                rows = await conn.fetch(('\n                    SELECT id, title, content, created_at\n                    FROM ' + _scoped_table('shared_memory.documents') + '\n                    WHERE content ILIKE $1\n                    ORDER BY created_at DESC\n                    LIMIT $2\n                '), f"%{query}%", limit)
 
                 # Log performance metrics
                 if performance_analytics:
@@ -900,7 +922,7 @@ async def get_stats() -> str:
         # PostgreSQL stats
         if postgres_pool:
             async with postgres_pool.acquire() as conn:
-                count = await conn.fetchval("SELECT COUNT(*) FROM shared_memory.documents")
+                count = await conn.fetchval(('SELECT COUNT(*) FROM ' + _scoped_table('shared_memory.documents') + ''))
                 stats["databases"]["postgresql"] = f"OK Connected ({count} documents)"
 
         # Qdrant stats
@@ -1016,12 +1038,7 @@ async def list_data() -> str:
     try:
         if postgres_pool:
             async with postgres_pool.acquire() as conn:
-                rows = await conn.fetch("""
-                    SELECT id, title, created_at
-                    FROM shared_memory.documents
-                    ORDER BY created_at DESC
-                    LIMIT 50
-                """)
+                rows = await conn.fetch(('\n                    SELECT id, title, created_at\n                    FROM ' + _scoped_table('shared_memory.documents') + '\n                    ORDER BY created_at DESC\n                    LIMIT 50\n                '))
 
                 # AUTO-TRIGGER: Log performance metrics
                 if performance_analytics:
@@ -1124,11 +1141,7 @@ async def add_memory(
         # raises "expected str, got dict"). This mirrors the working inserts in
         # src/enhanced_cognee_mcp.py and src/agent_memory_integration.py.
         async with postgres_pool.acquire() as conn:
-            await conn.execute("""
-                INSERT INTO shared_memory.documents
-                (id, title, content, agent_id, memory_category, tags, metadata, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
-            """, memory_id, f"Memory from {agent_id}", content,
+            await conn.execute(('\n                INSERT INTO ' + _scoped_table('shared_memory.documents') + '\n                (id, title, content, agent_id, memory_category, tags, metadata, created_at)\n                VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)\n            '), memory_id, f"Memory from {agent_id}", content,
                 agent_id, "general", [], json.dumps(metadata_dict), created_at)
 
         logger.info(f"OK Added memory: {memory_id} for user: {user_id}, agent: {agent_id}")
@@ -1183,7 +1196,7 @@ async def add_memory(
                 expire_at = expire_at + _td(days=auto_ttl)
                 async with postgres_pool.acquire() as _conn:
                     await _conn.execute(
-                        "UPDATE shared_memory.documents SET expire_at=$1 WHERE id=$2",
+                        ('UPDATE ' + _scoped_table('shared_memory.documents') + ' SET expire_at=$1 WHERE id=$2'),
                         expire_at, memory_id
                     )
                 logger.info(
@@ -1250,11 +1263,7 @@ async def search_memories(
 
         async with postgres_pool.acquire() as conn:
             # Build query with filters
-            query_str = """
-                SELECT id, title, content, agent_id, created_at
-                FROM shared_memory.documents
-                WHERE content ILIKE $1
-            """
+            query_str = ('\n                SELECT id, title, content, agent_id, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE content ILIKE $1\n            ')
             params = [f"%{query}%"]
 
             # Add agent filter if specified
@@ -1348,11 +1357,7 @@ async def get_memories(
             return "ERR PostgreSQL not available - cannot get memories"
 
         async with postgres_pool.acquire() as conn:
-            query_str = """
-                SELECT id, title, content, agent_id, created_at
-                FROM shared_memory.documents
-                WHERE 1=1
-            """
+            query_str = ('\n                SELECT id, title, content, agent_id, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE 1=1\n            ')
             params = []
 
             if agent_id:
@@ -1411,11 +1416,7 @@ async def get_memory(memory_id: str) -> str:
             return "ERR PostgreSQL not available - cannot get memory"
 
         async with postgres_pool.acquire() as conn:
-            row = await conn.fetchrow("""
-                SELECT id, title, content, agent_id, metadata, created_at
-                FROM shared_memory.documents
-                WHERE id = $1
-            """, memory_id)
+            row = await conn.fetchrow(('\n                SELECT id, title, content, agent_id, metadata, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE id = $1\n            '), memory_id)
 
             # AUTO-TRIGGER: Log performance metrics
             if performance_analytics:
@@ -1469,19 +1470,13 @@ async def update_memory(memory_id: str, content: str) -> str:
 
         async with postgres_pool.acquire() as conn:
             # Check if memory exists
-            existing = await conn.fetchval("""
-                SELECT id FROM shared_memory.documents WHERE id = $1
-            """, memory_id)
+            existing = await conn.fetchval(('\n                SELECT id FROM ' + _scoped_table('shared_memory.documents') + ' WHERE id = $1\n            '), memory_id)
 
             if not existing:
                 return f"ERR Memory not found: {memory_id}"
 
             # Update memory
-            await conn.execute("""
-                UPDATE shared_memory.documents
-                SET content = $2
-                WHERE id = $1
-            """, memory_id, content)
+            await conn.execute(('\n                UPDATE ' + _scoped_table('shared_memory.documents') + '\n                SET content = $2\n                WHERE id = $1\n            '), memory_id, content)
 
             logger.info(f"OK Updated memory: {memory_id}")
 
@@ -1573,18 +1568,13 @@ async def delete_memory(
 
         async with postgres_pool.acquire() as conn:
             # Check if memory exists
-            existing = await conn.fetchval("""
-                SELECT id, agent_id, data->>'category' as category
-                FROM shared_memory.documents WHERE id = $1
-            """, memory_id)
+            existing = await conn.fetchval(("\n                SELECT id, agent_id, data->>'category' as category\n                FROM " + _scoped_table('shared_memory.documents') + ' WHERE id = $1\n            '), memory_id)
 
             if not existing:
                 return f"ERR Memory not found: {memory_id}"
 
             # Delete memory
-            await conn.execute("""
-                DELETE FROM shared_memory.documents WHERE id = $1
-            """, memory_id)
+            await conn.execute(('\n                DELETE FROM ' + _scoped_table('shared_memory.documents') + ' WHERE id = $1\n            '), memory_id)
 
             logger.info(f"OK Deleted memory: {memory_id} by agent: {agent_id}")
 
@@ -1643,12 +1633,7 @@ async def list_agents() -> str:
             return "ERR PostgreSQL not available - cannot list agents"
 
         async with postgres_pool.acquire() as conn:
-            rows = await conn.fetch("""
-                SELECT agent_id, COUNT(*) as memory_count
-                FROM shared_memory.documents
-                GROUP BY agent_id
-                ORDER BY memory_count DESC
-            """)
+            rows = await conn.fetch(('\n                SELECT agent_id, COUNT(*) as memory_count\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                GROUP BY agent_id\n                ORDER BY memory_count DESC\n            '))
 
             # AUTO-TRIGGER: Log performance metrics
             if performance_analytics:
@@ -3211,15 +3196,17 @@ async def init_sprint8_modules():
         recovery_manager = RecoveryManager()
         logger.info("OK Recovery Manager initialized")
 
-    # Initialize Maintenance Scheduler and AUTO-START it
+    # Preparing a server must not silently schedule autonomous mutations.
     maintenance_scheduler = MaintenanceScheduler(mcp_client=None)
-    try:
-        maintenance_scheduler.start()
-        logger.info("OK Maintenance Scheduler initialized and AUTO-STARTED")
-        # Phase 8b: bootstrap default scheduled tasks from config (non-blocking)
-        asyncio.create_task(_bootstrap_scheduler_defaults())
-    except Exception as e:
-        logger.warning(f"Maintenance Scheduler start failed: {e}")
+    if os.getenv("ENHANCED_ENABLE_SCHEDULER", "0") == "1":
+        try:
+            maintenance_scheduler.start()
+            logger.info("OK Maintenance Scheduler explicitly enabled")
+            asyncio.create_task(_bootstrap_scheduler_defaults())
+        except Exception as e:
+            logger.warning(f"Maintenance Scheduler start failed: {e}")
+    else:
+        logger.info("INFO Maintenance Scheduler disabled by default")
 
     # Initialize Scheduled Deduplication
     if postgres_pool and qdrant_client:
@@ -4086,18 +4073,7 @@ async def search_by_language(
     try:
         # Search memories
         async with postgres_pool.acquire() as conn:
-            memories = await conn.fetch("""
-                SELECT id, data_text, metadata, created_at
-                FROM shared_memory.documents
-                WHERE user_id = $1
-                AND (agent_id = $2 OR agent_id = 'shared')
-                AND (
-                    to_tsvector('english', coalesce(data_text, '')) @@ plainto_tsquery('english', $3)
-                    OR data_text ILIKE '%' || $3 || '%'
-                )
-                ORDER BY created_at DESC
-                LIMIT $4
-            """, user_id, agent_id, query, limit * 2)  # Get more for filtering
+            memories = await conn.fetch(('\n                SELECT id, data_text, metadata, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + "\n                WHERE user_id = $1\n                AND (agent_id = $2 OR agent_id = 'shared')\n                AND (\n                    to_tsvector('english', coalesce(data_text, '')) @@ plainto_tsquery('english', $3)\n                    OR data_text ILIKE '%' || $3 || '%'\n                )\n                ORDER BY created_at DESC\n                LIMIT $4\n            "), user_id, agent_id, query, limit * 2)  # Get more for filtering
 
         # Convert to list of dicts
         memory_dicts = []
@@ -4164,12 +4140,7 @@ async def get_language_distribution(
     try:
         # Get all memories
         async with postgres_pool.acquire() as conn:
-            memories = await conn.fetch("""
-                SELECT id, metadata
-                FROM shared_memory.documents
-                WHERE user_id = $1
-                AND (agent_id = $2 OR agent_id = 'shared')
-            """, user_id, agent_id)
+            memories = await conn.fetch(('\n                SELECT id, metadata\n                FROM ' + _scoped_table('shared_memory.documents') + "\n                WHERE user_id = $1\n                AND (agent_id = $2 OR agent_id = 'shared')\n            "), user_id, agent_id)
 
         # Convert to list of dicts
         memory_dicts = []
@@ -4238,18 +4209,7 @@ async def cross_language_search(
 
         # Search memories
         async with postgres_pool.acquire() as conn:
-            memories = await conn.fetch("""
-                SELECT id, data_text, metadata, created_at
-                FROM shared_memory.documents
-                WHERE user_id = $1
-                AND (agent_id = $2 OR agent_id = 'shared')
-                AND (
-                    to_tsvector('english', coalesce(data_text, '')) @@ plainto_tsquery('english', $3)
-                    OR data_text ILIKE '%' || $3 || '%'
-                )
-                ORDER BY created_at DESC
-                LIMIT $4
-            """, user_id, agent_id, query, limit * 2)
+            memories = await conn.fetch(('\n                SELECT id, data_text, metadata, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + "\n                WHERE user_id = $1\n                AND (agent_id = $2 OR agent_id = 'shared')\n                AND (\n                    to_tsvector('english', coalesce(data_text, '')) @@ plainto_tsquery('english', $3)\n                    OR data_text ILIKE '%' || $3 || '%'\n                )\n                ORDER BY created_at DESC\n                LIMIT $4\n            "), user_id, agent_id, query, limit * 2)
 
         # Convert to list of dicts
         memory_dicts = []
@@ -4320,12 +4280,7 @@ async def get_search_facets(
     try:
         # Get all memories
         async with postgres_pool.acquire() as conn:
-            memories = await conn.fetch("""
-                SELECT id, metadata
-                FROM shared_memory.documents
-                WHERE user_id = $1
-                AND (agent_id = $2 OR agent_id = 'shared')
-            """, user_id, agent_id)
+            memories = await conn.fetch(('\n                SELECT id, metadata\n                FROM ' + _scoped_table('shared_memory.documents') + "\n                WHERE user_id = $1\n                AND (agent_id = $2 OR agent_id = 'shared')\n            "), user_id, agent_id)
 
         # Convert to list of dicts
         memory_dicts = []
@@ -4387,11 +4342,7 @@ async def intelligent_summarize(
             return "ERR PostgreSQL not available"
 
         async with postgres_pool.acquire() as conn:
-            row = await conn.fetchrow("""
-                SELECT id, content, metadata, created_at
-                FROM shared_memory.documents
-                WHERE id = $1
-            """, memory_id)
+            row = await conn.fetchrow(('\n                SELECT id, content, metadata, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE id = $1\n            '), memory_id)
 
             if not row:
                 return f"ERR Memory not found: {memory_id}"
@@ -4521,11 +4472,7 @@ async def cluster_memories(
             return "ERR PostgreSQL not available"
 
         async with postgres_pool.acquire() as conn:
-            query = """
-                SELECT id, content, metadata, agent_id, created_at
-                FROM shared_memory.documents
-                WHERE LENGTH(content) > 100
-            """
+            query = ('\n                SELECT id, content, metadata, agent_id, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE LENGTH(content) > 100\n            ')
             params = []
             param_count = 1
 
@@ -5120,10 +5067,10 @@ async def ingest_url(
     schedule: Optional[str] = None,
 ) -> str:
     """
-    Scrape one or more URLs and store their content in the knowledge graph.
+    Import up to four operator-approved HTTPS pages into the legacy global graph.
 
-    Uses the v1.0.9 web_scraper_task which supports both BeautifulSoup
-    (free, no API key) and Tavily (higher quality, requires API key).
+    Available only to an explicitly enabled, unscoped local/operator profile.
+    Tenant/project service profiles refuse this legacy global pipeline.
 
     TRIGGER TYPE: (A) Auto - AI IDE triggers this based on conversation context.
     WHEN TO CALL: Call automatically when the user provides a URL and says "learn from
@@ -5135,44 +5082,28 @@ async def ingest_url(
     -----------
     - url: Single URL or comma-separated list of URLs to scrape
     - dataset_name: Target dataset name (default: 'web')
-    - tavily_api_key: Optional Tavily API key for premium extraction.
-      Falls back to TAVILY_API_KEY env var, then BeautifulSoup.
-    - schedule: Optional cron expression for recurring scrapes (e.g. '0 6 * * *').
-      If omitted, scrapes immediately.
+    - tavily_api_key: Retained for compatibility; paid extraction is refused.
+    - schedule: Retained for compatibility; recurring imports are refused until
+      a durable, scoped scheduler is qualified.
 
     Returns:
     --------
     - Scrape status with page count or schedule confirmation
     """
     try:
-        from cognee.tasks.web_scraper.web_scraper_task import (
-            web_scraper_task,
-            cron_web_scraper_task,
-        )
-
-        # Resolve URL list
+        from src.security.capabilities import fetch_import_page, validate_destination
         urls = [u.strip() for u in url.split(",") if u.strip()]
-        if not urls:
-            return "ERR No valid URLs provided"
-
-        api_key = tavily_api_key or os.environ.get("TAVILY_API_KEY", "")
-
-        if schedule:
-            await cron_web_scraper_task(
-                url=urls,
-                schedule=schedule,
-                tavily_api_key=api_key or None,
-                job_name=f"mcp_{dataset_name}",
-            )
-            return (
-                f"OK Web scrape scheduled (cron: '{schedule}') "
-                f"for {len(urls)} URL(s) in dataset '{dataset_name}'"
-            )
-
+        if not 1 <= len(urls) <= 4 or schedule or tavily_api_key:
+            return "ERR Import 1-4 approved URLs without scheduling or a paid extractor"
+        # Validate the entire batch before making any request.
+        for page_url in urls:
+            validate_destination(page_url, "web_import")
+        pages = {page_url: await fetch_import_page(page_url) for page_url in urls}
+        from cognee.tasks.web_scraper.web_scraper_task import web_scraper_task
+        from cognee.tasks.web_scraper.config import DefaultCrawlerConfig
         await web_scraper_task(
-            url=urls,
-            tavily_api_key=api_key or None,
-            job_name=f"mcp_{dataset_name}",
+            url=urls, tavily_api_key=None, soup_crawler_config=DefaultCrawlerConfig(),
+            job_name=f"mcp_{dataset_name}", prefetched_content=pages,
         )
         return (
             f"OK Scraped {len(urls)} URL(s) and stored in knowledge graph "
@@ -5183,8 +5114,8 @@ async def ingest_url(
             f"ERR Web scraping requires optional dependencies: {exc}\n"
             "Install with: pip install cognee[scraping]"
         )
-    except Exception as exc:
-        return f"ERR ingest_url failed: {exc}"
+    except Exception:
+        return "ERR Web import failed; review the operator destination grants and response limits"
 
 
 @mcp.tool()
@@ -5196,53 +5127,45 @@ async def ingest_db(
     """
     Ingest tables from a relational database into the knowledge graph via dlt.
 
-    Supports PostgreSQL, MySQL, SQLite, MSSQL, Oracle connection strings.
-    Optionally filter with a SQL query (e.g. 'SELECT * FROM orders WHERE status=active').
+    Accepts a named operator-configured read-only source, with a fixed query.
+    Available only in an explicitly enabled unscoped operator profile.
 
     TRIGGER TYPE: (M) Manual - triggered when user wants to ingest database content
 
     Parameters:
     -----------
-    - connection_string: Database URI (e.g. 'postgresql://user:pass@host/db',
-      'sqlite:///path/to/db.sqlite')
+    - connection_string: Source alias in ENHANCED_DATABASE_SOURCES. Raw URIs
+      and caller-supplied credentials are refused.
     - dataset_name: Target dataset name for grouping ingested rows (default: 'db')
-    - query: Optional SQL query to filter a specific table/rows.
-      Format: 'SELECT ... FROM <table> WHERE ...' or just a table name.
+    - query: Must be omitted; the operator defines the source query.
 
     Returns:
     --------
     - Ingestion status with row count
     """
     try:
+        from src.security.capabilities import configured_database_source
+        source = configured_database_source(connection_string, query)
         from cognee.tasks.ingestion.create_dlt_source import (
             create_dlt_source_from_connection_string,
-            is_connection_string,
         )
         from cognee.tasks.ingestion.ingest_dlt_source import ingest_dlt_source
 
-        if not is_connection_string(connection_string):
-            return (
-                f"ERR '{connection_string[:40]}...' does not look like a valid connection string.\n"
-                "Expected format: postgresql://user:pass@host/db or sqlite:///path.db"
-            )
-
         dlt_source = create_dlt_source_from_connection_string(
-            connection_string=connection_string,
-            query=query,
+            connection_string=source["connection_string"], query=source["query"],
         )
 
         await ingest_dlt_source(dlt_source=dlt_source, dataset_name=dataset_name)
         return (
-            f"OK Database ingestion complete for dataset '{dataset_name}' "
-            f"(source: {connection_string[:30]}...)"
+            f"OK Database ingestion complete for dataset '{dataset_name}'"
         )
     except ImportError as exc:
         return (
             f"ERR Database ingestion requires dlt: {exc}\n"
             "Install with: pip install cognee[dlt]"
         )
-    except Exception as exc:
-        return f"ERR ingest_db failed: {exc}"
+    except Exception:
+        return "ERR Database import failed; review the operator source configuration"
 
 
 @mcp.tool()
@@ -5615,11 +5538,7 @@ async def search_quick(
             return "ERR PostgreSQL not available - cannot search memories"
 
         async with postgres_pool.acquire() as conn:
-            sql = """
-                SELECT id, title, content, agent_id, created_at
-                FROM shared_memory.documents
-                WHERE content ILIKE $1
-            """
+            sql = ('\n                SELECT id, title, content, agent_id, created_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE content ILIKE $1\n            ')
             params: list = [f"%{query}%"]
             if agent_id:
                 sql += " AND agent_id = $2"
@@ -5674,12 +5593,7 @@ async def get_memory_detail(memory_id: str) -> str:
 
         async with postgres_pool.acquire() as conn:
             row = await conn.fetchrow(
-                """
-                SELECT id, title, content, agent_id, metadata,
-                       created_at, updated_at, expire_at
-                FROM shared_memory.documents
-                WHERE id = $1
-                """,
+                ('\n                SELECT id, title, content, agent_id, metadata,\n                       created_at, updated_at, expire_at\n                FROM ' + _scoped_table('shared_memory.documents') + '\n                WHERE id = $1\n                '),
                 memory_id,
             )
 
@@ -5750,7 +5664,7 @@ async def get_related(
 
         async with postgres_pool.acquire() as conn:
             source = await conn.fetchrow(
-                "SELECT id, content, agent_id FROM shared_memory.documents WHERE id = $1",
+                ('SELECT id, content, agent_id FROM ' + _scoped_table('shared_memory.documents') + ' WHERE id = $1'),
                 memory_id,
             )
             if not source:
@@ -5768,7 +5682,7 @@ async def get_related(
             conditions = " OR ".join(f"content ILIKE ${i + 2}" for i in range(len(words)))
             sql = f"""
                 SELECT id, title, content, agent_id, created_at
-                FROM shared_memory.documents
+                FROM {_scoped_table('shared_memory.documents')}
                 WHERE id != $1 AND ({conditions})
                 ORDER BY created_at DESC
                 LIMIT {int(limit)}
@@ -6254,13 +6168,12 @@ async def verify_memory(
     agent_id: Optional[str] = None,
 ) -> str:
     """
-    Verify the integrity of a memory entry by checking its SHA-256 checksum
-    against the stored provenance record, then mark it as verified.
+    Check a memory's SHA-256 checksum and record an integrity verification.
+    This does not establish that its factual content is true.
 
     TRIGGER TYPE: (M) Manual - Verification is an explicit compliance step.
 
-    If the checksum is absent (memory was added before provenance tracking),
-    the tool still marks the memory as verified-by-inspection.
+    A missing baseline or mismatch cannot acquire a verification flag.
 
     Parameters:
     -----------
@@ -6279,21 +6192,16 @@ async def verify_memory(
         result = await pt.verify_checksum(memory_id)
 
         if result.get("error"):
-            if result["error"] == "no checksum in provenance":
-                # Mark as verified by inspection (no checksum baseline)
-                await pt.mark_verified(memory_id, verified_by=agent_id or "system")
-                return (
-                    f"OK Memory {memory_id} marked as verified (no checksum baseline; "
-                    f"verified by inspection)."
-                )
             return f"ERR verify_memory: {result['error']}"
 
         match = result.get("match")
         if match:
-            await pt.mark_verified(memory_id, verified_by=agent_id or "system")
+            if not await pt.mark_verified(memory_id, verified_by=agent_id or "system",
+                                          expected_checksum=result["actual_checksum"]):
+                return "ERR Could not record the checksum verification"
             return (
                 f"OK Memory {memory_id} checksum MATCH. "
-                f"Content integrity confirmed. Marked as verified."
+                f"Content integrity confirmed. Factual truth has not been verified."
             )
         else:
             return (
@@ -7975,7 +7883,7 @@ async def main():
          RNR Enhanced Cognee MCP Server - Enhanced Stack
     PostgreSQL+pgVector | Qdrant | Neo4j | Redis
 ==================================================================
-    """)
+    """, file=sys.stderr)
 
     # Initialize Enhanced stack
     await init_enhanced_stack()
@@ -7983,131 +7891,142 @@ async def main():
     # Initialize Sprint 8 modules
     await init_sprint8_modules()
 
-    print("\nOK RNR Enhanced Cognee MCP Server starting...")
-    print("  Available tools:")
-    print("    Standard Memory MCP Tools (for MCP-compatible IDE integration):")
-    print("      - add_memory: Add memory entry")
-    print("      - search_memories: Search memories")
-    print("      - get_memories: List all memories")
-    print("      - get_memory: Get specific memory by ID")
-    print("      - update_memory: Update existing memory")
-    print("      - delete_memory: Delete memory")
-    print("      - list_agents: List all agents")
-    print("    RNR Enhanced Cognee Tools:")
-    print("      - cognify: Add data to knowledge graph")
-    print("      - search: Search knowledge graph")
-    print("      - list_data: List all documents")
-    print("      - get_stats: Get system statistics")
-    print("      - health: Health check")
-    print("    Sprint 8 Backup & Recovery Tools:")
-    print("      - create_backup: Create backup of databases")
-    print("      - restore_backup: Restore from backup")
-    print("      - list_backups: List all backups")
-    print("      - verify_backup: Verify backup integrity")
-    print("      - rollback_restore: Rollback failed restore")
-    print("    Sprint 8 Maintenance Scheduler Tools:")
-    print("      - schedule_task: Schedule maintenance task")
-    print("      - list_tasks: List scheduled tasks")
-    print("      - cancel_task: Cancel scheduled task")
-    print("    Sprint 8 Deduplication Tools:")
-    print("      - deduplicate: Perform deduplication")
-    print("      - schedule_deduplication: Schedule periodic deduplication")
-    print("      - deduplication_report: Generate deduplication report")
-    print("    Sprint 8 Summarization Tools:")
-    print("      - summarize_old_memories: Summarize old memories")
-    print("      - schedule_summarization: Schedule periodic summarization")
-    print("      - summary_stats: Get summarization statistics")
-    print("    Sprint 9 Multi-Language Tools:")
-    print("      - detect_language: Detect language from text (28 languages)")
-    print("      - get_supported_languages: List all supported languages")
-    print("      - search_by_language: Search with language filtering")
-    print("      - get_language_distribution: Get language statistics")
-    print("      - cross_language_search: Cross-language search with ranking")
-    print("      - get_search_facets: Get faceted search options")
-    print("    Sprint 10 Advanced AI Features:")
-    print("      - intelligent_summarize: LLM-based memory summarization")
-    print("      - auto_summarize_old_memories: Batch summarization of old memories")
-    print("      - cluster_memories: Semantic memory clustering")
-    print("      - advanced_search: Advanced search with re-ranking")
-    print("      - expand_search_query: Query expansion using LLM")
-    print("      - get_search_analytics: Search analytics and metrics")
-    print("      - get_summarization_stats: Summarization statistics")
-    print("    Memory Management Tools:")
-    print("      - expire_memories: Expire old memories")
-    print("      - get_memory_age_stats: Get memory age statistics")
-    print("      - set_memory_ttl: Set time-to-live for memory")
-    print("      - archive_category: Archive category memories")
-    print("    Performance Analytics Tools:")
-    print("      - get_performance_metrics: Get comprehensive metrics")
-    print("      - get_slow_queries: Get slow queries")
-    print("      - get_prometheus_metrics: Export Prometheus metrics")
-    print("    Cross-Agent Sharing Tools:")
-    print("      - set_memory_sharing: Set sharing policy")
-    print("      - check_memory_access: Check memory access")
-    print("      - get_shared_memories: Get shared memories")
-    print("      - create_shared_space: Create shared space")
-    print("    Real-Time Sync Tools:")
-    print("      - publish_memory_event: Publish memory event")
-    print("      - get_sync_status: Get sync status")
-    print("      - sync_agent_state: Sync agent state")
-    print("    Phase 2 - Knowledge Graph (v1.0.9 API):")
-    print("      - remember: Session-aware cognee ingestion")
-    print("      - recall: Knowledge graph search (15 search types)")
-    print("      - forget_memory: Delete from cognee knowledge graph")
-    print("      - improve: 4-stage feedback improvement pipeline")
-    print("      - save_interaction: Save coding interactions as knowledge")
-    print("      - cognify_status: Check background task status")
-    print("      search() now accepts search_type= for graph routing")
-    print("    Phase 3 - External Loaders, Translation, Entities, v2 Graph:")
-    print("      - ingest_url: Scrape URLs into knowledge graph (Tavily/BS4)")
-    print("      - ingest_db: Ingest relational DB tables via dlt")
-    print("      - translate_text: Translate text (llm/google/azure)")
-    print("      - regex_extract_entities: Extract entities via regex patterns")
-    print("      - extract_graph_v2: Cascade v2 graph extraction (preview)")
-    print("      - list_loaders: List available file format loaders")
-    print("    Plan 14.8 - LLM Cost Tracking:")
-    print("      - get_llm_cost_report: Token usage and cost report (per-agent/tool/model)")
-    print("      - set_cost_budget: Set monthly LLM cost limit for an agent")
-    print("    Phase 7 - Progressive Search Tools:")
-    print("      - search_quick: Fast top-3 keyword search (lightweight)")
-    print("      - get_memory_detail: Full detail of a single memory by ID")
-    print("      - get_related: Find memories related to a given memory")
-    print("    Phase 7 - Session Management Tools:")
-    print("      - start_session: Start a new Claude Code session")
-    print("      - end_session: End a session with optional summary")
-    print("      - get_session_context: Retrieve full session context + memories")
-    print("      - get_session_history: List recent sessions for a user/agent")
-    print("    Phase 9 - Audit and Compliance Tools:")
-    print("      - query_audit_log: Query audit log for recent operations")
-    print("    Phase 14.3 - Encryption at Rest:")
-    print("      - encrypt_memory: Encrypt a memory's content with Fernet AES")
-    print("      - get_encryption_stats: Encryption coverage statistics")
-    print("      - rotate_encryption_key: Rotate master key and re-encrypt all memories")
-    print("    Phase 12.8 - Structured Observations (EAV):")
-    print("      - add_observation: Add entity-attribute-value observation to a memory")
-    print("      - get_observations: Get all observations for a memory")
-    print("      - update_observation: Update an observation value/confidence")
-    print("      - delete_observation: Delete a structured observation")
-    print("    Phase 17.4 - Slack/Discord Notifications:")
-    print("      - configure_slack_notifications: Register Slack webhook channel")
-    print("      - configure_discord_notifications: Register Discord webhook channel")
-    print("      - test_notification_channel: Send test notification to channel")
-    print("    Phase 18.4 - Memory Importance Scoring:")
-    print("      - get_memory_importance: Get heuristic importance score for a memory")
-    print("      - update_importance_scores: Recompute scores for up to N memories")
-    print("      - get_top_important_memories: Top N memories by importance score")
-    print("    Phase 18.5 - Heuristic Re-ranking:")
-    print("      - rerank_search_results: Re-rank search results by multi-signal score")
-    print("    Undo Operations:")
-    print("      - undo_last: Undo the most recent automated memory operation")
-    print("      - get_undo_history: List recent undoable operations")
-    print("      - redo_last: Re-apply the most recently undone operation")
-    print("  Total tools: 122")
-    print()
+    print("\nOK RNR Enhanced Cognee MCP Server starting...", file=sys.stderr)
+    print("  Available tools:", file=sys.stderr)
+    print("    Standard Memory MCP Tools (for MCP-compatible IDE integration):", file=sys.stderr)
+    print("      - add_memory: Add memory entry", file=sys.stderr)
+    print("      - search_memories: Search memories", file=sys.stderr)
+    print("      - get_memories: List all memories", file=sys.stderr)
+    print("      - get_memory: Get specific memory by ID", file=sys.stderr)
+    print("      - update_memory: Update existing memory", file=sys.stderr)
+    print("      - delete_memory: Delete memory", file=sys.stderr)
+    print("      - list_agents: List all agents", file=sys.stderr)
+    print("    RNR Enhanced Cognee Tools:", file=sys.stderr)
+    print("      - cognify: Add data to knowledge graph", file=sys.stderr)
+    print("      - search: Search knowledge graph", file=sys.stderr)
+    print("      - list_data: List all documents", file=sys.stderr)
+    print("      - get_stats: Get system statistics", file=sys.stderr)
+    print("      - health: Health check", file=sys.stderr)
+    print("    Sprint 8 Backup & Recovery Tools:", file=sys.stderr)
+    print("      - create_backup: Create backup of databases", file=sys.stderr)
+    print("      - restore_backup: Restore from backup", file=sys.stderr)
+    print("      - list_backups: List all backups", file=sys.stderr)
+    print("      - verify_backup: Verify backup integrity", file=sys.stderr)
+    print("      - rollback_restore: Rollback failed restore", file=sys.stderr)
+    print("    Sprint 8 Maintenance Scheduler Tools:", file=sys.stderr)
+    print("      - schedule_task: Schedule maintenance task", file=sys.stderr)
+    print("      - list_tasks: List scheduled tasks", file=sys.stderr)
+    print("      - cancel_task: Cancel scheduled task", file=sys.stderr)
+    print("    Sprint 8 Deduplication Tools:", file=sys.stderr)
+    print("      - deduplicate: Perform deduplication", file=sys.stderr)
+    print("      - schedule_deduplication: Schedule periodic deduplication", file=sys.stderr)
+    print("      - deduplication_report: Generate deduplication report", file=sys.stderr)
+    print("    Sprint 8 Summarization Tools:", file=sys.stderr)
+    print("      - summarize_old_memories: Summarize old memories", file=sys.stderr)
+    print("      - schedule_summarization: Schedule periodic summarization", file=sys.stderr)
+    print("      - summary_stats: Get summarization statistics", file=sys.stderr)
+    print("    Sprint 9 Multi-Language Tools:", file=sys.stderr)
+    print("      - detect_language: Detect language from text (28 languages)", file=sys.stderr)
+    print("      - get_supported_languages: List all supported languages", file=sys.stderr)
+    print("      - search_by_language: Search with language filtering", file=sys.stderr)
+    print("      - get_language_distribution: Get language statistics", file=sys.stderr)
+    print("      - cross_language_search: Cross-language search with ranking", file=sys.stderr)
+    print("      - get_search_facets: Get faceted search options", file=sys.stderr)
+    print("    Sprint 10 Advanced AI Features:", file=sys.stderr)
+    print("      - intelligent_summarize: LLM-based memory summarization", file=sys.stderr)
+    print("      - auto_summarize_old_memories: Batch summarization of old memories", file=sys.stderr)
+    print("      - cluster_memories: Semantic memory clustering", file=sys.stderr)
+    print("      - advanced_search: Advanced search with re-ranking", file=sys.stderr)
+    print("      - expand_search_query: Query expansion using LLM", file=sys.stderr)
+    print("      - get_search_analytics: Search analytics and metrics", file=sys.stderr)
+    print("      - get_summarization_stats: Summarization statistics", file=sys.stderr)
+    print("    Memory Management Tools:", file=sys.stderr)
+    print("      - expire_memories: Expire old memories", file=sys.stderr)
+    print("      - get_memory_age_stats: Get memory age statistics", file=sys.stderr)
+    print("      - set_memory_ttl: Set time-to-live for memory", file=sys.stderr)
+    print("      - archive_category: Archive category memories", file=sys.stderr)
+    print("    Performance Analytics Tools:", file=sys.stderr)
+    print("      - get_performance_metrics: Get comprehensive metrics", file=sys.stderr)
+    print("      - get_slow_queries: Get slow queries", file=sys.stderr)
+    print("      - get_prometheus_metrics: Export Prometheus metrics", file=sys.stderr)
+    print("    Cross-Agent Sharing Tools:", file=sys.stderr)
+    print("      - set_memory_sharing: Set sharing policy", file=sys.stderr)
+    print("      - check_memory_access: Check memory access", file=sys.stderr)
+    print("      - get_shared_memories: Get shared memories", file=sys.stderr)
+    print("      - create_shared_space: Create shared space", file=sys.stderr)
+    print("    Real-Time Sync Tools:", file=sys.stderr)
+    print("      - publish_memory_event: Publish memory event", file=sys.stderr)
+    print("      - get_sync_status: Get sync status", file=sys.stderr)
+    print("      - sync_agent_state: Sync agent state", file=sys.stderr)
+    print("    Phase 2 - Knowledge Graph (v1.0.9 API):", file=sys.stderr)
+    print("      - remember: Session-aware cognee ingestion", file=sys.stderr)
+    print("      - recall: Knowledge graph search (15 search types)", file=sys.stderr)
+    print("      - forget_memory: Delete from cognee knowledge graph", file=sys.stderr)
+    print("      - improve: 4-stage feedback improvement pipeline", file=sys.stderr)
+    print("      - save_interaction: Save coding interactions as knowledge", file=sys.stderr)
+    print("      - cognify_status: Check background task status", file=sys.stderr)
+    print("      search() now accepts search_type= for graph routing", file=sys.stderr)
+    print("    Phase 3 - External Loaders, Translation, Entities, v2 Graph:", file=sys.stderr)
+    print("      - ingest_url: Scrape URLs into knowledge graph (Tavily/BS4)", file=sys.stderr)
+    print("      - ingest_db: Ingest relational DB tables via dlt", file=sys.stderr)
+    print("      - translate_text: Translate text (llm/google/azure)", file=sys.stderr)
+    print("      - regex_extract_entities: Extract entities via regex patterns", file=sys.stderr)
+    print("      - extract_graph_v2: Cascade v2 graph extraction (preview)", file=sys.stderr)
+    print("      - list_loaders: List available file format loaders", file=sys.stderr)
+    print("    Plan 14.8 - LLM Cost Tracking:", file=sys.stderr)
+    print("      - get_llm_cost_report: Token usage and cost report (per-agent/tool/model)", file=sys.stderr)
+    print("      - set_cost_budget: Set monthly LLM cost limit for an agent", file=sys.stderr)
+    print("    Phase 7 - Progressive Search Tools:", file=sys.stderr)
+    print("      - search_quick: Fast top-3 keyword search (lightweight)", file=sys.stderr)
+    print("      - get_memory_detail: Full detail of a single memory by ID", file=sys.stderr)
+    print("      - get_related: Find memories related to a given memory", file=sys.stderr)
+    print("    Phase 7 - Session Management Tools:", file=sys.stderr)
+    print("      - start_session: Start a new Claude Code session", file=sys.stderr)
+    print("      - end_session: End a session with optional summary", file=sys.stderr)
+    print("      - get_session_context: Retrieve full session context + memories", file=sys.stderr)
+    print("      - get_session_history: List recent sessions for a user/agent", file=sys.stderr)
+    print("    Phase 9 - Audit and Compliance Tools:", file=sys.stderr)
+    print("      - query_audit_log: Query audit log for recent operations", file=sys.stderr)
+    print("    Phase 14.3 - Encryption at Rest:", file=sys.stderr)
+    print("      - encrypt_memory: Encrypt a memory's content with Fernet AES", file=sys.stderr)
+    print("      - get_encryption_stats: Encryption coverage statistics", file=sys.stderr)
+    print("      - rotate_encryption_key: Rotate master key and re-encrypt all memories", file=sys.stderr)
+    print("    Phase 12.8 - Structured Observations (EAV):", file=sys.stderr)
+    print("      - add_observation: Add entity-attribute-value observation to a memory", file=sys.stderr)
+    print("      - get_observations: Get all observations for a memory", file=sys.stderr)
+    print("      - update_observation: Update an observation value/confidence", file=sys.stderr)
+    print("      - delete_observation: Delete a structured observation", file=sys.stderr)
+    print("    Phase 17.4 - Slack/Discord Notifications:", file=sys.stderr)
+    print("      - configure_slack_notifications: Register Slack webhook channel", file=sys.stderr)
+    print("      - configure_discord_notifications: Register Discord webhook channel", file=sys.stderr)
+    print("      - test_notification_channel: Send test notification to channel", file=sys.stderr)
+    print("    Phase 18.4 - Memory Importance Scoring:", file=sys.stderr)
+    print("      - get_memory_importance: Get heuristic importance score for a memory", file=sys.stderr)
+    print("      - update_importance_scores: Recompute scores for up to N memories", file=sys.stderr)
+    print("      - get_top_important_memories: Top N memories by importance score", file=sys.stderr)
+    print("    Phase 18.5 - Heuristic Re-ranking:", file=sys.stderr)
+    print("      - rerank_search_results: Re-rank search results by multi-signal score", file=sys.stderr)
+    print("    Undo Operations:", file=sys.stderr)
+    print("      - undo_last: Undo the most recent automated memory operation", file=sys.stderr)
+    print("      - get_undo_history: List recent undoable operations", file=sys.stderr)
+    print("      - redo_last: Re-apply the most recently undone operation", file=sys.stderr)
+    print("  Total tools: 122", file=sys.stderr)
+    print(file=sys.stderr)
 
     try:
         # Run MCP server
-        await mcp.run_stdio_async()
+        if _STDIO_OUTPUT is None:
+            await mcp.run_stdio_async()
+        else:
+            import anyio
+            from io import TextIOWrapper
+            from mcp.server.stdio import stdio_server
+            output = anyio.wrap_file(TextIOWrapper(_STDIO_OUTPUT.buffer, encoding="utf-8"))
+            # Mirrors the pinned MCP v1 FastMCP runner, with its public stdio
+            # transport given an explicit protocol stream.
+            async with stdio_server(stdout=output) as (read_stream, write_stream):
+                await mcp._mcp_server.run(read_stream, write_stream,
+                                        mcp._mcp_server.create_initialization_options())
     finally:
         await cleanup_enhanced_stack()
 
@@ -8130,22 +8049,46 @@ if __name__ == "__main__":
         default=os.environ.get("COGNEE_SERVICE_API_KEY", ""),
         help="API key for the remote Cognee instance (used with --serve-url).",
     )
+    parser.add_argument(
+        "--tool-groups",
+        default="",
+        help=(
+            "Comma-separated tool groups to advertise (memory_read, graph, "
+            "ingest, analysis, memory_write, ops_readonly). Empty advertises "
+            "all tools (operator CLI use). Unlisted tools are never "
+            "advertised when a selection is active."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.tool_groups:
+        from mcp_tool_groups import apply_to_registry
+        try:
+            summary = apply_to_registry(mcp._tool_manager._tools, args.tool_groups)
+        except ValueError as group_error:
+            print(f"ERR tool group selection refused: {group_error}", file=sys.stderr)
+            sys.exit(3)
+        print(
+            "OK tool groups applied: {} ({} tools advertised, {} removed)".format(
+                summary["groups"], summary["selected"], summary["removed"]
+            ),
+            file=sys.stderr,
+        )
 
     # Cloud connectivity toggle (optional, opt-in only)
     if args.serve_url:
         try:
             from cognee.api.v1.serve.serve import serve as cognee_serve
-            cognee_serve(url=args.serve_url, api_key=args.serve_api_key or None)
-            print(f"OK Cloud connectivity enabled: {args.serve_url}")
+            asyncio.run(cognee_serve(url=args.serve_url, api_key=args.serve_api_key or None))
+            print(f"OK Cloud connectivity enabled: {args.serve_url}", file=sys.stderr)
         except Exception as _serve_err:
-            print(f"WARN Could not enable cloud connectivity: {_serve_err}")
-            print("INFO Continuing in local-only mode")
+            print(f"WARN Could not enable cloud connectivity: {_serve_err}", file=sys.stderr)
+            print("INFO Continuing in local-only mode", file=sys.stderr)
 
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nOK RNR Enhanced Cognee MCP Server stopped")
+        print("\nOK RNR Enhanced Cognee MCP Server stopped", file=sys.stderr)
     except Exception as e:
         logger.error(f"Server error: {e}")
         sys.exit(1)

@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "environment": "Ubuntu-Workspace",
+  "parent_revision": "14f3d091f1b124c602f3218b82a24d860972a7ad",
+  "restricted_distribution_version": "1.2.0",
+  "source_sha256": {
+    "src/local_embeddings.py": "4daea182fb8158af5fdadff0cac8edac19cd840f91de8dd84e8b1b10139fa1d1",
+    "scripts/qualification/prepare_text_model.py": "2805ea4e6a88c8c8adceeb7cf12d31c82563d9dbbafff4a0547eaf82de253ed0",
+    "requirements-memory.in": "90d7b66b526300ba0a09cb00f8e45af8ebeffb7c3275d2fc3d1e4fb09fe6c06c",
+    "requirements-memory.lock": "d5b8aff432bb1b2b51500f06377a2fbf62a96824399e6b8bf4e33ffd0b94d43a",
+    "requirements-index.lock": "89a9279aa8bd0b5f0227efa235a939658d33cf707a376db2c639832aeedc9e58",
+    "requirements-full.lock": "e3d4f60b328fc31f7f232d6c88ad9a5db8bab1b240661ae944b4e5f460fd41ae",
+    "requirements.txt": "5fb8f65d5f3a4d026561ca6dbae744542a0e26ea3a97f03cdb921fc8ce35c98b",
+    "pyproject.toml": "d4a9e762e01481e1e925de29ac17c2c1bb81f39cc1840431c8c2cc0ccda5c02f",
+    "packaging/memory/pyproject.toml": "f749dc9127994fbd76d679862061bdce543fcc199225da76c7ce6f8a85de7d27",
+    "tests/fixtures/text_embedding_reference.json": "9f7c7e8f3f3c0132555c3873f8845de7bfbb82bcc020daffb869558f2e3148eb"
+  },
+  "restricted_audit": {
+    "known_findings": 0,
+    "ignored_advisories": 0,
+    "enforced": true
+  },
+  "full_audit": {
+    "known_findings": 3,
+    "package": "filelock",
+    "version": "3.32.7",
+    "fix_floor": "4.2.1",
+    "blocked_by": "LiteLLM filelock<4; no override or downgrade admitted"
+  },
+  "model_parity": {
+    "baseline": "FastEmbed 0.9.0 CPU on same pinned public model",
+    "cases": 30,
+    "dimensions": 384,
+    "maximum_absolute_error": 0.0,
+    "new_model_training": false,
+    "private_data_or_chat_model_used": false
+  },
+  "source_batch": {
+    "batch": "source",
+    "complete": true,
+    "lanes": [
+      {
+        "name": "units",
+        "exit_code": 0,
+        "retained_fixtures": "/tmp/ecq-ljocrxw7",
+        "tests": 4349,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 4349,
+        "complete": true
+      },
+      {
+        "name": "hermes-and-recovery",
+        "exit_code": 0,
+        "retained_fixtures": "/tmp/ecq-5myb9hqe",
+        "tests": 1330,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 1330,
+        "complete": true
+      }
+    ],
+    "created_utc": "2026-10-24T02:24:59.473880+00:00",
+    "installed_host_qualified": false,
+    "fleet_launch_approved": false
+  },
+  "real_database_model_recovery": {
+    "tests": 54,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "prior_disposable_authentication_failure": {
+    "passed": 3,
+    "failures": 7,
+    "errors": 12,
+    "retained": true,
+    "installed_database_changed": false
+  },
+  "clean_restricted_runtime": {
+    "installed_distribution_count": 52,
+    "pip_check_passed": true,
+    "fresh_environment": true,
+    "root_and_restricted_wheel_boundary_passed": true
+  },
+  "docker_local": {
+    "executed": false,
+    "reason": "Docker not available in this WSL distro; settings unchanged"
+  },
+  "old_completed_test": {
+    "run_id": "5d0e9a49bdf544359ae6deff",
+    "canonical_version": 4,
+    "replayed": false,
+    "native_completion_or_original_cause_reclassified": false
+  },
+  "installed_runtime_changed": false,
+  "installed_host_qualified": false,
+  "fleet_launch_approved": false,
+  "remaining": [
+    "exact hosted image/index checks",
+    "full legacy filelock compatibility",
+    "installed native turn completion",
+    "installed interrupted/unattended credential renewal and secret reload",
+    "current host database/index backup recovery",
+    "actual fleet inventory identity and private admission",
+    "Windows real collection and remote/offline recovery",
+    "owner historical credential disposition",
+    "final release review"
+  ],
+  "hosted_initial_memory": {
+    "revision": "d2bb1ccfd61960428dce9905ed21986678310a69",
+    "passed": 1360,
+    "failures": 51,
+    "skipped": 5,
+    "repaired_fixture_causes": [
+      "hardcoded local UID",
+      "process umask leak"
+    ],
+    "cross_machine_reference": {
+      "observed_first_case_maximum_component_error": 0.00021559,
+      "admitted_maximum_component_error": 0.001,
+      "required_cosine": 0.99999,
+      "same_host_restart_tolerance_unchanged": true
+    },
+    "fixed_source_local_combined": {
+      "passed": 1411,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5
+    },
+    "fresh_hosted_validation_required": true
+  },
+  "hosted_initial_default_stack": {
+    "image_build_and_reduced_runtime_smoke_passed": true,
+    "container_worker_catchup_passed": false,
+    "public_model_cache_traversal_fixed": true,
+    "fresh_hosted_validation_required": true
+  },
+  "accepted_hosted_memory_candidate": {
+    "revision": "cc6dc226f85c2d87fe8a2878494af1a2dc1d58db",
+    "required_ci": "success",
+    "canonical_browser_and_frontends": "success",
+    "memory_run": 40055060743,
+    "memory_passed": 1411,
+    "memory_skipped": 5,
+    "actual_store_run": 40055060862,
+    "actual_store_passed": 35,
+    "actual_store_skipped": 0,
+    "restricted_image_high_critical": 0,
+    "complete_image_findings": {
+      "MEDIUM": 26,
+      "LOW": 10,
+      "UNKNOWN": 1
+    },
+    "base_trust_bundle_patch_still_tracked": true
+  },
+  "final_type_guard_repair": {
+    "mypy_version": "2.4.0",
+    "matched_dependency_environment": true,
+    "blocking_modules_passed": 29,
+    "targeted_crypto_provenance_passed": 79,
+    "full_source_batch": {
+      "batch": "source",
+      "complete": true,
+      "lanes": [
+        {
+          "name": "units",
+          "exit_code": 0,
+          "retained_fixtures": "/tmp/ecq-2yzn7yft",
+          "tests": 4349,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 4349,
+          "complete": true
+        },
+        {
+          "name": "hermes-and-recovery",
+          "exit_code": 0,
+          "retained_fixtures": "/tmp/ecq-vvsnb_sp",
+          "tests": 1330,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 1330,
+          "complete": true
+        }
+      ],
+      "created_utc": "2026-10-24T02:46:52.990826+00:00",
+      "installed_host_qualified": false,
+      "fleet_launch_approved": false
+    },
+    "new_source_sha256": {
+      "src/encryption_manager.py": "80167331ca4db98f3565547284f8e4785ab4538b78abefc94b24b4b1aecd9f58",
+      "src/memory_provenance.py": "5ab64a5f52fb3e681dafbcc2adbc05f40f3b9a70ee69922ca8114cda2f07bed8"
+    },
+    "fresh_hosted_results_required": true
+  },
+  "broader_ci_still_fails": {
+    "unit_system_failed": 34,
+    "unit_system_passed": 4408,
+    "measured_coverage_percent": 80.9,
+    "main_merge_qualified": false
+  }
+}
