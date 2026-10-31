@@ -863,9 +863,14 @@ def apply_arcadedb(logins, stamp, candidate):
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
                 "graph_restart_failed")
         time.sleep(8)
+        # The staged user mapped onto root authenticates AS root (its
+        # secret is root's new password); every other staged name
+        # authenticates under its own name.
+        root_mapped = sorted(staged_remaining)[0] if staged_remaining else None
         for name, secret in staged.items():
-            require(arcade_auth_ok(name, secret),
-                    "arcade_auth_verify_failed:" + name)
+            as_name = "root" if name == root_mapped else name
+            require(arcade_auth_ok(as_name, secret),
+                    "arcade_auth_verify_failed:%s" % name)
     except Exception:
         restore = users_file.with_name(users_file.name
                                        + ".before-rotation-" + stamp)
