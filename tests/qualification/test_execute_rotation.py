@@ -22,7 +22,15 @@ executor = load('execute_staged_rotation')
 def test_as_pairs_accepts_dict_and_singleton_list():
     assert executor.as_pairs({"a": "x", "b": "y"}) == [("a", "x"), ("b", "y")]
     assert executor.as_pairs([{"a": "x"}]) == [("a", "x")]
-    for bad in ([], ["flat"], [{"a": 1}], "string", [{"a": "x", "b": "y"}]):
+    staged = {"api": {"username": "ecmem_api", "password": "p1"},
+              "worker": {"username": "ecmem_worker", "password": "p2"},
+              "operator": {"username": "ecmem_ops", "password": "p3"}}
+    assert executor.as_pairs(staged) == [("ecmem_api", "p1"),
+                                         ("ecmem_worker", "p2"),
+                                         ("ecmem_ops", "p3")]
+    for bad in ([], ["flat"], [{"a": 1}], "string", [{"a": "x", "b": "y"}],
+                {"label": {"username": "u", "not_password": "x"}},
+                {"label": {"username": 7, "password": "p"}}):
         with pytest.raises(ValueError):
             executor.as_pairs(bad)
 

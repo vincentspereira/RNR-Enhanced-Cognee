@@ -67,15 +67,31 @@ def login_shape_error(value):
 
 
 def as_pairs(value):
-    """Normalize a family entry to [(name, new_secret)] pairs; names and
-    secrets must already be nonempty strings - never coerced."""
+    """Normalize a family entry to [(name, new_secret)] pairs.
+
+    Accepted shapes: flat {name: secret}; list of single-key dicts; and
+    the staged nested form {label: {username, password}, ...} where the
+    pair becomes (username, password). Values must already be nonempty
+    strings - never coerced."""
     def check(name, secret):
         if not (isinstance(name, str) and name and isinstance(secret, str)
                 and secret):
             raise ValueError("unsupported_login_shape:"
                              + json.dumps(login_shape_error(value))[:400])
         return (name, secret)
+
     if isinstance(value, dict):
+        nested = all(isinstance(v, dict) for v in value.values()) and value
+        if nested:
+            pairs = []
+            for label, entry in value.items():
+                if not (isinstance(entry, dict)
+                        and isinstance(entry.get("username"), str)
+                        and isinstance(entry.get("password"), str)):
+                    raise ValueError("unsupported_login_shape:"
+                                     + json.dumps(login_shape_error(value))[:400])
+                pairs.append(check(entry["username"], entry["password"]))
+            return pairs
         return [check(k, v) for k, v in value.items()]
     if (isinstance(value, list) and value
             and all(isinstance(i, dict) and len(i) == 1 for i in value)):

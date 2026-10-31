@@ -25,6 +25,10 @@ SOURCE = Path(__file__).resolve().parent.parent / "enhanced_cognee_mcp" / "serve
 INSTALL_DIR = HOME / "mcp-servers" / "enhanced-cognee"
 GATEWAY_PYTHON = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
 DEFAULT_GROUPS = "memory_read"
+HOME_CONFIG = HOME / "config.yaml"
+# The main Hermes assistant (app-level default profile, gateway home
+# config) acts as the fleet's chief coordinator: full toolset.
+HOME_GROUPS = "memory_read,ingest,analysis,coordination"
 # Full per-table enablement (owner-approved 31 Oct): analysis for every
 # role marked N or G in the matrix; ingest where N or G; coordination for
 # the four coordinators; the ops family stays read-only by design.
@@ -152,9 +156,13 @@ def main():
         result = enable_profile(PROFILES / name / "config.yaml",
                                 ROLE_GROUPS.get(name, args.groups))
         (changed if result == "changed" else already).append(name)
+    home_result = "skipped"
+    if HOME_CONFIG.is_file():
+        home_result = enable_profile(HOME_CONFIG, HOME_GROUPS)
     print(json.dumps({"complete": True, "server_sha256": digest,
                       "install_dir": str(INSTALL_DIR),
                       "changed": changed, "already": already,
+                      "home_config": home_result,
                       "groups_default": args.groups}, sort_keys=True))
     return 0
 
