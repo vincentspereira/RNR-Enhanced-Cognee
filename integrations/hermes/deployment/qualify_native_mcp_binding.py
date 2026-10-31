@@ -319,7 +319,9 @@ def worker():
         deferred = catalogue.get('remote_definitions_deferred', [])
         result['remote_definitions_deferred'] = deferred
         result['remote_binding_deferred'] = bool(deferred)
-        result['native_remote_binding_qualified'] = False
+        # The remote stage above sets native_remote_binding_qualified; only
+        # default it when no remote definitions existed to qualify.
+        result.setdefault('native_remote_binding_qualified', False)
         result['native_launch_network_used'] = True
         result['retained_copy_reuse'] = False
         result['qualification_unit_stopped'] = True
