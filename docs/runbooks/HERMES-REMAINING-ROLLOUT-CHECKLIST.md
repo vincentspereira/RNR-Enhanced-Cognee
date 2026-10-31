@@ -755,3 +755,20 @@ read-only sinks by design). No redundant build. Families 3 (summarize)
 and 4 (language) now require the owner LLM route/budget decision; the
 multilingual embedding limitation (pinned model is English-only) is
 recorded with the proposal.
+
+31 October 2026 STAGE D COMPLETE (ALL FOUR FAMILIES): family 3
+(summarize/organize) and family 4 (language) are deployed and verified
+live under the owner-approved LLM route A (GLM-5.3-Flash via the daemon
+credential whitelist; per-project daily cap 50000 tokens, fail-soft).
+Live round-trip evidence under the web-researcher scope: a genuine model
+summary of the space's records (stored as an origin=summarize record),
+a real French translation (returned, never stored), Cyrillic detection
+(script heuristic, no model), budget accounting 657/50000, and
+version-checked retraction cleanup. Researcher pilots now carry
+memory_read,ingest,analysis. Deploy lessons retained: daemon environment
+whitelist (llm.json loads via credential_environment as ENHANCED_LLM_*
+env), MemoryScope.project attribute, list_records results key, and
+authenticated probes on every new route. Families summary: memory
+(automatic, provider), reads (Stage C), graph (continuous by
+architecture, family 2), ingestion (family 1), summarize/language
+(families 3-4). Admin families remain operator-only by design.
