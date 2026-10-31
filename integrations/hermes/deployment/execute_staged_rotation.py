@@ -792,6 +792,34 @@ def _arcade_pbkdf2(password, sample_hash):
         base64.b64encode(salt).decode(), base64.b64encode(digest).decode()])
 
 
+def _arcade_auth_matrix(staged, root_mapped=None):
+    """Sanitized auth matrix: HTTP status per identity (names and codes
+    only - never a secret)."""
+    import base64
+    import urllib.request as _u
+    import urllib.error as _ue
+
+    def status(username, password):
+        request = _u.Request(
+            ARCADE_HTTP + "/api/v1/server",
+            headers={"Authorization": "Basic " + base64.b64encode(
+                ("%s:%s" % (username, password)).encode()).decode()})
+        try:
+            with _u.urlopen(request, timeout=8) as response:
+                return response.status
+        except _ue.HTTPError as exc:
+            return exc.code
+        except Exception as exc:
+            return type(exc).__name__
+
+    matrix = {"anonymous": status("", "")}
+    for name, secret in sorted(staged.items()):
+        matrix[name] = status(name, secret)
+        if name == root_mapped:
+            matrix[name + "@root"] = status("root", secret)
+    return matrix
+
+
 def apply_arcadedb(logins, stamp, candidate):
     pairs = as_pairs(logins["arcadedb"])
     require(len(pairs) == 3, "expected_three_arcadedb_users")
@@ -869,8 +897,10 @@ def apply_arcadedb(logins, stamp, candidate):
         root_mapped = sorted(staged_remaining)[0] if staged_remaining else None
         for name, secret in staged.items():
             as_name = "root" if name == root_mapped else name
-            require(arcade_auth_ok(as_name, secret),
-                    "arcade_auth_verify_failed:%s" % name)
+            if not arcade_auth_ok(as_name, secret):
+                raise ValueError("arcade_auth_verify_failed:%s:%s" % (
+                    name, json.dumps(_arcade_auth_matrix(
+                        staged, root_mapped))))
     except Exception:
         restore = users_file.with_name(users_file.name
                                        + ".before-rotation-" + stamp)
