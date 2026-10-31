@@ -226,6 +226,13 @@ def apply_postgresql(logins, stamp, candidate):
             alter_user = parts.username
             alter_password = parts.password or ""
     staged_map = dict(pairs)
+    # The native psql needs its bundled libpq (not on the system path).
+    lib_dirs = sorted(glob.glob(
+        "/opt/enhanced-cognee-stores/native/usr/lib/*/"))
+    lib_dirs += sorted(glob.glob(
+        "/opt/enhanced-cognee-stores/native/usr/lib/postgresql/*/lib/"))
+    psql_env = {"PATH": "/usr/bin:/bin",
+                "LD_LIBRARY_PATH": ":".join(lib_dirs)}
     # Query existing roles first: staged names that do not exist (the
     # operator role keeps its legacy name) must not be ALTERed.
     list_process = subprocess.run(
@@ -254,13 +261,6 @@ def apply_postgresql(logins, stamp, candidate):
                              staged_map[operators[0]].replace("'", "''")))
     require(statements, "no_roles_to_alter")
     sql = ";".join(statements)
-    # The native psql needs its bundled libpq (not on the system path).
-    lib_dirs = sorted(glob.glob(
-        "/opt/enhanced-cognee-stores/native/usr/lib/*/"))
-    lib_dirs += sorted(glob.glob(
-        "/opt/enhanced-cognee-stores/native/usr/lib/postgresql/*/lib/"))
-    psql_env = {"PATH": "/usr/bin:/bin",
-                "LD_LIBRARY_PATH": ":".join(lib_dirs)}
     process = subprocess.run(
         ["/opt/enhanced-cognee-stores/native/usr/lib/postgresql/16/bin/psql",
          "postgresql://%s:%s@127.0.0.1:%d/postgres" % (quote(alter_user),
@@ -494,15 +494,24 @@ def apply_qdrant(logins, stamp, candidate):
     require(old_read != old_admin or len(staged) == 1,
             "qdrant_keys_identical_cannot_map")
     matched = []
+    already_current = []
     for label, secret in staged.items():
         old = old_for[label]
-        require(old != secret, "qdrant_candidate_equals_current:" + label)
+        if old == secret:
+            # Staged key already equals the live one (proven pattern from
+            # the issuer family): verified no-op for this key.
+            already_current.append(label)
+            continue
         hits = []
         for path in (ETC / "qdrant.yaml", ETC / "index.json"):
             if old in path.read_text():
                 hits.append((path, old))
         require(hits, "qdrant_current_key_not_located:" + label)
         matched.append((label, secret, hits))
+    if not matched:
+        return {"family": "qdrant", "keys_rotated": [],
+                "keys_already_current": sorted(already_current),
+                "verified": True}
     for path in (ETC / "qdrant.yaml", ETC / "index.json"):
         backup(path, stamp)
     try:
@@ -535,7 +544,8 @@ def apply_qdrant(logins, stamp, candidate):
                      "enhanced-cognee-api.service"):
             systemctl("restart", unit)
         raise
-    return {"family": "qdrant", "keys_rotated": [p[0] for p in pairs],
+    return {"family": "qdrant", "keys_rotated": [p[0] for p in matched],
+            "keys_already_current": sorted(already_current),
             "api_healthy": True}
 
 
