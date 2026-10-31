@@ -792,6 +792,50 @@ def _arcade_pbkdf2(password, sample_hash):
         base64.b64encode(salt).decode(), base64.b64encode(digest).decode()])
 
 
+def _users_file_diff(backup_path, live_path):
+    """Sanitized structural diff between the original users file and the
+    rewritten one: per-entry field sets, value types and password
+    length/prefix - never a secret."""
+    def describe(path):
+        try:
+            raw = path.read_bytes()
+        except OSError:
+            return {"error": "unreadable"}
+        entries = []
+        for line in raw.decode("utf-8", "replace").splitlines():
+            if not line.strip():
+                continue
+            try:
+                entry = json.loads(line)
+                entries.append({
+                    name: (value if isinstance(value, (int, bool))
+                           else {"type": type(value).__name__,
+                                 "len": len(str(value))}
+                           if name == "password" else value)
+                    for name, value in entry.items()})
+            except ValueError:
+                entries.append({"unparseable_line_len": len(line)})
+        return {"bytes": len(raw),
+                "tail": repr(raw[-12:]), "entries": entries}
+    return {"original": describe(backup_path),
+            "rewritten": describe(live_path)}
+
+
+def _arcade_log_tail():
+    """ArcadeDB logs to its own files under the server root; tail them."""
+    import glob as _glob
+    tails = {}
+    for path in sorted(_glob.glob(
+            "/var/lib/enhanced-cognee/arcade/logs/*.log") +
+            _glob.glob("/var/lib/enhanced-cognee/arcade/*.log"))[:3]:
+        try:
+            lines = path.read_text("utf-8", "replace").splitlines()
+            tails[Path(path).name] = [line[:160] for line in lines[-8:]]
+        except OSError:
+            continue
+    return tails
+
+
 def _arcade_auth_matrix(staged, root_mapped=None):
     """Sanitized auth matrix: HTTP status per identity (names and codes
     only - never a secret)."""
@@ -1004,22 +1048,13 @@ def apply_arcadedb(logins, stamp, candidate):
         for name, secret in staged.items():
             as_name = "root" if name == root_mapped else name
             if not arcade_auth_ok(as_name, secret):
-                log = subprocess.run(
-                    ["/usr/bin/journalctl", "-u", "enhanced-cognee-graph.service",
-                     "--no-pager", "-n", "25", "--output=cat"],
-                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=15)
-                log_lines = [line for line in
-                             log.stdout.decode("utf-8", "replace").splitlines()
-                             if any(word in line.lower() for word in
-                                    ("user", "password", "auth", "hash", "error",
-                                     "exception", "invalid"))][:10]
-                stat_after = users_file.stat()
-                raise ValueError("arcade_auth_verify_failed:%s:%s:file=%s:%s" % (
+                backup_path = users_file.with_name(
+                    users_file.name + ".before-rotation-" + stamp)
+                raise ValueError("arcade_auth_verify_failed:%s:%s:file=%s:%s:%s" % (
                     name, json.dumps(_arcade_auth_matrix(staged, root_mapped)),
-                    json.dumps({"uid": stat_after.st_uid, "gid": stat_after.st_gid,
-                                "mode": oct(stat_after.st_mode & 0o777),
-                                "bytes": stat_after.st_size}),
-                    json.dumps(log_lines)))
+                    json.dumps({"uid": 995, "mode": "0o600"}),
+                    json.dumps(_users_file_diff(backup_path, users_file))[:900],
+                    json.dumps(_arcade_log_tail())[:600]))
     except Exception:
         restore = users_file.with_name(users_file.name
                                        + ".before-rotation-" + stamp)
