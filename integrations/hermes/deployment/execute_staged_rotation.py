@@ -746,16 +746,27 @@ ARCADE_USERS_CANDIDATES = [
 
 
 def arcade_auth_ok(username, password):
-    """Functional check: basic-auth against the ArcadeDB HTTP API."""
+    """Functional check via the COMMAND endpoint (the /api/v1/server info
+    route HANGS for valid non-admin users and degrades the whole server -
+    never use it for verification). Authentication succeeded when the
+    status is anything other than 401/403 (e.g. 200 or a 500 query
+    error); bad or missing credentials answer 403."""
     import base64
+    import urllib.error as _ue
     import urllib.request as _u
     request = _u.Request(
-        ARCADE_HTTP + "/api/v1/server",
-        headers={"Authorization": "Basic " + base64.b64encode(
-            ("%s:%s" % (username, password)).encode()).decode()})
+        ARCADE_HTTP + "/api/v1/command/hermes_deploy_v1",
+        data=json.dumps({"language": "sql", "command": "select from OUser",
+                         "limit": 1}).encode(),
+        method="POST",
+        headers={"Content-Type": "application/json",
+                 "Authorization": "Basic " + base64.b64encode(
+                     ("%s:%s" % (username, password)).encode()).decode()})
     try:
-        with _u.urlopen(request, timeout=8) as response:
-            return response.status == 200
+        with _u.urlopen(request, timeout=10) as response:
+            return response.status < 400
+    except _ue.HTTPError as exc:
+        return exc.code not in (401, 403)
     except Exception:
         return False
 
