@@ -702,23 +702,38 @@ def apply_application(logins, stamp, candidate):
             "default_reissued": True, "probe_role": 200}
 
 
-def inspect_arcadedb(candidate):
-    artifact = candidate / "graph-operator-recovery"
-    raw = artifact.read_text()
-    require(len(raw) <= 65536, "artifact_oversized")
-    structure = {"bytes": len(raw), "parses_as_json": False}
+def _sanitized_structure(path: Path):
+    """Structure of one artifact file: for JSON a key tree with types and
+    value lengths; otherwise size and first-line prefix. Never a value."""
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        return {"error": type(exc).__name__}
+    entry = {"bytes": len(raw)}
     try:
         value = json.loads(raw)
-        structure["parses_as_json"] = True
-        if isinstance(value, dict):
-            structure["keys"] = sorted(value)[:32]
-            structure["value_kinds"] = {k: type(v).__name__
-                                        for k, v in list(value.items())[:32]}
-        else:
-            structure["shape"] = type(value).__name__
     except ValueError:
-        structure["first_line_prefix"] = raw[:60]
-    return {"family": "arcadedb-inspect", "artifact": structure,
+        entry["first_line_prefix"] = raw[:60].decode("utf-8", "replace")
+        return entry
+    def walk(item):
+        if isinstance(item, dict):
+            return {str(k)[:32]: walk(v) for k, v in list(item.items())[:24]}
+        if isinstance(item, list):
+            return {"<list>": len(item)}
+        return "%s:%d" % (type(item).__name__, len(str(item)))
+    entry["tree"] = walk(value)
+    return entry
+
+
+def inspect_arcadedb(candidate):
+    artifact = candidate / "graph-operator-recovery"
+    require(artifact.is_dir(), "artifact_not_a_directory")
+    structure = {child.name: _sanitized_structure(child)
+                 for child in sorted(artifact.iterdir())[:24]}
+    summary = json.loads((candidate / "summary.json").read_text())
+    return {"family": "arcadedb-inspect", "artifact_children": structure,
+            "graph_authentication_metadata": summary.get(
+                "graph_authentication_metadata"),
             "note": "apply phase for arcadedb is built against this schema"}
 
 
