@@ -66,14 +66,40 @@ def login_shape_error(value):
     return describe(value)
 
 
-def as_pairs(value):
-    """Normalize a family entry to [(name, new_secret)] pairs.
+_SECRET_FIELDS = ("password", "api_key", "jwt_signing_key", "secret",
+                  "key", "token")
+_NAME_FIELDS = ("username", "name", "role", "user")
 
-    Accepted shapes: flat {name: secret}; list of single-key dicts; and
-    the staged nested form {label: {username, password}, ...} where the
-    pair becomes (username, password). Values must already be nonempty
-    strings - never coerced."""
-    def check(name, secret):
+
+def _pair_from_entry(label, entry):
+    """One staged entry -> (name, secret). Classic username/password entries
+    keep the username as the name; single-secret entries (api_key,
+    jwt_signing_key, ...) take their label or an explicit name field."""
+    if isinstance(entry, str) and entry:
+        return (label, entry)
+    if not isinstance(entry, dict):
+        raise ValueError("unsupported_login_shape:entry")
+    secrets = [field for field in _SECRET_FIELDS
+               if isinstance(entry.get(field), str) and entry[field]]
+    names = [field for field in _NAME_FIELDS
+             if isinstance(entry.get(field), str) and entry[field]]
+    if ("username" in entry and "password" in entry
+            and entry.get("password") in [entry.get(f) for f in secrets]):
+        return (entry["username"], entry["password"])
+    if len(secrets) == 1:
+        name = entry[names[0]] if names else label
+        return (name, entry[secrets[0]])
+    raise ValueError("unsupported_login_shape:entry_fields:"
+                     + ",".join(sorted(entry)))
+
+
+def as_pairs(value):
+    """Normalize a family entry to [(name, new_secret)] pairs across the
+    staged shapes: flat {name: secret}, list of single-key dicts, and the
+    nested {label: {username,password}|{api_key}|{jwt_signing_key}} form.
+    Values must already be nonempty strings - never coerced."""
+    def check(pair):
+        name, secret = pair
         if not (isinstance(name, str) and name and isinstance(secret, str)
                 and secret):
             raise ValueError("unsupported_login_shape:"
@@ -81,21 +107,13 @@ def as_pairs(value):
         return (name, secret)
 
     if isinstance(value, dict):
-        nested = all(isinstance(v, dict) for v in value.values()) and value
-        if nested:
-            pairs = []
-            for label, entry in value.items():
-                if not (isinstance(entry, dict)
-                        and isinstance(entry.get("username"), str)
-                        and isinstance(entry.get("password"), str)):
-                    raise ValueError("unsupported_login_shape:"
-                                     + json.dumps(login_shape_error(value))[:400])
-                pairs.append(check(entry["username"], entry["password"]))
-            return pairs
-        return [check(k, v) for k, v in value.items()]
+        if value and all(isinstance(v, (dict, str)) for v in value.values()):
+            return [check(_pair_from_entry(str(k), v))
+                    for k, v in value.items()]
+        return [check((str(k), v)) for k, v in value.items()]
     if (isinstance(value, list) and value
             and all(isinstance(i, dict) and len(i) == 1 for i in value)):
-        return [check(k, v) for i in value for k, v in i.items()]
+        return [check((str(k), v)) for i in value for k, v in i.items()]
     raise ValueError("unsupported_login_shape:"
                      + json.dumps(login_shape_error(value))[:400])
 
@@ -165,6 +183,20 @@ def psql_port_and_roles(api_json):
     return parts.port, dsn
 
 
+def dsn_diagnostic(dsn):
+    """Structure of the DSN with values removed - field names, presence
+    flags and query keys only."""
+    parts = urlsplit(dsn)
+    return json.dumps({
+        "scheme": parts.scheme, "host": parts.hostname, "port": parts.port,
+        "has_username": bool(parts.username), "username": parts.username,
+        "has_password": bool(parts.password),
+        "password_len": len(parts.password or ""),
+        "path": parts.path[:40], "query_keys": parts.query.split("&")[:8]
+        and [pair.split("=")[0] for pair in parts.query.split("&") if pair],
+    })[:400]
+
+
 def apply_postgresql(logins, stamp, candidate):
     pairs = as_pairs(logins["postgresql"])
     require(len(pairs) == 3, "expected_three_postgres_logins")
@@ -175,7 +207,9 @@ def apply_postgresql(logins, stamp, candidate):
     require(user in dict(pairs), "service_role_missing_from_candidates")
     new_password = dict(pairs)[user]
     old_password = urlsplit(dsn).password or ""
-    require(old_password and old_password != new_password, "dsn_password_unusable")
+    old_password = urlsplit(dsn).password or ""
+    if not (old_password and old_password != new_password):
+        raise ValueError("dsn_password_unusable:" + dsn_diagnostic(dsn))
     # Order: ALTER first (old password still valid), then file updates.
     from collections import OrderedDict
     from urllib.parse import quote
@@ -237,7 +271,9 @@ def apply_valkey(logins, stamp, candidate):
         match = re.match(r"user\s+([A-Za-z0-9_-]+)\s+(.*)", line.strip())
         if match:
             user_lines[match.group(1)] = index
-    require(set(user_lines) == set(dict(pairs)), "acl_users_differ_from_candidates")
+    require(set(user_lines) == set(dict(pairs)),
+            "acl_users_differ_from_candidates:file=%s:staged=%s"
+            % (",".join(sorted(user_lines)), ",".join(sorted(dict(pairs)))))
     for name, secret in pairs:
         line = lines[user_lines[name]]
         if ">" in line:
