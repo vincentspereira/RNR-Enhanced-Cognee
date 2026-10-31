@@ -740,3 +740,18 @@ memory_read,ingest; all other roles remain read-only pending the demand
 check. Deploy chases retained: quoted-PYTHONPATH parsing, every
 interpreter site-packages scan, authenticated route probe, and error
 detail passthrough in the MCP server.
+
+31 October 2026 STAGE D FAMILY 2 (GRAPH) COMPLETE BY ARCHITECTURE: the
+protected service derives its source-linked graph continuously - the
+index worker drains the change feed (live evidence under the
+web-researcher scope: worker running, pending_change_events 0,
+oldest_pending 0.0s, graph source_linked_graph, vector index available),
+and Stage C already serves traversal (get_related/connections) and
+visibility (get_stats carries graph/worker/pending). The legacy
+cognify/extract/compact tools are manual-batch equivalents of what this
+architecture does automatically; a synchronous in-API rebuild would also
+break the reviewed API/worker credential separation (the API holds
+read-only sinks by design). No redundant build. Families 3 (summarize)
+and 4 (language) now require the owner LLM route/budget decision; the
+multilingual embedding limitation (pinned model is English-only) is
+recorded with the proposal.
