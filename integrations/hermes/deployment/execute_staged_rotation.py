@@ -226,17 +226,33 @@ def apply_postgresql(logins, stamp, candidate):
             alter_user = parts.username
             alter_password = parts.password or ""
     staged_map = dict(pairs)
-    statements = ['ALTER ROLE "%s" WITH PASSWORD \'%s\''
-                  % (name, secret.replace("'", "''"))
-                  for name, secret in pairs]
-    # PostgreSQL refuses renaming the SESSION role; the legacy operator
-    # keeps its current name and receives the staged operator password.
-    if alter_user and alter_user not in staged_map:
+    # Query existing roles first: staged names that do not exist (the
+    # operator role keeps its legacy name) must not be ALTERed.
+    list_process = subprocess.run(
+        ["/opt/enhanced-cognee-stores/native/usr/lib/postgresql/16/bin/psql",
+         "postgresql://%s:%s@127.0.0.1:%d/postgres" % (quote(alter_user),
+                                                       quote(alter_password),
+                                                       port),
+         "-t", "-A", "-c", "SELECT rolname FROM pg_roles"],
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=60,
+        env=psql_env)
+    require(list_process.returncode == 0, "role_list_failed")
+    existing = {line.strip() for line in
+                list_process.stdout.decode().splitlines() if line.strip()}
+    statements = []
+    for name, secret in pairs:
+        if name in existing:
+            statements.append('ALTER ROLE "%s" WITH PASSWORD \'%s\''
+                              % (name, secret.replace("'", "''")))
+        elif "operator" not in name.lower():
+            raise ValueError("staged_role_missing:" + name)
+    if alter_user and alter_user in existing and alter_user not in staged_map:
         operators = [n for n in staged_map if "operator" in n.lower()]
         require(len(operators) == 1, "operator_secret_target_ambiguous")
         statements.append('ALTER ROLE "%s" WITH PASSWORD \'%s\''
                           % (alter_user,
                              staged_map[operators[0]].replace("'", "''")))
+    require(statements, "no_roles_to_alter")
     sql = ";".join(statements)
     # The native psql needs its bundled libpq (not on the system path).
     lib_dirs = sorted(glob.glob(
@@ -458,29 +474,25 @@ def apply_qdrant(logins, stamp, candidate):
     pairs = as_pairs(logins["qdrant"])
     require(len(pairs) == 2, "expected_two_qdrant_keys")
     staged = dict(pairs)
-    # Old values come from qdrant.yaml's own key fields, assigned by field
-    # name (a field containing "read" is the read-only key; the other key
-    # field is admin/write). This removes any cross-matching between keys.
-    import re as _re
-    yaml_text = (ETC / "qdrant.yaml").read_text()
-    key_fields = {}
-    for match in _re.finditer(
-            r"^(\s*[A-Za-z0-9_]*(?:api_key|key)[A-Za-z0-9_]*):\s*[\"']?([^\s\"']+)",
-            yaml_text, _re.MULTILINE):
-        field, value = match.group(1).strip(), match.group(2).strip()
-        if len(value) >= 16:
-            key_fields[field] = value
-    require(len(key_fields) == 2,
-            "qdrant_key_fields_not_found:%s" % _qdrant_structure_dump(
-                ETC / "qdrant.yaml", yaml_text))
-    read_field = [f for f in key_fields if "read" in f.lower()]
-    admin_field = [f for f in key_fields if f not in read_field]
-    require(len(read_field) == 1 and len(admin_field) == 1,
-            "qdrant_key_roles_ambiguous")
+    # The qdrant config is JSON (despite the .yaml name): the two keys are
+    # service.api_key (admin/write) and service.read_only_api_key.
+    config = json.loads((ETC / "qdrant.yaml").read_text())
+    service = config.get("service", {})
+    old_admin = service.get("api_key")
+    old_read = service.get("read_only_api_key")
+    require(isinstance(old_admin, str) and len(old_admin) >= 16
+            and isinstance(old_read, str) and len(old_read) >= 16,
+            "qdrant_service_keys_missing")
     old_for = {}
     for label in staged:
-        field = read_field[0] if "read" in label.lower() else admin_field[0]
-        old_for[label] = key_fields[field]
+        if "read" in label.lower():
+            old_for[label] = old_read
+        elif "admin" in label.lower() or "write" in label.lower():
+            old_for[label] = old_admin
+        else:
+            raise ValueError("qdrant_label_unmapped:" + label)
+    require(old_read != old_admin or len(staged) == 1,
+            "qdrant_keys_identical_cannot_map")
     matched = []
     for label, secret in staged.items():
         old = old_for[label]
@@ -495,8 +507,8 @@ def apply_qdrant(logins, stamp, candidate):
         backup(path, stamp)
     try:
         replaced = {label: 0 for label in staged}
-        # Longest current values first: a shorter key that is a substring
-        # of a longer one must not consume the longer one's occurrence.
+        # Longest current values first: if one key is a prefix of the
+        # other it must not consume the longer one's occurrence.
         ordered = sorted(matched, key=lambda m: max(
             (len(old) for _, old in m[2]), default=0), reverse=True)
         for label, secret, hits in ordered:
