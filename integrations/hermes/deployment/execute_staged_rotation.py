@@ -820,6 +820,31 @@ def _arcade_auth_matrix(staged, root_mapped=None):
     return matrix
 
 
+def _graph_broken_state():
+    """Sanitized state of the graph service while not ready: unit states,
+    restart count, port reachability and the unfiltered journal tail."""
+    show = subprocess.run(
+        ["/usr/bin/systemctl", "show", "enhanced-cognee-graph.service",
+         "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts",
+         "-p", "ExecMainStartTimestamp"],
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=15)
+    states = dict(line.split("=", 1) for line in
+                  show.stdout.decode().splitlines() if "=" in line)
+    reachable = "refused"
+    try:
+        with socket.create_connection(("127.0.0.1", 28536), timeout=3):
+            reachable = "accepting"
+    except OSError:
+        pass
+    log = subprocess.run(
+        ["/usr/bin/journalctl", "-u", "enhanced-cognee-graph.service",
+         "--no-pager", "-n", "20", "--output=cat"],
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=15)
+    tail = [line[:160] for line in
+            log.stdout.decode("utf-8", "replace").splitlines()][-12:]
+    return {"states": states, "port": reachable, "journal_tail": tail}
+
+
 def apply_arcadedb(logins, stamp, candidate):
     pairs = as_pairs(logins["arcadedb"])
     require(len(pairs) == 3, "expected_three_arcadedb_users")
@@ -911,7 +936,8 @@ def apply_arcadedb(logins, stamp, candidate):
                         break
             except Exception:
                 continue
-        require(ready, "graph_not_ready_after_60s")
+        require(ready, "graph_not_ready_after_60s:%s" % json.dumps(
+            _graph_broken_state()))
         # The staged user mapped onto root authenticates AS root (its
         # secret is root's new password); every other staged name
         # authenticates under its own name.
