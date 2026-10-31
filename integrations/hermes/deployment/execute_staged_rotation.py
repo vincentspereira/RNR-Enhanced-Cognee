@@ -225,16 +225,18 @@ def apply_postgresql(logins, stamp, candidate):
             parts = urlsplit(operator_dsn)
             alter_user = parts.username
             alter_password = parts.password or ""
-    staged_names = {name for name, _ in pairs}
-    statements = []
-    if alter_user and alter_user not in staged_names:
-        target = [name for name in staged_names if "operator" in name.lower()]
-        require(len(target) == 1, "operator_rename_target_ambiguous")
-        statements.append('ALTER ROLE "%s" RENAME TO "%s"'
-                          % (alter_user, target[0]))
-    statements += ['ALTER ROLE "%s" WITH PASSWORD \'%s\''
-                   % (name, secret.replace("'", "''"))
-                   for name, secret in pairs]
+    staged_map = dict(pairs)
+    statements = ['ALTER ROLE "%s" WITH PASSWORD \'%s\''
+                  % (name, secret.replace("'", "''"))
+                  for name, secret in pairs]
+    # PostgreSQL refuses renaming the SESSION role; the legacy operator
+    # keeps its current name and receives the staged operator password.
+    if alter_user and alter_user not in staged_map:
+        operators = [n for n in staged_map if "operator" in n.lower()]
+        require(len(operators) == 1, "operator_secret_target_ambiguous")
+        statements.append('ALTER ROLE "%s" WITH PASSWORD \'%s\''
+                          % (alter_user,
+                             staged_map[operators[0]].replace("'", "''")))
     sql = ";".join(statements)
     # The native psql needs its bundled libpq (not on the system path).
     lib_dirs = sorted(glob.glob(
@@ -270,24 +272,20 @@ def apply_postgresql(logins, stamp, candidate):
             if operator_dsn and urlsplit(operator_dsn).password:
                 staged_map = dict(pairs)
                 new_secret = staged_map.get(urlsplit(operator_dsn).username)
-                rename_to = None
                 if new_secret is None:
                     operators = [n for n in staged_map
                                  if "operator" in n.lower()]
                     if urlsplit(operator_dsn).username not in staged_map \
                             and len(operators) == 1:
+                        # Legacy operator name keeps its identity; only its
+                        # password rotates to the staged operator secret.
                         new_secret = staged_map[operators[0]]
-                        rename_to = operators[0]
                 if new_secret:
                     backup(operator_path, stamp)
                     count = replace_value_in_file(
                         operator_path, urlsplit(operator_dsn).password,
                         new_secret)
                     require(count >= 1, "operator_dsn_password_not_found")
-                    if rename_to:
-                        replace_value_in_file(operator_path,
-                                              urlsplit(operator_dsn).username,
-                                              rename_to)
                     touched.append(("operator.json", count))
         require(systemctl("restart", "enhanced-cognee-api.service") == 0, "api_restart_failed")
         require(api_health(), "api_unhealthy_after_rotation")
@@ -434,6 +432,28 @@ def apply_valkey(logins, stamp, candidate):
             "renamed": renamed, "auth_verified": True}
 
 
+def _qdrant_structure_dump(path, text):
+    """Sanitized structure of the qdrant config: JSON key tree (name and
+    value length) or YAML field names; never a value itself."""
+    import re as _re
+    try:
+        value = json.loads(text)
+    except ValueError:
+        names = sorted({m.group(1).strip() for m in _re.finditer(
+            r"^(\s*[A-Za-z0-9_.-]+):\s*\S", text, _re.MULTILINE)})
+        return "yaml_fields=" + json.dumps(names)
+    def walk(item, prefix=""):
+        if isinstance(item, dict):
+            out = {}
+            for key, child in list(item.items())[:24]:
+                out[str(key)[:32]] = walk(child, prefix + "." + str(key))
+            return out
+        if isinstance(item, list):
+            return {"<list>": len(item)}
+        return "%s:%d" % (type(item).__name__, len(str(item)))
+    return "json_tree=" + json.dumps(walk(value))[:600]
+
+
 def apply_qdrant(logins, stamp, candidate):
     pairs = as_pairs(logins["qdrant"])
     require(len(pairs) == 2, "expected_two_qdrant_keys")
@@ -451,11 +471,8 @@ def apply_qdrant(logins, stamp, candidate):
         if len(value) >= 16:
             key_fields[field] = value
     require(len(key_fields) == 2,
-            "qdrant_key_fields_not_found:yaml_fields=" + json.dumps(
-                sorted({match.group(1).strip()
-                        for match in _re.finditer(
-                            r"^(\s*[A-Za-z0-9_.-]+):\s*\S",
-                            yaml_text, _re.MULTILINE)})))
+            "qdrant_key_fields_not_found:%s" % _qdrant_structure_dump(
+                ETC / "qdrant.yaml", yaml_text))
     read_field = [f for f in key_fields if "read" in f.lower()]
     admin_field = [f for f in key_fields if f not in read_field]
     require(len(read_field) == 1 and len(admin_field) == 1,
