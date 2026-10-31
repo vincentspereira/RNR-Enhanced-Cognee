@@ -772,3 +772,20 @@ authenticated probes on every new route. Families summary: memory
 (automatic, provider), reads (Stage C), graph (continuous by
 architecture, family 2), ingestion (family 1), summarize/language
 (families 3-4). Admin families remain operator-only by design.
+
+31 October 2026 QUEUE ADVANCE: (1) analysis group enabled for 13 roles
+total (researchers ingest+analysis; authors, analysts, coordinators
+analysis; 7be6680b). (2) remote-catalogue stage built and tested on the
+native binding machinery (streamable-HTTP MCP client; receipts carry
+names/counts only; b3f714dd) - owner command executes the context7 and
+deepwiki qualification. (3) staged credential rotation: root-only
+inspector prepared (names/keys only, never values); the apply phase is
+written against the inspected layout next. (4) max-context: read-path
+scale verified live (recall at limit=20 semantic, list at limit=200 with
+pagination, clean sweep to zero). Two deliberate write-side behaviors
+verified along the way: a per-profile 120 requests/minute budget, and a
+clarification gate that requires a sanitized summary for rapid automated
+write bursts (single writes pass; identical content in a paced 120-write
+burst, and via ingestion, is held for clarification) - the anti-transcript
+design working as intended. The chat-model maximum-context capture test
+remains a live long-session protocol for the owner window.
