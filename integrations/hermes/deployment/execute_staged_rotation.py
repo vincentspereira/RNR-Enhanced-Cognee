@@ -761,22 +761,28 @@ def arcade_auth_ok(username, password):
 
 
 def _arcade_pbkdf2(password, sample_hash):
-    """Hash `password` in the same PBKDF2 format as an existing entry.
+    """Hash `password` in the same PBKDF2 layout as a live entry.
 
-    ArcadeDB stores ``PBKDF2WithHmacSHA256:<iterations>:<saltB64>:<hashB64>``;
-    the iteration count and format are copied from a live entry, the salt
-    is freshly random."""
+    The exact field layout is copied from the live entry: every colon-
+    separated part except the last two (salt, hash) is preserved verbatim
+    (algorithm name, iteration count, any extra parameters); the salt is
+    freshly random and the hash recomputed with PBKDF2-HMAC-SHA256 at
+    the live iteration count."""
     import base64
     import hashlib
-    import hmac as _hmac
     parts = sample_hash.split(":")
-    require(len(parts) == 4 and parts[0].startswith("PBKDF2"), "hash_format")
-    iterations = int(parts[1])
+    require(len(parts) >= 4 and parts[0].startswith("PBKDF"),
+            "hash_format:parts=%d:prefix=%s"
+            % (len(parts), parts[0][:12]))
+    try:
+        iterations = int(parts[1])
+    except ValueError as exc:
+        raise ValueError("hash_format:iterations=%s" % parts[1][:12]) from exc
+    require(1 <= iterations <= 10_000_000, "hash_format:iterations_range")
     salt = os.urandom(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
-    return "%s:%d:%s:%s" % (parts[0], iterations,
-                            base64.b64encode(salt).decode(),
-                            base64.b64encode(digest).decode())
+    return ":".join(parts[:-2] + [base64.b64encode(salt).decode(),
+                                  base64.b64encode(digest).decode()])
 
 
 def apply_arcadedb(logins, stamp, candidate):

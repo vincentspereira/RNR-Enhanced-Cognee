@@ -86,6 +86,10 @@ def test_arcade_pbkdf2_matches_live_format():
     parts = hashed.split(":")
     assert parts[0] == "PBKDF2WithHmacSHA256" and parts[1] == "120000"
     assert len(parts) == 4 and parts[2] != sample.split(":")[2]
+    # Extra-parameter layouts keep their structure: only salt/hash swap.
+    wide = "PBKDF2WithHmacSHA256:65000:extra:c2FsdA==:aGFzaA=="
+    wide_hashed = executor._arcade_pbkdf2("secret", wide)
+    assert wide_hashed.split(":")[:3] == wide.split(":")[:3]
     with pytest.raises(ValueError):
         executor._arcade_pbkdf2("secret", "not-a-pbkdf2-hash")
 
