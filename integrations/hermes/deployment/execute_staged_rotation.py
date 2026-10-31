@@ -1019,26 +1019,33 @@ def apply_arcadedb(logins, stamp, candidate):
         users_file.chmod(0o600)
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
                 "graph_restart_failed")
-        # ArcadeDB boots slowly; a starting server answers 403 to
-        # everything. The HEALTHY anonymous behavior on the info route is
-        # 401 (auth challenge) - wait for that before verifying anything.
-        ready = False
-        for _ in range(45):
-            time.sleep(2)
+        # ArcadeDB boots in phases: the listener answers 401 (default
+        # challenge) BEFORE the security subsystem loads the users, then
+        # briefly 403s everything while settling, then returns to the
+        # healthy 401. A single 401 is not readiness - require it stable
+        # across consecutive probes.
+        import urllib.request as _u
+        import urllib.error as _ue
+
+        def anon_status():
             try:
-                import urllib.request as _u
-                import urllib.error as _ue
-                try:
-                    with _u.urlopen(ARCADE_HTTP + "/api/v1/server",
-                                    timeout=5):
-                        pass
-                except _ue.HTTPError as exc:
-                    if exc.code == 401:
-                        ready = True
-                        break
+                with _u.urlopen(ARCADE_HTTP + "/api/v1/server", timeout=5):
+                    return 200
+            except _ue.HTTPError as exc:
+                return exc.code
             except Exception:
-                continue
-        require(ready, "graph_not_ready_after_60s:%s" % json.dumps(
+                return 0
+
+        stable = 0
+        for _ in range(60):
+            time.sleep(3)
+            if anon_status() == 401:
+                stable += 1
+                if stable >= 3:
+                    break
+            else:
+                stable = 0
+        require(stable >= 3, "graph_not_ready_after_60s:%s" % json.dumps(
             _graph_broken_state()))
         # The staged user mapped onto root authenticates AS root (its
         # secret is root's new password); every other staged name
