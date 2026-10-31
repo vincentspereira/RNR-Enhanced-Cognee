@@ -216,11 +216,19 @@ def apply_postgresql(logins, stamp, candidate):
     escaped = new_password.replace("'", "''")
     sql = ";".join('ALTER ROLE "%s" WITH PASSWORD \'%s\'' % (name, secret.replace("'", "''"))
                    for name, secret in pairs)
+    # The native psql needs its bundled libpq (not on the system path).
+    lib_dirs = sorted(glob.glob(
+        "/opt/enhanced-cognee-stores/native/usr/lib/*/"))
+    lib_dirs += sorted(glob.glob(
+        "/opt/enhanced-cognee-stores/native/usr/lib/postgresql/*/lib/"))
+    psql_env = {"PATH": "/usr/bin:/bin",
+                "LD_LIBRARY_PATH": ":".join(lib_dirs)}
     process = subprocess.run(
         ["/opt/enhanced-cognee-stores/native/usr/lib/postgresql/16/bin/psql",
          "postgresql://%s:%s@127.0.0.1:%d/postgres" % (quote(user), quote(old_password), port),
          "-v", "ON_ERROR_STOP=1", "-c", sql],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60,
+        env=psql_env)
     require(process.returncode == 0,
             "alter_failed:" + process.stderr.decode()[:160])
     touched = []
@@ -257,6 +265,47 @@ def resp_command(sock_file, *parts):
         sock.connect(str(sock_file))
         sock.sendall(payload)
         return sock.recv(512)
+
+
+def valkey_endpoint():
+    """(kind, endpoint) from the service config: unixsocket path or TCP
+    port. Never returns a credential."""
+    import glob as _glob
+    conf = (ETC / "valkey.conf").read_text()
+    unixsocket, port = None, None
+    for line in conf.splitlines():
+        tokens = line.split()
+        if len(tokens) >= 2 and tokens[0] == "unixsocket":
+            unixsocket = tokens[1]
+        if len(tokens) >= 2 and tokens[0] == "port":
+            try:
+                port = int(tokens[1])
+            except ValueError:
+                port = None
+    if unixsocket and Path(unixsocket).exists():
+        return "unix", unixsocket
+    for pattern in ("/var/lib/enhanced-cognee/valkey/*.sock",
+                    "/run/enhanced-cognee*/valkey*.sock"):
+        found = _glob.glob(pattern)
+        if found:
+            return "unix", found[0]
+    if port:
+        return "tcp", port
+    raise ValueError("valkey_endpoint_not_found:unix=%s:tcp_port=%s"
+                     % (bool(unixsocket), port))
+
+
+def valkey_auth(endpoint, kind, username, password):
+    if kind == "unix":
+        return resp_command(endpoint, "AUTH", username, password)
+    with socket.create_connection(("127.0.0.1", int(endpoint)), timeout=5) as s:
+        s.settimeout(5)
+        payload = b"*3\r\n$4\r\nAUTH\r\n"
+        for part in (username, password):
+            raw = part.encode()
+            payload += b"$%d\r\n%s\r\n" % (len(raw), raw)
+        s.sendall(payload)
+        return s.recv(512)
 
 
 def apply_valkey(logins, stamp, candidate):
@@ -310,12 +359,10 @@ def apply_valkey(logins, stamp, candidate):
         require(systemctl("restart", "enhanced-cognee-cache.service") == 0,
                 "cache_restart_failed")
         time.sleep(3)
-        import glob
-        sockets = glob.glob("/var/lib/enhanced-cognee/valkey/*.sock") + \
-            glob.glob("/run/enhanced-cognee*/valkey*.sock")
-        require(sockets, "valkey_socket_not_found")
+        time.sleep(3)
+        kind, endpoint = valkey_endpoint()
         probe_user = sorted(set(staged))[0]
-        reply = resp_command(sockets[0], "AUTH", probe_user, staged[probe_user])
+        reply = valkey_auth(endpoint, kind, probe_user, staged[probe_user])
         require(b"+OK" in reply or b":1" in reply, "valkey_auth_verify_failed")
     except Exception:
         shutil.copy2(ETC / ("valkey-users.acl.before-rotation-" + stamp), acl_path)
@@ -346,13 +393,21 @@ def apply_qdrant(logins, stamp, candidate):
         backup(path, stamp)
     try:
         replaced = {name: 0 for name, _ in pairs}
-        for name, secret, hits in matched:
+        # Longest current values first: a shorter key that is a substring
+        # of a longer one must not consume the longer one's occurrence.
+        ordered = sorted(matched, key=lambda m: max(
+            (len(old) for _, old in m[2]), default=0), reverse=True)
+        for name, secret, hits in ordered:
             for path, old in hits:
                 count = replace_value_in_file(path, old, secret)
                 replaced[name] += count
-            # Each key must land in at least one file; a key legitimately
-            # lives in only one of qdrant.yaml / index.json.
             require(replaced[name] >= 1, "qdrant_replace_missed:" + name)
+        for path in (ETC / "qdrant.yaml", ETC / "index.json"):
+            raw = path.read_text()
+            for _, secret, hits in matched:
+                for _, old in hits:
+                    require(old not in raw,
+                            "qdrant_old_value_remains:" + path.name)
         for unit in ("enhanced-cognee-qdrant.service",
                      "enhanced-cognee-api.service"):
             require(systemctl("restart", unit) == 0, "restart_failed:" + unit)
@@ -379,6 +434,37 @@ def _leaf_values(value):
             yield from _leaf_values(child)
     else:
         yield value
+
+
+def running_secret_state(secret):
+    """Value-free comparison of the API process's live ENHANCED_JWT_SECRET
+    against the new secret, plus which auth-related env names the process
+    carries. Returns a diagnostic dict."""
+    import hashlib as _hash
+    show = subprocess.run(["/usr/bin/systemctl", "show",
+                           "enhanced-cognee-api.service", "-p", "MainPID",
+                           "--value"], stdout=subprocess.PIPE, timeout=15)
+    pid = show.stdout.decode().strip()
+    if not pid.isdigit():
+        return {"pid": "missing"}
+    try:
+        environ = Path("/proc/%s/environ" % pid).read_bytes().split(b"\0")
+    except OSError:
+        return {"pid": pid, "environ": "unreadable"}
+    names, live_fingerprint = [], None
+    new_fingerprint = _hash.sha256(secret.encode()).hexdigest()[:12]
+    for entry in environ:
+        if b"=" not in entry:
+            continue
+        key, value = entry.split(b"=", 1)
+        name = key.decode("utf-8", "replace")
+        if name.startswith(("ENHANCED_", "ENCRYPTION_")):
+            names.append(name)
+        if name == "ENHANCED_JWT_SECRET":
+            live_fingerprint = _hash.sha256(value).hexdigest()[:12]
+    return {"pid": pid, "auth_env_names": sorted(names),
+            "live_secret_matches_new": live_fingerprint == new_fingerprint,
+            "live_secret_present": live_fingerprint is not None}
 
 
 def apply_application(logins, stamp, candidate):
@@ -415,8 +501,9 @@ def apply_application(logins, stamp, candidate):
             if probe == 401:
                 break
             time.sleep(2)
-        require(probe == 401,
-                "old_tokens_still_accepted:probe=%d" % probe)
+        if probe != 401:
+            raise ValueError("old_tokens_still_accepted:probe=%d:%s"
+                             % (probe, json.dumps(running_secret_state(secret))))
         result = subprocess.run(
             [sys.executable, "-I", str(Path(__file__).parent
                                        / "issue_fleet_role_tokens.py")],
