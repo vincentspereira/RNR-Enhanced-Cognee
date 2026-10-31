@@ -70,8 +70,34 @@ def test_definitions_classifies_remote_definitions_without_exposing_them():
     servers, fetch, remotes = driver.definitions(config.encode())
     assert remotes == ['context7']
     assert servers['context7']['kind'] == 'remote'
-    assert set(servers['context7']) == {'name', 'kind'}
-    assert servers['context7'] != dict(servers['context7'], url='anything')
+    assert servers['context7']['url'].startswith('https://mcp.context7.example')
+    assert servers['context7']['headers']['CONTEXT7_API_KEY'] == 'invented-value'
+
+
+def test_first_json_body_parses_plain_and_sse():
+    plain = driver._first_json_body(b'{"jsonrpc":"2.0","id":1,"result":{}}')
+    assert plain == {"jsonrpc": "2.0", "id": 1, "result": {}}
+    sse = (b'event: message\ndata: {"jsonrpc":"2.0","id":2,"result":{"tools":[]}}\n\n')
+    assert driver._first_json_body(sse)["id"] == 2
+
+
+def test_remote_catalogue_receipts_carry_no_endpoint_values(monkeypatch):
+    calls = {}
+
+    def fake_remote(url, headers, timeout=25):
+        calls['url'] = url
+        return {'initialize_passed': True, 'tools_count': 3}
+
+    monkeypatch.setattr(driver, 'remote_catalogue', fake_remote)
+    servers = {'context7': {'name': 'context7', 'kind': 'remote',
+                            'url': 'https://invented.test/mcp',
+                            'headers': {'X-Key': 'secret-value'}}}
+    results = driver.run_remote_catalogue(servers)
+    assert calls['url'] == 'https://invented.test/mcp'
+    receipt = json.dumps(results)
+    assert results['context7']['complete'] is True
+    assert results['context7']['tools_count'] == 3
+    assert 'invented.test' not in receipt and 'secret-value' not in receipt
 
 
 def test_definitions_refuses_duplicate_keys_and_bad_shapes():

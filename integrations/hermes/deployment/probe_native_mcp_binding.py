@@ -162,7 +162,12 @@ def definitions(raw):
             # with profile credentials, which needs an explicit owner gate.
             if not (isinstance(row.get('url'), str) and 0 < len(row['url']) <= 2048):
                 raise ValueError('server:%s:url_invalid' % name[:64])
-            rows[name] = dict(name=name, kind='remote')
+            headers = row.get('headers', {})
+            require(isinstance(headers, dict) and all(
+                isinstance(k, str) and isinstance(v, str) and 0 < len(k) <= 128
+                for k, v in headers.items()), 'server:%s:headers_invalid' % name[:64])
+            rows[name] = dict(name=name, kind='remote', url=row['url'],
+                              headers=headers)
             remotes.append(name)
             continue
         command = row.get('command')
@@ -273,9 +278,100 @@ def run_fetch_public(row, fetch, home, scope, env_base):
     return result
 
 
+def _first_json_body(raw: bytes):
+    """Parse the first JSON-RPC payload: plain JSON or an SSE data event."""
+    text = raw.decode('utf-8', 'replace')
+    for line in text.splitlines():
+        if line.startswith('data:'):
+            return json.loads(line[5:].strip())
+    return json.loads(text)
+
+
+def _remote_rpc(connection, path, payload, headers, session, timeout):
+    body = json.dumps(payload, separators=(',', ':')).encode()
+    request = dict(headers)
+    request['Content-Type'] = 'application/json'
+    request['Accept'] = 'application/json, text/event-stream'
+    if session:
+        request['Mcp-Session-Id'] = session
+    connection.request('POST', path, body, request)
+    response = connection.getresponse()
+    raw = response.read(262145)
+    if response.status != 200 or len(raw) > 262144:
+        raise ValueError('remote_http_%d' % response.status)
+    return response, _first_json_body(raw)
+
+
+def remote_catalogue(url, headers, timeout=25):
+    """Initialize a streamable-HTTP MCP server and count its tools.
+
+    Endpoint URLs and header values stay in memory; the receipt carries
+    names, counts and error kinds only."""
+    from http.client import HTTPSConnection, HTTPConnection
+    from urllib.parse import urlsplit
+    parts = urlsplit(url)
+    if parts.scheme not in ('http', 'https') or not parts.hostname:
+        raise ValueError('remote_url_invalid')
+    connection = (HTTPSConnection(parts.hostname, parts.port or 443, timeout=timeout)
+                  if parts.scheme == 'https'
+                  else HTTPConnection(parts.hostname, parts.port or 80, timeout=timeout))
+    path = parts.path or '/'
+    if parts.query:
+        path += '?' + parts.query
+    session = ''
+    try:
+        import uuid as _uuid
+        response, init = _remote_rpc(connection, path, {
+            'jsonrpc': '2.0', 'id': 1, 'method': 'initialize',
+            'params': {'protocolVersion': '2024-11-05', 'capabilities': {},
+                       'clientInfo': {'name': 'enhanced-cognee-qualification',
+                                      'version': '1'}}}, headers, session, timeout)
+        session = response.getheader('Mcp-Session-Id') or ''
+        if not isinstance(init, dict) or init.get('id') != 1 or 'result' not in init:
+            raise ValueError('remote_initialize_refused')
+        try:
+            connection.request('POST', path, json.dumps({
+                'jsonrpc': '2.0', 'method': 'notifications/initialized'
+            }).encode(), {'Content-Type': 'application/json',
+                          'Accept': 'application/json, text/event-stream',
+                          **({'Mcp-Session-Id': session} if session else {}), **headers})
+            connection.getresponse().read(4096)
+        except Exception:
+            pass
+        _, listing = _remote_rpc(connection, path, {
+            'jsonrpc': '2.0', 'id': 2, 'method': 'tools/list', 'params': {}},
+            headers, session, timeout)
+        result = (listing or {}).get('result') or {}
+        tools = result.get('tools')
+        if not isinstance(tools, list) or not 1 <= len(tools) <= 2048:
+            raise ValueError('remote_catalogue_invalid')
+        return {'initialize_passed': True, 'tools_count': len(tools)}
+    finally:
+        connection.close()
+
+
+def run_remote_catalogue(servers):
+    results = {}
+    for name, row in sorted(servers.items()):
+        if row['kind'] != 'remote':
+            continue
+        entry = {'complete': False, 'binding': 'remote', 'tools_count': 0,
+                 'initialize_passed': False}
+        try:
+            found = remote_catalogue(row['url'], row['headers'])
+            entry.update(found, complete=True)
+        except Exception as exc:
+            entry['error_kind'] = type(exc).__name__ if type(exc).__name__ in {
+                'ValueError', 'TimeoutError', 'OSError', 'PermissionError',
+                'JSONDecodeError'} else 'other'
+        results[name] = entry
+    return results
+
+
 def main():
     stage, rundir, protocol_path = sys.argv[1:4]
-    require(stage in {'catalogue', 'fetch-public'} and len(sys.argv) == 4)
+    require(stage in {'catalogue', 'fetch-public', 'remote-catalogue'}
+            and len(sys.argv) == 4)
     invocation = os.environ.get('INVOCATION_ID', '')
     require(re.fullmatch('[a-f0-9]{32}', invocation))
     scope = protocol(protocol_path)
@@ -291,6 +387,13 @@ def main():
             'config_path': str(path), 'config_sha256': hashlib.sha256(raw).hexdigest(),
             'fetch_server': fetch, 'definition_count': len(servers),
             'remote_definitions_deferred': deferred, 'servers': results}), flush=True)
+        return 0 if complete else 1
+    if stage == 'remote-catalogue':
+        results = run_remote_catalogue(servers)
+        complete = all(row['complete'] for row in results.values()) and bool(results)
+        print(json.dumps({'stage': stage, 'complete': complete,
+                          'invocation_id': invocation,
+                          'remote_count': len(results), 'servers': results}), flush=True)
         return 0 if complete else 1
     require(fetch in servers)
     result = run_fetch_public(servers[fetch], fetch, home, scope, dict(os.environ))

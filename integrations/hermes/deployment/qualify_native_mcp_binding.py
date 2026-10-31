@@ -27,8 +27,8 @@ import time
 import uuid
 
 BASE = Path('/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529')
-ARTIFACT = BASE / 'operator-native-mcp-binding-v6'
-OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v6-20261029.service'
+ARTIFACT = BASE / 'operator-native-mcp-binding-v7'
+OPERATOR_UNIT = 'ec-native-mcp-binding-operator-v7-20261031.service'
 SUPPORT = BASE / 'operator-main-rea-reviewed-candidate-v2/prepare_main_with_telegram.py'
 SUPPORT_SHA = 'fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51'
 DEPLOY = Path('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/launch-worktree-20261024/integrations/hermes/deployment')
@@ -38,7 +38,7 @@ RECONCILE_ARTIFACT = BASE / 'operator-managed-mcp-runtime-v3'
 PROTOCOL = DEPLOY / 'probe_main_local_mcp.py'
 PROTOCOL_SHA = '415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07'
 DRIVER = DEPLOY / 'probe_native_mcp_binding.py'
-DRIVER_SHA = 'a54f321c30b64924a3b72d0b779f90997ec89674f65e192d6643cd02c3e062d5'
+DRIVER_SHA = '8a379ba60d5e36ed8655b7df457a43b258f24f6830ac979ccd1414922425a07d'
 RELEASE = Path('/opt/hermes-runtime/releases/4d04303818b6-1729494fe783-tools1')
 PROGRAM_ROOT = Path('/opt/hermes-runtime/programs')
 FIELDS = ['LoadState', 'ActiveState', 'SubState', 'Result', 'ExecMainStatus', 'ExecMainPID',
@@ -141,6 +141,29 @@ def validate_catalogue(value, invocation):
                                                   'PermissionError', 'JSONDecodeError',
                                                   'BrokenPipeError', 'other'})
     require(value['complete'] == all(row['complete'] for row in value['servers'].values()))
+    return value
+
+
+def validate_remote_catalogue(value, invocation):
+    require(isinstance(value, dict) and value.get('stage') == 'remote-catalogue'
+            and value.get('invocation_id') == invocation
+            and type(value.get('complete')) is bool
+            and isinstance(value.get('remote_count'), int)
+            and 1 <= value['remote_count'] <= 8
+            and isinstance(value.get('servers'), dict)
+            and len(value['servers']) == value['remote_count'])
+    for name, row in value['servers'].items():
+        require(isinstance(name, str) and 0 < len(name) <= 64 and isinstance(row, dict)
+                and row.get('binding') == 'remote'
+                and 'url' not in row and 'headers' not in row)
+        if row.get('complete'):
+            require(row.get('initialize_passed') is True
+                    and type(row.get('tools_count')) is int
+                    and 1 <= row['tools_count'] <= 2048)
+        else:
+            require(row.get('error_kind') in {'ValueError', 'TimeoutError', 'OSError',
+                                              'PermissionError', 'JSONDecodeError', 'other'})
+    require(value['complete'] == all(r['complete'] for r in value['servers'].values()))
     return value
 
 
@@ -269,6 +292,16 @@ def worker():
         write(evidence / 'catalogue-receipt.json', canonical(catalogue))
         result['catalogue'] = catalogue
         result['stages'] = {'catalogue': stage_a}
+        deferred = catalogue.get('remote_definitions_deferred') or []
+        if deferred:
+            result['checkpoint'] = 'native_remote_catalogue'
+            remote, stage_r = run_stage('ec-native-mcp-remote-' + context['id'] + '.service',
+                                        'remote-catalogue', account,
+                                        validate_remote_catalogue, networked=True)
+            write(evidence / 'remote-catalogue-receipt.json', canonical(remote))
+            result['remote_catalogue'] = remote
+            result['stages']['remote-catalogue'] = stage_r
+            result['native_remote_binding_qualified'] = remote['complete']
         if catalogue.get('fetch_server'):
             result['checkpoint'] = 'native_fetch_public'
             fetch, stage_b = run_stage('ec-native-mcp-fetch-' + context['id'] + '.service',
