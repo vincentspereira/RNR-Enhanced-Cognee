@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+"""Install the Stage C memory MCP server and enable it for fleet profiles.
+
+User-space (no root). Copies the hash-pinned server into the gateway home,
+then adds the enhanced_cognee MCP definition to each profile's config.yaml
+with the profile-appropriate tool groups, using ruamel round-trip editing
+so comments survive. Timestamped backups; safe_load readback verification;
+profiles with the definition already present are reported and untouched.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import shutil
+import sys
+import time
+import uuid
+from pathlib import Path
+
+HOME = Path("/home/vincentspereira/.hermes")
+PROFILES = HOME / "profiles"
+SERVER_NAME = "enhanced_cognee"
+SOURCE = Path(__file__).resolve().parent.parent / "enhanced_cognee_mcp" / "server.py"
+INSTALL_DIR = HOME / "mcp-servers" / "enhanced-cognee"
+GATEWAY_PYTHON = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
+DEFAULT_GROUPS = "memory_read"
+# Stage C: read-side only everywhere; the provider stays the single write path.
+ROLE_GROUPS = {}
+
+
+def require(value, category="stage_c_enablement_refused"):
+    if not value:
+        raise ValueError(category)
+
+
+def install_server() -> str:
+    require(SOURCE.is_file(), "server_source_missing")
+    digest = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
+    INSTALL_DIR.mkdir(parents=True, exist_ok=True)
+    target = INSTALL_DIR / "server.py"
+    if target.exists():
+        require(hashlib.sha256(target.read_bytes()).hexdigest() == digest,
+                "installed_server_differs_refusing_overwrite")
+    else:
+        shutil.copy2(SOURCE, target)
+        target.chmod(0o644)
+    require(GATEWAY_PYTHON.is_file(), "gateway_python_missing")
+    return digest
+
+
+def enable_profile(config_path: Path, groups: str) -> str:
+    """Add the MCP definition; returns 'changed', 'already', or raises."""
+    from ruamel.yaml import YAML
+    import yaml as safe_yaml
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    data = yaml.load(config_path.read_text())
+    require(isinstance(data, dict), "config_not_mapping")
+    servers = data.setdefault("mcp_servers", {})
+    require(isinstance(servers, dict), "mcp_servers_not_mapping")
+    if SERVER_NAME in servers:
+        require(servers[SERVER_NAME].get("args", [])[-1:] == [groups]
+                or groups in servers[SERVER_NAME].get("args", []),
+                "existing_definition_differs")
+        return "already"
+    backup = config_path.with_name(
+        "config.yaml-before-memory-mcp-" + uuid.uuid4().hex[:12])
+    shutil.copy2(config_path, backup)
+    servers[SERVER_NAME] = {
+        "command": str(GATEWAY_PYTHON),
+        "args": ["-I", str(INSTALL_DIR / "server.py"), "--tool-groups", groups],
+        "env": {"ENHANCED_COGNEE_ACCESS_TOKEN": "${ENHANCED_COGNEE_ACCESS_TOKEN}"},
+    }
+    import io
+    buffer = io.StringIO()
+    yaml.dump(data, buffer)
+    config_path.write_text(buffer.getvalue())
+    verify = safe_yaml.safe_load(config_path.read_text())
+    entry = verify["mcp_servers"][SERVER_NAME]
+    require(entry["command"] == str(GATEWAY_PYTHON)
+            and entry["env"]["ENHANCED_COGNEE_ACCESS_TOKEN"]
+            == "${ENHANCED_COGNEE_ACCESS_TOKEN}", "readback_failed")
+    return "changed"
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--only", help="enable a single profile (pilot)")
+    parser.add_argument("--groups", default=DEFAULT_GROUPS)
+    args = parser.parse_args()
+    require(sys.argv[1:].count("--groups") <= 1 and not args.groups == "",
+            "invalid_groups")
+    digest = install_server()
+    changed, already = [], []
+    if args.only:
+        targets = [args.only]
+        require((PROFILES / args.only / "config.yaml").is_file(), "profile_missing")
+    else:
+        targets = sorted(child.name for child in PROFILES.iterdir()
+                         if (child / "config.yaml").is_file())
+    for name in targets:
+        result = enable_profile(PROFILES / name / "config.yaml",
+                                ROLE_GROUPS.get(name, args.groups))
+        (changed if result == "changed" else already).append(name)
+    print(json.dumps({"complete": True, "server_sha256": digest,
+                      "install_dir": str(INSTALL_DIR),
+                      "changed": changed, "already": already,
+                      "groups_default": args.groups}, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except SystemExit:
+        raise
+    except Exception as exc:
+        print(json.dumps({"complete": False,
+                          "category": "stage_c_enablement_refused",
+                          "error_kind": type(exc).__name__,
+                          "detail": str(exc)[:160] if isinstance(exc, ValueError) else ""},
+                         sort_keys=True))
+        raise SystemExit(1)
