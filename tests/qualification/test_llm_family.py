@@ -114,7 +114,9 @@ def test_daemon_loads_llm_route_into_whitelisted_env(tmp_path, monkeypatch):
     monkeypatch.setenv("ENHANCED_LLM_TOKEN_CAP", "3000")
     route = llm.load_route_env()
     assert route["model"] == "m" and route["daily_token_cap"] == 3000
-    monkeypatch.delenv("ENHANCED_LLM_BASE_URL")
+    for name in ("ENHANCED_LLM_BASE_URL", "ENHANCED_LLM_API_KEY",
+                 "ENHANCED_LLM_MODEL", "ENHANCED_LLM_TOKEN_CAP"):
+        monkeypatch.delenv(name)
     assert llm.load_route_env() is None
 
 
