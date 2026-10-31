@@ -845,9 +845,16 @@ def apply_arcadedb(logins, stamp, candidate):
                     "arcade_unmapped_staged_users:%s:live_names=%s"
                     % (name, json.dumps([e.get("name") for e in entries])))
             entry = candidates[0]
-            entry["name"] = name
-            entry["password"] = _arcade_pbkdf2(staged_remaining[name],
-                                               sample_hash)
+            if str(entry.get("name")) == "root":
+                # ArcadeDB requires the root user; the operator rotation
+                # REPLACES its password, never its name (the artifact flag
+                # is graph_root_password_replaced).
+                entry["password"] = _arcade_pbkdf2(staged_remaining[name],
+                                                   sample_hash)
+            else:
+                entry["name"] = name
+                entry["password"] = _arcade_pbkdf2(staged_remaining[name],
+                                                   sample_hash)
             claimed.add(name)
             renamed_entries.append(name)
         users_file.write_text("\n".join(
