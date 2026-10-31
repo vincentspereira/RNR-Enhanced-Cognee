@@ -25,22 +25,57 @@ SOURCE = Path(__file__).resolve().parent.parent / "enhanced_cognee_mcp" / "serve
 INSTALL_DIR = HOME / "mcp-servers" / "enhanced-cognee"
 GATEWAY_PYTHON = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
 DEFAULT_GROUPS = "memory_read"
-# Stage D per-family enablement: researchers pilot ingest+analysis; authors,
-# analysts and coordinators get analysis; ops roles stay read-side.
+# Full per-table enablement (owner-approved 31 Oct): analysis for every
+# role marked N or G in the matrix; ingest where N or G; coordination for
+# the four coordinators; the ops family stays read-only by design.
+_INGEST_ANALYSIS = "memory_read,ingest,analysis"
+_ANALYSIS_ONLY = "memory_read,analysis"
+_COORDINATION = "memory_read,analysis,coordination"
 ROLE_GROUPS = {
-    "web-researcher": "memory_read,ingest,analysis",
-    "deep-research-specialist": "memory_read,ingest,analysis",
-    "niche-hunter": "memory_read,ingest,analysis",
-    "educational-content-author": "memory_read,analysis",
-    "fiction-content-author": "memory_read,analysis",
-    "theology-content-author": "memory_read,analysis",
-    "technical-writer": "memory_read,analysis",
-    "marketing-social-manager": "memory_read,analysis",
-    "customer-feedback-analyst": "memory_read,analysis",
-    "chief-of-staff": "memory_read,analysis,coordination",
-    "project-orchestrator": "memory_read,analysis,coordination",
-    "cross-project-collaborator": "memory_read,analysis,coordination",
-    "deliberation-moderator": "memory_read,analysis,coordination",
+    # Research and content: ingest + analysis
+    "web-researcher": _INGEST_ANALYSIS,
+    "deep-research-specialist": _INGEST_ANALYSIS,
+    "niche-hunter": _INGEST_ANALYSIS,
+    "educational-content-author": _INGEST_ANALYSIS,
+    "fiction-content-author": _INGEST_ANALYSIS,
+    "theology-content-author": _INGEST_ANALYSIS,
+    "technical-writer": _INGEST_ANALYSIS,
+    "technical-consultant": _INGEST_ANALYSIS,
+    "marketing-social-manager": _INGEST_ANALYSIS,
+    "customer-feedback-analyst": _INGEST_ANALYSIS,
+    "ecommerce-kdp-publisher": _INGEST_ANALYSIS,
+    "print-merch-designer": _INGEST_ANALYSIS,
+    "multimedia-producer": _INGEST_ANALYSIS,
+    "uxui-engineer": _INGEST_ANALYSIS,
+    "github-collaborator": _INGEST_ANALYSIS,
+    "context-engineer": _INGEST_ANALYSIS,
+    "aiml-engineer": _INGEST_ANALYSIS,
+    "data-engineer": _INGEST_ANALYSIS,
+    "data-gen-rl": _INGEST_ANALYSIS,
+    # Engineering and specialist: analysis only
+    "backend-developer": _ANALYSIS_ONLY,
+    "frontend-developer": _ANALYSIS_ONLY,
+    "mobile-developer": _ANALYSIS_ONLY,
+    "code-implementer": _ANALYSIS_ONLY,
+    "code-reviewer": _ANALYSIS_ONLY,
+    "debug-specialist": _ANALYSIS_ONLY,
+    "test-engineer": _ANALYSIS_ONLY,
+    "integration-specialist": _ANALYSIS_ONLY,
+    "software-architect": _ANALYSIS_ONLY,
+    "security-specialist": _ANALYSIS_ONLY,
+    "governance-privacy": _ANALYSIS_ONLY,
+    "ai-safety-guardrails": _ANALYSIS_ONLY,
+    # Coordination: analysis + shared-space publication
+    "chief-of-staff": _COORDINATION,
+    "project-orchestrator": _COORDINATION,
+    "cross-project-collaborator": _COORDINATION,
+    "deliberation-moderator": _COORDINATION,
+    # Ops family: read-only by design (matrix: analysis NR)
+    "devops-engineer": "memory_read",
+    "deployment-engineer": "memory_read",
+    "cloud-engineer": "memory_read",
+    "observability-specialist": "memory_read",
+    "performance-optimiser": "memory_read",
 }
 
 

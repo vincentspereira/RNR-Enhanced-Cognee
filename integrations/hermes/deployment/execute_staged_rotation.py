@@ -52,20 +52,36 @@ def load_candidate():
     return candidate, logins
 
 
+def login_shape_error(value):
+    """Sanitized structure of an unrecognized family entry: key names,
+    nesting and types only - never a secret value or its length."""
+    def describe(item, depth=0):
+        if depth > 4:
+            return {"depth": "max"}
+        if isinstance(item, dict):
+            return {str(k): describe(v, depth + 1) for k, v in list(item.items())[:8]}
+        if isinstance(item, list):
+            return {"<list>": [describe(i, depth + 1) for i in item[:3]]}
+        return type(item).__name__
+    return describe(value)
+
+
 def as_pairs(value):
     """Normalize a family entry to [(name, new_secret)] pairs; names and
     secrets must already be nonempty strings - never coerced."""
     def check(name, secret):
         if not (isinstance(name, str) and name and isinstance(secret, str)
                 and secret):
-            raise ValueError("unsupported_login_shape")
+            raise ValueError("unsupported_login_shape:"
+                             + json.dumps(login_shape_error(value))[:400])
         return (name, secret)
     if isinstance(value, dict):
         return [check(k, v) for k, v in value.items()]
     if (isinstance(value, list) and value
             and all(isinstance(i, dict) and len(i) == 1 for i in value)):
         return [check(k, v) for i in value for k, v in i.items()]
-    raise ValueError("unsupported_login_shape")
+    raise ValueError("unsupported_login_shape:"
+                     + json.dumps(login_shape_error(value))[:400])
 
 
 def backup(path: Path, stamp):
