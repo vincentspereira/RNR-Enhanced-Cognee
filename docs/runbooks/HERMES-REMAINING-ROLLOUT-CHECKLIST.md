@@ -789,3 +789,17 @@ write bursts (single writes pass; identical content in a paced 120-write
 burst, and via ingestion, is held for clarification) - the anti-transcript
 design working as intended. The chat-model maximum-context capture test
 remains a live long-session protocol for the owner window.
+
+31 October 2026 CREDENTIAL ROTATION: FOUR OF FIVE FAMILIES COMPLETE.
+postgresql (roles rotated under operator rights, the legacy operator
+keeping its identity with the staged operator secret; operator.json DSN
+updated; api.json/index.json already current; api healthy), valkey (all
+three users rotated, the formerly disabled memory_worker renamed-and-
+enabled as the staged ec_api user, every AUTH verified), qdrant (both
+service keys proven already current, verified no-op), application (issuer
+key proven already current by dual HMAC verification, operator file
+consistent, fleet tokens untouched). The staging snapshot proved to be
+post-partial-application for several candidates; every already-current
+value completed as a verified no-op with receipts. Every intermediate
+refusal rolled back fully - the fleet was never left half-rotated.
+Remaining: the arcadedb family behind its read-only inspection gate.
