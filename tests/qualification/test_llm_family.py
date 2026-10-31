@@ -88,6 +88,36 @@ def test_parse_consolidation_strict_json():
     assert llm.parse_consolidation('{"groups": [[1,2]]}') == {"groups": []}
 
 
+def test_daemon_loads_llm_route_into_whitelisted_env(tmp_path, monkeypatch):
+    import json as _json
+    daemon = None
+    spec = importlib.util.spec_from_file_location(
+        "memory_daemon", SRC.parent / "src" / "memory_daemon.py")
+    daemon = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(daemon)
+    api = {"ENHANCED_MEMORY_DATABASE_URL": "postgres://invented",
+           "ENHANCED_JWT_SECRET": "x" * 40}
+    (tmp_path / "api.json").write_text(_json.dumps(api))
+    (tmp_path / "api.json").chmod(0o600)
+    plain = daemon.credential_environment("api", str(tmp_path))
+    assert "ENHANCED_LLM_BASE_URL" not in plain
+    (tmp_path / "llm.json").write_text(_json.dumps(
+        {"base_url": "https://api.example.test/v4", "api_key": "k",
+         "model": "m", "daily_token_cap": 3000}))
+    (tmp_path / "llm.json").chmod(0o600)
+    loaded = daemon.credential_environment("api", str(tmp_path))
+    assert loaded["ENHANCED_LLM_BASE_URL"] == "https://api.example.test/v4"
+    assert loaded["ENHANCED_LLM_TOKEN_CAP"] == "3000"
+    monkeypatch.setenv("ENHANCED_LLM_BASE_URL", loaded["ENHANCED_LLM_BASE_URL"])
+    monkeypatch.setenv("ENHANCED_LLM_API_KEY", "k")
+    monkeypatch.setenv("ENHANCED_LLM_MODEL", "m")
+    monkeypatch.setenv("ENHANCED_LLM_TOKEN_CAP", "3000")
+    route = llm.load_route_env()
+    assert route["model"] == "m" and route["daily_token_cap"] == 3000
+    monkeypatch.delenv("ENHANCED_LLM_BASE_URL")
+    assert llm.load_route_env() is None
+
+
 def test_translate_messages_guardrails():
     messages = llm.translate_messages("hello", "French")
     assert "French" in messages[1]["content"]

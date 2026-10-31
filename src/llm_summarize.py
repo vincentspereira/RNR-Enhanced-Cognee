@@ -28,7 +28,32 @@ class LlmUnavailable(ValueError):
     """Fixed ASCII reasons only; never includes model content or the key."""
 
 
+def load_route_env():
+    """Route from the daemon's whitelisted env (preferred under systemd)."""
+    base_url = os.environ.get("ENHANCED_LLM_BASE_URL")
+    api_key = os.environ.get("ENHANCED_LLM_API_KEY")
+    model = os.environ.get("ENHANCED_LLM_MODEL")
+    if not base_url and not api_key and not model:
+        return None
+    if not all(isinstance(v, str) and v.strip() for v in (base_url, api_key, model)):
+        raise LlmUnavailable("The model route environment is incomplete")
+    parts = urlsplit(base_url)
+    if parts.scheme != "https" or not parts.hostname or parts.username or parts.password:
+        raise LlmUnavailable("The model route must be an https origin without credentials")
+    try:
+        cap = int(os.environ.get("ENHANCED_LLM_TOKEN_CAP", DEFAULT_DAILY_TOKEN_CAP))
+    except (TypeError, ValueError):
+        raise LlmUnavailable("The daily token cap is invalid")
+    if not 1000 <= cap <= 10_000_000:
+        raise LlmUnavailable("The daily token cap is out of range")
+    return {"base_url": base_url.rstrip("/"), "api_key": api_key, "model": model,
+            "daily_token_cap": cap}
+
+
 def load_route(credentials_directory: str | None):
+    route = load_route_env()
+    if route is not None:
+        return route
     if not credentials_directory:
         return None
     path = Path(credentials_directory) / "llm.json"

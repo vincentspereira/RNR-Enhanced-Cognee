@@ -22,7 +22,7 @@ import urllib.request
 WORKTREE = Path("/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020"
                 "/launch-worktree-20261024")
 SOURCES = {"src/ingestion.py": None, "src/llm_summarize.py": None,
-           "src/memory_api.py": None}
+           "src/memory_api.py": None, "src/memory_daemon.py": None}
 SERVICE = "enhanced-cognee-api.service"
 RUNTIME_PYTHON = Path("/opt/enhanced-cognee-memory/runtime/bin/python")
 HEALTH = "http://127.0.0.1:28080/health/ready"

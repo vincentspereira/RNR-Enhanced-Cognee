@@ -144,8 +144,9 @@ async def lifespan(app: FastAPI):
         await service.check_schema()
         app.state.memory_service = service
         from src import llm_summarize
-        app.state.llm_route = llm_summarize.load_route(
-            os.environ.get("CREDENTIALS_DIRECTORY"))
+        app.state.llm_route = (llm_summarize.load_route_env()
+                               or llm_summarize.load_route(
+                                   os.environ.get("CREDENTIALS_DIRECTORY")))
         app.state.llm_budget = llm_summarize.TokenBudget()
         yield
     finally:

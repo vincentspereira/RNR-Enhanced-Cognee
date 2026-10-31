@@ -92,6 +92,32 @@ def credential_environment(role: str, directory: str) -> dict[str, str]:
         raise ValueError("A persistent backup signing key of at least 32 bytes is required")
     environment = {key: value for key, value in os.environ.items() if key in {"LANG", "LC_ALL", "TZ"}}
     environment.update(value)
+    # Optional LLM route (families 3/4): loaded with the same private-file
+    # verification and exposed as env; an absent file leaves the route off.
+    if role == "api":
+        llm_path = parent / "llm.json"
+        if llm_path.exists():
+            llm_fd = os.open(llm_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK)
+            with os.fdopen(llm_fd, "rb") as handle:
+                info = os.fstat(handle.fileno())
+                if not stat.S_ISREG(info.st_mode) or not (
+                        info.st_uid == os.geteuid() and not info.st_mode & 0o077
+                        or _systemd_private_acl(handle.fileno(), info, parent)):
+                    raise ValueError("The LLM route credential must be a private regular file")
+                llm_raw = handle.read(65537)
+            if len(llm_raw) > 65536:
+                raise ValueError("LLM route credential exceeded its size limit")
+            llm_value = json.loads(llm_raw, object_pairs_hook=unique)
+            llm_allowed = {"base_url", "api_key", "model", "daily_token_cap"}
+            if (not isinstance(llm_value, dict) or set(llm_value) - llm_allowed
+                    or not all(isinstance(llm_value.get(key), str) and llm_value[key]
+                               for key in ("base_url", "api_key", "model"))
+                    or not llm_value["base_url"].startswith("https://")):
+                raise ValueError("Unexpected LLM route credential fields")
+            environment["ENHANCED_LLM_BASE_URL"] = llm_value["base_url"]
+            environment["ENHANCED_LLM_API_KEY"] = llm_value["api_key"]
+            environment["ENHANCED_LLM_MODEL"] = llm_value["model"]
+            environment["ENHANCED_LLM_TOKEN_CAP"] = str(llm_value.get("daily_token_cap", 50000))
     environment.update(PATH="/usr/local/bin:/usr/bin:/bin", ENHANCED_ENV="production",
         ENHANCED_REQUIRE_TENANT="1", ENHANCED_LOAD_DOTENV="0", COGNEE_LOG_FILE="false",
         COGNEE_TELEMETRY_ENABLED="0", HF_HUB_OFFLINE="1", PYTHONDONTWRITEBYTECODE="1",
