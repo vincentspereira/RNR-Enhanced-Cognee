@@ -1085,8 +1085,33 @@ def apply_arcadedb(logins, stamp, candidate):
         systemctl("restart", "enhanced-cognee-graph.service")
         raise
     require(api_health(), "api_unhealthy_after_graph_rotation")
+    # The index worker's own ArcadeDB pair lives in worker.json; when a
+    # rotated user's password changes, the worker credential must follow
+    # or the derived-graph pipeline breaks on next connect.
+    worker_path = ETC / "worker.json"
+    worker_updated = False
+    if worker_path.exists():
+        worker = json.loads(worker_path.read_text())
+        live_user = worker.get("INDEX_ARCADEDB_USER", "")
+        live_password = worker.get("INDEX_ARCADEDB_PASSWORD", "")
+        staged_map = dict(pairs)
+        new_secret = staged_map.get(live_user)
+        if new_secret is None:
+            workers = [n for n in staged_map if "worker" in n.lower()]
+            if len(workers) == 1:
+                new_secret = staged_map[workers[0]]
+        if new_secret and live_password and new_secret != live_password:
+            backup(worker_path, stamp)
+            count = replace_value_in_file(worker_path, live_password,
+                                          new_secret)
+            require(count >= 1, "worker_json_password_not_found")
+            worker_updated = True
+            require(systemctl("restart", "enhanced-cognee-index.service") == 0,
+                    "index_worker_restart_failed")
+            time.sleep(5)
     return {"family": "arcadedb", "users_rotated": sorted(staged), "renamed": renamed_entries,
-            "already_current_verified": current, "verified": True}
+            "already_current_verified": current, "verified": True,
+            "worker_json_updated": worker_updated}
 
 
 def main():
