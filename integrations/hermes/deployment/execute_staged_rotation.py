@@ -839,8 +839,8 @@ def apply_arcadedb(logins, stamp, candidate):
                           and e.get("name") not in staged
                           and (keyword is None
                                or keyword in str(e.get("name", "")).lower()
-                               or str(e.get("name")) == "root"
-                               and keyword == "root")]
+                               or (keyword == "operator"
+                                   and str(e.get("name")) == "root"))]
             require(candidates,
                     "arcade_unmapped_staged_users:%s:live_names=%s"
                     % (name, json.dumps([e.get("name") for e in entries])))
