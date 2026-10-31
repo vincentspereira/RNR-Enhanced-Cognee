@@ -12,6 +12,7 @@ ends with the automatic fleet token reissue.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 from pathlib import Path
@@ -361,9 +362,13 @@ def apply_valkey(logins, stamp, candidate):
         time.sleep(3)
         time.sleep(3)
         kind, endpoint = valkey_endpoint()
-        probe_user = sorted(set(staged))[0]
-        reply = valkey_auth(endpoint, kind, probe_user, staged[probe_user])
-        require(b"+OK" in reply or b":1" in reply, "valkey_auth_verify_failed")
+        replies = {}
+        for user, password in sorted(staged.items()):
+            reply = valkey_auth(endpoint, kind, user, password)
+            replies[user] = reply[:80].decode("utf-8", "replace")
+            require(b"+OK" in reply or b":1" in reply,
+                    "valkey_auth_verify_failed:%s:reply=%s"
+                    % (user, replies[user]))
     except Exception:
         shutil.copy2(ETC / ("valkey-users.acl.before-rotation-" + stamp), acl_path)
         systemctl("restart", "enhanced-cognee-cache.service")
@@ -375,33 +380,52 @@ def apply_valkey(logins, stamp, candidate):
 def apply_qdrant(logins, stamp, candidate):
     pairs = as_pairs(logins["qdrant"])
     require(len(pairs) == 2, "expected_two_qdrant_keys")
-    index_json = json.loads((ETC / "index.json").read_text())
-    current = sorted({v for v in _leaf_values(index_json)
-                      if isinstance(v, str) and len(v) >= 16})
-    # Match candidates to current values by trying each pair against files.
+    staged = dict(pairs)
+    # Old values come from qdrant.yaml's own key fields, assigned by field
+    # name (a field containing "read" is the read-only key; the other key
+    # field is admin/write). This removes any cross-matching between keys.
+    import re as _re
+    yaml_text = (ETC / "qdrant.yaml").read_text()
+    key_fields = {}
+    for match in _re.finditer(
+            r"^(\s*[A-Za-z0-9_]*(?:api_key|key)[A-Za-z0-9_]*):\s*[\"']?([^\s\"']+)",
+            yaml_text, _re.MULTILINE):
+        field, value = match.group(1).strip(), match.group(2).strip()
+        if len(value) >= 16:
+            key_fields[field] = value
+    require(len(key_fields) == 2,
+            "qdrant_key_fields_not_found:" + ",".join(sorted(key_fields)))
+    read_field = [f for f in key_fields if "read" in f.lower()]
+    admin_field = [f for f in key_fields if f not in read_field]
+    require(len(read_field) == 1 and len(admin_field) == 1,
+            "qdrant_key_roles_ambiguous")
+    old_for = {}
+    for label in staged:
+        field = read_field[0] if "read" in label.lower() else admin_field[0]
+        old_for[label] = key_fields[field]
     matched = []
-    for name, secret in pairs:
+    for label, secret in staged.items():
+        old = old_for[label]
+        require(old != secret, "qdrant_candidate_equals_current:" + label)
         hits = []
         for path in (ETC / "qdrant.yaml", ETC / "index.json"):
-            raw = path.read_text()
-            for value in current:
-                if value != secret and value in raw:
-                    hits.append((path, value))
-        require(hits, "qdrant_current_key_not_located:" + name)
-        matched.append((name, secret, hits))
+            if old in path.read_text():
+                hits.append((path, old))
+        require(hits, "qdrant_current_key_not_located:" + label)
+        matched.append((label, secret, hits))
     for path in (ETC / "qdrant.yaml", ETC / "index.json"):
         backup(path, stamp)
     try:
-        replaced = {name: 0 for name, _ in pairs}
+        replaced = {label: 0 for label in staged}
         # Longest current values first: a shorter key that is a substring
         # of a longer one must not consume the longer one's occurrence.
         ordered = sorted(matched, key=lambda m: max(
             (len(old) for _, old in m[2]), default=0), reverse=True)
-        for name, secret, hits in ordered:
+        for label, secret, hits in ordered:
             for path, old in hits:
                 count = replace_value_in_file(path, old, secret)
-                replaced[name] += count
-            require(replaced[name] >= 1, "qdrant_replace_missed:" + name)
+                replaced[label] += count
+            require(replaced[label] >= 1, "qdrant_replace_missed:" + label)
         for path in (ETC / "qdrant.yaml", ETC / "index.json"):
             raw = path.read_text()
             for _, secret, hits in matched:
@@ -577,7 +601,7 @@ def main():
     except Exception as exc:
         receipt = {"complete": False, "family": args.family,
                    "error_kind": type(exc).__name__,
-                   "detail": str(exc)[:200] if isinstance(exc, ValueError) else ""}
+                   "detail": str(exc)[:800] if isinstance(exc, ValueError) else ""}
         receipt_path.write_text(json.dumps(receipt, indent=1, sort_keys=True) + "\n")
         print(json.dumps(receipt, sort_keys=True))
         return 1
