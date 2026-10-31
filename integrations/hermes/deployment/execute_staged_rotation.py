@@ -207,8 +207,8 @@ def apply_postgresql(logins, stamp, candidate):
     require(user in dict(pairs), "service_role_missing_from_candidates")
     new_password = dict(pairs)[user]
     old_password = urlsplit(dsn).password or ""
-    old_password = urlsplit(dsn).password or ""
-    if not (old_password and old_password != new_password):
+    api_password_unchanged = old_password == new_password
+    if not old_password:
         raise ValueError("dsn_password_unusable:" + dsn_diagnostic(dsn))
     # Order: ALTER first (old password still valid), then file updates.
     from collections import OrderedDict
@@ -225,12 +225,13 @@ def apply_postgresql(logins, stamp, candidate):
             "alter_failed:" + process.stderr.decode()[:160])
     touched = []
     try:
-        for name in ("api.json", "index.json"):
-            path = ETC / name
-            backup(path, stamp)
-            count = replace_value_in_file(path, old_password, new_password)
-            require(count >= 1, "dependent_file_missing_old_value:" + name)
-            touched.append((name, count))
+        if not api_password_unchanged:
+            for name in ("api.json", "index.json"):
+                path = ETC / name
+                backup(path, stamp)
+                count = replace_value_in_file(path, old_password, new_password)
+                require(count >= 1, "dependent_file_missing_old_value:" + name)
+                touched.append((name, count))
         require(systemctl("restart", "enhanced-cognee-api.service") == 0, "api_restart_failed")
         require(api_health(), "api_unhealthy_after_rotation")
         require(probe_role_status() in (200, 401), "api_probe_failed")
@@ -242,7 +243,8 @@ def apply_postgresql(logins, stamp, candidate):
         systemctl("restart", "enhanced-cognee-api.service")
         raise
     return {"family": "postgresql", "roles_rotated": [p[0] for p in pairs],
-            "dependent_files_updated": touched, "api_healthy": True}
+            "dependent_files_updated": touched, "api_healthy": True,
+            "api_password_already_current": api_password_unchanged}
 
 
 def resp_command(sock_file, *parts):
@@ -271,9 +273,26 @@ def apply_valkey(logins, stamp, candidate):
         match = re.match(r"user\s+([A-Za-z0-9_-]+)\s+(.*)", line.strip())
         if match:
             user_lines[match.group(1)] = index
-    require(set(user_lines) == set(dict(pairs)),
-            "acl_users_differ_from_candidates:file=%s:staged=%s"
-            % (",".join(sorted(user_lines)), ",".join(sorted(dict(pairs)))))
+    staged = dict(pairs)
+    file_users = set(user_lines)
+    leftovers = sorted(file_users - set(staged) - {"default"})
+    renamed = None
+    if leftovers:
+        # A staged name not in the file replaces exactly one legacy user
+        # that is not the mandatory valkey default user.
+        replacements = sorted(set(staged) - file_users)
+        require(len(leftovers) == 1 and len(replacements) == 1,
+                "acl_users_differ_from_candidates:file=%s:staged=%s"
+                % (",".join(sorted(file_users)), ",".join(sorted(staged))))
+        renamed = (leftovers[0], replacements[0])
+        user_lines[replacements[0]] = user_lines.pop(leftovers[0])
+        lines[user_lines[replacements[0]]] = lines[user_lines[
+            replacements[0]]].replace("user " + leftovers[0],
+                                      "user " + replacements[0], 1)
+    elif set(staged) - file_users:
+        raise ValueError("acl_users_differ_from_candidates:file=%s:staged=%s"
+                         % (",".join(sorted(file_users)),
+                            ",".join(sorted(staged))))
     for name, secret in pairs:
         line = lines[user_lines[name]]
         if ">" in line:
@@ -295,15 +314,15 @@ def apply_valkey(logins, stamp, candidate):
         sockets = glob.glob("/var/lib/enhanced-cognee/valkey/*.sock") + \
             glob.glob("/run/enhanced-cognee*/valkey*.sock")
         require(sockets, "valkey_socket_not_found")
-        reply = resp_command(sockets[0], "AUTH", dict(pairs)[list(user_lines)[0]],
-                             dict(pairs)[list(user_lines)[0]])
+        probe_user = sorted(set(staged))[0]
+        reply = resp_command(sockets[0], "AUTH", probe_user, staged[probe_user])
         require(b"+OK" in reply or b":1" in reply, "valkey_auth_verify_failed")
     except Exception:
         shutil.copy2(ETC / ("valkey-users.acl.before-rotation-" + stamp), acl_path)
         systemctl("restart", "enhanced-cognee-cache.service")
         raise
-    return {"family": "valkey", "users_rotated": list(user_lines),
-            "auth_verified": True}
+    return {"family": "valkey", "users_rotated": sorted(staged),
+            "renamed": renamed, "auth_verified": True}
 
 
 def apply_qdrant(logins, stamp, candidate):
@@ -326,10 +345,14 @@ def apply_qdrant(logins, stamp, candidate):
     for path in (ETC / "qdrant.yaml", ETC / "index.json"):
         backup(path, stamp)
     try:
+        replaced = {name: 0 for name, _ in pairs}
         for name, secret, hits in matched:
             for path, old in hits:
                 count = replace_value_in_file(path, old, secret)
-                require(count >= 1, "qdrant_replace_missed:" + path.name)
+                replaced[name] += count
+            # Each key must land in at least one file; a key legitimately
+            # lives in only one of qdrant.yaml / index.json.
+            require(replaced[name] >= 1, "qdrant_replace_missed:" + name)
         for unit in ("enhanced-cognee-qdrant.service",
                      "enhanced-cognee-api.service"):
             require(systemctl("restart", unit) == 0, "restart_failed:" + unit)
@@ -363,18 +386,37 @@ def apply_application(logins, stamp, candidate):
     require(len(pairs) == 1, "expected_one_application_secret")
     name, secret = pairs[0]
     api_path = ETC / "api.json"
+    operator_path = ETC / "operator.json"
     backup(api_path, stamp)
     original = api_path.read_text()
     current = json.loads(original).get("ENHANCED_JWT_SECRET", "")
     require(len(current) >= 32, "issuer_secret_shape_unexpected")
+    # The issuer requires api.json and operator.json to carry the SAME
+    # signing secret; rotate both or future issuance refuses.
+    operator_touched = False
+    if operator_path.exists():
+        backup(operator_path, stamp)
+        operator_touched = operator_path.read_text().count(current) >= 1
     try:
         count = replace_value_in_file(api_path, current, secret)
         require(count == 1, "issuer_secret_replace_count")
+        if operator_touched:
+            operator_count = replace_value_in_file(operator_path, current,
+                                                   secret)
+            require(operator_count >= 1, "operator_secret_replace_count")
         require(systemctl("restart", "enhanced-cognee-api.service") == 0,
                 "api_restart_failed")
         require(api_health(), "api_unhealthy")
-        # All fleet tokens are now invalid; verify then reissue.
-        require(probe_role_status() == 401, "old_tokens_still_accepted")
+        # All fleet tokens are now invalid; verify then reissue. Retry the
+        # denial probe: a restart-blip status of 0 is not proof of acceptance.
+        probe = 0
+        for attempt in range(4):
+            probe = probe_role_status()
+            if probe == 401:
+                break
+            time.sleep(2)
+        require(probe == 401,
+                "old_tokens_still_accepted:probe=%d" % probe)
         result = subprocess.run(
             [sys.executable, "-I", str(Path(__file__).parent
                                        / "issue_fleet_role_tokens.py")],
@@ -390,10 +432,17 @@ def apply_application(logins, stamp, candidate):
         require(b'"complete": true' in default.stdout, "default_reissue_failed")
         require(probe_role_status() == 200, "new_tokens_not_accepted")
     except Exception:
-        shutil.copy2(ETC / ("api.json.before-rotation-" + stamp), api_path)
+        restore_api = ETC / ("api.json.before-rotation-" + stamp)
+        if restore_api.exists():
+            shutil.copy2(restore_api, api_path)
+        if operator_touched:
+            restore_operator = ETC / ("operator.json.before-rotation-" + stamp)
+            if restore_operator.exists():
+                shutil.copy2(restore_operator, operator_path)
         systemctl("restart", "enhanced-cognee-api.service")
         raise
     return {"family": "application", "issuer_rotated": name,
+            "operator_file_rotated": operator_touched,
             "fleet_tokens_reissued": batch.get("roles_total"),
             "default_reissued": True, "probe_role": 200}
 
