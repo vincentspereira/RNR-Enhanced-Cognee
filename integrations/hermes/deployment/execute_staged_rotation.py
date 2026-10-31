@@ -444,7 +444,7 @@ def apply_valkey(logins, stamp, candidate):
         shutil.copy2(ETC / ("valkey-users.acl.before-rotation-" + stamp), acl_path)
         systemctl("restart", "enhanced-cognee-cache.service")
         raise
-    return {"family": "valkey", "users_rotated": sorted(staged),
+    return {"family": "valkey", "users_rotated": sorted(staged), "renamed": renamed_entries,
             "renamed": renamed, "auth_verified": True}
 
 
@@ -819,6 +819,7 @@ def apply_arcadedb(logins, stamp, candidate):
     backup(users_file, stamp)
     try:
         updated = []
+        renamed_entries = []
         staged_remaining = dict(staged)
         for entry in entries:
             name = entry.get("name")
@@ -826,16 +827,29 @@ def apply_arcadedb(logins, stamp, candidate):
                 entry = dict(entry, password=_arcade_pbkdf2(
                     staged_remaining.pop(name), sample_hash))
             updated.append(entry)
-        # Staged names not present in the file replace legacy entries by
-        # position (the operator-recovery artifact records the mapping as
-        # a full-file replacement; the live file has exactly 3 entries).
-        require(not staged_remaining or len(entries) == len(staged),
-                "arcade_unmapped_staged_users:" + ",".join(staged_remaining))
-        for (name, secret), entry in zip(staged_remaining.items(),
-                                         [e for e in updated
-                                          if e.get("name") not in staged]):
+        # Staged names not present by exact match map by role keyword
+        # (operator/api/worker/root) onto remaining live entries; the
+        # receipt records the mapping. Live names are not secrets.
+        claimed = {e.get("name") for e in updated if e.get("name") in staged}
+        for name in sorted(staged_remaining):
+            keyword = next((word for word in ("operator", "worker", "api",
+                                              "root") if word in name), None)
+            candidates = [e for e in updated
+                          if e.get("name") not in claimed
+                          and e.get("name") not in staged
+                          and (keyword is None
+                               or keyword in str(e.get("name", "")).lower()
+                               or str(e.get("name")) == "root"
+                               and keyword == "root")]
+            require(candidates,
+                    "arcade_unmapped_staged_users:%s:live_names=%s"
+                    % (name, json.dumps([e.get("name") for e in entries])))
+            entry = candidates[0]
             entry["name"] = name
-            entry["password"] = _arcade_pbkdf2(secret, sample_hash)
+            entry["password"] = _arcade_pbkdf2(staged_remaining[name],
+                                               sample_hash)
+            claimed.add(name)
+            renamed_entries.append(name)
         users_file.write_text("\n".join(
             json.dumps(entry) for entry in updated) + "\n")
         users_file.chmod(0o600)
@@ -853,7 +867,7 @@ def apply_arcadedb(logins, stamp, candidate):
         systemctl("restart", "enhanced-cognee-graph.service")
         raise
     require(api_health(), "api_unhealthy_after_graph_rotation")
-    return {"family": "arcadedb", "users_rotated": sorted(staged),
+    return {"family": "arcadedb", "users_rotated": sorted(staged), "renamed": renamed_entries,
             "already_current_verified": current, "verified": True}
 
 
