@@ -1,5 +1,23 @@
 # Remaining Hermes memory rollout work
 
+31 October 2026 STAGE C DELIVERED: the API-backed memory MCP server is
+installed in the gateway home (hash-pinned, pure stdlib, gateway-managed
+Python) and enabled for all 42 profiles (pilot web-researcher first, then
+the batch; memory_read group, 10 tools: recall, get_memories, get_memory,
+get_memory_history, get_related, list_agents, get_shared_memories,
+library_membership, get_stats, health). The memory_write group exists but
+stays disabled for roles: the provider remains the single governed write
+path. Request bodies match the API models exactly (RecallRequest
+limit<=20 and extra=forbid; CorrectionRequest expected_version; safe
+retraction). End-to-end pilot passed under the web-researcher scoped
+token: handshake, exact tool advertisement, authenticated status, real
+recall payload. Roles see the tools from their next session start. Found
+expired: the two canary tokens (old 24h pilot TTL; excluded from the
+30-day batch) - renew or retire with the canaries per plan. Per the
+agreed staging, Stage D now waits on a 1-2 week demand check of real
+fleet usage; its first family (ingestion) design, including the LLM
+route/budget proposal, comes after that.
+
 30 October 2026 RENEWAL AUTOMATION OPERATIONAL: the approved weekly timer
 is installed and verified end-to-end. First unattended run: default
 renewed to 2026-11-29T23:30:32Z, 40 roles correctly skipped (outside the
