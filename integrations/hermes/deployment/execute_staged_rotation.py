@@ -212,13 +212,10 @@ def apply_postgresql(logins, stamp, candidate):
     if not old_password:
         raise ValueError("dsn_password_unusable:" + dsn_diagnostic(dsn))
     # Order: ALTER first (old password still valid), then file updates.
-    from collections import OrderedDict
     from urllib.parse import quote
-    sql = ";".join('ALTER ROLE "%s" WITH PASSWORD \'%s\''
-                   % (name, secret.replace("'", "''"))
-                   for name, secret in pairs)
-    # The api role cannot ALTER peers; prefer an operator DSN from the
-    # root-only operator credential if it carries one.
+    # The api role cannot ALTER peers; use the operator DSN from the
+    # root-only operator credential. Its CURRENT name may be the legacy
+    # name that the staged set renames away from.
     alter_user, alter_password = user, old_password
     operator_path = ETC / "operator.json"
     if operator_path.exists():
@@ -228,8 +225,17 @@ def apply_postgresql(logins, stamp, candidate):
             parts = urlsplit(operator_dsn)
             alter_user = parts.username
             alter_password = parts.password or ""
-            require(alter_user in dict(pairs),
-                    "operator_role_missing_from_candidates:" + str(alter_user))
+    staged_names = {name for name, _ in pairs}
+    statements = []
+    if alter_user and alter_user not in staged_names:
+        target = [name for name in staged_names if "operator" in name.lower()]
+        require(len(target) == 1, "operator_rename_target_ambiguous")
+        statements.append('ALTER ROLE "%s" RENAME TO "%s"'
+                          % (alter_user, target[0]))
+    statements += ['ALTER ROLE "%s" WITH PASSWORD \'%s\''
+                   % (name, secret.replace("'", "''"))
+                   for name, secret in pairs]
+    sql = ";".join(statements)
     # The native psql needs its bundled libpq (not on the system path).
     lib_dirs = sorted(glob.glob(
         "/opt/enhanced-cognee-stores/native/usr/lib/*/"))
@@ -256,6 +262,33 @@ def apply_postgresql(logins, stamp, candidate):
                 count = replace_value_in_file(path, old_password, new_password)
                 require(count >= 1, "dependent_file_missing_old_value:" + name)
                 touched.append((name, count))
+        # The operator credential's DSN carries the operator password (and
+        # the legacy name being renamed away from).
+        if operator_path.exists():
+            operator = json.loads(operator_path.read_text())
+            operator_dsn = operator.get("ENHANCED_MEMORY_DATABASE_URL", "")
+            if operator_dsn and urlsplit(operator_dsn).password:
+                staged_map = dict(pairs)
+                new_secret = staged_map.get(urlsplit(operator_dsn).username)
+                rename_to = None
+                if new_secret is None:
+                    operators = [n for n in staged_map
+                                 if "operator" in n.lower()]
+                    if urlsplit(operator_dsn).username not in staged_map \
+                            and len(operators) == 1:
+                        new_secret = staged_map[operators[0]]
+                        rename_to = operators[0]
+                if new_secret:
+                    backup(operator_path, stamp)
+                    count = replace_value_in_file(
+                        operator_path, urlsplit(operator_dsn).password,
+                        new_secret)
+                    require(count >= 1, "operator_dsn_password_not_found")
+                    if rename_to:
+                        replace_value_in_file(operator_path,
+                                              urlsplit(operator_dsn).username,
+                                              rename_to)
+                    touched.append(("operator.json", count))
         require(systemctl("restart", "enhanced-cognee-api.service") == 0, "api_restart_failed")
         require(api_health(), "api_unhealthy_after_rotation")
         require(probe_role_status() in (200, 401), "api_probe_failed")
@@ -359,18 +392,24 @@ def apply_valkey(logins, stamp, candidate):
                          % (",".join(sorted(file_users)),
                             ",".join(sorted(staged))))
     for name, secret in pairs:
-        line = lines[user_lines[name]]
-        if ">" in line:
-            tokens = line.split()
-            for position, token in enumerate(tokens):
-                if token.startswith(">") or token.startswith("#"):
-                    tokens[position] = ">" + secret
-                    break
-            lines[user_lines[name]] = " ".join(tokens)
-        else:
-            tokens = line.split() + [">" + secret]
-            lines[user_lines[name]] = " ".join(tokens)
-    acl_path.write_text("\n".join(lines) + "\n")
+        index = user_lines[name]
+        tokens = lines[index].split()
+        # A rotated user must be ENABLED with its password set: strip the
+        # disabled flag and resetpass, ensure the on flag survives.
+        tokens = [t for t in tokens if t not in ("off", "resetpass")]
+        if "on" not in tokens:
+            tokens.insert(2, "on")
+        replaced_token = False
+        for position, token in enumerate(tokens):
+            if token.startswith(">") or token.startswith("#"):
+                tokens[position] = ">" + secret
+                replaced_token = True
+                break
+        if not replaced_token:
+            tokens.append(">" + secret)
+        lines[index] = " ".join(tokens)
+    updated = "\n".join(lines) + "\n"
+    acl_path.write_text(updated)
     try:
         require(systemctl("restart", "enhanced-cognee-cache.service") == 0,
                 "cache_restart_failed")
@@ -412,11 +451,11 @@ def apply_qdrant(logins, stamp, candidate):
         if len(value) >= 16:
             key_fields[field] = value
     require(len(key_fields) == 2,
-            "qdrant_key_fields_not_found:" + json.dumps(
-                {match.group(1).strip(): len(match.group(2))
-                 for match in _re.finditer(
-                     r"^(\s*[A-Za-z0-9_]*(?:api_key|key|secret|token)[A-Za-z0-9_]*):"
-                     r"\s*[\"']?([^\s\"']+)", yaml_text, _re.MULTILINE)}))
+            "qdrant_key_fields_not_found:yaml_fields=" + json.dumps(
+                sorted({match.group(1).strip()
+                        for match in _re.finditer(
+                            r"^(\s*[A-Za-z0-9_.-]+):\s*\S",
+                            yaml_text, _re.MULTILINE)})))
     read_field = [f for f in key_fields if "read" in f.lower()]
     admin_field = [f for f in key_fields if f not in read_field]
     require(len(read_field) == 1 and len(admin_field) == 1,
@@ -545,6 +584,24 @@ def apply_application(logins, stamp, candidate):
     original = api_path.read_text()
     current = json.loads(original).get("ENHANCED_JWT_SECRET", "")
     require(len(current) >= 32, "issuer_secret_shape_unexpected")
+    if current == secret:
+        # Staged key already equals the live secret (proven by the dual
+        # HMAC verification): nothing to rotate, tokens stay valid, no
+        # reissue needed. Keep operator.json consistent if it differs.
+        operator_consistent = True
+        if operator_path.exists():
+            operator_raw = operator_path.read_text()
+            operator_consistent = current in operator_raw
+            if not operator_consistent:
+                backup(operator_path, stamp)
+                count = replace_value_in_file(operator_path,
+                                              json.loads(operator_raw).get(
+                                                  "ENHANCED_JWT_SECRET", ""),
+                                              secret)
+                operator_consistent = count >= 1
+        return {"family": "application", "issuer_already_current": True,
+                "operator_file_consistent": operator_consistent,
+                "tokens_untouched": True}
     # The issuer requires api.json and operator.json to carry the SAME
     # signing secret; rotate both or future issuance refuses.
     operator_touched = False
