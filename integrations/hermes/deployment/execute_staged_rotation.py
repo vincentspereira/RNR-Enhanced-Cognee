@@ -844,6 +844,10 @@ def apply_arcadedb(logins, stamp, candidate):
         if str(entry.get("password", "")).startswith("PBKDF2"):
             sample_hash = entry["password"]
     require(sample_hash, "arcade_hash_sample_missing")
+    # The service user (uid 995) must keep ownership: a 0600 users file
+    # owned by root leaves the graph server unable to read its own users
+    # (deny-all 403s - the same ownership lesson as valkey).
+    original_stat = users_file.stat()
     backup(users_file, stamp)
     try:
         updated = []
@@ -886,7 +890,9 @@ def apply_arcadedb(logins, stamp, candidate):
             claimed.add(name)
             renamed_entries.append(name)
         users_file.write_text("\n".join(
-            json.dumps(entry) for entry in updated) + "\n")
+            json.dumps(entry, separators=(",", ":")) for entry in updated)
+            + "\n")
+        os.chown(users_file, original_stat.st_uid, original_stat.st_gid)
         users_file.chmod(0o600)
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
                 "graph_restart_failed")
