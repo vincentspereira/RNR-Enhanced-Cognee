@@ -1014,8 +1014,7 @@ def apply_arcadedb(logins, stamp, candidate):
             claimed.add(name)
             renamed_entries.append(name)
         users_file.write_text("\n".join(
-            json.dumps(entry, separators=(",", ":")) for entry in updated)
-            + "\n")
+            json.dumps(entry) for entry in updated) + "\n")
         os.chown(users_file, original_stat.st_uid, original_stat.st_gid)
         users_file.chmod(0o600)
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
@@ -1050,11 +1049,16 @@ def apply_arcadedb(logins, stamp, candidate):
             if not arcade_auth_ok(as_name, secret):
                 backup_path = users_file.with_name(
                     users_file.name + ".before-rotation-" + stamp)
-                raise ValueError("arcade_auth_verify_failed:%s:%s:file=%s:%s:%s" % (
-                    name, json.dumps(_arcade_auth_matrix(staged, root_mapped)),
-                    json.dumps({"uid": 995, "mode": "0o600"}),
-                    json.dumps(_users_file_diff(backup_path, users_file))[:900],
-                    json.dumps(_arcade_log_tail())[:600]))
+                diagnostics = {
+                    "auth_matrix": _arcade_auth_matrix(staged, root_mapped),
+                    "file_diff": _users_file_diff(backup_path, users_file),
+                    "arcade_logs": _arcade_log_tail()}
+                (candidate / ("graph-diagnostics-%s.json" % stamp)
+                 ).write_text(json.dumps(diagnostics, indent=1) + "\n")
+                raise ValueError(
+                    "arcade_auth_verify_failed:%s:diagnostics=%s" % (
+                        name,
+                        candidate / ("graph-diagnostics-%s.json" % stamp)))
     except Exception:
         restore = users_file.with_name(users_file.name
                                        + ".before-rotation-" + stamp)
