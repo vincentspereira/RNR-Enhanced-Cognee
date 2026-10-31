@@ -86,10 +86,13 @@ def test_arcade_pbkdf2_matches_live_format():
     parts = hashed.split(":")
     assert parts[0] == "PBKDF2WithHmacSHA256" and parts[1] == "120000"
     assert len(parts) == 4 and parts[2] != sample.split(":")[2]
-    # Extra-parameter layouts keep their structure: only salt/hash swap.
-    wide = "PBKDF2WithHmacSHA256:65000:extra:c2FsdA==:aGFzaA=="
-    wide_hashed = executor._arcade_pbkdf2("secret", wide)
-    assert wide_hashed.split(":")[:3] == wide.split(":")[:3]
+    # The live fleet layout: dollar-separated, 32-byte salt and digest.
+    live = "PBKDF2WithHmacSHA256$65536$" + "H" * 44 + "$" + "z" * 44
+    live_hashed = executor._arcade_pbkdf2("secret", live)
+    live_parts = live_hashed.split("$")
+    assert len(live_parts) == 4 and live_parts[1] == "65536"
+    assert len(live_parts[2]) == 44 and len(live_parts[3]) == 44
+    assert live_parts[2] != "H" * 44
     with pytest.raises(ValueError):
         executor._arcade_pbkdf2("secret", "not-a-pbkdf2-hash")
 

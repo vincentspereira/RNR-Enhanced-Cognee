@@ -770,25 +770,26 @@ def _arcade_pbkdf2(password, sample_hash):
     the live iteration count."""
     import base64
     import hashlib
-    parts = sample_hash.split(":")
-    if len(parts) < 4 or not parts[0].startswith("PBKDF"):
-        # Reveal the layout structure (hash characters, not secrets):
-        # first characters plus a separator histogram and length.
-        separators = {char: sample_hash.count(char)
-                      for char in ":$-_.,|/" if sample_hash.count(char)}
-        raise ValueError(
-            "hash_format:parts=%d:prefix=%s:separators=%s:length=%d"
-            % (len(parts), sample_hash[:48], json.dumps(separators),
-               len(sample_hash)))
+    # Live layouts observed: colon-separated and dollar-separated, both
+    # ``algorithm:iterations:saltB64:hashB64`` field order.
+    for separator in (":", "$"):
+        parts = sample_hash.split(separator)
+        if len(parts) == 4 and parts[0].startswith("PBKDF"):
+            break
+    else:
+        raise ValueError("hash_format:unsupported_layout:length=%d"
+                         % len(sample_hash))
     try:
         iterations = int(parts[1])
     except ValueError as exc:
         raise ValueError("hash_format:iterations=%s" % parts[1][:12]) from exc
     require(1 <= iterations <= 10_000_000, "hash_format:iterations_range")
-    salt = os.urandom(16)
+    # 32-byte salt and 32-byte SHA-256 digest, standard padded base64 -
+    # matching the live entry's 44-character fields.
+    salt = os.urandom(32)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
-    return ":".join(parts[:-2] + [base64.b64encode(salt).decode(),
-                                  base64.b64encode(digest).decode()])
+    return separator.join(parts[:1] + [
+        base64.b64encode(salt).decode(), base64.b64encode(digest).decode()])
 
 
 def apply_arcadedb(logins, stamp, candidate):
