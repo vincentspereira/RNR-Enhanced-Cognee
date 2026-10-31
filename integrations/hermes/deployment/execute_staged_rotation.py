@@ -922,16 +922,20 @@ def apply_arcadedb(logins, stamp, candidate):
         require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
                 "graph_restart_failed")
         # ArcadeDB boots slowly; a starting server answers 403 to
-        # everything. Wait until the healthy anonymous answer (200 on
-        # the info route) returns before verifying credentials.
+        # everything. The HEALTHY anonymous behavior on the info route is
+        # 401 (auth challenge) - wait for that before verifying anything.
         ready = False
-        for _ in range(30):
+        for _ in range(45):
             time.sleep(2)
             try:
                 import urllib.request as _u
-                with _u.urlopen(ARCADE_HTTP + "/api/v1/server",
-                                timeout=5) as response:
-                    if response.status == 200:
+                import urllib.error as _ue
+                try:
+                    with _u.urlopen(ARCADE_HTTP + "/api/v1/server",
+                                    timeout=5):
+                        pass
+                except _ue.HTTPError as exc:
+                    if exc.code == 401:
                         ready = True
                         break
             except Exception:
