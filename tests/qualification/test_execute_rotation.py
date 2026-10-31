@@ -79,6 +79,17 @@ def test_backup_is_timestamped_and_idempotent(tmp_path):
     assert other is not first and other.read_text() == '{"v": 2}'
 
 
+def test_arcade_pbkdf2_matches_live_format():
+    sample = ("PBKDF2WithHmacSHA256:120000:"
+              "c2FsdHNhbHRzYWx0c2FsdA==:aGFzaGhhc2hoYXNo")
+    hashed = executor._arcade_pbkdf2("secret", sample)
+    parts = hashed.split(":")
+    assert parts[0] == "PBKDF2WithHmacSHA256" and parts[1] == "120000"
+    assert len(parts) == 4 and parts[2] != sample.split(":")[2]
+    with pytest.raises(ValueError):
+        executor._arcade_pbkdf2("secret", "not-a-pbkdf2-hash")
+
+
 def test_families_and_guard_constants():
     assert set(executor.FAMILIES) == {"postgresql", "valkey", "qdrant",
                                       "application"}

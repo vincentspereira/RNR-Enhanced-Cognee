@@ -143,16 +143,21 @@ def main():
     if ROTATION_ROOT.is_dir():
         candidates = [d for d in ROTATION_ROOT.iterdir() if d.is_dir()]
         if len(candidates) == 1:
-            receipts = list(candidates[0].glob("execution-*.json"))
-            families = {}
-            for receipt in receipts:
+            latest = {}
+            for receipt in candidates[0].glob("execution-*.json"):
                 body = json.loads(receipt.read_text())
-                families[body.get("family")] = body.get("complete")
+                family = body.get("family")
+                stamp = receipt.name  # stamps sort chronologically
+                if family not in latest or stamp > latest[family][0]:
+                    latest[family] = (stamp, body.get("complete"))
+            families = {family: complete
+                        for family, (_, complete) in latest.items()}
             for family in ("postgresql", "valkey", "qdrant", "application"):
                 check("rotation: %s" % family, families.get(family) is True,
                       str(families.get(family)))
             check("rotation: arcadedb",
-                  families.get("arcadedb") is True or "arcadedb-apply" in str(families),
+                  families.get("arcadedb") is True
+                  or families.get("arcadedb-apply") is True,
                   "pending" if families.get("arcadedb") is None else
                   str(families.get("arcadedb")))
         else:

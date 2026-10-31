@@ -737,9 +737,117 @@ def inspect_arcadedb(candidate):
             "note": "apply phase for arcadedb is built against this schema"}
 
 
+ARCADE_HTTP = "http://127.0.0.1:28536"
+ARCADE_USERS_CANDIDATES = [
+    Path("/var/lib/enhanced-cognee/arcade/config/server-users.jsonl"),
+    Path("/var/lib/enhanced-cognee/arcade/server-users.jsonl"),
+    Path("/var/lib/enhanced-cognee/arcade/db/server-users.jsonl"),
+]
+
+
+def arcade_auth_ok(username, password):
+    """Functional check: basic-auth against the ArcadeDB HTTP API."""
+    import base64
+    import urllib.request as _u
+    request = _u.Request(
+        ARCADE_HTTP + "/api/v1/server",
+        headers={"Authorization": "Basic " + base64.b64encode(
+            ("%s:%s" % (username, password)).encode()).decode()})
+    try:
+        with _u.urlopen(request, timeout=8) as response:
+            return response.status == 200
+    except Exception:
+        return False
+
+
+def _arcade_pbkdf2(password, sample_hash):
+    """Hash `password` in the same PBKDF2 format as an existing entry.
+
+    ArcadeDB stores ``PBKDF2WithHmacSHA256:<iterations>:<saltB64>:<hashB64>``;
+    the iteration count and format are copied from a live entry, the salt
+    is freshly random."""
+    import base64
+    import hashlib
+    import hmac as _hmac
+    parts = sample_hash.split(":")
+    require(len(parts) == 4 and parts[0].startswith("PBKDF2"), "hash_format")
+    iterations = int(parts[1])
+    salt = os.urandom(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
+    return "%s:%d:%s:%s" % (parts[0], iterations,
+                            base64.b64encode(salt).decode(),
+                            base64.b64encode(digest).decode())
+
+
+def apply_arcadedb(logins, stamp, candidate):
+    pairs = as_pairs(logins["arcadedb"])
+    require(len(pairs) == 3, "expected_three_arcadedb_users")
+    staged = dict(pairs)
+    # Functional first: staged credentials that already authenticate are
+    # proven current (the established pattern for this staged set).
+    current = sorted(name for name, secret in staged.items()
+                     if arcade_auth_ok(name, secret))
+    if len(current) == len(staged):
+        return {"family": "arcadedb", "users_verified_live": current,
+                "already_current": True}
+    users_file = next((p for p in ARCADE_USERS_CANDIDATES if p.is_file()),
+                      None)
+    require(users_file is not None, "arcade_users_file_not_found")
+    sample_hash = ""
+    entries = []
+    for line in users_file.read_text().splitlines():
+        if not line.strip():
+            continue
+        entry = json.loads(line)
+        entries.append(entry)
+        if str(entry.get("password", "")).startswith("PBKDF2"):
+            sample_hash = entry["password"]
+    require(sample_hash, "arcade_hash_sample_missing")
+    backup(users_file, stamp)
+    try:
+        updated = []
+        staged_remaining = dict(staged)
+        for entry in entries:
+            name = entry.get("name")
+            if name in staged_remaining:
+                entry = dict(entry, password=_arcade_pbkdf2(
+                    staged_remaining.pop(name), sample_hash))
+            updated.append(entry)
+        # Staged names not present in the file replace legacy entries by
+        # position (the operator-recovery artifact records the mapping as
+        # a full-file replacement; the live file has exactly 3 entries).
+        require(not staged_remaining or len(entries) == len(staged),
+                "arcade_unmapped_staged_users:" + ",".join(staged_remaining))
+        for (name, secret), entry in zip(staged_remaining.items(),
+                                         [e for e in updated
+                                          if e.get("name") not in staged]):
+            entry["name"] = name
+            entry["password"] = _arcade_pbkdf2(secret, sample_hash)
+        users_file.write_text("\n".join(
+            json.dumps(entry) for entry in updated) + "\n")
+        users_file.chmod(0o600)
+        require(systemctl("restart", "enhanced-cognee-graph.service") == 0,
+                "graph_restart_failed")
+        time.sleep(8)
+        for name, secret in staged.items():
+            require(arcade_auth_ok(name, secret),
+                    "arcade_auth_verify_failed:" + name)
+    except Exception:
+        restore = users_file.with_name(users_file.name
+                                       + ".before-rotation-" + stamp)
+        if restore.exists():
+            shutil.copy2(restore, users_file)
+        systemctl("restart", "enhanced-cognee-graph.service")
+        raise
+    require(api_health(), "api_unhealthy_after_graph_rotation")
+    return {"family": "arcadedb", "users_rotated": sorted(staged),
+            "already_current_verified": current, "verified": True}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("family", choices=FAMILIES + ("arcadedb-inspect",))
+    parser.add_argument("family", choices=FAMILIES + ("arcadedb",
+                                                      "arcadedb-inspect"))
     args = parser.parse_args()
     require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
             and os.uname().nodename == "Ubuntu-Hermes", "owner_sudo_on_gateway_host")
@@ -755,6 +863,8 @@ def main():
             receipt = apply_qdrant(logins, stamp, candidate)
         elif args.family == "application":
             receipt = apply_application(logins, stamp, candidate)
+        elif args.family == "arcadedb":
+            receipt = apply_arcadedb(logins, stamp, candidate)
         else:
             receipt = inspect_arcadedb(candidate)
     except Exception as exc:
