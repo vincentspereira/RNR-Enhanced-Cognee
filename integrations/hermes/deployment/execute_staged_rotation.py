@@ -771,9 +771,15 @@ def _arcade_pbkdf2(password, sample_hash):
     import base64
     import hashlib
     parts = sample_hash.split(":")
-    require(len(parts) >= 4 and parts[0].startswith("PBKDF"),
-            "hash_format:parts=%d:prefix=%s"
-            % (len(parts), parts[0][:12]))
+    if len(parts) < 4 or not parts[0].startswith("PBKDF"):
+        # Reveal the layout structure (hash characters, not secrets):
+        # first characters plus a separator histogram and length.
+        separators = {char: sample_hash.count(char)
+                      for char in ":$-_.,|/" if sample_hash.count(char)}
+        raise ValueError(
+            "hash_format:parts=%d:prefix=%s:separators=%s:length=%d"
+            % (len(parts), sample_hash[:48], json.dumps(separators),
+               len(sample_hash)))
     try:
         iterations = int(parts[1])
     except ValueError as exc:
