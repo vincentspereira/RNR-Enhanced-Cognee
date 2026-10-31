@@ -96,7 +96,7 @@ def test_daemon_loads_llm_route_into_whitelisted_env(tmp_path, monkeypatch):
     daemon = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(daemon)
     api = {"ENHANCED_MEMORY_DATABASE_URL": "postgres://invented",
-           "ENHANCED_JWT_SECRET": "x" * 40}
+           "ENCRYPTION_MASTER_KEY": "invented-master-key-material-0123456789"}
     (tmp_path / "api.json").write_text(_json.dumps(api))
     (tmp_path / "api.json").chmod(0o600)
     plain = daemon.credential_environment("api", str(tmp_path))
