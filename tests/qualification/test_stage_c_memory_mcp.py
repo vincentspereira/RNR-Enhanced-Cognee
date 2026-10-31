@@ -107,10 +107,18 @@ def test_api_call_shapes(monkeypatch):
 
 
 def test_api_error_maps_to_honest_tool_error(monkeypatch):
-    monkeypatch.setattr(server, "api", lambda m, p, t, b=None: (403, {"detail": "x"}))
+    monkeypatch.setattr(server, "api",
+                        lambda m, p, t, b=None: (403, {"detail": "x"}))
     table = server.handlers("t")
     payload = table["get_stats"][1]({})
     assert payload["status_code"] == 403 and "refused" in payload["error"]
+
+    monkeypatch.setattr(server, "api",
+                        lambda m, p, t, b=None: (422, {"detail":
+                                                  "Refused: not a public address"}))
+    payload = server.handlers("t")["ingest_url"][1]({"url": "http://127.0.0.1/"})
+    assert payload["status_code"] == 422
+    assert payload.get("detail") == "Refused: not a public address"
 
 
 def test_enablement_helper_constants():

@@ -110,8 +110,11 @@ def handlers(token):
     def call(method, path, body=None, expect=200):
         status, payload = api(method, path, token, body)
         if status != expect:
+            detail = payload.get("detail") if isinstance(payload, dict) else None
             return {"error": "memory request refused (HTTP %d); no success was "
-                             "acknowledged" % status, "status_code": status}
+                             "acknowledged" % status,
+                    "status_code": status,
+                    **({"detail": str(detail)[:200]} if detail else {})}
         return payload
 
     table = {}

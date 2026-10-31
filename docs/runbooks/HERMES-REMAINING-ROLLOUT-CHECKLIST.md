@@ -723,3 +723,20 @@ next gateway restart. Canary token renewal is moot. Stage D (ingestion
 family) build is underway: the API remember/recall contracts are captured
 and the service code location resolves with the root-side deploy helper;
 the owner deploy command follows the build.
+
+31 October 2026 STAGE D FAMILY 1 (INGESTION) COMPLETE: the reviewed
+ingestion endpoint is deployed to BOTH service code roots (base runtime
+and candidate venv site-packages; the service imports the latter per its
+unit drop-in), the API restarted healthy, and the route is proven with an
+AUTHENTICATED probe (empty body -> 422; the boundary 401 fires before
+routing, so unauthenticated probes prove nothing - retained lesson).
+End-to-end MCP verification passed under the web-researcher scoped token:
+12 tools advertised, ingest_text stored a chunk with provenance,
+get_memories listed the record, ingest_url to a loopback address was
+refused with the reason surfaced to the caller, and the record was
+retracted clean with the version check. Researcher pilot roles
+(web-researcher, deep-research-specialist, niche-hunter) carry
+memory_read,ingest; all other roles remain read-only pending the demand
+check. Deploy chases retained: quoted-PYTHONPATH parsing, every
+interpreter site-packages scan, authenticated route probe, and error
+detail passthrough in the MCP server.
