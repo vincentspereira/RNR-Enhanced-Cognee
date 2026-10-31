@@ -63,6 +63,12 @@ def locate_code_root():
     for candidate in candidates:
         if (candidate / "src" / "memory_api.py").is_file():
             return candidate / "src"
+    # The service runs from the runtime venv: the src package is installed
+    # directly in its site-packages.
+    for site_src in sorted(RUNTIME_PYTHON.parent.parent.glob(
+            "lib/python*/site-packages/src")):
+        if (site_src / "memory_api.py").is_file():
+            return site_src
     raise ValueError("service_code_root_not_found")
 
 
