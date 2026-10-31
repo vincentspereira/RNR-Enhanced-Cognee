@@ -803,3 +803,21 @@ post-partial-application for several candidates; every already-current
 value completed as a verified no-op with receipts. Every intermediate
 refusal rolled back fully - the fleet was never left half-rotated.
 Remaining: the arcadedb family behind its read-only inspection gate.
+
+1 November 2026 ENGAGEMENT COMPLETE: the consolidated verifier reports
+56/56 checks green - five backend services, memory API health, the main
+assistant authenticated against its default scope, all 40 roles live-
+verified with their exact per-matrix toolsets (10-18 tools each), the
+main assistant 20 tools, the weekly token renewal timer, the daily
+encrypted fleet backup timer, and ALL FIVE credential rotation families
+(postgresql, valkey, qdrant, application, arcadedb) with receipts. The
+arcadedb root cause chain, fully closed with live evidence: ArcadeDB
+uses the salt FIELD TEXT as raw salt bytes (never base64-decoded - the
+detail no documentation states, proven by brute-force against the index
+worker live known-good pair), and the /api/v1/server info route hangs
+for valid non-admin credentials while degrading the whole server to
+403-everything - verification must use the command endpoint with a
+not-401/403 criterion. The forgotten ArcadeDB root password is formally
+replaced (operator secret onto the root account, verified live); the
+index worker pair was already current. Enhanced Cognee stands fully
+delivered as the extended memory for Hermes Agent and all its bots.
