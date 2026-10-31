@@ -795,12 +795,15 @@ def _arcade_pbkdf2(password, sample_hash):
     except ValueError as exc:
         raise ValueError("hash_format:iterations=%s" % parts[1][:12]) from exc
     require(1 <= iterations <= 10_000_000, "hash_format:iterations_range")
-    # 32-byte salt and 32-byte SHA-256 digest, standard padded base64 -
-    # matching the live entry's 44-character fields.
-    salt = os.urandom(32)
-    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
+    # Live-verified algorithm (proven against the worker's known-good
+    # pair): ArcadeDB uses the salt FIELD TEXT as the raw salt bytes -
+    # it does NOT base64-decode it. Digest: PBKDF2-HMAC-SHA256, 32
+    # bytes, base64-encoded.
+    salt_text = base64.b64encode(os.urandom(24)).decode()
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(),
+                                 salt_text.encode(), iterations, 32)
     return separator.join(parts[:2] + [
-        base64.b64encode(salt).decode(), base64.b64encode(digest).decode()])
+        salt_text, base64.b64encode(digest).decode()])
 
 
 def _users_file_diff(backup_path, live_path):
@@ -848,19 +851,24 @@ def _arcade_log_tail():
 
 
 def _arcade_auth_matrix(staged, root_mapped=None):
-    """Sanitized auth matrix: HTTP status per identity (names and codes
-    only - never a secret)."""
+    """Sanitized auth matrix on the COMMAND endpoint (the /api/v1/server
+    route hangs for valid non-admins): HTTP status per identity - names
+    and codes only, never a secret."""
     import base64
-    import urllib.request as _u
     import urllib.error as _ue
+    import urllib.request as _u
 
     def status(username, password):
         request = _u.Request(
-            ARCADE_HTTP + "/api/v1/server",
-            headers={"Authorization": "Basic " + base64.b64encode(
-                ("%s:%s" % (username, password)).encode()).decode()})
+            ARCADE_HTTP + "/api/v1/command/hermes_deploy_v1",
+            data=json.dumps({"language": "sql", "command":
+                             "select from OUser", "limit": 1}).encode(),
+            method="POST",
+            headers={"Content-Type": "application/json",
+                     "Authorization": "Basic " + base64.b64encode(
+                         ("%s:%s" % (username, password)).encode()).decode()})
         try:
-            with _u.urlopen(request, timeout=8) as response:
+            with _u.urlopen(request, timeout=10) as response:
                 return response.status
         except _ue.HTTPError as exc:
             return exc.code
@@ -960,25 +968,26 @@ def apply_arcadedb(logins, stamp, candidate):
         if str(entry.get("password", "")).startswith("PBKDF2"):
             sample_hash = entry["password"]
     require(sample_hash, "arcade_hash_sample_missing")
-    # Offline algorithm proof: the staged before-artifact holds the old
-    # operator password in plaintext whose hash sits in the live file.
-    # If our reconstruction cannot reproduce a live hash, refuse BEFORE
-    # writing anything.
-    authority_before = candidate / "graph-operator-recovery" / \
-        "operator-authority.before.json"
-    if authority_before.is_file():
-        known = json.loads(authority_before.read_text())
-        known_user = known.get("INDEX_ARCADEDB_USER")
-        known_password = known.get("INDEX_ARCADEDB_PASSWORD")
+    # Offline algorithm proof against a live known-good pair: the index
+    # worker's own credentials, whose hash sits in the live users file.
+    worker_path = ETC / "worker.json"
+    if worker_path.exists():
+        worker = json.loads(worker_path.read_text())
+        known_user = worker.get("INDEX_ARCADEDB_USER", "")
+        known_password = worker.get("INDEX_ARCADEDB_PASSWORD", "")
         entry_hash = next((e.get("password") for e in entries
                            if e.get("name") == known_user
                            and str(e.get("password", "")).startswith("PBKDF")),
                           None)
         if entry_hash and known_password:
-            proof = _verify_hash_algorithm(entry_hash, known_password)
-            require(any(variant.get("reconstruct_ok")
-                        for variant in proof.get("variants", {}).values()),
-                    "hash_algorithm_mismatch:" + json.dumps(proof))
+            parts = entry_hash.split("$")
+            if len(parts) == 4:
+                digest = hashlib.pbkdf2_hmac(
+                    "sha256", known_password.encode(), parts[2].encode(),
+                    int(parts[1]), 32)
+                import base64 as _b64
+                require(_b64.b64decode(parts[3] + "=" * (-len(parts[3]) % 4))
+                        == digest, "hash_algorithm_mismatch_worker_pair")
     # The service user (uid 995) must keep ownership: a 0600 users file
     # owned by root leaves the graph server unable to read its own users
     # (deny-all 403s - the same ownership lesson as valkey).
