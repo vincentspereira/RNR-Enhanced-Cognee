@@ -25,12 +25,22 @@ SOURCE = Path(__file__).resolve().parent.parent / "enhanced_cognee_mcp" / "serve
 INSTALL_DIR = HOME / "mcp-servers" / "enhanced-cognee"
 GATEWAY_PYTHON = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
 DEFAULT_GROUPS = "memory_read"
-# Stage D: ingestion and analysis pilot on the researcher roles first; all
-# other roles stay read-only until the pilot batch verifies.
+# Stage D per-family enablement: researchers pilot ingest+analysis; authors,
+# analysts and coordinators get analysis; ops roles stay read-side.
 ROLE_GROUPS = {
     "web-researcher": "memory_read,ingest,analysis",
     "deep-research-specialist": "memory_read,ingest,analysis",
     "niche-hunter": "memory_read,ingest,analysis",
+    "educational-content-author": "memory_read,analysis",
+    "fiction-content-author": "memory_read,analysis",
+    "theology-content-author": "memory_read,analysis",
+    "technical-writer": "memory_read,analysis",
+    "marketing-social-manager": "memory_read,analysis",
+    "customer-feedback-analyst": "memory_read,analysis",
+    "chief-of-staff": "memory_read,analysis",
+    "project-orchestrator": "memory_read,analysis",
+    "cross-project-collaborator": "memory_read,analysis",
+    "deliberation-moderator": "memory_read,analysis",
 }
 
 
