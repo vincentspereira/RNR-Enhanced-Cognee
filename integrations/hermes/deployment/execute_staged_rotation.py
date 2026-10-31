@@ -845,6 +845,42 @@ def _graph_broken_state():
     return {"states": states, "port": reachable, "journal_tail": tail}
 
 
+def _verify_hash_algorithm(sample_hash, known_password):
+    """Offline proof: reconstruct a LIVE entry's hash from its known
+    plaintext. Tries the plausible encoding variants and reports which
+    (if any) matches - never the password itself."""
+    import base64
+    import binascii
+    import hashlib
+    for separator in (":", "$"):
+        parts = sample_hash.split(separator)
+        if len(parts) == 4 and parts[0].startswith("PBKDF"):
+            break
+    else:
+        return {"parses": False}
+    iterations = int(parts[1])
+    salt_text, hash_text = parts[2], parts[3]
+    candidates = {}
+    for name, decode in (
+            ("b64", lambda t: base64.b64decode(t + "=" * (-len(t) % 4))),
+            ("b64_nopad", lambda t: base64.b64decode(t + "=" * (-len(t) % 4))),
+            ("urlsafe", lambda t: base64.urlsafe_b64decode(
+                t + "=" * (-len(t) % 4))),
+            ("raw", lambda t: t.encode())):
+        try:
+            salt = decode(salt_text)
+            digest = decode(hash_text)
+        except (binascii.Error, ValueError):
+            continue
+        candidates[name] = {
+            "salt_bytes": len(salt), "digest_bytes": len(digest),
+            "reconstruct_ok": hashlib.pbkdf2_hmac(
+                "sha256", known_password.encode(), salt,
+                iterations) == digest}
+    return {"parses": True, "iterations": iterations,
+            "variants": candidates}
+
+
 def apply_arcadedb(logins, stamp, candidate):
     pairs = as_pairs(logins["arcadedb"])
     require(len(pairs) == 3, "expected_three_arcadedb_users")
@@ -869,6 +905,25 @@ def apply_arcadedb(logins, stamp, candidate):
         if str(entry.get("password", "")).startswith("PBKDF2"):
             sample_hash = entry["password"]
     require(sample_hash, "arcade_hash_sample_missing")
+    # Offline algorithm proof: the staged before-artifact holds the old
+    # operator password in plaintext whose hash sits in the live file.
+    # If our reconstruction cannot reproduce a live hash, refuse BEFORE
+    # writing anything.
+    authority_before = candidate / "graph-operator-recovery" / \
+        "operator-authority.before.json"
+    if authority_before.is_file():
+        known = json.loads(authority_before.read_text())
+        known_user = known.get("INDEX_ARCADEDB_USER")
+        known_password = known.get("INDEX_ARCADEDB_PASSWORD")
+        entry_hash = next((e.get("password") for e in entries
+                           if e.get("name") == known_user
+                           and str(e.get("password", "")).startswith("PBKDF")),
+                          None)
+        if entry_hash and known_password:
+            proof = _verify_hash_algorithm(entry_hash, known_password)
+            require(any(variant.get("reconstruct_ok")
+                        for variant in proof.get("variants", {}).values()),
+                    "hash_algorithm_mismatch:" + json.dumps(proof))
     # The service user (uid 995) must keep ownership: a 0600 users file
     # owned by root leaves the graph server unable to read its own users
     # (deny-all 403s - the same ownership lesson as valkey).
