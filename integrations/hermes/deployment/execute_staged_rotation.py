@@ -788,7 +788,7 @@ def _arcade_pbkdf2(password, sample_hash):
     # matching the live entry's 44-character fields.
     salt = os.urandom(32)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
-    return separator.join(parts[:1] + [
+    return separator.join(parts[:2] + [
         base64.b64encode(salt).decode(), base64.b64encode(digest).decode()])
 
 
