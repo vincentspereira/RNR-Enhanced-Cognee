@@ -264,7 +264,7 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
         return llm_summarize, route, budget
 
     def _project(request):
-        return scope(request).project_id
+        return scope(request).project
 
     @app.post("/v1/memories/summarize")
     async def summarize(body: SummarizeRequest, request: Request):

@@ -159,13 +159,16 @@ def probe_role_token():
     raise ValueError("probe_token_missing")
 
 
-def authenticated_status(path):
+def authenticated_status(path, method="GET", body=None):
     """Returns (code, body, diagnostic) - the diagnostic carries the raw
     first bytes so a refusal is never debugged blind."""
     import urllib.error
-    request = urllib.request.Request("http://127.0.0.1:28080" + path,
+    data = json.dumps(body).encode() if body is not None else None
+    request = urllib.request.Request("http://127.0.0.1:28080" + path, data=data,
+                                     method=method,
                                      headers={"Authorization": "Bearer "
-                                              + probe_role_token()})
+                                              + probe_role_token(),
+                                              "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(request, timeout=5) as response:
             raw = response.read(2048)
@@ -221,15 +224,16 @@ def main():
         status_code, summarization, diag = authenticated_status(
             "/v1/memories/summarization/status")
         language_code, _, language_diag = authenticated_status(
-            "/v1/memories/detect-language")
+            "/v1/memories/detect-language", method="POST", body={"text": "probe"})
         result["probe_diagnostics"] = {
             "ingest": "ok", "summarization_status": [status_code, diag],
             "detect_language": [language_code, language_diag]}
         require(status_code == 200,
                 "summarization_status_route_not_live:code=%d:diag=%s"
                 % (status_code, diag[:120]))
-        require(language_code in (405, 422),
-                "detect_language_route_not_live:code=%d" % language_code)
+        require(language_code == 200,
+                "detect_language_route_not_live:code=%d:diag=%s"
+                % (language_code, language_diag[:120]))
         result.update(complete=True,
                       deployed={name: hashlib.sha256(raw).hexdigest()
                                 for name, raw in sources.items()},
