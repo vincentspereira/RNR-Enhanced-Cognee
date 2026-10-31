@@ -29,10 +29,41 @@ def test_registry_matches_stage_c_inventory():
                 "update_memory", "forget_memory", "set_memory_sharing",
                 "ingest_url", "ingest_text", "summarize_memories",
                 "find_consolidation_candidates", "get_summarization_status",
-                "translate_text", "detect_language"}
+                "translate_text", "detect_language", "publish_to_library",
+                "revoke_library_publication"}
     assert set(table) == expected
     for schema, fn in table.values():
         assert schema["inputSchema"]["additionalProperties"] is False
+
+
+def test_coordination_tools_build_versioned_bodies(monkeypatch):
+    captured = {}
+
+    def fake_api(method, path, token, body=None):
+        captured.update(method=method, path=path, body=body)
+        return 200, {"published": True}
+
+    monkeypatch.setattr(server, "api", fake_api)
+    table = server.handlers("t")
+    table["publish_to_library"][1]({"record_id": "abc", "expected_version": 3,
+                                     "library": "team_notes"})
+    assert captured["method"] == "POST"
+    assert captured["path"] == "/v1/memories/abc/library"
+    assert captured["body"] == {"expected_version": 3, "library": "team_notes",
+                                "revoke": False}
+    table["revoke_library_publication"][1]({"record_id": "abc",
+                                            "expected_version": 4,
+                                            "library": "team_notes"})
+    assert captured["body"]["revoke"] is True
+    with pytest.raises(ValueError):
+        table["publish_to_library"][1]({"record_id": "abc",
+                                        "expected_version": 0,
+                                        "library": "x"})
+    selection = server.apply_groups(dict(table), "memory_read,coordination")
+    assert {"publish_to_library", "revoke_library_publication",
+            "set_memory_sharing"} <= set(selection)
+    plain = server.apply_groups(dict(table), "memory_read")
+    assert "publish_to_library" not in plain
 
 
 def test_ingest_tools_build_correct_bodies(monkeypatch):

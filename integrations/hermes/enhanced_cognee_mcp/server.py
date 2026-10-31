@@ -42,6 +42,10 @@ GROUPS = {
         "summarize_memories", "find_consolidation_candidates",
         "get_summarization_status", "translate_text", "detect_language",
     ),
+    "coordination": (
+        "publish_to_library", "revoke_library_publication",
+        "set_memory_sharing",
+    ),
     # Deliberately absent from every group: administration stays with the
     # operator; write tools stay disabled for fleet roles (the memory
     # provider remains the single governed write path). Ingestion writes
@@ -233,6 +237,45 @@ def handlers(token):
          {"text": {"type": "string"}}, ("text",),
          lambda a: call("POST", "/v1/memories/detect-language",
                         {"text": str(a.get("text"))[:8000]}))
+
+    def _versioned(record_id, path, extra, method="POST"):
+        body = {"expected_version": int(a_version(a))} if False else dict(extra)
+        return call(method, "/v1/memories/" + _ident(record_id) + path, body)
+
+    def a_version(a):
+        version = int(a.get("expected_version"))
+        if not 1 <= version <= 10**9:
+            raise ValueError("expected_version out of range")
+        return version
+
+    tool("publish_to_library", "Publish the current reviewed version of one "
+         "of this profile's memories to a shared library (owner-reviewed "
+         "knowledge sharing).",
+         {"record_id": {"type": "string"}, "expected_version": {"type": "integer"},
+          "library": {"type": "string"}},
+         ("record_id", "expected_version", "library"),
+         lambda a: _versioned(a.get("record_id"), "/library",
+                              {"expected_version": a_version(a),
+                               "library": str(a.get("library")),
+                               "revoke": False}))
+    tool("revoke_library_publication", "Revoke a memory's publication in a "
+         "shared library; reads checking revocation stop immediately.",
+         {"record_id": {"type": "string"}, "expected_version": {"type": "integer"},
+          "library": {"type": "string"}},
+         ("record_id", "expected_version", "library"),
+         lambda a: _versioned(a.get("record_id"), "/library",
+                              {"expected_version": a_version(a),
+                               "library": str(a.get("library")),
+                               "revoke": True}))
+    tool("set_memory_sharing", "Change a memory's sharing policy (private, "
+         "library-mediated, or custom agent list as JSON).",
+         {"record_id": {"type": "string"}, "policy": {"type": "string"},
+          "allowed_agents": {"type": "string"}},
+         ("record_id", "policy"),
+         lambda a: call("PUT", "/v1/memories/" + _ident(a.get("record_id"))
+                        + "/share", {"policy": str(a.get("policy")),
+                                     **({"allowed_agents": str(a["allowed_agents"])}
+                                        if a.get("allowed_agents") else {})}))
     return table
 
 

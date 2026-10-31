@@ -37,10 +37,10 @@ ROLE_GROUPS = {
     "technical-writer": "memory_read,analysis",
     "marketing-social-manager": "memory_read,analysis",
     "customer-feedback-analyst": "memory_read,analysis",
-    "chief-of-staff": "memory_read,analysis",
-    "project-orchestrator": "memory_read,analysis",
-    "cross-project-collaborator": "memory_read,analysis",
-    "deliberation-moderator": "memory_read,analysis",
+    "chief-of-staff": "memory_read,analysis,coordination",
+    "project-orchestrator": "memory_read,analysis,coordination",
+    "cross-project-collaborator": "memory_read,analysis,coordination",
+    "deliberation-moderator": "memory_read,analysis,coordination",
 }
 
 
