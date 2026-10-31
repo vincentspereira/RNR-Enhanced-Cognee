@@ -980,6 +980,7 @@ def apply_arcadedb(logins, stamp, candidate):
                            and str(e.get("password", "")).startswith("PBKDF")),
                           None)
         if entry_hash and known_password:
+            import hashlib
             parts = entry_hash.split("$")
             if len(parts) == 4:
                 digest = hashlib.pbkdf2_hmac(
