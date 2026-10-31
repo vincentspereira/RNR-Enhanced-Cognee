@@ -1,4 +1,4 @@
-"""Restricted native memory API. No arbitrary ingestion or administrative tools."""
+"""Restricted native memory API. Reviewed ingestion only; no administrative tools."""
 from __future__ import annotations
 
 import os
@@ -29,6 +29,18 @@ class RememberRequest(BaseModel):
     evidence: Optional[MemoryEvidence] = None
     fact_key: Optional[str] = Field(default=None, pattern=r"^[a-z][a-z0-9_.:-]{0,159}$")
     knowledge_links: list[KnowledgeLink] = Field(default_factory=list, max_length=16)
+
+
+class IngestRequest(BaseModel):
+    """Reviewed ingestion (Stage D family 1): exactly one source, chunked and
+    stored through the normal remember() admission with provenance."""
+    model_config = ConfigDict(extra="forbid")
+    url: Optional[str] = Field(default=None, max_length=2048)
+    text: Optional[str] = Field(default=None, min_length=1, max_length=131072)
+    title: Optional[str] = Field(default=None, max_length=200)
+    category: str = Field(default="ingested", min_length=1, max_length=100)
+    base_key: str = Field(min_length=8, max_length=100,
+                          pattern=r"^[a-z0-9][a-z0-9_-]*$")
 
 
 class RecallRequest(BaseModel):
@@ -190,6 +202,30 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     @app.post("/v1/memories")
     async def remember(body: RememberRequest, request: Request):
         return await store().remember(scope(request), **body.model_dump())
+
+    @app.post("/v1/memories/ingest")
+    async def ingest(body: IngestRequest, request: Request):
+        import asyncio
+
+        from src.ingestion import (IngestRefused, build_records, chunk_text,
+                                   fetch_public_text)
+        if (body.url is None) == (body.text is None):
+            raise IngestRefused("Provide exactly one of url or text")
+        if body.url is not None:
+            document, content_type = await asyncio.to_thread(fetch_public_text, body.url)
+            label = body.url
+        else:
+            document, content_type = body.text, "inline"
+            label = body.title or "inline document"
+        chunks = chunk_text(document)
+        records = build_records(chunks, label, body.category, body.base_key)
+        stored = []
+        for record in records:
+            stored.append(await store().remember(scope(request), **record))
+        return {"ingested": len(stored), "chunks": len(chunks),
+                "content_type": content_type,
+                "record_ids": [row.get("id") or row.get("record_id")
+                               for row in stored if isinstance(row, dict)]}
 
     @app.post("/v1/memories/recall")
     async def recall(body: RecallRequest, request: Request):

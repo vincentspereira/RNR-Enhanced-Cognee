@@ -35,9 +35,13 @@ GROUPS = {
     "memory_write": (
         "remember", "update_memory", "forget_memory", "set_memory_sharing",
     ),
+    "ingest": (
+        "ingest_url", "ingest_text",
+    ),
     # Deliberately absent from every group: administration stays with the
-    # operator; write tools stay disabled for fleet roles in Stage C (the
-    # memory provider remains the single governed write path).
+    # operator; write tools stay disabled for fleet roles (the memory
+    # provider remains the single governed write path). Ingestion writes
+    # flow through the API's reviewed ingestion endpoint with provenance.
 }
 
 
@@ -171,6 +175,29 @@ def handlers(token):
          ("record_id", "policy"),
          lambda a: call("PUT", "/v1/memories/" + _ident(a.get("record_id")) + "/share",
                         {"policy": str(a.get("policy"))}))
+    import uuid as _uuid
+
+    def _ingest(body):
+        body.setdefault("base_key", "mcp-" + _uuid.uuid4().hex[:20])
+        return call("POST", "/v1/memories/ingest", body)
+
+    tool("ingest_url", "Fetch a public text/HTML page and store its content "
+         "in this profile's memory space with source provenance. Private "
+         "addresses are refused.",
+         {"url": {"type": "string"}, "title": {"type": "string"},
+          "category": {"type": "string"}}, ("url",),
+         lambda a: _ingest({"url": str(a.get("url")),
+                            **({"title": str(a["title"])} if a.get("title") else {}),
+                            **({"category": str(a["category"])}
+                               if a.get("category") else {})}))
+    tool("ingest_text", "Store a provided document/text in this profile's "
+         "memory space, chunked with provenance.",
+         {"text": {"type": "string"}, "title": {"type": "string"},
+          "category": {"type": "string"}}, ("text",),
+         lambda a: _ingest({"text": str(a.get("text")),
+                            **({"title": str(a["title"])} if a.get("title") else {}),
+                            **({"category": str(a["category"])}
+                               if a.get("category") else {})}))
     return table
 
 

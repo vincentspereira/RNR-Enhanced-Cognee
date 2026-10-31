@@ -26,10 +26,33 @@ def test_registry_matches_stage_c_inventory():
     expected = {"recall", "get_memories", "get_memory", "get_memory_history",
                 "get_related", "list_agents", "get_shared_memories",
                 "library_membership", "get_stats", "health", "remember",
-                "update_memory", "forget_memory", "set_memory_sharing"}
+                "update_memory", "forget_memory", "set_memory_sharing",
+                "ingest_url", "ingest_text"}
     assert set(table) == expected
     for schema, fn in table.values():
         assert schema["inputSchema"]["additionalProperties"] is False
+
+
+def test_ingest_tools_build_correct_bodies(monkeypatch):
+    captured = {}
+
+    def fake_api(method, path, token, body=None):
+        captured.update(method=method, path=path, body=body)
+        return 200, {"ingested": 1, "chunks": 1}
+
+    monkeypatch.setattr(server, "api", fake_api)
+    table = server.handlers("scoped-token")
+    result = table["ingest_text"][1]({"text": "invented document",
+                                      "title": "Fixture"})
+    assert result["ingested"] == 1
+    assert captured["method"] == "POST" and captured["path"] == "/v1/memories/ingest"
+    assert captured["body"]["text"] == "invented document"
+    assert captured["body"]["title"] == "Fixture"
+    assert captured["body"]["base_key"].startswith("mcp-")
+    selection = server.apply_groups(dict(table), "memory_read,ingest")
+    assert {"ingest_url", "ingest_text"} <= set(selection)
+    read_only = server.apply_groups(dict(table), "memory_read")
+    assert "ingest_url" not in read_only
 
 
 def test_groups_keep_write_tools_out_of_read_selection():

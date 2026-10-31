@@ -25,8 +25,13 @@ SOURCE = Path(__file__).resolve().parent.parent / "enhanced_cognee_mcp" / "serve
 INSTALL_DIR = HOME / "mcp-servers" / "enhanced-cognee"
 GATEWAY_PYTHON = HOME / "tools/python-3.14.9+20261021-linux-x64/bin/python3"
 DEFAULT_GROUPS = "memory_read"
-# Stage C: read-side only everywhere; the provider stays the single write path.
-ROLE_GROUPS = {}
+# Stage D family 1 (ingestion) pilots on the researcher roles first; all
+# other roles stay read-only until the pilot batch verifies.
+ROLE_GROUPS = {
+    "web-researcher": "memory_read,ingest",
+    "deep-research-specialist": "memory_read,ingest",
+    "niche-hunter": "memory_read,ingest",
+}
 
 
 def require(value, category="stage_c_enablement_refused"):
@@ -50,7 +55,7 @@ def install_server() -> str:
 
 
 def enable_profile(config_path: Path, groups: str) -> str:
-    """Add the MCP definition; returns 'changed', 'already', or raises."""
+    """Add or update the MCP definition; returns 'changed' or 'already'."""
     from ruamel.yaml import YAML
     import yaml as safe_yaml
     yaml = YAML()
@@ -59,19 +64,17 @@ def enable_profile(config_path: Path, groups: str) -> str:
     require(isinstance(data, dict), "config_not_mapping")
     servers = data.setdefault("mcp_servers", {})
     require(isinstance(servers, dict), "mcp_servers_not_mapping")
-    if SERVER_NAME in servers:
-        require(servers[SERVER_NAME].get("args", [])[-1:] == [groups]
-                or groups in servers[SERVER_NAME].get("args", []),
-                "existing_definition_differs")
-        return "already"
-    backup = config_path.with_name(
-        "config.yaml-before-memory-mcp-" + uuid.uuid4().hex[:12])
-    shutil.copy2(config_path, backup)
-    servers[SERVER_NAME] = {
+    desired = {
         "command": str(GATEWAY_PYTHON),
         "args": ["-I", str(INSTALL_DIR / "server.py"), "--tool-groups", groups],
         "env": {"ENHANCED_COGNEE_ACCESS_TOKEN": "${ENHANCED_COGNEE_ACCESS_TOKEN}"},
     }
+    if servers.get(SERVER_NAME) == desired:
+        return "already"
+    backup = config_path.with_name(
+        "config.yaml-before-memory-mcp-" + uuid.uuid4().hex[:12])
+    shutil.copy2(config_path, backup)
+    servers[SERVER_NAME] = desired
     import io
     buffer = io.StringIO()
     yaml.dump(data, buffer)
@@ -80,7 +83,8 @@ def enable_profile(config_path: Path, groups: str) -> str:
     entry = verify["mcp_servers"][SERVER_NAME]
     require(entry["command"] == str(GATEWAY_PYTHON)
             and entry["env"]["ENHANCED_COGNEE_ACCESS_TOKEN"]
-            == "${ENHANCED_COGNEE_ACCESS_TOKEN}", "readback_failed")
+            == "${ENHANCED_COGNEE_ACCESS_TOKEN}"
+            and entry["args"][-1] == groups, "readback_failed")
     return "changed"
 
 
