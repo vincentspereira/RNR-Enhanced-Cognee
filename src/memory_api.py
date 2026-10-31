@@ -277,7 +277,7 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
             scope(request), limit=body.limit, offset=0,
             category=body.category, agent=None, include_shared=True)
         rows = records if isinstance(records, list) else \
-            (records.get("records") or records.get("items") or [])
+            (records.get("results") or records.get("records") or [])
         messages = llm.summarize_messages(rows, body.title)
         if not budget.allows(route, _project(request), 4000):
             raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
@@ -312,7 +312,7 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
             scope(request), limit=body.limit, offset=0,
             category=None, agent=None, include_shared=True)
         rows = records if isinstance(records, list) else \
-            (records.get("records") or records.get("items") or [])
+            (records.get("results") or records.get("records") or [])
         messages = llm.consolidation_messages(rows)
         if not budget.allows(route, _project(request), 4000):
             raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
