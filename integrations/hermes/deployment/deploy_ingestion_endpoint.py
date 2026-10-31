@@ -21,10 +21,15 @@ import urllib.request
 
 WORKTREE = Path("/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020"
                 "/launch-worktree-20261024")
-SOURCES = {"src/ingestion.py": None, "src/memory_api.py": None}
+SOURCES = {"src/ingestion.py": None, "src/llm_summarize.py": None,
+           "src/memory_api.py": None}
 SERVICE = "enhanced-cognee-api.service"
 RUNTIME_PYTHON = Path("/opt/enhanced-cognee-memory/runtime/bin/python")
 HEALTH = "http://127.0.0.1:28080/health/ready"
+LLM_CREDENTIAL = Path("/etc/enhanced-cognee/llm.json")
+LLM_DROPIN = Path("/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf")
+DEFAULT_BASE_URL = "https://open.bigmodel.cn/api/coding/paas/v4"
+DEFAULT_MODEL = "GLM-5.3-Flash"
 
 
 def require(value, category="ingestion_deploy_refused"):
@@ -119,6 +124,55 @@ def ingest_route_live():
         return False
 
 
+def install_llm_route():
+    """Interactive one-time credential setup: prompts on the owner terminal,
+    writes root-only llm.json plus the LoadCredential drop-in. Skips
+    silently when already installed or when no prompt is possible."""
+    import getpass
+    if LLM_CREDENTIAL.exists() or LLM_DROPIN.exists():
+        return "already-installed"
+    if not sys.stdin.isatty():
+        return "skipped-no-tty-configure-separately"
+    print("Configure the memory model route (approved LLM route A).")
+    print("The key is written only to %s (root, 0600) and never echoed." % LLM_CREDENTIAL)
+    base_url = input("Base URL [%s]: " % DEFAULT_BASE_URL).strip() or DEFAULT_BASE_URL
+    model = input("Model [%s]: " % DEFAULT_MODEL).strip() or DEFAULT_MODEL
+    api_key = getpass.getpass("API key (hidden): ").strip()
+    if not api_key:
+        return "skipped-no-key"
+    cap = input("Daily token cap per project [50000]: ").strip() or "50000"
+    LLM_CREDENTIAL.write_text(json.dumps({
+        "base_url": base_url, "api_key": api_key, "model": model,
+        "daily_token_cap": int(cap)}, indent=1) + "\n")
+    LLM_CREDENTIAL.chmod(0o600)
+    LLM_DROPIN.write_text(
+        "[Service]\nLoadCredential=llm.json:%s\n" % LLM_CREDENTIAL)
+    LLM_DROPIN.chmod(0o644)
+    return "installed"
+
+
+def probe_role_token():
+    env = Path("/home/vincentspereira/.hermes/profiles/web-researcher/.env")
+    for line in env.read_text().splitlines():
+        if line.startswith("ENHANCED_COGNEE_ACCESS_TOKEN="):
+            return line.split("=", 1)[1].strip()
+    raise ValueError("probe_token_missing")
+
+
+def authenticated_status(path):
+    import urllib.error
+    request = urllib.request.Request("http://127.0.0.1:28080" + path,
+                                     headers={"Authorization": "Bearer "
+                                              + probe_role_token()})
+    try:
+        with urllib.request.urlopen(request, timeout=5) as response:
+            return response.status, json.loads(response.read())
+    except urllib.error.HTTPError as exc:
+        return exc.code, {}
+    except Exception:
+        return 0, {}
+
+
 def main():
     require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
             and os.uname().nodename == "Ubuntu-Hermes", "owner_sudo_on_gateway_host")
@@ -128,6 +182,11 @@ def main():
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     result = {"complete": False, "code_roots": [str(root) for root in code_roots],
               "stamp": stamp}
+    llm_setup = install_llm_route()
+    result["llm_route_setup"] = llm_setup
+    if llm_setup == "installed":
+        code, _ = systemctl("daemon-reload")
+        require(code == 0, "daemon_reload_failed")
     backups = {}
     try:
         for code_root in code_roots:
@@ -152,6 +211,11 @@ def main():
         require(code == 0, "restart_failed")
         require(health_ready(), "health_not_ready_after_restart")
         require(ingest_route_live(), "ingest_route_not_live_after_restart")
+        status_code, summarization = authenticated_status(
+            "/v1/memories/summarization/status")
+        require(status_code == 200, "summarization_status_route_not_live")
+        language = authenticated_status("/v1/memories/detect-language")
+        require(language[0] in (405, 422), "detect_language_route_not_live")
         result.update(complete=True,
                       deployed={name: hashlib.sha256(raw).hexdigest()
                                 for name, raw in sources.items()},
@@ -160,6 +224,7 @@ def main():
                       ).hexdigest() if backups else None),
                       service_restarted=True, health_ready=True,
                       ingest_route_live=True,
+                      llm_route=summarization,
                       unit_definition=unit_lines)
     except Exception as exc:
         # Roll back to the recorded bytes and restart again.

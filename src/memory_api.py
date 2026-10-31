@@ -43,6 +43,29 @@ class IngestRequest(BaseModel):
                           pattern=r"^[a-z0-9][a-z0-9_-]*$")
 
 
+class SummarizeRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    limit: int = Field(default=20, ge=2, le=50)
+    title: Optional[str] = Field(default=None, max_length=200)
+    category: Optional[str] = Field(default=None, min_length=1, max_length=100)
+
+
+class ConsolidateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    limit: int = Field(default=20, ge=2, le=50)
+
+
+class TranslateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    text: str = Field(min_length=1, max_length=8000)
+    target_language: str = Field(min_length=2, max_length=32)
+
+
+class DetectLanguageRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    text: str = Field(min_length=1, max_length=8000)
+
+
 class RecallRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     query: str = Field(min_length=1, max_length=2000)
@@ -120,6 +143,10 @@ async def lifespan(app: FastAPI):
         # Provisioning belongs to a separate operator, never runtime credentials.
         await service.check_schema()
         app.state.memory_service = service
+        from src import llm_summarize
+        app.state.llm_route = llm_summarize.load_route(
+            os.environ.get("CREDENTIALS_DIRECTORY"))
+        app.state.llm_budget = llm_summarize.TokenBudget()
         yield
     finally:
         if 'derived' in locals() and derived is not None:
@@ -226,6 +253,92 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
                 "content_type": content_type,
                 "record_ids": [row.get("id") or row.get("record_id")
                                for row in stored if isinstance(row, dict)]}
+
+    def _llm():
+        from src import llm_summarize
+        route = getattr(app.state, "llm_route", None)
+        if route is None:
+            raise llm_summarize.LlmUnavailable(
+                "The model route is not configured for this service")
+        budget = getattr(app.state, "llm_budget", None)
+        return llm_summarize, route, budget
+
+    def _project(request):
+        return scope(request).project_id
+
+    @app.post("/v1/memories/summarize")
+    async def summarize(body: SummarizeRequest, request: Request):
+        import asyncio
+        import uuid
+
+        llm, route, budget = _llm()
+        records = await store().list_records(
+            scope(request), limit=body.limit, offset=0,
+            category=body.category, agent=None, include_shared=True)
+        rows = records if isinstance(records, list) else \
+            (records.get("records") or records.get("items") or [])
+        messages = llm.summarize_messages(rows, body.title)
+        if not budget.allows(route, _project(request), 4000):
+            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
+        text, tokens = await asyncio.to_thread(llm.chat, route, messages)
+        budget.charge(_project(request), tokens)
+        stored = await store().remember(
+            scope(request), content=text[:65536],
+            idempotency_key="summarize-" + uuid.uuid4().hex,
+            category="summary",
+            metadata={"origin": "summarize", "source": "llm_summary",
+                      "sources": min(len(rows), 100), "model": route["model"]})
+        return {"summary": text, "record_id": stored.get("id") if isinstance(stored, dict) else None,
+                "sources": len(rows), "tokens_used": tokens,
+                "budget_used_today": budget.used(_project(request))}
+
+    @app.get("/v1/memories/summarization/status")
+    async def summarization_status(request: Request):
+        route = getattr(app.state, "llm_route", None)
+        budget = getattr(app.state, "llm_budget", None)
+        return {"configured": route is not None,
+                "model": route["model"] if route else None,
+                "daily_token_cap": route["daily_token_cap"] if route else None,
+                "used_today": budget.used(_project(request)) if budget else 0,
+                "project_id": _project(request)}
+
+    @app.post("/v1/memories/consolidation/candidates")
+    async def consolidation(body: ConsolidateRequest, request: Request):
+        import asyncio
+
+        llm, route, budget = _llm()
+        records = await store().list_records(
+            scope(request), limit=body.limit, offset=0,
+            category=None, agent=None, include_shared=True)
+        rows = records if isinstance(records, list) else \
+            (records.get("records") or records.get("items") or [])
+        messages = llm.consolidation_messages(rows)
+        if not budget.allows(route, _project(request), 4000):
+            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
+        reply, tokens = await asyncio.to_thread(llm.chat, route, messages,
+                                                max_tokens=600)
+        budget.charge(_project(request), tokens)
+        return {"candidates": llm.parse_consolidation(reply), "compared": len(rows),
+                "tokens_used": tokens, "report_only": True}
+
+    @app.post("/v1/memories/translate")
+    async def translate(body: TranslateRequest, request: Request):
+        import asyncio
+
+        llm, route, budget = _llm()
+        messages = llm.translate_messages(body.text, body.target_language)
+        if not budget.allows(route, _project(request), 4000):
+            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
+        translation, tokens = await asyncio.to_thread(llm.chat, route, messages,
+                                                      max_tokens=2000)
+        budget.charge(_project(request), tokens)
+        return {"translation": translation, "target_language": body.target_language,
+                "tokens_used": tokens, "stored": False}
+
+    @app.post("/v1/memories/detect-language")
+    async def detect_language(body: DetectLanguageRequest):
+        from src.llm_summarize import detect_language as detect
+        return detect(body.text)
 
     @app.post("/v1/memories/recall")
     async def recall(body: RecallRequest, request: Request):

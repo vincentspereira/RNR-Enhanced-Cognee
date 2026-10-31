@@ -27,7 +27,9 @@ def test_registry_matches_stage_c_inventory():
                 "get_related", "list_agents", "get_shared_memories",
                 "library_membership", "get_stats", "health", "remember",
                 "update_memory", "forget_memory", "set_memory_sharing",
-                "ingest_url", "ingest_text"}
+                "ingest_url", "ingest_text", "summarize_memories",
+                "find_consolidation_candidates", "get_summarization_status",
+                "translate_text", "detect_language"}
     assert set(table) == expected
     for schema, fn in table.values():
         assert schema["inputSchema"]["additionalProperties"] is False

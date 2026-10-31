@@ -38,6 +38,10 @@ GROUPS = {
     "ingest": (
         "ingest_url", "ingest_text",
     ),
+    "analysis": (
+        "summarize_memories", "find_consolidation_candidates",
+        "get_summarization_status", "translate_text", "detect_language",
+    ),
     # Deliberately absent from every group: administration stays with the
     # operator; write tools stay disabled for fleet roles (the memory
     # provider remains the single governed write path). Ingestion writes
@@ -201,6 +205,34 @@ def handlers(token):
                             **({"title": str(a["title"])} if a.get("title") else {}),
                             **({"category": str(a["category"])}
                                if a.get("category") else {})}))
+    tool("summarize_memories", "Summarize this profile's recent memories into "
+         "one digest, stored as a summary record in the same space.",
+         {"limit": {"type": "integer"}, "title": {"type": "string"},
+          "category": {"type": "string"}}, (),
+         lambda a: call("POST", "/v1/memories/summarize", {
+             "limit": _limit(a.get("limit"), 20, 50),
+             **({"title": str(a["title"])} if a.get("title") else {}),
+             **({"category": str(a["category"])} if a.get("category") else {})}))
+    tool("find_consolidation_candidates", "Report-only: which memories look "
+         "like duplicates or merge candidates. Never merges by itself.",
+         {"limit": {"type": "integer"}}, (),
+         lambda a: call("POST", "/v1/memories/consolidation/candidates",
+                        {"limit": _limit(a.get("limit"), 20, 50)}))
+    tool("get_summarization_status", "Model route and daily budget state for "
+         "this profile's space.", {}, (),
+         lambda a: call("GET", "/v1/memories/summarization/status"))
+    tool("translate_text", "Translate text via the configured model route. "
+         "The result is returned, never stored.",
+         {"text": {"type": "string"}, "target_language": {"type": "string"}},
+         ("text", "target_language"),
+         lambda a: call("POST", "/v1/memories/translate",
+                        {"text": str(a.get("text"))[:8000],
+                         "target_language": str(a.get("target_language"))}))
+    tool("detect_language", "Detect a text's language by script analysis "
+         "(no model involved).",
+         {"text": {"type": "string"}}, ("text",),
+         lambda a: call("POST", "/v1/memories/detect-language",
+                        {"text": str(a.get("text"))[:8000]}))
     return table
 
 
