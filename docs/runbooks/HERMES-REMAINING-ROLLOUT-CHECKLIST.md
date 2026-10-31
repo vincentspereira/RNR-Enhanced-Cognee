@@ -709,3 +709,17 @@ main_resume continuation to bind trusted root/exact-runner/post-publication
 journal metadata, verify ciphertext/signature/counts/signed time, then enable
 and verify the daily timer. No manual backup, unit replacement, model or restore
 replay. A persistent timer may perform a scheduled catch-up. Other gates remain.
+
+31 October 2026 CANARIES RETIRED: both enhanced-cognee-test profiles were
+archived to ~/.hermes/profile-archive (full tarballs) and removed; the
+gateway_state.json served_profiles list no longer names them (backup
+retained; 43->41 entries), projects.db holds no references, and profiles/
+now contains exactly the 40 role directories. Found and fixed alongside: a
+one-second boot burst at the 30 Oct gateway restart had written the
+standard home skeleton (SOUL.md, sessions/, logs/ and seven more) INTO the
+profiles/ directory itself; those entries were relocated to the archive
+and nothing referenced them (no config.yaml). Watch for recurrence at the
+next gateway restart. Canary token renewal is moot. Stage D (ingestion
+family) build is underway: the API remember/recall contracts are captured
+and the service code location resolves with the root-side deploy helper;
+the owner deploy command follows the build.
