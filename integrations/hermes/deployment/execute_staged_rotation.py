@@ -214,9 +214,22 @@ def apply_postgresql(logins, stamp, candidate):
     # Order: ALTER first (old password still valid), then file updates.
     from collections import OrderedDict
     from urllib.parse import quote
-    escaped = new_password.replace("'", "''")
-    sql = ";".join('ALTER ROLE "%s" WITH PASSWORD \'%s\'' % (name, secret.replace("'", "''"))
+    sql = ";".join('ALTER ROLE "%s" WITH PASSWORD \'%s\''
+                   % (name, secret.replace("'", "''"))
                    for name, secret in pairs)
+    # The api role cannot ALTER peers; prefer an operator DSN from the
+    # root-only operator credential if it carries one.
+    alter_user, alter_password = user, old_password
+    operator_path = ETC / "operator.json"
+    if operator_path.exists():
+        operator = json.loads(operator_path.read_text())
+        operator_dsn = operator.get("ENHANCED_MEMORY_DATABASE_URL", "")
+        if operator_dsn:
+            parts = urlsplit(operator_dsn)
+            alter_user = parts.username
+            alter_password = parts.password or ""
+            require(alter_user in dict(pairs),
+                    "operator_role_missing_from_candidates:" + str(alter_user))
     # The native psql needs its bundled libpq (not on the system path).
     lib_dirs = sorted(glob.glob(
         "/opt/enhanced-cognee-stores/native/usr/lib/*/"))
@@ -226,7 +239,9 @@ def apply_postgresql(logins, stamp, candidate):
                 "LD_LIBRARY_PATH": ":".join(lib_dirs)}
     process = subprocess.run(
         ["/opt/enhanced-cognee-stores/native/usr/lib/postgresql/16/bin/psql",
-         "postgresql://%s:%s@127.0.0.1:%d/postgres" % (quote(user), quote(old_password), port),
+         "postgresql://%s:%s@127.0.0.1:%d/postgres" % (quote(alter_user),
+                                                       quote(alter_password),
+                                                       port),
          "-v", "ON_ERROR_STOP=1", "-c", sql],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60,
         env=psql_env)
@@ -367,8 +382,11 @@ def apply_valkey(logins, stamp, candidate):
             reply = valkey_auth(endpoint, kind, user, password)
             replies[user] = reply[:80].decode("utf-8", "replace")
             require(b"+OK" in reply or b":1" in reply,
-                    "valkey_auth_verify_failed:%s:reply=%s"
-                    % (user, replies[user]))
+                    "valkey_auth_verify_failed:%s:reply=%s:acl_lines=%s"
+                    % (user, replies[user], json.dumps(
+                        [re.sub(r"[>#][^\s]+", ">***", line)
+                         for line in updated.splitlines()
+                         if line.strip().startswith("user")])))
     except Exception:
         shutil.copy2(ETC / ("valkey-users.acl.before-rotation-" + stamp), acl_path)
         systemctl("restart", "enhanced-cognee-cache.service")
@@ -394,7 +412,11 @@ def apply_qdrant(logins, stamp, candidate):
         if len(value) >= 16:
             key_fields[field] = value
     require(len(key_fields) == 2,
-            "qdrant_key_fields_not_found:" + ",".join(sorted(key_fields)))
+            "qdrant_key_fields_not_found:" + json.dumps(
+                {match.group(1).strip(): len(match.group(2))
+                 for match in _re.finditer(
+                     r"^(\s*[A-Za-z0-9_]*(?:api_key|key|secret|token)[A-Za-z0-9_]*):"
+                     r"\s*[\"']?([^\s\"']+)", yaml_text, _re.MULTILINE)}))
     read_field = [f for f in key_fields if "read" in f.lower()]
     admin_field = [f for f in key_fields if f not in read_field]
     require(len(read_field) == 1 and len(admin_field) == 1,
@@ -460,6 +482,22 @@ def _leaf_values(value):
         yield value
 
 
+def _hmac_ok(token, secret):
+    """Local HS256 signature check (no library, no network)."""
+    import base64
+    import hashlib
+    import hmac as _hmac
+    try:
+        header, payload, signature = token.split(".")
+        message = (header + "." + payload).encode()
+        expected = base64.urlsafe_b64encode(
+            _hmac.new(secret.encode(), message, hashlib.sha256).digest()
+        ).rstrip(b"=").decode()
+        return _hmac.compare_digest(signature, expected)
+    except Exception:
+        return False
+
+
 def running_secret_state(secret):
     """Value-free comparison of the API process's live ENHANCED_JWT_SECRET
     against the new secret, plus which auth-related env names the process
@@ -489,6 +527,12 @@ def running_secret_state(secret):
     return {"pid": pid, "auth_env_names": sorted(names),
             "live_secret_matches_new": live_fingerprint == new_fingerprint,
             "live_secret_present": live_fingerprint is not None}
+
+
+def token_signature_state(token, old_secret, new_secret):
+    """Which secret the live fleet token's signature actually matches."""
+    return {"token_verifies_with_old": _hmac_ok(token, old_secret),
+            "token_verifies_with_new": _hmac_ok(token, new_secret)}
 
 
 def apply_application(logins, stamp, candidate):
@@ -526,8 +570,12 @@ def apply_application(logins, stamp, candidate):
                 break
             time.sleep(2)
         if probe != 401:
-            raise ValueError("old_tokens_still_accepted:probe=%d:%s"
-                             % (probe, json.dumps(running_secret_state(secret))))
+            raise ValueError(
+                "old_tokens_still_accepted:probe=%d:%s:%s" % (
+                    probe,
+                    json.dumps(running_secret_state(secret)),
+                    json.dumps(token_signature_state(
+                        role_token(), current, secret))))
         result = subprocess.run(
             [sys.executable, "-I", str(Path(__file__).parent
                                        / "issue_fleet_role_tokens.py")],
