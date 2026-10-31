@@ -160,17 +160,24 @@ def probe_role_token():
 
 
 def authenticated_status(path):
+    """Returns (code, body, diagnostic) - the diagnostic carries the raw
+    first bytes so a refusal is never debugged blind."""
     import urllib.error
     request = urllib.request.Request("http://127.0.0.1:28080" + path,
                                      headers={"Authorization": "Bearer "
                                               + probe_role_token()})
     try:
         with urllib.request.urlopen(request, timeout=5) as response:
-            return response.status, json.loads(response.read())
+            raw = response.read(2048)
+            try:
+                body = json.loads(raw) if raw else {}
+            except ValueError:
+                body = {}
+            return response.status, body, raw[:200].decode("utf-8", "replace")
     except urllib.error.HTTPError as exc:
-        return exc.code, {}
-    except Exception:
-        return 0, {}
+        return exc.code, {}, exc.read(200).decode("utf-8", "replace")
+    except Exception as exc:
+        return 0, {}, type(exc).__name__
 
 
 def main():
@@ -211,11 +218,18 @@ def main():
         require(code == 0, "restart_failed")
         require(health_ready(), "health_not_ready_after_restart")
         require(ingest_route_live(), "ingest_route_not_live_after_restart")
-        status_code, summarization = authenticated_status(
+        status_code, summarization, diag = authenticated_status(
             "/v1/memories/summarization/status")
-        require(status_code == 200, "summarization_status_route_not_live")
-        language = authenticated_status("/v1/memories/detect-language")
-        require(language[0] in (405, 422), "detect_language_route_not_live")
+        language_code, _, language_diag = authenticated_status(
+            "/v1/memories/detect-language")
+        result["probe_diagnostics"] = {
+            "ingest": "ok", "summarization_status": [status_code, diag],
+            "detect_language": [language_code, language_diag]}
+        require(status_code == 200,
+                "summarization_status_route_not_live:code=%d:diag=%s"
+                % (status_code, diag[:120]))
+        require(language_code in (405, 422),
+                "detect_language_route_not_live:code=%d" % language_code)
         result.update(complete=True,
                       deployed={name: hashlib.sha256(raw).hexdigest()
                                 for name, raw in sources.items()},
