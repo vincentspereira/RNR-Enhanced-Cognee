@@ -1,5 +1,15 @@
 # Independent review prompt: Enhanced Cognee fleet memory delivery
 
+> PRESERVED BASELINE AUDIT PROMPT. Do not execute its historical sudo verifier
+> or ignored archived functional script for remediation acceptance. Consult
+> `docs/reports/audits/2026-11-01-remediation/REMEDIATION-STATUS.md` and
+> `OWNER-NEXT-STEPS.md` in that directory. The revised verifier is NON-ROOT,
+> reports skipped owner-only evidence explicitly, and labels catalogue checks
+> separately from native capture. The maintained `functional_memory_test.py`
+> requires explicit opt-in and selected invented fixtures. Root renewal and
+> backend installation remain separate owner gates; never rotate credentials
+> or activate bots simply to make a check green.
+
 Copy the prompt below into the reviewing agent. It is sanitized: no
 passwords, tokens, keys or private profile contents. The reviewer needs
 command access to Ubuntu-Hermes as vincentspereira; the few root-side

@@ -1,0 +1,53 @@
+test_disabled_provider_and_broken_command_cannot_pass (test_verifier_audit_remediation.VerificationContractTests.test_disabled_provider_and_broken_command_cannot_pass) ... ERROR
+test_root_receipts_are_explicit_skips_not_crash (test_verifier_audit_remediation.VerificationContractTests.test_root_receipts_are_explicit_skips_not_crash) ... ERROR
+test_skip_is_not_complete_or_failed (test_verifier_audit_remediation.VerificationContractTests.test_skip_is_not_complete_or_failed) ... ERROR
+
+======================================================================
+ERROR: test_disabled_provider_and_broken_command_cannot_pass (test_verifier_audit_remediation.VerificationContractTests.test_disabled_provider_and_broken_command_cannot_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 18, in test_disabled_provider_and_broken_command_cannot_pass
+    m=load()
+      ^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 13, in load
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1132, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1190, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/integrations/hermes/deployment/verification_contracts.py'
+
+======================================================================
+ERROR: test_root_receipts_are_explicit_skips_not_crash (test_verifier_audit_remediation.VerificationContractTests.test_root_receipts_are_explicit_skips_not_crash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 24, in test_root_receipts_are_explicit_skips_not_crash
+    m=load()
+      ^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 13, in load
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1132, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1190, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/integrations/hermes/deployment/verification_contracts.py'
+
+======================================================================
+ERROR: test_skip_is_not_complete_or_failed (test_verifier_audit_remediation.VerificationContractTests.test_skip_is_not_complete_or_failed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 31, in test_skip_is_not_complete_or_failed
+    m=load();summary=m.summarise([{'name':'root','status':'SKIP','detail':'owner-only'}])
+      ^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_verifier_audit_remediation.py", line 13, in load
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1132, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1190, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/integrations/hermes/deployment/verification_contracts.py'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=3)

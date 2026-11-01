@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 48 items
+
+tests/unit/test_mcp_audit_remediation.py .......                         [ 14%]
+tests/unit/test_library_read_audit_remediation.py ....                   [ 22%]
+tests/unit/test_ingestion_audit_remediation.py ........                  [ 39%]
+tests/unit/test_renewal_audit_remediation.py ...............             [ 70%]
+tests/unit/test_renewal_installer_audit.py ....                          [ 79%]
+tests/unit/test_verifier_audit_remediation.py ....                       [ 87%]
+tests/unit/test_functional_runner_audit.py .....                         [ 97%]
+tests/unit/test_daemon_budget_audit.py .                                 [100%]
+
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/docs/reports/audits/2026-11-01-remediation/parent-regressions.xml -
+============================== 48 passed in 0.57s ==============================

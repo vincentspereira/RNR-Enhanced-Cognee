@@ -1,0 +1,34 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 13 items
+
+tests/unit/test_analysis_audit_remediation.py [31mF[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m              [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m__________ test_summary_is_explicit_return_only_with_source_versions ___________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:63: in test_summary_is_explicit_return_only_with_source_versions
+    [0mresult = analysis.invoke([33m"[39;49;00m[33m/v1/memories/summarize[39;49;00m[33m"[39;49;00m, SummarizeRequest(record_ids=[[33m"[39;49;00m[33ma[39;49;00m[33m"[39;49;00m]))[90m[39;49;00m
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   pydantic_core._pydantic_core.ValidationError: 1 validation error for SummarizeRequest[0m
+[1m[31mE   record_ids[0m
+[1m[31mE     Extra inputs are not permitted [type=extra_forbidden, input_value=['a'], input_type=list][0m
+[1m[31mE       For further information visit https://errors.pydantic.dev/2.14/v/extra_forbidden[0m
+[31m[1m_________ test_analysis_requires_explicit_record_ids[SummarizeRequest] _________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:74: in test_analysis_requires_explicit_record_ids
+    [0m[94mwith[39;49;00m pytest.raises(ValidationError):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   Failed: DID NOT RAISE ValidationError[0m
+[31m[1m________ test_analysis_requires_explicit_record_ids[ConsolidateRequest] ________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:74: in test_analysis_requires_explicit_record_ids
+    [0m[94mwith[39;49;00m pytest.raises(ValidationError):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   Failed: DID NOT RAISE ValidationError[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_summary_is_explicit_return_only_with_source_versions[0m - pydantic_core._pydantic_core.ValidationError: 1 validation error for Summar...
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_analysis_requires_explicit_record_ids[SummarizeRequest][0m - Failed: DID NOT RAISE ValidationError
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_analysis_requires_explicit_record_ids[ConsolidateRequest][0m - Failed: DID NOT RAISE ValidationError
+[31m========================= [31m[1m3 failed[0m, [32m10 passed[0m[31m in 1.26s[0m[31m =========================[0m

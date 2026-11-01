@@ -1,0 +1,51 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 7 items
+
+tests/unit/test_ingestion_audit_remediation.py FFFFFF.                   [100%]
+
+=================================== FAILURES ===================================
+__________________ test_request_target_preserves_query_string __________________
+tests/unit/test_ingestion_audit_remediation.py:11: in test_request_target_preserves_query_string
+    assert ing.validate_url('https://example.test/doc?q=a%2Fb&v=2')[3] == '/doc?q=a%2Fb&v=2'
+E   AssertionError: assert '/doc' == '/doc?q=a%2Fb&v=2'
+E     
+E     - /doc?q=a%2Fb&v=2
+E     + /doc
+_____ test_fetch_pins_validated_address_without_second_hostname_resolution _____
+tests/unit/test_ingestion_audit_remediation.py:28: in test_fetch_pins_validated_address_without_second_hostname_resolution
+    conn=ing.PinnedConnection('http','example.test',80,'93.184.216.34')
+         ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'PinnedConnection'
+________________ test_peer_must_match_validated_public_address _________________
+tests/unit/test_ingestion_audit_remediation.py:43: in test_peer_must_match_validated_public_address
+    ing.PinnedConnection('http','example.test',80,'93.184.216.34').connect()
+    ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'PinnedConnection'
+_________________ test_https_retains_original_certificate_name _________________
+tests/unit/test_ingestion_audit_remediation.py:56: in test_https_retains_original_certificate_name
+    monkeypatch.setattr(ing.ssl,'create_default_context',lambda:Context())
+                        ^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'ssl'
+______ test_absolute_deadline_uses_isolated_worker_and_sanitises_timeout _______
+tests/unit/test_ingestion_audit_remediation.py:66: in test_absolute_deadline_uses_isolated_worker_and_sanitises_timeout
+    monkeypatch.setattr(ing.subprocess,'run',run)
+                        ^^^^^^^^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'subprocess'
+_________________ test_worker_result_is_bounded_and_validated __________________
+tests/unit/test_ingestion_audit_remediation.py:75: in test_worker_result_is_bounded_and_validated
+    monkeypatch.setattr(ing.subprocess,'run',lambda *a,**kw:subprocess.CompletedProcess([],0,json.dumps({'ok':True,'text':'invented public document','content_type':'text/plain'}).encode()))
+                        ^^^^^^^^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'subprocess'
+=========================== short test summary info ============================
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_request_target_preserves_query_string
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_fetch_pins_validated_address_without_second_hostname_resolution
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_peer_must_match_validated_public_address
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_https_retains_original_certificate_name
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_absolute_deadline_uses_isolated_worker_and_sanitises_timeout
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_worker_result_is_bounded_and_validated
+========================= 6 failed, 1 passed in 0.12s ==========================

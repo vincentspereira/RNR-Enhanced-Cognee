@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/unit/test_analysis_audit_remediation.py",
+    "tests/unit/test_analysis_lifespan_audit_remediation.py",
+    "tests/unit/test_analysis_protocol_audit_remediation.py",
+    "tests/unit/test_api_integration_audit.py",
+    "tests/unit/test_daemon_budget_audit.py",
+    "tests/unit/test_functional_runner_audit.py",
+    "tests/unit/test_ingestion_audit_remediation.py",
+    "tests/unit/test_library_read_audit_remediation.py",
+    "tests/unit/test_llm_budget_audit_remediation.py",
+    "tests/unit/test_mcp_audit_remediation.py",
+    "tests/unit/test_renewal_audit_remediation.py",
+    "tests/unit/test_renewal_installer_audit.py",
+    "tests/unit/test_verifier_audit_remediation.py",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/pytest-base",
+    "--color=no",
+    "-q",
+    "--junitxml=/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/regressions.xml"
+  ],
+  "exit_code": 0,
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101",
+  "scratch": "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk"
+}

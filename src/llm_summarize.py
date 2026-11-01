@@ -2,15 +2,15 @@
 
 The model route lives in a root-owned LoadCredential file (llm.json) the
 service reads at startup: base_url, api_key, model, daily_token_cap. The
-key never enters agent space, logs, or receipts. A per-process daily
-per-project token budget fails soft: exhausting it reports unavailability
+key never enters agent space, logs, or receipts. A persistent daily
+per-tenant/project token budget fails closed for model calls only:
+exhausting or losing the ledger reports unavailability
 and never blocks memory itself. Language detection is script-based and
 needs no model.
 """
 from __future__ import annotations
 
-import datetime as _dt
-import getpass
+import asyncio
 import json
 import os
 import re
@@ -18,6 +18,8 @@ import time
 from http.client import HTTPConnection, HTTPSConnection
 from pathlib import Path
 from urllib.parse import urlsplit
+
+from src.llm_budget import BudgetUnavailable, TokenBudget
 
 MAX_PROMPT_CHARS = 24000
 MAX_REPLY_CHARS = 16000
@@ -83,29 +85,31 @@ def load_route(credentials_directory: str | None):
             "daily_token_cap": cap}
 
 
-class TokenBudget:
-    """Per-process, per-project, per-UTC-day accounting (restart resets)."""
+async def budgeted_chat(route, budget, tenant, project, messages, *, max_tokens=900):
+    """Reserve a conservative UTF-8 bound before dispatching provider work.
 
-    def __init__(self):
-        self._used: dict[tuple[str, str], int] = {}
-
-    @staticmethod
-    def _day() -> str:
-        return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
-
-    def used(self, project: str) -> int:
-        return self._used.get((self._day(), project), 0)
-
-    def allows(self, route, project: str, estimate: int) -> bool:
-        return self.used(project) + estimate <= route["daily_token_cap"]
-
-    def charge(self, project: str, tokens: int) -> None:
-        key = (self._day(), project)
-        self._used[key] = self._used.get(key, 0) + max(0, int(tokens))
+    One token per serialized input byte, plus framing allowance and the entire
+    output maximum. A lost/cancelled/failed call retains this charge; only valid
+    positive integer provider usage reconciles it. No content is in SQLite.
+    """
+    require_safe_payload(messages)
+    if budget is None:
+        raise LlmUnavailable("The persistent model budget ledger is unavailable")
+    estimate = len(json.dumps(messages, ensure_ascii=False).encode("utf-8")) + 1024 + max_tokens
+    try:
+        reservation = await asyncio.to_thread(budget.reserve, tenant, project, estimate,
+                                              route["daily_token_cap"])
+        text, usage = await asyncio.to_thread(chat, route, messages, max_tokens=max_tokens)
+        await asyncio.to_thread(budget.reconcile, reservation, usage)
+    except BudgetUnavailable:
+        raise LlmUnavailable("The model budget is exhausted or unavailable") from None
+    reliable = type(usage) is int and 0 < usage <= 1_000_000_000
+    return text, usage if reliable else None
 
 
 def chat(route, messages, *, max_tokens: int = 900, timeout: int = 45):
     """One bounded chat completion; returns (text, usage_tokens)."""
+    require_safe_payload(messages)
     parts = urlsplit(route["base_url"])
     connection = (HTTPSConnection(parts.hostname, parts.port or 443, timeout=timeout)
                   if parts.scheme == "https"
@@ -128,10 +132,12 @@ def chat(route, messages, *, max_tokens: int = 900, timeout: int = 45):
             raise LlmUnavailable("The model reply exceeded its budget")
         payload = json.loads(raw)
         text = payload.get("choices", [{}])[0].get("message", {}).get("content", "")
-        usage = payload.get("usage", {}).get("total_tokens", 0)
+        usage = payload.get("usage")
+        usage = usage.get("total_tokens") if isinstance(usage, dict) else None
         if not isinstance(text, str) or not text.strip():
             raise LlmUnavailable("The model returned no usable content")
-        return text[:MAX_REPLY_CHARS], int(usage or 0)
+        reliable = type(usage) is int and 0 < usage <= 1_000_000_000
+        return text[:MAX_REPLY_CHARS], usage if reliable else None
     except LlmUnavailable:
         raise
     except OSError as exc:
@@ -186,8 +192,28 @@ def detect_language(text: str) -> dict:
             "confidence": round(matched / total, 2), "method": "script_heuristic"}
 
 
+def require_safe_payload(payload) -> None:
+    """Screen full raw strings as well as field pairs before any truncation.
+
+    Serializing a string containing JSON escapes its quotes and can hide a
+    credential assignment from the detector, so inspect each original leaf too.
+    """
+    from src.security.memory_admission import contains_credentials
+    text = payload if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False)
+    if contains_credentials(text):
+        raise LlmUnavailable("Credential-shaped content cannot be sent to a model")
+    if isinstance(payload, dict):
+        for key, value in payload.items():
+            require_safe_payload(key)
+            require_safe_payload(value)
+    elif isinstance(payload, (list, tuple)):
+        for value in payload:
+            require_safe_payload(value)
+
+
 def summarize_messages(records, title: str | None) -> list[dict]:
     """Bounded prompt over record contents."""
+    require_safe_payload([records, title])
     lines = []
     used = 0
     for record in records:
@@ -200,7 +226,7 @@ def summarize_messages(records, title: str | None) -> list[dict]:
         used += len(line)
     if not lines:
         raise LlmUnavailable("Nothing to summarize")
-    topic = title or "this profile's recent memories"
+    topic = title or "the explicitly selected source records"
     return [
         {"role": "system", "content": "You summarize memory records. Reply with "
          "a compact factual digest under 300 words. ASCII output only. Never "
@@ -211,6 +237,7 @@ def summarize_messages(records, title: str | None) -> list[dict]:
 
 def consolidation_messages(records) -> list[dict]:
     """Ask the model which records look like duplicates/merge candidates."""
+    require_safe_payload(records)
     lines = []
     used = 0
     for record in records:
@@ -252,6 +279,7 @@ def parse_consolidation(reply: str) -> dict:
 
 
 def translate_messages(text: str, target_language: str) -> list[dict]:
+    require_safe_payload([text, target_language])
     if not isinstance(text, str) or not 1 <= len(text) <= 8000:
         raise LlmUnavailable("Text length out of range for translation")
     if not isinstance(target_language, str) or not 2 <= len(target_language.strip()) <= 32:

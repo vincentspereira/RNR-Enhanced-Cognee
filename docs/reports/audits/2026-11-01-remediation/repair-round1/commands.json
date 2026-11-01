@@ -1,0 +1,133 @@
+{
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101",
+  "commands": {
+    "r1": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "tests/unit/test_review_round1_remediation.py",
+        "-q"
+      ],
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "red_source": "before respective fix",
+      "test_snapshot": "initial-r1-tests.py"
+    },
+    "r2": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "tests/unit/test_review_round1_remediation.py",
+        "-k",
+        "mcp",
+        "-q"
+      ],
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "red_source": "before respective fix",
+      "test_snapshot": "initial-r2-tests.py"
+    },
+    "r3": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "tests/unit/test_review_round1_remediation.py",
+        "-k",
+        "r3 or unrepresentable",
+        "-q"
+      ],
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "red_source": "before respective fix",
+      "test_snapshot": "initial-r3-tests.py"
+    },
+    "inventory": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "tests/unit/test_review_round1_remediation.py",
+        "-k",
+        "inventory",
+        "-q"
+      ],
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "red_source": "before respective fix",
+      "test_snapshot": "initial-inventory-tests.py"
+    },
+    "final_regressions": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "--color=no",
+        "tests/unit/test_analysis_audit_remediation.py",
+        "tests/unit/test_analysis_lifespan_audit_remediation.py",
+        "tests/unit/test_analysis_protocol_audit_remediation.py",
+        "tests/unit/test_api_integration_audit.py",
+        "tests/unit/test_daemon_budget_audit.py",
+        "tests/unit/test_functional_runner_audit.py",
+        "tests/unit/test_ingestion_audit_remediation.py",
+        "tests/unit/test_library_read_audit_remediation.py",
+        "tests/unit/test_llm_budget_audit_remediation.py",
+        "tests/unit/test_mcp_audit_remediation.py",
+        "tests/unit/test_renewal_audit_remediation.py",
+        "tests/unit/test_renewal_installer_audit.py",
+        "tests/unit/test_verifier_audit_remediation.py",
+        "tests/unit/test_review_round1_remediation.py",
+        "-q",
+        "--junitxml=docs/reports/audits/2026-11-01-remediation/repair-round1/regressions-green.xml"
+      ],
+      "exit_code": 0
+    },
+    "unchanged_independent": {
+      "argv": [
+        "../.venv-deployment/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-c",
+        "/dev/null",
+        "--confcutdir=tests/unit",
+        "-p",
+        "no:cacheprovider",
+        "--color=no",
+        "docs/reports/audits/2026-11-01-remediation/review-round1/test_independent_challenges_v2.py",
+        "-k",
+        "not renewal_unrepresentable_expiry",
+        "-q",
+        "--junitxml=docs/reports/audits/2026-11-01-remediation/repair-round1/independent-unchanged-green.xml"
+      ],
+      "exit_code": 0
+    }
+  },
+  "verified_counts": {
+    "existing_audit_cases": 149,
+    "new_round1_cases": 38,
+    "combined_passed": 187
+  }
+}

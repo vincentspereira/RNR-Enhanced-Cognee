@@ -1,0 +1,320 @@
+.FFFFFFFFF.F..                                                           [100%]
+=================================== FAILURES ===================================
+___________ test_root_runtime_rejects_replaceable_interpreter_alias ____________
+
+tmp_path = PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_root_runtime_rejects_repl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7667839ccbc0>
+
+    def test_root_runtime_rejects_replaceable_interpreter_alias(tmp_path, monkeypatch):
+        renewal = load(DEPLOY / 'renew_fleet_memory_tokens.py')
+        alias, provisioner, inventory = setup_renewal_tree(tmp_path)
+        alias.parent.chmod(0o777)
+        SYNTHETIC_UNSAFE_PATHS.add(alias.parent)
+        monkeypatch.setattr(renewal, 'PROVISIONER_PYTHON', alias)
+        monkeypatch.setattr(renewal, 'PROVISIONER', provisioner)
+        monkeypatch.setattr(renewal, 'INVENTORY', inventory)
+        monkeypatch.setattr(Path, 'lstat', synthetic_root_lstat)
+        with pytest.raises(ValueError, match='untrusted_runtime_path'):
+            renewal.trusted_path(alias.parent)  # closest rejection control
+        # The symlink's target is safe, but the actual exec pathname is replaceable.
+>       with pytest.raises(ValueError, match='untrusted_runtime_path'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:86: Failed
+_________ test_installer_rejects_replaceable_interpreter_before_launch _________
+
+tmp_path = PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_installer_rejects_replace0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7667839cd670>
+
+    def test_installer_rejects_replaceable_interpreter_before_launch(tmp_path, monkeypatch):
+        installer, alias, target = installer_fixture(tmp_path, monkeypatch)
+        alias.parent.chmod(0o777)
+        SYNTHETIC_UNSAFE_PATHS.add(alias.parent)
+        launches = []
+        def no_launch(command, **kwargs):
+            launches.append(command)
+            # Return failure so installer exits before acquiring any write lock.
+            return subprocess.CompletedProcess(command, 1, b'', b'')
+        monkeypatch.setattr(installer.subprocess, 'run', no_launch)
+        with pytest.raises(ValueError):
+            installer.main()
+>       assert launches == [], 'root preflight reached a replaceable exec path: ' + repr(launches)
+E       AssertionError: root preflight reached a replaceable exec path: [['/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_installer_rejects_replace0/runtime-fixture/runtime/bin/python', '-I', '-B', '-c', 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)']]
+E       assert [['/home/vinc...v") else 1)']] == []
+E         
+E         Left contains one more item: ['/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_installer_rejects_replace0/runt...n/python', '-I', '-B', '-c', 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)']
+E         Use -v to get more diff
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:134: AssertionError
+______________ test_installer_rejects_unknown_existing_inventory _______________
+
+tmp_path = PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_installer_rejects_unknown0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7667839cf080>
+
+    def test_installer_rejects_unknown_existing_inventory(tmp_path, monkeypatch):
+        installer, alias, target = installer_fixture(tmp_path, monkeypatch)
+        old_inventory = b'{"schema":99,"profiles":["owner-custom-inventory"]}\n'
+        (target / 'roles.json').write_bytes(old_inventory)
+        monkeypatch.setattr(installer.subprocess, 'run', lambda command, **kw: subprocess.CompletedProcess(command, 0, b'', b''))
+>       with pytest.raises(ValueError, match='unknown_predecessor'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:142: Failed
+----------------------------- Captured stdout call -----------------------------
+{"backup": "/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_installer_rejects_unknown0/installed/before-audit-upgrade-20261101T125035Z-19f2d106", "complete": true, "credentials_issued": 0, "installed_not_exercised": true, "inventory_profiles": 45, "next_owner_action": "Review receipt, then enable timer at an approved window; expiry catch-up may invoke renewal.", "renewal_ran": false, "source_hashes": {"provision_gateway_profile_access.py": "93679a24d12ef88f6d71d9b9733b2fcc28f2c58c6897cc20a78440618fd8ca94", "renew_fleet_memory_tokens.py": "68517e61e891e9f9909b92fd8f7f9e79af97c47fcef4404de72573f5acd6e18f", "roles.json": "7ba6314c360eb5dc433798bbcbd2b434d932687ccebff8a4868a2a077cc755dc"}, "timer_started": false}
+_____________ test_mcp_rejects_http_200_invalid_response_shapes[] ______________
+
+body = b''
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7667839cf9b0>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x7667839fec80>('isError')
+E        +    where <built-in method get of dict object at 0x7667839fec80> = {'content': [{'type': 'text', 'text': 'null'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+___________ test_mcp_rejects_http_200_invalid_response_shapes[null] ____________
+
+body = b'null'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a61bb0>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x7667839fde40>('isError')
+E        +    where <built-in method get of dict object at 0x7667839fde40> = {'content': [{'type': 'text', 'text': 'null'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+____________ test_mcp_rejects_http_200_invalid_response_shapes[[]] _____________
+
+body = b'[]'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a63350>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '[]'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x7667839b5980>('isError')
+E        +    where <built-in method get of dict object at 0x7667839b5980> = {'content': [{'type': 'text', 'text': '[]'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+___________ test_mcp_rejects_http_200_invalid_response_shapes[true] ____________
+
+body = b'true'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a622d0>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'true'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x766783907a40>('isError')
+E        +    where <built-in method get of dict object at 0x766783907a40> = {'content': [{'type': 'text', 'text': 'true'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+____________ test_mcp_rejects_http_200_invalid_response_shapes[17] _____________
+
+body = b'17'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a63aa0>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '17'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x7667839b6500>('isError')
+E        +    where <built-in method get of dict object at 0x7667839b6500> = {'content': [{'type': 'text', 'text': '17'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+______ test_mcp_rejects_http_200_invalid_response_shapes["not-an-object"] ______
+
+body = b'"not-an-object"'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a008f0>
+
+    @pytest.mark.parametrize('body', [b'', b'null', b'[]', b'true', b'17', b'"not-an-object"'])
+    def test_mcp_rejects_http_200_invalid_response_shapes(body, monkeypatch):
+        mcp = load(REPO / 'integrations/hermes/enhanced_cognee_mcp/server.py')
+        class Connection:
+            def __init__(self, *a, **kw):
+                pass
+            def request(self, *a, **kw):
+                pass
+            def getresponse(self):
+                return SimpleNamespace(status=200, read=lambda size: body)
+            def close(self):
+                pass
+        monkeypatch.setattr(mcp, 'HTTPConnection', Connection)
+        message = {'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'get_stats','arguments':{}}}
+        output = io.StringIO()
+        with patch('sys.stdin', io.StringIO(json.dumps(message) + '\n')), patch('sys.stdout', output):
+            mcp.serve(mcp.handlers('invented-review-placeholder'))
+        reply = json.loads(output.getvalue())
+>       assert reply['result'].get('isError') is True, reply
+E       AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '"not-an-object"'}]}}
+E       assert None is True
+E        +  where None = <built-in method get of dict object at 0x7667839fec40>('isError')
+E        +    where <built-in method get of dict object at 0x7667839fec40> = {'content': [{'type': 'text', 'text': '"not-an-object"'}]}.get
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:165: AssertionError
+____ test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles _____
+
+tmp_path = PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-26/test_renewal_unrepresentable_e0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x766783a00500>
+
+    def test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles(tmp_path, monkeypatch):
+        renewal = load(DEPLOY / 'renew_fleet_memory_tokens.py')
+        payload = base64.urlsafe_b64encode(json.dumps({'exp':10**100}).encode()).rstrip(b'=').decode()
+        token = 'a' * 16 + '.' + payload + '.' + 'a' * 16
+        assert renewal.decode_exp(token) == 10**100
+        monkeypatch.setattr(renewal.os, 'geteuid', lambda: 0)
+        monkeypatch.setattr(renewal.os, 'uname', lambda: SimpleNamespace(nodename='Ubuntu-Hermes'))
+        monkeypatch.setattr(renewal, 'validate_runtime', lambda: None)
+        monkeypatch.setattr(renewal, 'PROVISIONER', tmp_path / 'provisioner.py')
+        renewal.PROVISIONER.write_text('# no executable content\n')
+        monkeypatch.setattr(renewal, 'profiles', lambda: ['default', 'web-researcher'])
+        monkeypatch.setattr(renewal, 'load_profile_token', lambda path: token)
+        monkeypatch.setattr(renewal, 'STATE', tmp_path / 'state.json')
+        attempted = []
+        def fake_renew(profile):
+            attempted.append(profile)
+            return {'profile':profile,'complete':False,'expires_utc':None,'error':'invented-refusal'}
+        monkeypatch.setattr(renewal, 'renew', fake_renew)
+        # No exception should escape a single malformed profile and abort the fleet.
+>       assert renewal.main() == 1
+               ^^^^^^^^^^^^^^
+
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def main():
+        require(os.geteuid() == 0 and os.uname().nodename == "Ubuntu-Hermes",
+                "run_on_gateway_host_as_root")
+        validate_runtime()
+        require(PROVISIONER.is_file(), "provisioner_missing")
+        now = int(time.time())
+        renewed, skipped, failed, expiries = [], [], [], {}
+        for profile in profiles():
+            path = env_path(profile)
+            token = load_profile_token(path)
+            try:
+                current_exp = decode_exp(token) if token else None
+            except ValueError:
+                current_exp = None
+            if current_exp is not None and not needs_renewal(current_exp, now):
+                skipped.append(profile)
+                expiries[profile] = time.strftime("%Y-%m-%dT%H:%M:%SZ",
+>                                                 time.gmtime(current_exp))
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+E               OverflowError: timestamp out of range for platform time_t
+
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:187: OverflowError
+=============================== warnings summary ===============================
+../.venv-deployment/lib/python3.12/site-packages/_pytest/cacheprovider.py:469
+  /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: could not create cache path /dev/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/dev/pytest-cache-files-mqoolxt1'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+../.venv-deployment/lib/python3.12/site-packages/_pytest/cacheprovider.py:423
+  /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/cacheprovider.py:423: PytestCacheWarning: could not create cache path /dev/.pytest_cache/v/cache/lastfailed: [Errno 13] Permission denied: '/dev/pytest-cache-files-enhr8yo2'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../../dev::test_root_runtime_rejects_replaceable_interpreter_alias
+FAILED ../../../../../dev::test_installer_rejects_replaceable_interpreter_before_launch
+FAILED ../../../../../dev::test_installer_rejects_unknown_existing_inventory
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[null]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[[]]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[true]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[17]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes["not-an-object"]
+FAILED ../../../../../dev::test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles
+10 failed, 4 passed, 2 warnings in 0.35s

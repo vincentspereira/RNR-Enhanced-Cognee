@@ -2,14 +2,14 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from typing import Any, Optional
 
 from fastapi import FastAPI, Request, Query
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from src.memory_keys import canonical_cipher_from_environment
 from src.memory_service import MemoryConflict, MemoryClarificationRequired, MemoryScope, MemoryService
@@ -43,16 +43,25 @@ class IngestRequest(BaseModel):
                           pattern=r"^[a-z0-9][a-z0-9_-]*$")
 
 
-class SummarizeRequest(BaseModel):
+class AnalysisSourcesRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    limit: int = Field(default=20, ge=2, le=50)
+    record_ids: list[str] = Field(min_length=1, max_length=50)
+
+    @field_validator("record_ids")
+    @classmethod
+    def explicit_unique_ids(cls, value):
+        if (len(set(value)) != len(value)
+                or any(not item.strip() or len(item) > 200 for item in value)):
+            raise ValueError("Analysis requires unique nonempty bounded record ids")
+        return value
+
+
+class SummarizeRequest(AnalysisSourcesRequest):
     title: Optional[str] = Field(default=None, max_length=200)
-    category: Optional[str] = Field(default=None, min_length=1, max_length=100)
 
 
-class ConsolidateRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    limit: int = Field(default=20, ge=2, le=50)
+class ConsolidateRequest(AnalysisSourcesRequest):
+    record_ids: list[str] = Field(min_length=2, max_length=50)
 
 
 class TranslateRequest(BaseModel):
@@ -147,7 +156,13 @@ async def lifespan(app: FastAPI):
         app.state.llm_route = (llm_summarize.load_route_env()
                                or llm_summarize.load_route(
                                    os.environ.get("CREDENTIALS_DIRECTORY")))
-        app.state.llm_budget = llm_summarize.TokenBudget()
+        app.state.llm_budget = None
+        if app.state.llm_route is not None:
+            try:
+                app.state.llm_budget = llm_summarize.TokenBudget()
+            except llm_summarize.BudgetUnavailable:
+                # Optional analysis fails closed; canonical memory stays usable.
+                pass
         yield
     finally:
         if 'derived' in locals() and derived is not None:
@@ -235,8 +250,8 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     async def ingest(body: IngestRequest, request: Request):
         import asyncio
 
-        from src.ingestion import (IngestRefused, build_records, chunk_text,
-                                   fetch_public_text)
+        from src.ingestion import (IngestRefused, IngestPartial, build_records,
+                                   chunk_text, fetch_public_text, ingest_record_batch)
         if (body.url is None) == (body.text is None):
             raise IngestRefused("Provide exactly one of url or text")
         if body.url is not None:
@@ -247,13 +262,14 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
             label = body.title or "inline document"
         chunks = chunk_text(document)
         records = build_records(chunks, label, body.category, body.base_key)
-        stored = []
-        for record in records:
-            stored.append(await store().remember(scope(request), **record))
-        return {"ingested": len(stored), "chunks": len(chunks),
-                "content_type": content_type,
-                "record_ids": [row.get("id") or row.get("record_id")
-                               for row in stored if isinstance(row, dict)]}
+        try:
+            record_ids = await ingest_record_batch(store(), scope(request), records)
+        except IngestPartial as partial:
+            return JSONResponse({"complete": False, "ingested": len(partial.record_ids),
+                "chunks": len(chunks), "record_ids": partial.record_ids,
+                "detail": str(partial), "retry_base_key": body.base_key}, status_code=503)
+        return {"complete": True, "ingested": len(record_ids), "chunks": len(chunks),
+                "content_type": content_type, "record_ids": record_ids}
 
     def _llm():
         from src import llm_summarize
@@ -262,77 +278,91 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
             raise llm_summarize.LlmUnavailable(
                 "The model route is not configured for this service")
         budget = getattr(app.state, "llm_budget", None)
+        if budget is None:
+            raise llm_summarize.LlmUnavailable("The persistent model budget ledger is unavailable")
         return llm_summarize, route, budget
 
     def _project(request):
         return scope(request).project
 
+    async def _analysis_sources(request, record_ids):
+        selected_scope = scope(request)
+        rows = []
+        for record_id in record_ids:
+            row = await store().get(selected_scope, record_id)
+            if (not isinstance(row, dict)
+                    or row.get("id") != record_id
+                    or type(row.get("version")) is not int or row["version"] < 1
+                    or not isinstance(row.get("content"), str) or not row["content"].strip()
+                    or row.get("project_id") != selected_scope.project
+                    or row.get("shared")
+                    or row.get("state") != "active"
+                    or not isinstance(row.get("provenance"), dict)
+                    or row["provenance"].get("subject") != selected_scope.subject):
+                raise ValueError("Analysis requires owned active non-shared source records")
+            if row.get("expires_at") is not None:
+                try:
+                    expires = datetime.fromisoformat(row["expires_at"])
+                    if expires.tzinfo is None or expires <= datetime.now(timezone.utc):
+                        raise ValueError
+                except (TypeError, ValueError):
+                    raise ValueError("Analysis requires unexpired verifiable source records") from None
+            rows.append(row)
+        return rows
+
     @app.post("/v1/memories/summarize")
     async def summarize(body: SummarizeRequest, request: Request):
         import asyncio
-        import uuid
 
         llm, route, budget = _llm()
-        records = await store().list_records(
-            scope(request), limit=body.limit, offset=0,
-            category=body.category, agent=None, include_shared=True)
-        rows = records if isinstance(records, list) else \
-            (records.get("results") or records.get("records") or [])
+        rows = await _analysis_sources(request, body.record_ids)
         messages = llm.summarize_messages(rows, body.title)
-        if not budget.allows(route, _project(request), 4000):
-            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
-        text, tokens = await asyncio.to_thread(llm.chat, route, messages)
-        budget.charge(_project(request), tokens)
-        stored = await store().remember(
-            scope(request), content=text[:65536],
-            idempotency_key="summarize-" + uuid.uuid4().hex,
-            category="summary",
-            metadata={"origin": "summarize", "source": "llm_summary",
-                      "sources": min(len(rows), 100), "model": route["model"]})
-        return {"summary": text, "record_id": stored.get("id") if isinstance(stored, dict) else None,
+        selected_scope = scope(request)
+        text, tokens = await llm.budgeted_chat(route, budget, selected_scope.tenant,
+                                               selected_scope.project, messages)
+        return {"summary": text, "stored": False, "record_id": None,
+                "source_records": [{"id": row["id"], "version": row["version"]} for row in rows],
                 "sources": len(rows), "tokens_used": tokens,
-                "budget_used_today": budget.used(_project(request))}
+                "budget_used_today": await asyncio.to_thread(budget.used, selected_scope.tenant,
+                                                              selected_scope.project)}
 
     @app.get("/v1/memories/summarization/status")
     async def summarization_status(request: Request):
+        import asyncio
+        from src.llm_budget import BudgetUnavailable
         route = getattr(app.state, "llm_route", None)
         budget = getattr(app.state, "llm_budget", None)
-        return {"configured": route is not None,
+        selected_scope = scope(request)
+        used = None
+        if budget is not None:
+            try:
+                used = await asyncio.to_thread(budget.used, selected_scope.tenant, selected_scope.project)
+            except BudgetUnavailable:
+                pass
+        return {"configured": route is not None and used is not None,
                 "model": route["model"] if route else None,
                 "daily_token_cap": route["daily_token_cap"] if route else None,
-                "used_today": budget.used(_project(request)) if budget else 0,
+                "used_today": used,
                 "project_id": _project(request)}
 
     @app.post("/v1/memories/consolidation/candidates")
     async def consolidation(body: ConsolidateRequest, request: Request):
-        import asyncio
-
         llm, route, budget = _llm()
-        records = await store().list_records(
-            scope(request), limit=body.limit, offset=0,
-            category=None, agent=None, include_shared=True)
-        rows = records if isinstance(records, list) else \
-            (records.get("results") or records.get("records") or [])
+        rows = await _analysis_sources(request, body.record_ids)
         messages = llm.consolidation_messages(rows)
-        if not budget.allows(route, _project(request), 4000):
-            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
-        reply, tokens = await asyncio.to_thread(llm.chat, route, messages,
-                                                max_tokens=600)
-        budget.charge(_project(request), tokens)
+        selected_scope = scope(request)
+        reply, tokens = await llm.budgeted_chat(route, budget, selected_scope.tenant,
+                                                selected_scope.project, messages, max_tokens=600)
         return {"candidates": llm.parse_consolidation(reply), "compared": len(rows),
                 "tokens_used": tokens, "report_only": True}
 
     @app.post("/v1/memories/translate")
     async def translate(body: TranslateRequest, request: Request):
-        import asyncio
-
         llm, route, budget = _llm()
         messages = llm.translate_messages(body.text, body.target_language)
-        if not budget.allows(route, _project(request), 4000):
-            raise llm.LlmUnavailable("The daily model budget for this project is exhausted")
-        translation, tokens = await asyncio.to_thread(llm.chat, route, messages,
-                                                      max_tokens=2000)
-        budget.charge(_project(request), tokens)
+        selected_scope = scope(request)
+        translation, tokens = await llm.budgeted_chat(route, budget, selected_scope.tenant,
+                                                      selected_scope.project, messages, max_tokens=2000)
         return {"translation": translation, "target_language": body.target_language,
                 "tokens_used": tokens, "stored": False}
 
@@ -363,6 +393,16 @@ def create_app(service: Optional[MemoryService] = None) -> FastAPI:
     @app.get("/v1/memories/status")
     async def status(request: Request):
         return await store().status(scope(request))
+
+    @app.get("/v1/memories/library/")
+    async def shared_records(request: Request, limit: int = Query(50, ge=1, le=200),
+                             offset: int = Query(0, ge=0, le=100000)):
+        return await store().list_records(scope(request), limit=limit, offset=offset,
+                                           include_shared=True, shared_only=True)
+
+    @app.get("/v1/memories/library/membership")
+    async def library_membership(request: Request):
+        return await store().library_membership(scope(request))
 
     @app.post("/v1/memories/library/membership")
     async def library_member(body: LibraryMemberRequest, request: Request):

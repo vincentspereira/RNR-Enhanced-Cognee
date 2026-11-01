@@ -1,0 +1,13 @@
+{
+  "legacy": {
+    "case_name": "test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles",
+    "obsolete_precondition": "assert renewal.decode_exp(token) == 10 ** 100",
+    "replacement_precondition": "with pytest.raises(ValueError):\n    renewal.decode_exp(token)",
+    "remaining_function_ast_equal": true
+  },
+  "fresh": {
+    "case": "deep-unused-claim",
+    "reason": "Valid representable exp with an unused nested claim is valid input, not an invalid token. Original harness incorrectly required renewal; copied control now checks successful skip and continuation.",
+    "same_remaining_cases": true
+  }
+}

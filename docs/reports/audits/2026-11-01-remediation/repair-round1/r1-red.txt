@@ -1,0 +1,35 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 5 items
+
+tests/unit/test_review_round1_remediation.py [32m.[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[31m                       [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_________ test_root_runtime_rejects_replaceable_interpreter_alias[bin] _________[0m
+[1m[31mtests/unit/test_review_round1_remediation.py[0m:118: in test_root_runtime_rejects_replaceable_interpreter_alias
+    [0m[94mwith[39;49;00m pytest.raises([96mValueError[39;49;00m, match=[33m"[39;49;00m[33muntrusted_runtime_path[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   Failed: DID NOT RAISE ValueError[0m
+[31m[1m_____________ test_runtime_validates_os_interpreter_lexical_parent _____________[0m
+[1m[31mtests/unit/test_review_round1_remediation.py[0m:133: in test_runtime_validates_os_interpreter_lexical_parent
+    [0m[94massert[39;49;00m Path([33m"[39;49;00m[33m/usr/bin/python3[39;49;00m[33m"[39;49;00m).parent [95min[39;49;00m checked[90m[39;49;00m
+[1m[31mE   AssertionError: assert PosixPath('/usr/bin') in [PosixPath('/usr/bin/python3.12'), PosixPath('/usr/bin/python3.12'), PosixPath('/home/vincentspereira/.hermes/cache/sc...vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-27/test_runtime_validates_os_inte0/roles.json')][0m
+[1m[31mE    +  where PosixPath('/usr/bin') = PosixPath('/usr/bin/python3').parent[0m
+[1m[31mE    +    where PosixPath('/usr/bin/python3') = Path('/usr/bin/python3')[0m
+[31m[1m_________ test_installer_rejects_replaceable_interpreter_before_launch _________[0m
+[1m[31mtests/unit/test_review_round1_remediation.py[0m:150: in test_installer_rejects_replaceable_interpreter_before_launch
+    [0m[94massert[39;49;00m launches == [], [33m"[39;49;00m[33mreplaceable exec path reached subprocess[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: replaceable exec path reached subprocess[0m
+[1m[31mE   assert [['/home/vinc...v") else 1)']] == [][0m
+[1m[31mE     [0m
+[1m[31mE     Left contains one more item: [0m[[33m'[39;49;00m[33m/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-27/test_installer_rejects_replace0/runt...n/python[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33m-I[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33m-B[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33m-c[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mimport importlib.util; raise SystemExit(0 if importlib.util.find_spec([39;49;00m[33m"[39;49;00m[33mdotenv[39;49;00m[33m"[39;49;00m[33m) else 1)[39;49;00m[33m'[39;49;00m][90m[39;49;00m[0m
+[1m[31mE     Use -v to get more diff[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_review_round1_remediation.py::[1mtest_root_runtime_rejects_replaceable_interpreter_alias[bin][0m - Failed: DID NOT RAISE ValueError
+[31mFAILED[0m tests/unit/test_review_round1_remediation.py::[1mtest_runtime_validates_os_interpreter_lexical_parent[0m - AssertionError: assert PosixPath('/usr/bin') in [PosixPath('/usr/bin/python...
+[31mFAILED[0m tests/unit/test_review_round1_remediation.py::[1mtest_installer_rejects_replaceable_interpreter_before_launch[0m - AssertionError: replaceable exec path reached subprocess
+[31m========================= [31m[1m3 failed[0m, [32m2 passed[0m[31m in 0.15s[0m[31m ==========================[0m

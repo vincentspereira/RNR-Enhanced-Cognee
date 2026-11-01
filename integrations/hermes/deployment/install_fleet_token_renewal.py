@@ -1,156 +1,199 @@
 #!/usr/bin/env python3
-"""Install the approved automated fleet token renewal (timer + pinned job).
+"""Owner-run, root-staged renewal upgrade. Never issue tokens or start a job.
 
-Owner-approved 30 October 2026. Copies the hash-pinned provisioner and
-renewal job into /opt/enhanced-cognee-memory/fleet-renewal (refusing any
-modification of an existing install), installs a hardened systemd
-service+timer, enables the timer, and runs the service once immediately so
-profiles already inside the 7-day window renew now. Idempotent: a repeat
-run verifies and reports without changing files.
+Stage this file, both job sources and roles.json in a new root-owned directory
+first. Installation preserves old bytes and state, accepts reviewed predecessors
+only, and reloads unit definitions without starting/restarting any service/timer.
 """
 from __future__ import annotations
-
+import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import shutil
+import stat
 import subprocess
 import sys
+import time
+import uuid
 
-DEPLOY = Path("/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020"
-              "/launch-worktree-20261024/integrations/hermes/deployment")
-VENV_PYTHON = Path("/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020"
-                   "/.venv-deployment/bin/python")
-RENEWAL_ROOT = Path("/opt/enhanced-cognee-memory/fleet-renewal")
-SERVICE = Path("/etc/systemd/system/ec-hermes-memory-token-renew.service")
-TIMER = Path("/etc/systemd/system/ec-hermes-memory-token-renew.timer")
-UNIT_NAME = "ec-hermes-memory-token-renew"
-# The first installed provisioner refused the unattended job (SUDO_USER-only
-# operator check); the upgrade path accepts exactly that pinned predecessor.
-PREVIOUS_PROVISIONER_SHA = "06ad220901f054b43a40e4ca7a6fae1b35f01e1be85ca2e905450fd5fb41903b"
-SOURCES = {}  # filled in main from the live files below
+DEPLOY = Path(__file__).resolve().parent
+RENEWAL_ROOT = Path('/opt/enhanced-cognee-memory/fleet-renewal')
+SERVICE = Path('/etc/systemd/system/ec-hermes-memory-token-renew.service')
+UNIT_NAME = 'ec-hermes-memory-token-renew'
+PROVISIONER_PYTHON = Path('/opt/enhanced-cognee-memory/candidates/'
+    '21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python')
+PREDECESSORS = {
+    'renew_fleet_memory_tokens.py': {'ea50b522303ca415382e4339af5bb686dc511b015580be5f7108a0bbc24405fd'},
+    'provision_gateway_profile_access.py': {'93679a24d12ef88f6d71d9b9733b2fcc28f2c58c6897cc20a78440618fd8ca94'},
+}
 
 
-def require(value, category="renewal_install_refused"):
+def require(value, category='renewal_upgrade_refused'):
     if not value:
         raise ValueError(category)
 
 
-def pinned_sources():
-    files = {"provision_gateway_profile_access.py": None,
-             "renew_fleet_memory_tokens.py": None}
-    for name in files:
-        raw = (DEPLOY / name).read_bytes()
-        require(0 < len(raw) <= 65536)
-        files[name] = {"raw": raw, "sha256": hashlib.sha256(raw).hexdigest()}
-    return files
+def trusted_path(path):
+    path = Path(path).absolute()
+    for current in [path] + list(path.parents):
+        info = current.lstat()
+        require(not stat.S_ISLNK(info.st_mode) and info.st_uid == 0
+                and not info.st_mode & 0o022, 'untrusted_root_path')
 
 
-def install_files(sources, upgrade):
-    existing = RENEWAL_ROOT.is_dir() and any(RENEWAL_ROOT.iterdir())
-    if not existing:
-        RENEWAL_ROOT.mkdir(mode=0o755)
-        for name, row in sources.items():
-            target = RENEWAL_ROOT / name
-            target.write_bytes(row["raw"])
-            target.chmod(0o644)
-        return True
-    if not upgrade:
-        for name, row in sources.items():
-            current = (RENEWAL_ROOT / name).read_bytes()
-            require(hashlib.sha256(current).hexdigest() == row["sha256"],
-                    "existing_install_differs_use_upgrade")
-        return False
-    # Upgrade: each file must match its pinned predecessor (or already be
-    # current) before replacement; state.json and backups stay untouched.
-    for name, row in sources.items():
-        current = (RENEWAL_ROOT / name).read_bytes()
-        digest = hashlib.sha256(current).hexdigest()
-        allowed = {row["sha256"]}
-        if name == "provision_gateway_profile_access.py":
-            allowed.add(PREVIOUS_PROVISIONER_SHA)
-        require(digest in allowed, "upgrade_source_unknown:" + name)
-    for name, row in sources.items():
-        target = RENEWAL_ROOT / name
-        if hashlib.sha256(target.read_bytes()).hexdigest() != row["sha256"]:
-            target.write_bytes(row["raw"])
-            target.chmod(0o644)
-    return False
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
 
 
-def install_units():
-    service = f"""[Unit]
+def approved_predecessor(name, current, desired):
+    require(current == desired or digest(current) in PREDECESSORS.get(name, set()),
+            'unknown_predecessor')
+
+
+def unit_text():
+    return f'''[Unit]
 Description=Renew Enhanced Cognee fleet memory tokens (7-day window)
 After=network.target enhanced-cognee-api.service
 
 [Service]
 Type=oneshot
 User=root
-ExecStart={VENV_PYTHON} -I {RENEWAL_ROOT / 'renew_fleet_memory_tokens.py'}
+ExecStart=/usr/bin/python3 -I -B {RENEWAL_ROOT / 'renew_fleet_memory_tokens.py'}
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict
 ReadWritePaths=/home/vincentspereira/.hermes {RENEWAL_ROOT}
 ProtectHome=no
-"""
-    timer = """[Timer]
-OnCalendar=Mon *-*-* 04:00:00
-RandomizedDelaySec=300
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-"""
-    for path, body, existing_ok in ((SERVICE, service, True), (TIMER, timer, True)):
-        if path.exists():
-            require(path.read_text() == body, "unit_differs_refusing_overwrite")
-            continue
-        path.write_text(body)
-        path.chmod(0o644)
+UMask=0077
+LimitCORE=0
+'''
 
 
-def systemctl(*args, timeout=60):
-    process = subprocess.run(["/usr/bin/systemctl", *args],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-    return process.returncode, process.stdout.decode()[:4000]
+def legacy_unit_text():
+    return '''[Unit]
+Description=Renew Enhanced Cognee fleet memory tokens (7-day window)
+After=network.target enhanced-cognee-api.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python -I /opt/enhanced-cognee-memory/fleet-renewal/renew_fleet_memory_tokens.py
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/home/vincentspereira/.hermes /opt/enhanced-cognee-memory/fleet-renewal
+ProtectHome=no
+'''
+
+
+def atomic_replace(path, body, mode=0o644):
+    stage = path.with_name('.' + path.name + '-upgrade-' + uuid.uuid4().hex)
+    fd = os.open(stage, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, mode)
+    with os.fdopen(fd, 'wb') as stream:
+        stream.write(body)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(stage, path)
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+    require(path.read_bytes() == body, 'readback_mismatch')
+
+
+def systemctl(*args):
+    result = subprocess.run(['/usr/bin/systemctl', *args], capture_output=True,
+                            timeout=30, check=False)
+    return result.returncode, result.stdout.decode('ascii', errors='replace').strip()
 
 
 def main():
-    require(os.geteuid() == 0 and os.environ.get("SUDO_USER") == "vincentspereira"
-            and os.uname().nodename == "Ubuntu-Hermes", "owner_sudo_on_gateway_host")
-    require(sys.argv[1:] in ([], ["--upgrade"]), "usage: [--upgrade]")
-    upgrade = sys.argv[1:] == ["--upgrade"]
-    require(VENV_PYTHON.is_file(), "deployment_venv_missing")
-    sources = pinned_sources()
-    created = install_files(sources, upgrade)
-    install_units()
-    code, _ = systemctl("daemon-reload")
-    require(code == 0, "daemon_reload_failed")
-    code, out = systemctl("enable", "--now", UNIT_NAME + ".timer")
-    require(code == 0, "timer_enable_failed:" + out[:120])
-    # First run now: renews any profile already inside the window.
-    code, run_out = systemctl("start", UNIT_NAME + ".service", timeout=600)
-    started = code == 0
-    code, timer_state = systemctl("is-active", UNIT_NAME + ".timer")
-    summary = {"complete": True, "files_created": created,
-               "timer_active": timer_state.strip() == "active",
-               "first_run_started": started,
-               "renewal_root": str(RENEWAL_ROOT),
-               "pinned_sha256": {name: row["sha256"] for name, row in sources.items()},
-               "schedule": "Mon *-*-* 04:00 (persistent, 5m jitter)",
-               "state_file": str(RENEWAL_ROOT / "state.json")}
-    print(json.dumps(summary, sort_keys=True))
-    return 0
+    require(sys.argv[1:] == ['--upgrade'], 'usage_upgrade_only')
+    require(os.geteuid() == 0 and os.uname().nodename == 'Ubuntu-Hermes', 'owner_root_on_hermes_only')
+    trusted_path(Path(__file__))
+    trusted_path(Path('/usr/bin/python3').parent)
+    trusted_path(Path('/usr/bin/python3').resolve())
+    trusted_path(PROVISIONER_PYTHON.parent)
+    trusted_path(PROVISIONER_PYTHON.resolve())
+    trusted_path(PROVISIONER_PYTHON.parent.parent / 'pyvenv.cfg')
+    trusted_path(RENEWAL_ROOT)
+    trusted_path(SERVICE)
+    raw = {}
+    for name in ['provision_gateway_profile_access.py', 'renew_fleet_memory_tokens.py', 'roles.json']:
+        path = DEPLOY / name
+        trusted_path(path)
+        raw[name] = path.read_bytes()
+        require(0 < len(raw[name]) <= 65536, 'source_size')
+    inventory = json.loads(raw['roles.json'])
+    roles = inventory.get('profiles') if isinstance(inventory, dict) else None
+    require(isinstance(inventory, dict) and set(inventory) == {'schema', 'profiles'}
+            and type(inventory['schema']) is int and inventory['schema'] == 1
+            and isinstance(roles, list) and len(roles) == 45
+            and all(isinstance(name, str) and re.fullmatch('[a-z][a-z0-9-]{0,31}', name)
+                    and not name.startswith('enhanced-cognee-test') for name in roles)
+            and roles == sorted(set(roles)) and 'default' in roles, 'inventory_shape')
+    old = {}
+    for name in PREDECESSORS:
+        target = RENEWAL_ROOT / name
+        trusted_path(target)
+        old[name] = target.read_bytes()
+        approved_predecessor(name, old[name], raw[name])
+    old_unit = SERVICE.read_text()
+    require(old_unit in {legacy_unit_text(), unit_text()}, 'unknown_service_predecessor')
+    if (RENEWAL_ROOT / 'roles.json').exists():
+        trusted_path(RENEWAL_ROOT / 'roles.json')
+        old['roles.json'] = (RENEWAL_ROOT / 'roles.json').read_bytes()
+        approved_predecessor('roles.json', old['roles.json'], raw['roles.json'])
+    code, active = systemctl('is-active', UNIT_NAME + '.service')
+    require(active not in {'active', 'activating', 'reloading'}, 'renewal_job_must_be_idle')
+    # Installation must not race a scheduled invocation. The owner first stops
+    # the TIMER only; this does not revoke existing credentials or run renewal.
+    _, timer_active = systemctl('is-active', UNIT_NAME + '.timer')
+    require(timer_active == 'inactive', 'stop_renewal_timer_before_upgrade')
+    # Verify the protected child can locate dotenv without touching a profile.
+    check = subprocess.run([str(PROVISIONER_PYTHON), '-I', '-B', '-c',
+        'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)'],
+        capture_output=True, timeout=30, check=False)
+    require(check.returncode == 0, 'protected_runtime_dotenv_unavailable')
+    lock_fd = os.open(RENEWAL_ROOT / 'upgrade.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        backup = RENEWAL_ROOT / ('before-audit-upgrade-' + time.strftime('%Y%m%dT%H%M%SZ', time.gmtime()) + '-' + uuid.uuid4().hex[:8])
+        backup.mkdir(mode=0o700)
+        for name, body in old.items():
+            atomic_replace(backup / name, body, 0o600)
+        atomic_replace(backup / 'service.unit', old_unit.encode('ascii'), 0o600)
+        # Inventory first, then job, then unit; a mid-install invocation fails
+        # closed. Timer remains stopped until the owner reviews the receipt.
+        for name in ['roles.json', 'provision_gateway_profile_access.py', 'renew_fleet_memory_tokens.py']:
+            atomic_replace(RENEWAL_ROOT / name, raw[name])
+        atomic_replace(SERVICE, unit_text().encode('ascii'))
+        code, _ = systemctl('daemon-reload')
+        require(code == 0, 'daemon_reload_failed_timer_remains_stopped')
+        _, command = systemctl('show', UNIT_NAME + '.service', '-p', 'ExecStart', '--value')
+        require('/usr/bin/python3 -I -B /opt/enhanced-cognee-memory/fleet-renewal/' in command,
+                'loaded_unit_mismatch_timer_remains_stopped')
+        print(json.dumps({'complete': True, 'installed_not_exercised': True,
+            'source_hashes': {name: digest(body) for name, body in raw.items()},
+            'backup': str(backup), 'inventory_profiles': len(roles),
+            'credentials_issued': 0, 'renewal_ran': False, 'timer_started': False,
+            'next_owner_action': 'Review receipt, then enable timer at an approved window; expiry catch-up may invoke renewal.'}, sort_keys=True))
+        return 0
+    finally:
+        os.close(lock_fd)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
         raise SystemExit(main())
     except SystemExit:
         raise
-    except Exception as exc:
-        print(json.dumps({"complete": False, "category": "renewal_install_refused",
-                          "error_kind": type(exc).__name__,
-                          "detail": str(exc)[:160] if isinstance(exc, ValueError) else ""},
-                         sort_keys=True))
+    except Exception as error:
+        print(json.dumps({'complete': False, 'category': 'renewal_upgrade_refused',
+                          'error_kind': type(error).__name__,
+                          'timer_must_remain_stopped': True}), flush=True)
         raise SystemExit(1)

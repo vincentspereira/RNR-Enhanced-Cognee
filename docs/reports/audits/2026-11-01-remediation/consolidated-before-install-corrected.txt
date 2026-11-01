@@ -1,0 +1,70 @@
+OK   service api                                      service activity only
+OK   service postgres                                 service activity only
+OK   service qdrant                                   service activity only
+OK   service graph                                    service activity only
+OK   service cache                                    service activity only
+OK   service index                                    service activity only
+OK   memory API health                                schema readiness; not a retrieval/capture test
+OK   main assistant memory status                     authenticated main scope
+ERR  installed MCP equals candidate                   byte equality; source fixes are not installed until this passes
+OK   role accounting-specialist                       17 catalogue tools; scoped status verified; capture not exercised
+OK   role ai-safety-guardrails                        15 catalogue tools; scoped status verified; capture not exercised
+OK   role aiml-engineer                               17 catalogue tools; scoped status verified; capture not exercised
+OK   role backend-developer                           15 catalogue tools; scoped status verified; capture not exercised
+OK   role chief-of-staff                              15 catalogue tools; scoped status verified; capture not exercised
+OK   role cloud-engineer                              10 catalogue tools; scoped status verified; capture not exercised
+OK   role code-implementer                            15 catalogue tools; scoped status verified; capture not exercised
+OK   role code-reviewer                               15 catalogue tools; scoped status verified; capture not exercised
+OK   role context-engineer                            17 catalogue tools; scoped status verified; capture not exercised
+OK   role cross-project-collaborator                  15 catalogue tools; scoped status verified; capture not exercised
+OK   role customer-feedback-analyst                   17 catalogue tools; scoped status verified; capture not exercised
+OK   role data-engineer                               17 catalogue tools; scoped status verified; capture not exercised
+OK   role data-gen-rl                                 17 catalogue tools; scoped status verified; capture not exercised
+OK   role debug-specialist                            15 catalogue tools; scoped status verified; capture not exercised
+OK   role deep-research-specialist                    17 catalogue tools; scoped status verified; capture not exercised
+OK   role deliberation-moderator                      15 catalogue tools; scoped status verified; capture not exercised
+OK   role deployment-engineer                         10 catalogue tools; scoped status verified; capture not exercised
+OK   role devops-engineer                             10 catalogue tools; scoped status verified; capture not exercised
+OK   role ecommerce-kdp-publisher                     17 catalogue tools; scoped status verified; capture not exercised
+OK   role educational-content-author                  17 catalogue tools; scoped status verified; capture not exercised
+OK   role fiction-content-author                      17 catalogue tools; scoped status verified; capture not exercised
+OK   role frontend-developer                          15 catalogue tools; scoped status verified; capture not exercised
+OK   role github-collaborator                         17 catalogue tools; scoped status verified; capture not exercised
+OK   role governance-privacy                          15 catalogue tools; scoped status verified; capture not exercised
+OK   role integration-specialist                      15 catalogue tools; scoped status verified; capture not exercised
+OK   role legal-specialist                            15 catalogue tools; scoped status verified; capture not exercised
+OK   role marketing-social-manager                    17 catalogue tools; scoped status verified; capture not exercised
+OK   role media-producer                              17 catalogue tools; scoped status verified; capture not exercised
+OK   role mobile-developer                            15 catalogue tools; scoped status verified; capture not exercised
+OK   role multimedia-producer                         17 catalogue tools; scoped status verified; capture not exercised
+OK   role niche-hunter                                17 catalogue tools; scoped status verified; capture not exercised
+OK   role observability-specialist                    10 catalogue tools; scoped status verified; capture not exercised
+OK   role performance-optimiser                       10 catalogue tools; scoped status verified; capture not exercised
+OK   role print-merch-designer                        17 catalogue tools; scoped status verified; capture not exercised
+OK   role project-orchestrator                        15 catalogue tools; scoped status verified; capture not exercised
+OK   role security-specialist                         15 catalogue tools; scoped status verified; capture not exercised
+OK   role social-work-specialist                      17 catalogue tools; scoped status verified; capture not exercised
+OK   role software-architect                          15 catalogue tools; scoped status verified; capture not exercised
+OK   role technical-consultant                        17 catalogue tools; scoped status verified; capture not exercised
+OK   role technical-writer                            17 catalogue tools; scoped status verified; capture not exercised
+OK   role test-engineer                               15 catalogue tools; scoped status verified; capture not exercised
+OK   role theology-content-author                     17 catalogue tools; scoped status verified; capture not exercised
+OK   role uxui-engineer                               17 catalogue tools; scoped status verified; capture not exercised
+OK   role web-researcher                              17 catalogue tools; scoped status verified; capture not exercised
+OK   main assistant tools                             17 catalogue tools; scoped status verified; capture not exercised
+OK   renewal timer active                             schedule only
+OK   renewal last service result                      last execution result, not future success
+ERR  renewal root-safe entry point                    must not execute a user-writable virtual environment
+ERR  renewal inventory and freshness                  requires all 45 identities and state no older than eight days; never runs renewal
+OK   enhanced-cognee-backup timer                     activity only, not restore proof
+OK   enhanced-cognee-backup last result               retained service execution result
+OK   enhanced-cognee-profile-backup timer             activity only, not restore proof
+OK   enhanced-cognee-profile-backup last result       retained service execution result
+OK   enhanced-cognee-qualified-fleet-backup-v2 timer  activity only, not restore proof
+OK   enhanced-cognee-qualified-fleet-backup-v2 last result retained service execution result
+SKIP rotation: postgresql                             owner-only receipt access
+SKIP rotation: valkey                                 owner-only receipt access
+SKIP rotation: qdrant                                 owner-only receipt access
+SKIP rotation: application                            owner-only receipt access
+SKIP rotation: arcadedb                               owner-only receipt access
+{"checks": 69, "complete": false, "failed": ["installed MCP equals candidate", "renewal root-safe entry point", "renewal inventory and freshness"], "scope": "configuration, catalogue, scoped status and job metadata; NOT native capture qualification", "skipped": ["rotation: postgresql", "rotation: valkey", "rotation: qdrant", "rotation: application", "rotation: arcadedb"]}

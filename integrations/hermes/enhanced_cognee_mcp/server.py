@@ -71,12 +71,14 @@ def _error(message):
 
 
 def api(method, path, token, body=None):
-    """Bounded call to the protected API; returns (status, json-or-None)."""
+    """Bounded call to the protected API; returns (status, JSON object)."""
     data = json.dumps(body, ensure_ascii=True).encode() if body is not None else None
     headers = {"Authorization": "Bearer " + token}
     if data is not None:
         headers["Content-Type"] = "application/json"
-    connection = HTTPConnection(API_HOST, API_PORT, timeout=10)
+    timeout = 65 if path in {"/v1/memories/summarize", "/v1/memories/translate",
+                             "/v1/memories/consolidation/candidates"} else 15
+    connection = HTTPConnection(API_HOST, API_PORT, timeout=timeout)
     try:
         connection.request(method, path, data, headers)
         response = connection.getresponse()
@@ -84,9 +86,12 @@ def api(method, path, token, body=None):
         if len(raw) > MAX_BODY:
             return response.status, {"error": "memory response exceeded its size budget"}
         try:
-            return response.status, json.loads(raw) if raw else None
+            payload = json.loads(raw) if raw else None
         except ValueError:
             return response.status, {"error": "memory response was not JSON"}
+        if not isinstance(payload, dict):
+            return response.status, {"error": "memory response was not a JSON object"}
+        return response.status, payload
     finally:
         connection.close()
 
@@ -153,7 +158,7 @@ def handlers(token):
     tool("get_related", "Entities/records connected to a query in this space.",
          {"query": {"type": "string"}}, ("query",),
          lambda a: call("POST", "/v1/memories/connections",
-                        {"query": _query(a.get("query"))}))
+                        {"entity": _query(a.get("query"))}))
     tool("list_agents", "Agents known to this memory space.", {}, (),
          lambda a: call("GET", "/v1/memories/agents"))
     tool("get_shared_memories", "Reviewed shared-library entries visible to "
@@ -209,19 +214,20 @@ def handlers(token):
                             **({"title": str(a["title"])} if a.get("title") else {}),
                             **({"category": str(a["category"])}
                                if a.get("category") else {})}))
-    tool("summarize_memories", "Summarize this profile's recent memories into "
-         "one digest, stored as a summary record in the same space.",
-         {"limit": {"type": "integer"}, "title": {"type": "string"},
-          "category": {"type": "string"}}, (),
+    tool("summarize_memories", "Summarize explicitly selected owned records. "
+         "Returned only; no detached summary is stored automatically.",
+         {"record_ids": {"type": "array", "items": {"type": "string"},
+                         "minItems": 1, "maxItems": 50},
+          "title": {"type": "string"}}, ("record_ids",),
          lambda a: call("POST", "/v1/memories/summarize", {
-             "limit": _limit(a.get("limit"), 20, 50),
-             **({"title": str(a["title"])} if a.get("title") else {}),
-             **({"category": str(a["category"])} if a.get("category") else {})}))
+             "record_ids": a["record_ids"],
+             **({"title": str(a["title"])} if a.get("title") else {})}))
     tool("find_consolidation_candidates", "Report-only: which memories look "
          "like duplicates or merge candidates. Never merges by itself.",
-         {"limit": {"type": "integer"}}, (),
+         {"record_ids": {"type": "array", "items": {"type": "string"},
+                         "minItems": 2, "maxItems": 50}}, ("record_ids",),
          lambda a: call("POST", "/v1/memories/consolidation/candidates",
-                        {"limit": _limit(a.get("limit"), 20, 50)}))
+                        {"record_ids": a["record_ids"]}))
     tool("get_summarization_status", "Model route and daily budget state for "
          "this profile's space.", {}, (),
          lambda a: call("GET", "/v1/memories/summarization/status"))
@@ -319,7 +325,11 @@ def serve(table):
         elif method == "tools/list":
             result = {"tools": [schema for schema, _ in table.values()]}
         elif method == "tools/call":
-            params = message.get("params") or {}
+            params = message.get("params", {})
+            if not isinstance(params, dict) or not isinstance(params.get("name"), str):
+                print(json.dumps({"jsonrpc": "2.0", "id": identifier,
+                                  "error": {"code": -32602, "message": "Invalid tool parameters"}}), flush=True)
+                continue
             entry = table.get(params.get("name"))
             if entry is None:
                 result = _error("unknown tool for this group selection")
@@ -327,9 +337,27 @@ def serve(table):
                                   "result": result}), flush=True)
                 continue
             try:
-                result = _text(entry[1](params.get("arguments") or {}))
-            except ValueError as exc:
-                result = _error(str(exc))
+                arguments = params.get("arguments", {})
+                schema = entry[0]["inputSchema"]
+                if (not isinstance(arguments, dict)
+                        or set(arguments) - set(schema["properties"])
+                        or not set(schema["required"]).issubset(arguments)):
+                    raise ValueError("invalid arguments")
+                for key, value in arguments.items():
+                    kind = schema["properties"][key].get("type")
+                    if ((kind == "string" and not isinstance(value, str))
+                            or (kind == "integer" and type(value) is not int)
+                            or (kind == "array" and (not isinstance(value, list)
+                                or any(not isinstance(item, str) for item in value)))):
+                        raise ValueError("invalid argument type")
+                payload = entry[1](arguments)
+                if isinstance(payload, dict) and "error" in payload:
+                    result = _text(payload)
+                    result["isError"] = True
+                else:
+                    result = _text(payload)
+            except (ValueError, TypeError):
+                result = _error("invalid memory tool arguments; check the API contract")
             except Exception:
                 result = _error("memory call failed; no success was acknowledged")
         else:

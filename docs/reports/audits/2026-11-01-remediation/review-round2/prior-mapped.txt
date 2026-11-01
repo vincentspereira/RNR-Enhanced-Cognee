@@ -1,0 +1,29 @@
+...............                                                          [100%]
+=============================== warnings summary ===============================
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+  /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py:42: DeprecationWarning: Binding 1 ('$1') is a named parameter, but you supplied a sequence which requires nameless (qmark) placeholders. Starting with Python 3.14 an sqlite3.ProgrammingError will be raised.
+    return db.execute(sql,args).fetchall()
+
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+  /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py:42: DeprecationWarning: Binding 2 ('$2') is a named parameter, but you supplied a sequence which requires nameless (qmark) placeholders. Starting with Python 3.14 an sqlite3.ProgrammingError will be raised.
+    return db.execute(sql,args).fetchall()
+
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+  /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py:42: DeprecationWarning: Binding 3 ('$3') is a named parameter, but you supplied a sequence which requires nameless (qmark) placeholders. Starting with Python 3.14 an sqlite3.ProgrammingError will be raised.
+    return db.execute(sql,args).fetchall()
+
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+  /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py:42: DeprecationWarning: Binding 4 ('$4') is a named parameter, but you supplied a sequence which requires nameless (qmark) placeholders. Starting with Python 3.14 an sqlite3.ProgrammingError will be raised.
+    return db.execute(sql,args).fetchall()
+
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+::test_shared_only_preserves_tenant_current_version_membership_and_publisher_gates
+  /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py:42: DeprecationWarning: Binding 5 ('$5') is a named parameter, but you supplied a sequence which requires nameless (qmark) placeholders. Starting with Python 3.14 an sqlite3.ProgrammingError will be raised.
+    return db.execute(sql,args).fetchall()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+15 passed, 10 warnings in 0.21s

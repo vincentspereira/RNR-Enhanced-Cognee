@@ -1,0 +1,122 @@
+[
+  {
+    "path": "integrations/hermes/deployment/functional_memory_test.py",
+    "sha256": "dbcbff1a57a88ae22c208ad499990160e4cf618e38c2b5d110eb301456a40317"
+  },
+  {
+    "path": "integrations/hermes/deployment/install_fleet_token_renewal.py",
+    "sha256": "4d291cb5e1336c7beba21ba6fc0cf6e56aac27058e32ffea7d31d6b767a838ac"
+  },
+  {
+    "path": "integrations/hermes/deployment/renew_fleet_memory_tokens.py",
+    "sha256": "5e05b0e1a0e1374065495c8891b5e81d472f5a537e3178c02d1af0977f4cdb1b"
+  },
+  {
+    "path": "integrations/hermes/deployment/roles.json",
+    "sha256": "7ba6314c360eb5dc433798bbcbd2b434d932687ccebff8a4868a2a077cc755dc"
+  },
+  {
+    "path": "integrations/hermes/deployment/verification_contracts.py",
+    "sha256": "0fcee4e096c31d3fa310082301f90f76ad0f07297408e96d36a52dc528c62fdf"
+  },
+  {
+    "path": "integrations/hermes/deployment/verify_everything.py",
+    "sha256": "cc7f2c51fbf80cea33150addac6d60b5e756adf016a629947e107b3ed8b596f0"
+  },
+  {
+    "path": "integrations/hermes/deployment/verify_fleet_memory_tools.py",
+    "sha256": "8532d8c0d8218652a601e08170857ec4a07b83a3d10b21f86cc38097856b1098"
+  },
+  {
+    "path": "integrations/hermes/enhanced_cognee_mcp/server.py",
+    "sha256": "7013cb6aa87afda4b0f80bae20ed7a8e29067c5693751fdf9eb90cf767e3bb20"
+  },
+  {
+    "path": "src/ingestion.py",
+    "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b"
+  },
+  {
+    "path": "src/llm_budget.py",
+    "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7"
+  },
+  {
+    "path": "src/llm_summarize.py",
+    "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae"
+  },
+  {
+    "path": "src/memory_api.py",
+    "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda"
+  },
+  {
+    "path": "src/memory_daemon.py",
+    "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20"
+  },
+  {
+    "path": "src/memory_library.py",
+    "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f"
+  },
+  {
+    "path": "src/memory_queries.py",
+    "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3"
+  },
+  {
+    "path": "src/security/enterprise_auth.py",
+    "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e"
+  },
+  {
+    "path": "tests/unit/test_analysis_audit_remediation.py",
+    "sha256": "63a5f892e08d8c2f742c439c275cb48c0d6d6c8dc969c1566059924fb646cb50"
+  },
+  {
+    "path": "tests/unit/test_analysis_lifespan_audit_remediation.py",
+    "sha256": "c9313fa01e711d7f1e2508158fcd340dd577c2e5fd2ce0ef08609a846d044a69"
+  },
+  {
+    "path": "tests/unit/test_analysis_protocol_audit_remediation.py",
+    "sha256": "3946511c0f4d91ca4f0781161146f5736327f99d303c9c0afee7ae3a42b16de7"
+  },
+  {
+    "path": "tests/unit/test_api_integration_audit.py",
+    "sha256": "8e10cc76aaa4a808c85be3093519dd66ccbf66d59e5637a6a87491d5ec29345b"
+  },
+  {
+    "path": "tests/unit/test_daemon_budget_audit.py",
+    "sha256": "abd59f66b21193673a91fc1ac79c806869a45d5f7d1f34c76d61f807f4644f28"
+  },
+  {
+    "path": "tests/unit/test_functional_runner_audit.py",
+    "sha256": "bbf22f8ac21e4b361a7412cdd03bc868a97829f54b0555fb60d28c336d52b4af"
+  },
+  {
+    "path": "tests/unit/test_ingestion_audit_remediation.py",
+    "sha256": "ddc05947bde5f8ae96c382778c8ab712ad850398320c1a7e8290ff2bb0c9de79"
+  },
+  {
+    "path": "tests/unit/test_library_read_audit_remediation.py",
+    "sha256": "39b1b666d3400c4f01d3e50ba5ed5a47e222ad67cf6ee56a373e1db742acbe81"
+  },
+  {
+    "path": "tests/unit/test_llm_budget_audit_remediation.py",
+    "sha256": "41bf80a7e537a05a6e1c433b0e0e29dec4b289d4347a9c182c9b199f5f3d78de"
+  },
+  {
+    "path": "tests/unit/test_mcp_audit_remediation.py",
+    "sha256": "9906b855b4bf9ea9d3489ff1dd033d6da047ca528126c2533fdeda7cb0c65990"
+  },
+  {
+    "path": "tests/unit/test_renewal_audit_remediation.py",
+    "sha256": "ee8964ff6e3fb5c6e87818d2c35d37bbbfc1472ee5115ee5b44bd9513caf099b"
+  },
+  {
+    "path": "tests/unit/test_renewal_installer_audit.py",
+    "sha256": "df4b66cee564e457d1070bcbd283fa921723370cf9bfd113b38c55cd94c8f220"
+  },
+  {
+    "path": "tests/unit/test_review_round1_remediation.py",
+    "sha256": "bbdf044f44a0d73df4043ed65f2674e9e47a3086dead47afe85b690c0b0e6bbd"
+  },
+  {
+    "path": "tests/unit/test_verifier_audit_remediation.py",
+    "sha256": "587620251f355311c7ec126f3b272bcc3eb334e20351f1edabc44430f114120d"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "accepted": true,
+  "scope": "source only, not installed",
+  "manifest_sha256": "d8357a0a41ba1ad600c1cfb1ce07f86290783e75ab69ce4422375d2073693c71",
+  "source_files": 30,
+  "review_archive_sha256": "989b27ad990a3df619b9347d06ecef5648340c898c43142ebb2d20b1eff8a602",
+  "accepted_case_executions": 214,
+  "pending": [
+    "owner installation",
+    "protected backend binding",
+    "service-UID ledger provisioning",
+    "current-profile recovery and credential-handoff evidence"
+  ]
+}

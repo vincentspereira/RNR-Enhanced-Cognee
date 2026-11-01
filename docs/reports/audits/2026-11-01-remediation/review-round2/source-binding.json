@@ -1,0 +1,9 @@
+{
+  "manifest_matches": true,
+  "count": 30,
+  "exact_changed_coverage": true,
+  "unexpected": [],
+  "missing": [],
+  "branch": "codex/enhanced-cognee-audit-remediation-20261101",
+  "head": "89d1be78bbe9571b9152396c5483eabbb8360b95"
+}

@@ -1,0 +1,14 @@
+test_production_api_gets_fixed_protected_ledger_path (test_daemon_budget_audit.DaemonBudgetTests.test_production_api_gets_fixed_protected_ledger_path) ... FAIL
+
+======================================================================
+FAIL: test_production_api_gets_fixed_protected_ledger_path (test_daemon_budget_audit.DaemonBudgetTests.test_production_api_gets_fixed_protected_ledger_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_daemon_budget_audit.py", line 16, in test_production_api_gets_fixed_protected_ledger_path
+    self.assertEqual(env.get('ENHANCED_LLM_BUDGET_DB'),'/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3')
+AssertionError: None != '/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

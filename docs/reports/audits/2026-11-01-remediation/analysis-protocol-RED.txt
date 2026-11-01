@@ -1,0 +1,28 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 11 items
+
+tests/unit/test_analysis_protocol_audit_remediation.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[31m       [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_______ test_http_usage_only_reconciles_reliable_integer_totals[usage4] ________[0m
+[1m[31mtests/unit/test_analysis_protocol_audit_remediation.py[0m:46: in test_http_usage_only_reconciles_reliable_integer_totals
+    [0m[94massert[39;49;00m tokens [95mis[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   assert 1 is None[0m
+[31m[1m_______ test_http_usage_only_reconciles_reliable_integer_totals[usage5] ________[0m
+[1m[31mtests/unit/test_analysis_protocol_audit_remediation.py[0m:46: in test_http_usage_only_reconciles_reliable_integer_totals
+    [0m[94massert[39;49;00m tokens [95mis[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   assert 12 is None[0m
+[31m[1m_______ test_http_usage_only_reconciles_reliable_integer_totals[usage7] ________[0m
+[1m[31mtests/unit/test_analysis_protocol_audit_remediation.py[0m:46: in test_http_usage_only_reconciles_reliable_integer_totals
+    [0m[94massert[39;49;00m tokens [95mis[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   assert 2 is None[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_analysis_protocol_audit_remediation.py::[1mtest_http_usage_only_reconciles_reliable_integer_totals[usage4][0m - assert 1 is None
+[31mFAILED[0m tests/unit/test_analysis_protocol_audit_remediation.py::[1mtest_http_usage_only_reconciles_reliable_integer_totals[usage5][0m - assert 12 is None
+[31mFAILED[0m tests/unit/test_analysis_protocol_audit_remediation.py::[1mtest_http_usage_only_reconciles_reliable_integer_totals[usage7][0m - assert 2 is None
+[31m========================= [31m[1m3 failed[0m, [32m8 passed[0m[31m in 0.79s[0m[31m ==========================[0m

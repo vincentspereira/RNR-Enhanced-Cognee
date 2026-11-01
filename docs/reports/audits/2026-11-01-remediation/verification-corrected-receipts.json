@@ -1,0 +1,30 @@
+[
+  {
+    "name": "verifier-green-corrected",
+    "args": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/unit",
+      "-p",
+      "test_verifier_audit_remediation.py",
+      "-v"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "consolidated-before-install-corrected",
+    "args": [
+      "integrations/hermes/deployment/verify_everything.py"
+    ],
+    "exit": 1
+  },
+  {
+    "name": "fleet-before-install-corrected",
+    "args": [
+      "integrations/hermes/deployment/verify_fleet_memory_tools.py"
+    ],
+    "exit": 0
+  }
+]

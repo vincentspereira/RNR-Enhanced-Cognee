@@ -1,0 +1,71 @@
+test_analysis_timeout_covers_server_model_deadline (test_mcp_audit_remediation.McpAuditTests.test_analysis_timeout_covers_server_model_deadline) ... FAIL
+test_connection_uses_entity_contract (test_mcp_audit_remediation.McpAuditTests.test_connection_uses_entity_contract) ... FAIL
+test_http_refusal_is_an_mcp_error (test_mcp_audit_remediation.McpAuditTests.test_http_refusal_is_an_mcp_error) ... FAIL
+test_invalid_arguments_do_not_echo_input (test_mcp_audit_remediation.McpAuditTests.test_invalid_arguments_do_not_echo_input) ... FAIL
+test_malformed_params_does_not_kill_next_request (test_mcp_audit_remediation.McpAuditTests.test_malformed_params_does_not_kill_next_request) ... ERROR
+test_required_args_are_enforced_before_network (test_mcp_audit_remediation.McpAuditTests.test_required_args_are_enforced_before_network) ... FAIL
+
+======================================================================
+ERROR: test_malformed_params_does_not_kill_next_request (test_mcp_audit_remediation.McpAuditTests.test_malformed_params_does_not_kill_next_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 33, in test_malformed_params_does_not_kill_next_request
+    replies = self.run_rpc([bad,self.call('health',ident=2)])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 21, in run_rpc
+    server.serve(table)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/integrations/hermes/enhanced_cognee_mcp/server.py", line 323, in serve
+    entry = table.get(params.get("name"))
+                      ^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+FAIL: test_analysis_timeout_covers_server_model_deadline (test_mcp_audit_remediation.McpAuditTests.test_analysis_timeout_covers_server_model_deadline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 61, in test_analysis_timeout_covers_server_model_deadline
+    self.assertGreaterEqual(observed[0],60)
+AssertionError: 10 not greater than or equal to 60
+
+======================================================================
+FAIL: test_connection_uses_entity_contract (test_mcp_audit_remediation.McpAuditTests.test_connection_uses_entity_contract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 47, in test_connection_uses_entity_contract
+    self.assertEqual(api.call_args.args[3],{'entity':'calibration'})
+AssertionError: {'query': 'calibration'} != {'entity': 'calibration'}
+- {'query': 'calibration'}
+?   -- ^
+
++ {'entity': 'calibration'}
+?    ^^^^
+
+
+======================================================================
+FAIL: test_http_refusal_is_an_mcp_error (test_mcp_audit_remediation.McpAuditTests.test_http_refusal_is_an_mcp_error)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 29, in test_http_refusal_is_an_mcp_error
+    self.assertTrue(replies[0]['result'].get('isError'))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_invalid_arguments_do_not_echo_input (test_mcp_audit_remediation.McpAuditTests.test_invalid_arguments_do_not_echo_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 41, in test_invalid_arguments_do_not_echo_input
+    self.assertNotIn(marker,json.dumps(replies))
+AssertionError: 'invented-private-input' unexpectedly found in '[{"jsonrpc": "2.0", "id": 1, "result": {"content": [{"type": "text", "text": "{\\"error\\": \\"invalid literal for int() with base 10: \'invented-private-input\'\\", \\"success_acknowledged\\": false}"}], "isError": true}}]'
+
+======================================================================
+FAIL: test_required_args_are_enforced_before_network (test_mcp_audit_remediation.McpAuditTests.test_required_args_are_enforced_before_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 65, in test_required_args_are_enforced_before_network
+    self.assertTrue(replies[0]['result'].get('isError'))
+AssertionError: None is not true
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.010s
+
+FAILED (failures=5, errors=1)

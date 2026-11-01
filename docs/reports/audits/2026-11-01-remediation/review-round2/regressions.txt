@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 187 items
+
+tests/unit/test_analysis_audit_remediation.py .......................... [ 13%]
+...................................                                      [ 32%]
+tests/unit/test_analysis_lifespan_audit_remediation.py ...               [ 34%]
+tests/unit/test_analysis_protocol_audit_remediation.py ...........       [ 40%]
+tests/unit/test_api_integration_audit.py ...                             [ 41%]
+tests/unit/test_daemon_budget_audit.py .                                 [ 42%]
+tests/unit/test_functional_runner_audit.py .....                         [ 44%]
+tests/unit/test_ingestion_audit_remediation.py ........                  [ 49%]
+tests/unit/test_library_read_audit_remediation.py ....                   [ 51%]
+tests/unit/test_llm_budget_audit_remediation.py .......................  [ 63%]
+tests/unit/test_mcp_audit_remediation.py .......                         [ 67%]
+tests/unit/test_renewal_audit_remediation.py ...............             [ 75%]
+tests/unit/test_renewal_installer_audit.py ....                          [ 77%]
+tests/unit/test_review_round1_remediation.py ........................... [ 91%]
+...........                                                              [ 97%]
+tests/unit/test_verifier_audit_remediation.py ....                       [100%]
+
+- generated xml file: /home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/regressions.xml -
+============================= 187 passed in 5.79s ==============================

@@ -464,6 +464,10 @@ def route_required_permission(method: str, path: str) -> Optional[Permission]:
     """
     if path in PUBLIC_PATHS:
         return None
+    # Only these exact, caller-scoped GET handlers are non-administrative.
+    if method.upper() == "GET" and path in {
+            "/v1/memories/library/", "/v1/memories/library/membership"}:
+        return Permission.MEMORY_READ
     if path.startswith("/v1/memories/") and (path.endswith(("/share", "/library")) or path.startswith("/v1/memories/library/")):
         return Permission.MEMORY_ADMIN
     exact = _ROUTE_PERMISSIONS.get((method.upper(), path))

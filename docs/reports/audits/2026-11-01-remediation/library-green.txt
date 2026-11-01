@@ -1,0 +1,9 @@
+test_library_get_requires_read_not_admin (test_library_read_audit_remediation.LibraryReadTests.test_library_get_requires_read_not_admin) ... ok
+test_library_mutation_still_requires_admin (test_library_read_audit_remediation.LibraryReadTests.test_library_mutation_still_requires_admin) ... ok
+test_membership_is_scoped_to_callers_tenant_and_project (test_library_read_audit_remediation.LibraryReadTests.test_membership_is_scoped_to_callers_tenant_and_project) ... ok
+test_shared_only_query_retains_existing_read_grants (test_library_read_audit_remediation.LibraryReadTests.test_shared_only_query_retains_existing_read_grants) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK
