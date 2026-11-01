@@ -65,12 +65,32 @@ def needs_renewal(exp: int, now: int, window: int = WINDOW_SECONDS) -> bool:
 
 
 def profiles() -> list[str]:
+    """default + every fleet role: the enablement role table first (the
+    source of truth for the current fleet), unioned with any names in the
+    historical batch receipts, so newly added bots renew without a data
+    fix even if the receipts file lags."""
     names = ["default"]
-    receipts = json.loads(RECEIPTS.read_text())
-    roles = sorted(name for name in receipts.get("receipts", {})
-                   if name not in CANARIES)
-    require(isinstance(roles, list) and len(roles) <= 64, "receipts_shape")
-    return names + roles
+    try:
+        import importlib.util
+        table = Path("/home/vincentspereira/agent-workspace/"
+                     "enhanced-cognee-deployment-20261020/launch-worktree-"
+                     "20261024/integrations/hermes/deployment/"
+                     "enable_fleet_memory_mcp.py")
+        if table.is_file():
+            spec = importlib.util.spec_from_file_location("enablement", table)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            names.extend(sorted(module.ROLE_GROUPS))
+    except Exception:
+        pass
+    try:
+        receipts = json.loads(RECEIPTS.read_text())
+        names.extend(sorted(name for name in receipts.get("receipts", {})))
+    except OSError:
+        pass
+    roles = sorted(set(names) - CANARIES)
+    require(isinstance(roles, list) and 1 <= len(roles) <= 64, "receipts_shape")
+    return roles
 
 
 def env_path(profile: str) -> Path:
