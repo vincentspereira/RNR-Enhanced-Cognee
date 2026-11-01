@@ -1,0 +1,118 @@
+{
+  "ci": {
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "new_helper_hosted_ci_pass_claimed": false,
+    "provenance": "current_public_github_api_exact_delivery_revision",
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "correction": {
+    "exact_node_bytes": 123655872,
+    "hashes_permissions_and_stability_guards_preserved": true,
+    "new_protected_artifact_version": 2,
+    "node_sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "old_sources_and_failures_preserved": true,
+    "other_script_validator_unchanged": true,
+    "prepared_source": "continue_main_rea_mcp.py",
+    "rea_sdk_reader_limit_bytes": 10485760,
+    "sha256": "49a76c14ee0a38578478126366809dc9879ff3693e7431b9f335c9a74508abf4"
+  },
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "diagnosis": {
+    "all_five_sha256_match": true,
+    "all_owners_modes_links_and_ancestors_pass": true,
+    "failing_artifact": "node",
+    "failing_predicate": "script_size_cap_applied_to_executable",
+    "node_executable_bytes": 123655872,
+    "original_script_cap_bytes": 16777216,
+    "provenance": "actual_readonly_public_artifact_metadata_hashes_and_original_validator",
+    "rea_started_by_failed_finish": false
+  },
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "protected_continuation": {
+    "actual_profile_admission_qualified": false,
+    "executed": false,
+    "filesystem_pass_reused": true,
+    "fleet_launch_approved": false,
+    "prior_207_tool_local_diagnostic_reused": true,
+    "protected_package_copy_passes_reused": true,
+    "reason": "sudo_requires_owner_terminal"
+  },
+  "protected_failure": {
+    "all_admission_policies_preserved_disabled": true,
+    "checkpoint": "public_code_pins",
+    "complete": false,
+    "credentials_issued": 0,
+    "error_kind": "ValueError",
+    "evidence_basename": "main-local-mcp-rea-finish-evjjlpz3",
+    "filesystem_replayed": false,
+    "full_public_readback_replayed": false,
+    "java_ghidra_proof_replayed": false,
+    "memory_api_called": false,
+    "model_called": false,
+    "new_package_copies": 0,
+    "operator_helper_sha256": "483a4d97d8f6756d87047a0a7d1851db31c3dff77a94a1b8c076aa2ce412915e",
+    "operator_job_stopped": true,
+    "previous_candidates_changed": false,
+    "provenance": "owner_supplied_final_json_and_matching_source_sha256",
+    "source_profiles_changed": false
+  },
+  "recorded_date": "2026-10-28",
+  "remaining": [
+    "protected_rea_only_continuation",
+    "actual_main_tools_context_and_native_binding",
+    "fetch_and_remote_mcp",
+    "production_dispatch",
+    "admitted_renewal",
+    "deferred_profiles",
+    "final_fresh_main_state",
+    "final_switch_review"
+  ],
+  "validation": {
+    "errors": 0,
+    "exact_corrected_preflight_actual_artifacts": [
+      {
+        "accepted": true,
+        "artifact": "public_protocol",
+        "bytes": 8240
+      },
+      {
+        "accepted": true,
+        "artifact": "node",
+        "bytes": 123655872
+      },
+      {
+        "accepted": true,
+        "artifact": "rea_entry",
+        "bytes": 6110
+      },
+      {
+        "accepted": true,
+        "artifact": "rea_main",
+        "bytes": 3566777
+      },
+      {
+        "accepted": true,
+        "artifact": "sdk",
+        "bytes": 337245
+      }
+    ],
+    "failures": 0,
+    "native_compile_passed": true,
+    "native_python": "3.14.7",
+    "private_profiles_read": false,
+    "server_started_by_public_pin_validation": false,
+    "service_protocol_regressions": "invented_fixtures",
+    "skips": 0,
+    "source_tests_passed": 52,
+    "warnings": 0
+  }
+}

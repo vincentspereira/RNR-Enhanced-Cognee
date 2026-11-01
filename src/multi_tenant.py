@@ -79,6 +79,18 @@ _TENANT_CTX: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
 _SAFE_RE = re.compile(r"[^a-zA-Z0-9_]")
 
 
+def validate_tenant_id(tenant_id: str) -> str:
+    """Require a canonical ID without silently aliasing existing data.
+
+    Legacy noncanonical namespaces require an explicit reviewed migration. They
+    must never be guessed from an external display name. Keeping IDs at 32
+    characters avoids PostgreSQL's 63-byte identifier truncation for core tables.
+    """
+    if not isinstance(tenant_id, str) or not re.fullmatch(r"[a-z][a-z0-9_]{0,31}", tenant_id):
+        raise ValueError("Tenant ID must be 1-32 lowercase letters, digits or underscores, starting with a letter.")
+    return tenant_id
+
+
 # ---------------------------------------------------------------------------
 # Errors
 # ---------------------------------------------------------------------------
@@ -114,7 +126,8 @@ def set_tenant(tenant_id: Optional[str]) -> contextvars.Token[Optional[str]]:
     restore the previous value -- but the ``TenantContext`` context
     manager below is the recommended API.
     """
-    safe = sanitise_tenant_id(tenant_id) if tenant_id else None
+    safe = (validate_tenant_id(tenant_id) if tenant_required()
+            else sanitise_tenant_id(tenant_id)) if tenant_id else None
     return _TENANT_CTX.set(safe)
 
 
@@ -258,7 +271,7 @@ async def ensure_tenant_schema(pool: Any, tenant_id: Optional[str] = None) -> No
     t = tenant_id or _TENANT_CTX.get()
     if t is None:
         return  # single-tenant mode -- nothing to create
-    safe_t = sanitise_tenant_id(t)
+    safe_t = validate_tenant_id(t) if tenant_required() else sanitise_tenant_id(t)
 
     async with pool.acquire() as conn:
         await conn.execute(

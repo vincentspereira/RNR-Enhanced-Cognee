@@ -1,0 +1,2244 @@
+{
+  "add_memory": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:write",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "canonical_record_write",
+        "history_append",
+        "audit_append",
+        "index_event_append"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "add_observation": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "advanced_search": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "archive_category": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "auto_deduplicate": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "auto_summarize_old_memories": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "cancel_task": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "check_duplicate": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "check_memory_access": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "cluster_memories": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "cognify": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "cognify_status": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "compact_knowledge_graph": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "configure_discord_notifications": {
+    "legacy": {
+      "permission": "system:config",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "configure_slack_notifications": {
+    "legacy": {
+      "permission": "system:config",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "consolidate_memories": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "create_backup": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "create_shared_space": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "cross_language_search": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "deduplicate": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "deduplication_report": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "delete_memory": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:delete",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "versioned_retraction",
+        "audit_append",
+        "derived_cleanup_event"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "delete_observation": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "detect_language": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "disable_webhook": {
+    "legacy": {
+      "permission": "system:config",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "encrypt_memory": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "end_session": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "expand_search_query": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "expire_memories": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "extract_graph_v2": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "find_consolidation_candidates": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "forget_memory": {
+    "legacy": {
+      "permission": "memory:delete",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:delete",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "versioned_retraction",
+        "audit_append",
+        "derived_cleanup_event"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "gdpr_check_consent": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "gdpr_delete_user_data": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "gdpr_export_user_data": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "gdpr_list_consents": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "gdpr_record_consent": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "gdpr_verify_tenant_isolation": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_confidence_report": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_consolidation_report": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_deduplication_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_encryption_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_graph_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_language_distribution": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_llm_cost_report": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_memories": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "get_memory": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "get_memory_age_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_memory_detail": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "get_memory_history": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "get_memory_importance": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_memory_provenance": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_observations": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_performance_metrics": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_prometheus_metrics": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_related": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_search_analytics": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_search_facets": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_session_context": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_session_history": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_shared_memories": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_slow_queries": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "get_summarization_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_summary_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_supported_languages": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_sync_status": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_tier_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_top_important_memories": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "get_undo_history": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "health": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "improve": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "ingest_db": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "ingest_url": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "intelligent_summarize": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "list_agents": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "list_backups": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "list_data": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "list_loader_plugins": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "list_loaders": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "list_tasks": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "list_webhooks": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "load_document_with_plugin": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "promote_memory_tier": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "publish_memory_event": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "query_audit_log": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "recall": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "redo_last": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "regex_extract_entities": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "register_webhook": {
+    "legacy": {
+      "permission": "system:config",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "remember": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:write",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "canonical_record_write",
+        "history_append",
+        "audit_append",
+        "index_event_append"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "rerank_search_results": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "restore_backup": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "revert_memory": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "rollback_restore": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "rotate_encryption_key": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "save_interaction": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "schedule_deduplication": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "schedule_summarization": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "schedule_task": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "search": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "search_by_language": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "search_memories": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:read",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "authorized_record_read",
+        "bounded_index_read"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "search_quick": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "set_cost_budget": {
+    "legacy": {
+      "permission": "system:config",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "set_memory_confidence": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "set_memory_sharing": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "set_memory_ttl": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "start_session": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "summarize_category": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "summarize_old_memories": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "summary_stats": {
+    "legacy": {
+      "permission": "memory:read",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "sync_agent_state": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "test_notification_channel": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "test_webhook": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "translate_text": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "undo_last": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "update_importance_scores": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "update_memory": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": {
+      "permission": "memory:write",
+      "implementation": "canonical_service",
+      "possible_effects": [
+        "canonical_record_write",
+        "history_append",
+        "audit_append",
+        "index_event_append"
+      ],
+      "canonical_admitted": true,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    }
+  },
+  "update_observation": {
+    "legacy": {
+      "permission": "memory:write",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "verify_backup": {
+    "legacy": {
+      "permission": "system:monitor",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  },
+  "verify_memory": {
+    "legacy": {
+      "permission": "system:admin",
+      "implementation": "legacy_separate_qualification_required",
+      "possible_effects": [
+        "legacy_storage",
+        "possible_mutation",
+        "possible_filesystem",
+        "possible_network",
+        "possible_model"
+      ],
+      "canonical_admitted": false,
+      "inputs_are_untrusted": true,
+      "grants_authority_from_content": false
+    },
+    "canonical": null
+  }
+}

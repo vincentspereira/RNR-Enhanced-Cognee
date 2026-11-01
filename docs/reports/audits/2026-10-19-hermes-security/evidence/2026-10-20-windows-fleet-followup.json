@@ -1,0 +1,266 @@
+{
+  "date": "2026-10-20",
+  "fleet": {
+    "tenant": "fleet_live_5d40ba35555f",
+    "source_revision": "df575f29d880c277265b3c99f516888dd2984784",
+    "client_uid": 65534,
+    "exit_code": 0,
+    "signing_key_not_given_to_client": true,
+    "real_profiles_unchanged": true,
+    "passed": true,
+    "synthetic_identities": 42,
+    "profile_installations": 0,
+    "write_concurrency": 8,
+    "recall_concurrency": 4,
+    "write_batch_seconds": 0.998,
+    "request_p50_seconds": 0.011,
+    "request_p95_seconds": 0.11,
+    "requests": 299,
+    "admission_retries": 0,
+    "private_cross_scope_denials": 42,
+    "reviewed_shared_reads": 41,
+    "membership_revocation_denied_immediately": true,
+    "correction_withdrawn_from_all_bot_views": true,
+    "private_records_preserved": true,
+    "actual_vector_index_queried": true,
+    "controller_pending_events": 0,
+    "chat_model_calls": 0,
+    "production_throughput_qualified": false,
+    "all_42_scopes_pending_events": 0,
+    "tenant_table_counts": {
+      "records": 43,
+      "record_versions": 44,
+      "record_audit": 88,
+      "library_members": 41,
+      "library_publications": 0
+    }
+  },
+  "windows": {
+    "native_powershell": "5.1.26100.9711",
+    "v11_parser_errors": 0,
+    "qualification_tool_parser_errors": 0,
+    "task_repair_parser_errors": 0,
+    "qualification_file_execution": "completed_after_process_only_approval",
+    "saved_policy_changed": false,
+    "process_only_remotesigned_approval": "received",
+    "real_archive_password_file_present": false,
+    "seven_zip_installed": true,
+    "existing_task": {
+      "name": "WSL Master Incremental Backup",
+      "state": "Ready",
+      "action_script": "backup-all-wsl.ps1",
+      "action_target_exists": false,
+      "uses_v11": false,
+      "requires_cognee": false,
+      "logon_type": "Password",
+      "run_level": "Highest",
+      "multiple_instances": "IgnoreNew",
+      "last_result_hex": "0xFFFD0000",
+      "weekly_schedule": true,
+      "task_modified": false
+    },
+    "repair_script": "C:\\Scripts\\Update-WSLBackupTask-v11.ps1",
+    "repair_default": "preview_only",
+    "repair_apply_requires_real_dpapi_file": true,
+    "repair_starts_task": false,
+    "local_chain_restore_manifests_found": 0,
+    "full_backup_started": false,
+    "cloud_upload_started": false,
+    "dpapi_runtime_test_passed": true,
+    "real_off_machine_restore_passed": false,
+    "native_runtime_checks": {
+      "complete": true,
+      "windows_powershell": "5.1.26100.9711",
+      "seven_zip": "26.03",
+      "backup_script_sha256": "235E44C93E346D88A2D98870CC516A964111518A46973F2ECB23ADBB9DBD32DA",
+      "passed": 32,
+      "failed": 0,
+      "checks": [
+        {
+          "name": "native_parser",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Write-Task",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Write-Ok",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Write-Bad",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Invoke-SevenZip",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Test-SevenZipArchive",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Invoke-WslBinaryExport",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Backup-EnhancedCognee",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Write-RestoreManifest",
+          "passed": true
+        },
+        {
+          "name": "one_definition_Test-CloudFilesPresent",
+          "passed": true
+        },
+        {
+          "name": "dpapi_no_plaintext",
+          "passed": true
+        },
+        {
+          "name": "dpapi_same_account_roundtrip",
+          "passed": true
+        },
+        {
+          "name": "dpapi_unattended_child_process",
+          "passed": true
+        },
+        {
+          "name": "encrypted_base_created",
+          "passed": true
+        },
+        {
+          "name": "encrypted_base_integrity",
+          "passed": true
+        },
+        {
+          "name": "wrong_password_rejected",
+          "passed": true
+        },
+        {
+          "name": "filenames_encrypted",
+          "passed": true
+        },
+        {
+          "name": "encrypted_diff_created",
+          "passed": true
+        },
+        {
+          "name": "encrypted_diff_integrity",
+          "passed": true
+        },
+        {
+          "name": "extract_base.7z",
+          "passed": true
+        },
+        {
+          "name": "extract_latest.7z",
+          "passed": true
+        },
+        {
+          "name": "restore_unchanged",
+          "passed": true
+        },
+        {
+          "name": "restore_corrected",
+          "passed": true
+        },
+        {
+          "name": "restore_added",
+          "passed": true
+        },
+        {
+          "name": "restore_deletion",
+          "passed": true
+        },
+        {
+          "name": "manifest_hashes",
+          "passed": true
+        },
+        {
+          "name": "older_files_retained",
+          "passed": true
+        },
+        {
+          "name": "real_wsl_binary_all_byte_values",
+          "passed": true
+        },
+        {
+          "name": "failed_wsl_export_not_promoted",
+          "passed": true
+        },
+        {
+          "name": "failed_wsl_partial_retained",
+          "passed": true
+        },
+        {
+          "name": "actual_windows_wsl_collection",
+          "passed": true
+        },
+        {
+          "name": "complete_archive_manifest_pairs",
+          "passed": true
+        }
+      ],
+      "collected_cognee": {
+        "copied_hashes_verified": true,
+        "recovery_keys_collected": false,
+        "completed_pairs": 3
+      },
+      "scheduled_task": {
+        "logon": "Password",
+        "nonoverlap": "IgnoreNew",
+        "requires_cognee": false,
+        "uses_v11": false,
+        "modified_by_test": false,
+        "last_result": "0xFFFD0000"
+      },
+      "fixtures_retained": true,
+      "full_backup_started": false,
+      "cloud_upload_started": false,
+      "owner_real_password_configured": false,
+      "real_off_machine_recovery_qualified": false,
+      "scheduled_execution_qualified": false
+    },
+    "backup_script_sha256": "235E44C93E346D88A2D98870CC516A964111518A46973F2ECB23ADBB9DBD32DA",
+    "wsl_explicit_exec_call_sites_fixed": 13,
+    "task_repair_preview_passed": true,
+    "task_repair_owner_approval": "received; apply only after real archive password setup",
+    "explicit_bash_argument_test_passed": true,
+    "explicit_python_zip_argument_test_passed": true,
+    "native_v11_whatif_exit_code": 0,
+    "saved_policy_after_test": {
+      "CurrentUser": null,
+      "LocalMachine": null,
+      "ProcessPreferencePresent": false
+    }
+  },
+  "frontend": {
+    "braces_latest": "3.0.3",
+    "eslint_config_next_latest": "16.4.2",
+    "upstream_patched_version": null,
+    "full_audit_gate_waived": false
+  },
+  "owner_recovery_revocation_confirmed": false,
+  "everyday_bots_modified": false,
+  "temporary_account_recreated": false,
+  "hosted_checks": {
+    "revision": "dac7826f56d876d5282f7210581f114e061ec06d",
+    "required_ci_run": 39501940961,
+    "unit_tests": 4344,
+    "schema_tests": 3,
+    "upstream_security_tests": 10,
+    "canonical_tests": 80,
+    "default_stack_run": 39501944103,
+    "default_stack_tests": 35,
+    "dashboard_run": 39501947497,
+    "browser_passed": true,
+    "frontend_audit_high_each": 5,
+    "frontend_production_findings_each": 0,
+    "all_passing_lanes_failures_errors_skips": 0,
+    "later_documentation_helper_revision_not_assessed": true
+  }
+}

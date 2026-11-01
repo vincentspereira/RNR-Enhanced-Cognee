@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rnr-enhanced-cognee-memory"
+version = "1.2.0"
+description = "Restricted canonical project memory, derived indexes and scoped MCP bridge"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+dependencies = [
+  "fastapi>=0.149.0,<1", "uvicorn>=0.54.0,<1", "asyncpg>=0.31.0,<1",
+  "cryptography>=50.0.0,<51", "PyJWT>=2.15.1,<3",
+  "numpy>=1.26.4,<3", "onnxruntime>=1.24.2,<2", "tokenizers>=0.21,<1",
+  "redis==5.1.1", "httpx>=0.28.1,<1", "mcp==1.30.0",
+]
+
+[tool.hatch.build.targets.wheel]
+only-include = []
+
+# One maintained source tree. Only reviewed runtime modules enter this artifact;
+# no upstream engine, local stores, historical plugins, settings or tests.
+[tool.hatch.build.targets.wheel.force-include]
+"../../src/memory_api.py" = "src/memory_api.py"
+"../../src/memory_daemon.py" = "src/memory_daemon.py"
+"../../src/memory_service.py" = "src/memory_service.py"
+"../../src/memory_contracts.py" = "src/memory_contracts.py"
+"../../src/memory_keys.py" = "src/memory_keys.py"
+"../../src/memory_key_rotation.py" = "src/memory_key_rotation.py"
+"../../src/memory_queries.py" = "src/memory_queries.py"
+"../../src/memory_library.py" = "src/memory_library.py"
+"../../src/memory_admin.py" = "src/memory_admin.py"
+"../../src/memory_backup.py" = "src/memory_backup.py"
+"../../src/legacy_memory_migration.py" = "src/legacy_memory_migration.py"
+"../../src/canonical_adapters.py" = "src/canonical_adapters.py"
+"../../src/index_contracts.py" = "src/index_contracts.py"
+"../../src/index_sinks.py" = "src/index_sinks.py"
+"../../src/index_outbox.py" = "src/index_outbox.py"
+"../../src/index_runtime.py" = "src/index_runtime.py"
+"../../src/recall_service.py" = "src/recall_service.py"
+"../../src/local_embeddings.py" = "src/local_embeddings.py"
+"../../src/encryption_manager.py" = "src/encryption_manager.py"
+"../../src/multi_tenant.py" = "src/multi_tenant.py"
+"../../src/mcp_security.py" = "src/mcp_security.py"
+"../../src/security/auth.py" = "src/security/auth.py"
+"../../src/security/enterprise_auth.py" = "src/security/enterprise_auth.py"
+"../../src/security/http_boundary.py" = "src/security/http_boundary.py"
+"../../src/security/request_context.py" = "src/security/request_context.py"
+"../../src/security/memory_admission.py" = "src/security/memory_admission.py"
+"../../src/security/tool_policy.py" = "src/security/tool_policy.py"
+"../../bin/project_memory_mcp.py" = "bin/project_memory_mcp.py"
+"../../sdk_pkg/enhanced_cognee_client" = "enhanced_cognee_client"
+"../../LICENSE" = "rnr_enhanced_cognee_memory-LICENSE"

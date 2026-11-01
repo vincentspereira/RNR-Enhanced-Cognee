@@ -2,6 +2,7 @@
   "name": "nextjs-dashboard",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -p 9050",
     "build": "next build",
@@ -15,7 +16,10 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
     "test:a11y": "playwright test tests/a11y",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "prelint": "node security-backports/apply-braces-depth-backport.mjs",
+    "prebuild": "node security-backports/apply-braces-depth-backport.mjs",
+    "security:backport": "node security-backports/check-braces-depth-backport.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -32,19 +36,19 @@
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-virtual": "^3.13.18",
-    "axios": "^1.13.4",
+    "axios": "^1.20.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cytoscape": "^3.33.1",
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
-    "jspdf": "^4.1.0",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.563.0",
-    "next": "16.1.6",
-    "react": "19.2.3",
+    "next": "16.4.2",
+    "react": "19.2.9",
     "react-calendar-heatmap": "^1.10.0",
     "react-cytoscapejs": "^2.0.0",
-    "react-dom": "19.2.3",
+    "react-dom": "19.2.9",
     "react-hook-form": "^7.71.1",
     "recharts": "^3.7.0",
     "sonner": "^2.0.7",
@@ -64,10 +68,11 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.3",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.4.2",
     "jsdom": "^28.0.0",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.12",
+    "@axe-core/playwright": "^4.11.1"
   }
 }

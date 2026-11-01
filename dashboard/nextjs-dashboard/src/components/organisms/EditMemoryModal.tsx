@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, Loader2, Sparkles } from "lucide-react";
@@ -19,7 +19,7 @@ const memorySchema = z.object({
     .string()
     .min(1, "Content is required")
     .max(10000, "Content must be less than 10,000 characters"),
-  agent_id: z.string().min(1, "Agent ID is required"),
+  agent_id: z.string().optional(),
   memory_type: z.string().optional(),
   memory_concept: z.string().optional(),
   before_state: z.string().optional(),
@@ -65,14 +65,13 @@ export function EditMemoryModal({
 }: EditMemoryModalProps) {
   const [isAutoCategorizing, setIsAutoCategorizing] = useState(false);
   const [memory, setMemory] = useState<Memory | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting, isDirty },
     reset,
@@ -80,7 +79,7 @@ export function EditMemoryModal({
     resolver: zodResolver(memorySchema),
   });
 
-  const content = watch("content") || "";
+  const content = useWatch({ control, name: "content", defaultValue: "" }) || "";
   const contentLength = content.length;
 
   // Fetch memory data on open
@@ -94,10 +93,10 @@ export function EditMemoryModal({
             agent_id: data.agent_id || "default",
             memory_type: data.memory_type || "",
             memory_concept: data.memory_concept || "",
-            before_state: (data as any).before_state || "",
-            after_state: (data as any).after_state || "",
-            files: (data as any).files?.join(", ") || "",
-            facts: (data as any).facts?.join("\n") || "",
+            before_state: data.before_state || "",
+            after_state: data.after_state || "",
+            files: data.files?.join(", ") || "",
+            facts: data.facts?.join("\n") || "",
           });
         })
         .catch((error) => {
@@ -110,14 +109,11 @@ export function EditMemoryModal({
     }
   }, [isOpen, memoryId, reset, onClose]);
 
-  // Track unsaved changes
-  useEffect(() => {
-    setHasUnsavedChanges(isDirty);
-  }, [isDirty]);
-
   const onSubmit = async (data: MemoryFormData) => {
     try {
+      if (!memory) throw new Error("Reload this memory before editing.");
       await updateMemory(memoryId, {
+        expected_version: memory.version,
         content: data.content,
         memory_type: data.memory_type,
         memory_concept: data.memory_concept,
@@ -135,7 +131,7 @@ export function EditMemoryModal({
         queryKey: queryKeys.memories.detail(memoryId),
       });
 
-      setHasUnsavedChanges(false);
+      reset();
       onClose();
     } catch (error) {
       console.error("Failed to update memory:", error);
@@ -178,7 +174,7 @@ export function EditMemoryModal({
   };
 
   const handleClose = () => {
-    if (hasUnsavedChanges) {
+    if (isDirty) {
       setShowConfirmDialog(true);
     } else {
       onClose();
@@ -187,7 +183,7 @@ export function EditMemoryModal({
 
   const handleConfirmClose = () => {
     setShowConfirmDialog(false);
-    setHasUnsavedChanges(false);
+    reset();
     onClose();
   };
 
@@ -294,18 +290,11 @@ export function EditMemoryModal({
                 >
                   Memory Type
                 </label>
-                <select
-                  id="memory_type"
-                  {...register("memory_type")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select type...</option>
-                  {MEMORY_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </option>
-                  ))}
-                </select>
+                <Input id="memory_type" {...register("memory_type")} list="memory-category-suggestions"
+                placeholder="Any project category (default: general)" />
+              <datalist id="memory-category-suggestions">
+                {MEMORY_TYPES.map((type) => <option key={type} value={type} />)}
+              </datalist>
               </div>
 
               {/* Memory Concept */}
@@ -336,7 +325,7 @@ export function EditMemoryModal({
               <button
                 type="button"
                 onClick={handleAutoCategorize}
-                disabled={isAutoCategorizing || !content}
+                disabled title="Automatic categorization is not configured"
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isAutoCategorizing ? (
@@ -357,7 +346,7 @@ export function EditMemoryModal({
                 Agent ID <span className="text-red-500">*</span>
               </label>
               <Input
-                id="agent_id"
+                id="agent_id" disabled
                 {...register("agent_id")}
                 error={errors.agent_id?.message}
                 aria-invalid={errors.agent_id ? "true" : "false"}

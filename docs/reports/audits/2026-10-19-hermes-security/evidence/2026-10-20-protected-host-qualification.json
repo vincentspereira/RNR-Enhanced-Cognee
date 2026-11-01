@@ -1,0 +1,405 @@
+{
+  "host": {
+    "host": "Ubuntu-Hermes",
+    "host_pid1": "systemd",
+    "system_state": "running",
+    "startup_jobs_none": true,
+    "wsl_configuration_preserved": true,
+    "windows_drive_mounts_absent": true,
+    "interop_enabled_claim": "not asserted; only appendWindowsPath=false verified",
+    "services": {
+      "enhanced-cognee-postgres.service": {
+        "User": "ecmem_pg",
+        "DynamicUser": "no",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "enhanced-cognee-qdrant.service": {
+        "User": "ecmem_qdrant",
+        "DynamicUser": "no",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "enhanced-cognee-graph.service": {
+        "User": "ecmem_graph",
+        "DynamicUser": "no",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "enhanced-cognee-cache.service": {
+        "User": "ecmem_cache",
+        "DynamicUser": "no",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "enhanced-cognee-api.service": {
+        "User": "enhanced-cognee-api",
+        "DynamicUser": "yes",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      },
+      "enhanced-cognee-index.service": {
+        "User": "enhanced-cognee-index",
+        "DynamicUser": "yes",
+        "ActiveState": "active",
+        "SubState": "running",
+        "UnitFileState": "enabled"
+      }
+    },
+    "getty": {
+      "Result": "success",
+      "ActiveState": "inactive",
+      "ConditionResult": "no"
+    },
+    "test_account_removed": true,
+    "private_or_everyday_profiles_activated": false
+  },
+  "store_and_credential_denials": {
+    "qdrant": {
+      "none_read_status": 401,
+      "api_read_status": 200,
+      "worker_read_status": 200,
+      "api_valid_write_status": 403
+    },
+    "postgres": {
+      "api": {
+        "read": true,
+        "forbidden_write_denied": true
+      },
+      "worker": {
+        "read": true,
+        "forbidden_write_denied": true
+      },
+      "backup": {
+        "read": true,
+        "forbidden_write_denied": true
+      }
+    },
+    "graph": {
+      "read_status": 200,
+      "matched_write_status": 403,
+      "rollback_preserved_records": true
+    },
+    "cache": {
+      "foreign_namespace_denied": true,
+      "acl_administration_denied": true
+    },
+    "service_namespaces": {
+      "api": {
+        "uid": 63764,
+        "own_credential_readable": true,
+        "other_credential_denied": true,
+        "operator_denied": true
+      },
+      "worker": {
+        "uid": 65231,
+        "own_credential_readable": true,
+        "other_credential_denied": true,
+        "operator_denied": true
+      }
+    },
+    "worker_has_no_jwt_signing_key": true,
+    "backup_has_no_memory_decryption_or_jwt_key": true
+  },
+  "sdk": [
+    {
+      "language": "node",
+      "protected_systemd_api": true,
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "language": "go",
+      "protected_systemd_api": true,
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "language": "rust",
+      "protected_systemd_api": true,
+      "passed": true,
+      "exit_code": 0
+    }
+  ],
+  "browser": {
+    "protected_systemd_api": true,
+    "native_chromium": true,
+    "passed": true,
+    "exit_code": 0,
+    "temporary_cors_origin": "http://localhost:9050",
+    "production_release_advisory_gate_cleared": false
+  },
+  "provider": {
+    "passed": 11,
+    "checks": [
+      "real_provider_semantic_status",
+      "actual_hermes_abc_and_loader",
+      "encrypted_write_and_idempotent_retry",
+      "semantic_paraphrase_and_untrusted_prefetch",
+      "credential_write_rejected",
+      "private_detail_clarification",
+      "clarification_then_versioned_correction",
+      "stale_version_denied",
+      "retraction_excluded_from_recall",
+      "bot_write_denied",
+      "session_switch_and_shutdown"
+    ],
+    "model_driven": false
+  },
+  "os_denials": {
+    "euid": 1001,
+    "groups": [
+      1002
+    ],
+    "checks": {
+      "service_keys": true,
+      "operator_keys": true,
+      "backup_keys": true,
+      "backup_directory": true,
+      "postgres_data": true,
+      "owner_profile": true,
+      "api_code_write_denied": true,
+      "store_code_write_denied": true,
+      "sudo_denied": true,
+      "windows_drive_absent": true,
+      "docker_admin_denied": true
+    },
+    "all_passed": true
+  },
+  "model": {
+    "profile_scope": "protected_test_20261020",
+    "model": "unsloth/Qwen3.8-27B-GGUF",
+    "native_python": "3.14.7",
+    "non_admin_uid": 1001,
+    "cloud_fallbacks": [],
+    "reasoning_effort": "none",
+    "model_guard_bypassed": false,
+    "raw_traces_private": true,
+    "scenarios": [
+      {
+        "scenario": "capture",
+        "passed": true,
+        "duration_seconds": 330.09,
+        "tool_calls": [
+          "enhanced_recall",
+          "enhanced_recall",
+          "enhanced_recall",
+          "enhanced_recall",
+          "enhanced_remember"
+        ],
+        "current_version": 1
+      },
+      {
+        "scenario": "recall",
+        "passed": true,
+        "duration_seconds": 104.8,
+        "tool_calls": [
+          "enhanced_get"
+        ],
+        "current_version": 1
+      },
+      {
+        "scenario": "correct",
+        "passed": true,
+        "duration_seconds": 107.18,
+        "tool_calls": [
+          "enhanced_correct"
+        ],
+        "current_version": 2
+      },
+      {
+        "scenario": "uncertain",
+        "passed": true,
+        "duration_seconds": 161.86,
+        "tool_calls": [
+          "enhanced_recall",
+          "enhanced_get",
+          "enhanced_clarify"
+        ],
+        "current_version": 2
+      },
+      {
+        "scenario": "credential_refusal",
+        "passed": true,
+        "duration_seconds": 142.93,
+        "tool_calls": [],
+        "current_version": 2
+      }
+    ],
+    "complete": true,
+    "local_model_metadata_observed": true,
+    "builtin_notebook_mirroring_observed": false
+  },
+  "restart": {
+    "all_four_stores_clean_restart": true,
+    "api_and_worker_restarted": true,
+    "canonical_records_history_audit_and_grants_unchanged": true,
+    "canonical_table_counts": {
+      "records": 25,
+      "record_versions": 56,
+      "record_audit": 68,
+      "library_members": 2,
+      "library_publications": 1
+    },
+    "authenticated_status": {
+      "ready": true,
+      "tenant_id": "qualification",
+      "project_id": "protected_test_20261020",
+      "subject": "protected_test_owner",
+      "active_records": 1,
+      "pending_change_events": 0,
+      "change_feed_worker": "running",
+      "retrieval": "semantic",
+      "embedding_model": "BAAI/bge-small-en-v1.5",
+      "graph": "source_linked_graph",
+      "encryption": "AES-256-GCM",
+      "encryption_key_id": "legacy_unnamed",
+      "schema_version": 3,
+      "index": {
+        "pipeline": "hermes_deploy_v1",
+        "worker_available": true,
+        "worker_state": "running",
+        "pending_change_events": 0,
+        "oldest_pending_seconds": 0,
+        "graph": "source_linked_graph",
+        "vector_index": "available",
+        "cache_contents": "encrypted_records_only"
+      }
+    },
+    "semantic_recall_after_restart": true,
+    "qdrant_actual_query_after_auth_repair": "queried",
+    "model_corrected_memory_version": 2,
+    "temporary_dashboard_cors_removed": true,
+    "standalone_browser_launch_warning_resolved": true
+  },
+  "restore": {
+    "restored": true,
+    "database": "memory_restore_protected_e10145837f09",
+    "counts": {
+      "records": 18,
+      "record_versions": 36,
+      "record_audit": 48,
+      "library_members": 2,
+      "library_publications": 1
+    },
+    "decrypted_current_and_history": true,
+    "cross_project_denial": true,
+    "restricted_role_denial": true,
+    "semantic_recall": true,
+    "source_linked_graph": true,
+    "fresh_index_pipeline": "prot_restore_e50ea47e93",
+    "remaining_events": 0,
+    "resumed_failed_fixture": true,
+    "completed_events_after_fix": 35,
+    "private_owner_recovery_custody_confirmed": false
+  },
+  "backups": {
+    "directory": "/var/backups/enhanced-cognee",
+    "directory_mode": "0700",
+    "file_modes": "0600",
+    "generations": [
+      {
+        "filename": "memory_20261020T191042Z_d0d336cb.dump.age",
+        "bytes": 545206,
+        "complete": true,
+        "manifest_signature_and_ciphertext_valid": true,
+        "age_decryption_valid": true,
+        "plaintext_dump_written": false
+      },
+      {
+        "filename": "memory_20261020T192154Z_8c829eca.dump.age",
+        "bytes": 545206,
+        "complete": true,
+        "manifest_signature_and_ciphertext_valid": true,
+        "age_decryption_valid": true,
+        "plaintext_dump_written": false
+      },
+      {
+        "filename": "memory_20261020T194942Z_423897dd.dump.age",
+        "bytes": 803923,
+        "complete": true,
+        "manifest_signature_and_ciphertext_valid": true,
+        "age_decryption_valid": true,
+        "plaintext_dump_written": false
+      }
+    ],
+    "last_backup_service_result": "success",
+    "timer": {
+      "NextElapseUSecRealtime": "Wed 2026-10-21 00:03:33 BST",
+      "RandomizedDelayUSec": "15min",
+      "Persistent": "yes",
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    },
+    "persistent_catchup_test_passed": true,
+    "owner_independent_custody_confirmed": false
+  },
+  "temporary_account_cleanup": {
+    "approved_account_removed": true,
+    "approved_home_removed": true,
+    "uid": 1001,
+    "home": "/var/lib/enhanced-cognee-test-20261020",
+    "useful_evidence_retained_root_private": true,
+    "sqlite_state_copies": 1,
+    "existing_owner_profile_files_unchanged": 88,
+    "shared_hermes_dependency_inode_and_contents_unchanged": true,
+    "chat_models_and_service_backups_preserved": true,
+    "userdel_exit_code": 0,
+    "non_admin_profile_left_active": false
+  },
+  "post_restart_provider": {
+    "native_non_admin_provider_after_restart": true,
+    "semantic_recall": true,
+    "real_vector_index_query": true,
+    "corrected_version": 2
+  },
+  "source_revision": "5c10ab033527a59dda0df5b01252069005358242",
+  "source_branch": "codex/hermes-ubuntu-deployment-protected-20261020",
+  "targeted_source_repairs": [
+    "820f164fcad1b9208a303c0f1b91599628856583",
+    "052f98e36abfffbfa25d61d9a117630228a3cfb5"
+  ],
+  "complete_installed_suite": {
+    "tests": 93,
+    "passed": 93,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 58.54
+  },
+  "focused_real_store_suite": {
+    "tests": 41,
+    "passed": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "hosted_source_checks": {
+    "revision": "052f98e36abfffbfa25d61d9a117630228a3cfb5",
+    "required_ci_run": 39483285556,
+    "unit_tests": 4344,
+    "schema_tests": 3,
+    "upstream_security_tests": 10,
+    "canonical_tests": 80,
+    "default_stack_run": 39481926570,
+    "default_stack_tests": 35,
+    "all_reported_failures_errors_skips": 0,
+    "image_findings": {
+      "CRITICAL": 0,
+      "HIGH": 0,
+      "MEDIUM": 26,
+      "LOW": 10
+    }
+  },
+  "private_use_admitted": false,
+  "main_merge_admitted": false,
+  "owner_revocation_confirmed": false,
+  "owner_independent_recovery_custody_confirmed": false,
+  "native_windows_recovery_qualified": false,
+  "real_bots_os_isolation_qualified": false
+}

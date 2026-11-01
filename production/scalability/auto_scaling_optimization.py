@@ -3,6 +3,8 @@ Production Auto-Scaling and Optimization Framework
 Implements intelligent auto-scaling, performance optimization, and resource management
 """
 
+import pytest
+
 import os
 import json
 import time
@@ -711,7 +713,7 @@ class AutoScalingEngine:
             "factors": {}
         }
 
-        if policy_id not in self.scaling_models:
+        if policy.policy_id not in self.scaling_models:
             # Fallback to resource-based if no model available
             return await self._resource_based_scaling(policy, utilization, current_replicas)
 

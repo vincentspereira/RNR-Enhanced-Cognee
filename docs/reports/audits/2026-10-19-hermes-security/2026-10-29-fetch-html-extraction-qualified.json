@@ -1,0 +1,90 @@
+{
+  "recorded_date": "2026-10-29",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "worktree_branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "subject": "Fetch candidate default HTML-to-Markdown extraction qualification",
+  "prior_failure_preserved": {
+    "earlier_default_html_expected_content_check_failed": true,
+    "retained_in": "2026-10-28-managed-mcp-runtime-preparation.json",
+    "not_replayed": true,
+    "prior_disposable_probe_homes_not_reused": true
+  },
+  "root_cause_analysis": {
+    "extraction_pipeline_defect_found": false,
+    "probe_expectation_defect_found": true,
+    "details": [
+      "The fixed example.com page body copy was reworded by its operator; both the earlier probe expectation and a first corrected draft asserted phrases that the served page no longer contains.",
+      "With Node present, Mozilla Readability (readabilipy use_readability=True) moves the page h1/title into article metadata, so a correct default-mode conversion legitimately omits the exact heading phrase that raw mode sees.",
+      "Offline fixture conversion verified correct output in both supported paths: Node Readability (system node) and the pure-Python fallback (heading retained, body retained).",
+      "readabilipy wheel ships its javascript/node_modules; have_node() was True via /usr/bin/node in the probe PATH."
+    ],
+    "offline_fixtures": "launch-worktree-20261024/.archive/fetch-html-diagnosis/ (local, ignored)"
+  },
+  "corrected_check": {
+    "kind": "structural-not-textual",
+    "asserts": [
+      "server URL prefix 'Contents of https://example.com/:'",
+      "no raw html/body/div tags survive conversion",
+      "simplification failure marker absent",
+      "non-empty converted body after the prefix"
+    ],
+    "rationale": "Third-party page copy can be reworded at any time; conversion fidelity is covered by offline invented fixtures and the structural check covers the live pipeline."
+  },
+  "live_probe_result": {
+    "complete": true,
+    "initialize_passed": true,
+    "tools_count": 1,
+    "tools_list_passed": true,
+    "private_destination_denials": 2,
+    "public_example_checked": true,
+    "public_example_mode": "raw",
+    "public_example_passed": true,
+    "html_markdown_extraction_qualified": true,
+    "html_default_mode_check": "converted-markdown-structure-verified",
+    "fetch_defaults_and_guards_unchanged": true,
+    "allow_private_ips_or_robots_guard_changed": false,
+    "profiles_read": false,
+    "memory_api_called": false,
+    "model_called": false,
+    "native_hermes_binding_qualified": false,
+    "fleet_launch_approved": false,
+    "evidence_home": "launch-worktree-20261024/.archive/fetch-html-diagnosis/fetch-probe-c7m3k7sc",
+    "qualification_surface": "ordinary_owner_independent_public_fetch_build",
+    "probe_interpreter": "protected release venv Python 3.14.7",
+    "built_fetch_python": "retained managed-mcp-build-vyy1g3gk/fetch (frozen lock 78647ee83c9b32ba3cd170b75367a7d171818b67e1dc4d929962d7463f095fdc)",
+    "sample_converted_output_chars": 190
+  },
+  "source_validation": {
+    "tests_passed": 38,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "warnings": 0,
+    "test_file": "tests/qualification/test_managed_mcp_runtime.py",
+    "new_test": "test_html_extraction_qualified_when_converted_body_is_retained",
+    "native_compilation_passed": true,
+    "native_python": "3.14.7"
+  },
+  "helper_sha256": {
+    "probe_fetch_candidate.py_before": "6cd5cabb12386bef7981cbd97a59e225bb1a465d9791977d32fef035440ecede",
+    "probe_fetch_candidate.py_after": "b7db72163075b86a78cf4a7bbe915e4dd603e5f5a2142ad0bb015f15b28238ec",
+    "probe_main_local_mcp_protocol_unchanged": "415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07"
+  },
+  "boundaries_respected": {
+    "protected_runtime_changed": false,
+    "profiles_changed": false,
+    "credentials_issued": 0,
+    "keys_read": false,
+    "services_restarted": false,
+    "public_fixture_only": "https://example.com/",
+    "private_data_sent": false
+  },
+  "remaining_gates": [
+    "protected managed PM runtime installation (owner terminal sudo, preflight re-verified PASS 2026-10-29)",
+    "actual native Hermes Fetch binding and remote acceptance",
+    "full main tools/context and current served capability",
+    "production launcher bindings and admitted credential renewal",
+    "final fresh main state, backup/rollback membership and fleet-switch review"
+  ]
+}

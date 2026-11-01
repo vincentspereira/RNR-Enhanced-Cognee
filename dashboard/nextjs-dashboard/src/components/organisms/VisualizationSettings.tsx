@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
+import { useStoredPreference, writeStoredPreference } from "@/lib/hooks/useStoredPreference";
 import { X, Palette, Settings, Download } from "lucide-react";
 import { NeutralButton } from "@/components/ui/elements/NeutralButton";
 import { IconButton } from "@/components/ui/elements/IconButton";
 import { Select } from "@/components/ui/elements/Select";
-import { Input } from "@/components/ui/elements/Input";
 
 export interface VisualizationSettings {
   theme: "dark" | "light";
@@ -45,27 +45,20 @@ export function VisualizationSettings({
   onSave,
   className = "",
 }: VisualizationSettingsProps) {
-  const [settings, setSettings] = useState<VisualizationSettings>(DEFAULT_SETTINGS);
-
-  // Load settings from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("visualizationSettings");
-      if (saved) {
-        try {
-          setSettings(JSON.parse(saved));
-        } catch (error) {
-          console.error("Failed to parse visualization settings:", error);
-        }
-      }
-    }
-  }, []);
+  const { settings: savedSettings, updateSettings } = useVisualizationSettings();
+  const [draft, setDraft] = useState<VisualizationSettings | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const settings = draft ?? savedSettings;
+  const setSettings = setDraft;
+  const handleClose = () => { setDraft(null); setSaveError(null); onClose(); };
 
   const handleSave = () => {
-    // Save to localStorage
-    if (typeof window !== "undefined") {
-      localStorage.setItem("visualizationSettings", JSON.stringify(settings));
+    if (!updateSettings(settings)) {
+      setSaveError("Unable to save preferences in this browser. Your changes have not been saved.");
+      return;
     }
+    setSaveError(null);
+    setDraft(null);
 
     // Call onSave callback
     onSave?.(settings);
@@ -91,7 +84,7 @@ export function VisualizationSettings({
             <Settings className="w-5 h-5 text-slate-400" />
             <h2 className="text-xl font-semibold text-slate-200">Visualization Settings</h2>
           </div>
-          <IconButton onClick={onClose} size="sm" icon={<X className="w-5 h-5" />} />
+          <IconButton onClick={handleClose} aria-label="Close settings" size="sm" icon={<X className="w-5 h-5" />} />
         </div>
 
         {/* Settings */}
@@ -104,10 +97,10 @@ export function VisualizationSettings({
             </h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Color Scheme</label>
+                <label htmlFor="visualization-colorScheme" className="block text-sm text-slate-400 mb-1">Color Scheme</label>
                 <Select
-                  value={settings.colorScheme}
-                  onChange={(e) => setSettings({ ...settings, colorScheme: e.target.value as any })}
+                  id="visualization-colorScheme" value={settings.colorScheme}
+                  onChange={(e) => setSettings({ ...settings, colorScheme: e.target.value as VisualizationSettings["colorScheme"] })}
                   className="w-full"
                 >
                   <option value="default">Default (Blue/Emerald)</option>
@@ -118,10 +111,10 @@ export function VisualizationSettings({
               </div>
 
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Theme</label>
+                <label htmlFor="visualization-theme" className="block text-sm text-slate-400 mb-1">Theme</label>
                 <Select
-                  value={settings.theme}
-                  onChange={(e) => setSettings({ ...settings, theme: e.target.value as any })}
+                  id="visualization-theme" value={settings.theme}
+                  onChange={(e) => setSettings({ ...settings, theme: e.target.value as VisualizationSettings["theme"] })}
                   className="w-full"
                 >
                   <option value="dark">Dark</option>
@@ -136,10 +129,10 @@ export function VisualizationSettings({
             <h3 className="text-sm font-medium text-slate-300 mb-3">Charts</h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Default Chart Type</label>
+                <label htmlFor="visualization-defaultChartType" className="block text-sm text-slate-400 mb-1">Default Chart Type</label>
                 <Select
-                  value={settings.defaultChartType}
-                  onChange={(e) => setSettings({ ...settings, defaultChartType: e.target.value as any })}
+                  id="visualization-defaultChartType" value={settings.defaultChartType}
+                  onChange={(e) => setSettings({ ...settings, defaultChartType: e.target.value as VisualizationSettings["defaultChartType"] })}
                   className="w-full"
                 >
                   <option value="line">Line Chart</option>
@@ -167,10 +160,10 @@ export function VisualizationSettings({
               </div>
 
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Data Density</label>
+                <label htmlFor="visualization-dataDensity" className="block text-sm text-slate-400 mb-1">Data Density</label>
                 <Select
-                  value={settings.dataDensity}
-                  onChange={(e) => setSettings({ ...settings, dataDensity: e.target.value as any })}
+                  id="visualization-dataDensity" value={settings.dataDensity}
+                  onChange={(e) => setSettings({ ...settings, dataDensity: e.target.value as VisualizationSettings["dataDensity"] })}
                   className="w-full"
                 >
                   <option value="compact">Compact (More Data)</option>
@@ -189,10 +182,10 @@ export function VisualizationSettings({
             </h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Default Format</label>
+                <label htmlFor="visualization-exportFormat" className="block text-sm text-slate-400 mb-1">Default Format</label>
                 <Select
-                  value={settings.exportFormat}
-                  onChange={(e) => setSettings({ ...settings, exportFormat: e.target.value as any })}
+                  id="visualization-exportFormat" value={settings.exportFormat}
+                  onChange={(e) => setSettings({ ...settings, exportFormat: e.target.value as VisualizationSettings["exportFormat"] })}
                   className="w-full"
                 >
                   <option value="png">PNG (Raster Image)</option>
@@ -202,10 +195,10 @@ export function VisualizationSettings({
               </div>
 
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Export Quality</label>
+                <label htmlFor="visualization-exportQuality" className="block text-sm text-slate-400 mb-1">Export Quality</label>
                 <Select
-                  value={settings.exportQuality}
-                  onChange={(e) => setSettings({ ...settings, exportQuality: e.target.value as any })}
+                  id="visualization-exportQuality" value={settings.exportQuality}
+                  onChange={(e) => setSettings({ ...settings, exportQuality: e.target.value as VisualizationSettings["exportQuality"] })}
                   className="w-full"
                 >
                   <option value="low">Low (Fast, Smaller File)</option>
@@ -217,15 +210,16 @@ export function VisualizationSettings({
           </div>
         </div>
 
+        {saveError && <p role="alert" className="px-6 text-red-400">{saveError}</p>}
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 p-6 border-t border-slate-700">
           <NeutralButton onClick={handleReset} size="sm">
             Reset to Defaults
           </NeutralButton>
-          <NeutralButton onClick={onClose} size="sm">
+          <NeutralButton onClick={handleClose} size="sm">
             Cancel
           </NeutralButton>
-          <NeutralButton onClick={handleSave} size="sm" variant="primary">
+          <NeutralButton onClick={handleSave} size="sm" variant="default">
             Save Settings
           </NeutralButton>
         </div>
@@ -238,29 +232,26 @@ export function VisualizationSettings({
  * Hook to use visualization settings
  */
 export function useVisualizationSettings() {
-  const [settings, setSettings] = useState<VisualizationSettings>(DEFAULT_SETTINGS);
+  const saved = useStoredPreference("visualizationSettings");
+  const settings = useMemo((): VisualizationSettings => {
+    try {
+      const parsed: unknown = JSON.parse(saved || "null");
+      if (!parsed || typeof parsed !== "object") return DEFAULT_SETTINGS;
+      const values = parsed as Record<string, unknown>;
+      return {
+        theme: values.theme === "light" ? "light" : "dark",
+        defaultChartType: values.defaultChartType === "bar" || values.defaultChartType === "pie" ? values.defaultChartType : "line",
+        animationsEnabled: typeof values.animationsEnabled === "boolean" ? values.animationsEnabled : true,
+        dataDensity: values.dataDensity === "compact" || values.dataDensity === "spacious" ? values.dataDensity : "comfortable",
+        exportFormat: values.exportFormat === "svg" || values.exportFormat === "pdf" ? values.exportFormat : "png",
+        exportQuality: values.exportQuality === "low" || values.exportQuality === "medium" ? values.exportQuality : "high",
+        colorScheme: values.colorScheme === "vibrant" || values.colorScheme === "pastel" || values.colorScheme === "monochrome" ? values.colorScheme : "default",
+      };
+    } catch { return DEFAULT_SETTINGS; }
+  }, [saved]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("visualizationSettings");
-      if (saved) {
-        try {
-          setSettings(JSON.parse(saved));
-        } catch (error) {
-          console.error("Failed to parse visualization settings:", error);
-        }
-      }
-    }
-  }, []);
-
-  const updateSettings = (newSettings: Partial<VisualizationSettings>) => {
-    const updated = { ...settings, ...newSettings };
-    setSettings(updated);
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("visualizationSettings", JSON.stringify(updated));
-    }
+  const updateSettings = (changes: Partial<VisualizationSettings>) => {
+    return writeStoredPreference("visualizationSettings", JSON.stringify({ ...settings, ...changes }));
   };
-
   return { settings, updateSettings };
 }

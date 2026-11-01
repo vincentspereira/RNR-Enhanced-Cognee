@@ -10,7 +10,7 @@ import {
   YAxis,
   BarChart,
   Bar,
-  type TooltipProps,
+  type TooltipContentProps,
 } from "recharts";
 import { format, subDays, subMonths, subYears, startOfDay } from "date-fns";
 import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Download, Filter } from "lucide-react";
@@ -40,7 +40,9 @@ const MEMORY_TYPE_COLORS: Record<MemoryType, string> = {
 /**
  * Custom Tooltip
  */
-const CustomTooltip = ({ active, payload, label }: TooltipProps<string, string>) => {
+type TimelineTooltipProps = Pick<TooltipContentProps<number, string>, "active" | "payload" | "label">;
+
+const CustomTooltip = ({ active, payload, label }: TimelineTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 shadow-lg">
@@ -220,8 +222,8 @@ export function TimelineView({ memories, className = "" }: TimelineViewProps) {
 
           {/* Pan Controls */}
           <div className="flex items-center gap-1 border border-slate-700 rounded-lg p-1">
-            <IconButton onClick={panLeft} size="sm" icon={<ChevronLeft className="w-4 h-4" />} />
-            <IconButton onClick={panRight} size="sm" icon={<ChevronRight className="w-4 h-4" />} />
+            <IconButton onClick={panLeft} aria-label="Earlier period" size="sm" icon={<ChevronLeft className="w-4 h-4" />} />
+            <IconButton onClick={panRight} aria-label="Later period" size="sm" icon={<ChevronRight className="w-4 h-4" />} />
           </div>
 
           {/* Filter Toggle */}
@@ -286,7 +288,7 @@ export function TimelineView({ memories, className = "" }: TimelineViewProps) {
             tickLine={{ stroke: "#334155" }}
           />
 
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={CustomTooltip} />
 
           <Legend wrapperStyle={{ color: "#cbd5e1" }} />
 

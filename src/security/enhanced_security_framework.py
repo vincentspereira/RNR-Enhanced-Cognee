@@ -19,6 +19,7 @@ import hashlib
 import secrets
 import logging
 import logging.handlers
+import threading
 import json
 import time
 import traceback
@@ -37,6 +38,9 @@ from packaging import version
 import subprocess
 import filetype
 import bleach
+
+
+_SECURITY_LOG_SETUP_LOCK = threading.RLock()
 
 
 # Security configuration
@@ -134,23 +138,32 @@ class SecurityLogger:
         else:
             resolved_log_file = os.path.join(log_dir, os.path.basename(self.log_file))
 
-        file_handler = logging.handlers.RotatingFileHandler(
-            resolved_log_file,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8"
-        )
-        file_handler.setFormatter(formatter)
-        file_handler.setLevel(logging.INFO)
-
-        # Console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        console_handler.setLevel(logging.WARNING)
-
-        self.logger.addHandler(file_handler)
-        self.logger.addHandler(console_handler)
+        # One logger per actual destination prevents cross-file disclosure.
+        # Repeated middleware construction must not accumulate handlers/Fds.
+        name = "security." + hashlib.sha256(os.path.realpath(resolved_log_file).encode()).hexdigest()
+        self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
+        self.logger.propagate = False
+        with _SECURITY_LOG_SETUP_LOCK:
+            if getattr(self.logger, "_rnr_security_ready", False):
+                return
+            file_handler = logging.handlers.RotatingFileHandler(
+                resolved_log_file,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8"
+            )
+            file_handler.setFormatter(formatter)
+            file_handler.setLevel(logging.INFO)
+
+            # Console handler
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(formatter)
+            console_handler.setLevel(logging.WARNING)
+
+            self.logger.addHandler(file_handler)
+            self.logger.addHandler(console_handler)
+            setattr(self.logger, "_rnr_security_ready", True)
 
     def log_security_event(self, event: SecurityEvent):
         """Log security event with detailed information"""

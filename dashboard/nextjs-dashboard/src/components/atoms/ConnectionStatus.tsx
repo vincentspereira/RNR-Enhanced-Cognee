@@ -3,7 +3,7 @@
 import { useSSE } from "@/lib/hooks/useSSE";
 
 export function ConnectionStatus() {
-  const { status, isConnected, isConnecting } = useSSE();
+  const { status, isConnecting } = useSSE();
 
   const statusConfig = {
     connected: {

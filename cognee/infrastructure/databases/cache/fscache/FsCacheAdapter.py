@@ -1,9 +1,9 @@
 import json
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
-import diskcache as dc
+from src.security.sqlite_text_cache import SqliteTextCache
 from pydantic import ValidationError
 
 from cognee.infrastructure.databases.cache.cache_db_interface import CacheDBInterface
@@ -29,8 +29,8 @@ class FSCacheAdapter(CacheDBInterface):
         storage_config = get_storage_config()
         data_root_directory = storage_config["data_root_directory"]
         self.cache_directory = os.path.join(data_root_directory, ".cognee_fs_cache", default_key)
-        os.makedirs(self.cache_directory, exist_ok=True)
-        self.cache = dc.Cache(directory=self.cache_directory)
+        os.makedirs(self.cache_directory, exist_ok=True, mode=0o700)
+        self.cache = SqliteTextCache(directory=self.cache_directory)
         self.session_ttl_seconds = session_ttl_seconds
         # Evict any entries whose TTL has already elapsed
         self.cache.expire()
@@ -60,7 +60,7 @@ class FSCacheAdapter(CacheDBInterface):
     ) -> dict:
         """Serialize one QA entry into the normalized cache payload shape."""
         entry = SessionQAEntry(
-            time=datetime.utcnow().isoformat(),
+            time=datetime.now(timezone.utc).isoformat(),
             question=question,
             context=context,
             answer=answer,
@@ -219,7 +219,7 @@ class FSCacheAdapter(CacheDBInterface):
                 entries.append(qa_entry)
                 self._save_entries(session_key, entries)
         except Exception as e:
-            error_msg = f"Unexpected error while adding Q&A to diskcache: {str(e)}"
+            error_msg = f"Unexpected error while adding Q&A to text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -279,7 +279,7 @@ class FSCacheAdapter(CacheDBInterface):
         except SessionQAEntryValidationError:
             raise
         except Exception as e:
-            error_msg = f"Unexpected error while updating Q&A in diskcache: {str(e)}"
+            error_msg = f"Unexpected error while updating Q&A in text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -321,7 +321,7 @@ class FSCacheAdapter(CacheDBInterface):
                 self._save_entries(session_key, entries)
                 return True
         except Exception as e:
-            error_msg = f"Unexpected error while deleting Q&A from diskcache: {str(e)}"
+            error_msg = f"Unexpected error while deleting Q&A from text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -342,7 +342,7 @@ class FSCacheAdapter(CacheDBInterface):
             return qa_existed or trace_existed
 
         except Exception as e:
-            error_msg = f"Unexpected error while deleting session from diskcache: {str(e)}"
+            error_msg = f"Unexpected error while deleting session from text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -379,7 +379,7 @@ class FSCacheAdapter(CacheDBInterface):
                 entries.append(trace_entry)
                 self._save_entries(trace_key, entries)
         except Exception as e:
-            error_msg = f"Unexpected error while appending agent trace step to diskcache: {str(e)}"
+            error_msg = f"Unexpected error while appending agent trace step to text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -408,14 +408,14 @@ class FSCacheAdapter(CacheDBInterface):
     async def prune(self) -> None:
         """
         Remove all items from the cache. In Cognee, prune means emptying the cache.
-        Uses diskcache's clear() - does not delete the directory or recreate the cache.
+        Uses the text cache clear() - does not delete the directory or recreate the cache.
         """
         try:
             self.cache.clear()
             self.cache.expire()
 
         except Exception as e:
-            error_msg = f"Unexpected error while pruning diskcache: {str(e)}"
+            error_msg = f"Unexpected error while pruning text cache: {str(e)}"
             logger.error(error_msg)
             raise CacheConnectionError(error_msg) from e
 
@@ -441,7 +441,7 @@ class FSCacheAdapter(CacheDBInterface):
         return []
 
     async def close(self):
-        """Flush diskcache expirations and close the underlying cache handle."""
+        """Flush text cache expirations and close the underlying cache handle."""
         if self.cache is not None:
             self.cache.expire()
             self.cache.close()

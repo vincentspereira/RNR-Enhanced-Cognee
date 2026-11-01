@@ -79,6 +79,11 @@ def _clean_env(monkeypatch):
 
 
 class TestPrincipal:
+    def test_invalid_local_role_fails_closed(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_MCP_ROLE", "readonyl")
+        with pytest.raises(ea.AuthError):
+            ea.local_principal()
+
     def test_admin_has_all_permissions(self):
         p = ea.admin_principal("op", "api-key")
         assert p.role == Role.ADMIN
@@ -164,7 +169,7 @@ class TestRoutePermissions:
             assert ea.route_required_permission("GET", p) is None
 
     def test_unknown_route_none(self):
-        assert ea.route_required_permission("GET", "/_probe/whoami") is None
+        assert ea.route_required_permission("GET", "/_probe/whoami") == Permission.MEMORY_READ
 
     def test_delete_verb_heuristic(self):
         assert ea.route_required_permission("DELETE", "/anything") == Permission.MEMORY_DELETE
@@ -184,8 +189,8 @@ class TestToolPermissions:
 
     def test_read_tools_unlisted(self):
         # Reads require only authentication (all roles hold MEMORY_READ).
-        assert ea.tool_required_permission("search_memories") is None
-        assert ea.tool_required_permission("get_stats") is None
+        assert ea.tool_required_permission("search_memories") == Permission.MEMORY_READ
+        assert ea.tool_required_permission("get_stats") == Permission.MEMORY_READ
 
 
 class TestAuthorize:

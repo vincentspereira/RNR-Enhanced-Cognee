@@ -9,6 +9,8 @@ Phase 4: Production Readiness and Optimization (Weeks 11-12)
 Category: Production Logging and Observability
 """
 
+import sys
+
 import pytest
 import asyncio
 import json

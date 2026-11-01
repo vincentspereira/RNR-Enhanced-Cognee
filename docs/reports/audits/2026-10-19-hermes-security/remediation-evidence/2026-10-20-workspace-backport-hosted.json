@@ -1,0 +1,198 @@
+{
+  "source_commit": "474d21d96fe682a22fd2144d2c4c7e3b3b8f395a",
+  "workflow_run": 39413284329,
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "name": "frontend (cognee-frontend)",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install from the committed lock without install hooks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check standalone copies match the maintained security backport",
+          "conclusion": "success"
+        },
+        {
+          "name": "Lint all delivered application source",
+          "conclusion": "success"
+        },
+        {
+          "name": "Reproduce the original exploit and verify the bounded source backport",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build and check TypeScript from the clean checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check dashboard behavior and credential destination boundaries",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build the delivered frontend Docker context",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retain audits and enforce unresolved frontend security findings",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "canonical-browser",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install locked service and browser dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise the delivered dashboard with real PostgreSQL and browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "frontend (dashboard/nextjs-dashboard)",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install from the committed lock without install hooks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check standalone copies match the maintained security backport",
+          "conclusion": "success"
+        },
+        {
+          "name": "Lint all delivered application source",
+          "conclusion": "success"
+        },
+        {
+          "name": "Reproduce the original exploit and verify the bounded source backport",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build and check TypeScript from the clean checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check dashboard behavior and credential destination boundaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build the delivered frontend Docker context",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retain audits and enforce unresolved frontend security findings",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "reason": "All functional, backport, browser and Docker build checks pass; version-matched development advisories remain enforced without suppression"
+}

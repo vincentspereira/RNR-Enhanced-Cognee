@@ -1,0 +1,128 @@
+name: Project memory qualification
+
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  memory-qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-qualification-only
+          POSTGRES_DB: cognee_qualification
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      RNR_QUALIFICATION_DATABASE_URL: postgresql://postgres:synthetic-qualification-only@127.0.0.1:5432/cognee_qualification
+      RNR_QUALIFICATION_MODEL_CACHE: /tmp/cognee-model-cache
+      COGNEE_TELEMETRY_ENABLED: '0'
+      COGNEE_LOG_FILE: 'false'
+      ENHANCED_LOAD_DOTENV: '0'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Exact historical deployment artifact tests need their pinned commits.
+      - name: Install free operator backup tools
+        run: sudo apt-get update && sudo apt-get install -y age postgresql-client
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare hash-pinned collector qualification engine
+        run: |
+          python - <<'PY'
+          import bz2, hashlib, json, os, pathlib, urllib.request
+          provenance = json.loads(pathlib.Path('scripts/windows/backup-v12/tool-provenance.json').read_text())
+          artifact = next(a for a in provenance['artifacts'] if a['platform'] == 'linux_amd64')
+          url = provenance['source'].replace('/tag/', '/download/') + '/' + artifact['asset']
+          with urllib.request.urlopen(url, timeout=60) as response:
+              compressed = response.read(67108865)
+          if len(compressed) > 67108864 or hashlib.sha256(compressed).hexdigest() != artifact['compressed_sha256']:
+              raise SystemExit('Qualification engine release hash mismatch')
+          binary = bz2.decompress(compressed)
+          if hashlib.sha256(binary).hexdigest() != artifact['binary_sha256']:
+              raise SystemExit('Qualification engine binary hash mismatch')
+          target = pathlib.Path(os.environ['RUNNER_TEMP']) / 'backup-qualification-tools' / 'restic'
+          target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+          target.write_bytes(binary)
+          target.chmod(0o700)
+          with open(os.environ['GITHUB_ENV'], 'a') as environment:
+              environment.write('RNR_RESTIC=' + str(target) + '\n')
+          PY
+      - name: Install locked memory-service dependencies
+        run: |
+          python -m pip install --require-hashes -r requirements-build.lock
+          python -m pip install --require-hashes -r requirements-index.lock
+          python -m pip install --require-hashes -r requirements-memory-mcp.lock
+          python -m pip install pytest==9.1.1 pytest-asyncio==1.4.0 pip-audit==2.9.0
+      - name: Audit locked service dependencies
+        run: |
+          pip-audit -r requirements-build.lock --require-hashes --disable-pip
+          pip-audit -r requirements-index.lock --require-hashes --disable-pip
+          pip-audit -r requirements-memory-mcp.lock --require-hashes --disable-pip
+      - name: Prepare free local search model
+        run: |
+          python scripts/qualification/prepare_text_model.py --cache /tmp/cognee-model-cache
+      - name: Run real database, local recall and provider contract checks
+        env:
+          HF_HUB_OFFLINE: '1'
+        run: |
+          python -m pytest tests/qualification/ tests/unit/test_capability_boundaries.py tests/unit/test_sqlite_text_cache.py -q -p no:cacheprovider --override-ini=addopts= --junitxml=memory-qualification.xml
+      - name: Build restricted service image
+        run: docker build -f docker/Dockerfile.memory -t rnr-cognee-memory:qualification .
+      - name: Provision matching canonical schema as operator
+        env:
+          ENHANCED_MEMORY_DATABASE_URL: postgresql://postgres:synthetic-qualification-only@127.0.0.1:5432/cognee_qualification
+        run: python -m src.memory_admin init-schema
+      - name: Provision restricted image database account
+        env:
+          ENHANCED_MEMORY_DATABASE_URL: postgresql://postgres:synthetic-qualification-only@127.0.0.1:5432/cognee_qualification
+        run: python -m src.memory_admin grant-runtime --role ci_memory_runtime --output "$RUNNER_TEMP/memory-runtime.json"
+      - name: Exercise the built image with invented records
+        env:
+          ENHANCED_ENV: production
+          ENHANCED_REQUIRE_TENANT: '1'
+          ENHANCED_JWT_SECRET: synthetic-ci-container-key-at-least-32-bytes
+          ENCRYPTION_MASTER_KEY: cXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXE=
+          RNR_QUALIFICATION_SERVICE_URL: http://127.0.0.1:8080
+          RNR_QUALIFICATION_JWT_SECRET: synthetic-ci-container-key-at-least-32-bytes
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, subprocess
+          runtime = pathlib.Path(os.environ['RUNNER_TEMP'])
+          settings = json.loads((runtime / 'memory-runtime.json').read_text())
+          for name in ('ENHANCED_ENV', 'ENHANCED_REQUIRE_TENANT', 'ENHANCED_JWT_SECRET', 'ENCRYPTION_MASTER_KEY'):
+              settings[name] = os.environ[name]
+          path = runtime / 'memory-image.env'
+          fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+          with os.fdopen(fd, 'w') as handle:
+              for name, value in settings.items():
+                  assert '\n' not in value and '\r' not in value
+                  handle.write(name + '=' + value + '\n')
+          subprocess.run(['docker', 'run', '-d', '--name', 'cognee-memory-qualification', '--network', 'host',
+              '--read-only', '--tmpfs', '/tmp:rw,noexec,nosuid,size=64m', '--cap-drop', 'ALL',
+              '--security-opt', 'no-new-privileges', '--memory', '768m', '--env-file', str(path),
+              'rnr-cognee-memory:qualification'], check=True)
+          PY
+          python tests/qualification/container_smoke.py
+      - name: Gate high and critical container findings
+        run: |
+          docker run --name memory-image-scanner -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --image-src docker --scanners vuln --disable-telemetry --timeout 10m --severity HIGH,CRITICAL --exit-code 1 --format json rnr-cognee-memory:qualification > memory-image-vulnerabilities.json
+      - name: Upload qualification results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: memory-qualification
+          path: |
+            memory-qualification.xml
+            memory-image-vulnerabilities.json

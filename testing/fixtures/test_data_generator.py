@@ -300,7 +300,7 @@ class TestDataGenerator:
             f"{regulation} compliance audit completed, status: {status}",
             f"{audit_type} audit for {regulation} controls: {random.randint(5, 50)} requirements checked",
             f"Compliance policy updated for {regulation}, version {random.randint(1, 5)}.0",
-            f"Risk assessment for {regulation} compliance: {random.choice(['low', 'medium', 'high']} risk level"
+            f"Risk assessment for {regulation} compliance: {random.choice(['low', 'medium', 'high'])} risk level"
         ]
 
         content = random.choice(content_templates)

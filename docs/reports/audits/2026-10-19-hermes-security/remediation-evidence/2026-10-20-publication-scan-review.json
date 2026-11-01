@@ -1,0 +1,62 @@
+[
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/evidence/audit-summary.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/evidence/audit-summary.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/evidence/audit-summary.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  },
+  {
+    "rule": "generic-api-key",
+    "file": "docs/reports/audits/2026-10-19-hermes-security/remediation-evidence/remediation-manifest.json",
+    "confirmed_recorded_sha256": true
+  }
+]

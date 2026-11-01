@@ -293,7 +293,7 @@ class RealTimeMemorySync:
             async with self.postgres_pool.acquire() as conn:
                 if memory_category:
                     memories = await conn.fetch(f"""
-                        SELECT id, content, metadata
+                        SELECT id, title, content, metadata, memory_category
                         FROM {_t_docs()}
                         WHERE agent_id = $1
                         AND memory_category = $2
@@ -302,7 +302,7 @@ class RealTimeMemorySync:
                     """, source_agent_id, memory_category)
                 else:
                     memories = await conn.fetch(f"""
-                        SELECT id, content, metadata
+                        SELECT id, title, content, metadata, memory_category
                         FROM {_t_docs()}
                         WHERE agent_id = $1
                         ORDER BY created_at DESC
@@ -325,8 +325,8 @@ class RealTimeMemorySync:
                         await conn.execute(f"""
                             INSERT INTO {_t_docs()}
                             (id, title, content, agent_id, memory_category, metadata, created_at)
-                            SELECT $1, $2 || ' (from ' || $3 || ')', $4, $5, $6, $7
-                            FROM shared_memory.documents
+                            SELECT $1, $2 || ' (from ' || $3 || ')', $4, $5, $6, $7, NOW()
+                            FROM {_t_docs()}
                             WHERE id = $8
                             ON CONFLICT (id) DO UPDATE SET
                                 content = EXCLUDED.content,
@@ -334,8 +334,9 @@ class RealTimeMemorySync:
                                     'synced_from', $3,
                                     'synced_at', NOW()::text
                                 )
-                        """, new_memory_id, memory["id"], source_agent_id, target_agent_id,
-                            memory.get("memory_category", "shared"), memory.get("metadata", {}), memory["id"])
+                        """, new_memory_id, memory.get("title") or memory["id"], source_agent_id,
+                            memory["content"], target_agent_id, memory.get("memory_category", "shared"),
+                            memory.get("metadata", {}), memory["id"])
 
                         sync_result["memories_synced"] += 1
 

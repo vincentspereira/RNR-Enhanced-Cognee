@@ -63,7 +63,6 @@ export function ActivityHeatmap({
     const weeksData: Array<Array<{ date: Date; count: number }>> = [];
     const now = new Date();
     let currentWeek: Array<{ date: Date; count: number }> = [];
-    let dayOfWeek = now.getDay(); // 0 = Sunday, 6 = Saturday
 
     // Start from the first day
     const startDate = startOfDay(subDays(now, days - 1));
@@ -89,9 +88,6 @@ export function ActivityHeatmap({
     return Object.values(activityData).reduce((sum, count) => sum + count, 0);
   }, [activityData]);
 
-  const maxActivity = useMemo(() => {
-    return Math.max(...Object.values(activityData));
-  }, [activityData]);
 
   const handleDayClick = (date: Date, count: number) => {
     if (count > 0 && onDayClick) {

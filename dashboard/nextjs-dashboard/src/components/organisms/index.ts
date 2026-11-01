@@ -7,7 +7,7 @@ export * from "./GraphNodeDetails";
 export * from "./KnowledgeGraph";
 export * from "./MemoryDetailSkeleton";
 export * from "./MemoryListSkeleton";
-export * from "./PageLoader";
+export { PageLoader, TimelineSkeleton, GraphSkeleton, AnalyticsSkeleton } from "./PageLoader";
 export * from "./SearchInterface";
 export * from "./SessionsList";
 export * from "./SessionTimeline";

@@ -1,0 +1,40 @@
+{
+  "source_commit": "16ee6a954bdfef9d8ee2cd9e155285d88a55710c",
+  "source_delivery": "clean export of Git index subsequently committed; no ignored source/config or old node_modules copied",
+  "local_frontends": {
+    "dashboard": {
+      "lint_errors": 0,
+      "lint_warnings": 1,
+      "build_exit_code": 0,
+      "unit_tests": 10,
+      "failures": 0,
+      "skipped": 0
+    },
+    "cognee_frontend": {
+      "lint_errors": 0,
+      "lint_warnings": 0,
+      "build_exit_code": 0
+    }
+  },
+  "dashboard_warning": "React Virtual intentionally unsupported by React Compiler automatic memoization; no suppression added",
+  "clean_browser": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "hosted_frontend_workflow": 39411568026,
+  "release_security_gate": "fails on five HIGH development-tool findings per frontend; production audits zero",
+  "advisory": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+  "latest_braces_release": "3.0.3",
+  "unit_local": {
+    "tests": 4293,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_backport_commit": "474d21d96fe682a22fd2144d2c4c7e3b3b8f395a",
+  "source_backport_hosted_workflow": 39413284329,
+  "source_backport_checks": "Original stack overflow reproduced; patched nested strings/ASTs, normal fast-glob, source-integrity/escape rejection and repeat application pass",
+  "standalone_frontend_docker_builds": "both pass on hosted runner; no frontend image security scan or deployment claim"
+}

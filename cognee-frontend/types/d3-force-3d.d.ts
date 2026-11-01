@@ -23,19 +23,19 @@ declare module "d3-force-3d" {
     nodes?: NodeDatum[]
   ): Simulation<NodeDatum, undefined>;
 
-  export function forceCenter(x: number, y: number, z: number): Force<SimulationNodeDatum3D, any>;
+  export function forceCenter(x: number, y: number, z: number): Force<SimulationNodeDatum3D, undefined>;
 
-  export function forceManyBody(): Force<SimulationNodeDatum3D, any>;
+  export function forceManyBody(): Force<SimulationNodeDatum3D, undefined>;
 
   export function forceLink<NodeDatum extends SimulationNodeDatum3D, Links extends SimulationLinkDatum<NodeDatum>[] = SimulationLinkDatum<NodeDatum>[]>(
     links?: Links
   ): Force<NodeDatum, SimulationLinkDatum<NodeDatum>>;
 
-  export function forceCollide(radius?: number): Force<SimulationNodeDatum3D, any>;
+  export function forceCollide(radius?: number): Force<SimulationNodeDatum3D, undefined>;
 
-  export function forceRadial(radius: number, x?: number, y?: number, z?: number): Force<SimulationNodeDatum3D, any>;
+  export function forceRadial(radius: number, x?: number, y?: number, z?: number): Force<SimulationNodeDatum3D, undefined>;
 
-  export function forceX(x?: number): Force<SimulationNodeDatum3D, any>;
-  export function forceY(y?: number): Force<SimulationNodeDatum3D, any>;
-  export function forceZ(z?: number): Force<SimulationNodeDatum3D, any>;
+  export function forceX(x?: number): Force<SimulationNodeDatum3D, undefined>;
+  export function forceY(y?: number): Force<SimulationNodeDatum3D, undefined>;
+  export function forceZ(z?: number): Force<SimulationNodeDatum3D, undefined>;
 }

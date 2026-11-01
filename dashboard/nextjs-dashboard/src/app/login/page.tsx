@@ -11,13 +11,11 @@ export default function LoginPage() {
   const router = useRouter();
   const [token, setToken] = useState("");
 
-  const handleContinue = () => {
-    router.push("/dashboard");
-  };
+
 
   const handleSaveToken = () => {
     if (token.trim()) {
-      localStorage.setItem("auth_token", token.trim());
+      sessionStorage.setItem("auth_token", token.trim());
     }
     router.push("/dashboard");
   };
@@ -39,10 +37,9 @@ export default function LoginPage() {
             <div className="flex items-start gap-3 rounded-md bg-blue-500/10 border border-blue-500/20 p-3">
               <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
               <div className="text-sm">
-                <p className="font-medium text-blue-700 dark:text-blue-300">Local Mode Active</p>
+                <p className="font-medium text-blue-700 dark:text-blue-300">Project access required</p>
                 <p className="text-muted-foreground mt-0.5">
-                  No login is required in local mode. Click &quot;Continue to Dashboard&quot; to proceed.
-                  Optionally paste an API token below if your backend is configured with authentication.
+                  Paste your short-lived project access token. It determines which project and reviewed shared memories you can use.
                 </p>
               </div>
             </div>
@@ -50,7 +47,7 @@ export default function LoginPage() {
             {/* Optional token field */}
             <div className="space-y-2">
               <label htmlFor="token" className="text-sm font-medium">
-                API Token (optional)
+                Project access token
               </label>
               <Input
                 id="token"
@@ -65,7 +62,7 @@ export default function LoginPage() {
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                If provided, it will be stored in localStorage and sent as a Bearer token.
+                Kept only for this browser tab session. Use a restricted project token, never a service or recovery key.
               </p>
             </div>
 
@@ -77,13 +74,7 @@ export default function LoginPage() {
                   Save Token and Continue
                 </Button>
               )}
-              <Button
-                variant={token.trim() ? "outline" : "default"}
-                onClick={handleContinue}
-                className="w-full"
-              >
-                Continue to Dashboard
-              </Button>
+
             </div>
           </CardContent>
         </Card>

@@ -121,7 +121,7 @@ export function MemoryCard({
         <div className="absolute top-4 left-4 z-10">
           <Checkbox
             checked={isSelected}
-            onCheckedChange={(checked) => {
+            onCheckedChange={() => {
               onSelect?.(memory.id);
             }}
             onClick={(e) => e.stopPropagation()}

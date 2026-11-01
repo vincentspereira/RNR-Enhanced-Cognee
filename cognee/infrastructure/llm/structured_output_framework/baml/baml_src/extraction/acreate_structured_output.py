@@ -29,7 +29,7 @@ T = TypeVar("T", bound="BaseModel | str")
 
 @retry(
     stop=stop_after_delay(128),
-    wait=wait_exponential_jitter(8, 128),
+    wait=wait_exponential_jitter(multiplier=8, max=128),
     before_sleep=before_sleep_log(logger, logging.DEBUG),
     reraise=True,
 )

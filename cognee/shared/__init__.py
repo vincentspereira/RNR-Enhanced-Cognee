@@ -2,5 +2,7 @@
 # and to have it loaded
 
 import dotenv
+import os
 
-dotenv.load_dotenv(override=True)
+if os.getenv("ENHANCED_LOAD_DOTENV", "0") == "1":
+    dotenv.load_dotenv(override=False)
