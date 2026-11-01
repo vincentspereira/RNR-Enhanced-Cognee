@@ -238,3 +238,19 @@ functional suite now asserts the refusal itself as the expected
 behavior. If direct bot publication is ever wanted, the correct path is
 an owner-issued reviewer credential or a reviewed-proposal endpoint -
 an explicit owner decision, not a silent permission change.
+
+## 6. Fleet expansion: four specialist roles (1 November 2026)
+
+The owner created four new profiles (media-producer, accounting-
+specialist, legal-specialist, social-work-specialist; roster now 44
+unique roles). Memory onboarding completed the same way as the original
+fleet: the memory provider plugin staged into each profile's own
+plugins/enhanced_cognee directory (profile-scoped discovery), the MCP
+server definition confirmed in each config.yaml with per-role groups
+(media-producer/accounting-specialist/social-work-specialist:
+memory_read,ingest,analysis; legal-specialist: memory_read,analysis -
+matching the approved matrix logic), scoped 30-day tokens issued into
+each profile's own .env by the audited provisioner, and the enablement
+role table extended to 44 with the verifiers updated (the per-role
+verifier now requires 44 and live-spawns every role including the four
+new ones).

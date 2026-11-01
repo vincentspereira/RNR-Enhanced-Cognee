@@ -51,7 +51,7 @@ def main():
     scope = {"__name__": "protocol", "__file__": "probe"}
     exec(compile(raw, "probe", "exec"), scope)
     enablement = load("enable_fleet_memory_mcp")
-    require(len(enablement.ROLE_GROUPS) == 40, "role_table_incomplete")
+    require(len(enablement.ROLE_GROUPS) == 44, "role_table_incomplete")
     rows, failures = [], []
     for role in sorted(enablement.ROLE_GROUPS):
         groups = enablement.ROLE_GROUPS[role]

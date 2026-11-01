@@ -56,6 +56,10 @@ ROLE_GROUPS = {
     "aiml-engineer": _INGEST_ANALYSIS,
     "data-engineer": _INGEST_ANALYSIS,
     "data-gen-rl": _INGEST_ANALYSIS,
+    # Specialist roles added 31 Oct (owner-created): ingest + analysis
+    "media-producer": _INGEST_ANALYSIS,
+    "accounting-specialist": _INGEST_ANALYSIS,
+    "social-work-specialist": _INGEST_ANALYSIS,
     # Engineering and specialist: analysis only
     "backend-developer": _ANALYSIS_ONLY,
     "frontend-developer": _ANALYSIS_ONLY,
@@ -69,6 +73,7 @@ ROLE_GROUPS = {
     "security-specialist": _ANALYSIS_ONLY,
     "governance-privacy": _ANALYSIS_ONLY,
     "ai-safety-guardrails": _ANALYSIS_ONLY,
+    "legal-specialist": _ANALYSIS_ONLY,
     # Coordination roles: analysis (library publication stays reviewer-gated)
     "chief-of-staff": _COORDINATION,
     "project-orchestrator": _COORDINATION,
