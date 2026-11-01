@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "integrations/hermes/deployment/stage_audit_backend.py",
+    "--inspect-runtime"
+  ],
+  "returncode": 0,
+  "stdout": "{\"mode\": \"inspect-runtime\", \"mutated\": false, \"original_candidate\": \"/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529\", \"runtime_entries\": 7235, \"runtime_inventory\": \"55897401aad689f945b96d0e9e56b17ee2165eb9567d2cce84347f0ac32b2926\"}\n",
+  "stderr": "",
+  "helper_sha256": "3bbe0c2305cc87489cea9c5bd87d68c434414dbf82d5fe484a82ad87699ae0c3"
+}

@@ -1,0 +1,11 @@
+{
+  "archive": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101.zip",
+  "bytes": 114970,
+  "sha256": "eff14e61b31ed313ad606c44654688188ad66ba51fa082d91260d7c6f4f776cb",
+  "crc32": "bcffce1c",
+  "members": 48,
+  "zip_testzip": null,
+  "all_member_sha256_and_crc32_verified": true,
+  "duplicate_or_unindexed_members": false,
+  "member_index_sha256": "62468a9ec84d3dc74576ac73bc3622df298a85e962f486df6c42f859774c5a00"
+}

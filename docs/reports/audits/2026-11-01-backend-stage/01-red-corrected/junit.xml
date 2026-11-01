@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.073" timestamp="2026-11-01T19:05:49.018116+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_backend_stage_audit" name="test_exact_c14_payload" time="0.001"><error message="failed on setup with &quot;AssertionError: stage-only helper is not implemented&#10;assert False&#10; +  where False = is_file()&#10; +    where is_file = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py').is_file&quot;">tests/unit/test_backend_stage_audit.py:16: in stage
+    assert HELPER.is_file(), 'stage-only helper is not implemented'
+E   AssertionError: stage-only helper is not implemented
+E   assert False
+E    +  where False = is_file()
+E    +    where is_file = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py').is_file</error></testcase></testsuite></testsuites>

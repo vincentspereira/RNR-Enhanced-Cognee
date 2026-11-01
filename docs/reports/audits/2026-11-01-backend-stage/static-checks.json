@@ -1,0 +1,29 @@
+{
+  "ast_checks": [
+    "integrations/hermes/deployment/stage_audit_backend.py",
+    "tests/unit/test_backend_stage_audit.py",
+    "docs/reports/audits/2026-11-01-backend-stage/run_tdd.py"
+  ],
+  "helper_imports": [
+    "ast",
+    "hashlib",
+    "json",
+    "os",
+    "pathlib",
+    "stat",
+    "sys"
+  ],
+  "forbidden_calls": [],
+  "ascii_and_whitespace": "passed",
+  "observed_old_overlay_modes": {
+    "src/ingestion.py": "0o644",
+    "src/llm_summarize.py": "0o644",
+    "src/memory_api.py": "0o644",
+    "src/memory_daemon.py": "0o644",
+    "src/memory_library.py": "0o644",
+    "src/memory_queries.py": "0o644",
+    "src/security/enterprise_auth.py": "0o644"
+  },
+  "ruff_installed": false,
+  "protected_destination_absent": true
+}

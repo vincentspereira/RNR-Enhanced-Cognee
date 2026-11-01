@@ -1,0 +1,30 @@
+[
+  {
+    "path": "docs/reports/audits/2026-11-01-backend-stage/OWNER-GUIDE.md",
+    "sha256": "aae32eae67c01d4aaf1d0f0e6f5a6c3aa0c8105adfb5db6f5d0412e2f0c40f77"
+  },
+  {
+    "path": "docs/reports/audits/2026-11-01-backend-stage/REPORT.md",
+    "sha256": "7a6fe0cdebfa5bb761683150202b8e979ffafd51fee5733fe40775ca22ccb13d"
+  },
+  {
+    "path": "docs/reports/audits/2026-11-01-backend-stage/run_tdd.py",
+    "sha256": "23b51e4b9ec6754aaa6706dd09ad1f307fa4dca4a1fab30829da94e97100024d"
+  },
+  {
+    "path": "integrations/hermes/deployment/audit_backend_payload.json",
+    "sha256": "801103b2fc3f4a01860ed9cb8d45b7d2d4a45c10e2be0c8c339ea11b415112d7"
+  },
+  {
+    "path": "integrations/hermes/deployment/stage_audit_backend.py",
+    "sha256": "3bbe0c2305cc87489cea9c5bd87d68c434414dbf82d5fe484a82ad87699ae0c3"
+  },
+  {
+    "path": "tests/unit/test_backend_stage_audit.py",
+    "sha256": "0832988fb193fd0a370202f363d8aa31f8571bb55cfd82a84cb89f64c2cfac02"
+  },
+  {
+    "path": "docs/reports/audits/2026-11-01-backend-stage/STAGE-COMMANDS.md",
+    "sha256": "3fc4dca469a5f9fdb917b54fcda3ae53ae3db5e0e43cab3ae603772906a721a4"
+  }
+]

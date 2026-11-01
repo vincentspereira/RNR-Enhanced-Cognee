@@ -1,0 +1,50 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 57 items
+
+tests/unit/test_backend_stage_audit.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 57%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                                                 [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_____________ test_readonly_cli_inspection_requires_no_root_bundle _____________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:396: in test_readonly_cli_inspection_requires_no_root_bundle
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33mmain[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mbounded CLI is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: bounded CLI is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'main')[0m
+[31m[1m_________________ test_cli_has_no_user_controlled_paths[args0] _________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:408: in test_cli_has_no_user_controlled_paths
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33mmain[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mbounded CLI is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: bounded CLI is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'main')[0m
+[31m[1m_________________ test_cli_has_no_user_controlled_paths[args1] _________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:408: in test_cli_has_no_user_controlled_paths
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33mmain[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mbounded CLI is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: bounded CLI is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'main')[0m
+[31m[1m_________________ test_cli_has_no_user_controlled_paths[args2] _________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:408: in test_cli_has_no_user_controlled_paths
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33mmain[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mbounded CLI is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: bounded CLI is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'main')[0m
+[31m[1m_________________ test_cli_has_no_user_controlled_paths[args3] _________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:408: in test_cli_has_no_user_controlled_paths
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33mmain[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mbounded CLI is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: bounded CLI is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'main')[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/07-red/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_readonly_cli_inspection_requires_no_root_bundle[0m - AssertionError: bounded CLI is missing
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_cli_has_no_user_controlled_paths[args0][0m - AssertionError: bounded CLI is missing
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_cli_has_no_user_controlled_paths[args1][0m - AssertionError: bounded CLI is missing
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_cli_has_no_user_controlled_paths[args2][0m - AssertionError: bounded CLI is missing
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_cli_has_no_user_controlled_paths[args3][0m - AssertionError: bounded CLI is missing
+[31m========================= [31m[1m5 failed[0m, [32m52 passed[0m[31m in 2.28s[0m[31m =========================[0m

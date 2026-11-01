@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 58 items
+
+tests/unit/test_backend_stage_audit.py ................................. [ 56%]
+.........................                                                [100%]
+
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/parent-regressions.xml -
+============================== 58 passed in 2.42s ==============================

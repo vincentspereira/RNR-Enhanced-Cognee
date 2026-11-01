@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "security_concerns": [],
+  "logic_errors": [],
+  "suggestions": [],
+  "summary": "Accepted exact seven-file stage-only source/owner-command candidate under documented exclusive-owner assumptions; no blocking security or correctness defect reproduced. No privileged bootstrap, protected staging or promotion occurred.",
+  "reviewed_manifest": {
+    "root": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101",
+    "baseline": "c14f595ccd53f432b455b16f116765d9aa6c9a14",
+    "branch": "codex/enhanced-cognee-backend-stage-20261101",
+    "manifest_path": "docs/reports/audits/2026-11-01-backend-stage/review-manifest-v1.json",
+    "manifest_sha256": "ef823819c3273526a94e69853e0109068e4ec483b18e99ea0dd0d940dec6e033",
+    "files": [
+      {
+        "path": "docs/reports/audits/2026-11-01-backend-stage/OWNER-GUIDE.md",
+        "sha256": "aae32eae67c01d4aaf1d0f0e6f5a6c3aa0c8105adfb5db6f5d0412e2f0c40f77"
+      },
+      {
+        "path": "docs/reports/audits/2026-11-01-backend-stage/REPORT.md",
+        "sha256": "7a6fe0cdebfa5bb761683150202b8e979ffafd51fee5733fe40775ca22ccb13d"
+      },
+      {
+        "path": "docs/reports/audits/2026-11-01-backend-stage/run_tdd.py",
+        "sha256": "23b51e4b9ec6754aaa6706dd09ad1f307fa4dca4a1fab30829da94e97100024d"
+      },
+      {
+        "path": "integrations/hermes/deployment/audit_backend_payload.json",
+        "sha256": "801103b2fc3f4a01860ed9cb8d45b7d2d4a45c10e2be0c8c339ea11b415112d7"
+      },
+      {
+        "path": "integrations/hermes/deployment/stage_audit_backend.py",
+        "sha256": "3bbe0c2305cc87489cea9c5bd87d68c434414dbf82d5fe484a82ad87699ae0c3"
+      },
+      {
+        "path": "tests/unit/test_backend_stage_audit.py",
+        "sha256": "0832988fb193fd0a370202f363d8aa31f8571bb55cfd82a84cb89f64c2cfac02"
+      },
+      {
+        "path": "docs/reports/audits/2026-11-01-backend-stage/STAGE-COMMANDS.md",
+        "sha256": "3fc4dca469a5f9fdb917b54fcda3ae53ae3db5e0e43cab3ae603772906a721a4"
+      }
+    ]
+  },
+  "tests_run": {
+    "existing_offline": {
+      "passed": 58,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "observed_warnings": 0,
+      "returncode": 0
+    },
+    "independent_challenges": {
+      "distinct_passed": 60,
+      "current_failures": 0,
+      "current_errors": 0,
+      "skips": 0,
+      "observed_warnings": 0,
+      "initial_run": {
+        "passed": 47,
+        "reviewer_fixture_failures": 2,
+        "returncode": 1
+      },
+      "corrected_replay_and_new_trust_cases": {
+        "passed": 13,
+        "corrected_cases": 2,
+        "new_cases": 11,
+        "returncode": 0
+      },
+      "original_failures_and_same_id_mappings_preserved": true,
+      "coverage": [
+        "strict malformed/duplicate/trailing JSON with genuine controls",
+        "real Unix socket/FIFO paths and bad type/group/mode/ancestor metadata",
+        "exclusive new clone, independent complete inventory digest, old metadata/entrypoints retained",
+        "injected initial-marker/clone-read/clone-write/overlay-write/pending-write/final-rename/final-read faults, no false COMPLETE, preservation and refusal to reuse",
+        "root-execution flags, helper/executor lexical aliases, hardlinks and writable lexical parents using synthetic privilege metadata",
+        "exact module bytecode exclusion boundaries",
+        "both Bash blocks syntax checked; ten bootstrap hashes matched; extracted unprivileged reader rejects modified/final-symlink/missing inputs without stdout; invented stdin-install transport readback"
+      ]
+    },
+    "distinct_total": 118,
+    "read_only_fixed_runtime_inspection": {
+      "uid": 1000,
+      "returncode": 0,
+      "entries": 7235,
+      "inventory_sha256": "55897401aad689f945b96d0e9e56b17ee2165eb9567d2cce84347f0ac32b2926"
+    },
+    "payload_sources": {
+      "bound_to_baseline": 8,
+      "modified": 0
+    },
+    "preservation": {
+      "seven_candidate_hashes_unchanged": true,
+      "tracked_files_unchanged": true,
+      "index_unchanged": true,
+      "protected_destination_and_bundle_absent": true
+    },
+    "limitations": [
+      "Synthetic root stat/trust fixtures do not establish real privilege isolation or full cloned-runtime boot.",
+      "Root bootstrap and host stage operation were not executed; services/models/APIs/credentials/profiles untouched.",
+      "Activation, ledger provisioning/cutover accounting, relocation and backup recovery remain separate owner-gated phases."
+    ]
+  },
+  "evidence_paths": {
+    "directory": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101",
+    "archive": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101.zip",
+    "archive_receipt": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101-archive-receipt.json",
+    "reconciliation": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101/case-reconciliation.json",
+    "static_preservation": "/home/vincentspereira/.hermes/cache/scratch/backend-stage-independent-review-20261101/static-and-preservation.json",
+    "archive_sha256": "eff14e61b31ed313ad606c44654688188ad66ba51fa082d91260d7c6f4f776cb",
+    "archive_crc32": "bcffce1c",
+    "archive_members": 48
+  }
+}

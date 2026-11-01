@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/ingestion.py",
+    "baseline_match": true,
+    "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b"
+  },
+  {
+    "path": "src/llm_summarize.py",
+    "baseline_match": true,
+    "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae"
+  },
+  {
+    "path": "src/llm_budget.py",
+    "baseline_match": true,
+    "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7"
+  },
+  {
+    "path": "src/memory_api.py",
+    "baseline_match": true,
+    "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda"
+  },
+  {
+    "path": "src/memory_daemon.py",
+    "baseline_match": true,
+    "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20"
+  },
+  {
+    "path": "src/memory_library.py",
+    "baseline_match": true,
+    "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f"
+  },
+  {
+    "path": "src/memory_queries.py",
+    "baseline_match": true,
+    "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3"
+  },
+  {
+    "path": "src/security/enterprise_auth.py",
+    "baseline_match": true,
+    "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e"
+  }
+]

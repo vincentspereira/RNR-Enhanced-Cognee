@@ -1,0 +1,11 @@
+{
+  "source_accepted": true,
+  "scope": "stage-only helper and exact owner-command source; no root staging or API activation",
+  "accepted_manifest_sha256": "ef823819c3273526a94e69853e0109068e4ec483b18e99ea0dd0d940dec6e033",
+  "review_archive_sha256": "eff14e61b31ed313ad606c44654688188ad66ba51fa082d91260d7c6f4f776cb",
+  "archive_payload_members_verified": 47,
+  "archive_self_index_byte_verified": true,
+  "reviewed_files": 7,
+  "existing_suite_passed": 58,
+  "independent_cases_passed": 60
+}

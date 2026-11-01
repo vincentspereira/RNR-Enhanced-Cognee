@@ -1,0 +1,35 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 34 items
+
+tests/unit/test_backend_stage_audit.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31m [ 97%]
+[0m[31mF[0m[31m                                                                        [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m______________ test_preflight_rejects_attacks_before_writes[pth] _______________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:261: in test_preflight_rejects_attacks_before_writes
+    [0m[94mwith[39;49;00m pytest.raises(stage.Rejected):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   Failed: DID NOT RAISE Rejected[0m
+[31m[1m_____________ test_preflight_rejects_attacks_before_writes[setuid] _____________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:263: in test_preflight_rejects_attacks_before_writes
+    [0m[94massert[39;49;00m [95mnot[39;49;00m layout.dest.exists()[90m[39;49;00m
+[1m[31mE   AssertionError: assert not True[0m
+[1m[31mE    +  where True = exists()[0m
+[1m[31mE    +    where exists = PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-41/test_preflight_rejects_attacks14/candidates/new').exists[0m
+[1m[31mE    +      where PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-41/test_preflight_rejects_attacks14/candidates/new') = namespace(base=PosixPath('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-41/test_preflig...th('/home/vincentspereira/.hermes/cache/scratch/pytest-of-vincentspereira/pytest-41/test_preflight_rejects_attacks14')).dest[0m
+[31m[1m______ test_preflight_rejects_attacks_before_writes[runtime-private-dir] _______[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:261: in test_preflight_rejects_attacks_before_writes
+    [0m[94mwith[39;49;00m pytest.raises(stage.Rejected):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   Failed: DID NOT RAISE Rejected[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/05-red/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_preflight_rejects_attacks_before_writes[pth][0m - Failed: DID NOT RAISE Rejected
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_preflight_rejects_attacks_before_writes[setuid][0m - AssertionError: assert not True
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_preflight_rejects_attacks_before_writes[runtime-private-dir][0m - Failed: DID NOT RAISE Rejected
+[31m========================= [31m[1m3 failed[0m, [32m31 passed[0m[31m in 1.57s[0m[31m =========================[0m

@@ -1,0 +1,63 @@
+{
+  "source_checks": [
+    {
+      "path": "docs/reports/audits/2026-11-01-backend-stage/OWNER-GUIDE.md",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "docs/reports/audits/2026-11-01-backend-stage/REPORT.md",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "docs/reports/audits/2026-11-01-backend-stage/run_tdd.py",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "integrations/hermes/deployment/audit_backend_payload.json",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "integrations/hermes/deployment/stage_audit_backend.py",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "tests/unit/test_backend_stage_audit.py",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    },
+    {
+      "path": "docs/reports/audits/2026-11-01-backend-stage/STAGE-COMMANDS.md",
+      "unchanged_hash": true,
+      "ascii": true,
+      "no_trailing_whitespace": true
+    }
+  ],
+  "stdlib_imports": [
+    "ast",
+    "hashlib",
+    "json",
+    "os",
+    "pathlib",
+    "stat",
+    "sys"
+  ],
+  "tracked_diff_empty": true,
+  "index_unchanged": true,
+  "status_unchanged": true,
+  "head": "c14f595ccd53f432b455b16f116765d9aa6c9a14",
+  "branch": "codex/enhanced-cognee-backend-stage-20261101",
+  "git_diff_check": 0,
+  "protected_new_destination_absent": true,
+  "protected_input_bundle_absent": true
+}
