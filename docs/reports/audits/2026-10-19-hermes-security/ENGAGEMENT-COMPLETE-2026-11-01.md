@@ -249,8 +249,12 @@ plugins/enhanced_cognee directory (profile-scoped discovery), the MCP
 server definition confirmed in each config.yaml with per-role groups
 (media-producer/accounting-specialist/social-work-specialist:
 memory_read,ingest,analysis; legal-specialist: memory_read,analysis -
-matching the approved matrix logic), scoped 30-day tokens issued into
-each profile's own .env by the audited provisioner, and the enablement
-role table extended to 44 with the verifiers updated (the per-role
-verifier now requires 44 and live-spawns every role including the four
-new ones).
+matching the approved matrix logic), scoped tokens issued into each
+profile's own .env by the audited provisioner - initially at the
+default 7-day TTL (owner question caught it), reissued at the
+fleet-standard 30 days - and the enablement role table extended to
+44 with the verifiers updated (the per-role verifier now requires 44
+and live-spawns every role including the four new ones). The renewal
+job's profile list now unions the enablement role table with the
+batch receipts (which were updated with a backup to include the
+four), so all 44 bots auto-renew inside their final 7 days.
