@@ -9,7 +9,7 @@ checks are marked OWNER and need Vincent's terminal.
 
 You are an independent reviewer. Another agent delivered Enhanced Cognee
 as the extended memory for the Hermes Agent main assistant and its
-40-bot fleet on this host (Ubuntu-Hermes). Your job is to verify with
+44-bot fleet on this host (Ubuntu-Hermes). Your job is to verify with
 fresh eyes that everything works as expected and to find anything that
 was missed, mis-stated or left inconsistent. You are NOT continuing the
 delivery; you are auditing it. Report findings honestly, including
@@ -40,11 +40,12 @@ launch-worktree-20261024). Claims in brief:
 1. Protected stack: 5 systemd services (postgres, qdrant, graph/
    ArcadeDB, cache/valkey, api on 127.0.0.1:28080) plus index worker.
 2. Memory provider (8 enhanced_* tools, automatic capture/recall) for
-   the main assistant and all 40 profiles under
+   the main assistant and all 44 profiles under
    /home/vincentspereira/.hermes/profiles/ (canaries retired).
 3. MCP server at ~/.hermes/mcp-servers/enhanced-cognee/server.py with
    per-role tool groups: memory_read (10 tools) for all; +ingest,+analysis
-   for 19 roles; +analysis for 12; ops roles read-only; coordinators
+   for 22 roles (incl. media-producer, accounting-specialist,
+  social-work-specialist); +analysis for 13 (incl. legal-specialist); ops roles read-only; coordinators
    memory_read,analysis (library tools deliberately reviewer-gated);
    main assistant (gateway home config) memory_read,ingest,analysis.
 4. Service API endpoints: ingestion, summarize/consolidation/status,
@@ -104,19 +105,19 @@ OWNER (Vincent's terminal, paste-only summaries back):
 - Security posture: confirm no credential values in git (run a fresh
   secret scan over the branch); confirm profile tokens are only in
   0600 .env files; confirm the LLM key exists only in /etc root-only.
-- Per-role spot checks: pick 3 roles from different groups; open their
+- Per-role spot checks: pick 3 roles from different groups (include one of the four new specialists: media-producer, accounting-specialist, legal-specialist, social-work-specialist); open their
   config.yaml mcp_servers.enhanced_cognee args and confirm the group
   matches the matrix in the engagement doc section 3.5.
 - MCP live behavior: for one role, spawn the server with its token and
   verify tools/list matches the group exactly (the scripted verifier
-  does this for all 40; do one manually to validate the validator).
+  does this for all 44; do one manually to validate the validator).
 - Rate limit and gates: one paced write loop (stay under 120/min) to
   confirm normal writes succeed; a single library publish attempt with
   a role token must get 403 memory:admin.
 - Renewal math: check state.json expiries are inside the 30-day window
   and the timer next-fire is Monday 04:00 +/- jitter.
 - Gap hunt (the real point of this review): anything NOT covered above
-  that a production memory backend for a 40-bot fleet should have.
+  that a production memory backend for a 44-bot fleet should have.
   Consider: monitoring/alerting, restore drill recency, log rotation,
   disk headroom for stores/backups, dependency CVE recheck, gateway
   restart resilience of MCP children, token renewal edge cases
