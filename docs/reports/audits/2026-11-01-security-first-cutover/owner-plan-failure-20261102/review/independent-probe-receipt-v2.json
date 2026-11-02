@@ -1,0 +1,1044 @@
+{
+  "passed": true,
+  "counts": {
+    "executed": 35,
+    "passed": 35,
+    "failed": 0,
+    "by_category": {
+      "boundary": 7,
+      "error_redaction": 4,
+      "ordinary_uid": 1,
+      "redaction": 10,
+      "routing": 11,
+      "runtime": 1,
+      "syntax": 1
+    }
+  },
+  "cases": [
+    {
+      "case": "one_literal_command_and_syntax",
+      "category": "syntax",
+      "passed": true,
+      "bash_exit": 0,
+      "python_ast_valid": true
+    },
+    {
+      "case": "real_ordinary_uid_negative",
+      "category": "ordinary_uid",
+      "passed": true,
+      "exit_code": 1,
+      "output": {
+        "checks": [],
+        "complete": false,
+        "error_kind": "RuntimeError",
+        "failed_stage": "protected_helper_identity",
+        "ledger_created": false,
+        "read_only": true,
+        "services_restarted": false
+      },
+      "scope": "Real ordinary UID, rejects before any protected helper access"
+    },
+    {
+      "case": "formatter_credential_directives",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "b7ab8992581f916b244d5459801459cb740dfd82a0156f145c6e261de20e9c3d",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "SetCredential": 1,
+          "LoadCredential": 1,
+          "EnvironmentFile": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "SetCredential",
+            "empty": false
+          },
+          {
+            "line": 3,
+            "leading_whitespace": false,
+            "directive": "LoadCredential",
+            "empty": false
+          },
+          {
+            "line": 4,
+            "leading_whitespace": false,
+            "directive": "EnvironmentFile",
+            "empty": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_unknown_key_section_comment",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "5264d4bd07611f82d9926243a2b0653b4c47dca0408a38d65782d3a9adac135e",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "OTHER": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "OTHER"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "OTHER",
+            "empty": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_known_variable_secret_values",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "692dde80e3090137d20afe03b9c6528eb0b15738beb69da8a54e84b9a0bbf623",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "Environment": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "Environment",
+            "empty": false,
+            "known_variable_names": [
+              "HOME",
+              "ENHANCED_LOAD_DOTENV"
+            ],
+            "other_variable_count": 1,
+            "matches_approved_literal_allowlist": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_malformed_quotes",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "2005f8929bcbedc05621306700f5248b92250d26938beb2972c4604967f80de8",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "Environment": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "Environment",
+            "empty": false,
+            "environment_syntax_valid": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_malformed_no_equals",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "5ad9163e8dd6af4334e8e1032d822cde22f4ea6bcfac8c527403806da3abfc6f",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {},
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "malformed_line": true
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_launch_values",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "e1e25b8d7f983d65b0e30fc57d57b9ddbdd043040a6059b1f8acf52044839a93",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "User": 1,
+          "Group": 1,
+          "WorkingDirectory": 1,
+          "ExecStart": 1
+        },
+        "missing_required_launch_directives": [],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "User",
+            "empty": false,
+            "matches_api_identity": false
+          },
+          {
+            "line": 3,
+            "leading_whitespace": false,
+            "directive": "Group",
+            "empty": false,
+            "matches_api_identity": false
+          },
+          {
+            "line": 4,
+            "leading_whitespace": false,
+            "directive": "WorkingDirectory",
+            "empty": false,
+            "matches_old_candidate": false
+          },
+          {
+            "line": 5,
+            "leading_whitespace": false,
+            "directive": "ExecStart",
+            "empty": false,
+            "matches_old_launcher": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_continuation_controls",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "172f1226c60863166df9d73c2c03ae0775ea35d1bbc9c6e11a20c94331741173",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "Environment": 1,
+          "OTHER": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "Environment",
+            "empty": false,
+            "environment_syntax_valid": false
+          },
+          {
+            "line": 3,
+            "leading_whitespace": false,
+            "malformed_line": true
+          },
+          {
+            "line": 4,
+            "leading_whitespace": true,
+            "directive": "OTHER",
+            "empty": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_non_ascii",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "315b3c6841b66f3216a7f9e58d07179d58b63add3c29bab1b99594488084bf46",
+      "sanitized_output": {
+        "ascii": false,
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_safe_environment",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "ebb245e736ff791c9e80b57d918ee12864b0ccd1aaa59d924442377688bc65ef",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "Environment": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group",
+          "WorkingDirectory",
+          "ExecStart"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "Environment",
+            "empty": false,
+            "known_variable_names": [
+              "ENHANCED_LOAD_DOTENV"
+            ],
+            "other_variable_count": 0,
+            "matches_approved_literal_allowlist": true
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "formatter_missing_identity",
+      "category": "redaction",
+      "passed": true,
+      "fixture_sha256": "6b49651b76bba0bf116ae0ff449b4750327e2fb554f2771c2cda7977759f5112",
+      "sanitized_output": {
+        "ascii": true,
+        "directive_counts": {
+          "WorkingDirectory": 1,
+          "ExecStart": 1
+        },
+        "missing_required_launch_directives": [
+          "User",
+          "Group"
+        ],
+        "rows": [
+          {
+            "line": 1,
+            "leading_whitespace": false,
+            "section": "Service"
+          },
+          {
+            "line": 2,
+            "leading_whitespace": false,
+            "directive": "WorkingDirectory",
+            "empty": false,
+            "matches_old_candidate": true
+          },
+          {
+            "line": 3,
+            "leading_whitespace": false,
+            "directive": "ExecStart",
+            "empty": true,
+            "matches_old_launcher": false
+          }
+        ],
+        "raw_values_printed": false
+      }
+    },
+    {
+      "case": "full_path_success_passthrough",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read",
+        "protected_runtime_unit_parse",
+        "snapshot_collection",
+        "plan_validation"
+      ],
+      "plan_sha256": "69812dc0393236012373423356d539d9ec03f142ab6d9bdea0c10e88a898dea1",
+      "scope": "Synthetic plan passthrough and canonical digest only, not real plan acceptance"
+    },
+    {
+      "case": "first_failure_runtime_guard",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard"
+      ],
+      "failed_stage": "runtime_guard"
+    },
+    {
+      "case": "first_failure_output_guard",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard"
+      ],
+      "failed_stage": "output_guard"
+    },
+    {
+      "case": "first_failure_unit_inventory",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory"
+      ],
+      "failed_stage": "unit_inventory"
+    },
+    {
+      "case": "first_failure_loaded_unit_state",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state"
+      ],
+      "failed_stage": "loaded_unit_state"
+    },
+    {
+      "case": "first_failure_protected_runtime_unit_read",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read"
+      ],
+      "failed_stage": "protected_runtime_unit_read"
+    },
+    {
+      "case": "first_failure_protected_runtime_unit_parse",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read",
+        "protected_runtime_unit_parse"
+      ],
+      "failed_stage": "protected_runtime_unit_parse"
+    },
+    {
+      "case": "first_failure_snapshot_collection",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read",
+        "protected_runtime_unit_parse",
+        "snapshot_collection"
+      ],
+      "failed_stage": "snapshot_collection"
+    },
+    {
+      "case": "first_failure_plan_validation",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read",
+        "protected_runtime_unit_parse",
+        "snapshot_collection",
+        "plan_validation"
+      ],
+      "failed_stage": "plan_validation"
+    },
+    {
+      "case": "boundary_ancestor_symlink",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_ancestor_writable",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_leaf_symlink",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_leaf_mode",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_leaf_owner",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_leaf_multilink",
+      "category": "boundary",
+      "passed": true,
+      "events": []
+    },
+    {
+      "case": "boundary_hash_mismatch",
+      "category": "boundary",
+      "passed": true,
+      "events": [
+        "helper_bytes"
+      ]
+    },
+    {
+      "case": "error_redaction_known_refusal",
+      "category": "error_redaction",
+      "passed": true,
+      "safe_result": {
+        "checks": [
+          {
+            "passed": true,
+            "stage": "runtime_guard"
+          },
+          {
+            "passed": true,
+            "stage": "output_guard"
+          },
+          {
+            "passed": true,
+            "stage": "unit_inventory"
+          },
+          {
+            "passed": true,
+            "stage": "loaded_unit_state"
+          },
+          {
+            "passed": true,
+            "stage": "protected_runtime_unit_parse"
+          }
+        ],
+        "complete": false,
+        "error_kind": "Refusal",
+        "failed_stage": "snapshot_collection",
+        "fixed_reason_code": "unsafe_path_mode",
+        "ledger_created": false,
+        "read_only": true,
+        "runtime_unit_structure": {
+          "ascii": true,
+          "directive_counts": {
+            "ExecStart": 2,
+            "Group": 1,
+            "User": 1,
+            "WorkingDirectory": 1
+          },
+          "missing_required_launch_directives": [],
+          "raw_values_printed": false,
+          "rows": [
+            {
+              "leading_whitespace": false,
+              "line": 1,
+              "section": "Service"
+            },
+            {
+              "directive": "User",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 2,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "Group",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 3,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "WorkingDirectory",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 4,
+              "matches_old_candidate": true
+            },
+            {
+              "directive": "ExecStart",
+              "empty": true,
+              "leading_whitespace": false,
+              "line": 5,
+              "matches_old_launcher": false
+            },
+            {
+              "directive": "ExecStart",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 6,
+              "matches_old_launcher": true
+            }
+          ]
+        },
+        "services_restarted": false
+      }
+    },
+    {
+      "case": "error_redaction_unknown_refusal",
+      "category": "error_redaction",
+      "passed": true,
+      "safe_result": {
+        "checks": [
+          {
+            "passed": true,
+            "stage": "runtime_guard"
+          },
+          {
+            "passed": true,
+            "stage": "output_guard"
+          },
+          {
+            "passed": true,
+            "stage": "unit_inventory"
+          },
+          {
+            "passed": true,
+            "stage": "loaded_unit_state"
+          },
+          {
+            "passed": true,
+            "stage": "protected_runtime_unit_parse"
+          }
+        ],
+        "complete": false,
+        "error_kind": "Refusal",
+        "failed_stage": "snapshot_collection",
+        "ledger_created": false,
+        "read_only": true,
+        "runtime_unit_structure": {
+          "ascii": true,
+          "directive_counts": {
+            "ExecStart": 2,
+            "Group": 1,
+            "User": 1,
+            "WorkingDirectory": 1
+          },
+          "missing_required_launch_directives": [],
+          "raw_values_printed": false,
+          "rows": [
+            {
+              "leading_whitespace": false,
+              "line": 1,
+              "section": "Service"
+            },
+            {
+              "directive": "User",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 2,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "Group",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 3,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "WorkingDirectory",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 4,
+              "matches_old_candidate": true
+            },
+            {
+              "directive": "ExecStart",
+              "empty": true,
+              "leading_whitespace": false,
+              "line": 5,
+              "matches_old_launcher": false
+            },
+            {
+              "directive": "ExecStart",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 6,
+              "matches_old_launcher": true
+            }
+          ]
+        },
+        "services_restarted": false
+      }
+    },
+    {
+      "case": "error_redaction_ordinary_exception",
+      "category": "error_redaction",
+      "passed": true,
+      "safe_result": {
+        "checks": [
+          {
+            "passed": true,
+            "stage": "runtime_guard"
+          },
+          {
+            "passed": true,
+            "stage": "output_guard"
+          },
+          {
+            "passed": true,
+            "stage": "unit_inventory"
+          },
+          {
+            "passed": true,
+            "stage": "loaded_unit_state"
+          },
+          {
+            "passed": true,
+            "stage": "protected_runtime_unit_parse"
+          }
+        ],
+        "complete": false,
+        "error_kind": "ValueError",
+        "failed_stage": "snapshot_collection",
+        "ledger_created": false,
+        "read_only": true,
+        "runtime_unit_structure": {
+          "ascii": true,
+          "directive_counts": {
+            "ExecStart": 2,
+            "Group": 1,
+            "User": 1,
+            "WorkingDirectory": 1
+          },
+          "missing_required_launch_directives": [],
+          "raw_values_printed": false,
+          "rows": [
+            {
+              "leading_whitespace": false,
+              "line": 1,
+              "section": "Service"
+            },
+            {
+              "directive": "User",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 2,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "Group",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 3,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "WorkingDirectory",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 4,
+              "matches_old_candidate": true
+            },
+            {
+              "directive": "ExecStart",
+              "empty": true,
+              "leading_whitespace": false,
+              "line": 5,
+              "matches_old_launcher": false
+            },
+            {
+              "directive": "ExecStart",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 6,
+              "matches_old_launcher": true
+            }
+          ]
+        },
+        "services_restarted": false
+      }
+    },
+    {
+      "case": "error_redaction_os_error",
+      "category": "error_redaction",
+      "passed": true,
+      "safe_result": {
+        "checks": [
+          {
+            "passed": true,
+            "stage": "runtime_guard"
+          },
+          {
+            "passed": true,
+            "stage": "output_guard"
+          },
+          {
+            "passed": true,
+            "stage": "unit_inventory"
+          },
+          {
+            "passed": true,
+            "stage": "loaded_unit_state"
+          },
+          {
+            "passed": true,
+            "stage": "protected_runtime_unit_parse"
+          }
+        ],
+        "complete": false,
+        "errno": 13,
+        "error_kind": "PermissionError",
+        "failed_stage": "snapshot_collection",
+        "ledger_created": false,
+        "read_only": true,
+        "runtime_unit_structure": {
+          "ascii": true,
+          "directive_counts": {
+            "ExecStart": 2,
+            "Group": 1,
+            "User": 1,
+            "WorkingDirectory": 1
+          },
+          "missing_required_launch_directives": [],
+          "raw_values_printed": false,
+          "rows": [
+            {
+              "leading_whitespace": false,
+              "line": 1,
+              "section": "Service"
+            },
+            {
+              "directive": "User",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 2,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "Group",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 3,
+              "matches_api_identity": true
+            },
+            {
+              "directive": "WorkingDirectory",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 4,
+              "matches_old_candidate": true
+            },
+            {
+              "directive": "ExecStart",
+              "empty": true,
+              "leading_whitespace": false,
+              "line": 5,
+              "matches_old_launcher": false
+            },
+            {
+              "directive": "ExecStart",
+              "empty": false,
+              "leading_whitespace": false,
+              "line": 6,
+              "matches_old_launcher": true
+            }
+          ]
+        },
+        "services_restarted": false
+      }
+    },
+    {
+      "case": "loaded_drift_stops_before_private_unit",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state"
+      ]
+    },
+    {
+      "case": "real_parser_malformed_full_path_redacted",
+      "category": "routing",
+      "passed": true,
+      "events": [
+        "helper_bytes",
+        "protected_definition_load",
+        "runtime_guard",
+        "output_guard",
+        "unit_inventory",
+        "loaded_unit_state",
+        "protected_runtime_unit_read",
+        "protected_runtime_unit_parse"
+      ],
+      "safe_result": {
+        "checks": [
+          {
+            "passed": true,
+            "stage": "runtime_guard"
+          },
+          {
+            "passed": true,
+            "stage": "output_guard"
+          },
+          {
+            "passed": true,
+            "stage": "unit_inventory"
+          },
+          {
+            "passed": true,
+            "stage": "loaded_unit_state"
+          }
+        ],
+        "complete": false,
+        "error_kind": "Refusal",
+        "failed_stage": "protected_runtime_unit_parse",
+        "fixed_reason_code": "unit_syntax_or_directive_refused",
+        "ledger_created": false,
+        "read_only": true,
+        "runtime_unit_structure": {
+          "ascii": true,
+          "directive_counts": {
+            "Environment": 1
+          },
+          "missing_required_launch_directives": [
+            "User",
+            "Group",
+            "WorkingDirectory",
+            "ExecStart"
+          ],
+          "raw_values_printed": false,
+          "rows": [
+            {
+              "leading_whitespace": false,
+              "line": 1,
+              "section": "Service"
+            },
+            {
+              "directive": "Environment",
+              "empty": false,
+              "environment_syntax_valid": false,
+              "leading_whitespace": false,
+              "line": 2
+            }
+          ]
+        },
+        "services_restarted": false
+      }
+    },
+    {
+      "case": "protected_runpy_file_runtime_guard_semantics",
+      "category": "runtime",
+      "passed": true,
+      "helper_file": "/opt/enhanced-cognee-memory/security-first-helper/prepare_security_first_cutover.py",
+      "run_name": "__readonly_diagnostic__",
+      "interpreter": "/usr/bin/python3",
+      "flags": {
+        "isolated": true,
+        "no_site": true,
+        "dont_write_bytecode": true,
+        "safe_path": true
+      },
+      "scope": "Real runpy and runtime_guard logic, in-memory root identity/path guards only"
+    }
+  ],
+  "source_hashes": {
+    "diagnostic_sha256": "1bcf3e2bb780a8baa59a8f68e75354e78bed9e767a631821a0314037e18b5256",
+    "helper_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "probe_sha256": "e0d69b5a19bc7cf1e6604cafb66d89343363fc19caf365bfa16371f6f07128e4",
+    "embedded_python_sha256": "640d43a080e68037f46391624bf92c1f4ea098c3b644c700fbd0431766a67e44"
+  },
+  "root_commands_executed": false,
+  "private_file_contents_read": false,
+  "service_or_network_calls": false,
+  "production_files_modified": false,
+  "owner_root_diagnostic": "PENDING; no live root/protected-unit proof"
+}

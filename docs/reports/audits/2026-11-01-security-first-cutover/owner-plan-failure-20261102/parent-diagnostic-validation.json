@@ -1,0 +1,42 @@
+{
+  "bash_syntax_exit": 0,
+  "python_ast_valid": true,
+  "formatter_cases": [
+    {
+      "case": "missing_identity",
+      "passed": true
+    },
+    {
+      "case": "secret_environment",
+      "passed": true
+    },
+    {
+      "case": "inline_credential",
+      "passed": true
+    },
+    {
+      "case": "comment",
+      "passed": true
+    },
+    {
+      "case": "malformed_quote",
+      "passed": true
+    },
+    {
+      "case": "unknown_directive_and_section",
+      "passed": true
+    },
+    {
+      "case": "non_ascii",
+      "passed": true
+    },
+    {
+      "case": "known_environment",
+      "passed": true
+    }
+  ],
+  "ordinary_uid_negative_exit": 1,
+  "root_commands_executed": false,
+  "real_root_diagnostic": "OWNER_PENDING",
+  "scope": "Syntax and formatter-only probes, not root-plan acceptance"
+}

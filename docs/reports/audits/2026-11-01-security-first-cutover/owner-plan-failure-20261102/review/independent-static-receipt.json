@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "read_only_call_closure": [
+    "canonical",
+    "check_output",
+    "collect_snapshot",
+    "digest",
+    "inventory_sources",
+    "parse_unit",
+    "plan_from_snapshot",
+    "proposed_dropin",
+    "read_loaded",
+    "read_protected",
+    "runtime_guard",
+    "show_properties"
+  ],
+  "write_or_cli_functions_unreachable": true,
+  "manual_findings": [
+    "Exact protected helper path, safe root ancestor/leaf metadata and SHA precede runpy.",
+    "Non-main runpy loads stdlib and definitions only; installed __file__ satisfies runtime_guard.",
+    "Only selected metadata systemctl show can launch; no app imports or credential file reads.",
+    "Structural unit renderer uses closed directive/variable label sets and no raw content.",
+    "Exceptions emit class, optional numeric errno and SHA-bound literal Refusal codes, never exception text.",
+    "Plan output is direct validated helper plan and canonical SHA, not reconstructed plan."
+  ],
+  "source_hashes": {
+    "diagnostic_sha256": "1bcf3e2bb780a8baa59a8f68e75354e78bed9e767a631821a0314037e18b5256",
+    "helper_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63"
+  },
+  "live_root_runtime_acceptance": "PENDING",
+  "probe_replay_note": "v2 changes only callable/type annotations and versioned receipt destination; v1 evidence preserved.",
+  "counts": {
+    "distinct_cases": 35,
+    "latest_passed": 35,
+    "latest_failed": 0,
+    "prior_replayed_executions": 35,
+    "total_case_executions": 70
+  }
+}
