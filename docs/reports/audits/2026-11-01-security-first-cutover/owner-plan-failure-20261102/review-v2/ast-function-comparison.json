@@ -1,0 +1,23 @@
+{
+  "identical": [
+    "Refusal",
+    "digest",
+    "canonical",
+    "proposed_dropin",
+    "trusted_path",
+    "write_new",
+    "write_bundle",
+    "read_protected",
+    "show_properties",
+    "read_loaded",
+    "inventory_sources",
+    "collect_snapshot",
+    "runtime_guard",
+    "check_output",
+    "main"
+  ],
+  "changed": [
+    "parse_unit",
+    "plan_from_snapshot"
+  ]
+}

@@ -1,0 +1,31 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 4 items
+
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands [31mFAILED[0m[31m [ 25%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[exact-reader] [32mPASSED[0m[31m [ 50%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[wrong-hash] [32mPASSED[0m[31m [ 75%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[symlink-reader] [32mPASSED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m______________________ test_owner_shell_ast_and_commands _______________________[0m
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py[0m:208: in test_owner_shell_ast_and_commands
+    [0m[94massert[39;49;00m forbidden [95mnot[39;49;00m [95min[39;49;00m [33m'[39;49;00m[33m'[39;49;00m.join(BLOCKS)[90m[39;49;00m
+[1m[31mE   assert 'restart' not in '(\nset -euo...\n  --plan\n'[0m
+[1m[31mE     [0m
+[1m[31mE     'restart' is contained here:[0m
+[1m[31mE       ([0m
+[1m[31mE       set -euo pipefail[0m
+[1m[31mE       repo="/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101"[0m
+[1m[31mE       expected="a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"[0m
+[1m[31mE       /usr/bin/test "$(/usr/bin/id -u)" -ne 0...[0m
+[1m[31mE     [0m
+[1m[31mE     ...Full output truncated (50 lines hidden), use '-vv' to show[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner-4e8a97d170f948849363235d0793d101/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::[1mtest_owner_shell_ast_and_commands[0m - assert 'restart' not in '(\nset -euo...\n  --plan\n'
+[31m========================= [31m[1m1 failed[0m, [32m3 passed[0m[31m in 0.26s[0m[31m ==========================[0m

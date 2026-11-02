@@ -1,0 +1,3035 @@
+{
+  "exitstatus": 0,
+  "records": [
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_phase_a_dropin_and_canonical_hash",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_phase_a_dropin_and_canonical_hash",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_phase_a_dropin_and_canonical_hash",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[missing]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[missing]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[missing]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[extra]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[extra]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[extra]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[reload]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[reload]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[reload]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[alias]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[alias]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[alias]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[run-override]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[run-override]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[run-override]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_rejects_extra_files_before_any_write",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_rejects_extra_files_before_any_write",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_bundle_rejects_extra_files_before_any_write",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Id]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Id]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Id]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Names]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Names]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Names]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[User]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[User]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[User]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Group]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Group]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Group]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[missing]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[missing]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[missing]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_writer_rejects_unsafe_parent_before_creation",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_writer_rejects_unsafe_parent_before_creation",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_writer_rejects_unsafe_parent_before_creation",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_must_have_execute_permission",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_must_have_execute_permission",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_must_have_execute_permission",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_inventory_refuses_unknown_manager_search_path",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_inventory_refuses_unknown_manager_search_path",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_inventory_refuses_unknown_manager_search_path",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_repeated_matching_identity_across_fragments_is_consistent",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_repeated_matching_identity_across_fragments_is_consistent",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_repeated_matching_identity_across_fragments_is_consistent",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=no\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=no\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=no\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=false\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=false\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=false\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=0\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=0\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=0\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=yes\\nDynamicUser=no\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=yes\\nDynamicUser=no\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=yes\\nDynamicUser=no\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[root.service]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[root.service]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[root.service]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[wrong.service]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[wrong.service]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[wrong.service]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[9invalid.service]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[9invalid.service]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[9invalid.service]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[bad@instance.service]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[bad@instance.service]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[bad@instance.service]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[enhanced-cognee-api.socket]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[enhanced-cognee-api.socket]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[enhanced-cognee-api.socket]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.service]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.service]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.service]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-root]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-root]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-root]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-other-account]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-other-account]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-other-account]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-root]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-root]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-root]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-other-account]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-other-account]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-other-account]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-no]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-no]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-no]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-reset]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-reset]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-reset]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[extra-reset]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[extra-reset]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[extra-reset]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-command]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-command]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-command]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[second-command]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[second-command]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[second-command]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-command]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-command]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-command]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-directory]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-directory]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-directory]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=llm.json:/invented\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=llm.json:/invented\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=llm.json:/invented\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[SetCredential=hidden:invented-secret\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[SetCredential=hidden:invented-secret\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[SetCredential=hidden:invented-secret\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[ImportCredential=*\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[ImportCredential=*\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[ImportCredential=*\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredentialEncrypted=hidden:/invented\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredentialEncrypted=hidden:/invented\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredentialEncrypted=hidden:/invented\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[EnvironmentFile=/invented\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[EnvironmentFile=/invented\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[EnvironmentFile=/invented\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[User=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[User=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[User=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[Group=\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[Group=\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[Group=\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[DynamicUser=yes\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[DynamicUser=yes\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[DynamicUser=yes\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_plan_entry_is_read_only_and_binds_v2_paths",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_plan_entry_is_read_only_and_binds_v2_paths",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2.py::test_owner_plan_entry_is_read_only_and_binds_v2_paths",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "when": "teardown",
+      "outcome": "passed"
+    }
+  ]
+}

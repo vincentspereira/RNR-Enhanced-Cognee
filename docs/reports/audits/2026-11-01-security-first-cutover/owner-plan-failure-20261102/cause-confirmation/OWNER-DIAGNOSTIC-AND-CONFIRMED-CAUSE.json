@@ -1,0 +1,30 @@
+{
+  "source": "owner_supplied_read_only_diagnostic",
+  "complete": false,
+  "failed_stage": "protected_runtime_unit_parse",
+  "fixed_reason_code": "unit_syntax_or_directive_refused",
+  "passed_stages": ["runtime_guard", "output_guard", "unit_inventory", "loaded_unit_state"],
+  "runtime_unit_structure": {
+    "ascii": true,
+    "directive_counts": {"ExecStart": 2, "WorkingDirectory": 1},
+    "missing_required_launch_directives": ["User", "Group"],
+    "working_directory_matches_old_candidate": true,
+    "execstart_reset_present": true,
+    "execstart_matches_old_launcher": true,
+    "raw_values_printed": false
+  },
+  "independent_ordinary_user_confirmation": {
+    "all_three_readable_unit_sources_omit_user_and_group": true,
+    "base_dynamic_user": "yes",
+    "loaded_user": "enhanced-cognee-api",
+    "loaded_group": "enhanced-cognee-api",
+    "loaded_state_matches_expected": true,
+    "installed_v1_helper_sha256_unchanged": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63"
+  },
+  "root_cause": "V1 incorrectly requires explicit User/Group declarations in a launch drop-in. DynamicUser=yes legitimately derives both names from the unit name when neither is declared.",
+  "authoritative_default_reference": "/usr/share/man/man5/systemd.exec.5.gz",
+  "scope": "Protected runtime-unit rows are owner evidence; readable base metadata and local manager documentation were independently checked. No private unit bytes/hash inferred.",
+  "services_restarted": false,
+  "ledger_created": false,
+  "next_action": "Second/final bounded source repair in a NEW v2 helper and NEW protected target; preserve installed v1 and live configuration. Independent review before owner commands."
+}

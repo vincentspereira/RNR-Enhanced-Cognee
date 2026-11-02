@@ -1,0 +1,22 @@
+{
+  "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/OWNER-V2-PLAN.md": "cbebb9eb0ae50451e5df431312ce9c7776dc90cabad1c5ec39ab2d3955bbeba0",
+  "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/run_offline.py": "076000b06feab1272e0ba13c444d6f555c5add53d1cd12f4028687bd77a34824",
+  "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/verify_v2_artifacts.py": "03348a168879e08ce8e16ad8cc0eb61840a76fe4a3621ab71eb54e0d5de38b77",
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f",
+  "integrations/hermes/deployment/audit_backend_payload.json": "801103b2fc3f4a01860ed9cb8d45b7d2d4a45c10e2be0c8c339ea11b415112d7",
+  "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+  "integrations/hermes/deployment/prepare_security_first_cutover_v2.py": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365",
+  "pytest.ini": "38b7e8683275dd7387530db3573a979e2b312d2b98da8d049c66952cc3c61618",
+  "src/ingestion.py": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+  "src/llm_budget.py": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+  "src/llm_summarize.py": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+  "src/memory_api.py": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+  "src/memory_daemon.py": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+  "src/memory_library.py": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+  "src/memory_queries.py": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+  "src/security/enterprise_auth.py": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+  "tests/unit/test_security_first_cutover.py": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213",
+  "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0",
+  "tests/unit/test_security_first_cutover_v2.py": "197edec152175a3171f7379dffea28ce4b87a000412e74f913fe699e3ad12e0e",
+  "tests/unit/test_security_first_cutover_v2_review_regressions.py": "fb4dbdd20431b57c1130bd6e0ed1e18d556cd477c5456f4be7fdd456efe11ae7"
+}

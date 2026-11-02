@@ -1,0 +1,27 @@
+{
+  "repair_cycle": "SECOND/FINAL; interrupted provider attempt before writes did not consume another cycle",
+  "red-owner-minimal": {
+    "classification": "test instrumentation failure before helper operation",
+    "receipt": "red-owner-minimal/receipt.json",
+    "cause": "Substring User= also matched DynamicUser=. Fixed only NEW test to match line prefixes. Original failing bytes preserved in red-minimal-test.py.txt."
+  },
+  "red-owner-confirmed": {
+    "classification": "expected V1 contract failure",
+    "receipt": "red-owner-confirmed/receipt.json",
+    "cause": "Actual V1 Refusal unit_syntax_or_directive_refused at parse_unit launch required User/Group."
+  },
+  "manual_document_lookup": {
+    "classification": "read-only lookup instrumentation failure; no source or tests touched",
+    "observed_exception": "ValueError: substring not found",
+    "cause": "Searched unescaped User=, Group= in roff source. Follow-up selected the DynamicUser option section; no protected/live state read or written."
+  },
+  "validator_write_tool_delivery": {
+    "classification": "tool response decoding error after file write",
+    "observed_exception": "json.decoder.JSONDecodeError: Extra data: line 4 column 1 (char 610)",
+    "cause": "write_file response through execute_code contained extra tool metadata. Direct read_file recovered complete written file. No validator process had run at that time; artifact-check-01 is the first execution."
+  },
+  "runner_failures": [],
+  "unknown_test_groups": [],
+  "source_contract_defects_observed_after_fix": [],
+  "independent_review": "NOT PERFORMED by this implementer; parent must obtain a fresh reviewer and stop/escalate on failure, not open a third repair cycle"
+}

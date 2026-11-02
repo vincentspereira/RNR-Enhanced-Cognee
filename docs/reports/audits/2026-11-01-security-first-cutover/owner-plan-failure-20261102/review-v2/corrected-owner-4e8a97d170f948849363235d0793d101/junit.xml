@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.233" timestamp="2026-11-02T04:40:07.872299+00:00" hostname="Ubuntu-Hermes"><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected" name="test_owner_shell_ast_and_commands" time="0.018"><failure message="assert 'restart' not in '(\nset -euo...\n  --plan\n'&#10;  &#10;  'restart' is contained here:&#10;    (&#10;    set -euo pipefail&#10;    repo=&quot;/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101&quot;&#10;    expected=&quot;a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365&quot;&#10;    /usr/bin/test &quot;$(/usr/bin/id -u)&quot; -ne 0...&#10;  &#10;  ...Full output truncated (50 lines hidden), use '-vv' to show">docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py:208: in test_owner_shell_ast_and_commands
+    assert forbidden not in ''.join(BLOCKS)
+E   assert 'restart' not in '(\nset -euo...\n  --plan\n'
+E     
+E     'restart' is contained here:
+E       (
+E       set -euo pipefail
+E       repo="/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101"
+E       expected="a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+E       /usr/bin/test "$(/usr/bin/id -u)" -ne 0...
+E     
+E     ...Full output truncated (50 lines hidden), use '-vv' to show</failure></testcase><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected" name="test_owner_unprivileged_reader_actual[exact-reader]" time="0.024" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected" name="test_owner_unprivileged_reader_actual[wrong-hash]" time="0.025" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected" name="test_owner_unprivileged_reader_actual[symlink-reader]" time="0.021" /></testsuite></testsuites>

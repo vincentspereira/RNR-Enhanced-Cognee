@@ -1,0 +1,22 @@
+--- tests/unit/test_security_first_cutover.py
++++ tests/unit/test_security_first_cutover_v2.py
+@@ -10,7 +10,9 @@
+ import pytest
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-HELPER = ROOT / "integrations/hermes/deployment/prepare_security_first_cutover.py"
++HELPER = ROOT / ("integrations/hermes/deployment/prepare_security_first_cutover.py"
++                 if os.environ.get("ENHANCED_CUTOVER_BASELINE_V1") == "1" else
++                 "integrations/hermes/deployment/prepare_security_first_cutover_v2.py")
+ 
+ 
+ def load_helper():
+@@ -73,7 +75,7 @@
+ 
+ 
+ def snapshot(monkeypatch):
+-    raw = {h.SOURCES[0]: b"[Service]\nLoadCredential=api.json:/etc/enhanced-cognee/api.json\n",
++    raw = {h.SOURCES[0]: b"[Service]\nDynamicUser=yes\nLoadCredential=api.json:/etc/enhanced-cognee/api.json\n",
+            h.SOURCES[1]: b"[Service]\nLoadCredential=index.json:/etc/enhanced-cognee/index.json\n",
+            h.SOURCES[2]: launch_unit(),
+            h.SOURCES[3]: b"[Service]\nLoadCredential=llm.json:/etc/enhanced-cognee/llm.json\n"}

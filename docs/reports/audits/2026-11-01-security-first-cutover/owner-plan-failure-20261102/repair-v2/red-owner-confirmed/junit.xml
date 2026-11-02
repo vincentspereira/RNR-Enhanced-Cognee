@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.109" timestamp="2026-11-02T04:28:13.162066+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover_v2" name="test_owner_four_line_launch_uses_whole_unit_dynamic_identity" time="0.001"><failure message="security_first_cutover.Refusal: unit_syntax_or_directive_refused">tests/unit/test_security_first_cutover_v2.py:47: in test_owner_four_line_launch_uses_whole_unit_dynamic_identity
+    plan = h.plan_from_snapshot(snap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+integrations/hermes/deployment/prepare_security_first_cutover.py:142: in plan_from_snapshot
+    parsed = parse_unit(snapshot["source_bytes"][path], launch=index == 2)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+integrations/hermes/deployment/prepare_security_first_cutover.py:102: in parse_unit
+    refuse()
+integrations/hermes/deployment/prepare_security_first_cutover.py:62: in refuse
+    raise Refusal("unit_syntax_or_directive_refused")
+E   security_first_cutover.Refusal: unit_syntax_or_directive_refused</failure></testcase></testsuite></testsuites>

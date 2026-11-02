@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/verify_v2_artifacts.py"
+  ],
+  "uid": 1000,
+  "returncode": 0,
+  "validator_sha256": "03348a168879e08ce8e16ad8cc0eb61840a76fe4a3621ab71eb54e0d5de38b77",
+  "stdout_sha256": "ad667e87a55b6d93d0433e0a77bc53b208ea159886d59cdbbc74b877e6e46041",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,47 @@
+{
+  "red-owner-minimal": {
+    "returncode": 1,
+    "tests": 1,
+    "failure": 1,
+    "error": 0,
+    "skipped": 0,
+    "passed": 0,
+    "receipt": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/red-owner-minimal/receipt.json"
+  },
+  "red-owner-confirmed": {
+    "returncode": 1,
+    "tests": 1,
+    "failure": 1,
+    "error": 0,
+    "skipped": 0,
+    "passed": 0,
+    "receipt": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/red-owner-confirmed/receipt.json"
+  },
+  "green-owner-minimal": {
+    "returncode": 0,
+    "tests": 1,
+    "failure": 0,
+    "error": 0,
+    "skipped": 0,
+    "passed": 1,
+    "receipt": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/green-owner-minimal/receipt.json"
+  },
+  "canonical-v2": {
+    "returncode": 0,
+    "tests": 202,
+    "failure": 0,
+    "error": 0,
+    "skipped": 0,
+    "passed": 202,
+    "receipt": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/canonical-v2/receipt.json"
+  },
+  "historical-v1": {
+    "returncode": 0,
+    "tests": 126,
+    "failure": 0,
+    "error": 0,
+    "skipped": 0,
+    "passed": 126,
+    "receipt": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/historical-v1/receipt.json"
+  }
+}

@@ -1,0 +1,66 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 39 items
+
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_positive_controls[implicit] [32mPASSED[0m[32m [  2%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_positive_controls[user-only] [32mPASSED[0m[32m [  5%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_positive_controls[group-only] [32mPASSED[0m[32m [  7%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_positive_controls[split-explicit] [32mPASSED[0m[32m [ 10%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_positive_controls[all-fragments-explicit] [32mPASSED[0m[32m [ 12%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[overridden-user] [32mPASSED[0m[32m [ 15%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[overridden-group] [32mPASSED[0m[32m [ 17%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[missing-dynamic] [32mPASSED[0m[32m [ 20%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[overridden-dynamic-no] [32mPASSED[0m[32m [ 23%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[duplicate-dynamic-yes] [32mPASSED[0m[32m [ 25%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[loaded-bool] [32mPASSED[0m[32m [ 28%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[invalid-unit-default] [32mPASSED[0m[32m [ 30%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_identity_negative_controls[launch-trailer] [32mPASSED[0m[32m [ 33%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_old_source_guards[missing-reset] [32mPASSED[0m[32m [ 35%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_old_source_guards[changed-command] [32mPASSED[0m[32m [ 38%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_old_source_guards[source-pin] [32mPASSED[0m[32m [ 41%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_old_source_guards[credential-rebind] [32mPASSED[0m[32m [ 43%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_installed_site8_and_manager_recheck [32mPASSED[0m[32m [ 46%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_inventory_generic_runtime_dropin_refused [32mPASSED[0m[32m [ 48%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_lexical_interpreter_trust[safe-alias] [32mPASSED[0m[32m [ 51%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_lexical_interpreter_trust[writable-alias-parent] [32mPASSED[0m[32m [ 53%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_lexical_interpreter_trust[hidden-symlink-dotdot] [32mPASSED[0m[32m [ 56%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_approval_exact_and_exception_redaction [32mPASSED[0m[32m [ 58%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_plan_no_write_and_finite_fixed_payload [32mPASSED[0m[32m [ 61%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_bundle_partial_and_no_overwrite [32mPASSED[0m[32m [ 64%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_shell_ast_and_commands [31mFAILED[0m[31m [ 66%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_unprivileged_reader_actual[exact-reader] [32mPASSED[0m[31m [ 69%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_unprivileged_reader_actual[wrong-hash] [32mPASSED[0m[31m [ 71%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_unprivileged_reader_actual[symlink-reader] [32mPASSED[0m[31m [ 74%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installer_prerequisites_doubles[new-private-parent] [32mPASSED[0m[31m [ 76%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installer_prerequisites_doubles[existing-private-parent] [32mPASSED[0m[31m [ 79%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installer_prerequisites_doubles[existing-helper] [32mPASSED[0m[31m [ 82%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installer_prerequisites_doubles[nonprivate-parent] [32mPASSED[0m[31m [ 84%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installer_prerequisites_doubles[unsafe-ancestor] [32mPASSED[0m[31m [ 87%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installed_readback_doubles[exact-installed] [32mPASSED[0m[31m [ 89%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installed_readback_doubles[wrong-hash] [32mPASSED[0m[31m [ 92%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installed_readback_doubles[wrong-owner] [32mPASSED[0m[31m [ 94%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installed_readback_doubles[hardlink] [32mPASSED[0m[31m [ 97%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::test_owner_installed_readback_doubles[wrong-mode] [32mPASSED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m______________________ test_owner_shell_ast_and_commands _______________________[0m
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py[0m:205: in test_owner_shell_ast_and_commands
+    [0m[94massert[39;49;00m shlex.split(BLOCKS[[94m1[39;49;00m])==[[33m'[39;49;00m[33m/usr/bin/sudo[39;49;00m[33m'[39;49;00m,[33m'[39;49;00m[33m/usr/bin/python3[39;49;00m[33m'[39;49;00m,[33m'[39;49;00m[33m-I[39;49;00m[33m'[39;49;00m,[33m'[39;49;00m[33m-S[39;49;00m[33m'[39;49;00m,[33m'[39;49;00m[33m-B[39;49;00m[33m'[39;49;00m,h.INSTALLED_HELPER,[33m'[39;49;00m[33m--plan[39;49;00m[33m'[39;49;00m][90m[39;49;00m
+[1m[31mE   AssertionError: assert ['/usr/bin/su...B', '\n', ...] == ['/usr/bin/su...r_v2.py', ...][0m
+[1m[31mE     [0m
+[1m[31mE     At index 5 diff: [0m[33m'[39;49;00m[33m\n[39;49;00m[33m'[39;49;00m[90m[39;49;00m != [0m[33m'[39;49;00m[33m/opt/enhanced-cognee-memory/security-first-helper-v2/prepare_security_first_cutover_v2.py[39;49;00m[33m'[39;49;00m[90m[39;49;00m[0m
+[1m[31mE     Left contains 2 more items, first extra item: [0m[33m'[39;49;00m[33m\n[39;49;00m[33m'[39;49;00m[90m[39;49;00m[0m
+[1m[31mE     [0m
+[1m[31mE     Full diff:[0m
+[1m[31mE     [0m[90m [39;49;00m [[90m[39;49;00m[0m
+[1m[31mE     [90m [39;49;00m     '/usr/bin/sudo',[90m[39;49;00m...[0m
+[1m[31mE     [0m
+[1m[31mE     ...Full output truncated (9 lines hidden), use '-vv' to show[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/fresh-3ad4e380345941888cb614ac863ee0f0/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review.py::[1mtest_owner_shell_ast_and_commands[0m - AssertionError: assert ['/usr/bin/su...B', '\n', ...] == ['/usr/bin/su...r_...
+[31m========================= [31m[1m1 failed[0m, [32m38 passed[0m[31m in 0.45s[0m[31m =========================[0m
