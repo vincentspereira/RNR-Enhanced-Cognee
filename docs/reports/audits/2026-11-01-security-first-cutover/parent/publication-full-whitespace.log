@@ -1,0 +1,92 @@
+docs/reports/audits/2026-11-01-security-first-cutover/implementation/01-red.log:21: trailing whitespace.
++INTERNALERROR> 
+docs/reports/audits/2026-11-01-security-first-cutover/implementation/01-red.log:23: trailing whitespace.
++INTERNALERROR> 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/junit.xml:22: trailing whitespace.
++tests/unit/test_security_first_cutover.py:286: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/junit.xml:23: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/junit.xml:48: trailing whitespace.
++integrations/hermes/deployment/prepare_security_first_cutover.py:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/junit.xml:49: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/process.log:157: trailing whitespace.
++[1m[31mtests/unit/test_security_first_cutover.py[0m:286: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/process.log:158: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/process.log:183: trailing whitespace.
++[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/process.log:184: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:9: trailing whitespace.
++tests/unit/test_security_first_cutover_review_regressions.py:37: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:10: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:87: trailing whitespace.
++docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:72: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:88: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:113: trailing whitespace.
++integrations/hermes/deployment/prepare_security_first_cutover.py:340: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:114: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:134: trailing whitespace.
++tests/unit/test_security_first_cutover_review_regressions.py:41: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:135: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:166: trailing whitespace.
++tests/unit/test_security_first_cutover_review_regressions.py:46: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml:167: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:24: trailing whitespace.
++[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:37: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:25: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:105: trailing whitespace.
++[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:72: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:106: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:131: trailing whitespace.
++[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:340: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:132: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:152: trailing whitespace.
++[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:41: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:153: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:187: trailing whitespace.
++[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:46: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/process.log:188: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:24: trailing whitespace.
++docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:25: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:50: trailing whitespace.
++integrations/hermes/deployment/prepare_security_first_cutover.py:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:51: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:82: trailing whitespace.
++docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:83: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:108: trailing whitespace.
++integrations/hermes/deployment/prepare_security_first_cutover.py:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml:109: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:86: trailing whitespace.
++[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:87: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:112: trailing whitespace.
++[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:113: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:147: trailing whitespace.
++[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:148: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:173: trailing whitespace.
++[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/process.log:174: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
