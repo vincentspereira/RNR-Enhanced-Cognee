@@ -1,0 +1,51 @@
+{
+  "accepted_startup_interpreter": {
+    "lexical": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python",
+    "resolved": "/usr/bin/python3.12",
+    "sha256": "9cf9605a276549eab3de9eb4e4ee49219b63e393b357b18dfc668177a98f837f"
+  },
+  "actual": "accepted; resolved field and hash describe the different safe file",
+  "actual_sandbox_resolution": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/outside/python3.12",
+  "alias_target": "../../../../../../usr/bin/bridge/../python3.12",
+  "expected": "reject the intermediate symlink ancestor or bind the real unsafe target",
+  "guard_checked_paths": [
+    "/",
+    "/opt",
+    "/opt/enhanced-cognee-memory",
+    "/opt/enhanced-cognee-memory/candidates",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101",
+    "/",
+    "/opt",
+    "/opt/enhanced-cognee-memory",
+    "/opt/enhanced-cognee-memory/candidates",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python",
+    "/",
+    "/usr",
+    "/usr/bin",
+    "/usr/bin/python3.12"
+  ],
+  "helper_sha256": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+  "lexical": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python",
+  "reads": [
+    "/etc/systemd/system/enhanced-cognee-api.service",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_summarize.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_budget.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_api.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_daemon.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_library.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_queries.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/security/enterprise_auth.py",
+    "/opt/enhanced-cognee-memory/security-first-helper/prepare_security_first_cutover.py",
+    "/usr/bin/python3.12"
+  ],
+  "safe_sandbox_file": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/usr/bin/python3.12",
+  "unsafe_mode": "0o777",
+  "unsafe_sandbox_file": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/outside/python3.12"
+}

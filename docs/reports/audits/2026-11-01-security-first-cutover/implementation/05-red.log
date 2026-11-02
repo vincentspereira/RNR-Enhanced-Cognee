@@ -1,0 +1,109 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 62 items / 54 deselected / 8 selected
+
+tests/unit/test_security_first_cutover.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter [31mFAILED[0m[31m [ 12%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None] [31mFAILED[0m[31m [ 25%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf] [31mFAILED[0m[31m [ 37%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run] [31mFAILED[0m[31m [ 50%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix] [31mFAILED[0m[31m [ 62%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias] [31mFAILED[0m[31m [ 75%][0m
+tests/unit/test_security_first_cutover.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures [31mFAILED[0m[31m [ 87%][0m
+tests/unit/test_security_first_cutover.py::test_protected_reader_never_follows_link_or_reads_fifo [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_____ test_snapshot_collection_reads_only_units_helper_modules_interpreter _____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:271: in test_snapshot_collection_reads_only_units_helper_modules_interpreter
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mcollect_snapshot[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mprotected snapshot collection missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: protected snapshot collection missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'collect_snapshot', None)[0m
+[31m[1m____ test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None] _____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33minventory_sources[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33msource inventory missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: source inventory missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'inventory_sources', None)[0m
+[31m[1m_ test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf] _[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33minventory_sources[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33msource inventory missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: source inventory missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'inventory_sources', None)[0m
+[31m[1m_____ test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run] _____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33minventory_sources[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33msource inventory missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: source inventory missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'inventory_sources', None)[0m
+[31m[1m___ test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix] ____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33minventory_sources[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33msource inventory missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: source inventory missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'inventory_sources', None)[0m
+[31m[1m____ test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias] ____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33minventory_sources[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33msource inventory missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: source inventory missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'inventory_sources', None)[0m
+[31m[1m___ test_show_reads_only_selected_properties_and_sanitizes_process_failures ____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:324: in test_show_reads_only_selected_properties_and_sanitizes_process_failures
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mread_loaded[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mloaded-state inspection missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: loaded-state inspection missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'read_loaded', None)[0m
+[31m[1m____________ test_protected_reader_never_follows_link_or_reads_fifo ____________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:347: in test_protected_reader_never_follows_link_or_reads_fifo
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mread_protected[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mprotected reader missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: protected reader missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'read_protected', None)[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/implementation/05-red.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_snapshot_collection_reads_only_units_helper_modules_interpreter[0m - AssertionError: protected snapshot collection missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'collect_snapshot', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_source_inventory_covers_fixed_and_runtime_prefix_overrides[None][0m - AssertionError: source inventory missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'inventory_sources', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf][0m - AssertionError: source inventory missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'inventory_sources', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_source_inventory_covers_fixed_and_runtime_prefix_overrides[run][0m - AssertionError: source inventory missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'inventory_sources', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix][0m - AssertionError: source inventory missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'inventory_sources', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias][0m - AssertionError: source inventory missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'inventory_sources', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_show_reads_only_selected_properties_and_sanitizes_process_failures[0m - AssertionError: loaded-state inspection missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'read_loaded', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_protected_reader_never_follows_link_or_reads_fifo[0m - AssertionError: protected reader missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'read_protected', None)
+[31m======================= [31m[1m8 failed[0m, [33m54 deselected[0m[31m in 0.33s[0m[31m =======================[0m

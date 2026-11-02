@@ -1,0 +1,45 @@
+{
+  "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101": {
+    "gid": 0,
+    "kind": 16384,
+    "mode": "0o755",
+    "present": true,
+    "readlink": null,
+    "uid": 0
+  },
+  "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python": {
+    "gid": 0,
+    "kind": 32768,
+    "mode": "0o755",
+    "present": true,
+    "readlink": null,
+    "uid": 0
+  },
+  "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_api.py": {
+    "gid": 0,
+    "kind": 32768,
+    "mode": "0o644",
+    "present": true,
+    "readlink": null,
+    "uid": 0
+  },
+  "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/pyvenv.cfg": {
+    "gid": 0,
+    "kind": 32768,
+    "mode": "0o644",
+    "present": true,
+    "readlink": null,
+    "uid": 0
+  },
+  "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_api.py": {
+    "present": false
+  },
+  "/opt/enhanced-cognee-memory/python": {
+    "gid": 0,
+    "kind": 16384,
+    "mode": "0o755",
+    "present": true,
+    "readlink": null,
+    "uid": 0
+  }
+}

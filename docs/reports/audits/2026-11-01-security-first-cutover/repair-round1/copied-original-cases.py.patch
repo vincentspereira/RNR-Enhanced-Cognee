@@ -1,0 +1,11 @@
+--- tests/unit/test_security_first_cutover.py
++++ docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-original-cases.py
+@@ -273,7 +273,7 @@
+     content = dict(snap["source_bytes"])
+     module_bytes = {p: ("invented-" + p).encode() for p in h.MODULE_HASHES}
+     monkeypatch.setattr(h, "MODULE_HASHES", {p: h.digest(b) for p, b in module_bytes.items()})
+-    content.update({h.CANDIDATE + "/" + p: b for p, b in module_bytes.items()})
++    content.update({h.CANDIDATE + "/runtime/lib/python3.12/site-packages/" + p: b for p, b in module_bytes.items()})
+     content[h.INSTALLED_HELPER] = b"invented helper"
+     content["/usr/bin/python3.12"] = b"invented interpreter"
+     reads, guards = [], []

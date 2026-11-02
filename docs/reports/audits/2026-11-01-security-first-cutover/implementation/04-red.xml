@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="0" tests="17" time="0.318" timestamp="2026-11-01T23:37:47.345492+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[none]" time="0.006"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[uid]" time="0.004"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[gid]" time="0.002"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[writable-file]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[writable-ancestor]" time="0.004"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[ancestor-link]" time="0.004"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[leaf-link]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[hardlink]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[fifo]" time="0.004"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[relative]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[dotdot]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_trust_rejects_unsafe_lexical_paths[private]" time="0.002"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:157: in test_trust_rejects_unsafe_lexical_paths
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]" time="0.003"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]" time="0.004"><failure message="AssertionError: path trust missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'trusted_path', None)">tests/unit/test_security_first_cutover.py:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    assert callable(getattr(h, "trusted_path", None)), "path trust missing"
+E   AssertionError: path trust missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'trusted_path', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_new_private_bundle_and_partial_failure_are_preserved" time="0.004"><failure message="AssertionError: exclusive writer missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'write_bundle', None)">tests/unit/test_security_first_cutover.py:244: in test_new_private_bundle_and_partial_failure_are_preserved
+    assert callable(getattr(h, "write_bundle", None)), "exclusive writer missing"
+E   AssertionError: exclusive writer missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'write_bundle', None)</failure></testcase></testsuite></testsuites>

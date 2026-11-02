@@ -1,0 +1,33 @@
+[
+  {
+    "kind": "bash_syntax_only",
+    "block": 1,
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "sha256": "9ddf2f87895c8175c44715d24b9c33b68b3df3d3aa67275f77e4e833cda9f31e"
+  },
+  {
+    "kind": "bash_syntax_only",
+    "block": 2,
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "sha256": "1b3e899bc42226883539122edc2b2e960de66d9c97b43a16449220f13d1ae5f9"
+  },
+  {
+    "kind": "python_ast_only",
+    "block": 1,
+    "sha256": "18265488044b7adc20d87be2d30e8693a8ece14163a876e352e92235431b968d"
+  },
+  {
+    "kind": "python_ast_only",
+    "block": 2,
+    "sha256": "8e953a872febb3e4182ef4ef8d252a44b72c6206035c9558cea33a81a1bb7fa5"
+  },
+  {
+    "kind": "python_ast_only",
+    "block": 3,
+    "sha256": "1568dd73572e031ce51e40a9207fa50c1f96b00a765889f93d4f4d01a94478f2"
+  }
+]

@@ -1,0 +1,573 @@
+{
+  "scope": "Offline stdlib-only execution and AST fragments; no server startup, real store, network, production credentials, or installed-state verification",
+  "head": "41e4de7a5db99970a7629ef3f274138eef3031e8",
+  "reviewed_source": "c14f595ccd53f432b455b16f116765d9aa6c9a14",
+  "pre_hardening_mcp_ref": "89d1be78bbe9571b9152396c5483eabbb8360b95",
+  "pre_hardening_mcp_sha256": "d328a8501cd602a1bd69a49ced7110831ea83c34c3b1d5b2233fb00b8e431d03",
+  "cases": [
+    {
+      "case": "daemon_strips_inherited_model_routes_and_credential_directory",
+      "passed": true
+    },
+    {
+      "case": "daemon_preserves_core_settings_and_forces_production_offline_dotenv_off",
+      "passed": true
+    },
+    {
+      "case": "api_json_rejects_four_model_or_fallback_injection_fields",
+      "passed": true
+    },
+    {
+      "case": "child_route_composition_is_none_without_llm_json",
+      "passed": true
+    },
+    {
+      "case": "direct_api_fallback_is_real_when_given_a_credential_directory",
+      "passed": true
+    },
+    {
+      "case": "llm_credential_positive_control_enables_route_and_ledger_setting",
+      "passed": true
+    },
+    {
+      "case": "language_detection_is_script_only",
+      "passed": true
+    },
+    {
+      "case": "three_model_endpoint_bodies_refuse_before_store_access_with_422_handler",
+      "passed": true
+    },
+    {
+      "case": "analysis_status_returns_unconfigured_nulls_without_budget",
+      "passed": true
+    },
+    {
+      "case": "six_core_endpoint_bodies_delegate_without_optional_route",
+      "passed": true
+    },
+    {
+      "case": "current_vs_pre_hardening_mcp_wire_contracts_differ_as_expected",
+      "passed": true
+    },
+    {
+      "case": "current_mcp_marks_422_as_error_but_pre_hardening_mcp_does_not",
+      "passed": true
+    },
+    {
+      "case": "local_import_closure_contains_no_dotenv_or_legacy_model_stack",
+      "passed": true
+    }
+  ],
+  "passed": 13,
+  "failed": 0,
+  "core_double_call_sequence": [
+    "remember",
+    "recall",
+    "connections",
+    "get",
+    "correct",
+    "correct"
+  ],
+  "new_mcp_wire_calls": [
+    {
+      "method": "POST",
+      "path": "/v1/memories/connections",
+      "body": {
+        "entity": "invented entity"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/summarize",
+      "body": {
+        "record_ids": [
+          "invented-1"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/consolidation/candidates",
+      "body": {
+        "record_ids": [
+          "invented-1",
+          "invented-2"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/translate",
+      "body": {
+        "text": "invented text",
+        "target_language": "en"
+      }
+    }
+  ],
+  "pre_hardening_mcp_wire_calls": [
+    {
+      "method": "POST",
+      "path": "/v1/memories/connections",
+      "body": {
+        "query": "invented entity"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/summarize",
+      "body": {
+        "limit": 20
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/consolidation/candidates",
+      "body": {
+        "limit": 20
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/memories/translate",
+      "body": {
+        "text": "invented text",
+        "target_language": "en"
+      }
+    }
+  ],
+  "new_mcp_refusal_rpc": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"detail\": \"The model route is not configured for this service\", \"error\": \"memory request refused (HTTP 422); no success was acknowledged\", \"status_code\": 422}"
+        }
+      ],
+      "isError": true
+    }
+  },
+  "pre_hardening_mcp_refusal_rpc": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"detail\": \"The model route is not configured for this service\", \"error\": \"memory request refused (HTTP 422); no success was acknowledged\", \"status_code\": 422}"
+        }
+      ]
+    }
+  },
+  "local_imports": {
+    "src.memory_daemon": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "stat",
+      "struct",
+      "sys"
+    ],
+    "src.memory_api": [
+      "__future__",
+      "asyncio",
+      "asyncpg",
+      "contextlib",
+      "datetime",
+      "fastapi",
+      "fastapi.exceptions",
+      "fastapi.middleware.cors",
+      "fastapi.responses",
+      "os",
+      "pydantic",
+      "src",
+      "src.canonical_adapters",
+      "src.index_contracts",
+      "src.index_runtime",
+      "src.index_sinks",
+      "src.ingestion",
+      "src.llm_budget",
+      "src.llm_summarize",
+      "src.local_embeddings",
+      "src.mcp_security",
+      "src.memory_contracts",
+      "src.memory_keys",
+      "src.memory_service",
+      "src.recall_service",
+      "src.security.enterprise_auth",
+      "src.security.http_boundary",
+      "typing"
+    ],
+    "src.security.enterprise_auth": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "jwt",
+      "logging",
+      "os",
+      "secrets",
+      "src.security.auth",
+      "src.security.tool_policy",
+      "typing",
+      "urllib.request"
+    ],
+    "src.security.tool_policy": [
+      "dataclasses",
+      "src.security",
+      "src.security.enterprise_auth"
+    ],
+    "src.security.auth": [
+      "asyncio",
+      "datetime",
+      "enum",
+      "hashlib",
+      "json",
+      "jwt",
+      "logging",
+      "os",
+      "secrets",
+      "typing"
+    ],
+    "src.llm_summarize": [
+      "__future__",
+      "asyncio",
+      "http.client",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "src.llm_budget",
+      "src.security.memory_admission",
+      "time",
+      "urllib.parse"
+    ],
+    "src.llm_budget": [
+      "__future__",
+      "contextlib",
+      "datetime",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "stat",
+      "uuid"
+    ],
+    "src.security.memory_admission": [
+      "__future__",
+      "json",
+      "re"
+    ],
+    "src.index_sinks": [
+      "__future__",
+      "httpx",
+      "json",
+      "math",
+      "re",
+      "redis.asyncio",
+      "src.index_contracts",
+      "urllib.parse"
+    ],
+    "src.index_contracts": [
+      "__future__",
+      "hashlib",
+      "hmac",
+      "json",
+      "pydantic",
+      "re",
+      "src.security.memory_admission",
+      "unicodedata"
+    ],
+    "src.mcp_security": [
+      "__future__",
+      "logging",
+      "os",
+      "secrets",
+      "threading",
+      "time",
+      "typing"
+    ],
+    "src.index_runtime": [
+      "__future__",
+      "argparse",
+      "asyncio",
+      "asyncpg",
+      "json",
+      "os",
+      "pathlib",
+      "pydantic",
+      "signal",
+      "src.index_contracts",
+      "src.index_outbox",
+      "src.index_sinks",
+      "src.local_embeddings",
+      "src.memory_keys",
+      "src.memory_service"
+    ],
+    "src.index_outbox": [
+      "__future__",
+      "asyncio",
+      "datetime",
+      "json",
+      "src.index_contracts",
+      "src.security.memory_admission",
+      "uuid"
+    ],
+    "src.memory_service": [
+      "__future__",
+      "asyncio",
+      "dataclasses",
+      "datetime",
+      "hashlib",
+      "json",
+      "math",
+      "re",
+      "src.encryption_manager",
+      "src.index_contracts",
+      "src.memory_contracts",
+      "src.memory_library",
+      "src.memory_queries",
+      "src.multi_tenant",
+      "src.security.auth",
+      "src.security.enterprise_auth",
+      "src.security.memory_admission",
+      "typing",
+      "uuid"
+    ],
+    "src.multi_tenant": [
+      "__future__",
+      "contextvars",
+      "os",
+      "re",
+      "typing"
+    ],
+    "src.memory_contracts": [
+      "__future__",
+      "pydantic",
+      "typing",
+      "urllib.parse"
+    ],
+    "src.memory_queries": [
+      "__future__",
+      "json",
+      "src.memory_library",
+      "src.security.memory_admission"
+    ],
+    "src.memory_library": [
+      "__future__",
+      "json",
+      "src.memory_service",
+      "src.multi_tenant",
+      "src.security.enterprise_auth",
+      "src.security.memory_admission"
+    ],
+    "src.encryption_manager": [
+      "__future__",
+      "base64",
+      "cryptography.fernet",
+      "cryptography.hazmat.primitives",
+      "cryptography.hazmat.primitives.ciphers.aead",
+      "cryptography.hazmat.primitives.kdf.hkdf",
+      "logging",
+      "os",
+      "src.multi_tenant",
+      "typing"
+    ],
+    "src.memory_keys": [
+      "__future__",
+      "json",
+      "os",
+      "re",
+      "src.encryption_manager"
+    ],
+    "src.local_embeddings": [
+      "__future__",
+      "asyncio",
+      "hashlib",
+      "numpy",
+      "onnxruntime",
+      "os",
+      "pathlib",
+      "stat",
+      "tokenizers"
+    ],
+    "src.recall_service": [
+      "__future__",
+      "json",
+      "math",
+      "src.index_contracts",
+      "src.memory_library",
+      "src.security.enterprise_auth",
+      "src.security.memory_admission"
+    ],
+    "src.security.http_boundary": [
+      "__future__",
+      "asyncio",
+      "json",
+      "os",
+      "src.multi_tenant",
+      "src.security.auth",
+      "src.security.enterprise_auth",
+      "src.security.request_context",
+      "starlette.datastructures",
+      "starlette.responses",
+      "time"
+    ],
+    "src.security.request_context": [
+      "__future__",
+      "contextlib",
+      "contextvars",
+      "src.multi_tenant",
+      "src.security.auth",
+      "src.security.enterprise_auth",
+      "typing"
+    ],
+    "src.ingestion": [
+      "__future__",
+      "html.parser",
+      "http.client",
+      "ipaddress",
+      "json",
+      "pathlib",
+      "re",
+      "socket",
+      "ssl",
+      "subprocess",
+      "sys",
+      "urllib.parse"
+    ],
+    "src.canonical_adapters": [
+      "__future__",
+      "fastapi",
+      "fastapi.responses",
+      "json",
+      "os",
+      "pydantic",
+      "src.memory_api",
+      "src.memory_service",
+      "src.security.enterprise_auth",
+      "src.security.request_context",
+      "src.security.tool_policy",
+      "typing"
+    ]
+  },
+  "source_manifest": {
+    "integrations/hermes/deployment/enhanced-cognee-api.service": {
+      "sha256": "af979af033e64fee0dde16a1484ac5eb00ca75282c3478f382599027ec35dba2",
+      "matches_c14f595c": true
+    },
+    "integrations/hermes/enhanced_cognee/client.py": {
+      "sha256": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64",
+      "matches_c14f595c": true
+    },
+    "integrations/hermes/enhanced_cognee_mcp/server.py": {
+      "sha256": "7013cb6aa87afda4b0f80bae20ed7a8e29067c5693751fdf9eb90cf767e3bb20",
+      "matches_c14f595c": true
+    },
+    "src/canonical_adapters.py": {
+      "sha256": "1b534bfe4cdd24f81cf39a865eae3f4f3175b46d61492caa79e0a4e92777d983",
+      "matches_c14f595c": true
+    },
+    "src/encryption_manager.py": {
+      "sha256": "80167331ca4db98f3565547284f8e4785ab4538b78abefc94b24b4b1aecd9f58",
+      "matches_c14f595c": true
+    },
+    "src/index_contracts.py": {
+      "sha256": "c70065ae5990d912abebbf69402192b84d9547389e2c06ec7518f7717daf5488",
+      "matches_c14f595c": true
+    },
+    "src/index_outbox.py": {
+      "sha256": "27fcbebcbfb5a197417365fc3b72f1a13a21a628f5495c5827dbdbcd02b05725",
+      "matches_c14f595c": true
+    },
+    "src/index_runtime.py": {
+      "sha256": "2b4d962e39fbc5e49a1a3fa4bd885191b3b81cef2c3956dfd7a6e2e17f48892e",
+      "matches_c14f595c": true
+    },
+    "src/index_sinks.py": {
+      "sha256": "1afd86bbc00552061229cc20086ed9e514da0de3a5cffd60076e0209ed3c28e5",
+      "matches_c14f595c": true
+    },
+    "src/ingestion.py": {
+      "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+      "matches_c14f595c": true
+    },
+    "src/llm_budget.py": {
+      "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+      "matches_c14f595c": true
+    },
+    "src/llm_summarize.py": {
+      "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+      "matches_c14f595c": true
+    },
+    "src/local_embeddings.py": {
+      "sha256": "4daea182fb8158af5fdadff0cac8edac19cd840f91de8dd84e8b1b10139fa1d1",
+      "matches_c14f595c": true
+    },
+    "src/mcp_security.py": {
+      "sha256": "447ba49eb5eccd94c91825565322eaf5c296735639d3aafb251ab8cca87d9f37",
+      "matches_c14f595c": true
+    },
+    "src/memory_api.py": {
+      "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+      "matches_c14f595c": true
+    },
+    "src/memory_contracts.py": {
+      "sha256": "94b342c22e8d47d7396ab8293633c4aa1e91703fc3ee5d8d6534c66af63b2977",
+      "matches_c14f595c": true
+    },
+    "src/memory_daemon.py": {
+      "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+      "matches_c14f595c": true
+    },
+    "src/memory_keys.py": {
+      "sha256": "17cd4044d02a7abed6e7780133bd83273d28bf9052fc001ef0d52ff618d9791c",
+      "matches_c14f595c": true
+    },
+    "src/memory_library.py": {
+      "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+      "matches_c14f595c": true
+    },
+    "src/memory_queries.py": {
+      "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+      "matches_c14f595c": true
+    },
+    "src/memory_service.py": {
+      "sha256": "42691149ac3335ffd2021cd87ef2f1cf5ae40fbeb54b68775f44c1d6c964a10c",
+      "matches_c14f595c": true
+    },
+    "src/multi_tenant.py": {
+      "sha256": "9d37b2612f2788d0dc233476d70d9480e856a8668bda702621f4aa46ecf7260c",
+      "matches_c14f595c": true
+    },
+    "src/recall_service.py": {
+      "sha256": "0f93b9c0b7c80afd67ec8a091f4a739a4ba28422c4e2fa3e4779c636ea595bb6",
+      "matches_c14f595c": true
+    },
+    "src/security/auth.py": {
+      "sha256": "a68e825f8927bc384358fc3616525d5aee0e365e036e2675dd35bd8001407007",
+      "matches_c14f595c": true
+    },
+    "src/security/enterprise_auth.py": {
+      "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+      "matches_c14f595c": true
+    },
+    "src/security/http_boundary.py": {
+      "sha256": "1392be1b5c0fbe3f02fc791dd60e66a7f3ac3f0e7d4a2abcf734322501182d31",
+      "matches_c14f595c": true
+    },
+    "src/security/memory_admission.py": {
+      "sha256": "b2e6d801438a89ed842a9b8f98c75981f42db63087c26b62d760c97f73475fca",
+      "matches_c14f595c": true
+    },
+    "src/security/request_context.py": {
+      "sha256": "7e96eddf4addb77655fa30d8675028ac60bff241426c62cac19f346e9f3ddfdc",
+      "matches_c14f595c": true
+    },
+    "src/security/tool_policy.py": {
+      "sha256": "e4a013003ca91dec6361384256e802011a02cf406bb0a5176108c04ddfff8915",
+      "matches_c14f595c": true
+    }
+  }
+}

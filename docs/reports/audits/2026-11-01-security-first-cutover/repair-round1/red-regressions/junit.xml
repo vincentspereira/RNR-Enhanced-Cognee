@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.238" timestamp="2026-11-01T23:59:39.436656+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover_review_regressions" name="test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting" time="0.045"><failure message="AssertionError: S01: normpath erased a symlink ancestor and fingerprinted the wrong executable">challenge = &lt;module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'&gt;
+tmp_path = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/sandbox/test_S01_alias_dotdot_rejects_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582c800&gt;
+
+    def test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting(challenge, tmp_path, monkeypatch):
+        with pytest.raises(challenge.h.Refusal, match="^unsafe_path_link$"):
+&gt;           challenge.test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor(tmp_path, monkeypatch)
+
+tests/unit/test_security_first_cutover_review_regressions.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/sandbox/test_S01_alias_dotdot_rejects_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582c800&gt;
+
+    def test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor(tmp_path, monkeypatch):
+        """A real lexical alias resolves to untrusted bytes; guard hashes another file."""
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=False)
+        virtual_root = tmp_path / 'vfs'
+        virtual_root.mkdir()
+        def local(path):
+            assert path.startswith('/')
+            return virtual_root / path.lstrip('/')
+        lexical = h.CANDIDATE + '/runtime/bin/python'
+        safe = '/usr/bin/python3.12'
+        bridge = '/usr/bin/bridge'
+        unsafe = '/outside/python3.12'
+        for path, data in content.items():
+            if path == lexical:
+                continue
+            p = local(path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(data)
+            p.chmod(0o644)
+        local(safe).parent.mkdir(parents=True, exist_ok=True)
+        local(safe).write_bytes(b'invented safe interpreter')
+        local(safe).chmod(0o755)
+        local('/outside/nested').mkdir(parents=True)
+        local(unsafe).write_bytes(b'invented unsafe interpreter')
+        local(unsafe).chmod(0o777)
+        local(bridge).symlink_to('../../outside/nested')
+        local(lexical).parent.mkdir(parents=True, exist_ok=True)
+        alias_target = os.path.relpath(local(bridge), local(lexical).parent) + '/../python3.12'
+        local(lexical).symlink_to(alias_target)
+        assert os.path.realpath(local(lexical)) == str(local(unsafe))
+        checked = []
+        def metadata(path):
+            checked.append(path)
+            return rootish_metadata(local(path))
+        def guard(path, **kwargs):
+            return h.trusted_path(path, stat_fn=metadata, readlink=lambda p: os.readlink(local(p)), **kwargs)
+        reads = []
+        def reader(path):
+            reads.append(path)
+            if path == safe:
+                return local(safe).read_bytes()
+            return content[path]
+        result = h.collect_snapshot(reader=reader, guard=guard,
+                                    inventory=lambda: list(h.SOURCES), loaded=lambda: dict(h.EXPECTED_LOADED))
+        accepted = h.plan_from_snapshot(result)
+        evidence('S01-alias-normalization', {'helper_sha256': PIN, 'lexical': lexical, 'alias_target': alias_target,
+            'actual_sandbox_resolution': os.path.realpath(local(lexical)), 'safe_sandbox_file': str(local(safe)),
+            'unsafe_sandbox_file': str(local(unsafe)), 'unsafe_mode': oct(stat.S_IMODE(local(unsafe).stat().st_mode)),
+            'guard_checked_paths': checked, 'reads': reads, 'accepted_startup_interpreter': accepted['startup_interpreter'],
+            'expected': 'reject the intermediate symlink ancestor or bind the real unsafe target',
+            'actual': 'accepted; resolved field and hash describe the different safe file'})
+&gt;       assert accepted['startup_interpreter']['resolved'] != safe, 'S01: normpath erased a symlink ancestor and fingerprinted the wrong executable'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: S01: normpath erased a symlink ancestor and fingerprinted the wrong executable
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:162: AssertionError</failure></testcase><testcase classname="tests.unit.test_security_first_cutover_review_regressions" name="test_L01_exact_installed_module_mapping_is_readable" time="0.017"><failure message="Failed: L01: collect_snapshot requests nonexistent candidate-root module: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870&gt;
+
+    def test_L01_installed_site_packages_layout_is_readable(monkeypatch):
+        """Contract assertion deliberately fails when helper looks in candidate root."""
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=True)
+        reads = []
+        def reader(path):
+            reads.append(path)
+            if path not in content:
+                raise FileNotFoundError(path)
+            return content[path]
+        try:
+&gt;           result = h.collect_snapshot(reader=reader, guard=lambda p, **kw: p,
+                                        inventory=lambda: list(h.SOURCES), loaded=lambda: dict(h.EXPECTED_LOADED))
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = &lt;function test_L01_installed_site_packages_layout_is_readable.&lt;locals&gt;.reader at 0x7b52c56d0220&gt;
+guard = &lt;function test_L01_installed_site_packages_layout_is_readable.&lt;locals&gt;.&lt;lambda&gt; at 0x7b52c56d02c0&gt;
+inventory = &lt;function test_L01_installed_site_packages_layout_is_readable.&lt;locals&gt;.&lt;lambda&gt; at 0x7b52c56d0360&gt;
+loaded = &lt;function test_L01_installed_site_packages_layout_is_readable.&lt;locals&gt;.&lt;lambda&gt; at 0x7b52c56d0400&gt;
+
+    def collect_snapshot(*, reader=read_protected, guard=trusted_path,
+                         inventory=inventory_sources, loaded=read_loaded):
+        first_inventory, first_loaded = inventory(), loaded()
+        guard(CANDIDATE, kind="directory")
+        lexical = CANDIDATE + "/runtime/bin/python"
+        resolved = guard(lexical, allow_alias=True, executable=True)
+        if resolved != lexical and re.fullmatch(r"/usr/bin/python3(?:\.[0-9]+)?", resolved) is None:
+            raise Refusal("startup_interpreter_target_refused")
+        snapshot = {
+            "inventory": first_inventory, "loaded": first_loaded,
+            "source_bytes": {path: reader(path) for path in SOURCES},
+            "candidate": CANDIDATE,
+&gt;           "candidate_hashes": {path: digest(reader(CANDIDATE + "/" + path)) for path in MODULE_HASHES},
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "helper_sha256": digest(reader(INSTALLED_HELPER)),
+            "startup_interpreter": {"lexical": lexical, "resolved": resolved, "sha256": digest(reader(resolved))},
+        }
+
+integrations/hermes/deployment/prepare_security_first_cutover.py:340: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py'
+
+    def reader(path):
+        reads.append(path)
+        if path not in content:
+&gt;           raise FileNotFoundError(path)
+E           FileNotFoundError: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:69: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+challenge = &lt;module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870&gt;
+
+    def test_L01_exact_installed_module_mapping_is_readable(challenge, monkeypatch):
+&gt;       challenge.test_L01_installed_site_packages_layout_is_readable(monkeypatch)
+
+tests/unit/test_security_first_cutover_review_regressions.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870&gt;
+
+    def test_L01_installed_site_packages_layout_is_readable(monkeypatch):
+        """Contract assertion deliberately fails when helper looks in candidate root."""
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=True)
+        reads = []
+        def reader(path):
+            reads.append(path)
+            if path not in content:
+                raise FileNotFoundError(path)
+            return content[path]
+        try:
+            result = h.collect_snapshot(reader=reader, guard=lambda p, **kw: p,
+                                        inventory=lambda: list(h.SOURCES), loaded=lambda: dict(h.EXPECTED_LOADED))
+        except FileNotFoundError as exc:
+            evidence('L01-installed-layout', {'helper_sha256': PIN, 'expected': 'collect hashes from runtime/lib/python3.12/site-packages/src',
+                'actual_missing_request': str(exc), 'reads': reads, 'exact_available_inputs': sorted(content),
+                'accepted_module_hashes': dict(h.MODULE_HASHES), 'source_hash_pins_rebound_for_invented_units_only': dict(h.SOURCE_HASHES)})
+&gt;           pytest.fail('L01: collect_snapshot requests nonexistent candidate-root module: ' + str(exc))
+E           Failed: L01: collect_snapshot requests nonexistent candidate-root module: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:78: Failed</failure></testcase><testcase classname="tests.unit.test_security_first_cutover_review_regressions" name="test_L02_root_decoys_cannot_authorize_changed_installed_modules" time="0.020"><failure message="AssertionError: L02: approved hashes do not bind the modules selected by -I -m">challenge = &lt;module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c58054f0&gt;
+
+    def test_L02_root_decoys_cannot_authorize_changed_installed_modules(challenge, monkeypatch):
+        with pytest.raises(challenge.h.Refusal, match="^inventory_or_loaded_or_candidate_drift$"):
+&gt;           challenge.test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules(monkeypatch)
+
+tests/unit/test_security_first_cutover_review_regressions.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7b52c58054f0&gt;
+
+    def test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules(monkeypatch):
+        """Wrong physical binding is one defect with L01, not a second count."""
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=False)
+        for rel in h.MODULE_HASHES:
+            content[h.CANDIDATE + '/runtime/lib/python3.12/site-packages/' + rel] = b'invented unreviewed runtime module'
+        reads = []
+        def reader(path):
+            reads.append(path)
+            return content[path]
+        result = h.collect_snapshot(reader=reader, guard=lambda p, **kw: p,
+                                    inventory=lambda: list(h.SOURCES), loaded=lambda: dict(h.EXPECTED_LOADED))
+        accepted = h.plan_from_snapshot(result)
+        evidence('L02-runtime-decoys', {'helper_sha256': PIN, 'accepted': accepted, 'reads': reads,
+            'runtime_module_sha256': h.digest(b'invented unreviewed runtime module'),
+            'expected': 'reject unreviewed runtime module bytes', 'actual': 'accepted candidate-root decoys; never read runtime modules'})
+&gt;       assert accepted['candidate_hashes'] != h.MODULE_HASHES, 'L02: approved hashes do not bind the modules selected by -I -m'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: L02: approved hashes do not bind the modules selected by -I -m
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:98: AssertionError</failure></testcase></testsuite></testsuites>

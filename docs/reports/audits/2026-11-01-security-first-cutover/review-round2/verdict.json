@@ -1,0 +1,51 @@
+{
+  "artifacts_created": "NEW review scripts, test copies/wrappers, synthetic sandboxes, source-bound receipts, report and focused archive under review-round2 only",
+  "counts": {
+    "bash_blocks_syntax_checked": 2,
+    "corrected_historical_executions": 176,
+    "duplicate_regression_implementations": 3,
+    "embedded_python_blocks_parsed": 3,
+    "errors": 0,
+    "executed": 260,
+    "failed": 0,
+    "fresh_authored_parameterized_cases": 84,
+    "fresh_test_families": 13,
+    "historical_distinct_logical_case_identities": 173,
+    "historical_reviewer_cases": 50,
+    "original_cases": 123,
+    "passed": 260,
+    "skipped": 0
+  },
+  "evidence_paths": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/REPORT.md",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/input-verification.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/static-and-freeze-verification.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/fixture-adaptations.patch",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/case-reconciliation.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/command-extraction.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/historical-run/process-receipt.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/fresh-run/process-receipt.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/payload-run/process-receipt.json",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/archive-index.json"
+  ],
+  "logic_errors": [],
+  "owner_pending": [
+    "protected helper installation and installed readback",
+    "actual root --plan including protected 20-launch-runtime.conf validation",
+    "approved exact-digest --prepare",
+    "separate live installation/reload/restart and installed behavior gates"
+  ],
+  "passed": true,
+  "prior_evidence_changes": 0,
+  "root_commands_executed": 0,
+  "security_concerns": [],
+  "source_changes": 0,
+  "source_hashes": {
+    "helper": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "immutable_rejected_archive": "ff21c524ac91e1fdb426de8c7c4c2ec4533c94bc554252282bf0efedd495196b",
+    "input_manifest": "b7234083655b534bd7d661d828aca084c2448681198dee5c81ecb67a1522e6b3",
+    "owner_instructions": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416"
+  },
+  "suggestions": [],
+  "summary": "Exact-hash source acceptance for repaired stage-only helper and owner hash-bound bootstrap/read-only-plan commands; all 260 offline ordinary-user test executions passed. Protected installation/root plan, preparation and live activation remain unperformed and separately gated."
+}

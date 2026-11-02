@@ -1,0 +1,187 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 50 items
+
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_L01_installed_site_packages_layout_is_readable <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [  2%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules [32mPASSED[0m[32m [  4%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor [32mPASSED[0m[32m [  6%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[[Service]\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [  8%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[[Unit]\nDescription=trailing\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 10%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[User=enhanced-cognee-api\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 12%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=/invented\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 14%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 16%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\nEnvironment=PYTHONUNBUFFERED=1\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 18%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n[Install]\nWantedBy=multi-user.target\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 20%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\nUnknown=canary\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 22%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n\x00] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 24%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n\r] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 26%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1 # comment\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 28%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment="HF_HUB_OFFLINE=1"junk\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 30%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 32%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\t\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 34%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n User=root\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 36%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n;comment\nUser=root\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 38%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P02_supported_environment_positive_controls[Environment="HF_HUB_OFFLINE=1"\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 40%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P02_supported_environment_positive_controls[Environment='HF_HUB_OFFLINE=1'\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 42%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_P02_supported_environment_positive_controls[Environment=HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1\n] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[32m [ 44%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_C01_snapshot_rechecks_both_manager_views[inventory] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [31mFAILED[0m[31m [ 46%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_C01_snapshot_rechecks_both_manager_views[loaded] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [31mFAILED[0m[31m [ 48%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_C02_prepare_rechecks_unpinned_but_approved_hashes[helper_sha256] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 50%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_C02_prepare_rechecks_unpinned_but_approved_hashes[startup_interpreter] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 52%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_E01_metadata_error_is_not_echoed[error0] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 54%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_E01_metadata_error_is_not_echoed[error1] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 56%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_E01_metadata_error_is_not_echoed[error2] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 58%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_I01_runtime_source_override_is_not_ignored[service.d] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 60%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_I01_runtime_source_override_is_not_ignored[enhanced-.service.d] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 62%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-.service.d] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 64%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-api.service.d] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 66%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[link] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 68%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[hardlink] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 70%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[owner] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 72%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[ancestor-owner] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 74%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[ancestor-write] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 76%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_T01_reader_guard_rejects_untrusted_inputs[fifo] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 78%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_W01_partial_artifacts_are_preserved[40-audit-security-first.conf] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 80%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_W01_partial_artifacts_are_preserved[manifest.json] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 82%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_W01_partial_artifacts_are_preserved[receipt.json] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 84%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_M01_plan_does_not_call_writer_or_change_sandbox <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 86%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args0] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 88%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args1] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 90%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args2] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 92%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args3] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 94%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args4] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 96%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args5] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [ 98%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::test_A01_literal_cli_args_fail_before_inspection[args6] <- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py [32mPASSED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___________ test_C01_snapshot_rechecks_both_manager_views[inventory] ___________[0m
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3ce8bbf830>
+which = 'inventory'
+
+    [0m[37m@pytest[39;49;00m.mark.parametrize([33m'[39;49;00m[33mwhich[39;49;00m[33m'[39;49;00m, [[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m])[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_C01_snapshot_rechecks_both_manager_views[39;49;00m(monkeypatch, which):[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mFalse[39;49;00m)[90m[39;49;00m
+        calls = {[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m: [94m0[39;49;00m, [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m: [94m0[39;49;00m}[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92minventory[39;49;00m():[90m[39;49;00m
+            calls[[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m] += [94m1[39;49;00m[90m[39;49;00m
+            result = [96mlist[39;49;00m(h.SOURCES)[90m[39;49;00m
+            [94mif[39;49;00m which == [33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m [95mand[39;49;00m calls[[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m] == [94m2[39;49;00m:[90m[39;49;00m
+                result.append([33m'[39;49;00m[33m/invented.conf[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+            [94mreturn[39;49;00m result[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mloaded[39;49;00m():[90m[39;49;00m
+            calls[[33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m] += [94m1[39;49;00m[90m[39;49;00m
+            result = [96mdict[39;49;00m(h.EXPECTED_LOADED)[90m[39;49;00m
+            [94mif[39;49;00m which == [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m [95mand[39;49;00m calls[[33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m] == [94m2[39;49;00m:[90m[39;49;00m
+                result[[33m'[39;49;00m[33mNeedDaemonReload[39;49;00m[33m'[39;49;00m] = [33m'[39;49;00m[33myes[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+            [94mreturn[39;49;00m result[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(h.Refusal, match=[33m'[39;49;00m[33msnapshot_changed[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           h.collect_snapshot(reader=[94mlambda[39;49;00m p: content[p], guard=[94mlambda[39;49;00m p, **kw: p, inventory=inventory, loaded=loaded)[90m[39;49;00m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.<lambda> at 0x7f3ce8c0a7a0>
+guard = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.<lambda> at 0x7f3ce8c0a8e0>
+inventory = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.inventory at 0x7f3ce8c0a520>
+loaded = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.loaded at 0x7f3ce8c0a700>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcollect_snapshot[39;49;00m(*, reader=read_protected, guard=trusted_path,[90m[39;49;00m
+                         inventory=inventory_sources, loaded=read_loaded):[90m[39;49;00m
+        first_inventory, first_loaded = inventory(), loaded()[90m[39;49;00m
+        guard(CANDIDATE, kind=[33m"[39;49;00m[33mdirectory[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        lexical = CANDIDATE + [33m"[39;49;00m[33m/runtime/bin/python[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        resolved = guard(lexical, allow_alias=[94mTrue[39;49;00m, executable=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m resolved != lexical [95mand[39;49;00m re.fullmatch([33mr[39;49;00m[33m"[39;49;00m[33m/usr/bin/python3(?:[39;49;00m[33m\[39;49;00m[33m.[0-9]+)?[39;49;00m[33m"[39;49;00m, resolved) [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m Refusal([33m"[39;49;00m[33mstartup_interpreter_target_refused[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        snapshot = {[90m[39;49;00m
+            [33m"[39;49;00m[33minventory[39;49;00m[33m"[39;49;00m: first_inventory, [33m"[39;49;00m[33mloaded[39;49;00m[33m"[39;49;00m: first_loaded,[90m[39;49;00m
+            [33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m: {path: reader(path) [94mfor[39;49;00m path [95min[39;49;00m SOURCES},[90m[39;49;00m
+            [33m"[39;49;00m[33mcandidate[39;49;00m[33m"[39;49;00m: CANDIDATE,[90m[39;49;00m
+>           [33m"[39;49;00m[33mcandidate_hashes[39;49;00m[33m"[39;49;00m: {path: digest(reader(CANDIDATE + [33m"[39;49;00m[33m/runtime/lib/python3.12/site-packages/[39;49;00m[33m"[39;49;00m + path)) [94mfor[39;49;00m path [95min[39;49;00m MODULE_HASHES},[90m[39;49;00m
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+            [33m"[39;49;00m[33mhelper_sha256[39;49;00m[33m"[39;49;00m: digest(reader(INSTALLED_HELPER)),[90m[39;49;00m
+            [33m"[39;49;00m[33mstartup_interpreter[39;49;00m[33m"[39;49;00m: {[33m"[39;49;00m[33mlexical[39;49;00m[33m"[39;49;00m: lexical, [33m"[39;49;00m[33mresolved[39;49;00m[33m"[39;49;00m: resolved, [33m"[39;49;00m[33msha256[39;49;00m[33m"[39;49;00m: digest(reader(resolved))},[90m[39;49;00m
+        }[90m[39;49;00m
+
+[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+p = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+>   [0mh.collect_snapshot(reader=[94mlambda[39;49;00m p: content[p], guard=[94mlambda[39;49;00m p, **kw: p, inventory=inventory, loaded=loaded)[90m[39;49;00m
+                                        ^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: KeyError
+[31m[1m____________ test_C01_snapshot_rechecks_both_manager_views[loaded] _____________[0m
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3ce8bf3fe0>
+which = 'loaded'
+
+    [0m[37m@pytest[39;49;00m.mark.parametrize([33m'[39;49;00m[33mwhich[39;49;00m[33m'[39;49;00m, [[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m])[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_C01_snapshot_rechecks_both_manager_views[39;49;00m(monkeypatch, which):[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mFalse[39;49;00m)[90m[39;49;00m
+        calls = {[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m: [94m0[39;49;00m, [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m: [94m0[39;49;00m}[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92minventory[39;49;00m():[90m[39;49;00m
+            calls[[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m] += [94m1[39;49;00m[90m[39;49;00m
+            result = [96mlist[39;49;00m(h.SOURCES)[90m[39;49;00m
+            [94mif[39;49;00m which == [33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m [95mand[39;49;00m calls[[33m'[39;49;00m[33minventory[39;49;00m[33m'[39;49;00m] == [94m2[39;49;00m:[90m[39;49;00m
+                result.append([33m'[39;49;00m[33m/invented.conf[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+            [94mreturn[39;49;00m result[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mloaded[39;49;00m():[90m[39;49;00m
+            calls[[33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m] += [94m1[39;49;00m[90m[39;49;00m
+            result = [96mdict[39;49;00m(h.EXPECTED_LOADED)[90m[39;49;00m
+            [94mif[39;49;00m which == [33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m [95mand[39;49;00m calls[[33m'[39;49;00m[33mloaded[39;49;00m[33m'[39;49;00m] == [94m2[39;49;00m:[90m[39;49;00m
+                result[[33m'[39;49;00m[33mNeedDaemonReload[39;49;00m[33m'[39;49;00m] = [33m'[39;49;00m[33myes[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+            [94mreturn[39;49;00m result[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(h.Refusal, match=[33m'[39;49;00m[33msnapshot_changed[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           h.collect_snapshot(reader=[94mlambda[39;49;00m p: content[p], guard=[94mlambda[39;49;00m p, **kw: p, inventory=inventory, loaded=loaded)[90m[39;49;00m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.<lambda> at 0x7f3ce8c584a0>
+guard = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.<lambda> at 0x7f3ce8c587c0>
+inventory = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.inventory at 0x7f3ce8c58680>
+loaded = <function test_C01_snapshot_rechecks_both_manager_views.<locals>.loaded at 0x7f3ce8c58400>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcollect_snapshot[39;49;00m(*, reader=read_protected, guard=trusted_path,[90m[39;49;00m
+                         inventory=inventory_sources, loaded=read_loaded):[90m[39;49;00m
+        first_inventory, first_loaded = inventory(), loaded()[90m[39;49;00m
+        guard(CANDIDATE, kind=[33m"[39;49;00m[33mdirectory[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        lexical = CANDIDATE + [33m"[39;49;00m[33m/runtime/bin/python[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        resolved = guard(lexical, allow_alias=[94mTrue[39;49;00m, executable=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m resolved != lexical [95mand[39;49;00m re.fullmatch([33mr[39;49;00m[33m"[39;49;00m[33m/usr/bin/python3(?:[39;49;00m[33m\[39;49;00m[33m.[0-9]+)?[39;49;00m[33m"[39;49;00m, resolved) [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m Refusal([33m"[39;49;00m[33mstartup_interpreter_target_refused[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        snapshot = {[90m[39;49;00m
+            [33m"[39;49;00m[33minventory[39;49;00m[33m"[39;49;00m: first_inventory, [33m"[39;49;00m[33mloaded[39;49;00m[33m"[39;49;00m: first_loaded,[90m[39;49;00m
+            [33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m: {path: reader(path) [94mfor[39;49;00m path [95min[39;49;00m SOURCES},[90m[39;49;00m
+            [33m"[39;49;00m[33mcandidate[39;49;00m[33m"[39;49;00m: CANDIDATE,[90m[39;49;00m
+>           [33m"[39;49;00m[33mcandidate_hashes[39;49;00m[33m"[39;49;00m: {path: digest(reader(CANDIDATE + [33m"[39;49;00m[33m/runtime/lib/python3.12/site-packages/[39;49;00m[33m"[39;49;00m + path)) [94mfor[39;49;00m path [95min[39;49;00m MODULE_HASHES},[90m[39;49;00m
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+            [33m"[39;49;00m[33mhelper_sha256[39;49;00m[33m"[39;49;00m: digest(reader(INSTALLED_HELPER)),[90m[39;49;00m
+            [33m"[39;49;00m[33mstartup_interpreter[39;49;00m[33m"[39;49;00m: {[33m"[39;49;00m[33mlexical[39;49;00m[33m"[39;49;00m: lexical, [33m"[39;49;00m[33mresolved[39;49;00m[33m"[39;49;00m: resolved, [33m"[39;49;00m[33msha256[39;49;00m[33m"[39;49;00m: digest(reader(resolved))},[90m[39;49;00m
+        }[90m[39;49;00m
+
+[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+p = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+>   [0mh.collect_snapshot(reader=[94mlambda[39;49;00m p: content[p], guard=[94mlambda[39;49;00m p, **kw: p, inventory=inventory, loaded=loaded)[90m[39;49;00m
+                                        ^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:200: KeyError
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::[1mtest_C01_snapshot_rechecks_both_manager_views[inventory][0m - KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+[31mFAILED[0m docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py::[1mtest_C01_snapshot_rechecks_both_manager_views[loaded][0m - KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+[31m========================= [31m[1m2 failed[0m, [32m48 passed[0m[31m in 0.35s[0m[31m =========================[0m

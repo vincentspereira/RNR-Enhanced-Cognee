@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.268" timestamp="2026-11-01T23:40:58.144104+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_bundle_readback_catches_corruption_before_complete_receipt" time="0.034"><failure message="Failed: DID NOT RAISE Refusal">tests/unit/test_security_first_cutover.py:476: in test_bundle_readback_catches_corruption_before_complete_receipt
+    with pytest.raises(h.Refusal):
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Refusal</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_bundle_rejects_extra_files_before_any_write" time="0.015"><failure message="Failed: DID NOT RAISE Refusal">tests/unit/test_security_first_cutover.py:486: in test_bundle_rejects_extra_files_before_any_write
+    with pytest.raises(h.Refusal):
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Refusal</failure></testcase></testsuite></testsuites>

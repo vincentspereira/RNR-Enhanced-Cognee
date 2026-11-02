@@ -1,0 +1,295 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml",
+    "-vv",
+    "--tb=long",
+    "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py"
+  ],
+  "bindings_sha256": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-original-cases.py": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213",
+    "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-review-cases.py": "834dcdd7fabe479fceb6909e79dcbe446f6af5347df753cf3b6a2dfb70649f39",
+    "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/run_tests.py": "b37051912a05d204c37f5aba4cfd7d2fa9ce8a6c58d3fe346b7787697cd7b3af",
+    "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/test_current_review_cases.py": "205bc64a856a5c67443f33a80f8430c0cecf8afcb312b389c653c15603cf2bc7",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f",
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777",
+    "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0"
+  },
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_L01_installed_site_packages_layout_is_readable",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Service]\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Unit]\\nDescription=trailing\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[User=enhanced-cognee-api\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=/invented\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nEnvironment=PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n[Install]\\nWantedBy=multi-user.target\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nUnknown=canary\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\x00]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\r]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1 # comment\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=\"HF_HUB_OFFLINE=1\"junk\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\t\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n User=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n;comment\\nUser=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment=\"HF_HUB_OFFLINE=1\"\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment='HF_HUB_OFFLINE=1'\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment=HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[inventory]",
+      "state": "failure"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[loaded]",
+      "state": "failure"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[helper_sha256]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[startup_interpreter]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-api.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[link]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-write]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[fifo]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[40-audit-security-first.conf]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[manifest.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[receipt.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_M01_plan_does_not_call_writer_or_change_sandbox",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args3]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args4]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args5]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args6]",
+      "state": "passed"
+    }
+  ],
+  "counts": {
+    "error": 0,
+    "failure": 2,
+    "passed": 48,
+    "skipped": 0
+  },
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "exit_code": 1,
+  "finished_unix": 1793577706.7683568,
+  "junit_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/reviewer-obsolete-fixture/junit.xml",
+  "junit_sha256": "593681f8b79b21fad3ed9ed892d38bdc5f09e9343610931d66ea23f8990717d3",
+  "log_sha256": "bca81e7a82584ef2e999f981a9bc657cf238163380f3da98efbd7264d6ea366e",
+  "obsolete_fixture_binding": true,
+  "scope": "offline synthetic tests only; no qualification or live service calls",
+  "started_unix": 1793577705.893484,
+  "total": 50
+}

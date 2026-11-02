@@ -1,0 +1,290 @@
+{
+  "integrations/hermes/deployment/prepare_security_first_cutover.py": {
+    "imports": [
+      {
+        "line": 7,
+        "statement": "import hashlib"
+      },
+      {
+        "line": 8,
+        "statement": "import json"
+      },
+      {
+        "line": 9,
+        "statement": "import re"
+      },
+      {
+        "line": 10,
+        "statement": "import shlex"
+      },
+      {
+        "line": 11,
+        "statement": "import os"
+      },
+      {
+        "line": 12,
+        "statement": "import stat"
+      },
+      {
+        "line": 13,
+        "statement": "from pathlib import Path"
+      },
+      {
+        "line": 14,
+        "statement": "import subprocess"
+      },
+      {
+        "line": 15,
+        "statement": "import sys"
+      }
+    ],
+    "non_ascii": false,
+    "sensitive_calls": [
+      {
+        "call": "os.open",
+        "line": 197,
+        "shell_true": false
+      },
+      {
+        "call": "os.open",
+        "line": 211,
+        "shell_true": false
+      },
+      {
+        "call": "os.open",
+        "line": 239,
+        "shell_true": false
+      },
+      {
+        "call": "os.fdopen",
+        "line": 199,
+        "shell_true": false
+      },
+      {
+        "call": "handle.write",
+        "line": 200,
+        "shell_true": false
+      },
+      {
+        "call": "os.mkdir",
+        "line": 213,
+        "shell_true": false
+      },
+      {
+        "call": "os.open",
+        "line": 214,
+        "shell_true": false
+      },
+      {
+        "call": "os.fdopen",
+        "line": 240,
+        "shell_true": false
+      },
+      {
+        "call": "writer",
+        "line": 395,
+        "shell_true": false
+      },
+      {
+        "call": "writer",
+        "line": 219,
+        "shell_true": false
+      },
+      {
+        "call": "os.open",
+        "line": 221,
+        "shell_true": false
+      },
+      {
+        "call": "os.fdopen",
+        "line": 223,
+        "shell_true": false
+      }
+    ]
+  },
+  "tests/unit/test_security_first_cutover.py": {
+    "imports": [
+      {
+        "line": 2,
+        "statement": "import hashlib"
+      },
+      {
+        "line": 3,
+        "statement": "import importlib.util"
+      },
+      {
+        "line": 4,
+        "statement": "import json"
+      },
+      {
+        "line": 5,
+        "statement": "import os"
+      },
+      {
+        "line": 6,
+        "statement": "import stat"
+      },
+      {
+        "line": 7,
+        "statement": "from pathlib import Path"
+      },
+      {
+        "line": 8,
+        "statement": "from types import SimpleNamespace"
+      },
+      {
+        "line": 10,
+        "statement": "import pytest"
+      },
+      {
+        "line": 517,
+        "statement": "import subprocess"
+      },
+      {
+        "line": 528,
+        "statement": "import ast"
+      },
+      {
+        "line": 529,
+        "statement": "import builtins"
+      },
+      {
+        "line": 586,
+        "statement": "import inspect"
+      }
+    ],
+    "non_ascii": false,
+    "sensitive_calls": [
+      {
+        "call": "spec.loader.exec_module",
+        "line": 21,
+        "shell_true": false
+      },
+      {
+        "call": "directory.mkdir",
+        "line": 159,
+        "shell_true": false
+      },
+      {
+        "call": "target.write_bytes",
+        "line": 161,
+        "shell_true": false
+      },
+      {
+        "call": "folder.mkdir",
+        "line": 210,
+        "shell_true": false
+      },
+      {
+        "call": "target.write_bytes",
+        "line": 212,
+        "shell_true": false
+      },
+      {
+        "call": "parent.mkdir",
+        "line": 247,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 251,
+        "shell_true": false
+      },
+      {
+        "call": "file.write_bytes",
+        "line": 349,
+        "shell_true": false
+      },
+      {
+        "call": "parent.mkdir",
+        "line": 394,
+        "shell_true": false
+      },
+      {
+        "call": "bundle.parent.mkdir",
+        "line": 462,
+        "shell_true": false
+      },
+      {
+        "call": "bundle.mkdir",
+        "line": 464,
+        "shell_true": false
+      },
+      {
+        "call": "parent.mkdir",
+        "line": 471,
+        "shell_true": false
+      },
+      {
+        "call": "parent.mkdir",
+        "line": 484,
+        "shell_true": false
+      },
+      {
+        "call": "target.write_bytes",
+        "line": 589,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 256,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_new",
+        "line": 261,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 263,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 267,
+        "shell_true": false
+      },
+      {
+        "call": "writes.append",
+        "line": 398,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 399,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_new",
+        "line": 475,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 477,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 487,
+        "shell_true": false
+      },
+      {
+        "call": "subprocess.run",
+        "line": 521,
+        "shell_true": false
+      },
+      {
+        "call": "h.write_bundle",
+        "line": 571,
+        "shell_true": false
+      },
+      {
+        "call": "writes.append",
+        "line": 452,
+        "shell_true": false
+      }
+    ]
+  }
+}

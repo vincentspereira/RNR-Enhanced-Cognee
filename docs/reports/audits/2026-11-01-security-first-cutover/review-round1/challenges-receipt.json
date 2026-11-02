@@ -1,0 +1,283 @@
+{
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_L01_installed_site_packages_layout_is_readable",
+      "state": "failure"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules",
+      "state": "failure"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor",
+      "state": "failure"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Service]\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Unit]\\nDescription=trailing\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[User=enhanced-cognee-api\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=/invented\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nEnvironment=PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n[Install]\\nWantedBy=multi-user.target\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nUnknown=canary\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\x00]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\r]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1 # comment\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=\"HF_HUB_OFFLINE=1\"junk\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\t\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n User=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n;comment\\nUser=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P02_supported_environment_positive_controls[Environment=\"HF_HUB_OFFLINE=1\"\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P02_supported_environment_positive_controls[Environment='HF_HUB_OFFLINE=1'\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_P02_supported_environment_positive_controls[Environment=HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[inventory]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[loaded]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[helper_sha256]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[startup_interpreter]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_E01_metadata_error_is_not_echoed[error0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_E01_metadata_error_is_not_echoed[error1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_E01_metadata_error_is_not_echoed[error2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_I01_runtime_source_override_is_not_ignored[service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-api.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[link]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-write]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[fifo]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_W01_partial_artifacts_are_preserved[40-audit-security-first.conf]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_W01_partial_artifacts_are_preserved[manifest.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_W01_partial_artifacts_are_preserved[receipt.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_M01_plan_does_not_call_writer_or_change_sandbox",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args3]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args4]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args5]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round1.test_independent_challenges",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args6]",
+      "state": "passed"
+    }
+  ],
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.xml",
+    "-q"
+  ],
+  "counts": {
+    "error": 0,
+    "failure": 3,
+    "passed": 47,
+    "skipped": 0
+  },
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "distinct_cases": 50,
+  "exit_code": 1,
+  "source_hashes": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  },
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "ceae37e53b3024a2eabf4ea8e244b6599bd5e6170cfc3014cd6844439dc54f9c",
+  "test_sha256": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f"
+}

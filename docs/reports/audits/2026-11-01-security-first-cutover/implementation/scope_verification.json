@@ -1,0 +1,15 @@
+{
+  "activation": false,
+  "credentials_read": false,
+  "git_status": [
+    "?? docs/reports/audits/2026-11-01-security-first-cutover/",
+    "?? integrations/hermes/deployment/prepare_security_first_cutover.py",
+    "?? tests/unit/test_security_first_cutover.py"
+  ],
+  "head": "41e4de7a5db99970a7629ef3f274138eef3031e8",
+  "llm_or_api_calls": false,
+  "qualification_rerun": false,
+  "root_execution": false,
+  "tracked_changed_paths": [],
+  "tracked_diff_check_returncode": 0
+}

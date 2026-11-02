@@ -1,0 +1,6 @@
+[
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[exact]",
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[mismatch]",
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[symlink]",
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[absent]"
+]

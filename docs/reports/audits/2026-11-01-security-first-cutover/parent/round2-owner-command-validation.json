@@ -1,0 +1,9 @@
+{
+  "bash_blocks_valid": 2,
+  "python_blocks_parsed": 3,
+  "bootstrap_source_hash_matches": true,
+  "ordinary_uid_plan_refused": true,
+  "actual_root_plan": "OWNER_PENDING",
+  "commands_executed_as_root": false,
+  "owner_instructions_sha256": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416"
+}

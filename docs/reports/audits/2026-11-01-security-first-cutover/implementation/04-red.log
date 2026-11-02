@@ -1,0 +1,217 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 54 items / 37 deselected / 17 selected
+
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[none] [31mFAILED[0m[31m [  5%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[uid] [31mFAILED[0m[31m [ 11%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[gid] [31mFAILED[0m[31m [ 17%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-file] [31mFAILED[0m[31m [ 23%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor] [31mFAILED[0m[31m [ 29%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link] [31mFAILED[0m[31m [ 35%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[leaf-link] [31mFAILED[0m[31m [ 41%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[hardlink] [31mFAILED[0m[31m [ 47%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[fifo] [31mFAILED[0m[31m [ 52%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[relative] [31mFAILED[0m[31m [ 58%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[dotdot] [31mFAILED[0m[31m [ 64%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[private] [31mFAILED[0m[31m [ 70%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none] [31mFAILED[0m[31m [ 76%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent] [31mFAILED[0m[31m [ 82%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner] [31mFAILED[0m[31m [ 88%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink] [31mFAILED[0m[31m [ 94%][0m
+tests/unit/test_security_first_cutover.py::test_new_private_bundle_and_partial_failure_are_preserved [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m________________ test_trust_rejects_unsafe_lexical_paths[none] _________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_________________ test_trust_rejects_unsafe_lexical_paths[uid] _________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_________________ test_trust_rejects_unsafe_lexical_paths[gid] _________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m____________ test_trust_rejects_unsafe_lexical_paths[writable-file] ____________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m__________ test_trust_rejects_unsafe_lexical_paths[writable-ancestor] __________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m____________ test_trust_rejects_unsafe_lexical_paths[ancestor-link] ____________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m______________ test_trust_rejects_unsafe_lexical_paths[leaf-link] ______________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m______________ test_trust_rejects_unsafe_lexical_paths[hardlink] _______________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m________________ test_trust_rejects_unsafe_lexical_paths[fifo] _________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m______________ test_trust_rejects_unsafe_lexical_paths[relative] _______________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_______________ test_trust_rejects_unsafe_lexical_paths[dotdot] ________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_______________ test_trust_rejects_unsafe_lexical_paths[private] _______________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:157: in test_trust_rejects_unsafe_lexical_paths
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_____ test_interpreter_alias_checks_both_lexical_and_resolved_chains[none] _____[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_ test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent] _[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_ test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner] _[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m_ test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink] _[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:208: in test_interpreter_alias_checks_both_lexical_and_resolved_chains
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mtrusted_path[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mpath trust missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: path trust missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'trusted_path', None)[0m
+[31m[1m__________ test_new_private_bundle_and_partial_failure_are_preserved ___________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:244: in test_new_private_bundle_and_partial_failure_are_preserved
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mwrite_bundle[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mexclusive writer missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: exclusive writer missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(h, 'write_bundle', None)[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/implementation/04-red.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[none][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[uid][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[gid][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[writable-file][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[writable-ancestor][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[ancestor-link][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[leaf-link][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[hardlink][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[fifo][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[relative][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[dotdot][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_trust_rejects_unsafe_lexical_paths[private][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_interpreter_alias_checks_both_lexical_and_resolved_chains[none][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink][0m - AssertionError: path trust missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'trusted_path', None)
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_new_private_bundle_and_partial_failure_are_preserved[0m - AssertionError: exclusive writer missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(h, 'write_bundle', None)
+[31m====================== [31m[1m17 failed[0m, [33m37 deselected[0m[31m in 0.34s[0m[31m =======================[0m

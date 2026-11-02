@@ -1,0 +1,14 @@
+{
+  "integrations/hermes/deployment/prepare_security_first_cutover.py": {
+    "dangerous_call_hits": [],
+    "manual_review": "No real secret assignments found. Secret-bearing test strings are explicitly invented refusal canaries. Fixed helper importlib exec_module is not dynamic eval/exec input.",
+    "secret_assignment_regex_lines": [],
+    "subprocess_review": "Helper has only selected systemctl show via shell=False and fixed sanitized env. Tests launch the fixed helper as ordinary user in a sandbox."
+  },
+  "tests/unit/test_security_first_cutover.py": {
+    "dangerous_call_hits": [],
+    "manual_review": "No real secret assignments found. Secret-bearing test strings are explicitly invented refusal canaries. Fixed helper importlib exec_module is not dynamic eval/exec input.",
+    "secret_assignment_regex_lines": [],
+    "subprocess_review": "Helper has only selected systemctl show via shell=False and fixed sanitized env. Tests launch the fixed helper as ordinary user in a sandbox."
+  }
+}

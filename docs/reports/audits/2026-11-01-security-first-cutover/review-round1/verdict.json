@@ -1,0 +1,122 @@
+{
+  "counts": {
+    "challenges": {
+      "distinct_cases": 50,
+      "error": 0,
+      "failure": 3,
+      "passed": 47,
+      "process_exit_code": 1,
+      "skipped": 0
+    },
+    "distinct_defects": 2,
+    "distinct_review_cases": 173,
+    "live_tests": 0,
+    "regressions": {
+      "distinct_cases": 123,
+      "error": 0,
+      "failure": 0,
+      "passed": 123,
+      "process_exit_code": 0,
+      "skipped": 0
+    },
+    "replayed_failure_cases": 3,
+    "setup_errors": 0
+  },
+  "evidence_paths": [
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/initial-bindings.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/run_review.py",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-receipt.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions.stdout",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions.stderr",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-receipt.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.stdout",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.stderr",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/L01-installed-layout.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/L02-runtime-decoys.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/S01-alias-normalization.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/deployed-layout-metadata.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/static-scan.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/static-security-assessment.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay_findings.py",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay-process-receipt.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay-process.stdout",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay-process.stderr",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/evidence-manifest.json",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay-70e47a18fd99475488f5b82dc53a04a3/replay-receipt.json"
+  ],
+  "logic_errors": [
+    {
+      "actual": "With an exact dictionary reader containing only all eight real accepted source bytes at installed paths plus the four invented unit sources/helper/interpreter, collection requests CANDIDATE/src/ingestion.py and raises FileNotFoundError. Metadata independently confirms CANDIDATE/src/memory_api.py is absent and its site-packages counterpart exists. A second probe supplies matching candidate-root decoys and deliberately different runtime module bytes: the plan passes without reading any runtime modules.",
+      "evidence": [
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/L01-installed-layout.json",
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/L02-runtime-decoys.json",
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/deployed-layout-metadata.json",
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.xml"
+      ],
+      "expected": "Read all eight accepted payload modules from CANDIDATE/runtime/lib/python3.12/site-packages/src, matching the staged wheel layout and -I -m startup.",
+      "fixture_boundaries": "Only invented static unit hashes were rebound. All eight module bytes exactly match the original embedded hashes, the candidate string and collector source are unchanged, and the reader rejects every unmapped path. Root20 private bytes were neither read nor guessed.",
+      "id": "L01-L02",
+      "impact": "The unchanged staged candidate cannot yield the required plan through this collection path once earlier owner gates pass. Adding candidate-root files merely to pass would instead approve bytes not selected by the runtime.",
+      "probe_ids": [
+        "test_L01_installed_site_packages_layout_is_readable",
+        "test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules"
+      ],
+      "reproduce": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python -B docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay_findings.py (exit 1; inspect L01 and L02 in the new replay directory)",
+      "severity": "high",
+      "source": "integrations/hermes/deployment/prepare_security_first_cutover.py:340",
+      "title": "Candidate module hashes bind candidate-root files instead of installed runtime/site-packages modules"
+    }
+  ],
+  "passed": false,
+  "scope": {
+    "euid": 1000,
+    "forbidden_actions_performed": [],
+    "harness_diagnostics": "Editor Pyright could not resolve pytest in its own environment and reported dynamic-module/fixture typing warnings. The prescribed deployment environment actually imported pytest and executed all 173 distinct cases; these are not runtime setup errors.",
+    "implementation_edits": false,
+    "limitations": "No installed helper execution, protected file contents, application import, API/model/network call, qualification rerun, root action, service command, profile/fleet change, commit/push or deletion. Synthetic root metadata models trust predicates; it is not real root execution.",
+    "live_readiness_claimed": false,
+    "owner_gates": "Protected root20 content/syntax and exact owner-root runtime remain owner-plan gates, not automatic defects. No immediate API restart is authorized.",
+    "replay_accounting": "Three replay executions repeat the same failed case identities and are not additional distinct tests.",
+    "separation": "Proposed route-off facts remain distinct from old loaded state and the separately conditional route review. No activation, accounting/recovery completion or private-data readiness is claimed.",
+    "worktree": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+    "writes": "Only NEW review evidence and invented sandboxes beneath docs/reports/audits/2026-11-01-security-first-cutover/review-round1/"
+  },
+  "security_concerns": [
+    {
+      "actual": "A real sandbox runtime/bin/python alias targets ../../../../../../usr/bin/bridge/../python3.12. bridge is another symlink to ../../outside/nested. Kernel-style resolution reaches outside/python3.12 with mode 0777, but trusted_path normpath removes bridge/.. before inspection, returns /usr/bin/python3.12, and collect_snapshot fingerprints the distinct safe file. plan_from_snapshot accepts it.",
+      "evidence": [
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/S01-alias-normalization.json",
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.xml",
+        "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges.stdout"
+      ],
+      "expected": "Reject symlink ancestors in the leaf alias target and bind the executable actually selected by the lexical ExecStart path.",
+      "id": "S01",
+      "impact": "The stage plan can assert a protected startup interpreter while the proposed lexical command selects different untrusted bytes. This is an offline supported-alias contract bypass, not a claim that the deployed regular-file interpreter is exploited.",
+      "probe_ids": [
+        "test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor"
+      ],
+      "reproduce": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python -B docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay_findings.py (exit 1; inspect S01 in the new replay directory)",
+      "severity": "medium",
+      "source": "integrations/hermes/deployment/prepare_security_first_cutover.py:176-180,328-342",
+      "title": "Interpreter alias normalization skips actual symlink ancestors and fingerprints a different executable"
+    }
+  ],
+  "source_hashes": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  },
+  "suggestions": [
+    {
+      "id": "T01",
+      "text": "Keep a physical installed-layout positive control and a root-decoy negative control. The existing collector test constructs candidate-root inputs and therefore mirrors the defect."
+    },
+    {
+      "id": "T02",
+      "text": "Add supported interpreter-alias coverage containing intermediate symlinks followed by dotdot; simple leaf aliases and writable-parent checks do not establish full resolution correctness."
+    }
+  ],
+  "summary": "Exact-hash stage-only helper review FAIL: two distinct reproduced defects; 123 existing regressions passed, while 50 independent challenges produced 47 passes and 3 contract failures. No code fix or activation was performed."
+}

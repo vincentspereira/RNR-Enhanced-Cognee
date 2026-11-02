@@ -1,0 +1,65 @@
+{
+  "exitstatus": 0,
+  "reports": [
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[exact]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[exact]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[exact]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[mismatch]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[mismatch]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[mismatch]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[symlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[symlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[symlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[absent]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[absent]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[absent]",
+      "when": "teardown",
+      "outcome": "passed"
+    }
+  ]
+}

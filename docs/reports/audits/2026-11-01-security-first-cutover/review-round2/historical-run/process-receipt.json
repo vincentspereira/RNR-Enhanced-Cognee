@@ -1,0 +1,919 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "round2_plugin",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/historical-sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/historical-run/junit.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_original_cases.py",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_review_cases.py",
+    "tests/unit/test_security_first_cutover_review_regressions.py"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "returncode": 0,
+  "source_and_test_bindings": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_original_cases.py": "3d455e834774691cffe20dffed4dd8dcc051b218d8a08a98f2328b2d42ab57d5",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_review_cases.py": "b85046bdda20ee017c16236fdd0fde0c4405a89d7746ae12bebc4224b63c24e0",
+    "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0",
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "docs/reports/audits/2026-11-01-security-first-cutover/OWNER-NEXT-PLAN.md": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416"
+  },
+  "case_count": 176,
+  "counts": {
+    "passed": 176,
+    "failed": 0,
+    "error": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_phase_a_dropin_and_canonical_hash",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_is_parsed_without_exposing_environment",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[source-hash]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[candidate-path]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[candidate-hash]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[candidate-extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[reload]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[alias]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[run-override]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[loaded-missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[credential-reset]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_plan_refuses_snapshot_drift[launch-syntax]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[none]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[uid]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[gid]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[relative]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_trust_rejects_unsafe_lexical_paths[private]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_new_private_bundle_and_partial_failure_are_preserved",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_protected_reader_never_follows_link_or_reads_fifo",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_output_guard_requires_private_existing_parent_and_absent_target",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_bundle_readback_catches_corruption_before_complete_receipt",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_bundle_rejects_extra_files_before_any_write",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[Id]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[Names]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[LoadState]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[ActiveState]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[SourcePath]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[User]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[Group]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[UMask]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_every_selected_loaded_property_is_bound[ExecStart]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_loaded_process_format_drift_is_refused[duplicate]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_loaded_process_format_drift_is_refused[missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_loaded_process_format_drift_is_refused[command-extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_loaded_process_format_drift_is_refused[unknown-property]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_writer_rejects_unsafe_parent_before_creation",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_snapshot_never_reads_arbitrary_alias_target",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_interpreter_must_have_execute_permission",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_original_cases",
+      "name": "test_inventory_refuses_unknown_manager_search_path",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_L01_installed_site_packages_layout_is_readable",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Service]\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[[Unit]\\nDescription=trailing\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[User=enhanced-cognee-api\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=/invented\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nEnvironment=PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n[Install]\\nWantedBy=multi-user.target\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\nUnknown=canary\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\x00]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n\\r]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1 # comment\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=\"HF_HUB_OFFLINE=1\"junk\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\t\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n User=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n;comment\\nUser=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment=\"HF_HUB_OFFLINE=1\"\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment='HF_HUB_OFFLINE=1'\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_P02_supported_environment_positive_controls[Environment=HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[inventory]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_C01_snapshot_rechecks_both_manager_views[loaded]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[helper_sha256]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_C02_prepare_rechecks_unpinned_but_approved_hashes[startup_interpreter]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_E01_metadata_error_is_not_echoed[error2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-api.service.d]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[link]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[ancestor-write]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_T01_reader_guard_rejects_untrusted_inputs[fifo]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[40-audit-security-first.conf]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[manifest.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_W01_partial_artifacts_are_preserved[receipt.json]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_M01_plan_does_not_call_writer_or_change_sandbox",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args0]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args1]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args2]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args3]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args4]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args5]",
+      "state": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.review-round2.test_current_review_cases",
+      "name": "test_A01_literal_cli_args_fail_before_inspection[args6]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_L01_exact_installed_module_mapping_is_readable",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "state": "passed"
+    }
+  ],
+  "log_sha256": "f8a7156a78918470ec3faa417ec22fee1a7055ddc69e859e66ff6b38b4f24792",
+  "junit_sha256": "ba9b280bbb14588d2e3d5c5ce2faa79b90ac0776a34e326414730b0770ec480e"
+}

@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_security_first_cutover.py",
+    "-q",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/parent/parent-regressions.xml"
+  ],
+  "returncode": 3,
+  "counts": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 1,
+    "skipped": 0
+  },
+  "hashes": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  }
+}

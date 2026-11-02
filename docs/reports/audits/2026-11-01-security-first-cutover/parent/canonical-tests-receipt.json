@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_security_first_cutover.py",
+    "tests/unit/test_security_first_cutover_review_regressions.py",
+    "-q",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/parent/canonical-tests-sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/parent/canonical-tests.xml"
+  ],
+  "returncode": 0,
+  "counts": {
+    "tests": 126,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "canonical_test_fixture_sha256": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213",
+  "body_byte_identical_to_reviewed_copy": true,
+  "all_other_accepted_input_hashes_unchanged": true,
+  "archive_all_44_payloads_verified": true,
+  "purpose": "Canonical unit fixture now uses byte-identical reviewed corrected body, rather than publishing a known-obsolete failing fixture. Original bytes remain in round1-source.zip."
+}

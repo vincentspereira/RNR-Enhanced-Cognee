@@ -1,0 +1,25 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 1 item
+
+tests/unit/test_security_first_cutover.py::test_phase_a_dropin_and_canonical_hash [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m____________________ test_phase_a_dropin_and_canonical_hash ____________________[0m
+[1m[31mtests/unit/test_security_first_cutover.py[0m:27: in test_phase_a_dropin_and_canonical_hash
+    [0m[94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mproposed_dropin[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mstage-only helper missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: stage-only helper missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = callable(None)[0m
+[1m[31mE    +    where None = getattr(namespace(), 'proposed_dropin', None)[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/implementation/01b-red.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_phase_a_dropin_and_canonical_hash[0m - AssertionError: stage-only helper missing
+assert False
+ +  where False = callable(None)
+ +    where None = getattr(namespace(), 'proposed_dropin', None)
+[31m============================== [31m[1m1 failed[0m[31m in 0.10s[0m[31m ===============================[0m

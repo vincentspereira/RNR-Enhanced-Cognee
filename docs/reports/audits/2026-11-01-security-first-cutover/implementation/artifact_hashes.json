@@ -1,0 +1,22 @@
+{
+  "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/implementation/run_tdd.py": {
+    "bytes": 1403,
+    "lines": 27,
+    "sha256": "4d433ac4e886e99eb5af34be681733eaa9d9e6be9c73d9613949700253570c1f"
+  },
+  "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/implementation/summarize_evidence.py": {
+    "bytes": 3843,
+    "lines": 76,
+    "sha256": "419f6adf8668924658db476c620eef2fe02d0639e05dc4206ad6073ef1b376ec"
+  },
+  "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover.py": {
+    "bytes": 19531,
+    "lines": 405,
+    "sha256": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813"
+  },
+  "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/tests/unit/test_security_first_cutover.py": {
+    "bytes": 28943,
+    "lines": 603,
+    "sha256": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  }
+}

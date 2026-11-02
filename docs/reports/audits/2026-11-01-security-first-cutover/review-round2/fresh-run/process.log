@@ -1,0 +1,91 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 80 items
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-None] [32mPASSED[0m[32m [  1%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/./python3.12-None] [32mPASSED[0m[32m [  2%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-None] [32mPASSED[0m[32m [  3%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[../../usr/bin/python3.12-None] [32mPASSED[0m[32m [  5%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3-None] [32mPASSED[0m[32m [  6%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../python3.12-link] [32mPASSED[0m[32m [  7%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../../bin/python3.12-link] [32mPASSED[0m[32m [  8%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-writable] [32mPASSED[0m[32m [ 10%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-owner] [32mPASSED[0m[32m [ 11%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-notdir] [32mPASSED[0m[32m [ 12%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-bin-writable] [32mPASSED[0m[32m [ 13%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/safe/bin/python-loop] [32mPASSED[0m[32m [ 15%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[None] [32mPASSED[0m[32m [ 16%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[0] [32mPASSED[0m[32m [ 17%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[1] [32mPASSED[0m[32m [ 18%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[2] [32mPASSED[0m[32m [ 20%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[3] [32mPASSED[0m[32m [ 21%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[4] [32mPASSED[0m[32m [ 22%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[5] [32mPASSED[0m[32m [ 23%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[6] [32mPASSED[0m[32m [ 25%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[7] [32mPASSED[0m[32m [ 26%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[*.json:/etc/enhanced-cognee] [32mPASSED[0m[32m [ 27%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/elsewhere/api.json] [32mPASSED[0m[32m [ 28%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json:extra] [32mPASSED[0m[32m [ 30%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json index.json:/etc/enhanced-cognee/index.json] [32mPASSED[0m[32m [ 31%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json] [32mPASSED[0m[32m [ 32%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[%n:/etc/enhanced-cognee/api.json] [32mPASSED[0m[32m [ 33%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\n[Unit]\nDescription=x\n] [32mPASSED[0m[32m [ 35%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\n[Service]\nEnvironment=HF_HUB_OFFLINE=1\n] [32mPASSED[0m[32m [ 36%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\nEnvironment=HF_HUB_OFFLINE=1\nImportCredential=*\n] [32mPASSED[0m[32m [ 37%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\nEnvironment="HF_HUB_OFFLINE=1"\nLoadCredentialEncrypted=a:b\n] [32mPASSED[0m[32m [ 38%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\nEnvironment=HF_HUB_OFFLINE=1\nExecStartPost=/bad\n] [32mPASSED[0m[32m [ 40%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\nEnvironment=HF_HUB_OFFLINE=1\n#x\nSetCredential=a:CANARY\n] [32mPASSED[0m[32m [ 41%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-service.d] [32mPASSED[0m[32m [ 42%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-.service.d] [32mPASSED[0m[32m [ 43%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-.service.d] [32mPASSED[0m[32m [ 45%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-api.service.d] [32mPASSED[0m[32m [ 46%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-service.d] [32mPASSED[0m[32m [ 47%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-.service.d] [32mPASSED[0m[32m [ 48%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-.service.d] [32mPASSED[0m[32m [ 50%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-api.service.d] [32mPASSED[0m[32m [ 51%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-service.d] [32mPASSED[0m[32m [ 52%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-.service.d] [32mPASSED[0m[32m [ 53%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-.service.d] [32mPASSED[0m[32m [ 55%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-api.service.d] [32mPASSED[0m[32m [ 56%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[0] [32mPASSED[0m[32m [ 57%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[1] [32mPASSED[0m[32m [ 58%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[2] [32mPASSED[0m[32m [ 60%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[helper_sha256] [32mPASSED[0m[32m [ 61%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[startup_interpreter] [32mPASSED[0m[32m [ 62%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[source_bytes] [32mPASSED[0m[32m [ 63%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[loaded] [32mPASSED[0m[32m [ 65%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[candidate_hashes] [32mPASSED[0m[32m [ 66%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F08_plan_strictly_readonly_and_no_sensitive_echo [32mPASSED[0m[32m [ 67%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[none] [32mPASSED[0m[32m [ 68%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[private-parent-exists] [32mPASSED[0m[32m [ 70%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[missing-base] [32mPASSED[0m[32m [ 71%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-symlink] [32mPASSED[0m[32m [ 72%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-writable] [32mPASSED[0m[32m [ 73%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-owner] [32mPASSED[0m[32m [ 75%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-gid] [32mPASSED[0m[32m [ 76%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-sticky] [32mPASSED[0m[32m [ 77%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-symlink] [32mPASSED[0m[32m [ 78%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-not-private] [32mPASSED[0m[32m [ 80%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-existing] [32mPASSED[0m[32m [ 81%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-dangling-link] [32mPASSED[0m[32m [ 82%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[none] [32mPASSED[0m[32m [ 83%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[hash-mismatch] [32mPASSED[0m[32m [ 85%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[root-reader] [32mPASSED[0m[32m [ 86%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[none] [32mPASSED[0m[32m [ 87%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[hash-mismatch] [32mPASSED[0m[32m [ 88%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-link] [32mPASSED[0m[32m [ 90%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-write] [32mPASSED[0m[32m [ 91%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-link] [32mPASSED[0m[32m [ 92%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-hardlink] [32mPASSED[0m[32m [ 93%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-owner] [32mPASSED[0m[32m [ 95%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-gid] [32mPASSED[0m[32m [ 96%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-mode] [32mPASSED[0m[32m [ 97%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-fifo] [32mPASSED[0m[32m [ 98%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B04_shell_privileged_boundary_and_stage_only_ast [32mPASSED[0m[32m [100%][0m
+
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/fresh-run/junit.xml -
+[32m============================== [32m[1m80 passed[0m[32m in 0.21s[0m[32m ==============================[0m
