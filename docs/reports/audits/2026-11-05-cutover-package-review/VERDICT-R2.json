@@ -1,0 +1,124 @@
+{
+  "package_under_review": {
+    "branch": "codex/enhanced-cognee-cutover-package-20261105",
+    "commit": "18509ec4db7f0d1c874c839fe49c1580f39c173e",
+    "worktree": "cutover-package-worktree-20261105",
+    "worktree_clean_at_commit": true,
+    "prior_commit_reviewed_round1": "66d1744e6bdd891ff570cc06ab48be469ad77aba",
+    "remote_ref_matches": true
+  },
+  "review": {
+    "reviewer": "independent round-2 reviewer (fresh non-builder context), read-only live system",
+    "date_utc": "2026-11-05",
+    "checks_run": 45,
+    "offline_tests_repassed": 34,
+    "offline_tests_total": 34,
+    "verdict": "PASS"
+  },
+  "repair_verification": {
+    "D1_enterprise_auth_pin": "VERIFIED. Live staged file re-hashed this session: 78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e. All NINE Block B1 pins re-hashed against the live candidate bytes - 9/9 match (round 1: 8/9). The round-1 typo pin (85e9) appears nowhere in the package or in any preserved pre-package artifact.",
+    "D2_busctl_readbacks": "VERIFIED. All six LoadCredential readbacks (Blocks A, C, D1, F1, F2, G) replaced with 'busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential'; no '-p LoadCredential' remains (test-enforced). Command form executed live this session, unprivileged, exit 0, correct object-path escaping; shows the merged a(ss) triple (index.json, llm.json, api.json). systemctl show -p LoadCredential still prints '[unprintable]' on this host - the replacement rationale holds. Block A now captures busctl-loadcredential-before.txt with the correct three-pair expectation matching today's live value.",
+    "D3_block_E_rewrite": "VERIFIED. The out-of-namespace E1 one-shot ('LEDGER_INIT_OK' / 'TokenBudget()') is gone; Block E is root-side E2/E3/E4 only; ledger init deferred to the daemon at Block G. Code-level verification: staged src/memory_api.py lifespan eagerly constructs TokenBudget() when an llm route is loaded (fail-soft on BudgetUnavailable, but a failed init is detected by the G receipt's configured=true expectation and by E2); src/llm_budget.py _secure_path(create=True) creates a 0600 single-link file plus reservations schema, which is exactly what E2's _stat_checks+_schema_facts accept; E2's --owner-name enhanced-cognee-api resolves via NSS while the unit is active (guaranteed immediately after the G restart). /var/lib/private re-verified 0700 root:root. G re-sequencing (E2/E3/E4 after the enablement restart, E4 drop-in only after E2 passes) and the completion checklist are internally consistent; no stale procedural E1 references remain.",
+    "D4_seven_lines": "VERIFIED. units/40-cutover-candidate.conf re-read: 10 lines; the first SEVEN ([Service] through 'LoadCredential=index.json:...') are the V3-identical prefix; stripping the three StateDirectory lines reproduces sha256 40ee1d8b61322c49676666257531953ee7957db086269bbb25a0373ad4619651 exactly. New wording accurate.",
+    "D5_exit2_note": "VERIFIED. Probe re-read: exit 2 is the generic OSError/ValueError path (missing secret, malformed scope, transport failure, unparseable credential/response) printing error_kind (exception type name) and message; the broadened doc wording matches the code.",
+    "D6_timer_capture": "PARTIALLY VERIFIED - see defect 2. profile-backup and qualified-fleet-backup-v2 timers added to Blocks A and D5 and all named units exist live; but enhanced-cognee-qualified-fleet-backup.timer (v1, unit-file state disabled) also exists on this host and is still not captured, while the doc now claims coverage of 'every other enhanced-cognee-* timer on this host'.",
+    "D7_block_0": "VERIFIED. The Block 0 section is byte-identical across 66d1744e..18509ec4 (1490 bytes compared).",
+    "manifest_delivery_updates": "VERIFIED. MANIFEST.json 12/12 and DELIVERY.json 13/13 (incl. MANIFEST hash) re-verified against worktree bytes with zero mismatches; the six changed shipped files all re-pinned; junit.xml/output.txt/receipt.json internally consistent (34 tests, timestamps 15:50:30-37, commit 15:50:46)."
+  },
+  "defects": [
+    {
+      "id": 1,
+      "severity": "minor",
+      "where": "REPORT.md repair log + tests/unit/test_cutover_package_20261105.py comments (provenance narrative)",
+      "what": "The repair documentation asserts the enterprise_auth.py pin typo came from the owner's 2026-11-03 step-2 receipt ('the 2026-11-03 step-2 receipt had a one-character transcription error'; test comment: 'the 2026-11-03 owner step-2 receipt contained a one-character transcription error ... that the package had propagated'). The preserved receipt (security-first-cutover-worktree-20261101/.../owner-step2-receipt-20261103T205923Z/OWNER-SUPPLIED-STEP2.txt, re-read this session) contains exactly one 78cf82b8... hash - the CORRECT 85b9 form - and a repo-wide search finds the 85e9 typo in no preserved pre-package artifact, only in the package's own first commit and in the round-1 review documents that quoted it. The typo originated in the package's own transcription, not in the owner receipt. (This misattribution was introduced by the round-1 review's evidence narrative and repeated by the repairer.)",
+      "impact": "Documentation accuracy only. The operational repair is correct: every B1 pin was re-derived from live candidate bytes and verified 9/9 this session, and no execution step depends on the provenance story. The false claim names a preserved owner artifact as containing an error it does not contain, which matters for an audit-grade package and should be corrected in a docs-only follow-up."
+    },
+    {
+      "id": 2,
+      "severity": "minor",
+      "where": "CUTOVER-COMMANDS.md Blocks A and D5; REPORT.md section D",
+      "what": "The repaired no-other-restart capture claims to cover 'every other enhanced-cognee-* timer on this host - backup, profile-backup and qualified-fleet-backup-v2', but a fourth timer exists: enhanced-cognee-qualified-fleet-backup.timer (v1, unit-file state 'disabled', preset enabled). It remains outside the before/after comparison.",
+      "impact": "Negligible operationally (the v1 timer is disabled and nothing in the procedure touches it), but the 'every ... timer on this host' wording is now factually false. Round-1 defect 6 is thus repaired for the enabled timers only; the overclaim wording should be scoped to the three captured timers or the v1 timer added."
+    },
+    {
+      "id": 3,
+      "severity": "info",
+      "where": "busctl readback grep pattern ('| grep .LoadCredential')",
+      "what": "The pattern also matches the adjacent '.LoadCredentialEncrypted' property line (live value: empty array, a(ss) 0), so every captured receipt will contain two lines, not one.",
+      "impact": "Harmless - the encrypted variant shows zero pairs and cannot be confused with the expected pair sets ('exactly three pairs' / 'exactly two pairs' remain unambiguous). Observation only; no change required."
+    },
+    {
+      "id": 4,
+      "severity": "info",
+      "where": "Blocks A/D5 comparison property choice (pre-existing design, unchanged by the repair)",
+      "what": "The before/after comparison uses the timers' own ActiveEnterTimestamp/NRestarts. A timer that merely FIRES during the cutover window does not change either (the triggered oneshot service runs instead), so the check proves the timers were not restarted, not that no backup job executed during the window.",
+      "impact": "Same residual blind spot already noted at round 1 (then defect 6, info). The captured services' activity is not part of any package step; acceptable for the package's threat model."
+    }
+  ],
+  "verified_sound": [
+    "All seven claimed repairs verified against the actual commit bytes and, where safe, the live read-only system (see repair_verification); D1-D5, D7 fully; D6 partially (defect 2)",
+    "Repair commit scope is exactly the 8 claimed files; no other file changed; all 8 pure ASCII",
+    "Round-1 blocking defect 1 resolved: B1 first gate now passes against live bytes (9/9 re-hashed this session)",
+    "Round-1 major defect 2 resolved: every LoadCredential proof now uses a command verified working on this host; Block A before-capture extended accordingly",
+    "Round-1 major defect 3 resolved: the deterministic BudgetUnavailable refusal path is gone; ledger lifecycle is now daemon-side, in-namespace, and each gate that depends on it has a working proof (E2 root readback resolves the dynamic owner via NSS while active)",
+    "LLM withholding chain unchanged and re-confirmed: 40- drop-in reset+two-adds re-read; live merged value is the expected three pairs; 50-llm-enable.conf pin equals today's live 30-llm.conf bytes (12f118dd)",
+    "Block A pins: 3 of 4 now verified against TODAY'S live world-readable bytes (unit af979af0..., 10-protected-stores 6ae6c5eb..., 30-llm 12f118dd...); 20-launch-runtime.conf (0600 root-only) remains anchored to the preserved step-2 receipt, which carries all four pins",
+    "No live changes by builder or repairer: package worktree clean at 18509ec4 (before and after the test re-run); drop-in directory exactly 10/20/30 with pre-package mtimes (2026-10-20/24/31); no 40-/50- drop-ins anywhere; no enhanced-cognee-backup.service.d; NeedDaemonReload=no; /opt/enhanced-cognee-memory/cutover mtime still 2026-11-02; remote branch ref equals 18509ec4",
+    "Offline suite re-run from a clean environment (env -i, venv python, no cache providers): 34/34 passed in 6.77s, exit 0, worktree still clean; the four new doc-consistency tests are meaningful and offline-only",
+    "Plugin/MCP contract re-confirmed: 44/44 profile plugin.yaml byte-identical (single sha256), client.py allowlist only /v1/memories* + /health/ready with Bearer, zero enhanced_cognee.json overrides anywhere under ~/.hermes",
+    "Old-runtime facts re-confirmed for B3/F1/G: old daemon loads llm.json only from CREDENTIALS_DIRECTORY; old API serves GET /v1/memories/summarization/status; backup unit User=root with no drop-ins and the ExecStart line E4 re-adds"
+  ],
+  "could_not_verify": [
+    "20-launch-runtime.conf bytes (0600 root-only) - pin bc687ead... anchored to the preserved 2026-11-03 step-2 receipt, consistent with the three live-verified siblings",
+    "Contents of root-only paths (/opt/enhanced-cognee-memory/cutover, credential files) - never read by policy; hashes/metadata from preserved evidence only",
+    "The real TENANT/PROJECT scope values for B3/D4, and whether the owner's private age identity exists for E3 (the package itself gates G on both)",
+    "Post-install runtime states (Block C/D receipts, post-cutover two-pair LoadCredential, Block G in-namespace ledger creation) - these exist only at owner execution time; verified at unit-semantics and source-code level (staged candidate bytes hash-pinned to the exact files whose code paths were read)"
+  ],
+  "case_list": [
+    "R2-01 worktree state: clean at 18509ec4 on codex/enhanced-cognee-cutover-package-20261105",
+    "R2-02 package inventory: 14 files (12 manifest-listed + MANIFEST + DELIVERY); repair commit touches exactly 8 files on base 41e4de7a lineage",
+    "R2-03 B1 live re-hash: 9/9 pins match staged candidate bytes incl. corrected enterprise_auth.py",
+    "R2-04 round-1 typo pin (85e9) absent from the package and from all preserved evidence",
+    "R2-05 MANIFEST.json 12/12 hashes vs worktree bytes",
+    "R2-06 DELIVERY.json 13/13 incl. MANIFEST hash (+5 primary)",
+    "R2-07 V3 derivation: strip 3 StateDirectory lines -> 40ee1d8b... exact",
+    "R2-08 D4 wording: first seven lines verified against actual conf bytes",
+    "R2-09 D7: Block 0 byte-identical across 66d1744e..18509ec4 (1490 bytes)",
+    "R2-10 busctl introspect form executed live unprivileged: exit 0, correct escaping, merged a(ss) triple",
+    "R2-11 systemctl show -p LoadCredential still '[unprintable]' (systemd 255) - D2 rationale holds",
+    "R2-12 grep pattern analysis: matches .LoadCredential and empty .LoadCredentialEncrypted (defect 3, harmless)",
+    "R2-13 six busctl readbacks present (A, C, D1, F1, F2, G); zero '-p LoadCredential' remains",
+    "R2-14 Block A busctl expected receipt (3 pairs incl. llm.json) equals today's live value",
+    "R2-15 Block C no-llm proof: 40- conf reset+two-adds re-read (lines 5-7)",
+    "R2-16 Block E contains no out-of-namespace ledger init (LEDGER_INIT_OK/TokenBudget( absent; E2/E3/E4 root-side only)",
+    "R2-17 daemon-side init real: memory_api lifespan eagerly constructs TokenBudget() when llm_route loaded",
+    "R2-18 init failure detectable: fail-soft BudgetUnavailable -> configured=true receipt mismatch or E2 failure -> owner stops",
+    "R2-19 E2 --owner-name resolves NSS while active; _stat_checks/_schema_facts accept exactly what TokenBudget creates (0600, nlink 1, reservations+budget_scope_day)",
+    "R2-20 /var/lib/private 0700 root:root re-verified; namespace/symlink analysis re-confirmed",
+    "R2-21 G re-sequencing consistent (E2/E3/E4 after enablement restart; checklist updated); no stale procedural E1 references",
+    "R2-22 D5 wording vs probe code: exit 2 generic OSError/ValueError path, error_kind type name",
+    "R2-23 D6 timers: named timers exist live; v1 qualified-fleet-backup.timer missed (defect 2)",
+    "R2-24 offline suite clean-env re-run: 34/34 passed, exit 0; worktree clean after",
+    "R2-25 four new doc-consistency tests reviewed (meaningful, offline-only, invented fixtures)",
+    "R2-26 all 8 changed files pure ASCII",
+    "R2-27 drop-in dir exactly 10/20/30 with pre-package mtimes; NeedDaemonReload=no",
+    "R2-28 no 40-/50- drop-ins; no enhanced-cognee-backup.service.d",
+    "R2-29 /opt/enhanced-cognee-memory/cutover mtime 2026-11-02 (pre-package)",
+    "R2-30 dynamic account: no /etc/passwd entry; getent resolves while active (uid 63764); DynamicUser=yes; active/running",
+    "R2-31 Block A pins: 3/4 vs today's live world-readable bytes (unit, 10-, 30-); 20- evidence-anchored",
+    "R2-32 30-llm.conf live hash == 50-llm-enable.conf pin (12f118dd)",
+    "R2-33 backup unit live: User=root, DropInPaths empty, ExecStart matches E4 re-add pattern",
+    "R2-34 old daemon loads llm.json only from CREDENTIALS_DIRECTORY",
+    "R2-35 old API serves GET /v1/memories/summarization/status",
+    "R2-36 enterprise_auth claim mapping (subject/roles/tenant) present in staged bytes",
+    "R2-37 client.py allowlist /v1/memories* + /health/ready with Bearer header",
+    "R2-38 plugin.yaml uniformity: 44/44 profiles, single sha256",
+    "R2-39 zero enhanced_cognee.json overrides under ~/.hermes",
+    "R2-40 B2 block verbatim-identical to NEXT-READONLY-SERVICE-USER-CHECK.md",
+    "R2-41 provenance: step-2 receipt contains the CORRECT 85b9 hash only; typo absent from preserved evidence (defect 1)",
+    "R2-42 remote ref: package branch pushed, ls-remote == 18509ec4; commit metadata sane (codex, 2026-11-05T15:50:46Z)",
+    "R2-43 REPORT.md repair log cross-checked against actual diffs (items 2-7 accurate; item 1 provenance misattributed)",
+    "R2-44 junit.xml/output.txt/receipt.json internal consistency (34 tests, coherent timestamps/workdir)",
+    "R2-45 F2 full-restore semantics: dropping the 40- drop-in returns the merged set to today's live three-pair value"
+  ]
+}
