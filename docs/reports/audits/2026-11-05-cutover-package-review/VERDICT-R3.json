@@ -1,0 +1,41 @@
+{
+  "package_under_review": {
+    "branch": "codex/enhanced-cognee-cutover-package-20261105",
+    "commit": "c9d8a0da2632bfafe49694a5baa56890c5e9df93",
+    "prior_commit_reviewed_round2": "18509ec4db7f0d1c874c839fe49c1580f39c173e",
+    "worktree": "cutover-package-worktree-20261105",
+    "worktree_clean_at_commit": true,
+    "remote_ref_matches": true
+  },
+  "review": {
+    "reviewer": "independent round-3 delta reviewer (fresh non-builder context), read-only, offline only",
+    "date_utc": "2026-11-05",
+    "verdict": "PASS",
+    "offline_tests_repassed": 34,
+    "offline_tests_total": 34
+  },
+  "repair_verification": {
+    "scope": "EXACT. 18509ec4..c9d8a0da touches exactly CUTOVER-COMMANDS.md, MANIFEST.json, DELIVERY.json (3 files, documentation-only, pure ASCII); no unit bytes, code, or test changes; worktree clean at c9d8a0da; package branch remote ref equals c9d8a0da.",
+    "L1_install_dir": "VERIFIED. Block G E4 script now contains 'sudo /usr/bin/install -d -o root -g root -m 0755 /etc/systemd/system/enhanced-cognee-backup.service.d' - exact parent path of the 40-ledger.conf dest, root:root, 0755 (standard systemd drop-in dir mode), placed after the REFUSE guard and before the file install; prose documents the live 'No such file or directory' finding.",
+    "L2_e4_relocation": "VERIFIED. E4 procedure fully removed from Block E (replaced by a relocation note with live-run rationale); complete procedure now inside Block G after the enablement restart and after E2/E3, with an explicit 'WARNING - ORDERING' paragraph: pre-G installation makes EVERY scheduled enhanced-cognee-backup.service run fail (observed live 2026-11-05). G receipt text and completion checklist updated ('E4 drop-in installed IN BLOCK G ... never before G'); the old ineffective trailing ordering note removed. E2 (root readback) -> E3 (backup+restore proof) -> E4 (drop-in install + oneshot) -> final exercise is coherent; the Block E LEDGER INITIALIZATION note and Block G gate 2 cross-reference still resolve.",
+    "manifest_delivery_hashes": "VERIFIED. MANIFEST 12/12 vs actual bytes (doc re-pinned to b114353d...); DELIVERY 13/13 artifact incl. MANIFEST self-hash 784bc824... plus 5/5 primary; E4 unit pin 3eaa5188... equals unchanged tracked unit bytes; old doc hash 77d3677... appears nowhere in the tree.",
+    "breakage_hunt": "CLEAN. No test pins the doc hash; all four doc-consistency tests unaffected by the moved text (no busctl readback or timer name inside the E4 block) and re-verified green; Block F unchanged with no E4 reference; all nine E4 mentions in the doc consistent with the relocation. Two minor non-blocking observations recorded as defects 1-2.",
+    "offline_tests_rerun": "34 passed, 0 failed, 0 errors, 0 skipped, exit 0 (venv python 3.12.13, pytest 9.1.1, junit redirected outside the reviewed worktree); worktree still clean after the run."
+  },
+  "defects": [
+    {
+      "id": 1,
+      "severity": "minor",
+      "where": "REPORT.md 'Review repairs applied 2026-11-05' log",
+      "what": "The log was not extended for the c9d8a0da repair: item 3 still reads 'Block E ... root-side E2/E3/E4 verification only' (true of the 18509ec4 revision it describes, but a reader of REPORT.md alone would not learn E4 moved into Block G).",
+      "impact": "Documentation completeness only. CUTOVER-COMMANDS.md is the authoritative procedure and is self-consistent; no executable step, gate, or receipt is affected. Docs-only follow-up recommended."
+    },
+    {
+      "id": 2,
+      "severity": "minor",
+      "where": "offline-tests/receipt.json, junit.xml, output.txt",
+      "what": "The recorded offline-test artifacts still timestamp the 15:50:37Z run against the 18509ec4 tree; the 17:27:44Z repair commit did not refresh them.",
+      "impact": "Stale run metadata only. The test file is unchanged and this re-review independently re-ran the suite at c9d8a0da with identical results (34/34, exit 0), so the recorded pass remains accurate for the code under test."
+    }
+  ]
+}
