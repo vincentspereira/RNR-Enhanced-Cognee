@@ -393,10 +393,12 @@ unintended restart - STOP and investigate before continuing.
 
 ## Block E - ledger verification + encrypted backup gate (root-side; no api restart)
 
-Purpose: verify the persistent budget ledger, extend the EXISTING encrypted
-backup service to cover it, plus prove restore. These are root-side
-verification steps over what the daemon built; they are acceptance steps
-for Block G enablement, not gates for the switch itself.
+Purpose: verify the persistent budget ledger and prove encrypted backup +
+restore. These are root-side verification steps over what the daemon built;
+they are acceptance steps for Block G enablement, not gates for the switch
+itself. E4 (the backup-service drop-in install) is NOT run from this block
+any more: it is specified inside Block G, after the enablement restart -
+see the E4 relocation note at the end of this block.
 
 LEDGER INITIALIZATION (revised after independent review): there is
 deliberately NO host-side initialization step. With DynamicUser=yes systemd
@@ -439,46 +441,17 @@ Expected: JSON overall=pass, integrity ok, rows 0, ciphertext_sha256 present.
 If no private age identity is available to the owner, this gate CANNOT pass:
 leave analysis withheld (skip G) and report - do not fabricate verification.
 
-E4 - align the EXISTING backup service (exact owner edit). The current
-enhanced-cognee-backup.service is Type=oneshot; a drop-in resets ExecStart,
-re-adds the ORIGINAL database backup line unchanged, and appends one ledger
-backup step. Install the tracked file
-docs/reports/audits/2026-11-05-cutover-package/units/enhanced-cognee-backup-40-ledger.conf
-(sha256 3eaa518890356207b33cc3bb5742772b39e6bc2b9eb6bcfdb6888714807f9e22):
-
-  [Service]
-  ExecStart=
-  ExecStart=/opt/enhanced-cognee-memory/runtime/bin/python -m src.memory_daemon backup
-  ExecStart=/usr/bin/python3 -I -S -B /opt/enhanced-cognee-memory/cutover/ledger_tools_20261105.py backup --ledger /var/lib/enhanced-cognee-llm-budget/tokens.sqlite3 --output-dir /var/backups/enhanced-cognee
-
-```bash
-(
-set -euo pipefail
-repo="/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/cutover-package-worktree-20261105"
-expected="3eaa518890356207b33cc3bb5742772b39e6bc2b9eb6bcfdb6888714807f9e22"
-src="$repo/docs/reports/audits/2026-11-05-cutover-package/units/enhanced-cognee-backup-40-ledger.conf"
-[ "$(sha256sum "$src" | cut -d' ' -f1)" = "$expected" ]
-dest="/etc/systemd/system/enhanced-cognee-backup.service.d/40-ledger.conf"
-[ ! -e "$dest" ] || { echo "REFUSE: $dest already exists; stop"; exit 1; }
-sudo /usr/bin/install -o root -g root -m 0644 "$src" "$dest"
-[ "$(sudo sha256sum "$dest" | cut -d' ' -f1)" = "$expected" ]
-sudo systemctl daemon-reload
-[ "$(systemctl show enhanced-cognee-backup.service -p NeedDaemonReload --value)" = "no" ]
-sudo systemctl start enhanced-cognee-backup.service
-systemctl status enhanced-cognee-backup.service --no-pager | head -12
-sudo ls -la /var/backups/enhanced-cognee | tail -8
-)
-```
-
-Expected: oneshot run exits 0 (both ExecStart steps), fresh encrypted DB
-backup and a new ledger-*.sqlite3.age (+ .json manifest) appear. This runs
-the existing daily-backup unit once out of schedule - it only ADDS encrypted
-artifacts; it deletes nothing. On failure: remove the drop-in
-(sudo rm /etc/systemd/system/enhanced-cognee-backup.service.d/40-ledger.conf
-&& sudo systemctl daemon-reload), capture journalctl -u enhanced-cognee-backup.service,
-and keep analysis withheld. Install this drop-in only AFTER the Block G
-restart has initialized the ledger in-namespace and E2 has passed -
-otherwise the ledger step fails the whole backup unit by design.
+E4 - align the EXISTING backup service: RELOCATED INTO BLOCK G (live-run
+finding, 2026-11-05). This step was originally specified here and the owner
+ran it from this position BEFORE Block G during the live cutover; that made
+EVERY scheduled run of enhanced-cognee-backup.service fail, because the
+drop-in appends a ledger-backup ExecStart step that is a hard dependency of
+the Type=oneshot unit, and the ledger does not exist until the Block G
+enablement restart initializes it in-namespace. The complete E4 procedure
+(unit bytes, install commands including drop-in-directory creation, and the
+expected receipt) now lives inside Block G, to be run only after that
+restart and after E2/E3 have passed. Do not install the drop-in at any
+earlier point - installing it before G fails every scheduled backup.
 
 ## Block F - rollback (emergency only)
 
@@ -603,12 +576,70 @@ Expected: active; the busctl LoadCredential readback lists api.json,
 index.json AND llm.json; the usage probe reports configured=true with
 used_today=0 for the clean day (exit 0, any_charged_today=false). This
 restart has now initialized the ledger in-namespace: complete Block E2 and
-E3 (and install the E4 backup drop-in) at this point, before the final
-exercise. Then exercise one real summarize call from a normal client and
-confirm /v1/memories/summarization/status reports the expected cap/usage.
+E3, then run E4 below, before the final exercise. Then exercise one real
+summarize call from a normal client and confirm
+/v1/memories/summarization/status reports the expected cap/usage.
 ONE restart, api unit only. To reverse enablement: remove the 50- drop-in,
 daemon-reload, one restart - analysis returns to 422/configured=false with
 the ledger rows retained.
+
+E4 (runs HERE, inside Block G - moved from Block E after a live-run
+finding) - align the EXISTING backup service (exact owner edit).
+
+WARNING - ORDERING (live-run finding, 2026-11-05): do NOT install this
+drop-in before the Block G restart above. The drop-in appends a
+ledger-backup ExecStart step that is a hard dependency of the Type=oneshot
+enhanced-cognee-backup.service, and the ledger only comes into existence
+when the enablement restart initializes it in-namespace. Installed before
+G, EVERY scheduled run of the backup service fails (observed live on
+2026-11-05: the owner installed it pre-G, every backup run failed, and the
+drop-in had to be removed again before the scheduled backups returned to
+status=0/SUCCESS). Run E4 only after the restart receipt above is green
+AND E2/E3 have passed.
+
+The current enhanced-cognee-backup.service is Type=oneshot; a drop-in
+resets ExecStart, re-adds the ORIGINAL database backup line unchanged, and
+appends one ledger backup step. Install the tracked file
+docs/reports/audits/2026-11-05-cutover-package/units/enhanced-cognee-backup-40-ledger.conf
+(sha256 3eaa518890356207b33cc3bb5742772b39e6bc2b9eb6bcfdb6888714807f9e22):
+
+  [Service]
+  ExecStart=
+  ExecStart=/opt/enhanced-cognee-memory/runtime/bin/python -m src.memory_daemon backup
+  ExecStart=/usr/bin/python3 -I -S -B /opt/enhanced-cognee-memory/cutover/ledger_tools_20261105.py backup --ledger /var/lib/enhanced-cognee-llm-budget/tokens.sqlite3 --output-dir /var/backups/enhanced-cognee
+
+The drop-in directory /etc/systemd/system/enhanced-cognee-backup.service.d
+does not exist on this host (live-run finding, 2026-11-05: the install step
+failed with "No such file or directory" until the directory was created),
+so the block creates it first:
+
+```bash
+(
+set -euo pipefail
+repo="/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/cutover-package-worktree-20261105"
+expected="3eaa518890356207b33cc3bb5742772b39e6bc2b9eb6bcfdb6888714807f9e22"
+src="$repo/docs/reports/audits/2026-11-05-cutover-package/units/enhanced-cognee-backup-40-ledger.conf"
+[ "$(sha256sum "$src" | cut -d' ' -f1)" = "$expected" ]
+dest="/etc/systemd/system/enhanced-cognee-backup.service.d/40-ledger.conf"
+[ ! -e "$dest" ] || { echo "REFUSE: $dest already exists; stop"; exit 1; }
+sudo /usr/bin/install -d -o root -g root -m 0755 /etc/systemd/system/enhanced-cognee-backup.service.d
+sudo /usr/bin/install -o root -g root -m 0644 "$src" "$dest"
+[ "$(sudo sha256sum "$dest" | cut -d' ' -f1)" = "$expected" ]
+sudo systemctl daemon-reload
+[ "$(systemctl show enhanced-cognee-backup.service -p NeedDaemonReload --value)" = "no" ]
+sudo systemctl start enhanced-cognee-backup.service
+systemctl status enhanced-cognee-backup.service --no-pager | head -12
+sudo ls -la /var/backups/enhanced-cognee | tail -8
+)
+```
+
+Expected: oneshot run exits 0 (both ExecStart steps), fresh encrypted DB
+backup and a new ledger-*.sqlite3.age (+ .json manifest) appear. This runs
+the existing daily-backup unit once out of schedule - it only ADDS encrypted
+artifacts; it deletes nothing. On failure: remove the drop-in
+(sudo rm /etc/systemd/system/enhanced-cognee-backup.service.d/40-ledger.conf
+&& sudo systemctl daemon-reload), capture journalctl -u enhanced-cognee-backup.service,
+and keep analysis withheld.
 
 ## Completion checklist
 
@@ -618,7 +649,7 @@ the ledger rows retained.
 - [ ] Block C installed drop-in hash matched; ONE restart; merged properties matched
 - [ ] Block D1-D5 all matched (incl. plugin-path round trip, 422 withholding, no other unit restarted)
 - [ ] Cutover complete - ordinary memory on the audited candidate, analysis withheld (ledger intentionally not yet initialized; the empty private state dir is not ledger proof)
-- [ ] (Later, only if approved) Block G gates checked, enablement restart run - ledger initialized in-namespace by the daemon; Block E2/E3 green; E4 drop-in installed and oneshot run produced both backups; enablement receipt filed
+- [ ] (Later, only if approved) Block G gates checked, enablement restart run - ledger initialized in-namespace by the daemon; Block E2/E3 green; E4 drop-in installed IN BLOCK G (only after the enablement restart and E2/E3 - never before G) and oneshot run produced both backups; enablement receipt filed
 
 Nothing in this package authorizes touching the Hermes gateway, profiles,
 the four store units, the fleet, or any credential file's CONTENT.
