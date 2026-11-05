@@ -1,0 +1,43 @@
+{
+  "activated": false,
+  "artifact_sha256": {
+    "docs/reports/audits/2026-11-05-cutover-package/CUTOVER-COMMANDS.md": "197c6cc1ba76f9ec11d5af28731e6db3f2eef06b0a6b6e89863aa5d27b252eb7",
+    "docs/reports/audits/2026-11-05-cutover-package/MANIFEST.json": "d4d30a70ff8a2979690bf5e4b065fd95955d7746e0e86ab788b935c9c2d2cf2b",
+    "docs/reports/audits/2026-11-05-cutover-package/REPORT.md": "c8629b535de1ade74b57ca63a65c0822fd90df3b4472c4ae0775bb93910e5a51",
+    "docs/reports/audits/2026-11-05-cutover-package/offline-tests/junit.xml": "82a04fff7f3bec0c05c38230b90d7443b333931e23d224ca047fe918677d4187",
+    "docs/reports/audits/2026-11-05-cutover-package/offline-tests/output.txt": "0d9255570615be7bbe1a7f481047e75d5278d8e368097539c0ca85f45bda06ec",
+    "docs/reports/audits/2026-11-05-cutover-package/offline-tests/receipt.json": "7db02be9de62417124aa68cd9bd0d650a5469af1d03a69338ffab5880375d128",
+    "docs/reports/audits/2026-11-05-cutover-package/units/40-cutover-candidate.conf": "f85e6fc63c58aa6275549fb36e4e1bc6ab31808d0af11f5498feac8b31ffd4c7",
+    "docs/reports/audits/2026-11-05-cutover-package/units/40-llm-withhold.conf": "5495876073e6ff1056e22f9c4597f718fa459e72119f031a200ccb39f511e3d0",
+    "docs/reports/audits/2026-11-05-cutover-package/units/50-llm-enable.conf": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33",
+    "docs/reports/audits/2026-11-05-cutover-package/units/enhanced-cognee-backup-40-ledger.conf": "3eaa518890356207b33cc3bb5742772b39e6bc2b9eb6bcfdb6888714807f9e22",
+    "integrations/hermes/deployment/cutover_probe_20261105.py": "8f523042abffee9192cc230a51b534cc9e988dad2814f7a156465df3d7a66514",
+    "integrations/hermes/deployment/ledger_tools_20261105.py": "076a2ff699b67117aace6c4ffe2f84280c13ed95e4810146b0929d4d409b3ff7",
+    "tests/unit/test_cutover_package_20261105.py": "15ec3af326d69e5d4bfe8dd944aa182d856d05710a94141d408cc4708684d202"
+  },
+  "base_commit": "41e4de7a5db99970a7629ef3f274138eef3031e8",
+  "branch": "codex/enhanced-cognee-cutover-package-20261105",
+  "credentials_read_or_printed": 0,
+  "files_built": 14,
+  "ledger_created": false,
+  "live_changes_made": false,
+  "mcp_contract_confirmed": true,
+  "offline_tests": {
+    "errors": 0,
+    "failed": 0,
+    "passed": 30,
+    "skipped": 0,
+    "total": 30
+  },
+  "primary_sha256": {
+    "docs/reports/audits/2026-11-05-cutover-package/CUTOVER-COMMANDS.md": "197c6cc1ba76f9ec11d5af28731e6db3f2eef06b0a6b6e89863aa5d27b252eb7",
+    "docs/reports/audits/2026-11-05-cutover-package/units/40-cutover-candidate.conf": "f85e6fc63c58aa6275549fb36e4e1bc6ab31808d0af11f5498feac8b31ffd4c7",
+    "integrations/hermes/deployment/cutover_probe_20261105.py": "8f523042abffee9192cc230a51b534cc9e988dad2814f7a156465df3d7a66514",
+    "integrations/hermes/deployment/ledger_tools_20261105.py": "076a2ff699b67117aace6c4ffe2f84280c13ed95e4810146b0929d4d409b3ff7",
+    "tests/unit/test_cutover_package_20261105.py": "15ec3af326d69e5d4bfe8dd944aa182d856d05710a94141d408cc4708684d202"
+  },
+  "privileged_execution_performed": false,
+  "services_restarted": 0,
+  "source_lineage_commit": "c14f595ccd53f432b455b16f116765d9aa6c9a14",
+  "status": "prepared-awaiting-independent-review"
+}
