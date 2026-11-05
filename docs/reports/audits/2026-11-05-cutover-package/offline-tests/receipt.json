@@ -1,13 +1,13 @@
 {
+  "collected_total": 34,
   "command": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python -B -m pytest --confcutdir=tests/unit -p no:cacheprovider --color=no tests/unit/test_cutover_package_20261105.py -q --junitxml=docs/reports/audits/2026-11-05-cutover-package/offline-tests/junit.xml",
-  "workdir": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/cutover-package-worktree-20261105",
-  "executed_utc": "2026-11-05T15:17:53.918923+00:00",
-  "exit_code": 0,
-  "collected_total": 30,
-  "passed": 30,
-  "failed": 0,
   "errors": 0,
-  "skipped": 0,
+  "executed_utc": "2026-11-05T15:50:37.394028+00:00",
+  "exit_code": 0,
+  "failed": 0,
   "fixtures": "invented only (stub HTTP API on 127.0.0.1, fake api.json/backup.json credentials, temp sqlite ledgers, stub age CLI); no live service, root, real credential or network beyond loopback",
-  "summary_line": "============================== 30 passed in 6.04s =============================="
+  "passed": 34,
+  "skipped": 0,
+  "summary_line": "============================== 34 passed in 7.04s ==============================",
+  "workdir": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/cutover-package-worktree-20261105"
 }

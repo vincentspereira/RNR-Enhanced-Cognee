@@ -561,3 +561,63 @@ def test_backup_dropin_preserves_original_and_adds_ledger_step():
         "ExecStart=/usr/bin/python3 -I -S -B /opt/enhanced-cognee-memory/cutover/"
         "ledger_tools_20261105.py backup --ledger /var/lib/enhanced-cognee-llm-budget/"
         "tokens.sqlite3 --output-dir /var/backups/enhanced-cognee")
+
+
+# ---------------------------------------------------------------------------
+# Cutover document consistency (guards the 2026-11-05 review repairs)
+# ---------------------------------------------------------------------------
+
+CUTOVER_DOC = ROOT / "docs/reports/audits/2026-11-05-cutover-package/CUTOVER-COMMANDS.md"
+
+# Re-derived from the live staged candidate bytes on 2026-11-05 (review
+# defect 1: the 2026-11-03 owner step-2 receipt contained a one-character
+# transcription error at hex position 21 that the package had propagated).
+ENTERPRISE_AUTH_PIN = "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e"
+STEP2_RECEIPT_TYPO_PIN = "78cf82b8d052c74438dc85e9b24393128e837dbb8bfee78eda8146dbef66ae1e"
+
+# The merged LoadCredential readback verified working during independent
+# review (systemd 255 systemctl show prints "[unprintable]" for it).
+BUSCTL_READBACK = ("sudo busctl introspect org.freedesktop.systemd1 "
+                   "/org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice"
+                   " | grep .LoadCredential")
+
+
+def read_cutover_doc():
+    return CUTOVER_DOC.read_text(encoding="ascii")
+
+
+def test_doc_pins_live_candidate_enterprise_auth_hash():
+    text = read_cutover_doc()
+    assert ENTERPRISE_AUTH_PIN in text
+    assert STEP2_RECEIPT_TYPO_PIN not in text
+
+
+def test_doc_loadcredential_readbacks_use_busctl_only():
+    text = read_cutover_doc()
+    # systemctl show -p LoadCredential is unusable on this host (systemd 255
+    # prints [unprintable]); every readback must use the busctl form instead,
+    # in Blocks A, C, D1, F1, F2 and G.
+    assert "-p LoadCredential" not in text.replace(
+        'systemctl show -p LoadCredential prints "[unprintable]"', "")
+    assert text.count(BUSCTL_READBACK) == 6
+    assert "[unprintable]" in text
+
+
+def test_doc_defers_ledger_init_into_service_namespace():
+    text = read_cutover_doc()
+    # The out-of-namespace one-shot init (old Block E1) must be gone...
+    assert "LEDGER_INIT_OK" not in text
+    assert "TokenBudget()" not in text
+    # ...replaced by daemon-side initialization at Block G enablement, with
+    # the honest statement that the empty private directory proves nothing.
+    assert "INSIDE the service mount namespace" in text
+    assert "NOT ledger proof" in text
+
+
+def test_doc_captures_every_enhanced_cognee_timer_before_and_after():
+    text = read_cutover_doc()
+    for timer in ("enhanced-cognee-backup.timer",
+                  "enhanced-cognee-profile-backup.timer",
+                  "enhanced-cognee-qualified-fleet-backup-v2.timer"):
+        # Once in the Block A before-capture, once in the Block D5 comparison.
+        assert text.count(timer) == 2

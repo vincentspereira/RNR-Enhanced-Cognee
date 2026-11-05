@@ -9,7 +9,8 @@ Source lineage: branch codex/enhanced-cognee-cutover-package-20261105, one
 commit on top of accepted backend-stage commit 41e4de7a5db99970a7629ef3f274138eef3031e8
 (source lineage c14f595ccd53f432b455b16f116765d9aa6c9a14). Candidate under
 switch: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101
-(byte-verified at staging; all eight module hashes re-pinned in Block B).
+(byte-verified at staging; every Block B pin below was re-derived from the
+live candidate file bytes on 2026-11-05, not copied from earlier receipts).
 
 Worktree holding the reviewed files (read-only source for installs):
   repo="/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/cutover-package-worktree-20261105"
@@ -106,12 +107,16 @@ for f in /etc/systemd/system/enhanced-cognee-api.service \
   sudo /usr/bin/install -o root -g root -m 0600 "$f" "$ev/$(basename "$f")"
 done
 systemctl show enhanced-cognee-api.service -p Id -p ActiveState -p SubState -p MainPID \
-  -p ExecStart -p WorkingDirectory -p StateDirectory -p StateDirectoryMode -p LoadCredential \
+  -p ExecStart -p WorkingDirectory -p StateDirectory -p StateDirectoryMode \
   -p DynamicUser -p User -p Group -p UMask -p ProtectSystem -p DropInPaths -p NeedDaemonReload \
   | sudo /usr/bin/tee "$ev/systemctl-api-before.txt" >/dev/null
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential \
+  | sudo /usr/bin/tee "$ev/busctl-loadcredential-before.txt" >/dev/null
 systemctl show enhanced-cognee-postgres.service enhanced-cognee-qdrant.service \
   enhanced-cognee-graph.service enhanced-cognee-cache.service enhanced-cognee-index.service \
-  enhanced-cognee-backup.timer -p Id -p ActiveState -p ActiveEnterTimestamp -p NRestarts \
+  enhanced-cognee-backup.timer enhanced-cognee-profile-backup.timer \
+  enhanced-cognee-qualified-fleet-backup-v2.timer \
+  -p Id -p ActiveState -p ActiveEnterTimestamp -p NRestarts \
   | sudo /usr/bin/tee "$ev/systemctl-related-units-before.txt" >/dev/null
 sudo /usr/bin/bash -c "cd '$ev' && sha256sum enhanced-cognee-api.service 10-protected-stores.conf 20-launch-runtime.conf 30-llm.conf | tee SHA256SUMS.txt"
 sudo /usr/bin/bash -c "stat -c '%n %s bytes %U:%G %a' '$ev'/*"
@@ -128,6 +133,11 @@ the owner's verified 2026-11-03 V3 plan readback):
   12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33  30-llm.conf
 
 plus EVIDENCE_DIR=/opt/enhanced-cognee-memory/cutover/rollback-evidence-<stamp>.
+busctl-loadcredential-before.txt must show exactly three pairs - api.json,
+index.json AND llm.json - the pre-switch credential set (llm.json still
+loaded by the 30-llm.conf drop-in). The busctl introspection form is used
+because systemctl show -p LoadCredential prints "[unprintable]" on this
+host's systemd 255 regardless of content and proves nothing.
 On mismatch of any hash: the live unit drifted since 2026-11-03 - STOP and
 re-assess; the captured evidence stays as the new baseline, do not delete it.
 Do not cat 20-launch-runtime.conf (or any captured file) to the terminal;
@@ -162,7 +172,7 @@ Expected receipt (any mismatch = STOP):
   c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20  .../src/memory_daemon.py
   9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f  .../src/memory_library.py
   be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3  .../src/memory_queries.py
-  78cf82b8d052c74438dc85e9b24393128e837dbb8bfee78eda8146dbef66ae1e  .../src/security/enterprise_auth.py
+  78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e  .../src/security/enterprise_auth.py
   1e4461092175d186c4bcdb19ee2849a45d6e4d8d1f6a871e45f63418d52a4e35  .../runtime/bin/python
 
 ### B2 - service-user import re-check (verbatim accepted check)
@@ -220,8 +230,12 @@ sudo /usr/bin/python3 -I -S -B /opt/enhanced-cognee-memory/cutover/cutover_probe
 ```
 
 Expected receipt: JSON with per-scope configured/used_today and the flags
-any_charged_today / any_unknown_scope. Exit code 0. If exit code is 2 the
-api.json has no ENHANCED_JWT_SECRET (unexpected) - STOP and report.
+any_charged_today / any_unknown_scope. Exit code 0. Exit code 2 is the
+probe's generic configuration/transport error, not a single diagnosis: the
+api.json may have no ENHANCED_JWT_SECRET, the --scope argument may be
+malformed, or the credential/response could not be read or parsed (API
+down, malformed JSON). Read the printed error_kind/message (a name only,
+never a secret value); any exit 2 is unexpected here - STOP and report.
 
 HONEST-ABORT RULE (exact): the switch in Block C is NEVER aborted by usage
 findings - ordinary memory service is independent of the optional route, and
@@ -259,7 +273,7 @@ docs/reports/audits/2026-11-05-cutover-package/units/40-cutover-candidate.conf
   StateDirectory=enhanced-cognee-llm-budget
   StateDirectoryMode=0700
 
-Design notes for reviewers: lines 1-6 are byte-identical to the
+Design notes for reviewers: the first seven lines are byte-identical to the
 independently reviewed V3 proposal (dropin_sha256
 40ee1d8b61322c49676666257531953ee7957db086269bbb25a0373ad4619651 in the
 owner's 2026-11-03 step-2 plan receipt; removing the three StateDirectory
@@ -277,7 +291,7 @@ is NOT modified, moved, masked or deleted. It remains on disk and still
 assigns LoadCredential=llm.json:... - but the later-lexically 40- drop-in
 resets the LoadCredential list (the bare "LoadCredential=" line) and re-adds
 only api.json and index.json, so NO llm credential reaches the new daemon.
-systemctl's merged LoadCredential readback in this block proves it. The file
+The busctl merged LoadCredential readback in this block proves it. The file
 /etc/enhanced-cognee/llm.json itself is never opened by anyone in this
 procedure.
 
@@ -297,7 +311,8 @@ sudo systemctl daemon-reload
 sudo systemctl restart enhanced-cognee-api.service
 systemctl is-active enhanced-cognee-api.service
 systemctl show enhanced-cognee-api.service -p ExecStart -p WorkingDirectory \
-  -p StateDirectory -p StateDirectoryMode -p LoadCredential -p ActiveState -p SubState -p MainPID
+  -p StateDirectory -p StateDirectoryMode -p ActiveState -p SubState -p MainPID
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential
 )
 ```
 
@@ -307,8 +322,12 @@ Expected receipt:
 - WorkingDirectory=/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101
 - StateDirectory=enhanced-cognee-api enhanced-cognee-llm-budget
 - StateDirectoryMode=0700
-- LoadCredential= shows api.json:/etc/enhanced-cognee/api.json and
-  index.json:/etc/enhanced-cognee/index.json and NO llm.json entry.
+- The busctl LoadCredential readback shows exactly two pairs -
+  api.json:/etc/enhanced-cognee/api.json and
+  index.json:/etc/enhanced-cognee/index.json - and NO llm.json entry.
+  (systemctl show -p LoadCredential prints "[unprintable]" on this host's
+  systemd 255 regardless of content; busctl introspect is the working
+  merged readback, verified during independent review.)
 On ANY mismatch (including the service failing to start): run
   systemctl status enhanced-cognee-api.service --no-pager; sudo journalctl -u enhanced-cognee-api.service -n 80 --no-pager
 capture the output, then go to Block F (rollback). Never re-run Block C to
@@ -319,13 +338,17 @@ capture the output, then go to Block F (rollback). Never re-run Block C to
 Purpose: prove the switch took effect exactly, the plugin contract works,
 analysis is withheld, and nothing else moved.
 
-D1 manager state:
+D1 manager state (the LoadCredential proof uses the busctl readback -
+systemctl's generic display is unusable on this host, see Block C):
 ```bash
 systemctl show enhanced-cognee-api.service -p ActiveState -p SubState -p MainPID \
-  -p ExecStart -p WorkingDirectory -p StateDirectory -p StateDirectoryMode -p LoadCredential -p NRestarts
+  -p ExecStart -p WorkingDirectory -p StateDirectory -p StateDirectoryMode -p NRestarts
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential
 ```
 Expected: active / running; same ExecStart/WorkingDirectory/StateDirectory
-values as Block C; NRestarts=0 (the manual restart is not an auto-restart).
+values as Block C; the busctl readback again shows exactly the api.json and
+index.json pairs and NO llm.json entry (the no-llm-credential proof);
+NRestarts=0 (the manual restart is not an auto-restart).
 
 D2 state directories inside the service namespace (root:path 0700):
 ```bash
@@ -358,29 +381,39 @@ D5 no other units restarted:
 ```bash
 systemctl show enhanced-cognee-postgres.service enhanced-cognee-qdrant.service \
   enhanced-cognee-graph.service enhanced-cognee-cache.service enhanced-cognee-index.service \
-  enhanced-cognee-backup.timer -p Id -p ActiveState -p ActiveEnterTimestamp -p NRestarts
+  enhanced-cognee-backup.timer enhanced-cognee-profile-backup.timer \
+  enhanced-cognee-qualified-fleet-backup-v2.timer \
+  -p Id -p ActiveState -p ActiveEnterTimestamp -p NRestarts
 ```
 Expected: identical ActiveEnterTimestamp values to the before-capture in
-$ev/systemctl-related-units-before.txt (Block A). Any change = unintended
-restart - STOP and investigate before continuing.
+$ev/systemctl-related-units-before.txt (Block A), which covers the four
+store units AND every other enhanced-cognee-* timer on this host -
+backup, profile-backup and qualified-fleet-backup-v2. Any change =
+unintended restart - STOP and investigate before continuing.
 
-## Block E - budget ledger + encrypted backup gate (no api restart)
+## Block E - ledger verification + encrypted backup gate (root-side; no api restart)
 
-Purpose: provision and verify the persistent budget ledger under the API
-identity and extend the EXISTING encrypted backup service to cover it, plus
-prove restore. These are gates for Block G, not for the switch itself.
+Purpose: verify the persistent budget ledger, extend the EXISTING encrypted
+backup service to cover it, plus prove restore. These are root-side
+verification steps over what the daemon built; they are acceptance steps
+for Block G enablement, not gates for the switch itself.
 
-E1 - one-shot ledger initialization as the service identity (requires the
-api service active so the managed account exists):
-```bash
-sudo -u enhanced-cognee-api /usr/bin/env -i HOME=/nonexistent PATH=/usr/bin:/bin LANG=C.UTF-8 \
-  ENHANCED_LLM_BUDGET_DB=/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3 \
-  /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python -I -B -c \
-  'from src.llm_budget import TokenBudget; b = TokenBudget(); print("LEDGER_INIT_OK", b.path)'
-```
-Expected: "LEDGER_INIT_OK /var/lib/enhanced-cognee-llm-budget/tokens.sqlite3".
-A "model budget ledger path is not service-private" refusal means the state
-directory is wrong - STOP; never chmod or chown it manually.
+LEDGER INITIALIZATION (revised after independent review): there is
+deliberately NO host-side initialization step. With DynamicUser=yes systemd
+provisions the state directory at /var/lib/private/enhanced-cognee-llm-budget
+(0700 root:root; the plain /var/lib/... path is a host-side symlink only),
+so a host-side `sudo -u enhanced-cognee-api` process cannot traverse to it
+and src/llm_budget.py correctly refuses that symlink path ("The model
+budget ledger path is not service-private"). The ledger is initialized by
+the daemon itself, INSIDE the service mount namespace, at the Block G
+enablement restart - the first restart that loads an llm credential
+(src/memory_daemon.py sets ENHANCED_LLM_BUDGET_DB only inside that branch;
+systemd re-chowns the state directory whenever the dynamic uid changes
+across restarts, so the ledger persists correctly). Until that restart the
+provisioned directory is empty, and an empty
+private directory is NOT ledger proof. Run E2/E3/E4 only
+AFTER the Block G restart, as part of G's acceptance, before its final
+summarize exercise.
 
 E2 - root readback of the ledger:
 ```bash
@@ -443,7 +476,8 @@ the existing daily-backup unit once out of schedule - it only ADDS encrypted
 artifacts; it deletes nothing. On failure: remove the drop-in
 (sudo rm /etc/systemd/system/enhanced-cognee-backup.service.d/40-ledger.conf
 && sudo systemctl daemon-reload), capture journalctl -u enhanced-cognee-backup.service,
-and keep analysis withheld. Install this drop-in only AFTER E1 succeeds -
+and keep analysis withheld. Install this drop-in only AFTER the Block G
+restart has initialized the ledger in-namespace and E2 has passed -
 otherwise the ledger step fails the whole backup unit by design.
 
 ## Block F - rollback (emergency only)
@@ -484,12 +518,13 @@ sudo /usr/bin/install -o root -g root -m 0644 "$src" /etc/systemd/system/enhance
 sudo systemctl daemon-reload
 sudo systemctl restart enhanced-cognee-api.service
 systemctl is-active enhanced-cognee-api.service
-systemctl show enhanced-cognee-api.service -p ExecStart -p WorkingDirectory -p LoadCredential
+systemctl show enhanced-cognee-api.service -p ExecStart -p WorkingDirectory
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential
 )
 ```
 Expected: active; ExecStart/WorkingDirectory show the OLD candidate
-21abf4857ca8dce8e0a3aafc725266c8d3754529; LoadCredential lists api.json and
-index.json only (no llm.json).
+21abf4857ca8dce8e0a3aafc725266c8d3754529; the busctl LoadCredential readback
+lists api.json and index.json only (no llm.json).
 
 Variant F2 - FULL restore (old behaviour INCLUDING the optional model
 route; only with explicit owner acceptance of old-code risk):
@@ -503,14 +538,15 @@ sudo rm -f /etc/systemd/system/enhanced-cognee-api.service.d/40-cutover-candidat
 sudo systemctl daemon-reload
 sudo systemctl restart enhanced-cognee-api.service
 systemctl is-active enhanced-cognee-api.service
-systemctl show enhanced-cognee-api.service -p ExecStart -p WorkingDirectory -p LoadCredential
+systemctl show enhanced-cognee-api.service -p ExecStart -p WorkingDirectory
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential
 )
 ```
-Expected: active; old ExecStart/WorkingDirectory; LoadCredential including
-llm.json (old code re-enables the model route with its VOLATILE in-memory
-accounting and known defects - this is why F1 is recommended). One restart
-only, api unit only. Optionally re-run Block A to capture a fresh evidence
-set reflecting the restored state.
+Expected: active; old ExecStart/WorkingDirectory; the busctl LoadCredential
+readback including llm.json (old code re-enables the model route with its
+VOLATILE in-memory accounting and known defects - this is why F1 is
+recommended). One restart only, api unit only. Optionally re-run Block A to
+capture a fresh evidence set reflecting the restored state.
 
 ## Block G - later optional-analysis enablement (owner decision, separate window)
 
@@ -521,8 +557,13 @@ NOT part of this cutover. All of the following gates must hold first:
    and no 50- drop-in ever installed before this block). If Block B3
    recorded any_charged_today or any_unknown_scope, this rule is what
    protects against an allowance reset - no exceptions, no manual waivers.
-2. Block E1-E3 all green: ledger provisioned, verified, and an encrypted
-   backup whose restore was proven.
+2. Ledger + backup chain ready to accept enablement: the enablement restart
+   below initializes the ledger in-namespace (see Block E ordering note -
+   until it runs, the ledger does not exist and the empty private state
+   directory proves nothing). Immediately after that restart run Block E2
+   (ledger verify) and E3 (encrypted backup + restore proof); only continue
+   if both are green. If either fails, reverse the enablement (end of this
+   block) and keep analysis withheld.
 3. Explicit owner approval to resume optional backend model calls. This is a
    deferred credential-wiring DECISION: alternatives include keeping
    analysis withheld indefinitely, or issuing a fresh llm credential before
@@ -551,19 +592,23 @@ dest="/etc/systemd/system/enhanced-cognee-api.service.d/50-llm-enable.conf"
 sudo /usr/bin/install -o root -g root -m 0644 "$src" "$dest"
 sudo systemctl daemon-reload
 sudo systemctl restart enhanced-cognee-api.service
-systemctl show enhanced-cognee-api.service -p LoadCredential -p ActiveState
+systemctl is-active enhanced-cognee-api.service
+sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential
 sudo /usr/bin/python3 -I -S -B /opt/enhanced-cognee-memory/cutover/cutover_probe_20261105.py usage \
   --api-credential /etc/enhanced-cognee/api.json --origin http://127.0.0.1:28080 --scope TENANT/PROJECT
 )
 ```
 
-Expected: LoadCredential lists api.json, index.json AND llm.json; active;
-the usage probe reports configured=true with used_today=0 for the clean day
-(exit 0, any_charged_today=false). Then exercise one real summarize call
-from a normal client and confirm /v1/memories/summarization/status reports
-the expected cap/usage. ONE restart, api unit only. To reverse enablement:
-remove the 50- drop-in, daemon-reload, one restart - analysis returns to
-422/configured=false with the ledger rows retained.
+Expected: active; the busctl LoadCredential readback lists api.json,
+index.json AND llm.json; the usage probe reports configured=true with
+used_today=0 for the clean day (exit 0, any_charged_today=false). This
+restart has now initialized the ledger in-namespace: complete Block E2 and
+E3 (and install the E4 backup drop-in) at this point, before the final
+exercise. Then exercise one real summarize call from a normal client and
+confirm /v1/memories/summarization/status reports the expected cap/usage.
+ONE restart, api unit only. To reverse enablement: remove the 50- drop-in,
+daemon-reload, one restart - analysis returns to 422/configured=false with
+the ledger rows retained.
 
 ## Completion checklist
 
@@ -572,9 +617,8 @@ remove the 50- drop-in, daemon-reload, one restart - analysis returns to
 - [ ] Block B1/B2/B3 receipts green; B3 JSON filed with evidence
 - [ ] Block C installed drop-in hash matched; ONE restart; merged properties matched
 - [ ] Block D1-D5 all matched (incl. plugin-path round trip, 422 withholding, no other unit restarted)
-- [ ] Block E1/E2/E3 green; E4 drop-in installed and oneshot run produced both backups
-- [ ] Cutover complete - ordinary memory on the audited candidate, analysis withheld
-- [ ] (Later, only if approved) Block G gates checked, enablement receipt filed
+- [ ] Cutover complete - ordinary memory on the audited candidate, analysis withheld (ledger intentionally not yet initialized; the empty private state dir is not ledger proof)
+- [ ] (Later, only if approved) Block G gates checked, enablement restart run - ledger initialized in-namespace by the daemon; Block E2/E3 green; E4 drop-in installed and oneshot run produced both backups; enablement receipt filed
 
 Nothing in this package authorizes touching the Hermes gateway, profiles,
 the four store units, the fleet, or any credential file's CONTENT.
