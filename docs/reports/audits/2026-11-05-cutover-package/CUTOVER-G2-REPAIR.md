@@ -1,5 +1,9 @@
 # CUTOVER-G2-REPAIR v2 - owner runbook (after failed G attempt 1, 2026-11-06)
 
+IMPORTANT: this runbook SUPERSEDES Block G of CUTOVER-COMMANDS.md in full.
+Lines ~553 and ~571 of that older document still describe the pre-fix plain
+ledger path; do not run Block G from CUTOVER-COMMANDS.md - run it from here.
+
 v1 of this runbook proposed a BindPaths drop-in; it is WITHDRAWN before any
 installation: systemd mounts BindPaths destinations via mount_nofollow
 (O_NOFOLLOW on the destination), which refuses symlink destinations, so the
