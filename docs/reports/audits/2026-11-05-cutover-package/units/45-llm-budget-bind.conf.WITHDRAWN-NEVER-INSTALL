@@ -1,0 +1,13 @@
+WITHDRAWN 2026-11-06 BEFORE ANY INSTALLATION - do not install.
+systemd mounts BindPaths destinations with O_NOFOLLOW and refuses symlink
+destinations; the unit would fail to start. Superseded by the reviewed
+one-line source fix (branch codex/llm-budget-path-nsfix-20261106).
+Original withdrawn content follows for the record only:
+---
+[Service]
+# G2 repair 2026-11-06: systemd DynamicUser keeps /var/lib/enhanced-cognee-llm-budget
+# as a symlink in the unit namespace (real dir lives at /var/lib/private/...).
+# src/llm_budget.py _secure_path correctly refuses symlinked ledger paths, so the
+# ledger was never created (incident 2026-11-06 15:04). Bind the real private dir
+# over the symlink path so the app sees a genuine private directory. No code change.
+BindPaths=/var/lib/private/enhanced-cognee-llm-budget:/var/lib/enhanced-cognee-llm-budget
