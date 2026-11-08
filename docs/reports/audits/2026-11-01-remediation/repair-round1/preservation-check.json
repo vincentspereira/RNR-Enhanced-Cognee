@@ -1,0 +1,46 @@
+{
+  "archived_source_count": 29,
+  "changed_archived_paths": [
+    "integrations/hermes/deployment/install_fleet_token_renewal.py",
+    "integrations/hermes/deployment/renew_fleet_memory_tokens.py",
+    "integrations/hermes/enhanced_cognee_mcp/server.py"
+  ],
+  "unchanged_archived_paths": [
+    "integrations/hermes/deployment/functional_memory_test.py",
+    "integrations/hermes/deployment/roles.json",
+    "integrations/hermes/deployment/verification_contracts.py",
+    "integrations/hermes/deployment/verify_everything.py",
+    "integrations/hermes/deployment/verify_fleet_memory_tools.py",
+    "src/ingestion.py",
+    "src/llm_budget.py",
+    "src/llm_summarize.py",
+    "src/memory_api.py",
+    "src/memory_daemon.py",
+    "src/memory_library.py",
+    "src/memory_queries.py",
+    "src/security/enterprise_auth.py",
+    "tests/unit/test_analysis_audit_remediation.py",
+    "tests/unit/test_analysis_lifespan_audit_remediation.py",
+    "tests/unit/test_analysis_protocol_audit_remediation.py",
+    "tests/unit/test_api_integration_audit.py",
+    "tests/unit/test_daemon_budget_audit.py",
+    "tests/unit/test_functional_runner_audit.py",
+    "tests/unit/test_ingestion_audit_remediation.py",
+    "tests/unit/test_library_read_audit_remediation.py",
+    "tests/unit/test_llm_budget_audit_remediation.py",
+    "tests/unit/test_mcp_audit_remediation.py",
+    "tests/unit/test_renewal_audit_remediation.py",
+    "tests/unit/test_renewal_installer_audit.py",
+    "tests/unit/test_verifier_audit_remediation.py"
+  ],
+  "original_reviewer_inputs_match_scratch": true,
+  "r3_copy_only_precondition_changed": true,
+  "source_manifest_sha256": "68e420aa6e21a27649927f61ae672a5acf479ad8ceb98f5a1bab56f203e1d5aa",
+  "rejected_source_zip_sha256": "f587f32a74fef138b42f61be2d4172a7b42047840c4aabe13041e195821778c5",
+  "repaired_source_hashes": {
+    "integrations/hermes/deployment/install_fleet_token_renewal.py": "4d291cb5e1336c7beba21ba6fc0cf6e56aac27058e32ffea7d31d6b767a838ac",
+    "integrations/hermes/deployment/renew_fleet_memory_tokens.py": "5e05b0e1a0e1374065495c8891b5e81d472f5a537e3178c02d1af0977f4cdb1b",
+    "integrations/hermes/enhanced_cognee_mcp/server.py": "7013cb6aa87afda4b0f80bae20ed7a8e29067c5693751fdf9eb90cf767e3bb20"
+  },
+  "new_tests_sha256": "bbdf044f44a0d73df4043ed65f2674e9e47a3086dead47afe85b690c0b0e6bbd"
+}

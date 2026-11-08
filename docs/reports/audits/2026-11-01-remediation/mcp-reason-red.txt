@@ -1,0 +1,20 @@
+test_analysis_timeout_covers_server_model_deadline (test_mcp_audit_remediation.McpAuditTests.test_analysis_timeout_covers_server_model_deadline) ... ok
+test_connection_uses_entity_contract (test_mcp_audit_remediation.McpAuditTests.test_connection_uses_entity_contract) ... ok
+test_http_refusal_is_an_mcp_error (test_mcp_audit_remediation.McpAuditTests.test_http_refusal_is_an_mcp_error) ... ok
+test_http_refusal_preserves_fixed_service_reason (test_mcp_audit_remediation.McpAuditTests.test_http_refusal_preserves_fixed_service_reason) ... FAIL
+test_invalid_arguments_do_not_echo_input (test_mcp_audit_remediation.McpAuditTests.test_invalid_arguments_do_not_echo_input) ... ok
+test_malformed_params_does_not_kill_next_request (test_mcp_audit_remediation.McpAuditTests.test_malformed_params_does_not_kill_next_request) ... ok
+test_required_args_are_enforced_before_network (test_mcp_audit_remediation.McpAuditTests.test_required_args_are_enforced_before_network) ... ok
+
+======================================================================
+FAIL: test_http_refusal_preserves_fixed_service_reason (test_mcp_audit_remediation.McpAuditTests.test_http_refusal_preserves_fixed_service_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_mcp_audit_remediation.py", line 33, in test_http_refusal_preserves_fixed_service_reason
+    self.assertIn('Fixed scope refusal',json.dumps(replies))
+AssertionError: 'Fixed scope refusal' not found in '[{"jsonrpc": "2.0", "id": 1, "result": {"content": [{"type": "text", "text": "{\\"error\\": \\"memory request refused (HTTP 403); no success was acknowledged\\", \\"success_acknowledged\\": false}"}], "isError": true}}]'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.006s
+
+FAILED (failures=1)

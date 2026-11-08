@@ -1,0 +1,63 @@
+{
+  "candidate_qualification_rerun": false,
+  "checked_as_uid": 1000,
+  "protected_root_plan_executed": false,
+  "readable_static_units": [
+    {
+      "expected_sha256": "af979af033e64fee0dde16a1484ac5eb00ca75282c3478f382599027ec35dba2",
+      "gid": 0,
+      "matches": true,
+      "mode": "0644",
+      "nlink": 1,
+      "path": "/etc/systemd/system/enhanced-cognee-api.service",
+      "sha256": "af979af033e64fee0dde16a1484ac5eb00ca75282c3478f382599027ec35dba2",
+      "supported_syntax": true,
+      "uid": 0
+    },
+    {
+      "expected_sha256": "6ae6c5ebf3ac141c5bd03c8ac6970c308eee4fe5220606b800c2e11f698cee06",
+      "gid": 0,
+      "matches": true,
+      "mode": "0644",
+      "nlink": 1,
+      "path": "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf",
+      "sha256": "6ae6c5ebf3ac141c5bd03c8ac6970c308eee4fe5220606b800c2e11f698cee06",
+      "supported_syntax": true,
+      "uid": 0
+    },
+    {
+      "expected_sha256": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33",
+      "gid": 0,
+      "matches": true,
+      "mode": "0644",
+      "nlink": 1,
+      "path": "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+      "sha256": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33",
+      "supported_syntax": true,
+      "uid": 0
+    }
+  ],
+  "selected_loaded_properties": {
+    "ActiveState": "active",
+    "DropInPaths": "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf /etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf /etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+    "DynamicUser": "yes",
+    "ExecStart": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -m src.memory_daemon api",
+    "FragmentPath": "/etc/systemd/system/enhanced-cognee-api.service",
+    "Group": "enhanced-cognee-api",
+    "Id": "enhanced-cognee-api.service",
+    "LoadState": "loaded",
+    "Names": "enhanced-cognee-api.service",
+    "NeedDaemonReload": "no",
+    "PrivateUsers": "no",
+    "ProtectSystem": "strict",
+    "RootDirectory": "",
+    "SourcePath": "",
+    "StateDirectory": "",
+    "StateDirectoryMode": "0755",
+    "UMask": "0077",
+    "User": "enhanced-cognee-api",
+    "WorkingDirectory": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529"
+  },
+  "unreadable_source": "/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf",
+  "unreadable_source_hashed": false
+}

@@ -1,0 +1,2138 @@
+{
+  "canonical_v2": [
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_phase_a_dropin_and_canonical_hash",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[reload]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[alias]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[run-override]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_bundle_rejects_extra_files_before_any_write",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Id]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Names]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[User]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Group]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_writer_rejects_unsafe_parent_before_creation",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_must_have_execute_permission",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_inventory_refuses_unknown_manager_search_path",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_repeated_matching_identity_across_fragments_is_consistent",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=no\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=false\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=0\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=yes\\nDynamicUser=no\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[root.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[wrong.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[9invalid.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[bad@instance.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[enhanced-cognee-api.socket]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-root]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-other-account]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-root]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-other-account]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-no]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[extra-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[second-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-directory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=llm.json:/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[SetCredential=hidden:invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[ImportCredential=*\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredentialEncrypted=hidden:/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[EnvironmentFile=/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[User=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[Group=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[DynamicUser=yes\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_owner_plan_entry_is_read_only_and_binds_v2_paths",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "status": "passed"
+    }
+  ],
+  "counts": {
+    "canonical_v2": 202,
+    "historical_v1": 126,
+    "v2_added_cases": 76,
+    "v2_historical_replay": 126
+  },
+  "fixture_change": "Only NEW canonical snapshot base adds DynamicUser=yes. All original test function bodies and parameterizations unchanged; no deletion/deselection/xfail.",
+  "historical_v1": [
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_phase_a_dropin_and_canonical_hash",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[reload]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[alias]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[run-override]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_bundle_rejects_extra_files_before_any_write",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Id]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Names]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[User]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Group]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[missing]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_writer_rejects_unsafe_parent_before_creation",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_interpreter_must_have_execute_permission",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover.py::test_inventory_refuses_unknown_manager_search_path",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "status": "passed"
+    }
+  ],
+  "mapped_challenge_change": "Only challenge PIN, output, and actual HELPER binding rebound; original challenge bytes and all three assertion bodies unchanged.",
+  "new_v2_cases": [
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys0-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys1-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_matching_explicit_identity_can_appear_in_any_known_fragment[keys2-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_repeated_matching_identity_across_fragments_is_consistent",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[root-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[0-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-User-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-0]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-2]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_conflicting_identity_anywhere_refused_even_if_overridden[other-account-Group-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=no\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=false\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=0\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_source_dynamic_user_must_be_present_and_yes[DynamicUser=yes\\nDynamicUser=no\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[yes-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-1]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_dynamic_user_declarations_across_fragments_must_all_match[no-3]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[root.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[wrong.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[9invalid.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[bad@instance.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[enhanced-cognee-api.socket]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_invalid_or_wrong_implicit_unit_identity_is_refused[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.service]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-root]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[User-other-account]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-root]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[Group-other-account]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-no]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_default_identity_source_manager_disagreement_is_refused[DynamicUser-]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[extra-reset]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[missing-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[second-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-command]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_omitted_identity_does_not_relax_exact_launch_contract[wrong-directory]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredential=llm.json:/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[SetCredential=hidden:invented-secret\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[ImportCredential=*\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[LoadCredentialEncrypted=hidden:/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[EnvironmentFile=/invented\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[User=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[Group=\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_four_line_launch_still_rejects_injected_directives[DynamicUser=yes\\n]",
+      "status": "passed"
+    },
+    {
+      "id": "tests/unit/test_security_first_cutover_v2.py::test_owner_plan_entry_is_read_only_and_binds_v2_paths",
+      "status": "passed"
+    }
+  ],
+  "replay_mapping": [
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_phase_a_dropin_and_canonical_hash",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_phase_a_dropin_and_canonical_hash"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_is_parsed_without_exposing_environment",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_is_parsed_without_exposing_environment"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[missing]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[missing]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[extra]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[extra]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[source-hash]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[source-hash]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-path]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-path]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-hash]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-hash]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[candidate-extra]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-extra]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[reload]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[reload]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[alias]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[alias]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[run-override]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[run-override]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[loaded-missing]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[loaded-missing]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-duplicate]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-wildcard]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[credential-reset]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-reset]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_plan_refuses_snapshot_drift[launch-syntax]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[launch-syntax]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[none]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[none]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[uid]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[uid]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[gid]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[gid]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-file]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[leaf-link]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[hardlink]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[fifo]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[relative]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[relative]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[dotdot]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_trust_rejects_unsafe_lexical_paths[private]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[private]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_new_private_bundle_and_partial_failure_are_preserved",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_new_private_bundle_and_partial_failure_are_preserved"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_protected_reader_never_follows_link_or_reads_fifo",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_protected_reader_never_follows_link_or_reads_fifo"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_output_guard_requires_private_existing_parent_and_absent_target",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_output_guard_requires_private_existing_parent_and_absent_target"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_bundle_readback_catches_corruption_before_complete_receipt",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_bundle_readback_catches_corruption_before_complete_receipt"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_bundle_rejects_extra_files_before_any_write",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_bundle_rejects_extra_files_before_any_write"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[isolated]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[no_site]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[safe_path]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Id]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Id]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Names]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Names]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[LoadState]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[LoadState]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ActiveState]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ActiveState]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[FragmentPath]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[SourcePath]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[SourcePath]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DropInPaths]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[User]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[User]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[Group]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Group]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DynamicUser]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ProtectSystem]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectory]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[UMask]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[UMask]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[PrivateUsers]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[RootDirectory]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[WorkingDirectory]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_every_selected_loaded_property_is_bound[ExecStart]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ExecStart]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_cli_entry_rejects_unprivileged_checkout_without_writes"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_no_application_imports_no_ledger_and_only_show_subprocess"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[duplicate]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[duplicate]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[missing]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[missing]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[command-extra]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[command-extra]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_loaded_process_format_drift_is_refused[unknown-property]",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[unknown-property]"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_writer_rejects_unsafe_parent_before_creation",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_writer_rejects_unsafe_parent_before_creation"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_snapshot_never_reads_arbitrary_alias_target",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_snapshot_never_reads_arbitrary_alias_target"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_interpreter_must_have_execute_permission",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_interpreter_must_have_execute_permission"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2.py::test_inventory_refuses_unknown_manager_search_path",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover.py::test_inventory_refuses_unknown_manager_search_path"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable"
+    },
+    {
+      "canonical_v2_node_id": "tests/unit/test_security_first_cutover_v2_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "historical_v1_node_id": "tests/unit/test_security_first_cutover_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules"
+    }
+  ]
+}

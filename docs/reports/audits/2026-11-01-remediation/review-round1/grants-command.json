@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-c",
+    "/dev/null",
+    "--confcutdir=/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/grant-base",
+    "-q",
+    "--tb=short",
+    "--junitxml=/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/grants.xml",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/test_grant_challenge.py"
+  ],
+  "exit_code": 0,
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101"
+}

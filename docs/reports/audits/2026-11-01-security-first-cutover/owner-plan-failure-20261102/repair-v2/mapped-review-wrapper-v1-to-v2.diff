@@ -1,0 +1,24 @@
+--- tests/unit/test_security_first_cutover_review_regressions.py
++++ tests/unit/test_security_first_cutover_v2_review_regressions.py
+@@ -12,7 +12,7 @@
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+ REVIEW = ROOT / "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py"
+-HELPER = ROOT / "integrations/hermes/deployment/prepare_security_first_cutover.py"
++HELPER = ROOT / "integrations/hermes/deployment/prepare_security_first_cutover_v2.py"
+ REVIEW_SHA256 = "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f"
+ REJECTED_SHA256 = "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813"
+ 
+@@ -27,7 +27,11 @@
+     assert text.count(old) == 1
+     module = ModuleType("repair_independent_inputs")
+     module.__file__ = str(REVIEW)
+-    exec(compile(text.replace(old, new), str(REVIEW), "exec"), module.__dict__)
++    text = text.replace(old, new)
++    old_helper = "HELPER = ROOT / 'integrations/hermes/deployment/prepare_security_first_cutover.py'"
++    assert text.count(old_helper) == 1
++    text = text.replace(old_helper, "HELPER = ROOT / 'integrations/hermes/deployment/prepare_security_first_cutover_v2.py'")
++    exec(compile(text, str(REVIEW), "exec"), module.__dict__)
+     module.OUT = tmp_path
+     return module
+ 

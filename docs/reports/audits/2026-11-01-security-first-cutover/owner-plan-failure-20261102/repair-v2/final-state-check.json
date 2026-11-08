@@ -1,0 +1,46 @@
+{
+  "tracked-diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "index-diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--exit-code"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "head": {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout": "72d2d90c3383cc9a83b7dfed7e3060c6ab27a8cf\n",
+    "stderr": ""
+  },
+  "branch": {
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "returncode": 0,
+    "stdout": "codex/enhanced-cognee-security-first-cutover-20261101\n",
+    "stderr": ""
+  },
+  "review_bindings_still_match": true,
+  "report_sha256": "52bb3c3c3fd61971f581f404f419af261b7e983a5140f1f2e59f968627d3d820",
+  "no_root_execution": true
+}

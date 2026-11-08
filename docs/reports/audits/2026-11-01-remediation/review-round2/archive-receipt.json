@@ -1,0 +1,119 @@
+{
+  "path": "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/independent-review-evidence.zip",
+  "sha256": "989b27ad990a3df619b9347d06ecef5648340c898c43142ebb2d20b1eff8a602",
+  "members": [
+    {
+      "path": "challenge-commands.json",
+      "sha256": "b18412bece8b45aef925a77c4c55dd25cb021b9fbb28064684eca7e279dfb38d"
+    },
+    {
+      "path": "finalize_review.py",
+      "sha256": "8d7800ad474f17d532cef7a04796cb42b9e7b44fba1c9cd1ff3955f3037db8af"
+    },
+    {
+      "path": "fresh-corrected.txt",
+      "sha256": "cbee9c0722fd6a09c9cc31d458a52e1ef59156c120e1c47c8ca9ed985131253a"
+    },
+    {
+      "path": "fresh-corrected.xml",
+      "sha256": "b273a45647d01135d0bc55ab4b5b66a67fc75c08eb285749bdf2a01b06dbf11b"
+    },
+    {
+      "path": "fresh.txt",
+      "sha256": "d3febb3b24b3754d2df5fb762a96bd2f9cabe2325e523cc9714ee34dab1e8492"
+    },
+    {
+      "path": "fresh.xml",
+      "sha256": "7e072e754ebfccc6adcb65f58974a65c1dd2f858eae2c4105dd80c9a80ffc8ae"
+    },
+    {
+      "path": "harness-mapping.json",
+      "sha256": "dc0988d8437286c7dc6b76d33abd4a29457c22837603d1dc8af457cd299758fa"
+    },
+    {
+      "path": "import-bindings.json",
+      "sha256": "0ec5ea02badf8fde250f4fe8d3d74dbe7d232d0827b8ba68abb22a7972e5f99b"
+    },
+    {
+      "path": "prepare_replays.py",
+      "sha256": "fee94af7b23ecc95ecffb2cf577d6331b9986446b4a07b1e917e79dbf8e6b52b"
+    },
+    {
+      "path": "preservation.json",
+      "sha256": "3bed05157c8cf9a8a4e1f252af6d6f55582a6ea6f27bb9e32728a2c530968bd8"
+    },
+    {
+      "path": "prior-mapped.txt",
+      "sha256": "e0e9aec4fbb5eaa034dddaf95c91fea83ea47ed426a243eeede218fbc3109ff7"
+    },
+    {
+      "path": "prior-mapped.xml",
+      "sha256": "feb7922bdb41792b1f860660c3939fd08df81af4afc31cdbff365a8adf90dae0"
+    },
+    {
+      "path": "prior-unchanged.txt",
+      "sha256": "08ccc16aa4ef0220d7cdf85acc8b37f4e181f7b7bcb81766fe69466ca1ec9921"
+    },
+    {
+      "path": "prior-unchanged.xml",
+      "sha256": "4adfcde0a144572ace262970be5829fb6b4d18406215bb91b4b9a082385feb64"
+    },
+    {
+      "path": "reconciliation.json",
+      "sha256": "87c0f74aefe9b7e69504ec711cf3f4bdac6063da058ddde550ae61e463bd4eb2"
+    },
+    {
+      "path": "regressions-command.json",
+      "sha256": "306c493a9a6c0862440e38e0ebdbc81d1ff95e38ed0cca4e4a4e623c5a21ab6d"
+    },
+    {
+      "path": "regressions.txt",
+      "sha256": "7ffdc8f4c08105695b6182901eac4f63d507cd6c8bdf0e157e798de9be440e4e"
+    },
+    {
+      "path": "regressions.xml",
+      "sha256": "3357e42f46ee52e5dd414beabb903bd40c578563a98c805905d8f018a691f0aa"
+    },
+    {
+      "path": "replay-commands.json",
+      "sha256": "c722ae8df13c5d0ea1c142b8e919c93a414857389604afb6f568f7a0917d20b9"
+    },
+    {
+      "path": "reviewed-manifest.json",
+      "sha256": "81a056791975e2d55b7b60e78badeb7df87ddab71b69bbfa35d16b4378b5eb64"
+    },
+    {
+      "path": "source-binding.json",
+      "sha256": "9a94cbcc5bceb2037d9670aa61955f1a39d16ffb619053d636bc066a8464aabc"
+    },
+    {
+      "path": "static-independent.json",
+      "sha256": "8e1acc0f44f59ea47ea7df38b97ff471571898addcabe9586c182eb7639bb9a5"
+    },
+    {
+      "path": "test_fresh_challenges.py",
+      "sha256": "cbb5080f3e23ee3dbd43d7ea9c93344ec6d1e27fe250289ad8f0b6acf49e0a74"
+    },
+    {
+      "path": "test_fresh_challenges_v2.py",
+      "sha256": "57ce9b861987409fc8e862575a732ff01960f63df23a6f5d129c90bc73a6f1b1"
+    },
+    {
+      "path": "test_grant_challenge.py",
+      "sha256": "1506aec5b16a79ba16533df4c618bd91ac39b87da01598b4cc193274d8879b22"
+    },
+    {
+      "path": "test_independent_challenges_v2.py",
+      "sha256": "1d90252abf4a1ef8d898fdfded2cd6fb32cebd9749412ff73f4b39ef30cdc9a8"
+    },
+    {
+      "path": "test_prior_mapped.py",
+      "sha256": "29500bd67e03e96b97faaa432d58b9b615fe1118bf6f6a9fce6229e8bdfe406e"
+    },
+    {
+      "path": "verdict.json",
+      "sha256": "f9b1699a16cf7074af690de42dd7e90de3d48b6032347813804e67b249460bfc"
+    }
+  ],
+  "crc_ok": true
+}

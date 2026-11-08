@@ -1,0 +1,30 @@
+{
+  "source": "owner_supplied_terminal_result",
+  "installed_helper": {
+    "helper_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "helper_installed": true,
+    "api_override_installed": false,
+    "services_restarted": false
+  },
+  "root_plan": {
+    "stderr": "ERR stage_only_refused",
+    "returncode_reported_by_owner": null,
+    "accepted_plan_received": false,
+    "cause_established": false
+  },
+  "independent_readback": {
+    "installed_helper_sha_matches": true,
+    "root_owned_regular_single_link_mode_0644": true,
+    "private_output_parent_root_mode_0700": true,
+    "helper_and_interpreter_trust_checks_pass": true,
+    "unit_source_inventory_matches": true,
+    "loaded_old_api_state_matches_expected": true,
+    "readable_three_unit_hashes_and_parsers_pass": true,
+    "private_runtime_unit_readable_as_ordinary_user": false
+  },
+  "interpretation": "Installation passed; root preflight refused without a reason-specific message. Ordinary-user access denial does not identify root's failure. Do not reinstall, change permissions, run prepare or restart.",
+  "next_gate": "Independently reviewed read-only stage/structural-metadata diagnostic; actual root result remains owner-pending",
+  "production_helper_source_changed_for_this_failure": false,
+  "automatic_helper_repair_cycles_already_used": 1,
+  "maximum_automatic_helper_repair_cycles": 2
+}

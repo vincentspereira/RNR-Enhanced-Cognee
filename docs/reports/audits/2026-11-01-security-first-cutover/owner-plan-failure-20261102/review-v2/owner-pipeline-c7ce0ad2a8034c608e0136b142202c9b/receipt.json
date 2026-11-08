@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "review_bindings",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/owner-pipeline-c7ce0ad2a8034c608e0136b142202c9b/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/owner-pipeline-c7ce0ad2a8034c608e0136b142202c9b/junit.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "exit_code": 0,
+  "plugin_autoload": true,
+  "baseline_switch_unset": true,
+  "basetemp_previously_absent": true,
+  "test_inputs": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py": "0fd77a3db07f40dcd36630ef915b452a75028ec1113aa02963bed279391bd818"
+  },
+  "junit_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "0.116",
+      "timestamp": "2026-11-02T04:42:24.537786+00:00",
+      "hostname": "Ubuntu-Hermes"
+    }
+  ],
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_owner_pipefail",
+      "name": "test_owner_pipefail_retains_empty_target_and_stops",
+      "outcome": "passed"
+    }
+  ],
+  "artifacts": {
+    "execution-records.json": "8c77e375990f1a33a99167d91387c2801e35399b19d9e0abe71c4df5758131e0",
+    "collection-bindings.json": "6b65b3449c52dde07ada65932d15da68c583d69d5e132e0ab67feca9357d15bb",
+    "junit.xml": "2d059f91f3b276f188f608642622307f048d469c97a581eba3c2aec6f953263b",
+    "stdout.txt": "09caa0a15ec6d62f9f17a454ef0cc81877acd771d1ff619ccaab19ed698ab5d9",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

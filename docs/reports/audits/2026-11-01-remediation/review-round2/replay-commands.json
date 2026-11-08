@@ -1,0 +1,45 @@
+[
+  {
+    "group": "prior-mapped",
+    "command": [
+      "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_prior_mapped.py",
+      "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_grant_challenge.py",
+      "-c",
+      "/dev/null",
+      "--confcutdir=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101",
+      "-p",
+      "no:cacheprovider",
+      "--color=no",
+      "-q",
+      "--tb=short",
+      "--basetemp=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/prior-mapped-tmp",
+      "--junitxml=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/prior-mapped.xml"
+    ],
+    "exit": 0
+  },
+  {
+    "group": "fresh-corrected",
+    "command": [
+      "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_fresh_challenges_v2.py",
+      "-c",
+      "/dev/null",
+      "--confcutdir=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101",
+      "-p",
+      "no:cacheprovider",
+      "--color=no",
+      "-q",
+      "--tb=short",
+      "--basetemp=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh-corrected-tmp",
+      "--junitxml=/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh-corrected.xml"
+    ],
+    "exit": 0
+  }
+]

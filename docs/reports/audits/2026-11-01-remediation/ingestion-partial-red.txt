@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/unit/test_ingestion_audit_remediation.py F                         [100%]
+
+=================================== FAILURES ===================================
+_____________ test_partial_ingestion_reports_only_acknowledged_ids _____________
+tests/unit/test_ingestion_audit_remediation.py:88: in test_partial_ingestion_reports_only_acknowledged_ids
+    with pytest.raises(ing.IngestPartial) as caught:
+                       ^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'src.ingestion' has no attribute 'IngestPartial'
+=========================== short test summary info ============================
+FAILED tests/unit/test_ingestion_audit_remediation.py::test_partial_ingestion_reports_only_acknowledged_ids
+============================== 1 failed in 0.08s ===============================

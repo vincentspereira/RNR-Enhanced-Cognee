@@ -1,0 +1,55 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml",
+    "-vv",
+    "--tb=long",
+    "tests/unit/test_security_first_cutover_review_regressions.py"
+  ],
+  "bindings_sha256": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f",
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777",
+    "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0"
+  },
+  "cases": [
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting",
+      "state": "failure"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_L01_exact_installed_module_mapping_is_readable",
+      "state": "failure"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover_review_regressions",
+      "name": "test_L02_root_decoys_cannot_authorize_changed_installed_modules",
+      "state": "failure"
+    }
+  ],
+  "counts": {
+    "error": 0,
+    "failure": 3,
+    "passed": 0,
+    "skipped": 0
+  },
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "exit_code": 1,
+  "finished_unix": 1793577579.9876127,
+  "junit_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml",
+  "junit_sha256": "ad1eb9858a41e200c90cf3e18fa6df0a39e2189fd4d30053bdf03ad8eaf89479",
+  "log_sha256": "7098ba04621a5e076953e9a4287b042638bb54eb7c9f295f3bc0e95b1c5e8a62",
+  "scope": "offline synthetic tests only; no qualification or live service calls",
+  "started_unix": 1793577579.0667617,
+  "total": 3
+}

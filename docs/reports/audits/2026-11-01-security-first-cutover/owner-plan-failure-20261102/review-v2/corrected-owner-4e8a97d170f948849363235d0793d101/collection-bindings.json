@@ -1,0 +1,62 @@
+[
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py",
+      "sha256": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    "actual_import": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  },
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[exact-reader]",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py",
+      "sha256": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    "actual_import": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  },
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[wrong-hash]",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py",
+      "sha256": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    "actual_import": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  },
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[symlink-reader]",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py",
+      "sha256": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    "actual_import": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  }
+]

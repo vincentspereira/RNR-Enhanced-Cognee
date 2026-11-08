@@ -1,0 +1,1205 @@
+{
+  "exitstatus": 0,
+  "reports": [
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/./python3.12-None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/./python3.12-None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/./python3.12-None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[../../usr/bin/python3.12-None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[../../usr/bin/python3.12-None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[../../usr/bin/python3.12-None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3-None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3-None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3-None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../python3.12-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../python3.12-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../python3.12-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../../bin/python3.12-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../../bin/python3.12-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/bridge/../../bin/python3.12-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-writable]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-writable]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-writable]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-owner]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-owner]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-owner]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-notdir]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-notdir]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/stable/../python3.12-notdir]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-bin-writable]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-bin-writable]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/usr/bin/python3.12-bin-writable]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/safe/bin/python-loop]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/safe/bin/python-loop]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F01_alias_lexical_chain[/safe/bin/python-loop]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[None]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[None]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[None]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[3]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[3]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[3]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[4]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[4]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[4]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[5]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[5]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[5]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[6]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[6]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[6]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[7]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[7]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F02_exact_installed_reads_and_per_module_decoys[7]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[*.json:/etc/enhanced-cognee]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[*.json:/etc/enhanced-cognee]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[*.json:/etc/enhanced-cognee]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/elsewhere/api.json]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/elsewhere/api.json]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/elsewhere/api.json]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json:extra]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json:extra]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json:extra]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json index.json:/etc/enhanced-cognee/index.json]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json index.json:/etc/enhanced-cognee/index.json]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json:/etc/enhanced-cognee/api.json index.json:/etc/enhanced-cognee/index.json]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[api.json]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[%n:/etc/enhanced-cognee/api.json]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[%n:/etc/enhanced-cognee/api.json]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F03_exact_credential_inventory_after_rehash[%n:/etc/enhanced-cognee/api.json]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Unit]\\nDescription=x\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Unit]\\nDescription=x\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Unit]\\nDescription=x\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Service]\\nEnvironment=HF_HUB_OFFLINE=1\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Service]\\nEnvironment=HF_HUB_OFFLINE=1\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\n[Service]\\nEnvironment=HF_HUB_OFFLINE=1\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nImportCredential=*\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nImportCredential=*\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nImportCredential=*\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=\"HF_HUB_OFFLINE=1\"\\nLoadCredentialEncrypted=a:b\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=\"HF_HUB_OFFLINE=1\"\\nLoadCredentialEncrypted=a:b\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=\"HF_HUB_OFFLINE=1\"\\nLoadCredentialEncrypted=a:b\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nExecStartPost=/bad\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nExecStartPost=/bad\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\nExecStartPost=/bad\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\n#x\\nSetCredential=a:CANARY\\n]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\n#x\\nSetCredential=a:CANARY\\n]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F04_parser_checks_entire_suffix[\\nEnvironment=HF_HUB_OFFLINE=1\\n#x\\nSetCredential=a:CANARY\\n]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-api.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-api.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[.40-hidden.conf-enhanced-cognee-api.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-api.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-api.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[40-audit-security-first.conf-enhanced-cognee-api.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-api.service.d]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-api.service.d]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F05_inventory_no_hidden_or_wildcard_exceptions[30-llm.conf~-enhanced-cognee-api.service.d]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[0]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[0]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[0]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[1]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[1]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[1]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[2]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[2]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F06_readback_corruption_preserves_no_success[2]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[helper_sha256]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[helper_sha256]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[helper_sha256]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[startup_interpreter]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[startup_interpreter]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[startup_interpreter]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[source_bytes]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[source_bytes]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[source_bytes]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[loaded]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[loaded]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[loaded]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[candidate_hashes]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[candidate_hashes]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F07_second_snapshot_drift_never_writes[candidate_hashes]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F08_plan_strictly_readonly_and_no_sensitive_echo",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F08_plan_strictly_readonly_and_no_sensitive_echo",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_F08_plan_strictly_readonly_and_no_sensitive_echo",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[none]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[none]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[none]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[private-parent-exists]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[private-parent-exists]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[private-parent-exists]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[missing-base]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[missing-base]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[missing-base]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-symlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-symlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-symlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-writable]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-writable]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[base-writable]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-owner]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-owner]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-owner]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-gid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-gid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-gid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-sticky]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-sticky]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[ancestor-sticky]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-symlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-symlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-symlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-not-private]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-not-private]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[parent-not-private]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-existing]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-existing]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-existing]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-dangling-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-dangling-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B01_bootstrap_original_code_metadata_matrix[helper-dangling-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[none]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[none]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[none]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[hash-mismatch]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[hash-mismatch]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[hash-mismatch]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[root-reader]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[root-reader]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B02_unprivileged_byte_handoff_exact_hash[root-reader]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[none]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[none]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[none]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[hash-mismatch]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[hash-mismatch]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[hash-mismatch]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-write]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-write]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[ancestor-write]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-link]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-link]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-link]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-hardlink]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-hardlink]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-hardlink]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-owner]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-owner]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-owner]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-gid]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-gid]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-gid]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-mode]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-mode]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-mode]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-fifo]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-fifo]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B03_installed_readback_before_root_plan[file-fifo]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B04_shell_privileged_boundary_and_stage_only_ast",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B04_shell_privileged_boundary_and_stage_only_ast",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_fresh_challenges.py::test_B04_shell_privileged_boundary_and_stage_only_ast",
+      "when": "teardown",
+      "outcome": "passed"
+    }
+  ]
+}

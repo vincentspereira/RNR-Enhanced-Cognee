@@ -1,0 +1,18 @@
+[
+  {
+    "file": "install_fleet_token_renewal.py",
+    "sha256": "4d291cb5e1336c7beba21ba6fc0cf6e56aac27058e32ffea7d31d6b767a838ac"
+  },
+  {
+    "file": "renew_fleet_memory_tokens.py",
+    "sha256": "5e05b0e1a0e1374065495c8891b5e81d472f5a537e3178c02d1af0977f4cdb1b"
+  },
+  {
+    "file": "provision_gateway_profile_access.py",
+    "sha256": "93679a24d12ef88f6d71d9b9733b2fcc28f2c58c6897cc20a78440618fd8ca94"
+  },
+  {
+    "file": "roles.json",
+    "sha256": "7ba6314c360eb5dc433798bbcbd2b434d932687ccebff8a4868a2a077cc755dc"
+  }
+]

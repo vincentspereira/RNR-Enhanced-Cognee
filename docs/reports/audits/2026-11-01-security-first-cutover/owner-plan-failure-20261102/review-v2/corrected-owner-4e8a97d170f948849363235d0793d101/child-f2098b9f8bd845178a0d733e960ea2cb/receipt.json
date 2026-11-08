@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "-c",
+    "\nimport hashlib,os,sys\nif os.geteuid()==0: raise SystemExit(\"Payload reader must remain unprivileged\")\nfd=os.open(sys.argv[1],os.O_RDONLY|os.O_NOFOLLOW)\nwith os.fdopen(fd,\"rb\") as stream: data=stream.read()\nif hashlib.sha256(data).hexdigest()!=sys.argv[2]: raise SystemExit(\"Source hash mismatch; no bytes emitted\")\nsys.stdout.buffer.write(data)",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner-4e8a97d170f948849363235d0793d101/sandbox/test_owner_unprivileged_reader1/invented.py",
+    "0000000000000000000000000000000000000000000000000000000000000000"
+  ],
+  "returncode": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "6b97422acd2021e9dca694bc9822ec9cb80c5077ab32f226129b5ce27e1436f0"
+}

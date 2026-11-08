@@ -1,0 +1,20 @@
+{
+  "exitstatus": 0,
+  "records": [
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py::test_owner_pipefail_retains_empty_target_and_stops",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py::test_owner_pipefail_retains_empty_target_and_stops",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py::test_owner_pipefail_retains_empty_target_and_stops",
+      "when": "teardown",
+      "outcome": "passed"
+    }
+  ]
+}

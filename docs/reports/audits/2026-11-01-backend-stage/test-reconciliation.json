@@ -1,0 +1,158 @@
+{
+  "runs": [
+    {
+      "label": "01-green",
+      "exit": 0,
+      "cases": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "01-red-corrected",
+      "exit": 1,
+      "cases": 1,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0
+    },
+    {
+      "label": "01-red-final",
+      "exit": 1,
+      "cases": 1,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "02-green",
+      "exit": 0,
+      "cases": 16,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "02-red",
+      "exit": 1,
+      "cases": 16,
+      "failed": 15,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "03-green",
+      "exit": 1,
+      "cases": 17,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "03-green-corrected",
+      "exit": 0,
+      "cases": 17,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "03-red",
+      "exit": 1,
+      "cases": 17,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "04-green",
+      "exit": 0,
+      "cases": 18,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "04-red",
+      "exit": 1,
+      "cases": 18,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "05-green",
+      "exit": 0,
+      "cases": 34,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "05-red",
+      "exit": 1,
+      "cases": 34,
+      "failed": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "06-green",
+      "exit": 0,
+      "cases": 35,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "06-red",
+      "exit": 1,
+      "cases": 35,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "07-green",
+      "exit": 0,
+      "cases": 57,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "07-red",
+      "exit": 1,
+      "cases": 57,
+      "failed": 5,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "08-green",
+      "exit": 0,
+      "cases": 58,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "08-red",
+      "exit": 1,
+      "cases": 58,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "label": "final-offline",
+      "exit": 0,
+      "cases": 58,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "final_distinct_cases": 58,
+  "repeated_runs_are_not_additional_cases": true
+}

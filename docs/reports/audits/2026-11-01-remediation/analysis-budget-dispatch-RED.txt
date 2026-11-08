@@ -1,0 +1,301 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 47 items
+
+tests/unit/test_analysis_audit_remediation.py [31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m [ 55%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                                                    [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m__________ test_summary_is_explicit_return_only_with_source_versions ___________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:63: in test_summary_is_explicit_return_only_with_source_versions
+    [0mresult = analysis.invoke([33m"[39;49;00m[33m/v1/memories/summarize[39;49;00m[33m"[39;49;00m, SummarizeRequest(record_ids=[[33m"[39;49;00m[33ma[39;49;00m[33m"[39;49;00m]))[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:311: in summarize
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_missing_ledger_blocks_every_model_endpoint[/v1/memories/summarize-body0] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:159: in test_missing_ledger_blocks_every_model_endpoint
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:311: in summarize
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'NoneType' object has no attribute 'allows'[0m
+[31m[1m_ test_missing_ledger_blocks_every_model_endpoint[/v1/memories/consolidation/candidates-body1] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:159: in test_missing_ledger_blocks_every_model_endpoint
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:337: in consolidation
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'NoneType' object has no attribute 'allows'[0m
+[31m[1m_ test_missing_ledger_blocks_every_model_endpoint[/v1/memories/translate-body2] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:159: in test_missing_ledger_blocks_every_model_endpoint
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:351: in translate
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'NoneType' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/summarize-body0] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:179: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:311: in summarize
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/consolidation/candidates-body1] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:179: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:337: in consolidation
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/translate-body2] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:179: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:351: in translate
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/summarize-body0] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:311: in summarize
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/consolidation/candidates-body1] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:337: in consolidation
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/translate-body2] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:351: in translate
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/summarize-body0] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:311: in summarize
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/consolidation/candidates-body1] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:337: in consolidation
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_ test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/translate-body2] _[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:181: in test_endpoints_reserve_before_dispatch_and_keep_uncertain_charge
+    [0manalysis.invoke(path, body)[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:351: in translate
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m__________ test_utf8_prompt_is_reserved_conservatively_not_fixed_4000 __________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:189: in test_utf8_prompt_is_reserved_conservatively_not_fixed_4000
+    [0manalysis.invoke([33m"[39;49;00m[33m/v1/memories/translate[39;49;00m[33m"[39;49;00m, TranslateRequest(text=[33m"[39;49;00m[33m\u4e2d[39;49;00m[33m"[39;49;00m * [94m2000[39;49;00m, target_language=[33m"[39;49;00m[33mEnglish[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:57: in invoke
+    [0m[94mreturn[39;49;00m asyncio.run(route.endpoint(body, request))[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:195: in run
+    [0m[94mreturn[39;49;00m runner.run(main)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py[0m:118: in run
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._loop.run_until_complete(task)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py[0m:691: in run_until_complete
+    [0m[94mreturn[39;49;00m future.result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/memory_api.py[0m:351: in translate
+    [0m[94mif[39;49;00m [95mnot[39;49;00m budget.allows(route, _project(request), [94m4000[39;49;00m):[90m[39;49;00m
+           ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'TokenBudget' object has no attribute 'allows'[0m
+[31m[1m_______________ test_concurrent_endpoint_calls_cannot_overspend ________________[0m
+[1m[31mtests/unit/test_analysis_audit_remediation.py[0m:211: in test_concurrent_endpoint_calls_cannot_overspend
+    [0m[94massert[39;49;00m [96msum[39;49;00m([96misinstance[39;49;00m(result, [96mdict[39;49;00m) [94mfor[39;49;00m result [95min[39;49;00m outcomes) == [94m1[39;49;00m[90m[39;49;00m
+[1m[31mE   assert 0 == 1[0m
+[1m[31mE    +  where 0 = sum(<generator object test_concurrent_endpoint_calls_cannot_overspend.<locals>.<genexpr> at 0x709d2ef84660>)[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_summary_is_explicit_return_only_with_source_versions[0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_missing_ledger_blocks_every_model_endpoint[/v1/memories/summarize-body0][0m - AttributeError: 'NoneType' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_missing_ledger_blocks_every_model_endpoint[/v1/memories/consolidation/candidates-body1][0m - AttributeError: 'NoneType' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_missing_ledger_blocks_every_model_endpoint[/v1/memories/translate-body2][0m - AttributeError: 'NoneType' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/summarize-body0][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/consolidation/candidates-body1][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[failure-/v1/memories/translate-body2][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/summarize-body0][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/consolidation/candidates-body1][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[missing-/v1/memories/translate-body2][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/summarize-body0][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/consolidation/candidates-body1][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_endpoints_reserve_before_dispatch_and_keep_uncertain_charge[success-/v1/memories/translate-body2][0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_utf8_prompt_is_reserved_conservatively_not_fixed_4000[0m - AttributeError: 'TokenBudget' object has no attribute 'allows'
+[31mFAILED[0m tests/unit/test_analysis_audit_remediation.py::[1mtest_concurrent_endpoint_calls_cannot_overspend[0m - assert 0 == 1
+[31m======================== [31m[1m15 failed[0m, [32m32 passed[0m[31m in 3.09s[0m[31m =========================[0m

@@ -1,0 +1,9 @@
+test_disabled_provider_and_broken_command_cannot_pass (test_verifier_audit_remediation.VerificationContractTests.test_disabled_provider_and_broken_command_cannot_pass) ... ok
+test_exact_approved_launch_positive_control_and_main_local_discovery (test_verifier_audit_remediation.VerificationContractTests.test_exact_approved_launch_positive_control_and_main_local_discovery) ... ok
+test_root_receipts_are_explicit_skips_not_crash (test_verifier_audit_remediation.VerificationContractTests.test_root_receipts_are_explicit_skips_not_crash) ... ok
+test_skip_is_not_complete_or_failed (test_verifier_audit_remediation.VerificationContractTests.test_skip_is_not_complete_or_failed) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.038s
+
+OK

@@ -1,0 +1,27 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+___________ test_root_runtime_rejects_replaceable_interpreter_alias ____________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:86: in test_root_runtime_rejects_replaceable_interpreter_alias
+    with pytest.raises(ValueError, match='untrusted_runtime_path'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_________ test_installer_rejects_replaceable_interpreter_before_launch _________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:134: in test_installer_rejects_replaceable_interpreter_before_launch
+    assert launches == [], 'root preflight reached a replaceable exec path: ' + repr(launches)
+E   AssertionError: root preflight reached a replaceable exec path: [['/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/challenge-v2-base/test_installer_rejects_replace0/runtime-fixture/runtime/bin/python', '-I', '-B', '-c', 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)']]
+E   assert [['/home/vinc...v") else 1)']] == []
+E     
+E     Left contains one more item: ['/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/challenge-v2-base/test_installer_rejects_...n/python', '-I', '-B', '-c', 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)']
+E     Use -v to get more diff
+______________ test_installer_rejects_unknown_existing_inventory _______________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py:142: in test_installer_rejects_unknown_existing_inventory
+    with pytest.raises(ValueError, match='unknown_predecessor'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+----------------------------- Captured stdout call -----------------------------
+{"backup": "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/challenge-v2-base/test_installer_rejects_unknown0/installed/before-audit-upgrade-20261101T124232Z-ce4d537b", "complete": true, "credentials_issued": 0, "installed_not_exercised": true, "inventory_profiles": 45, "next_owner_action": "Review receipt, then enable timer at an approved window; expiry catch-up may invoke renewal.", "renewal_ran": false, "source_hashes": {"provision_gateway_profile_access.py": "93679a24d12ef88f6d71d9b9733b2fcc28f2c58c6897cc20a78440618fd8ca94", "renew_fleet_memory_tokens.py": "68517e61e891e9f9909b92fd8f7f9e79af97c47fcef4404de72573f5acd6e18f", "roles.json": "7ba6314c360eb5dc433798bbcbd2b434d932687ccebff8a4868a2a077cc755dc"}, "timer_started": false}
+=========================== short test summary info ============================
+FAILED ../../../../../dev::test_root_runtime_rejects_replaceable_interpreter_alias
+FAILED ../../../../../dev::test_installer_rejects_replaceable_interpreter_before_launch
+FAILED ../../../../../dev::test_installer_rejects_unknown_existing_inventory
+3 failed, 1 passed, 10 deselected in 0.25s

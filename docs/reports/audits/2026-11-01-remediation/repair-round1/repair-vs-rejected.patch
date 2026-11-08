@@ -1,0 +1,117 @@
+--- rejected/integrations/hermes/deployment/install_fleet_token_renewal.py
++++ repaired/integrations/hermes/deployment/install_fleet_token_renewal.py
+@@ -115,17 +115,13 @@
+     require(sys.argv[1:] == ['--upgrade'], 'usage_upgrade_only')
+     require(os.geteuid() == 0 and os.uname().nodename == 'Ubuntu-Hermes', 'owner_root_on_hermes_only')
+     trusted_path(Path(__file__))
++    trusted_path(Path('/usr/bin/python3').parent)
+     trusted_path(Path('/usr/bin/python3').resolve())
++    trusted_path(PROVISIONER_PYTHON.parent)
+     trusted_path(PROVISIONER_PYTHON.resolve())
+     trusted_path(PROVISIONER_PYTHON.parent.parent / 'pyvenv.cfg')
+     trusted_path(RENEWAL_ROOT)
+     trusted_path(SERVICE)
+-    code, active = systemctl('is-active', UNIT_NAME + '.service')
+-    require(active not in {'active', 'activating', 'reloading'}, 'renewal_job_must_be_idle')
+-    # Installation must not race a scheduled invocation. The owner first stops
+-    # the TIMER only; this does not revoke existing credentials or run renewal.
+-    _, timer_active = systemctl('is-active', UNIT_NAME + '.timer')
+-    require(timer_active == 'inactive', 'stop_renewal_timer_before_upgrade')
+     raw = {}
+     for name in ['provision_gateway_profile_access.py', 'renew_fleet_memory_tokens.py', 'roles.json']:
+         path = DEPLOY / name
+@@ -151,6 +147,13 @@
+     if (RENEWAL_ROOT / 'roles.json').exists():
+         trusted_path(RENEWAL_ROOT / 'roles.json')
+         old['roles.json'] = (RENEWAL_ROOT / 'roles.json').read_bytes()
++        approved_predecessor('roles.json', old['roles.json'], raw['roles.json'])
++    code, active = systemctl('is-active', UNIT_NAME + '.service')
++    require(active not in {'active', 'activating', 'reloading'}, 'renewal_job_must_be_idle')
++    # Installation must not race a scheduled invocation. The owner first stops
++    # the TIMER only; this does not revoke existing credentials or run renewal.
++    _, timer_active = systemctl('is-active', UNIT_NAME + '.timer')
++    require(timer_active == 'inactive', 'stop_renewal_timer_before_upgrade')
+     # Verify the protected child can locate dotenv without touching a profile.
+     check = subprocess.run([str(PROVISIONER_PYTHON), '-I', '-B', '-c',
+         'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("dotenv") else 1)'],
+--- rejected/integrations/hermes/deployment/renew_fleet_memory_tokens.py
++++ repaired/integrations/hermes/deployment/renew_fleet_memory_tokens.py
+@@ -48,6 +48,12 @@
+     claims = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+     require(isinstance(claims, dict) and type(claims.get("exp")) is int
+             and claims["exp"] > 0, "claims_shape")
++    # Keep the existing positive-expiry policy and a four-digit UTC year.
++    require(claims["exp"] <= 253402300799, "claims_expiry")
++    try:
++        require(1 <= time.gmtime(claims["exp"]).tm_year <= 9999, "claims_expiry")
++    except (ValueError, OverflowError, OSError):
++        raise ValueError("claims_expiry") from None
+     return claims["exp"]
+ 
+ 
+@@ -83,8 +89,10 @@
+ 
+ 
+ def validate_runtime() -> None:
+-    # Resolve the distro/venv executable alias, then check the whole real chain.
++    # Trust both the alias directory actually used by exec and its real target.
++    trusted_path(Path("/usr/bin/python3").parent)
+     trusted_path(Path("/usr/bin/python3").resolve())
++    trusted_path(PROVISIONER_PYTHON.parent)
+     trusted_path(PROVISIONER_PYTHON.resolve())
+     trusted_path(PROVISIONER_PYTHON.parent.parent / "pyvenv.cfg")
+     trusted_path(Path(__file__))
+@@ -175,17 +183,19 @@
+     now = int(time.time())
+     renewed, skipped, failed, expiries = [], [], [], {}
+     for profile in profiles():
+-        path = env_path(profile)
+-        token = load_profile_token(path)
+         try:
++            path = env_path(profile)
++            token = load_profile_token(path)
+             current_exp = decode_exp(token) if token else None
+-        except ValueError:
+-            current_exp = None
+-        if current_exp is not None and not needs_renewal(current_exp, now):
+-            skipped.append(profile)
+-            expiries[profile] = time.strftime("%Y-%m-%dT%H:%M:%SZ",
+-                                              time.gmtime(current_exp))
+-            continue
++            if current_exp is not None and not needs_renewal(current_exp, now):
++                expiry = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(current_exp))
++                skipped.append(profile)
++                expiries[profile] = expiry
++                continue
++        except (ValueError, TypeError, OverflowError, OSError):
++            # Invalid/unreadable expiry follows the existing renewal policy,
++            # only after the protected runtime and inventory passed preflight.
++            pass
+         result = renew(profile)
+         if result["complete"]:
+             renewed.append(profile)
+--- rejected/integrations/hermes/enhanced_cognee_mcp/server.py
++++ repaired/integrations/hermes/enhanced_cognee_mcp/server.py
+@@ -71,7 +71,7 @@
+ 
+ 
+ def api(method, path, token, body=None):
+-    """Bounded call to the protected API; returns (status, json-or-None)."""
++    """Bounded call to the protected API; returns (status, JSON object)."""
+     data = json.dumps(body, ensure_ascii=True).encode() if body is not None else None
+     headers = {"Authorization": "Bearer " + token}
+     if data is not None:
+@@ -86,9 +86,12 @@
+         if len(raw) > MAX_BODY:
+             return response.status, {"error": "memory response exceeded its size budget"}
+         try:
+-            return response.status, json.loads(raw) if raw else None
++            payload = json.loads(raw) if raw else None
+         except ValueError:
+             return response.status, {"error": "memory response was not JSON"}
++        if not isinstance(payload, dict):
++            return response.status, {"error": "memory response was not a JSON object"}
++        return response.status, payload
+     finally:
+         connection.close()
+ 

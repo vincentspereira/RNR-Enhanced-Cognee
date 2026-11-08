@@ -1,0 +1,648 @@
+{
+  "cases": [
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_phase_a_dropin_and_canonical_hash",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_is_parsed_without_exposing_environment",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\\\\n PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\\\x31\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\\nListenStream=1\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\r\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\\x00\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\\n]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_full_plan_binds_every_field_and_eight_accepted_payload_hashes",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[source-hash]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[candidate-path]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[candidate-hash]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[candidate-extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[reload]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[alias]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[run-override]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[loaded-missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[credential-duplicate]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[credential-wildcard]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[credential-reset]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_plan_refuses_snapshot_drift[launch-syntax]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[none]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[uid]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[gid]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[writable-file]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[writable-ancestor]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[ancestor-link]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[leaf-link]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[fifo]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[relative]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[dotdot]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_trust_rejects_unsafe_lexical_paths[private]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[none]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_new_private_bundle_and_partial_failure_are_preserved",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_snapshot_collection_reads_only_units_helper_modules_interpreter",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_show_reads_only_selected_properties_and_sanitizes_process_failures",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_protected_reader_never_follows_link_or_reads_fifo",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_output_guard_requires_private_existing_parent_and_absent_target",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_bundle_readback_catches_corruption_before_complete_receipt",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_bundle_rejects_extra_files_before_any_write",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_each_required_interpreter_flag_is_independently_required[isolated]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_each_required_interpreter_flag_is_independently_required[no_site]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_each_required_interpreter_flag_is_independently_required[safe_path]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[Id]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[Names]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[LoadState]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[ActiveState]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[FragmentPath]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[SourcePath]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[DropInPaths]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[NeedDaemonReload]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[User]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[Group]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[DynamicUser]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[ProtectSystem]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[StateDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[StateDirectoryMode]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[UMask]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[PrivateUsers]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[RootDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[WorkingDirectory]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_every_selected_loaded_property_is_bound[ExecStart]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_known_static_source_hashes_are_exactly_the_owner_supplied_pins",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_cli_entry_rejects_unprivileged_checkout_without_writes",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_no_application_imports_no_ledger_and_only_show_subprocess",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_loaded_process_format_drift_is_refused[duplicate]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_loaded_process_format_drift_is_refused[missing]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_loaded_process_format_drift_is_refused[command-extra]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_loaded_process_format_drift_is_refused[unknown-property]",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_writer_rejects_unsafe_parent_before_creation",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_snapshot_never_reads_arbitrary_alias_target",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_interpreter_must_have_execute_permission",
+      "state": "passed"
+    },
+    {
+      "classname": "tests.unit.test_security_first_cutover",
+      "name": "test_inventory_refuses_unknown_manager_search_path",
+      "state": "passed"
+    }
+  ],
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_security_first_cutover.py",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions.xml",
+    "-q"
+  ],
+  "counts": {
+    "error": 0,
+    "failure": 0,
+    "passed": 123,
+    "skipped": 0
+  },
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "distinct_cases": 123,
+  "exit_code": 0,
+  "source_hashes": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  },
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "bc9de604d380fe02651bf068becd3e05fc44e15a24a35529bd241700968c466f",
+  "test_sha256": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+}

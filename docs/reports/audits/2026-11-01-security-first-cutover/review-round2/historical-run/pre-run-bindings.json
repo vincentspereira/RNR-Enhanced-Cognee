@@ -1,0 +1,7 @@
+{
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_original_cases.py": "3d455e834774691cffe20dffed4dd8dcc051b218d8a08a98f2328b2d42ab57d5",
+  "docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_current_review_cases.py": "b85046bdda20ee017c16236fdd0fde0c4405a89d7746ae12bebc4224b63c24e0",
+  "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0",
+  "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+  "docs/reports/audits/2026-11-01-security-first-cutover/OWNER-NEXT-PLAN.md": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416"
+}

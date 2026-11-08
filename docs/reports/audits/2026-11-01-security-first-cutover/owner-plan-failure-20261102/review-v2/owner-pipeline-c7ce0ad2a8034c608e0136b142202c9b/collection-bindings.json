@@ -1,0 +1,13 @@
+[
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py::test_owner_pipefail_retains_empty_target_and_stops",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_owner_pipefail.py",
+      "sha256": "0fd77a3db07f40dcd36630ef915b452a75028ec1113aa02963bed279391bd818"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  }
+]

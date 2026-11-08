@@ -1,0 +1,50 @@
+[
+  {
+    "module": "src.llm_budget",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/llm_budget.py",
+    "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+    "manifest_match": true
+  },
+  {
+    "module": "src.llm_summarize",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/llm_summarize.py",
+    "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+    "manifest_match": true
+  },
+  {
+    "module": "src.memory_api",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/memory_api.py",
+    "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+    "manifest_match": true
+  },
+  {
+    "module": "src.ingestion",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/ingestion.py",
+    "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+    "manifest_match": true
+  },
+  {
+    "module": "src.memory_queries",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/memory_queries.py",
+    "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+    "manifest_match": true
+  },
+  {
+    "module": "src.memory_library",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/memory_library.py",
+    "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+    "manifest_match": true
+  },
+  {
+    "module": "src.memory_daemon",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/memory_daemon.py",
+    "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+    "manifest_match": true
+  },
+  {
+    "module": "src.security.enterprise_auth",
+    "imported_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/src/security/enterprise_auth.py",
+    "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+    "manifest_match": true
+  }
+]

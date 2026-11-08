@@ -1,0 +1,6 @@
+{
+  "manifest": "source-manifest-round2.json",
+  "parsed_python_files": 29,
+  "static_matches": [],
+  "scope": "added production source; new full production files; no secret values recorded"
+}

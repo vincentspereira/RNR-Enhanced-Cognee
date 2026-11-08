@@ -1,0 +1,56 @@
+{
+  "scope": "ordinary-user read-only metadata, not root plan or production credential inspection",
+  "results": [
+    {
+      "check": "installed_helper_trust",
+      "result": "passed"
+    },
+    {
+      "check": "system_python_trust",
+      "result": "passed"
+    },
+    {
+      "check": "systemctl_trust",
+      "result": "passed"
+    },
+    {
+      "check": "unit_source_inventory",
+      "result": "passed"
+    },
+    {
+      "check": "loaded_unit_state",
+      "result": "passed",
+      "matches_expected": true,
+      "mismatches": {}
+    },
+    {
+      "check": "candidate_interpreter_trust",
+      "result": "passed"
+    },
+    {
+      "check": "unit_parse",
+      "path": "/etc/systemd/system/enhanced-cognee-api.service",
+      "result": "passed",
+      "sha256": "af979af033e64fee0dde16a1484ac5eb00ca75282c3478f382599027ec35dba2"
+    },
+    {
+      "check": "unit_parse",
+      "path": "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf",
+      "result": "passed",
+      "sha256": "6ae6c5ebf3ac141c5bd03c8ac6970c308eee4fe5220606b800c2e11f698cee06"
+    },
+    {
+      "check": "unit_parse",
+      "path": "/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf",
+      "result": "refused_or_inaccessible",
+      "error_type": "PermissionError",
+      "errno": 13
+    },
+    {
+      "check": "unit_parse",
+      "path": "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+      "result": "passed",
+      "sha256": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.066" timestamp="2026-11-01T19:06:07.749905+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_backend_stage_audit" name="test_exact_c14_payload" time="0.002"><failure message="AssertionError: stage-only helper is not implemented&#10;assert None is not None">tests/unit/test_backend_stage_audit.py:25: in test_exact_c14_payload
+    assert stage is not None, 'stage-only helper is not implemented'
+E   AssertionError: stage-only helper is not implemented
+E   assert None is not None</failure></testcase></testsuite></testsuites>

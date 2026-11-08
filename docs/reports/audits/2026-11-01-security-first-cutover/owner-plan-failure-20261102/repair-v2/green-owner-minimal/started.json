@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/green-owner-minimal/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/green-owner-minimal/junit.xml",
+    "-vv",
+    "tests/unit/test_security_first_cutover_v2.py"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "uid": 1000,
+  "bound_sha256": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "integrations/hermes/deployment/prepare_security_first_cutover_v2.py": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365",
+    "tests/unit/test_security_first_cutover_v2.py": "6e44f0a05dc4f4b799771dffe9c1946e6040fa52101bcfedf2407c228da2f050"
+  },
+  "baseline_v1": false,
+  "plugin_autoload": true,
+  "started_ns": 1793593721514845368
+}

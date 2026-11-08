@@ -1,0 +1,15 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 4 items
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[exact] [32mPASSED[0m[32m [ 25%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[mismatch] [32mPASSED[0m[32m [ 50%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[symlink] [32mPASSED[0m[32m [ 75%][0m
+docs/reports/audits/2026-11-01-security-first-cutover/review-round2/test_payload_reader.py::test_B05_real_ordinary_payload_reader[absent] [32mPASSED[0m[32m [100%][0m
+
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/payload-run/junit.xml -
+[32m============================== [32m[1m4 passed[0m[32m in 0.11s[0m[32m ===============================[0m

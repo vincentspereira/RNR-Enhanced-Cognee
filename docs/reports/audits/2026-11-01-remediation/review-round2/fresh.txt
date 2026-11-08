@@ -1,0 +1,13 @@
+F...........                                                             [100%]
+=================================== FAILURES ===================================
+_ test_any_invalid_profile_token_does_not_abort_remaining_profiles[deep-unused-claim] _
+../../../.hermes/cache/scratch/review-independent-round2-20261101/test_fresh_challenges.py:52: in test_any_invalid_profile_token_does_not_abort_remaining_profiles
+    assert renewal.main() == 1
+E   AssertionError: assert 0 == 1
+E    +  where 0 = <function main at 0x76e99601c720>()
+E    +    where <function main at 0x76e99601c720> = <module 'fresh_renew_fleet_memory_tokens' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/integrations/hermes/deployment/renew_fleet_memory_tokens.py'>.main
+----------------------------- Captured stdout call -----------------------------
+{"complete": true, "failed": [], "renewed": 0, "skipped": 2, "state": "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh-tmp/test_any_invalid_profile_token0/state.json"}
+=========================== short test summary info ============================
+FAILED ../../../../../dev::test_any_invalid_profile_token_does_not_abort_remaining_profiles[deep-unused-claim]
+1 failed, 11 passed in 0.17s

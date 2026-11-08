@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.180" timestamp="2026-11-01T23:47:49.534438+00:00" hostname="Ubuntu-Hermes"><testcase classname="pytest" name="internal" time="0.000"><error message="internal error">Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/main.py", line 330, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+                         ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/main.py", line 383, in _main
+    config.hook.pytest_collection(session=session)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_caller.py", line 197, in __call__
+    return self._hookexec(
+           ^^^^^^^^^^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_manager.py", line 183, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_execution.py", line 195, in _multicall
+    raise exception
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_execution.py", line 167, in _multicall
+    teardown.throw(exception)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/logging.py", line 803, in pytest_collection
+    return (yield)
+            ^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_execution.py", line 167, in _multicall
+    teardown.throw(exception)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/warnings.py", line 99, in pytest_collection
+    return (yield)
+            ^^^^^
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/pluggy/_execution.py", line 180, in _multicall
+    teardown.send(result)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1447, in pytest_collection
+    self._validate_config_options()
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1464, in _validate_config_options
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1506, in _warn_or_fail_if_strict
+    self.issue_config_time_warning(PytestConfigWarning(message), stacklevel=3)
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1654, in issue_config_time_warning
+    warnings.warn(warning, stacklevel=stacklevel)
+pytest.PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope</error></testcase></testsuite></testsuites>

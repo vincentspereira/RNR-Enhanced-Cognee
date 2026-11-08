@@ -1,0 +1,68 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "review_bindings",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner-4e8a97d170f948849363235d0793d101/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner-4e8a97d170f948849363235d0793d101/junit.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands",
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "exit_code": 1,
+  "plugin_autoload": true,
+  "baseline_switch_unset": true,
+  "basetemp_previously_absent": true,
+  "test_inputs": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588",
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual": "cd2f292ff625283c4b68adf270402e72edbc8c6cffa3136c57c05f5c7f993588"
+  },
+  "junit_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "0",
+      "tests": "4",
+      "time": "0.233",
+      "timestamp": "2026-11-02T04:40:07.872299+00:00",
+      "hostname": "Ubuntu-Hermes"
+    }
+  ],
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected",
+      "name": "test_owner_shell_ast_and_commands",
+      "outcome": "failed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected",
+      "name": "test_owner_unprivileged_reader_actual[exact-reader]",
+      "outcome": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected",
+      "name": "test_owner_unprivileged_reader_actual[wrong-hash]",
+      "outcome": "passed"
+    },
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected",
+      "name": "test_owner_unprivileged_reader_actual[symlink-reader]",
+      "outcome": "passed"
+    }
+  ],
+  "artifacts": {
+    "execution-records.json": "c4c53c2ee3fd0ef8ee22d0531ab1723666b4bc86d7c0c3eea909a1a7f7e46da9",
+    "collection-bindings.json": "c6140d27de62da343aebf29d3faf114c13876e8a49e06dd4f308739c30d8033e",
+    "junit.xml": "c95c18bd1038592db2deb4e7e292aeddc980dfb00c2a28994cf2666cbdd6141a",
+    "stdout.txt": "93397a5887efd4a83445aa03b1769825345ed9abf4df4503fd28d6f0a4991c15",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

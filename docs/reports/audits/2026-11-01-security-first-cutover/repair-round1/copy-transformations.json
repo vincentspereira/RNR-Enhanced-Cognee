@@ -1,0 +1,18 @@
+[
+  {
+    "copied": "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-original-cases.py",
+    "copied_sha256": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213",
+    "new": "content.update({h.CANDIDATE + \"/runtime/lib/python3.12/site-packages/\" + p: b for p, b in module_bytes.items()})",
+    "old": "content.update({h.CANDIDATE + \"/\" + p: b for p, b in module_bytes.items()})",
+    "original": "tests/unit/test_security_first_cutover.py",
+    "original_sha256": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  },
+  {
+    "copied": "docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-review-cases.py",
+    "copied_sha256": "834dcdd7fabe479fceb6909e79dcbe446f6af5347df753cf3b6a2dfb70649f39",
+    "new": "def test_C01_snapshot_rechecks_both_manager_views(monkeypatch, which):\n    snap = invented_snapshot(monkeypatch)\n    content = exact_content(snap, installed=True)",
+    "old": "def test_C01_snapshot_rechecks_both_manager_views(monkeypatch, which):\n    snap = invented_snapshot(monkeypatch)\n    content = exact_content(snap, installed=False)",
+    "original": "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py",
+    "original_sha256": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f"
+  }
+]

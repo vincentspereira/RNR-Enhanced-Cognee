@@ -8,11 +8,13 @@ from src.security.memory_admission import contains_private_memory_details
 
 
 class MemoryQueries:
-    async def list_records(self, scope, *, limit=50, offset=0, category=None, agent=None, include_shared=True):
+    async def list_records(self, scope, *, limit=50, offset=0, category=None, agent=None, include_shared=True, shared_only=False):
         if not 1 <= limit <= 200 or not 0 <= offset <= 100000:
             raise ValueError("Use bounded pagination: limit 1-200 and offset 0-100000")
         sql = "SELECT r.* FROM shared_memory.records r WHERE " + READ_PREDICATE
         args = [scope.tenant, scope.project, include_shared]
+        if shared_only:
+            sql += " AND r.project<>$2"
         for column, value in (("writer_agent", agent),):
             if value is not None:
                 args.append(value)

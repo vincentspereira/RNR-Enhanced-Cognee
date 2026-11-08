@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "docs/reports/audits/2026-11-01-security-first-cutover/review-round1/replay_findings.py"
+  ],
+  "exit_code": 1,
+  "stdout_sha256": "ccea5edf982d0e8c897321ff9c57aa7ed1dd2ed28c09010860c7913b98f83d4c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "review_bindings",
+    "--basetemp=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner2-47891d31a10e483d89f7d5ef75067a9a/sandbox",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner2-47891d31a10e483d89f7d5ef75067a9a/junit.xml",
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected2.py::test_owner_shell_ast_and_commands"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101",
+  "euid": 1000,
+  "exit_code": 0,
+  "plugin_autoload": true,
+  "baseline_switch_unset": true,
+  "basetemp_previously_absent": true,
+  "test_inputs": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected2.py::test_owner_shell_ast_and_commands": "dd2f0c7668d5132d0413699a967e366f6280d262045e8c247cb92d6e818a1cfa"
+  },
+  "junit_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "0.120",
+      "timestamp": "2026-11-02T04:40:28.466004+00:00",
+      "hostname": "Ubuntu-Hermes"
+    }
+  ],
+  "cases": [
+    {
+      "classname": "docs.reports.audits.2026-11-01-security-first-cutover.owner-plan-failure-20261102.review-v2.test_fresh_review_corrected2",
+      "name": "test_owner_shell_ast_and_commands",
+      "outcome": "passed"
+    }
+  ],
+  "artifacts": {
+    "execution-records.json": "969c51dbfb97a60b0110edd9031e35df642f66e1ddf2b761a749e0c69a6de08d",
+    "collection-bindings.json": "0f3321ae9def5db25fa90bd0f662801f755ba55793e5641e905e8760891f227b",
+    "junit.xml": "22296df14ed5d745a625d40cfa2c77ca80123d222c6afeeb95dd2c01563d57cf",
+    "stdout.txt": "f668d5266ce824b7fb73ba9d72c11025e587da0229705054cd4d394012dc075f",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

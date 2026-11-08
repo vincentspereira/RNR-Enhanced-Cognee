@@ -1,5 +1,84 @@
 # Restore native managed MCP launcher support without fleet activation
 
+29 October 2026 next gate PREPARED: the native MCP binding qualification
+group is ready for the owner's sudo terminal. The operator unit verifies the
+completed reconciliation and unchanged disabled policies, stages the pinned
+driver and protocol publicly, and starts hardened transient units running
+the driver as the actual restricted main identity. The identity reads only
+its own Hermes config through a bounded unique-key loader, resolves every
+preserved definition through the release's own _resolve_stdio_command,
+launches it exactly as the native gateway would (networked, matching
+production), handshakes and counts tools, and probes only the Fetch
+private-address refusals. If a Fetch definition exists, a second unit
+performs the authorized public example.com retrieval in raw and default
+modes. Config values never cross the identity boundary; receipts carry
+counts, flags, resolution class and error kinds only. An offline probe
+confirmed bare npx/uvx/node/uv all resolve to the managed release launchers,
+and the managed uv 0.12.3 and Python 3.14.7 binaries run. Fifty-four focused
+tests pass. Receipt: `2026-10-29-native-mcp-binding-preparation.json`.
+
+29 October 2026 COMPLETE: the owner executed the corrected reconciliation. It
+verified every payload member against the sealed archive, corrected 233
+directory modes to their archived 0755 values, and the restricted-identity
+proof PASSED under the actual UID 992/GID 984 with zero capabilities and a
+private network namespace: resident PM runtime qualified, native managed
+uvx/npx launcher selection qualified, python and uv tool digests verified.
+The managed uv 0.12.3 and Python 3.14.7 binaries run; the pm-runtime marker
+is readable by restricted identities. Receipts: retained v1 partial
+publication, retained v2 verification refusal, completed
+operator-managed-mcp-runtime-v3; sanitized record
+`2026-10-29-managed-runtime-install-reconciliation.json`. The managed-launch
+packaging gate is CLOSED. Still separate and open: actual native MCP-server
+binding for all six preserved definitions (including Fetch remote acceptance
+and the already-candidate-qualified HTML extraction), full main
+tools/context and current served capability, production launcher bindings,
+admitted credential renewal/reload, and the final fleet-switch review. No
+service, profile, credential, policy or bot was changed by the installation
+or reconciliation; fleet admission policies remain disabled.
+
+29 October 2026 update (superseded detail, retained): the owner executed the
+protected installation. It
+published every archive member, the pm-runtime marker and the merged facts,
+then failed its restricted-identity proof at checkpoint
+restricted_native_pm_proof: the operator umask had stripped group/other bits
+from created directories, leaving the new payload directories at 0700, so the
+UID-992 proof child could not read pm-runtime/pm-runtime.json. Content was
+unaffected; the failure, its artifact and its proof home are retained and the
+installer refuses automatic retry by design. The first reconciliation attempt
+(v2) refused in its own read-only verification stage and applied nothing: it
+wrongly compared the merged live facts.json against the archive's staged copy
+and walked the whole store, flagging legitimate pre-release tools as
+unexpected. That refusal is retained as evidence. The corrected helper
+verifies the published payload member-by-member against the sealed archive,
+checks the merged facts bytes separately, walks only the three payload
+subtrees, corrects ONLY payload directory modes to their archived 0755
+values, reruns the identical restricted proof with captured output, and
+writes its receipt under operator-managed-mcp-runtime-v3. Read-only checks
+confirmed the correction is safe: verified_tools is read-only without an
+install lock, the unpublished .install.lock is writer-side state, and
+tree_digest ignores mode bits. 47 focused tests pass, including fixture
+reproductions of both refusal causes; the read-only stages passed dry runs
+(5,005 members, 3,719 file digests, no member outside the payload subtrees).
+Receipt: `2026-10-29-managed-runtime-install-reconciliation.json`. Execution
+awaits the owner's sudo terminal; zero restricted bot processes at
+preparation.
+
+29 October 2026 addendum: the retained Fetch HTML-extraction failure was
+root-caused to a stale probe expectation, not the server. The served
+example.com copy was reworded, and with Node present Mozilla Readability moves
+the page heading into article metadata, so the earlier default-mode phrase
+check could not pass even though conversion was correct in both extractor
+paths. The probe now verifies conversion structurally (fixed URL prefix, HTML
+actually converted away, simplification-failure marker absent, non-empty
+body). The retained frozen build passed the full probe again, including the
+new default-mode check: initialize, one-tool catalogue, two private-address
+refusals, raw retrieval and converted-Markdown extraction. Thirty-eight
+focused tests pass; native 3.14.7 compilation passes. Sanitized receipt:
+`2026-10-29-fetch-html-extraction-qualified.json`. This qualifies the
+ordinary-owner candidate build only; native Hermes Fetch binding remains
+unqualified until the protected runtime has its managed PM components and the
+binding group runs. The earlier failure record is preserved, not replayed.
+
 28 October 2026, Ubuntu-Hermes. Delivery remains exact
 21abf4857ca8dce8e0a3aafc725266c8d3754529. The protected Filesystem/REA component
 passes are complete; do not replay them. Native Hermes launcher binding is a

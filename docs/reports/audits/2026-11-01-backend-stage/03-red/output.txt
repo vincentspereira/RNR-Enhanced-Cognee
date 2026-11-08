@@ -1,0 +1,21 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 17 items
+
+tests/unit/test_backend_stage_audit.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31m                 [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_________________ test_preflight_protected_runtime_and_payload _________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:148: in test_preflight_protected_runtime_and_payload
+    [0m[94massert[39;49;00m [96mhasattr[39;49;00m(stage, [33m'[39;49;00m[33minspect_runtime[39;49;00m[33m'[39;49;00m), [33m'[39;49;00m[33mprotected preflight is missing[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: protected preflight is missing[0m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = hasattr(<module 'stage_backend_under_test' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/integrations/hermes/deployment/stage_audit_backend.py'>, 'inspect_runtime')[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/03-red/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_preflight_protected_runtime_and_payload[0m - AssertionError: protected preflight is missing
+[31m========================= [31m[1m1 failed[0m, [32m16 passed[0m[31m in 0.29s[0m[31m =========================[0m

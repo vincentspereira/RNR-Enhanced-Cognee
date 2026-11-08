@@ -1,0 +1,35 @@
+test_library_get_requires_read_not_admin (test_library_read_audit_remediation.LibraryReadTests.test_library_get_requires_read_not_admin) ... FAIL
+test_library_mutation_still_requires_admin (test_library_read_audit_remediation.LibraryReadTests.test_library_mutation_still_requires_admin) ... ok
+test_membership_is_scoped_to_callers_tenant_and_project (test_library_read_audit_remediation.LibraryReadTests.test_membership_is_scoped_to_callers_tenant_and_project) ... ERROR
+test_shared_only_query_retains_existing_read_grants (test_library_read_audit_remediation.LibraryReadTests.test_shared_only_query_retains_existing_read_grants) ... ERROR
+
+======================================================================
+ERROR: test_membership_is_scoped_to_callers_tenant_and_project (test_library_read_audit_remediation.LibraryReadTests.test_membership_is_scoped_to_callers_tenant_and_project)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_library_read_audit_remediation.py", line 29, in test_membership_is_scoped_to_callers_tenant_and_project
+    result=asyncio.run(obj.library_membership(scope))
+                       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'LibraryAccess' object has no attribute 'library_membership'
+
+======================================================================
+ERROR: test_shared_only_query_retains_existing_read_grants (test_library_read_audit_remediation.LibraryReadTests.test_shared_only_query_retains_existing_read_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_library_read_audit_remediation.py", line 43, in test_shared_only_query_retains_existing_read_grants
+    result=asyncio.run(obj.list_records(scope,shared_only=True,include_shared=True))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: MemoryQueries.list_records() got an unexpected keyword argument 'shared_only'
+
+======================================================================
+FAIL: test_library_get_requires_read_not_admin (test_library_read_audit_remediation.LibraryReadTests.test_library_get_requires_read_not_admin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/tests/unit/test_library_read_audit_remediation.py", line 16, in test_library_get_requires_read_not_admin
+    self.assertEqual(route_required_permission('GET',path),Permission.MEMORY_READ)
+AssertionError: <Permission.MEMORY_ADMIN: 'memory:admin'> != <Permission.MEMORY_READ: 'memory:read'>
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (failures=1, errors=2)

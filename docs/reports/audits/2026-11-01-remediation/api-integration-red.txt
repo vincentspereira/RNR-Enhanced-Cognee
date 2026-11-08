@@ -1,0 +1,50 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/unit/test_api_integration_audit.py FFF                             [100%]
+
+=================================== FAILURES ===================================
+_ ApiIntegrationTests.test_partial_ingest_returns_explicit_non_success_receipt _
+tests/unit/test_api_integration_audit.py:41: in test_partial_ingest_returns_explicit_non_success_receipt
+    result=asyncio.run(self.endpoint(app,'/v1/memories/ingest','POST')(body,self.request()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../hermes-agent/.hermes-runtime/python/generation-1786230515-1342-a86bcfde/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+src/memory_api.py:267: in ingest
+    stored.append(await store().remember(scope(request), **record))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_api_integration_audit.py:37: in remember
+    if self.count==2:raise ValueError('invented private exception')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: invented private exception
+_________ ApiIntegrationTests.test_scoped_library_membership_endpoint __________
+tests/unit/test_api_integration_audit.py:22: in test_scoped_library_membership_endpoint
+    result=asyncio.run(self.endpoint(app,'/v1/memories/library/membership','GET')(self.request()))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_api_integration_audit.py:17: in endpoint
+    self.assertTrue(found,'missing declared read API endpoint')
+E   AssertionError: [] is not true : missing declared read API endpoint
+__ ApiIntegrationTests.test_shared_read_endpoint_uses_shared_only_grant_query __
+tests/unit/test_api_integration_audit.py:28: in test_shared_read_endpoint_uses_shared_only_grant_query
+    result=asyncio.run(self.endpoint(app,'/v1/memories/library/','GET')(self.request(),limit=50,offset=0))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_api_integration_audit.py:17: in endpoint
+    self.assertTrue(found,'missing declared read API endpoint')
+E   AssertionError: [] is not true : missing declared read API endpoint
+=========================== short test summary info ============================
+FAILED tests/unit/test_api_integration_audit.py::ApiIntegrationTests::test_partial_ingest_returns_explicit_non_success_receipt
+FAILED tests/unit/test_api_integration_audit.py::ApiIntegrationTests::test_scoped_library_membership_endpoint
+FAILED tests/unit/test_api_integration_audit.py::ApiIntegrationTests::test_shared_read_endpoint_uses_shared_only_grant_query
+============================== 3 failed in 0.81s ===============================

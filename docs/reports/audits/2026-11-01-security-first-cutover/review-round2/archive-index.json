@@ -1,0 +1,192 @@
+{
+  "archive": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round2/evidence.zip",
+  "archive_sha256": "72dea048a7540200e142585dd3e8dfb86148fb766f7a47ed0647863dd735bfe7",
+  "crc_and_all_payload_hashes_verified": true,
+  "exclusions": [
+    "synthetic sandbox trees, symlinks and FIFOs; fixtures remain preserved outside archive under review-round2"
+  ],
+  "members": 44,
+  "payloads": {
+    "REPORT.md": {
+      "bytes": 9966,
+      "sha256": "0755432f6f7a78c562bfc37eda7d13e099ddb41beb10e4adbb4871d3119a8a6f"
+    },
+    "case-reconciliation.json": {
+      "bytes": 97327,
+      "sha256": "de383ff672ecf5806fb359f7cb6587791a0df5b97e9b129065e39f3744fab997"
+    },
+    "command-extraction.json": {
+      "bytes": 804,
+      "sha256": "8421483734c7ec59df5b16be3103368f7c69b636d1f6bf10ec24faf66ecfb718"
+    },
+    "copied-original-cases.py": {
+      "bytes": 28980,
+      "sha256": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213"
+    },
+    "copied-review-cases.py": {
+      "bytes": 15747,
+      "sha256": "834dcdd7fabe479fceb6909e79dcbe446f6af5347df753cf3b6a2dfb70649f39"
+    },
+    "finalize_review.py": {
+      "bytes": 9388,
+      "sha256": "bfc2d436e04367f90f85791120bbb2e71c0a0b0613c3b023c36ddc984b50fd86"
+    },
+    "fixture-adaptations.patch": {
+      "bytes": 1776,
+      "sha256": "19f1bfc3555d6f5e7b4027aa3645f085f05d04dced2c2d82e9507cdbf48c3cce"
+    },
+    "fresh-run/case-phase-outcomes.json": {
+      "bytes": 58833,
+      "sha256": "5e65b867825afdecb9085bf3b6df3e6c48eb9fef3bc3533fab07783bd495205f"
+    },
+    "fresh-run/collected-case-ids.json": {
+      "bytes": 13467,
+      "sha256": "90e0999e3ce596e0f23485bea0c8a6fd30159a14ebaca378bc7554c695215f8d"
+    },
+    "fresh-run/junit.xml": {
+      "bytes": 16503,
+      "sha256": "3dfa13beefd9ea8ec3788bc8db102dfe5184c08d4f6bc33998716f4417127849"
+    },
+    "fresh-run/pre-run-bindings.json": {
+      "bytes": 453,
+      "sha256": "e894145cc7be3a14f5be98b9db65c592b64f493ea358d015501af25be42d00d5"
+    },
+    "fresh-run/process-receipt.json": {
+      "bytes": 20566,
+      "sha256": "7bb04c93879bb473a12c1e107eaf5b0986334a39d430683214a646b511955dfd"
+    },
+    "fresh-run/process.log": {
+      "bytes": 16554,
+      "sha256": "4ec5e90d8a5c6d9a1df69318f66b389aeeee2a7ae9629896472fd8636138a422"
+    },
+    "historical-run/case-phase-outcomes.json": {
+      "bytes": 131415,
+      "sha256": "4cd80613870c84851592e829c41ad39889d9675756b7f247e68bc86c6599ce89"
+    },
+    "historical-run/collected-case-ids.json": {
+      "bytes": 30301,
+      "sha256": "b935a5fe1f05c979eec518809a479cbed1e1b5428f661c2cc3c2ae040d39ba4a"
+    },
+    "historical-run/junit.xml": {
+      "bytes": 36666,
+      "sha256": "ba9b280bbb14588d2e3d5c5ce2faa79b90ac0776a34e326414730b0770ec480e"
+    },
+    "historical-run/pre-run-bindings.json": {
+      "bytes": 763,
+      "sha256": "b39877958c3565fe669addd65edbd74c6f81e1b1fc3dc084bd1f6f3b5318db4a"
+    },
+    "historical-run/process-receipt.json": {
+      "bytes": 44336,
+      "sha256": "73c6dfa7916509763fd6feab64ee605eeb787b06cc738282d00e7ee27a663ae6"
+    },
+    "historical-run/process.log": {
+      "bytes": 35944,
+      "sha256": "f8a7156a78918470ec3faa417ec22fee1a7055ddc69e859e66ff6b38b4f24792"
+    },
+    "input-verification.json": {
+      "bytes": 1782,
+      "sha256": "6b69b57a75948b653edac6b0dde2cd1ec89cc26709178c0dc2ccadd977b1f992"
+    },
+    "owner-block-1.sh": {
+      "bytes": 2593,
+      "sha256": "9ddf2f87895c8175c44715d24b9c33b68b3df3d3aa67275f77e4e833cda9f31e"
+    },
+    "owner-block-2.sh": {
+      "bytes": 130,
+      "sha256": "1b3e899bc42226883539122edc2b2e960de66d9c97b43a16449220f13d1ae5f9"
+    },
+    "owner-python-1.py": {
+      "bytes": 810,
+      "sha256": "18265488044b7adc20d87be2d30e8693a8ece14163a876e352e92235431b968d"
+    },
+    "owner-python-2.py": {
+      "bytes": 345,
+      "sha256": "8e953a872febb3e4182ef4ef8d252a44b72c6206035c9558cea33a81a1bb7fa5"
+    },
+    "owner-python-3.py": {
+      "bytes": 793,
+      "sha256": "1568dd73572e031ce51e40a9207fa50c1f96b00a765889f93d4f4d01a94478f2"
+    },
+    "payload-run/case-phase-outcomes.json": {
+      "bytes": 2683,
+      "sha256": "c257944d562efab92346af1cc9c222ef20ddab45992c2db5a87b723b0b804ffc"
+    },
+    "payload-run/collected-case-ids.json": {
+      "bytes": 577,
+      "sha256": "0a303e1d9a6c2c0762012f2a8de262f264a6df760ba2ff245a397a79b42437d5"
+    },
+    "payload-run/junit.xml": {
+      "bytes": 963,
+      "sha256": "801b8698aeb4ebb4fde170abcf811dfe17444029b7dfda42d7717cf38cbe714d"
+    },
+    "payload-run/pre-run-bindings.json": {
+      "bytes": 451,
+      "sha256": "b6beb416e7f979f57d1d57598ef3b9d5d65495d4ce11620fb0a8294c280c8d52"
+    },
+    "payload-run/process-receipt.json": {
+      "bytes": 2582,
+      "sha256": "d765884120ab10bc3c420057cf2b9c29b040ac463b03e28a012c9995a90e9863"
+    },
+    "payload-run/process.log": {
+      "bytes": 1634,
+      "sha256": "4903ffc17ee1699128752ce961e070e850029daa566c753f44e4b2ac91394001"
+    },
+    "round2_plugin.py": {
+      "bytes": 644,
+      "sha256": "80b3e4214034eb80716776bb73bcfc39059f7e8b9a97dbac7275bb84180d451a"
+    },
+    "run_payload.py": {
+      "bytes": 591,
+      "sha256": "68a59b92327afd5652840e2cac72c23a9f5989b4ba4c9a55cc5cb9017f48fb0f"
+    },
+    "run_review.py": {
+      "bytes": 3007,
+      "sha256": "bee82e469a7a7de4dc328d40515c4a6322939fcf3ecf968b21255748cfaad2c6"
+    },
+    "setup_review.py": {
+      "bytes": 1873,
+      "sha256": "c69b718dce002d5c2b19a6dfdc52689c4bd4cc195bcd94545b57bba607e76a64"
+    },
+    "source-snapshots/OWNER-NEXT-PLAN.md": {
+      "bytes": 6225,
+      "sha256": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416"
+    },
+    "source-snapshots/prepare_security_first_cutover.py": {
+      "bytes": 19946,
+      "sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63"
+    },
+    "source-snapshots/round2-review-manifest.json": {
+      "bytes": 1790,
+      "sha256": "b7234083655b534bd7d661d828aca084c2448681198dee5c81ecb67a1522e6b3"
+    },
+    "static-and-freeze-verification.json": {
+      "bytes": 2246,
+      "sha256": "57da79a97e342a1810c93fb02cf56688680c8ab4c53bc7256b3634532bd2bbb9"
+    },
+    "test_current_original_cases.py": {
+      "bytes": 742,
+      "sha256": "3d455e834774691cffe20dffed4dd8dcc051b218d8a08a98f2328b2d42ab57d5"
+    },
+    "test_current_review_cases.py": {
+      "bytes": 2417,
+      "sha256": "b85046bdda20ee017c16236fdd0fde0c4405a89d7746ae12bebc4224b63c24e0"
+    },
+    "test_fresh_challenges.py": {
+      "bytes": 18357,
+      "sha256": "b130b12c56a8138102f30d7e72e6dee74b6a1c0d96a4c79c7455bffb7c0ed442"
+    },
+    "test_payload_reader.py": {
+      "bytes": 1662,
+      "sha256": "fdec69a27eca451e91e7ca7a6fb14f5158e4381ad5d63c3f06156eec0dc766da"
+    },
+    "verdict.json": {
+      "bytes": 3973,
+      "sha256": "fbef2f472432c6e73f1baef7afd8cd59499e6ae034a98c5c0e8e12668a99e4a6"
+    }
+  },
+  "source_snapshot_bindings": {
+    "source-snapshots/OWNER-NEXT-PLAN.md": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/OWNER-NEXT-PLAN.md",
+    "source-snapshots/prepare_security_first_cutover.py": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover.py",
+    "source-snapshots/round2-review-manifest.json": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/parent/round2-review-manifest.json"
+  }
+}

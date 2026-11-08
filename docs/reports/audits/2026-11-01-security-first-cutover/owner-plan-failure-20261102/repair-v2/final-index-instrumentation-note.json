@@ -1,0 +1,7 @@
+{
+  "classification": "evidence-index assembly assertion only; no test/helper failure",
+  "observed_exception": "AssertionError at set(manifest).issubset(finalbindings)",
+  "cause": "Review input manifest intentionally omitted original OWNER-NEXT-PLAN.md, which is separately bound by baseline-manifest.json. Index assertion incorrectly required it in both. No writes or validation subprocess occurred in that call.",
+  "correction": "Validate preserved baseline hashes independently; do not require review manifest key inclusion.",
+  "source_tests_owner_changed": false
+}

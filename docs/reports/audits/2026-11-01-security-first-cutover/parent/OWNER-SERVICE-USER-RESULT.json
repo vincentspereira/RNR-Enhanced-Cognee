@@ -1,0 +1,27 @@
+{
+  "source": "owner_supplied_terminal_result",
+  "date": "2026-11-01",
+  "result": {
+    "complete": true,
+    "uid": 63764,
+    "prefix": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime",
+    "modules_imported": 8,
+    "correct_module_paths": true,
+    "source_writable": false,
+    "api_started": false,
+    "credentials_passed": false
+  },
+  "independent_readonly_confirmation": {
+    "uid_account_match_at_observation": true,
+    "api_still_on_old_candidate": true,
+    "dynamic_user": true,
+    "state_directory": "",
+    "protect_system": "strict",
+    "umask": "0077"
+  },
+  "scope": "Candidate service-account import/path/read-only permission check only; not full startup or service-namespace ledger acceptance",
+  "owner_chosen_approach": "Security fixes first; temporarily withhold optional backend model analysis until accounting and recovery pass",
+  "immediate_restart_approved": false,
+  "new_preparation_scope": "A new stage-only protected-artifact package, not a live unit write, activation, restart or ledger creation",
+  "parallel_work_open": ["40-role execution-tool proposal", "four-specialist execution-tool review", "scheduled renewal execution evidence"]
+}

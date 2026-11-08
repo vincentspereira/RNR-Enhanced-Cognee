@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="50" time="0.313" timestamp="2026-11-02T00:01:46.198769+00:00" hostname="Ubuntu-Hermes"><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_L01_installed_site_packages_layout_is_readable" time="0.003" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules" time="0.002" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor" time="0.019" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[[Service]\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[[Unit]\nDescription=trailing\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[User=enhanced-cognee-api\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=/invented\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[ExecStart=\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\nEnvironment=PYTHONUNBUFFERED=1\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n[Install]\nWantedBy=multi-user.target\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\nUnknown=canary\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n\x00]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n\r]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1 # comment\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=&quot;HF_HUB_OFFLINE=1&quot;junk\n]" time="0.000" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\t\n]" time="0.000" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n User=root\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P01_full_input_parser_rejects_suffix_mutations[Environment=HF_HUB_OFFLINE=1\n;comment\nUser=root\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P02_supported_environment_positive_controls[Environment=&quot;HF_HUB_OFFLINE=1&quot;\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P02_supported_environment_positive_controls[Environment='HF_HUB_OFFLINE=1'\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_P02_supported_environment_positive_controls[Environment=HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1\n]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_C01_snapshot_rechecks_both_manager_views[inventory]" time="0.001"><failure message="KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f3ce8bbf830&gt;
+which = 'inventory'
+
+    @pytest.mark.parametrize('which', ['inventory', 'loaded'])
+    def test_C01_snapshot_rechecks_both_manager_views(monkeypatch, which):
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=False)
+        calls = {'inventory': 0, 'loaded': 0}
+        def inventory():
+            calls['inventory'] += 1
+            result = list(h.SOURCES)
+            if which == 'inventory' and calls['inventory'] == 2:
+                result.append('/invented.conf')
+            return result
+        def loaded():
+            calls['loaded'] += 1
+            result = dict(h.EXPECTED_LOADED)
+            if which == 'loaded' and calls['loaded'] == 2:
+                result['NeedDaemonReload'] = 'yes'
+            return result
+        with pytest.raises(h.Refusal, match='snapshot_changed'):
+&gt;           h.collect_snapshot(reader=lambda p: content[p], guard=lambda p, **kw: p, inventory=inventory, loaded=loaded)
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.&lt;lambda&gt; at 0x7f3ce8c0a7a0&gt;
+guard = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.&lt;lambda&gt; at 0x7f3ce8c0a8e0&gt;
+inventory = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.inventory at 0x7f3ce8c0a520&gt;
+loaded = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.loaded at 0x7f3ce8c0a700&gt;
+
+    def collect_snapshot(*, reader=read_protected, guard=trusted_path,
+                         inventory=inventory_sources, loaded=read_loaded):
+        first_inventory, first_loaded = inventory(), loaded()
+        guard(CANDIDATE, kind="directory")
+        lexical = CANDIDATE + "/runtime/bin/python"
+        resolved = guard(lexical, allow_alias=True, executable=True)
+        if resolved != lexical and re.fullmatch(r"/usr/bin/python3(?:\.[0-9]+)?", resolved) is None:
+            raise Refusal("startup_interpreter_target_refused")
+        snapshot = {
+            "inventory": first_inventory, "loaded": first_loaded,
+            "source_bytes": {path: reader(path) for path in SOURCES},
+            "candidate": CANDIDATE,
+&gt;           "candidate_hashes": {path: digest(reader(CANDIDATE + "/runtime/lib/python3.12/site-packages/" + path)) for path in MODULE_HASHES},
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "helper_sha256": digest(reader(INSTALLED_HELPER)),
+            "startup_interpreter": {"lexical": lexical, "resolved": resolved, "sha256": digest(reader(resolved))},
+        }
+
+integrations/hermes/deployment/prepare_security_first_cutover.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+p = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+&gt;   h.collect_snapshot(reader=lambda p: content[p], guard=lambda p, **kw: p, inventory=inventory, loaded=loaded)
+                                        ^^^^^^^^^^
+E   KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: KeyError</failure></testcase><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_C01_snapshot_rechecks_both_manager_views[loaded]" time="0.001"><failure message="KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f3ce8bf3fe0&gt;
+which = 'loaded'
+
+    @pytest.mark.parametrize('which', ['inventory', 'loaded'])
+    def test_C01_snapshot_rechecks_both_manager_views(monkeypatch, which):
+        snap = invented_snapshot(monkeypatch)
+        content = exact_content(snap, installed=False)
+        calls = {'inventory': 0, 'loaded': 0}
+        def inventory():
+            calls['inventory'] += 1
+            result = list(h.SOURCES)
+            if which == 'inventory' and calls['inventory'] == 2:
+                result.append('/invented.conf')
+            return result
+        def loaded():
+            calls['loaded'] += 1
+            result = dict(h.EXPECTED_LOADED)
+            if which == 'loaded' and calls['loaded'] == 2:
+                result['NeedDaemonReload'] = 'yes'
+            return result
+        with pytest.raises(h.Refusal, match='snapshot_changed'):
+&gt;           h.collect_snapshot(reader=lambda p: content[p], guard=lambda p, **kw: p, inventory=inventory, loaded=loaded)
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.&lt;lambda&gt; at 0x7f3ce8c584a0&gt;
+guard = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.&lt;lambda&gt; at 0x7f3ce8c587c0&gt;
+inventory = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.inventory at 0x7f3ce8c58680&gt;
+loaded = &lt;function test_C01_snapshot_rechecks_both_manager_views.&lt;locals&gt;.loaded at 0x7f3ce8c58400&gt;
+
+    def collect_snapshot(*, reader=read_protected, guard=trusted_path,
+                         inventory=inventory_sources, loaded=read_loaded):
+        first_inventory, first_loaded = inventory(), loaded()
+        guard(CANDIDATE, kind="directory")
+        lexical = CANDIDATE + "/runtime/bin/python"
+        resolved = guard(lexical, allow_alias=True, executable=True)
+        if resolved != lexical and re.fullmatch(r"/usr/bin/python3(?:\.[0-9]+)?", resolved) is None:
+            raise Refusal("startup_interpreter_target_refused")
+        snapshot = {
+            "inventory": first_inventory, "loaded": first_loaded,
+            "source_bytes": {path: reader(path) for path in SOURCES},
+            "candidate": CANDIDATE,
+&gt;           "candidate_hashes": {path: digest(reader(CANDIDATE + "/runtime/lib/python3.12/site-packages/" + path)) for path in MODULE_HASHES},
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "helper_sha256": digest(reader(INSTALLED_HELPER)),
+            "startup_interpreter": {"lexical": lexical, "resolved": resolved, "sha256": digest(reader(resolved))},
+        }
+
+integrations/hermes/deployment/prepare_security_first_cutover.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+p = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+&gt;   h.collect_snapshot(reader=lambda p: content[p], guard=lambda p, **kw: p, inventory=inventory, loaded=loaded)
+                                        ^^^^^^^^^^
+E   KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py:200: KeyError</failure></testcase><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_C02_prepare_rechecks_unpinned_but_approved_hashes[helper_sha256]" time="0.002" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_C02_prepare_rechecks_unpinned_but_approved_hashes[startup_interpreter]" time="0.002" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_E01_metadata_error_is_not_echoed[error0]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_E01_metadata_error_is_not_echoed[error1]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_E01_metadata_error_is_not_echoed[error2]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_I01_runtime_source_override_is_not_ignored[service.d]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_I01_runtime_source_override_is_not_ignored[enhanced-.service.d]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-.service.d]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_I01_runtime_source_override_is_not_ignored[enhanced-cognee-api.service.d]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[link]" time="0.010" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[hardlink]" time="0.006" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[owner]" time="0.005" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[ancestor-owner]" time="0.005" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[ancestor-write]" time="0.004" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_T01_reader_guard_rejects_untrusted_inputs[fifo]" time="0.004" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_W01_partial_artifacts_are_preserved[40-audit-security-first.conf]" time="0.004" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_W01_partial_artifacts_are_preserved[manifest.json]" time="0.011" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_W01_partial_artifacts_are_preserved[receipt.json]" time="0.011" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_M01_plan_does_not_call_writer_or_change_sandbox" time="0.003" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args0]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args1]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args2]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args3]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args4]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args5]" time="0.001" /><testcase classname="docs.reports.audits.2026-11-01-security-first-cutover.repair-round1.test_current_review_cases" name="test_A01_literal_cli_args_fail_before_inspection[args6]" time="0.001" /></testsuite></testsuites>

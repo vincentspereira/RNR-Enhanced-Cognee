@@ -1,0 +1,40 @@
+{
+  "recorded_date": "2026-10-29",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "subject": "Live main profile memory provider selection - READ-ONLY inspection complete",
+  "evidence": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-evidence/main-memory-selection-g5ikx5oz",
+  "finding": {
+    "memory_provider": "enhanced_cognee",
+    "provider_selected": true,
+    "memory_keys": ["provider"],
+    "mcp_definition_count_live": 4,
+    "mcp_definition_names": ["context7", "deepwiki", "fetch", "filesystem"],
+    "config_path": "/var/lib/enhanced-cognee-profiles/5592956882ea9a13/.hermes/config.yaml",
+    "config_sha256": "0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289",
+    "config_bytes": 4322
+  },
+  "meaning": "The live main profile is ALREADY switched to Enhanced Cognee as its extended memory provider; no controlled switch is needed. The remaining main-profile gates are served-capability and maximum-context capture.",
+  "boundaries": {
+    "read_only": true,
+    "keys_read": false,
+    "model_called": false,
+    "memory_api_called": false,
+    "provider_switched": false,
+    "all_admission_policies_preserved_disabled": true
+  },
+  "retained_attempts": {
+    "operator-main-memory-selection-v1": {
+      "error_kind": "PermissionError",
+      "cause": "the child read its pinned support file from the artifact tree, which the hardened unit deliberately makes inaccessible",
+      "correction": "the support file is staged beside the probe in the public programs directory",
+      "preserved": true
+    }
+  },
+  "tool": {
+    "probe": "probe_main_memory_selection.py 3ad7f545b4ef1a2837e28b40c5d0161a57be19e778f13f58348681e64d25c1d2",
+    "helper": "inspect_main_memory_selection.py bb66df0840dd286fc7c1ea2857bb9c0ba05c93f178111b74ffbd26e9fe3ea459",
+    "reused_pinned_support": "probe_native_mcp_binding.py a54f321c30b64924a3b72d0b779f90997ec89674f65e192d6643cd02c3e062d5",
+    "tests_passed": 63
+  }
+}

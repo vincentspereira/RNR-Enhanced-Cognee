@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/usr/bin/bash",
+    "-n",
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/corrected-owner-4e8a97d170f948849363235d0793d101/sandbox/test_owner_shell_ast_and_comma0/block-1.sh"
+  ],
+  "returncode": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

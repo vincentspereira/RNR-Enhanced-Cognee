@@ -1,0 +1,65 @@
+{
+  "exitstatus": 1,
+  "records": [
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands",
+      "when": "call",
+      "outcome": "failed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_shell_ast_and_commands",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[exact-reader]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[exact-reader]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[exact-reader]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[wrong-hash]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[wrong-hash]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[wrong-hash]",
+      "when": "teardown",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[symlink-reader]",
+      "when": "setup",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[symlink-reader]",
+      "when": "call",
+      "outcome": "passed"
+    },
+    {
+      "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected.py::test_owner_unprivileged_reader_actual[symlink-reader]",
+      "when": "teardown",
+      "outcome": "passed"
+    }
+  ]
+}

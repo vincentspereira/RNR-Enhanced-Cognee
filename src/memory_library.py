@@ -40,6 +40,15 @@ CREATE TABLE IF NOT EXISTS shared_memory.library_publications (
 
 
 class LibraryAccess:
+    async def library_membership(self, scope) -> dict:
+        """Return only this caller project's approved library memberships."""
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetch("""SELECT library,can_publish
+                FROM shared_memory.library_members
+                WHERE tenant=$1 AND project=$2 ORDER BY library LIMIT 200""",
+                scope.tenant, scope.project)
+        return {"memberships": [dict(row) for row in rows]}
+
     async def set_library_member(self, scope, *, library: str, member_project: str,
                                  admitted: bool, can_publish: bool = False) -> dict:
         if not scope.admin:

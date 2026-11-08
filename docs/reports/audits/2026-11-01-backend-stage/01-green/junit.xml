@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.039" timestamp="2026-11-01T19:06:32.796057+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_backend_stage_audit" name="test_exact_c14_payload" time="0.002" /></testsuite></testsuites>

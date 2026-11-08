@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.058" timestamp="2026-11-01T23:35:57.093344+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_phase_a_dropin_and_canonical_hash" time="0.002" /></testsuite></testsuites>

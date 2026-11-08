@@ -1,0 +1,21 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 1 item
+
+tests/unit/test_security_first_cutover_v2.py::test_owner_four_line_launch_uses_whole_unit_dynamic_identity [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_________ test_owner_four_line_launch_uses_whole_unit_dynamic_identity _________[0m
+[1m[31mtests/unit/test_security_first_cutover_v2.py[0m:45: in test_owner_four_line_launch_uses_whole_unit_dynamic_identity
+    [0m[94massert[39;49;00m [96mall[39;49;00m([33mb[39;49;00m[33m"[39;49;00m[33mUser=[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m raw [95mand[39;49;00m [33mb[39;49;00m[33m"[39;49;00m[33mGroup=[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m raw [94mfor[39;49;00m raw [95min[39;49;00m snap[[33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m].values())[90m[39;49;00m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = all(<generator object test_owner_four_line_launch_uses_whole_unit_dynamic_identity.<locals>.<genexpr> at 0x7bbe63ff2dc0>)[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/red-owner-minimal/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover_v2.py::[1mtest_owner_four_line_launch_uses_whole_unit_dynamic_identity[0m - assert False
+ +  where False = all(<generator object test_owner_four_line_launch_uses_whole_unit_dynamic_identity.<locals>.<genexpr> at 0x7bbe63ff2dc0>)
+[31m============================== [31m[1m1 failed[0m[31m in 0.14s[0m[31m ===============================[0m

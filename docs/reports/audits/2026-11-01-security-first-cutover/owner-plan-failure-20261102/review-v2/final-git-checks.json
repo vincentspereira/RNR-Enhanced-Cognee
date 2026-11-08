@@ -1,0 +1,44 @@
+{
+  "head": {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "72d2d90c3383cc9a83b7dfed7e3060c6ab27a8cf\n",
+    "stderr": ""
+  },
+  "branch": {
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exit_code": 0,
+    "stdout": "codex/enhanced-cognee-security-first-cutover-20261101\n",
+    "stderr": ""
+  },
+  "tracked_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "index_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--exit-code"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

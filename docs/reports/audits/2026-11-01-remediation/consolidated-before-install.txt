@@ -1,0 +1,70 @@
+OK   service api                                      service activity only
+OK   service postgres                                 service activity only
+OK   service qdrant                                   service activity only
+OK   service graph                                    service activity only
+OK   service cache                                    service activity only
+OK   service index                                    service activity only
+OK   memory API health                                schema readiness; not a retrieval/capture test
+OK   main assistant memory status                     authenticated main scope
+ERR  installed MCP equals candidate                   byte equality; source fixes are not installed until this passes
+ERR  role accounting-specialist                       configured_launch_mismatch
+ERR  role ai-safety-guardrails                        configured_launch_mismatch
+ERR  role aiml-engineer                               configured_launch_mismatch
+ERR  role backend-developer                           configured_launch_mismatch
+ERR  role chief-of-staff                              configured_launch_mismatch
+ERR  role cloud-engineer                              configured_launch_mismatch
+ERR  role code-implementer                            configured_launch_mismatch
+ERR  role code-reviewer                               configured_launch_mismatch
+ERR  role context-engineer                            configured_launch_mismatch
+ERR  role cross-project-collaborator                  configured_launch_mismatch
+ERR  role customer-feedback-analyst                   configured_launch_mismatch
+ERR  role data-engineer                               configured_launch_mismatch
+ERR  role data-gen-rl                                 configured_launch_mismatch
+ERR  role debug-specialist                            configured_launch_mismatch
+ERR  role deep-research-specialist                    configured_launch_mismatch
+ERR  role deliberation-moderator                      configured_launch_mismatch
+ERR  role deployment-engineer                         configured_launch_mismatch
+ERR  role devops-engineer                             configured_launch_mismatch
+ERR  role ecommerce-kdp-publisher                     configured_launch_mismatch
+ERR  role educational-content-author                  configured_launch_mismatch
+ERR  role fiction-content-author                      configured_launch_mismatch
+ERR  role frontend-developer                          configured_launch_mismatch
+ERR  role github-collaborator                         configured_launch_mismatch
+ERR  role governance-privacy                          configured_launch_mismatch
+ERR  role integration-specialist                      configured_launch_mismatch
+ERR  role legal-specialist                            configured_launch_mismatch
+ERR  role marketing-social-manager                    configured_launch_mismatch
+ERR  role media-producer                              configured_launch_mismatch
+ERR  role mobile-developer                            configured_launch_mismatch
+ERR  role multimedia-producer                         configured_launch_mismatch
+ERR  role niche-hunter                                configured_launch_mismatch
+ERR  role observability-specialist                    configured_launch_mismatch
+ERR  role performance-optimiser                       configured_launch_mismatch
+ERR  role print-merch-designer                        configured_launch_mismatch
+ERR  role project-orchestrator                        configured_launch_mismatch
+ERR  role security-specialist                         configured_launch_mismatch
+ERR  role social-work-specialist                      configured_launch_mismatch
+ERR  role software-architect                          configured_launch_mismatch
+ERR  role technical-consultant                        configured_launch_mismatch
+ERR  role technical-writer                            configured_launch_mismatch
+ERR  role test-engineer                               configured_launch_mismatch
+ERR  role theology-content-author                     configured_launch_mismatch
+ERR  role uxui-engineer                               configured_launch_mismatch
+ERR  role web-researcher                              configured_launch_mismatch
+ERR  main assistant tools                             plugin_admission_not_verified
+OK   renewal timer active                             schedule only
+OK   renewal last service result                      last execution result, not future success
+ERR  renewal root-safe entry point                    must not execute a user-writable virtual environment
+ERR  renewal inventory and freshness                  requires all 45 identities and state no older than eight days; never runs renewal
+OK   enhanced-cognee-backup timer                     activity only, not restore proof
+OK   enhanced-cognee-backup last result               retained service execution result
+OK   enhanced-cognee-profile-backup timer             activity only, not restore proof
+OK   enhanced-cognee-profile-backup last result       retained service execution result
+OK   enhanced-cognee-qualified-fleet-backup-v2 timer  activity only, not restore proof
+OK   enhanced-cognee-qualified-fleet-backup-v2 last result retained service execution result
+SKIP rotation: postgresql                             owner-only receipt access
+SKIP rotation: valkey                                 owner-only receipt access
+SKIP rotation: qdrant                                 owner-only receipt access
+SKIP rotation: application                            owner-only receipt access
+SKIP rotation: arcadedb                               owner-only receipt access
+{"checks": 69, "complete": false, "failed": ["installed MCP equals candidate", "role accounting-specialist", "role ai-safety-guardrails", "role aiml-engineer", "role backend-developer", "role chief-of-staff", "role cloud-engineer", "role code-implementer", "role code-reviewer", "role context-engineer", "role cross-project-collaborator", "role customer-feedback-analyst", "role data-engineer", "role data-gen-rl", "role debug-specialist", "role deep-research-specialist", "role deliberation-moderator", "role deployment-engineer", "role devops-engineer", "role ecommerce-kdp-publisher", "role educational-content-author", "role fiction-content-author", "role frontend-developer", "role github-collaborator", "role governance-privacy", "role integration-specialist", "role legal-specialist", "role marketing-social-manager", "role media-producer", "role mobile-developer", "role multimedia-producer", "role niche-hunter", "role observability-specialist", "role performance-optimiser", "role print-merch-designer", "role project-orchestrator", "role security-specialist", "role social-work-specialist", "role software-architect", "role technical-consultant", "role technical-writer", "role test-engineer", "role theology-content-author", "role uxui-engineer", "role web-researcher", "main assistant tools", "renewal root-safe entry point", "renewal inventory and freshness"], "scope": "configuration, catalogue, scoped status and job metadata; NOT native capture qualification", "skipped": ["rotation: postgresql", "rotation: valkey", "rotation: qdrant", "rotation: application", "rotation: arcadedb"]}

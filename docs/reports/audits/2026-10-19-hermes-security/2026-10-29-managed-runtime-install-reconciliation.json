@@ -1,0 +1,100 @@
+{
+  "recorded_date": "2026-10-29",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "worktree_branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "subject": "Protected managed-MCP-runtime install: retained partial attempt and prepared reconciliation",
+  "owner_install_attempt": {
+    "command": "sudo /usr/bin/python3 -I install_managed_mcp_runtime.py (no arguments)",
+    "result": "complete=false",
+    "checkpoint": "restricted_native_pm_proof",
+    "archive_members_validated": 5005,
+    "managed_launcher_packaging_changed": true,
+    "backend_runtime_changed": false,
+    "services_restarted": false,
+    "profiles_changed": false,
+    "credentials_issued": 0,
+    "keys_read": false,
+    "category": "managed_pm_install_incomplete_preserve_evidence_no_automatic_retry",
+    "error_kind": "ValueError",
+    "retained_artifact": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-managed-mcp-runtime-v1",
+    "retained_proof_home": "/var/tmp/ec-managed-pm-proof-88e5c4b6768d87576c0cc62f"
+  },
+  "root_cause": {
+    "defect": "operator umask 0o077 stripped group/other bits from mkdir(mode=0o755); the explicit chmod covered only regular files",
+    "observed_modes": {
+      "pm-runtime": "0700 root:root",
+      "python/python-3.14.7+20260901-linux-x64": "0700 root:root",
+      "python/uv-0.12.3-linux-x64": "0700 root:root",
+      "pre-existing python/node-26.7.0-linux-x64": "0755 root:root"
+    },
+    "failure_mechanism": "the UID-992 proof child could not read pm-runtime/pm-runtime.json (EACCES), exited nonzero, and the installer require() raised ValueError",
+    "content_impact": "none: every archive member, its digests, the pm-runtime marker and the merged facts.json published correctly",
+    "downstream_checks_confirmed_safe": [
+      "verified_tools is explicitly read-only and takes no install lock",
+      "the absent python/.install.lock is writer-side state; readers do not require it",
+      "tree_digest covers relpath and content only, never mode bits, so mode correction cannot disturb recorded digests"
+    ]
+  },
+  "reconciliation_helper": {
+    "source": "integrations/hermes/deployment/reconcile_managed_mcp_runtime.py",
+    "sha256": "5bdb2d8a8be87e27ceba925e2c437eac1cd1b1e54403eb4d3fd485374dc5f4b6",
+    "sha256_first_revision_superseded": "ad12507a6480e6c890b71956ae684ab28afdd4755e823bbb319c1bb83d516c8d",
+    "design": [
+      "refuses unless the retained v1 summary is the known publication-stage partial or the v2 summary is the known verification-stage refusal",
+      "verifies the pinned v1 installer source hash before reusing its code",
+      "re-admits the sealed archive (hash, admission, per-file digests) and verifies the published payload member-by-member, refusing any unexpected file, mode, owner or entry",
+      "verifies the merged live facts.json bytes separately instead of comparing them to the archive's staged copy",
+      "walks only the three payload subtrees; the store root legitimately keeps pre-release tools (ffmpeg, node, npm, ripgrep)",
+      "corrects only payload directory modes to their archived 0755 values and re-verifies",
+      "reruns the identical restricted-identity proof with stdout/stderr captured into the artifact regardless of outcome",
+      "records its receipt under operator-managed-mcp-runtime-v3; the v1 partial publication and the v2 verification refusal stay retained and untouched",
+      "idempotent on its own completed receipt; never retries a failed attempt automatically"
+    ],
+    "tests": {"passed": 47, "failures": 0, "errors": 0, "skips": 0, "warnings": 0, "new": 9},
+    "dry_run_readonly_stages": {"v1_source_verified": true, "archive_members": 5005, "file_digests": 3719, "pass": true,
+      "walk_root_coverage": "no archive member lies outside the payload subtrees"},
+    "execution": {
+      "status": "complete",
+      "executed_by": "owner sudo terminal, 2026-10-29",
+      "receipt": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-managed-mcp-runtime-v3/summary.json",
+      "directories_corrected": 233,
+      "payload_subtrees_verified": ["pm-runtime", "python/python-3.14.7+20260901-linux-x64", "python/uv-0.12.3-linux-x64"],
+      "proof": {
+        "complete": true,
+        "resident_pm_runtime_qualified": true,
+        "native_managed_launcher_selection_qualified": true,
+        "tool_digests_verified": ["python", "uv"],
+        "restricted_identity_verified": true,
+        "network_namespace_isolated": true,
+        "native_mcp_server_binding_qualified": false,
+        "profiles_read": false,
+        "model_called": false,
+        "memory_api_called": false
+      },
+      "retained_proof_home": "/var/tmp/ec-managed-pm-reconcile-8dc946343a96f60165e1bb2c",
+      "independent_post_checks": {
+        "marker_readable_by_ordinary_user": true,
+        "payload_dirs_mode_0755": true,
+        "managed_uv_binary_runs": "uv 0.12.3 (x86_64-unknown-linux-gnu)",
+        "managed_python_runs": "Python 3.14.7"
+      }
+    }
+  },
+  "retained_reconciliation_attempts": {
+    "operator-managed-mcp-runtime-v2": {
+      "checkpoint": "archive_and_live_tree_verification",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "none (refusal preceded the correction stage)",
+      "cause": "the first revision wrongly size/hash-compared the merged live facts.json against the archive's staged copy, and its tree walk covered the whole store, flagging legitimate pre-release tools as unexpected entries",
+      "preserved": true
+    }
+  },
+  "boundaries": {
+    "fleet_launch_approved": false,
+    "native_mcp_server_binding_qualified": false,
+    "private_data_or_keys_read": false,
+    "services_or_profiles_changed_by_reconciliation": false
+  }
+}

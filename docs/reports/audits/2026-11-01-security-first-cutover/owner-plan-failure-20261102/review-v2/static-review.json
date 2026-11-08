@@ -1,0 +1,53 @@
+{
+  "actual_diff_matches_supplied_except_headers": true,
+  "security_scan_added_lines": {
+    "hardcoded_secret": [],
+    "shell_injection": [],
+    "dynamic_execution": [],
+    "unsafe_deserialization": [],
+    "sql_interpolation": []
+  },
+  "helper_imports": [
+    "hashlib",
+    "json",
+    "re",
+    "shlex",
+    "os",
+    "stat",
+    "pathlib",
+    "subprocess",
+    "sys"
+  ],
+  "historical_test_body_comparison": {
+    "test_phase_a_dropin_and_canonical_hash": true,
+    "test_launch_unit_is_parsed_without_exposing_environment": true,
+    "test_launch_unit_refuses_ambiguous_or_secret_directives": true,
+    "test_full_plan_binds_every_field_and_eight_accepted_payload_hashes": true,
+    "test_plan_refuses_snapshot_drift": true,
+    "test_trust_rejects_unsafe_lexical_paths": true,
+    "test_interpreter_alias_checks_both_lexical_and_resolved_chains": true,
+    "test_new_private_bundle_and_partial_failure_are_preserved": true,
+    "test_snapshot_collection_reads_only_units_helper_modules_interpreter": true,
+    "test_source_inventory_covers_fixed_and_runtime_prefix_overrides": true,
+    "test_show_reads_only_selected_properties_and_sanitizes_process_failures": true,
+    "test_protected_reader_never_follows_link_or_reads_fifo": true,
+    "test_runtime_guard_requires_root_protected_install_and_isolated_interpreter": true,
+    "test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle": true,
+    "test_main_rejects_malformed_arguments_without_normalizing_or_echo": true,
+    "test_prepare_failures_write_nothing_and_do_not_echo_exception": true,
+    "test_output_guard_requires_private_existing_parent_and_absent_target": true,
+    "test_bundle_readback_catches_corruption_before_complete_receipt": true,
+    "test_bundle_rejects_extra_files_before_any_write": true,
+    "test_each_required_interpreter_flag_is_independently_required": true,
+    "test_every_selected_loaded_property_is_bound": true,
+    "test_known_static_source_hashes_are_exactly_the_owner_supplied_pins": true,
+    "test_cli_entry_rejects_unprivileged_checkout_without_writes": true,
+    "test_no_application_imports_no_ledger_and_only_show_subprocess": true,
+    "test_loaded_process_format_drift_is_refused": true,
+    "test_writer_rejects_unsafe_parent_before_creation": true,
+    "test_snapshot_never_reads_arbitrary_alias_target": true,
+    "test_interpreter_must_have_execute_permission": true,
+    "test_inventory_refuses_unknown_manager_search_path": true
+  },
+  "owner_review": "Full exact-hash owner document read; two shell blocks, three embedded scripts; root scripts evaluated only via controlled OS/Path doubles. Positive/negative root-path, existing-directory, private-parent, installed hash, owner, mode and link-count paths exercised. Ordinary reader actually run against invented payloads; bash -n only for original shell blocks. No root command or install executed."
+}

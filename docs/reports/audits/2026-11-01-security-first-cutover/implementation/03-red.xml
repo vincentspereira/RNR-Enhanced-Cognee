@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="15" skipped="0" tests="15" time="0.156" timestamp="2026-11-01T23:36:50.693303+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_full_plan_binds_every_field_and_eight_accepted_payload_hashes" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:87: in test_full_plan_binds_every_field_and_eight_accepted_payload_hashes
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[missing]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[extra]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[source-hash]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[candidate-path]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[candidate-hash]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[candidate-extra]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[reload]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[alias]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[run-override]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[loaded-missing]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[credential-duplicate]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[credential-wildcard]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[credential-reset]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_plan_refuses_snapshot_drift[launch-syntax]" time="0.001"><failure message="AssertionError: plan derivation missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'plan_from_snapshot', None)">tests/unit/test_security_first_cutover.py:114: in test_plan_refuses_snapshot_drift
+    assert callable(getattr(h, "plan_from_snapshot", None)), "plan derivation missing"
+E   AssertionError: plan derivation missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'plan_from_snapshot', None)</failure></testcase></testsuite></testsuites>

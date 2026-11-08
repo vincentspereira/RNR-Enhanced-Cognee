@@ -1,0 +1,69 @@
+{
+  "passed": false,
+  "security_concerns": [
+    {
+      "id": "R1",
+      "severity": "high",
+      "locations": ["integrations/hermes/deployment/renew_fleet_memory_tokens.py:85-89", "integrations/hermes/deployment/renew_fleet_memory_tokens.py:123", "integrations/hermes/deployment/install_fleet_token_renewal.py:118-120", "integrations/hermes/deployment/install_fleet_token_renewal.py:155"],
+      "issue": "Runtime preflight validates the resolved Python target and pyvenv.cfg, but never validates runtime/bin, the lexical parent of the path actually executed. A trusted target reached through a symlink inside a writable bin directory passes validation; another user can replace that alias before root executes it.",
+      "reproduction": "Corrected synthetic-root fixtures with a real symlink and real 0777 bin directory: validate_runtime returned successfully, and installer reached the no-launch subprocess double with the replaceable alias. Protected-tree positive control passed. No privileged or malicious process was launched; this does not assert the installed directory is currently writable.",
+      "minimal_fix": "Before resolving the executable alias, validate PROVISIONER_PYTHON.parent and its complete lexical ancestor chain in both installer and renewal runtime checks. Continue validating the resolved target. Add a negative regression for a trusted binary reached through a writable lexical bin directory."
+    }
+  ],
+  "logic_errors": [
+    {
+      "id": "R2",
+      "severity": "medium",
+      "locations": ["integrations/hermes/enhanced_cognee_mcp/server.py:85-91", "integrations/hermes/enhanced_cognee_mcp/server.py:120-128", "integrations/hermes/enhanced_cognee_mcp/server.py:350-355"],
+      "issue": "HTTP 200 responses with empty bodies, null, arrays, booleans, numbers, or strings become ordinary successful MCP tool results. Only payload dictionaries containing error receive isError=true, so malformed API responses are incorrectly acknowledged as tool success.",
+      "reproduction": "Six no-network get_stats RPC probes supplied empty, null, [], true, 17 and a string via a synthetic HTTP connection. Every reply omitted isError and returned the invalid payload as successful content. A valid object positive control passed.",
+      "minimal_fix": "Reject empty and non-object API payloads with a fixed sanitized error before returning them from call/api. Preserve isError=true through serve; add the six response-shape regressions."
+    },
+    {
+      "id": "R3",
+      "severity": "medium",
+      "locations": ["integrations/hermes/deployment/renew_fleet_memory_tokens.py:49-51", "integrations/hermes/deployment/renew_fleet_memory_tokens.py:178-187"],
+      "issue": "Per-profile failure isolation remains incomplete: decode_exp accepts arbitrarily large positive integers, and skipped-token timestamp formatting is outside the profile error boundary. One malformed user-controlled profile token can abort the whole fleet renewal before later profiles or the state receipt are processed. This is inherited retained-path behavior, not a newly introduced regression.",
+      "reproduction": "An invented shape-valid token with exp=10**100 passed decode_exp; main raised OverflowError at time.gmtime(current_exp), never reaching the second synthetic profile. Provisioner, model and network calls were replaced by doubles.",
+      "minimal_fix": "Reject out-of-range/unrepresentable expiry values and keep profile token loading, decoding and timestamp formatting inside a per-profile exception boundary. Treat only that profile as invalid/due or failed and continue to the remaining identities."
+    }
+  ],
+  "suggestions": [
+    {
+      "location": "integrations/hermes/deployment/install_fleet_token_renewal.py:151-153,169-170",
+      "issue": "The installer accepts and backs up an arbitrary existing root-owned roles.json, including schema=99, then overwrites it and returns complete=true. The explicit unknown-predecessor checks cover job sources and the service, not this data file.",
+      "recommendation": "Clarify whether the fail-closed predecessor policy includes inventory. If yes, allow only absent inventory, exact desired bytes, or approved predecessor hashes before writes. Otherwise document that root-staged inventory intentionally overrides unknown existing inventory. This policy ambiguity is not counted as an additional blocker."
+    },
+    {
+      "issue": "Root-mode fixtures initially inherited unrelated 0775/0664 modes and rejected their own positive control. Both original evidence and the corrected four-case replay are retained; unaffected cases were not rerun or double-counted. The SQLite grant challenge emitted ten adapter-only parameter-binding deprecation warnings."
+    }
+  ],
+  "summary": "FAIL source acceptance: three reproducible scoped blockers remain despite all 149 manifested regression cases passing. All 29 source/test hashes matched and covered the changed/new Python/JSON files. Privileged deployment remains a separate pending owner gate, not a reason for rejection. No candidate edits, commits, live model/API probes, service actions or credential actions were performed; all created evidence is under reviewer scratch.",
+  "reviewed_files": {
+    "exact_manifest": "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/source-manifest.json",
+    "entries": 29,
+    "source_files": 16,
+    "test_files": 13,
+    "additional_dependency_reads": ["integrations/hermes/deployment/provision_gateway_profile_access.py", "pytest.ini", "AGENTS.md"],
+    "scope_note": "Concurrent documentation edits were excluded from source acceptance; final source hashes remained unchanged."
+  },
+  "tests_run": {
+    "candidate_regressions": {"passed": 149, "failed": 0, "command_receipt": "regressions-command.json"},
+    "fresh_challenges": {"distinct": 15, "passed": 5, "failed": 10, "interpretation": "Nine failing cases reproduce three blockers; one failing assertion concerns the non-blocking existing-inventory policy ambiguity.", "command_receipts": ["challenges-command.json", "challenges-v2-command.json", "grants-command.json"]},
+    "verified_defenses": ["Protected runtime positive control", "Valid MCP object response", "Cancellation during reservation never dispatches a model and retains committed reservation", "Non-ASCII opaque payload consumes conservative durable reservation and does not enter SQLite", "Shared-only predicate enforces tenant, active/expiry, current version, membership and publisher grants on synthetic SQLite rows"],
+    "static_scan": "No added-line/new-file shell execution, dynamic eval/exec, pickle deserialization or interpolated execute(f...) matches; manifest has no hash mismatches or missing changed source files.",
+    "limitations": "Offline source review only. No real PostgreSQL, model, external network, installed-host qualification or privileged runtime execution."
+  },
+  "evidence_paths": [
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/source-manifest.json",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/regressions.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/regressions.xml",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges_v2.py",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/challenges.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/challenges-v2.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/test_grant_challenge.py",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/grants.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/ec-independent-review-_vspxshk/reconciliation.json"
+  ]
+}

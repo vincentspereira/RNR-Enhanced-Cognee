@@ -1,5 +1,240 @@
 # Remaining Hermes memory rollout work
 
+31 October 2026 STAGE C DELIVERED: the API-backed memory MCP server is
+installed in the gateway home (hash-pinned, pure stdlib, gateway-managed
+Python) and enabled for all 42 profiles (pilot web-researcher first, then
+the batch; memory_read group, 10 tools: recall, get_memories, get_memory,
+get_memory_history, get_related, list_agents, get_shared_memories,
+library_membership, get_stats, health). The memory_write group exists but
+stays disabled for roles: the provider remains the single governed write
+path. Request bodies match the API models exactly (RecallRequest
+limit<=20 and extra=forbid; CorrectionRequest expected_version; safe
+retraction). End-to-end pilot passed under the web-researcher scoped
+token: handshake, exact tool advertisement, authenticated status, real
+recall payload. Roles see the tools from their next session start. Found
+expired: the two canary tokens (old 24h pilot TTL; excluded from the
+30-day batch) - renew or retire with the canaries per plan. Per the
+agreed staging, Stage D now waits on a 1-2 week demand check of real
+fleet usage; its first family (ingestion) design, including the LLM
+route/budget proposal, comes after that.
+
+30 October 2026 RENEWAL AUTOMATION OPERATIONAL: the approved weekly timer
+is installed and verified end-to-end. First unattended run: default
+renewed to 2026-11-29T23:30:32Z, 40 roles correctly skipped (outside the
+7-day window), zero failures; next fire Mon 2026-11-02 04:01 GMT. One
+correction was needed: the provisioner initially refused the unattended
+context (SUDO_USER absent under systemd); it now also accepts membership
+in the renewal service cgroup, and the installer gained a provenance-
+checked --upgrade path. State file (sanitized, no token values):
+/opt/enhanced-cognee-memory/fleet-renewal/state.json. Remaining queue:
+MCP phase two (role-scoped tool groups; recon done, build next),
+remote-endpoint qualification (context7, deepwiki), maximum-context
+verification, credential rotation execution (incl. ArcadeDB reset), and
+the final fleet-switch review. Canary retirement after the first month of
+fleet operation.
+
+30 October 2026 PER-PROFILE PLUGIN DISCOVERY FIXED: memory plugins resolve
+per profile (profile isolation scans the profile's own plugins directory),
+so role profiles did not see the gateway-home plugin install. The provider
+plugin is now staged into ALL 42 profile directories (39 staged, 3 already
+covered), and discovery verified for five sampled roles across role
+families. Owner-side effect: every role's Memory Provider dropdown now
+includes Enhanced Cognee (refresh the settings page; a role session open
+since before staging may need close/reopen). Stage 8 can proceed; no
+further restarts required for this.
+
+30 October 2026 STAGE 8 READY: all 40 role tokens issued and API-verified
+(30-day expiry, ~Nov 29; the batch command re-run is the renewal), the
+gateway restarted with the provider selected, and the per-role Memory
+Provider dropdowns now include Enhanced Cognee. Two batch-issuer defects
+were found and fixed on the first run: root-owned receipts (now chowned to
+the gateway identity) and hyphenated role names refused by the backend's
+canonical space-ID rule (roles address underscored space ids; default
+unaffected). Hyphenated names mapping to canonical ids must stay in the
+tests. The owner approved: 30-day rotation + automated renewal as the end
+state (the unattended-renewal design is a fleet-review decision), remote
+endpoint and MCP phase-two work after Stage 8, and providing the
+memory-wiring addendum to the fleet activation bot. Owner decisions still
+parked: ArcadeDB operator credential reset (folded into the stack
+rotation), historical exposed-key disposition (scan closed F22), fleet
+admission enablement and main merge at the final review.
+
+30 October 2026 MILESTONE: ENHANCED COGNEE IS LIVE AS THE DEFAULT
+ASSISTANT'S EXTENDED MEMORY. Verified in the owner's Desktop against the
+fleet gateway: the provider appears in and is selected by the Memory
+Provider dropdown for the default profile; an explicit remember stored
+record 28f557e8 (the first write attempt was refused by a policy gate and
+the adjusted retry passed — guardrails enforcing on live writes); and a
+fresh session received automatic recall injection and answered the test
+phrase exactly. Token for the default profile: issuer-signed, expires
+2026-11-06 (weekly renewal cadence until the fleet lifecycle policy
+lands). Remaining for the full goal: wire the 42 role profiles in Stage 8
+batches (per-role tokens via the provisioner's --profile flag, provider
+selection per role, the memory-wiring addendum), the remote-endpoint and
+MCP phase-two work, served-capability and maximum-context verification,
+the credential rotation execution, and the fleet-switch review. The owner
+is holding Stage 8 until memory wiring is confirmed per role.
+
+30 October 2026 CANARY PROFILES FOUND: the two enhanced-cognee-test profiles
+in the gateway home are not dummies — both are issuer-provisioned (Oct 25:
+.env with a scoped token, .env-before-issuer backups, prepared/published
+receipts, renewal lock), with empty memories/sessions and the standard
+persona. RECOMMENDATION to the owner: keep both as the memory canaries
+(first wired, first verified); they are not part of the 40 roles. This also
+means the issuer flow has already provisioned real gateway profiles once —
+the activation path is renewal/re-issue for the canaries plus issuance for
+the roles, not a new provisioner build. Renewal flow inspection is next.
+
+30 October 2026 ACTIVATION DESIGN (gateway fleet): the token publication
+targets are confirmed — the gateway home carries ~/.hermes/.env (0600,
+vincentspereira) for the app-level default profile, and every role profile
+has its own .env overlay (exactly what agent.secret_scope reads, per-profile
+private memory spaces via per-profile tokens). The gateway config
+(~/.hermes/config.yaml) has no memory section yet; activation adds
+memory.provider: enhanced_cognee and requires a gateway restart at an
+owner-chosen window. The retained pilot provisioner (342 lines, phased:
+identity, profile preflight, environment backup/publication/readback,
+issuer-signed expiring tokens) is hardcoded to the old pilot home and
+profile, so a gateway-profile variant is the immediate build: same audited
+flow, new targets (home .env for default; profiles/<role>/.env per role),
+identity claims tenant=hermes_gateway with project_id per profile. The
+plugin is staged and discoverable; the API is on the provider default
+origin. Everything else (served-capability verification, max-context,
+remote endpoints, role batches) follows activation.
+
+30 October 2026 ARCHITECTURE RECONCILED: the owner's Hermes Agent Desktop
+manages the fleet through an SSH gateway to THIS host (127.0.0.1:2222 as
+vincentspereira; Hermes from ~/agent-workspace/hermes-agent, upstream
+checkout bf0203a794). The fleet's 42 role profiles live in
+/home/vincentspereira/.hermes/profiles/. The Desktop's provider dropdown
+(Built-in only, Byterover, Retaindb) reflects that gateway installation,
+which had no Enhanced Cognee provider. The provider plugin is now STAGED at
+/home/vincentspereira/.hermes/plugins/memory/enhanced_cognee/ (plugin.yaml
+c23230082be650ae142c4e3d8e30350ea5f3d18af5b879996328caf59d4dca48,
+__init__.py fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061,
+client.py 8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64),
+which activates nothing until memory.provider is set and the gateway
+restarts. The memory API already listens on 127.0.0.1:28080, the provider's
+default origin. The provider serves EIGHT tools under the official
+memory-provider contract (distinct from the ~120-tool MCP server).
+Remaining activation steps: issue one scoped ENHANCED_COGNEE_ACCESS_TOKEN
+for the default profile (issuer machinery is deliberately disabled for
+fleet admission, so the single-profile issuance path is being prepared),
+set memory.provider: enhanced_cognee in the gateway config, restart the
+gateway at an owner-chosen window, select the provider for default in the
+Desktop, verify served tools and capture/recall, then roll out to the roles
+in batches with per-profile tokens. The clarified 8-tool provider versus
+the ~120-tool MCP server distinction is recorded here.
+
+29 October 2026 FINDING: the live main profile's memory provider is ALREADY
+enhanced_cognee (read-only inspection under the actual restricted identity;
+config hash 0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289,
+4 MCP definitions). No controlled switch is needed for the main profile;
+the remaining main-profile gates are served capability and maximum-context
+capture. The live remote HTTP endpoints (context7, deepwiki) remain deferred
+behind the owner external-endpoint gate; the owner has since AUTHORIZED
+their qualification, which will be prepared on the binding machinery.
+Separately, a redacted git-history credential scan found NO structural
+provider keys; audit item F22's candidates are accounted for as upstream
+defaults, templates and invented fixtures, with three fingerprints recorded
+for an optional owner glance
+(`2026-10-29-git-history-key-scan.txt`). The actionable exposure remains
+the stack credentials in the agent-readable .env (staged rotation) and the
+provider-side model/Telegram keys. See
+`2026-10-29-main-memory-selection.json`.
+
+29 October 2026 COMPLETE: the native MCP binding gate is CLOSED. The v6
+operator ran both stages under the actual restricted main identity. The
+catalogue read the live main profile config (4 definitions: fetch,
+filesystem, context7, deepwiki), resolved the stdio definitions through the
+release's native managed launchers, and bound them: Fetch via managed uvx
+(1 tool, 2 private-address denials) and Filesystem via managed npx (14
+tools). The live profile holds remote HTTP endpoints context7 and deepwiki,
+which are accounted and explicitly DEFERRED: connecting to external
+endpoints with profile credentials needs the owner's qualification gate; the
+receipts carry names only, never url or header values. The fetch-public
+stage then completed the authorized public example.com retrieval in raw and
+default modes through the native binding (converted-Markdown structural
+check qualified). Evidence:
+`operator-evidence/native-mcp-binding-ggu1psf5`; sanitized record
+`2026-10-29-native-mcp-binding-preparation.json` (v1-v5 retained attempts
+documented). Still open: full main tools/context and current served
+capability (including the unverified maximum-context capture), production
+launcher bindings for live fleet processes, admitted credential
+renewal/reload, fresh main-state reconciliation with backup/rollback
+membership, the remote-endpoint owner gate, and one concrete fleet-switch
+review. Admission stays disabled; no fleet activation or main merge.
+
+29 October 2026 PREPARED: the native MCP binding qualification group awaits
+the owner's sudo terminal. The first attempt (v1) stopped itself in the
+operator's verification phase with zero effects: it tried to read a helper
+from the owner's 0750 home, which the capability-less operator unit cannot
+traverse; it is retained. The corrected v2 freezes every staged source,
+including the pinned installer, into the artifact at launch and the worker
+loads nothing from the worktree. It runs the pinned driver as the actual
+restricted main identity; the identity reads only its own Hermes config,
+resolves every preserved definition through the release's native launcher
+resolution, and launches each server exactly as production would (networked
+posture recorded honestly). A second unit, if a Fetch definition exists,
+completes the authorized public example.com raw and default-mode retrieval.
+Config values never cross the identity boundary; receipts carry counts,
+flags and error kinds only. 54 focused tests pass; the offline resolution
+probe confirmed managed npx/uvx/node/uv selection. Receipt:
+`2026-10-29-native-mcp-binding-preparation.json`. After this gate: full main
+tools/context and current served capability, production launcher bindings
+for live fleet processes, admitted credential renewal/reload, then the fresh
+main-state and fleet-switch review.
+
+29 October 2026 COMPLETE: the native managed-launch packaging gate is CLOSED.
+The owner ran the corrected reconciliation: every payload member verified
+against the sealed archive, 233 directory modes corrected to their archived
+0755 values, and the restricted-identity proof PASSED under the actual UID
+992/GID 984 (zero capabilities, private network namespace): resident PM
+runtime qualified, native uvx/npx launcher selection qualified, python and uv
+digests verified. The managed uv 0.12.3 and Python 3.14.7 binaries run and
+the pm-runtime marker is readable by restricted identities. Retained: the v1
+partial publication (umask directory-mode defect), the v2 verification
+refusal (over-strict checks, zero effects), the completed v3 receipt.
+Sanitized record: `2026-10-29-managed-runtime-install-reconciliation.json`.
+Next gate: actual native MCP-server binding for all six preserved main
+definitions (Fetch native binding plus remote acceptance; the candidate-level
+HTML extraction qualification is already recorded), full main tools/context
+and current served capability, production launcher bindings, admitted
+credential renewal/reload, then the fresh main-state and fleet-switch review.
+No service, profile, credential, policy or bot changed; admission stays
+disabled.
+
+29 October 2026 (installation history, retained): the owner ran the
+protected PM installation. It
+published all 5,005 members plus the marker and merged facts correctly, then
+failed only its restricted-identity proof because the operator umask left the
+new directories at 0700 and the UID-992 proof child could not read the
+pm-runtime marker. The first reconciliation attempt refused in its read-only
+verification stage (it compared the merged facts against the staged copy and
+walked the whole store) and applied nothing; it is retained as evidence. The
+corrected helper verifies the payload member-by-member, checks the merged
+facts bytes separately, walks only the payload subtrees, corrects only the
+payload directory modes to their archived 0755 values, and reruns the
+identical proof with captured output into a v3 receipt (47 focused tests,
+fixture reproductions of both refusal causes; read-only dry runs passed). It
+awaits the owner's sudo terminal. Receipt:
+`2026-10-29-managed-runtime-install-reconciliation.json`.
+
+29 October 2026: the Fetch candidate's default HTML-to-Markdown extraction is
+now QUALIFIED at the ordinary-owner candidate level. The retained failure was
+root-caused to a stale page-copy expectation (example.com's body text was
+reworded; the Node extractor also legitimately moves the heading into article
+metadata), not a server defect. The probe now checks conversion structurally.
+The full probe passed again on the retained frozen build: initialize, one-tool
+catalogue, two private-address refusals, raw retrieval and converted-Markdown
+extraction. 38 focused tests and native 3.14.7 compilation pass. Receipt:
+`2026-10-29-fetch-html-extraction-qualified.json`. Native Hermes Fetch
+binding, remote acceptance and fleet use remain open. The protected managed PM
+runtime installation is unchanged and still awaits the owner's sudo terminal;
+its read-only preflight was re-verified PASS on 29 October 2026 (all five
+helper hashes, sealed archive SHA256, four protected pins and inactive
+restricted accounts rechecked).
+
 28 October native managed-launch support is PREPARED, not installed. A NEW
 ordinary-owner supported-PM build, exact frozen Fetch lock, sealed 464,097,280-byte
 public payload and 5,005-member disposable restore passed. The relocated resident
@@ -474,3 +709,115 @@ main_resume continuation to bind trusted root/exact-runner/post-publication
 journal metadata, verify ciphertext/signature/counts/signed time, then enable
 and verify the daily timer. No manual backup, unit replacement, model or restore
 replay. A persistent timer may perform a scheduled catch-up. Other gates remain.
+
+31 October 2026 CANARIES RETIRED: both enhanced-cognee-test profiles were
+archived to ~/.hermes/profile-archive (full tarballs) and removed; the
+gateway_state.json served_profiles list no longer names them (backup
+retained; 43->41 entries), projects.db holds no references, and profiles/
+now contains exactly the 40 role directories. Found and fixed alongside: a
+one-second boot burst at the 30 Oct gateway restart had written the
+standard home skeleton (SOUL.md, sessions/, logs/ and seven more) INTO the
+profiles/ directory itself; those entries were relocated to the archive
+and nothing referenced them (no config.yaml). Watch for recurrence at the
+next gateway restart. Canary token renewal is moot. Stage D (ingestion
+family) build is underway: the API remember/recall contracts are captured
+and the service code location resolves with the root-side deploy helper;
+the owner deploy command follows the build.
+
+31 October 2026 STAGE D FAMILY 1 (INGESTION) COMPLETE: the reviewed
+ingestion endpoint is deployed to BOTH service code roots (base runtime
+and candidate venv site-packages; the service imports the latter per its
+unit drop-in), the API restarted healthy, and the route is proven with an
+AUTHENTICATED probe (empty body -> 422; the boundary 401 fires before
+routing, so unauthenticated probes prove nothing - retained lesson).
+End-to-end MCP verification passed under the web-researcher scoped token:
+12 tools advertised, ingest_text stored a chunk with provenance,
+get_memories listed the record, ingest_url to a loopback address was
+refused with the reason surfaced to the caller, and the record was
+retracted clean with the version check. Researcher pilot roles
+(web-researcher, deep-research-specialist, niche-hunter) carry
+memory_read,ingest; all other roles remain read-only pending the demand
+check. Deploy chases retained: quoted-PYTHONPATH parsing, every
+interpreter site-packages scan, authenticated route probe, and error
+detail passthrough in the MCP server.
+
+31 October 2026 STAGE D FAMILY 2 (GRAPH) COMPLETE BY ARCHITECTURE: the
+protected service derives its source-linked graph continuously - the
+index worker drains the change feed (live evidence under the
+web-researcher scope: worker running, pending_change_events 0,
+oldest_pending 0.0s, graph source_linked_graph, vector index available),
+and Stage C already serves traversal (get_related/connections) and
+visibility (get_stats carries graph/worker/pending). The legacy
+cognify/extract/compact tools are manual-batch equivalents of what this
+architecture does automatically; a synchronous in-API rebuild would also
+break the reviewed API/worker credential separation (the API holds
+read-only sinks by design). No redundant build. Families 3 (summarize)
+and 4 (language) now require the owner LLM route/budget decision; the
+multilingual embedding limitation (pinned model is English-only) is
+recorded with the proposal.
+
+31 October 2026 STAGE D COMPLETE (ALL FOUR FAMILIES): family 3
+(summarize/organize) and family 4 (language) are deployed and verified
+live under the owner-approved LLM route A (GLM-5.3-Flash via the daemon
+credential whitelist; per-project daily cap 50000 tokens, fail-soft).
+Live round-trip evidence under the web-researcher scope: a genuine model
+summary of the space's records (stored as an origin=summarize record),
+a real French translation (returned, never stored), Cyrillic detection
+(script heuristic, no model), budget accounting 657/50000, and
+version-checked retraction cleanup. Researcher pilots now carry
+memory_read,ingest,analysis. Deploy lessons retained: daemon environment
+whitelist (llm.json loads via credential_environment as ENHANCED_LLM_*
+env), MemoryScope.project attribute, list_records results key, and
+authenticated probes on every new route. Families summary: memory
+(automatic, provider), reads (Stage C), graph (continuous by
+architecture, family 2), ingestion (family 1), summarize/language
+(families 3-4). Admin families remain operator-only by design.
+
+31 October 2026 QUEUE ADVANCE: (1) analysis group enabled for 13 roles
+total (researchers ingest+analysis; authors, analysts, coordinators
+analysis; 7be6680b). (2) remote-catalogue stage built and tested on the
+native binding machinery (streamable-HTTP MCP client; receipts carry
+names/counts only; b3f714dd) - owner command executes the context7 and
+deepwiki qualification. (3) staged credential rotation: root-only
+inspector prepared (names/keys only, never values); the apply phase is
+written against the inspected layout next. (4) max-context: read-path
+scale verified live (recall at limit=20 semantic, list at limit=200 with
+pagination, clean sweep to zero). Two deliberate write-side behaviors
+verified along the way: a per-profile 120 requests/minute budget, and a
+clarification gate that requires a sanitized summary for rapid automated
+write bursts (single writes pass; identical content in a paced 120-write
+burst, and via ingestion, is held for clarification) - the anti-transcript
+design working as intended. The chat-model maximum-context capture test
+remains a live long-session protocol for the owner window.
+
+31 October 2026 CREDENTIAL ROTATION: FOUR OF FIVE FAMILIES COMPLETE.
+postgresql (roles rotated under operator rights, the legacy operator
+keeping its identity with the staged operator secret; operator.json DSN
+updated; api.json/index.json already current; api healthy), valkey (all
+three users rotated, the formerly disabled memory_worker renamed-and-
+enabled as the staged ec_api user, every AUTH verified), qdrant (both
+service keys proven already current, verified no-op), application (issuer
+key proven already current by dual HMAC verification, operator file
+consistent, fleet tokens untouched). The staging snapshot proved to be
+post-partial-application for several candidates; every already-current
+value completed as a verified no-op with receipts. Every intermediate
+refusal rolled back fully - the fleet was never left half-rotated.
+Remaining: the arcadedb family behind its read-only inspection gate.
+
+1 November 2026 ENGAGEMENT COMPLETE: the consolidated verifier reports
+56/56 checks green - five backend services, memory API health, the main
+assistant authenticated against its default scope, all 40 roles live-
+verified with their exact per-matrix toolsets (10-18 tools each), the
+main assistant 20 tools, the weekly token renewal timer, the daily
+encrypted fleet backup timer, and ALL FIVE credential rotation families
+(postgresql, valkey, qdrant, application, arcadedb) with receipts. The
+arcadedb root cause chain, fully closed with live evidence: ArcadeDB
+uses the salt FIELD TEXT as raw salt bytes (never base64-decoded - the
+detail no documentation states, proven by brute-force against the index
+worker live known-good pair), and the /api/v1/server info route hangs
+for valid non-admin credentials while degrading the whole server to
+403-everything - verification must use the command endpoint with a
+not-401/403 criterion. The forgotten ArcadeDB root password is formally
+replaced (operator secret onto the root account, verified live); the
+index worker pair was already current. Enhanced Cognee stands fully
+delivered as the extended memory for Hermes Agent and all its bots.

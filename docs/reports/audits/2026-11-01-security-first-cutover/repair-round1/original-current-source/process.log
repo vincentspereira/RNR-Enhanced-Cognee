@@ -1,0 +1,198 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 123 items
+
+tests/unit/test_security_first_cutover.py::test_phase_a_dropin_and_canonical_hash [32mPASSED[0m[32m [  0%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_is_parsed_without_exposing_environment [32mPASSED[0m[32m [  1%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredential=llm.json:invented-secret\n] [32mPASSED[0m[32m [  2%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[SetCredentialEncrypted=secret\n] [32mPASSED[0m[32m [  3%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredentialEncrypted=secret\n] [32mPASSED[0m[32m [  4%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ImportCredential=*\n] [32mPASSED[0m[32m [  4%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=\n] [32mPASSED[0m[32m [  5%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[LoadCredential=api.json:/etc/enhanced-cognee/api.json\n] [32mPASSED[0m[32m [  6%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=ENHANCED_LLM_API_KEY=invented-secret\n] [32mPASSED[0m[32m [  7%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[EnvironmentFile=/invented-secret\n] [32mPASSED[0m[32m [  8%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStartPre=/invented-secret\n] [32mPASSED[0m[32m [  8%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[StateDirectory=invented-secret\n] [32mPASSED[0m[32m [  9%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[User=root\n] [32mPASSED[0m[32m [ 10%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=\n] [32mPASSED[0m[32m [ 11%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Unknown=invented-secret\n] [32mPASSED[0m[32m [ 12%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=1\\\n PYTHONUNBUFFERED=1\n] [32mPASSED[0m[32m [ 13%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONDONTWRITEBYTECODE=\\x31\n] [32mPASSED[0m[32m [ 13%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ Environment=PYTHONUNBUFFERED=1\n] [32mPASSED[0m[32m [ 14%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[[Socket]\nListenStream=1\n] [32mPASSED[0m[32m [ 15%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\r\n] [32mPASSED[0m[32m [ 16%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[Environment=PYTHONUNBUFFERED=1\x00\n] [32mPASSED[0m[32m [ 17%][0m
+tests/unit/test_security_first_cutover.py::test_launch_unit_refuses_ambiguous_or_secret_directives[ExecStart=\n] [32mPASSED[0m[32m [ 17%][0m
+tests/unit/test_security_first_cutover.py::test_full_plan_binds_every_field_and_eight_accepted_payload_hashes [32mPASSED[0m[32m [ 18%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[missing] [32mPASSED[0m[32m [ 19%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[extra] [32mPASSED[0m[32m [ 20%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[source-hash] [32mPASSED[0m[32m [ 21%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-path] [32mPASSED[0m[32m [ 21%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-hash] [32mPASSED[0m[32m [ 22%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[candidate-extra] [32mPASSED[0m[32m [ 23%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[reload] [32mPASSED[0m[32m [ 24%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[alias] [32mPASSED[0m[32m [ 25%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[run-override] [32mPASSED[0m[32m [ 26%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[loaded-missing] [32mPASSED[0m[32m [ 26%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-duplicate] [32mPASSED[0m[32m [ 27%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-wildcard] [32mPASSED[0m[32m [ 28%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[credential-reset] [32mPASSED[0m[32m [ 29%][0m
+tests/unit/test_security_first_cutover.py::test_plan_refuses_snapshot_drift[launch-syntax] [32mPASSED[0m[32m [ 30%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[none] [32mPASSED[0m[32m [ 30%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[uid] [32mPASSED[0m[32m [ 31%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[gid] [32mPASSED[0m[32m [ 32%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-file] [32mPASSED[0m[32m [ 33%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[writable-ancestor] [32mPASSED[0m[32m [ 34%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[ancestor-link] [32mPASSED[0m[32m [ 34%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[leaf-link] [32mPASSED[0m[32m [ 35%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[hardlink] [32mPASSED[0m[32m [ 36%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[fifo] [32mPASSED[0m[32m [ 37%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[relative] [32mPASSED[0m[32m [ 38%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[dotdot] [32mPASSED[0m[32m [ 39%][0m
+tests/unit/test_security_first_cutover.py::test_trust_rejects_unsafe_lexical_paths[private] [32mPASSED[0m[32m [ 39%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[none] [32mPASSED[0m[32m [ 40%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[writable-link-parent] [32mPASSED[0m[32m [ 41%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-owner] [32mPASSED[0m[32m [ 42%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_alias_checks_both_lexical_and_resolved_chains[target-hardlink] [32mPASSED[0m[32m [ 43%][0m
+tests/unit/test_security_first_cutover.py::test_new_private_bundle_and_partial_failure_are_preserved [32mPASSED[0m[32m [ 43%][0m
+tests/unit/test_security_first_cutover.py::test_snapshot_collection_reads_only_units_helper_modules_interpreter [31mFAILED[0m[31m [ 44%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None] [32mPASSED[0m[31m [ 45%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf] [32mPASSED[0m[31m [ 46%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run] [32mPASSED[0m[31m [ 47%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix] [32mPASSED[0m[31m [ 47%][0m
+tests/unit/test_security_first_cutover.py::test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias] [32mPASSED[0m[31m [ 48%][0m
+tests/unit/test_security_first_cutover.py::test_show_reads_only_selected_properties_and_sanitizes_process_failures [32mPASSED[0m[31m [ 49%][0m
+tests/unit/test_security_first_cutover.py::test_protected_reader_never_follows_link_or_reads_fifo [32mPASSED[0m[31m [ 50%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None] [32mPASSED[0m[31m [ 51%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid] [32mPASSED[0m[31m [ 52%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid] [32mPASSED[0m[31m [ 52%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags] [32mPASSED[0m[31m [ 53%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout] [32mPASSED[0m[31m [ 54%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter] [32mPASSED[0m[31m [ 55%][0m
+tests/unit/test_security_first_cutover.py::test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper] [32mPASSED[0m[31m [ 56%][0m
+tests/unit/test_security_first_cutover.py::test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle [32mPASSED[0m[31m [ 56%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0] [32mPASSED[0m[31m [ 57%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1] [32mPASSED[0m[31m [ 58%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2] [32mPASSED[0m[31m [ 59%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3] [32mPASSED[0m[31m [ 60%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4] [32mPASSED[0m[31m [ 60%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5] [32mPASSED[0m[31m [ 61%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6] [32mPASSED[0m[31m [ 62%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7] [32mPASSED[0m[31m [ 63%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8] [32mPASSED[0m[31m [ 64%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9] [32mPASSED[0m[31m [ 65%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10] [32mPASSED[0m[31m [ 65%][0m
+tests/unit/test_security_first_cutover.py::test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11] [32mPASSED[0m[31m [ 66%][0m
+tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval] [32mPASSED[0m[31m [ 67%][0m
+tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou] [32mPASSED[0m[31m [ 68%][0m
+tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception] [32mPASSED[0m[31m [ 69%][0m
+tests/unit/test_security_first_cutover.py::test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output] [32mPASSED[0m[31m [ 69%][0m
+tests/unit/test_security_first_cutover.py::test_output_guard_requires_private_existing_parent_and_absent_target [32mPASSED[0m[31m [ 70%][0m
+tests/unit/test_security_first_cutover.py::test_bundle_readback_catches_corruption_before_complete_receipt [32mPASSED[0m[31m [ 71%][0m
+tests/unit/test_security_first_cutover.py::test_bundle_rejects_extra_files_before_any_write [32mPASSED[0m[31m [ 72%][0m
+tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[isolated] [32mPASSED[0m[31m [ 73%][0m
+tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[no_site] [32mPASSED[0m[31m [ 73%][0m
+tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[dont_write_bytecode] [32mPASSED[0m[31m [ 74%][0m
+tests/unit/test_security_first_cutover.py::test_each_required_interpreter_flag_is_independently_required[safe_path] [32mPASSED[0m[31m [ 75%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Id] [32mPASSED[0m[31m [ 76%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Names] [32mPASSED[0m[31m [ 77%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[LoadState] [32mPASSED[0m[31m [ 78%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ActiveState] [32mPASSED[0m[31m [ 78%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[FragmentPath] [32mPASSED[0m[31m [ 79%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[SourcePath] [32mPASSED[0m[31m [ 80%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DropInPaths] [32mPASSED[0m[31m [ 81%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[NeedDaemonReload] [32mPASSED[0m[31m [ 82%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[User] [32mPASSED[0m[31m [ 82%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[Group] [32mPASSED[0m[31m [ 83%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[DynamicUser] [32mPASSED[0m[31m [ 84%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ProtectSystem] [32mPASSED[0m[31m [ 85%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectory] [32mPASSED[0m[31m [ 86%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[StateDirectoryMode] [32mPASSED[0m[31m [ 86%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[UMask] [32mPASSED[0m[31m [ 87%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[PrivateUsers] [32mPASSED[0m[31m [ 88%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[RootDirectory] [32mPASSED[0m[31m [ 89%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[WorkingDirectory] [32mPASSED[0m[31m [ 90%][0m
+tests/unit/test_security_first_cutover.py::test_every_selected_loaded_property_is_bound[ExecStart] [32mPASSED[0m[31m [ 91%][0m
+tests/unit/test_security_first_cutover.py::test_known_static_source_hashes_are_exactly_the_owner_supplied_pins [32mPASSED[0m[31m [ 91%][0m
+tests/unit/test_security_first_cutover.py::test_cli_entry_rejects_unprivileged_checkout_without_writes [32mPASSED[0m[31m [ 92%][0m
+tests/unit/test_security_first_cutover.py::test_no_application_imports_no_ledger_and_only_show_subprocess [32mPASSED[0m[31m [ 93%][0m
+tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[duplicate] [32mPASSED[0m[31m [ 94%][0m
+tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[missing] [32mPASSED[0m[31m [ 95%][0m
+tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[command-extra] [32mPASSED[0m[31m [ 95%][0m
+tests/unit/test_security_first_cutover.py::test_loaded_process_format_drift_is_refused[unknown-property] [32mPASSED[0m[31m [ 96%][0m
+tests/unit/test_security_first_cutover.py::test_writer_rejects_unsafe_parent_before_creation [32mPASSED[0m[31m [ 97%][0m
+tests/unit/test_security_first_cutover.py::test_snapshot_never_reads_arbitrary_alias_target [32mPASSED[0m[31m [ 98%][0m
+tests/unit/test_security_first_cutover.py::test_interpreter_must_have_execute_permission [32mPASSED[0m[31m [ 99%][0m
+tests/unit/test_security_first_cutover.py::test_inventory_refuses_unknown_manager_search_path [32mPASSED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_____ test_snapshot_collection_reads_only_units_helper_modules_interpreter _____[0m
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7528029bb920>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_snapshot_collection_reads_only_units_helper_modules_interpreter[39;49;00m(monkeypatch):[90m[39;49;00m
+        [94massert[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(h, [33m"[39;49;00m[33mcollect_snapshot[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)), [33m"[39;49;00m[33mprotected snapshot collection missing[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        snap = snapshot(monkeypatch)[90m[39;49;00m
+        content = [96mdict[39;49;00m(snap[[33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        module_bytes = {p: ([33m"[39;49;00m[33minvented-[39;49;00m[33m"[39;49;00m + p).encode() [94mfor[39;49;00m p [95min[39;49;00m h.MODULE_HASHES}[90m[39;49;00m
+        monkeypatch.setattr(h, [33m"[39;49;00m[33mMODULE_HASHES[39;49;00m[33m"[39;49;00m, {p: h.digest(b) [94mfor[39;49;00m p, b [95min[39;49;00m module_bytes.items()})[90m[39;49;00m
+        content.update({h.CANDIDATE + [33m"[39;49;00m[33m/[39;49;00m[33m"[39;49;00m + p: b [94mfor[39;49;00m p, b [95min[39;49;00m module_bytes.items()})[90m[39;49;00m
+        content[h.INSTALLED_HELPER] = [33mb[39;49;00m[33m"[39;49;00m[33minvented helper[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        content[[33m"[39;49;00m[33m/usr/bin/python3.12[39;49;00m[33m"[39;49;00m] = [33mb[39;49;00m[33m"[39;49;00m[33minvented interpreter[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        reads, guards = [], [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+            reads.append(path)[90m[39;49;00m
+            [94mreturn[39;49;00m content[path][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mguard[39;49;00m(path, **kwargs):[90m[39;49;00m
+            guards.append((path, kwargs))[90m[39;49;00m
+            [94mreturn[39;49;00m [33m"[39;49;00m[33m/usr/bin/python3.12[39;49;00m[33m"[39;49;00m [94mif[39;49;00m kwargs.get([33m"[39;49;00m[33mallow_alias[39;49;00m[33m"[39;49;00m) [94melse[39;49;00m path[90m[39;49;00m
+>       result = h.collect_snapshot(reader=reader, guard=guard, inventory=[94mlambda[39;49;00m: [96mlist[39;49;00m(h.SOURCES),[90m[39;49;00m
+                                    loaded=[94mlambda[39;49;00m: [96mdict[39;49;00m(h.EXPECTED_LOADED))[90m[39;49;00m
+
+[1m[31mtests/unit/test_security_first_cutover.py[0m:286: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = <function test_snapshot_collection_reads_only_units_helper_modules_interpreter.<locals>.reader at 0x7528024db060>
+guard = <function test_snapshot_collection_reads_only_units_helper_modules_interpreter.<locals>.guard at 0x7528024dade0>
+inventory = <function test_snapshot_collection_reads_only_units_helper_modules_interpreter.<locals>.<lambda> at 0x7528024db2e0>
+loaded = <function test_snapshot_collection_reads_only_units_helper_modules_interpreter.<locals>.<lambda> at 0x7528024db380>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcollect_snapshot[39;49;00m(*, reader=read_protected, guard=trusted_path,[90m[39;49;00m
+                         inventory=inventory_sources, loaded=read_loaded):[90m[39;49;00m
+        first_inventory, first_loaded = inventory(), loaded()[90m[39;49;00m
+        guard(CANDIDATE, kind=[33m"[39;49;00m[33mdirectory[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        lexical = CANDIDATE + [33m"[39;49;00m[33m/runtime/bin/python[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        resolved = guard(lexical, allow_alias=[94mTrue[39;49;00m, executable=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m resolved != lexical [95mand[39;49;00m re.fullmatch([33mr[39;49;00m[33m"[39;49;00m[33m/usr/bin/python3(?:[39;49;00m[33m\[39;49;00m[33m.[0-9]+)?[39;49;00m[33m"[39;49;00m, resolved) [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m Refusal([33m"[39;49;00m[33mstartup_interpreter_target_refused[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        snapshot = {[90m[39;49;00m
+            [33m"[39;49;00m[33minventory[39;49;00m[33m"[39;49;00m: first_inventory, [33m"[39;49;00m[33mloaded[39;49;00m[33m"[39;49;00m: first_loaded,[90m[39;49;00m
+            [33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m: {path: reader(path) [94mfor[39;49;00m path [95min[39;49;00m SOURCES},[90m[39;49;00m
+            [33m"[39;49;00m[33mcandidate[39;49;00m[33m"[39;49;00m: CANDIDATE,[90m[39;49;00m
+>           [33m"[39;49;00m[33mcandidate_hashes[39;49;00m[33m"[39;49;00m: {path: digest(reader(CANDIDATE + [33m"[39;49;00m[33m/runtime/lib/python3.12/site-packages/[39;49;00m[33m"[39;49;00m + path)) [94mfor[39;49;00m path [95min[39;49;00m MODULE_HASHES},[90m[39;49;00m
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+            [33m"[39;49;00m[33mhelper_sha256[39;49;00m[33m"[39;49;00m: digest(reader(INSTALLED_HELPER)),[90m[39;49;00m
+            [33m"[39;49;00m[33mstartup_interpreter[39;49;00m[33m"[39;49;00m: {[33m"[39;49;00m[33mlexical[39;49;00m[33m"[39;49;00m: lexical, [33m"[39;49;00m[33mresolved[39;49;00m[33m"[39;49;00m: resolved, [33m"[39;49;00m[33msha256[39;49;00m[33m"[39;49;00m: digest(reader(resolved))},[90m[39;49;00m
+        }[90m[39;49;00m
+
+[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+        reads.append(path)[90m[39;49;00m
+>       [94mreturn[39;49;00m content[path][90m[39;49;00m
+               ^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'[0m
+
+[1m[31mtests/unit/test_security_first_cutover.py[0m:282: KeyError
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/original-current-source/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover.py::[1mtest_snapshot_collection_reads_only_units_helper_modules_interpreter[0m - KeyError: '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py'
+[31m======================== [31m[1m1 failed[0m, [32m122 passed[0m[31m in 0.92s[0m[31m =========================[0m

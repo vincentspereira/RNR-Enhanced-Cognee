@@ -1,0 +1,50 @@
+"""Offline V2 identity regression; invented metadata, never live unit bytes."""
+import importlib.util
+import os
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+HELPER = ROOT / ("integrations/hermes/deployment/prepare_security_first_cutover.py"
+                 if os.environ.get("ENHANCED_CUTOVER_BASELINE_V1") == "1" else
+                 "integrations/hermes/deployment/prepare_security_first_cutover_v2.py")
+
+
+def load_helper():
+    spec = importlib.util.spec_from_file_location("security_first_cutover", HELPER)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+h = load_helper()
+
+
+def owner_launch():
+    # Metadata-equivalent invented four-line override, not owner bytes/hash.
+    return ("[Service]\nWorkingDirectory=" + h.OLD + "\nExecStart=\nExecStart="
+            + h.OLD + "/runtime/bin/python -m src.memory_daemon api\n").encode("ascii")
+
+
+def owner_snapshot(monkeypatch):
+    raw = dict(zip(h.SOURCES, [
+        b"[Service]\nDynamicUser=yes\nLoadCredential=api.json:/etc/enhanced-cognee/api.json\n",
+        b"[Service]\nLoadCredential=index.json:/etc/enhanced-cognee/index.json\n",
+        owner_launch(),
+        b"[Service]\nLoadCredential=llm.json:/etc/enhanced-cognee/llm.json\n"]))
+    monkeypatch.setattr(h, "SOURCE_HASHES", {p: h.digest(b) for p, b in raw.items() if p != h.SOURCES[2]})
+    return {"source_bytes": raw, "inventory": list(h.SOURCES), "loaded": dict(h.EXPECTED_LOADED),
+            "candidate": h.CANDIDATE, "candidate_hashes": dict(h.MODULE_HASHES),
+            "helper_sha256": "1" * 64, "startup_interpreter": {
+                "lexical": h.CANDIDATE + "/runtime/bin/python", "resolved": "/usr/bin/python3.12",
+                "sha256": "2" * 64}}
+
+
+def test_owner_four_line_launch_uses_whole_unit_dynamic_identity(monkeypatch):
+    snap = owner_snapshot(monkeypatch)
+    assert len(owner_launch().splitlines()) == 4
+    assert all(not line.startswith((b"User=", b"Group="))
+               for raw in snap["source_bytes"].values() for line in raw.splitlines())
+    plan = h.plan_from_snapshot(snap)
+    assert plan["loaded"]["DynamicUser"] == "yes"
+    assert (plan["loaded"]["User"], plan["loaded"]["Group"]) == ("enhanced-cognee-api",) * 2
+    assert plan["activated"] is False and plan["services_restarted"] is False

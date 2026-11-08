@@ -1,0 +1,18 @@
+{
+  "prior_count": 29,
+  "current_count": 30,
+  "changed_since_rejection": [
+    "integrations/hermes/deployment/install_fleet_token_renewal.py",
+    "integrations/hermes/deployment/renew_fleet_memory_tokens.py",
+    "integrations/hermes/enhanced_cognee_mcp/server.py"
+  ],
+  "new_paths": [
+    "tests/unit/test_review_round1_remediation.py"
+  ],
+  "removed_paths": [],
+  "old_test_files_unchanged": true,
+  "archive_bad_crc_member": null,
+  "archive_member_count": 29,
+  "archive_matches_prior_manifest": true,
+  "archive_has_exact_manifest_members": true
+}

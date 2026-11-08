@@ -1,0 +1,50 @@
+\fIUser=\fR, \fIGroup=\fR
+.RS 4
+Set the UNIX user or group that the processes are executed as, respectively\&. Takes a single user or group name, or a numeric ID as argument\&. For system services (services run by the system service manager, i\&.e\&. managed by PID 1) and for user services of the root user (services managed by root\*(Aqs instance of
+\fBsystemd \-\-user\fR), the default is
+"root", but
+\fIUser=\fR
+may be used to specify a different user\&. For user services of any other user, switching user identity is not permitted, hence the only valid setting is the same user the user\*(Aqs service manager is running as\&. If no group is set, the default group of the user is used\&. This setting does not affect commands whose command line is prefixed with
+"+"\&.
+.sp
+Note that this enforces only weak restrictions on the user/group name syntax, but will generate warnings in many cases where user/group names do not adhere to the following rules: the specified name should consist only of the characters a\-z, A\-Z, 0\-9,
+"_"
+and
+"\-", except for the first character which must be one of a\-z, A\-Z and
+"_"
+(i\&.e\&. digits and
+"\-"
+are not permitted as first character)\&. The user/group name must have at least one character, and at most 31\&. These restrictions are made in order to avoid ambiguities and to ensure user/group names and unit files remain portable among Linux systems\&. For further details on the names accepted and the names warned about see
+\m[blue]\fBUser/Group Name Syntax\fR\m[]\&\s-2\u[3]\d\s+2\&.
+.sp
+When used in conjunction with
+\fIDynamicUser=\fR
+the user/group name specified is dynamically allocated at the time the service is started, and released at the time the service is stopped \(em unless it is already allocated statically (see below)\&. If
+\fIDynamicUser=\fR
+is not used the specified user and group must have been created statically in the user database no later than the moment the service is started, for example using the
+\fBsysusers.d\fR(5)
+facility, which is applied at boot or package install time\&. If the user does not exist by then program invocation will fail\&.
+.sp
+If the
+\fIUser=\fR
+setting is used the supplementary group list is initialized from the specified user\*(Aqs default group list, as defined in the system\*(Aqs user and group database\&. Additional groups may be configured through the
+\fISupplementaryGroups=\fR
+setting (see below)\&.
+.RE
+.PP
+\fIDynamicUser=\fR
+.RS 4
+Takes a boolean parameter\&. If set, a UNIX user and group pair is allocated dynamically when the unit is started, and released as soon as it is stopped\&. The user and group will not be added to
+/etc/passwd
+or
+/etc/group, but are managed transiently during runtime\&. The
+\fBnss-systemd\fR(8)
+glibc NSS module provides integration of these dynamic users/groups into the system\*(Aqs user and group databases\&. The user and group name to use may be configured via
+\fIUser=\fR
+and
+\fIGroup=\fR
+(see above)\&. If these options are not used and dynamic user/group allocation is enabled for a unit, the name of the dynamic user/group is implicitly derived from the unit name\&. If the unit name without the type suffix qualifies as valid user name it is used directly, otherwise a name incorporating a hash of it is used\&. If a statically allocated user or group of the configured name already exists, it is used and no dynamic user/group is allocated\&. Note that if
+\fIUser=\fR
+is specified and the static group with the name exists, then it is required that the static user with the name already exists\&. Similarly, if
+\fIGroup=\fR
+is specified and the static user with the name exists, then it is required that the static group with the name already exists\&. 

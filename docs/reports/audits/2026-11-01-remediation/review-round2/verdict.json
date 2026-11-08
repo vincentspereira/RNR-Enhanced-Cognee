@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "security_concerns": [],
+  "logic_errors": [],
+  "suggestions": [
+    {
+      "priority": "low",
+      "detail": "Before Python 3.14, update only the copied SQLite grant-challenge adapter to bind $1..$5 by name; preserve every grant assertion. The unchanged historical harness currently emits 10 deprecation warnings."
+    }
+  ],
+  "summary": "Exact 30-file repaired candidate accepted for source only: original R1/R2/R3 and inventory challenges pass; no remaining reproduced contract defect. Installed backend, root upgrade and all owner/runtime gates remain unaccepted.",
+  "reviewed_manifest": {
+    "path": "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/reviewed-manifest.json",
+    "candidate_manifest": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/docs/reports/audits/2026-11-01-remediation/source-manifest-round2.json",
+    "sha256": "d8357a0a41ba1ad600c1cfb1ce07f86290783e75ab69ce4422375d2073693c71",
+    "files": 30,
+    "production_or_data": 16,
+    "tests": 14,
+    "exact_changed_non_doc_coverage": true,
+    "frozen_hashes_rechecked_at_finish": true
+  },
+  "tests_run": {
+    "candidate_regressions": {
+      "passed": 187,
+      "exit": 0,
+      "warnings": 0
+    },
+    "preserved_prior_challenges": {
+      "passed": 15,
+      "exit": 0,
+      "warnings": 10,
+      "mapping": "14 unchanged original challenges pass; obsolete huge-expiry acceptance precondition mapped to rejection, with remaining function AST identical. Includes unchanged shared-grant assertions."
+    },
+    "fresh_independent_challenges": {
+      "passed": 12,
+      "exit": 0,
+      "warnings": 0,
+      "coverage": [
+        "writable lexical bin/runtime/ancestor rejection",
+        "HTTP 200 malformed reply followed by successful next RPC",
+        "huge/nested/malformed expiry continuation and valid unused-claim skip",
+        "persistent no-content budget charging after provider failure and reopen"
+      ]
+    },
+    "accepted_case_executions": 214,
+    "excluded_harness_attempts": {
+      "prior_unchanged": "14 passed; one failure at obsolete decode acceptance precondition, before sweep execution.",
+      "fresh_initial": "11 passed; one invalid harness expectation classified a valid unused claim as malformed. Original retained and copied positive control corrected."
+    },
+    "full_suite": "Not run; unrelated optional qdrant_client baseline failure was outside this targeted acceptance."
+  },
+  "evidence_paths": [
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/source-binding.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/reviewed-manifest.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/preservation.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/import-bindings.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/static-independent.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/regressions-command.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/regressions.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/regressions.xml",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/challenge-commands.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/replay-commands.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/harness-mapping.json",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/prior-unchanged.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/prior-mapped.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/prior-mapped.xml",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh-corrected.txt",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/fresh-corrected.xml",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_fresh_challenges.py",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_fresh_challenges_v2.py",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/test_prior_mapped.py",
+    "/home/vincentspereira/.hermes/cache/scratch/review-independent-round2-20261101/reconciliation.json"
+  ],
+  "scope_boundaries": "Repository/source and preserved evidence read only. Created evidence only in this new scratch directory. No installation, commit, package install, real model/API/service/fleet action or protected-state modification."
+}

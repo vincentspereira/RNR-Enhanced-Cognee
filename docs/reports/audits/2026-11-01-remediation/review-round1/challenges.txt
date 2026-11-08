@@ -1,0 +1,80 @@
+F..FFFFFFF.F..                                                           [100%]
+=================================== FAILURES ===================================
+______________________ test_root_runtime_positive_control ______________________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:65: in test_root_runtime_positive_control
+    renewal.validate_runtime()
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:89: in validate_runtime
+    trusted_path(PROVISIONER_PYTHON.parent.parent / "pyvenv.cfg")
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:78: in trusted_path
+    require(not stat.S_ISLNK(info.st_mode) and info.st_uid == uid
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:39: in require
+    raise ValueError(category)
+E   ValueError: untrusted_runtime_path
+______________ test_installer_rejects_unknown_existing_inventory _______________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:134: in test_installer_rejects_unknown_existing_inventory
+    with pytest.raises(ValueError, match='unknown_predecessor'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'unknown_predecessor'
+E     Actual message: 'untrusted_root_path'
+_____________ test_mcp_rejects_http_200_invalid_response_shapes[] ______________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a770d80>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a770d80> = {'content': [{'type': 'text', 'text': 'null'}]}.get
+___________ test_mcp_rejects_http_200_invalid_response_shapes[null] ____________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a773740>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a773740> = {'content': [{'type': 'text', 'text': 'null'}]}.get
+____________ test_mcp_rejects_http_200_invalid_response_shapes[[]] _____________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '[]'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a6b4180>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a6b4180> = {'content': [{'type': 'text', 'text': '[]'}]}.get
+___________ test_mcp_rejects_http_200_invalid_response_shapes[true] ____________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'true'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a650500>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a650500> = {'content': [{'type': 'text', 'text': 'true'}]}.get
+____________ test_mcp_rejects_http_200_invalid_response_shapes[17] _____________
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '17'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a67fdc0>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a67fdc0> = {'content': [{'type': 'text', 'text': '17'}]}.get
+______ test_mcp_rejects_http_200_invalid_response_shapes["not-an-object"] ______
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '"not-an-object"'}]}}
+E   assert None is True
+E    +  where None = <built-in method get of dict object at 0x7dc71a653300>('isError')
+E    +    where <built-in method get of dict object at 0x7dc71a653300> = {'content': [{'type': 'text', 'text': '"not-an-object"'}]}.get
+____ test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles _____
+../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:185: in test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles
+    assert renewal.main() == 1
+           ^^^^^^^^^^^^^^
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:187: in main
+    time.gmtime(current_exp))
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: timestamp out of range for platform time_t
+=========================== short test summary info ============================
+FAILED ../../../../../dev::test_root_runtime_positive_control - ValueError: u...
+FAILED ../../../../../dev::test_installer_rejects_unknown_existing_inventory
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[null]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[[]]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[true]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes[17]
+FAILED ../../../../../dev::test_mcp_rejects_http_200_invalid_response_shapes["not-an-object"]
+FAILED ../../../../../dev::test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles
+9 failed, 5 passed in 0.30s

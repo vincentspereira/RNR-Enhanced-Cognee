@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="0.298" timestamp="2026-11-01T23:38:58.127588+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_snapshot_collection_reads_only_units_helper_modules_interpreter" time="0.002"><failure message="AssertionError: protected snapshot collection missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'collect_snapshot', None)">tests/unit/test_security_first_cutover.py:271: in test_snapshot_collection_reads_only_units_helper_modules_interpreter
+    assert callable(getattr(h, "collect_snapshot", None)), "protected snapshot collection missing"
+E   AssertionError: protected snapshot collection missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'collect_snapshot', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_source_inventory_covers_fixed_and_runtime_prefix_overrides[None]" time="0.002"><failure message="AssertionError: source inventory missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'inventory_sources', None)">tests/unit/test_security_first_cutover.py:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    assert callable(getattr(h, "inventory_sources", None)), "source inventory missing"
+E   AssertionError: source inventory missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'inventory_sources', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_source_inventory_covers_fixed_and_runtime_prefix_overrides[99-evil.conf]" time="0.001"><failure message="AssertionError: source inventory missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'inventory_sources', None)">tests/unit/test_security_first_cutover.py:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    assert callable(getattr(h, "inventory_sources", None)), "source inventory missing"
+E   AssertionError: source inventory missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'inventory_sources', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_source_inventory_covers_fixed_and_runtime_prefix_overrides[run]" time="0.001"><failure message="AssertionError: source inventory missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'inventory_sources', None)">tests/unit/test_security_first_cutover.py:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    assert callable(getattr(h, "inventory_sources", None)), "source inventory missing"
+E   AssertionError: source inventory missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'inventory_sources', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_source_inventory_covers_fixed_and_runtime_prefix_overrides[prefix]" time="0.001"><failure message="AssertionError: source inventory missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'inventory_sources', None)">tests/unit/test_security_first_cutover.py:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    assert callable(getattr(h, "inventory_sources", None)), "source inventory missing"
+E   AssertionError: source inventory missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'inventory_sources', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_source_inventory_covers_fixed_and_runtime_prefix_overrides[alias]" time="0.001"><failure message="AssertionError: source inventory missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'inventory_sources', None)">tests/unit/test_security_first_cutover.py:298: in test_source_inventory_covers_fixed_and_runtime_prefix_overrides
+    assert callable(getattr(h, "inventory_sources", None)), "source inventory missing"
+E   AssertionError: source inventory missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'inventory_sources', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_show_reads_only_selected_properties_and_sanitizes_process_failures" time="0.001"><failure message="AssertionError: loaded-state inspection missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'read_loaded', None)">tests/unit/test_security_first_cutover.py:324: in test_show_reads_only_selected_properties_and_sanitizes_process_failures
+    assert callable(getattr(h, "read_loaded", None)), "loaded-state inspection missing"
+E   AssertionError: loaded-state inspection missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'read_loaded', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_protected_reader_never_follows_link_or_reads_fifo" time="0.005"><failure message="AssertionError: protected reader missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'read_protected', None)">tests/unit/test_security_first_cutover.py:347: in test_protected_reader_never_follows_link_or_reads_fifo
+    assert callable(getattr(h, "read_protected", None)), "protected reader missing"
+E   AssertionError: protected reader missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'read_protected', None)</failure></testcase></testsuite></testsuites>

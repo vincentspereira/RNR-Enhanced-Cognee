@@ -25,6 +25,7 @@ m = load('install_managed_mcp_runtime')
 b = load('build_managed_mcp_candidate')
 fetch = load('probe_fetch_candidate')
 qualify = load('qualify_managed_pm_payload')
+reconcile = load('reconcile_managed_mcp_runtime')
 
 
 def archive(extra=()):
@@ -179,3 +180,140 @@ def test_fetch_network_error_cannot_masquerade_as_private_refusal(value):
 def test_fetch_requires_actual_private_address_guard():
     assert fetch.private_denial({'isError': True, 'content': [
         {'type': 'text', 'text': 'Refused: not a public address'}]})
+
+
+def test_html_extraction_qualified_when_converted_body_is_retained():
+    converted = ('Contents of https://example.com/:\n'
+                 'This domain is for use in documentation examples without'
+                 ' needing permission.')
+    assert fetch.expected_html_body(converted)
+    for text in ('', None, 42,
+                 '<error>Page failed to be simplified from HTML</error>',
+                 'Contents of https://example.com/:<html><body>raw</body></html>',
+                 'Contents of https://invented.invalid/:words',
+                 'Contents of https://example.com/:   '):
+        assert not fetch.expected_html_body(text)
+
+
+def reconciliation_rows():
+    return {
+        'pm-runtime': member('pm-runtime', tarfile.DIRTYPE, mode=0o755),
+        'pm-runtime/pm-runtime.json': member('pm-runtime/pm-runtime.json'),
+        'python': member('python', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64': member('python/uv-0.12.3-linux-x64', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64/bin': member('python/uv-0.12.3-linux-x64/bin', tarfile.DIRTYPE, mode=0o755),
+        'python/uv-0.12.3-linux-x64/bin/uv': member('python/uv-0.12.3-linux-x64/bin/uv', mode=0o755),
+        'python/.install.lock': member('python/.install.lock'),
+    }
+
+
+def test_plan_mode_corrections_detects_umask_stripped_directories():
+    rows = reconciliation_rows()
+    observed = {'pm-runtime': 0o700, 'python': 0o755,
+                'python/uv-0.12.3-linux-x64': 0o700,
+                'python/uv-0.12.3-linux-x64/bin': 0o755}
+    assert reconcile.plan_mode_corrections(rows, observed) == [
+        ('pm-runtime', 0o755), ('python/uv-0.12.3-linux-x64', 0o755)]
+
+
+def test_plan_mode_corrections_requires_every_directory_observed():
+    rows = reconciliation_rows()
+    partial = {'pm-runtime': 0o755, 'python': 0o755,
+               'python/uv-0.12.3-linux-x64': 0o755}
+    with pytest.raises(ValueError):
+        reconcile.plan_mode_corrections(rows, partial)
+
+
+def test_merged_facts_bytes_reproduces_installer_merge():
+    before = {'schema': 1, 'packages': {'python': {'entry': '.'}, 'node': {'entry': 'n'}}}
+    staged = {'schema': 1, 'packages': {
+        'python': {'entry': 'python-3.14.7+20260901-linux-x64'},
+        'uv': {'entry': 'uv-0.12.3-linux-x64'}}}
+    merged = json.loads(reconcile.merged_facts_bytes(before, staged))
+    assert merged['packages']['python']['entry'] == 'python-3.14.7+20260901-linux-x64'
+    assert merged['packages']['uv']['entry'] == 'uv-0.12.3-linux-x64'
+    assert merged['packages']['node'] == {'entry': 'n'}
+    bad = {'schema': 1, 'packages': {'uv': {}}}
+    with pytest.raises(ValueError):
+        reconcile.merged_facts_bytes(before, bad)
+
+
+def test_reconciliation_helper_refuses_changed_v1_source(tmp_path):
+    original = reconcile.V1_HELPER
+    try:
+        reconcile.V1_HELPER = tmp_path / 'install_managed_mcp_runtime.py'
+        reconcile.V1_HELPER.write_text('# tampered fixture\n')
+        with pytest.raises(ValueError):
+            reconcile.load_v1()
+    finally:
+        reconcile.V1_HELPER = original
+
+
+def test_reconciliation_proof_captures_output_on_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile.os, 'chown', lambda *a, **k: None)
+    failed = SimpleNamespace(returncode=1, stdout=b'', stderr=b'permission denied: pm-runtime.json')
+    monkeypatch.setattr(reconcile.subprocess, 'run', lambda *a, **k: failed)
+    with pytest.raises(ValueError):
+        reconcile.proof(tmp_path / 'home', reconcile.load_v1(), tmp_path)
+    assert (tmp_path / 'proof-returncode.txt').read_text().strip() == '1'
+    assert 'permission denied' in (tmp_path / 'proof-stderr.txt').read_text()
+
+
+def live_state_fixture(tmp_path):
+    """A store with pre-release tools, payload dirs hit by the umask defect."""
+    root = tmp_path / 'release'
+    for relative, mode in [('python/bin', 0o755), ('python/node-26.7.0-linux-x64', 0o755),
+                           ('python', 0o755), ('pm-runtime', 0o700),
+                           ('python/uv-0.12.3-linux-x64', 0o700),
+                           ('python/uv-0.12.3-linux-x64/bin', 0o700)]:
+        path = root / relative
+        path.mkdir(parents=True, exist_ok=True)
+        path.chmod(mode)
+    (root / 'pm-runtime/pm-runtime.json').write_bytes(b'{}')
+    (root / 'python/facts.json').write_bytes(b'{"merged": true, "packages": {}}')
+    (root / 'python/facts.json').chmod(0o644)
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').write_bytes(b'')
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').chmod(0o755)
+    rows = reconciliation_rows()
+    rows['pm-runtime/pm-runtime.json'].size = 2
+    rows['python/facts.json'] = member('python/facts.json')
+    roots = ['pm-runtime', 'python/uv-0.12.3-linux-x64']
+    return rows, root, roots
+
+
+def test_live_state_flags_stripped_dirs_and_ignores_store_extras(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    modes, hashes = reconcile.live_state(rows, root, roots)
+    assert modes['pm-runtime'] == 0o700
+    assert modes['python'] == 0o755
+    assert modes['python/uv-0.12.3-linux-x64'] == 0o700
+    assert 'python/facts.json' not in hashes
+    assert 'python/uv-0.12.3-linux-x64/bin/uv' in hashes
+    corrections = dict(reconcile.plan_mode_corrections(rows, modes))
+    assert corrections == {'pm-runtime': 0o755, 'python/uv-0.12.3-linux-x64': 0o755,
+                           'python/uv-0.12.3-linux-x64/bin': 0o755}
+
+
+def test_live_state_refuses_unexpected_payload_entry(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'pm-runtime/unreviewed').write_bytes(b'x')
+    with pytest.raises(ValueError):
+        reconcile.live_state(rows, root, roots)
+
+
+def test_live_state_refuses_wrong_payload_file_mode(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'python/uv-0.12.3-linux-x64/bin/uv').chmod(0o600)
+    with pytest.raises(ValueError):
+        reconcile.live_state(rows, root, roots)
+
+
+def test_live_state_accepts_separately_verified_facts_bytes(tmp_path, monkeypatch):
+    monkeypatch.setattr(reconcile, 'REQUIRE_ROOT_OWNED', False)
+    rows, root, roots = live_state_fixture(tmp_path)
+    (root / 'python/facts.json').write_bytes(b'{"merged": true, "packages": {"uv": 1}}')
+    modes, hashes = reconcile.live_state(rows, root, roots)
+    assert 'python/facts.json' not in hashes

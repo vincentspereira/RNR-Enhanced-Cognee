@@ -1,0 +1,43 @@
+{
+  "accepted_module_hashes": {
+    "src/ingestion.py": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+    "src/llm_budget.py": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+    "src/llm_summarize.py": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+    "src/memory_api.py": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+    "src/memory_daemon.py": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+    "src/memory_library.py": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+    "src/memory_queries.py": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+    "src/security/enterprise_auth.py": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e"
+  },
+  "actual_missing_request": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py",
+  "exact_available_inputs": [
+    "/etc/systemd/system/enhanced-cognee-api.service",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/ingestion.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/llm_budget.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/llm_summarize.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_api.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_daemon.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_library.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_queries.py",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/security/enterprise_auth.py",
+    "/opt/enhanced-cognee-memory/security-first-helper/prepare_security_first_cutover.py"
+  ],
+  "expected": "collect hashes from runtime/lib/python3.12/site-packages/src",
+  "helper_sha256": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+  "reads": [
+    "/etc/systemd/system/enhanced-cognee-api.service",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf",
+    "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py"
+  ],
+  "source_hash_pins_rebound_for_invented_units_only": {
+    "/etc/systemd/system/enhanced-cognee-api.service": "7354431b0cba37c2bf1f591264bb23faec5c8c686cbbc65962297223dbfaf38d",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf": "5fadaaad5b608494bab14c3f2f0f1f0e17e374f7815378424e62ecab63e67c9e",
+    "/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33"
+  }
+}

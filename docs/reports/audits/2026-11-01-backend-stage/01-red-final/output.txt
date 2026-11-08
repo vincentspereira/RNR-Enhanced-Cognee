@@ -1,0 +1,20 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/unit/test_backend_stage_audit.py [31mF[0m[31m                                 [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m____________________________ test_exact_c14_payload ____________________________[0m
+[1m[31mtests/unit/test_backend_stage_audit.py[0m:25: in test_exact_c14_payload
+    [0m[94massert[39;49;00m stage [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m, [33m'[39;49;00m[33mstage-only helper is not implemented[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: stage-only helper is not implemented[0m
+[1m[31mE   assert None is not None[0m
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/01-red-final/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_backend_stage_audit.py::[1mtest_exact_c14_payload[0m - AssertionError: stage-only helper is not implemented
+[31m============================== [31m[1m1 failed[0m[31m in 0.09s[0m[31m ===============================[0m

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="25" skipped="0" tests="25" time="0.506" timestamp="2026-11-01T23:40:06.330296+00:00" hostname="Ubuntu-Hermes"><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[None]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[uid]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[gid]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[flags]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[checkout]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[interpreter]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_runtime_guard_requires_root_protected_install_and_isolated_interpreter[unsafe-helper]" time="0.001"><failure message="AssertionError: root CLI guard missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'runtime_guard', None)">tests/unit/test_security_first_cutover.py:361: in test_runtime_guard_requires_root_protected_install_and_isolated_interpreter
+    assert callable(getattr(h, "runtime_guard", None)), "root CLI guard missing"
+E   AssertionError: root CLI guard missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'runtime_guard', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle" time="0.004"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:383: in test_main_full_plan_is_read_only_and_prepare_rechecks_and_writes_exact_bundle
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments0]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments1]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments2]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments3]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments4]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments5]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments6]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments7]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments8]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments9]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments10]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_main_rejects_malformed_arguments_without_normalizing_or_echo[arguments11]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:426: in test_main_rejects_malformed_arguments_without_normalizing_or_echo
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_prepare_failures_write_nothing_and_do_not_echo_exception[wrong-approval]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:436: in test_prepare_failures_write_nothing_and_do_not_echo_exception
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_prepare_failures_write_nothing_and_do_not_echo_exception[toctou]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:436: in test_prepare_failures_write_nothing_and_do_not_echo_exception
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_prepare_failures_write_nothing_and_do_not_echo_exception[secret-exception]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:436: in test_prepare_failures_write_nothing_and_do_not_echo_exception
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_prepare_failures_write_nothing_and_do_not_echo_exception[unsafe-output]" time="0.001"><failure message="AssertionError: stage-only CLI missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'main', None)">tests/unit/test_security_first_cutover.py:436: in test_prepare_failures_write_nothing_and_do_not_echo_exception
+    assert callable(getattr(h, "main", None)), "stage-only CLI missing"
+E   AssertionError: stage-only CLI missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'main', None)</failure></testcase><testcase classname="tests.unit.test_security_first_cutover" name="test_output_guard_requires_private_existing_parent_and_absent_target" time="0.003"><failure message="AssertionError: output preflight missing&#10;assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(h, 'check_output', None)">tests/unit/test_security_first_cutover.py:458: in test_output_guard_requires_private_existing_parent_and_absent_target
+    assert callable(getattr(h, "check_output", None)), "output preflight missing"
+E   AssertionError: output preflight missing
+E   assert False
+E    +  where False = callable(None)
+E    +    where None = getattr(h, 'check_output', None)</failure></testcase></testsuite></testsuites>

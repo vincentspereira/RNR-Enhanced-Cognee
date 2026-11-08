@@ -1,0 +1,87 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+RNR Enhanced Cognee Test Suite
+Coverage Target: 98%
+Test Requirements: 100% success, 0 warnings, 0 skipped
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 11 items
+
+tests/unit/test_renewal_audit_remediation.py [31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                 [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome0] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:43: in test_renew_rejects_untrusted_results_without_leaking
+    [0mresult = renewal.renew([33m"[39;49;00m[33mdefault[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mintegrations/hermes/deployment/renew_fleet_memory_tokens.py[0m:101: in renew
+    [0mprocess = subprocess.run([90m[39;49;00m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:40: in run
+    [0m[94mraise[39;49;00m outcome[90m[39;49;00m
+[1m[31mE   subprocess.TimeoutExpired: Command 'synthetic' timed out after 180 seconds[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome1] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:43: in test_renew_rejects_untrusted_results_without_leaking
+    [0mresult = renewal.renew([33m"[39;49;00m[33mdefault[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mintegrations/hermes/deployment/renew_fleet_memory_tokens.py[0m:101: in renew
+    [0mprocess = subprocess.run([90m[39;49;00m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:40: in run
+    [0m[94mraise[39;49;00m outcome[90m[39;49;00m
+[1m[31mE   OSError: SECRET[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome2] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:44: in test_renew_rejects_untrusted_results_without_leaking
+    [0m[94massert[39;49;00m result[[33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE   assert True is False[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome3] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:43: in test_renew_rejects_untrusted_results_without_leaking
+    [0mresult = renewal.renew([33m"[39;49;00m[33mdefault[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mintegrations/hermes/deployment/renew_fleet_memory_tokens.py[0m:109: in renew
+    [0m[94mreturn[39;49;00m {[33m"[39;49;00m[33mprofile[39;49;00m[33m"[39;49;00m: profile, [33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m: [96mbool[39;49;00m(receipt.get([33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m)),[90m[39;49;00m
+                                                 ^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'list' object has no attribute 'get'[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome4] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:43: in test_renew_rejects_untrusted_results_without_leaking
+    [0mresult = renewal.renew([33m"[39;49;00m[33mdefault[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mintegrations/hermes/deployment/renew_fleet_memory_tokens.py[0m:109: in renew
+    [0m[94mreturn[39;49;00m {[33m"[39;49;00m[33mprofile[39;49;00m[33m"[39;49;00m: profile, [33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m: [96mbool[39;49;00m(receipt.get([33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m)),[90m[39;49;00m
+                                                 ^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   AttributeError: 'NoneType' object has no attribute 'get'[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome6] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:44: in test_renew_rejects_untrusted_results_without_leaking
+    [0m[94massert[39;49;00m result[[33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE   assert True is False[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome7] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:44: in test_renew_rejects_untrusted_results_without_leaking
+    [0m[94massert[39;49;00m result[[33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE   assert True is False[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome8] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:44: in test_renew_rejects_untrusted_results_without_leaking
+    [0m[94massert[39;49;00m result[[33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE   assert True is False[0m
+[31m[1m________ test_renew_rejects_untrusted_results_without_leaking[outcome9] ________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:44: in test_renew_rejects_untrusted_results_without_leaking
+    [0m[94massert[39;49;00m result[[33m"[39;49;00m[33mcomplete[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE   assert True is False[0m
+[31m[1m_________ test_renew_validates_receipt_and_uses_system_isolated_python _________[0m
+[1m[31mtests/unit/test_renewal_audit_remediation.py[0m:57: in test_renew_validates_receipt_and_uses_system_isolated_python
+    [0m[94massert[39;49;00m commands[[94m0[39;49;00m][:[94m3[39;49;00m] == [[33m"[39;49;00m[33m/usr/bin/python3[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-I[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-B[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+[1m[31mE   AssertionError: assert ['/home/vince...le_access.py'] == ['/usr/bin/py...', '-I', '-B'][0m
+[1m[31mE     [0m
+[1m[31mE     At index 0 diff: [0m[33m'[39;49;00m[33m/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python[39;49;00m[33m'[39;49;00m[90m[39;49;00m != [0m[33m'[39;49;00m[33m/usr/bin/python3[39;49;00m[33m'[39;49;00m[90m[39;49;00m[0m
+[1m[31mE     Use -v to get more diff[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome0][0m - subprocess.TimeoutExpired: Command 'synthetic' timed out after 180 seconds
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome1][0m - OSError: SECRET
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome2][0m - assert True is False
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome3][0m - AttributeError: 'list' object has no attribute 'get'
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome4][0m - AttributeError: 'NoneType' object has no attribute 'get'
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome6][0m - assert True is False
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome7][0m - assert True is False
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome8][0m - assert True is False
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_rejects_untrusted_results_without_leaking[outcome9][0m - assert True is False
+[31mFAILED[0m tests/unit/test_renewal_audit_remediation.py::[1mtest_renew_validates_receipt_and_uses_system_isolated_python[0m - AssertionError: assert ['/home/vince...le_access.py'] == ['/usr/bin/py...',...
+[31m========================= [31m[1m10 failed[0m, [32m1 passed[0m[31m in 0.23s[0m[31m =========================[0m

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "../.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/unit",
+    "tests/unit/test_backend_stage_audit.py",
+    "-q",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101/docs/reports/audits/2026-11-01-backend-stage/06-red/junit.xml"
+  ],
+  "cwd": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/backend-stage-worktree-20261101",
+  "returncode": 1,
+  "bindings": {
+    "integrations/hermes/deployment/stage_audit_backend.py": "df1b8ef5160db473a78ca3840671529d3fc3c2130a1b57e94c2672ced9f8b789",
+    "integrations/hermes/deployment/audit_backend_payload.json": "801103b2fc3f4a01860ed9cb8d45b7d2d4a45c10e2be0c8c339ea11b415112d7",
+    "tests/unit/test_backend_stage_audit.py": "7c32798eb60f8bf3c082a60707df74de61d0b33548b667a096cd439fd0e0d549"
+  }
+}

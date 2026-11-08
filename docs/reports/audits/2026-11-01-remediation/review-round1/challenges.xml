@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="14" time="0.296" timestamp="2026-11-01T12:41:40.579850+00:00" hostname="Ubuntu-Hermes"><testcase classname="" name="test_root_runtime_positive_control" time="0.007"><failure message="ValueError: untrusted_runtime_path">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:65: in test_root_runtime_positive_control
+    renewal.validate_runtime()
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:89: in validate_runtime
+    trusted_path(PROVISIONER_PYTHON.parent.parent / "pyvenv.cfg")
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:78: in trusted_path
+    require(not stat.S_ISLNK(info.st_mode) and info.st_uid == uid
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:39: in require
+    raise ValueError(category)
+E   ValueError: untrusted_runtime_path</failure></testcase><testcase classname="" name="test_root_runtime_rejects_replaceable_interpreter_alias" time="0.008" /><testcase classname="" name="test_installer_rejects_replaceable_interpreter_before_launch" time="0.013" /><testcase classname="" name="test_installer_rejects_unknown_existing_inventory" time="0.012"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'unknown_predecessor'&#10;  Actual message: 'untrusted_root_path'">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:134: in test_installer_rejects_unknown_existing_inventory
+    with pytest.raises(ValueError, match='unknown_predecessor'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'unknown_predecessor'
+E     Actual message: 'untrusted_root_path'</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[]" time="0.013"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a770d80&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a770d80&gt; = {'content': [{'type': 'text', 'text': 'null'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a770d80&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a770d80&gt; = {'content': [{'type': 'text', 'text': 'null'}]}.get</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[null]" time="0.006"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a773740&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a773740&gt; = {'content': [{'type': 'text', 'text': 'null'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'null'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a773740&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a773740&gt; = {'content': [{'type': 'text', 'text': 'null'}]}.get</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[[]]" time="0.005"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '[]'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a6b4180&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a6b4180&gt; = {'content': [{'type': 'text', 'text': '[]'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '[]'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a6b4180&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a6b4180&gt; = {'content': [{'type': 'text', 'text': '[]'}]}.get</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[true]" time="0.005"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'true'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a650500&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a650500&gt; = {'content': [{'type': 'text', 'text': 'true'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': 'true'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a650500&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a650500&gt; = {'content': [{'type': 'text', 'text': 'true'}]}.get</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[17]" time="0.004"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '17'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a67fdc0&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a67fdc0&gt; = {'content': [{'type': 'text', 'text': '17'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '17'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a67fdc0&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a67fdc0&gt; = {'content': [{'type': 'text', 'text': '17'}]}.get</failure></testcase><testcase classname="" name="test_mcp_rejects_http_200_invalid_response_shapes[&quot;not-an-object&quot;]" time="0.007"><failure message="AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '&quot;not-an-object&quot;'}]}}&#10;assert None is True&#10; +  where None = &lt;built-in method get of dict object at 0x7dc71a653300&gt;('isError')&#10; +    where &lt;built-in method get of dict object at 0x7dc71a653300&gt; = {'content': [{'type': 'text', 'text': '&quot;not-an-object&quot;'}]}.get">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:157: in test_mcp_rejects_http_200_invalid_response_shapes
+    assert reply['result'].get('isError') is True, reply
+E   AssertionError: {'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': '"not-an-object"'}]}}
+E   assert None is True
+E    +  where None = &lt;built-in method get of dict object at 0x7dc71a653300&gt;('isError')
+E    +    where &lt;built-in method get of dict object at 0x7dc71a653300&gt; = {'content': [{'type': 'text', 'text': '"not-an-object"'}]}.get</failure></testcase><testcase classname="" name="test_mcp_object_reply_positive_control" time="0.005" /><testcase classname="" name="test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles" time="0.007"><failure message="OverflowError: timestamp out of range for platform time_t">../../../.hermes/cache/scratch/ec-independent-review-_vspxshk/test_independent_challenges.py:185: in test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles
+    assert renewal.main() == 1
+           ^^^^^^^^^^^^^^
+integrations/hermes/deployment/renew_fleet_memory_tokens.py:187: in main
+    time.gmtime(current_exp))
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: timestamp out of range for platform time_t</failure></testcase><testcase classname="" name="test_cancellation_during_reservation_never_dispatches_model" time="0.038" /><testcase classname="" name="test_opaque_non_ascii_payload_retains_uncertain_charge" time="0.036" /></testsuite></testsuites>

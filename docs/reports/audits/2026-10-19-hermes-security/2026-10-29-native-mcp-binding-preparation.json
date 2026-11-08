@@ -1,0 +1,153 @@
+{
+  "recorded_date": "2026-10-29",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "worktree_branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "subject": "Native MCP binding qualification group prepared for owner-terminal execution",
+  "design": {
+    "surface": "actual restricted main identity (ecbot_5592956882ea9a13) in hardened transient units",
+    "stage_catalogue": {
+      "posture": "networked, matching production native launches (npx/uvx resolve public packages on cache miss)",
+      "behavior": "the identity reads only its own Hermes config.yaml through a bounded unique-key YAML loader, resolves every definition through the release's own _resolve_stdio_command, launches it, handshakes, counts tools, and probes only the Fetch private-address refusals",
+      "boundary": "config values never cross the identity boundary; receipts carry counts, flags, resolution class and error kinds only"
+    },
+    "stage_fetch_public": {
+      "posture": "networked; only when a Fetch definition exists in the live profile",
+      "behavior": "two private-address refusals, the authorized public example.com retrieval in raw mode, and the default-mode converted-Markdown structural check already qualified at candidate level",
+      "if_absent": "recorded as fetch_binding_deferred; candidate-level Fetch qualification stands"
+    },
+    "guard": "the worker refuses while any restricted bot process is active, and only proceeds when the launcher entry remains disabled and all admission policies are unchanged"
+  },
+  "prerequisites_verified": {
+    "reconciliation_v3_complete": true,
+    "resident_pm_runtime_qualified": true,
+    "native_managed_launcher_selection_qualified": true,
+    "managed_uv_binary_runs": "uv 0.12.3 (x86_64-unknown-linux-gnu)",
+    "managed_python_runs": "Python 3.14.7",
+    "offline_resolution_probe": "bare npx, uvx, node, uv all resolve to the managed release launchers; absolute paths pass through; no env keys added",
+    "support_chain_retained": true,
+    "restricted_bot_processes_at_preparation": 0
+  },
+  "sources": {
+    "probe_native_mcp_binding.py": "a54f321c30b64924a3b72d0b779f90997ec89674f65e192d6643cd02c3e062d5",
+    "qualify_native_mcp_binding.py": "cb75f5d3e8b7bbd5756f04f99a2a413ac2e7ae90db6e99274f40e5250eba54b5",
+    "superseded_revisions": [
+      {"sha256": "3e04a6eb3bfab260538a95bf700dc7ae09addd1177637446f5ca40093d62e3be",
+       "superseded_by": "installer frozen into the artifact (0750 home traversal denied to the capability-less operator)"},
+      {"sha256": "74e2ec56279129053a3f3ecb38053fe1744b9356a9e39857eb3bd1267dfbc1bc",
+       "superseded_by": "launch ordering: retained_runtime read the frozen installer before the artifact existed; the freeze now precedes verification and both owner-terminal refusals created no state"},
+      {"sha256": "4b31d7037ca958c49ca88b4b0e3e587d417b2d254094c328db0c824d9b670af8",
+       "superseded_by": "driver config resolution now mirrors hermes_constants (account home plus data-dir suffix, then sibling .hermes* directories) with a bounded name-only preflight diagnostic; superseded driver 941be00c7a545bd60853500784c4ff2422a957400bb75a17969fb5e4abbeb56d assumed a fixed config path"},
+      {"sha256": "786f9ed36f2b28cfa8d87c5e2a584896e34e6ee31f2f7e155d434843cf11d1cf",
+       "superseded_by": "config parser hardened with phase categories after the v3 child refused: the diagnostic proved the config exists and is readable at the assumed path, so the failure was inside the parse or shape checks; unquoted YAML date scalars are now accepted, the server-count bound is 16 with the live count recorded, and parse or shape failures carry safe field-name categories"},
+      {"sha256": "bd267aed49565cd6bad8a2e657f285d72ae76ad46cbd360a89e951cb059b3528",
+       "superseded_by": "remote MCP definitions classified and deferred after the v4 child pinpointed server:context7:command_invalid: the live main profile contains remote HTTP MCP definitions (no stdio command), and connecting to an external endpoint with profile credentials is an external send that requires the owner's explicit qualification gate"}
+    ],
+    "protocol_reused": "probe_main_local_mcp.py 415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07 (reply bound raised to 10 MiB for the REA catalogue)",
+    "installer_reused": "install_managed_mcp_runtime.py a877fd6dd3688ea77d42ae02c94b060340b5a3c217f85df85ec035f987822711 (public_read + no_active_candidates; frozen into the artifact at launch because the capability-less operator unit cannot traverse the 0750 owner home)"
+  },
+  "retained_attempts": {
+    "operator-native-mcp-binding-v1": {
+      "checkpoint": "retained_runtime_and_policies",
+      "complete": false,
+      "error_kind": "PermissionError",
+      "effects_applied": "none; the operator stopped itself before any child unit existed",
+      "cause": "the v1 worker read the installer from the owner worktree; /home/vincentspereira is mode 0750 and the hardened operator unit strips every capability, so traversal was denied",
+      "correction": "the installer is now hash-pinned and frozen into the artifact at launch and the worker loads it from there; the v2 artifact and unit names are fresh",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v2": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "the catalogue child unit started under the actual restricted identity, crashed in its own preflight, and was stopped; no tool call, model call or write occurred",
+      "cause": "the driver assumed the profile config at <account-home>/.hermes/config.yaml; Hermes resolves the account's data dir with an optional HERMES_DATA_DIR_SUFFIX and profiles may repoint HOME, so the assumed path need not exist",
+      "correction": "the driver resolved the config the way hermes_constants does (account home plus data-dir suffix, then sibling .hermes* directories) and on any preflight failure printed a bounded name-only diagnostic to the journal",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v3": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "the catalogue child unit ran under the actual restricted identity, refused in its own preflight, and was stopped; no tool call, model call or write occurred",
+      "diagnostic_finding": "the bounded journal diagnostic proved the config exists as a regular identity-owned file at /var/lib/enhanced-cognee-profiles/5592956882ea9a13/.hermes/config.yaml, so the refusal was inside the parse or shape checks, not path resolution",
+      "correction": "phase-categorized parser with safe field-name details, YAML date scalars accepted, server-count bound widened to 16 with the live count recorded",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v4": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "category_detail": "server:context7:command_invalid",
+      "effects_applied": "the catalogue child unit ran under the actual restricted identity, read its own config successfully, pinpointed the failing definition, and was stopped; no tool call, model call or write occurred",
+      "diagnostic_finding": "the live main profile contains remote HTTP MCP definitions (context7) that have no stdio command; the driver's stdio-only shape check refused them",
+      "correction": "remote definitions are classified and accounted with an explicit external-endpoint owner gate instead of being launched: the stage qualifies the stdio definitions and records remote bindings as deferred with names only, never url or header values",
+      "preserved": true
+    },
+    "operator-native-mcp-binding-v5": {
+      "checkpoint": "native_catalogue",
+      "complete": false,
+      "error_kind": "ValueError",
+      "effects_applied": "the catalogue child unit ran to completion under the actual restricted identity and its receipt recorded complete=true; the operator then refused on its own post-run property check and stopped",
+      "catalogue_receipt_finding": {
+        "definition_count_live": 4,
+        "fetch": "resolved_via=managed, complete, initialize and tools_list passed, 1 tool, 2 private-address denials",
+        "filesystem": "resolved_via=managed, complete, initialize and tools_list passed, 14 tools",
+        "remote_definitions_deferred": ["context7", "deepwiki"],
+        "config_sha256": "0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289"
+      },
+      "cause": "the operator's networked-stage property check expected PrivateNetwork to be empty, but systemd always reports the default 'no' for unset properties",
+      "correction": "the networked stage accepts PrivateNetwork=no (the property is only required to be 'yes' for the isolated catalogue variant); the v6 artifact and unit names are fresh, and the fetch-public stage still lies ahead",
+      "preserved": true
+    }
+  },
+  "source_validation": {
+    "tests_passed": 54,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "warnings": 0,
+    "new_in_this_group": 9,
+    "native_compilation_passed": true
+  },
+  "execution": {
+    "status": "complete",
+    "executed_by": "owner sudo terminal, 2026-10-29",
+    "evidence": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-evidence/native-mcp-binding-ggu1psf5",
+    "operator_helper_sha256": "cb75f5d3e8b7bbd5756f04f99a2a413ac2e7ae90db6e99274f40e5250eba54b5",
+    "catalogue": {
+      "complete": true,
+      "definition_count_live": 4,
+      "config_path": "/var/lib/enhanced-cognee-profiles/5592956882ea9a13/.hermes/config.yaml",
+      "config_sha256": "0f46e8c6e945b27878d6e93f23acd256172dd2afb6db08671ecb540237cbc289",
+      "fetch": "resolved_via=managed (uvx), initialize and tools_list passed, 1 tool, 2 private-address denials",
+      "filesystem": "resolved_via=managed (npx), initialize and tools_list passed, 14 tools",
+      "remote_definitions_deferred": ["context7", "deepwiki"]
+    },
+    "fetch_public": {
+      "complete": true,
+      "raw_passed": true,
+      "default_extraction_qualified": true,
+      "private_denials": 2
+    },
+    "gate_result": {
+      "native_mcp_binding_qualified": true,
+      "native_fetch_binding_qualified": true,
+      "native_remote_binding_qualified": false,
+      "remote_binding_deferred": true,
+      "remote_definitions_deferred": ["context7", "deepwiki"],
+      "note": "local stdio definitions bind natively and Fetch completes public retrieval; remote endpoint qualification is an explicit owner gate"
+    },
+    "idempotent": "reattaching with the same command resumes the watch without replay; a failed attempt is retained and requires inspection",
+    "boundaries": [
+      "no model call",
+      "no memory API call",
+      "no platform adapter",
+      "no credential issued",
+      "no key read",
+      "no profile or candidate changed",
+      "fleet admission stays disabled",
+      "fleet_launch_approved false"
+    ]
+  }
+}

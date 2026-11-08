@@ -1,0 +1,568 @@
+{
+  "existing": [
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_exact_c14_payload",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[unknown]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[missing]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[duplicate]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[nested-duplicate]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[extra-row]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[missing-row]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[row-field]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[traversal]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[wrong-commit]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[wrong-hash]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[malformed-hash]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[bool-schema]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[float-schema]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[nan]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_manifest_is_closed_schema[not-object]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_protected_runtime_and_payload",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_stage_new_candidate_only",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[old-hash]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[new-module-present]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[source-change]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[writable-runtime]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[writable-bin]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[external-bin-writable]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[wrong-owner]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[hardlink]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[source-symlink]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[lexical-alias-dir]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[lib64-escape]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[fifo]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[pyvenv-change]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[pth]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[setuid]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_preflight_rejects_attacks_before_writes[runtime-private-dir]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_stale_overlay_bytecode_is_not_cloned",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[not-root]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[no-isolation]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[site-enabled]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[bytecode-enabled]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[checkout-script]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[writable-bundle-parent]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[writable-interpreter-parent]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[interpreter-dir-alias]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[writable-executable-alias]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[wrong-interpreter]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_root_execution_trust[script-hardlink]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_destination_refuses_every_existing_shape[directory]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_destination_refuses_every_existing_shape[file]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_destination_refuses_every_existing_shape[dangling-link]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_partial_preserved_without_complete_or_reuse[clone-io]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_partial_preserved_without_complete_or_reuse[readback-tamper]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_no_launch_network_service_or_private_config_reads",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_readonly_cli_inspection_requires_no_root_bundle",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_cli_has_no_user_controlled_paths[args0]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_cli_has_no_user_controlled_paths[args1]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_cli_has_no_user_controlled_paths[args2]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_cli_has_no_user_controlled_paths[args3]",
+      "result": "passed"
+    },
+    {
+      "id": "tests.unit.test_backend_stage_audit::test_final_marker_readback_is_checked",
+      "result": "passed"
+    }
+  ],
+  "initial_independent": [
+    {
+      "id": "::test_complete_clone_independent_control",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[null-files]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[dict-files]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[null-row]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[reorder]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[bool-oldhash]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[float-newhash]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[duplicate-identical-top]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[duplicate-identical-row]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[trailing-object]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[trailing-garbage]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[infinity]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[invalid-utf8]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_new_manifest_challenges[unknown-row-key]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[socket]",
+      "result": "failure"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[fifo]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[directory-instead-of-binary]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[file-instead-of-source-parent]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[runtime-ancestor-alias]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[candidate-parent-writable]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[bundle-fifo]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[helper-gid]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[target-gid]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[sticky-dir]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[setgid-file]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[uppercase-pth]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[lib64-nested-link]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[private-artifacts]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_specialfile_metadata_challenges[bad-json-manifest]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[initial-marker]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[clone-read]",
+      "result": "failure"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[clone-write]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[overlay-write]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[pending-write]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[final-rename]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[final-read]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[ingestion.pyc-True]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[ingestion.pyo-True]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[__pycache__/ingestion.cpython-312.pyc-True]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[__pycache__/ingestion.cpython-312.opt-2.pyc-True]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[ingestion_other.pyc-False]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[__pycache__/ingestion_other.cpython-312.pyc-False]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_bytecode_exact_module_selection[different/__pycache__/ingestion.cpython-312.pyc-False]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_exact_unprivileged_bootstrap_reader[same-bytes]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_exact_unprivileged_bootstrap_reader[bad-bytes]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_exact_unprivileged_bootstrap_reader[final-symlink]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_exact_unprivileged_bootstrap_reader[parent-alias]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_exact_unprivileged_bootstrap_reader[missing]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_command_metadata_and_syntax",
+      "result": "passed"
+    }
+  ],
+  "replay_and_new_trust": [
+    {
+      "id": "::test_specialfile_metadata_challenges[socket]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_failure_boundaries_preserve_no_false_complete[clone-read]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[uid]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[isolated]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[site]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[bytecode]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[wrong-script-path]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[script-symlink]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[script-hardlink]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[bundle-ancestor-mode]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[wrong-executable]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[lexical-executor-alias]",
+      "result": "passed"
+    },
+    {
+      "id": "::test_fresh_execution_trust_controls[writable-executor-alias-parent]",
+      "result": "passed"
+    }
+  ],
+  "final_unique_independent": 60,
+  "final_unique_combined": 118,
+  "final_independent_results": {
+    "::test_complete_clone_independent_control": "passed",
+    "::test_new_manifest_challenges[null-files]": "passed",
+    "::test_new_manifest_challenges[dict-files]": "passed",
+    "::test_new_manifest_challenges[null-row]": "passed",
+    "::test_new_manifest_challenges[reorder]": "passed",
+    "::test_new_manifest_challenges[bool-oldhash]": "passed",
+    "::test_new_manifest_challenges[float-newhash]": "passed",
+    "::test_new_manifest_challenges[duplicate-identical-top]": "passed",
+    "::test_new_manifest_challenges[duplicate-identical-row]": "passed",
+    "::test_new_manifest_challenges[trailing-object]": "passed",
+    "::test_new_manifest_challenges[trailing-garbage]": "passed",
+    "::test_new_manifest_challenges[infinity]": "passed",
+    "::test_new_manifest_challenges[invalid-utf8]": "passed",
+    "::test_new_manifest_challenges[unknown-row-key]": "passed",
+    "::test_specialfile_metadata_challenges[socket]": "passed",
+    "::test_specialfile_metadata_challenges[fifo]": "passed",
+    "::test_specialfile_metadata_challenges[directory-instead-of-binary]": "passed",
+    "::test_specialfile_metadata_challenges[file-instead-of-source-parent]": "passed",
+    "::test_specialfile_metadata_challenges[runtime-ancestor-alias]": "passed",
+    "::test_specialfile_metadata_challenges[candidate-parent-writable]": "passed",
+    "::test_specialfile_metadata_challenges[bundle-fifo]": "passed",
+    "::test_specialfile_metadata_challenges[helper-gid]": "passed",
+    "::test_specialfile_metadata_challenges[target-gid]": "passed",
+    "::test_specialfile_metadata_challenges[sticky-dir]": "passed",
+    "::test_specialfile_metadata_challenges[setgid-file]": "passed",
+    "::test_specialfile_metadata_challenges[uppercase-pth]": "passed",
+    "::test_specialfile_metadata_challenges[lib64-nested-link]": "passed",
+    "::test_specialfile_metadata_challenges[private-artifacts]": "passed",
+    "::test_specialfile_metadata_challenges[bad-json-manifest]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[initial-marker]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[clone-read]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[clone-write]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[overlay-write]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[pending-write]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[final-rename]": "passed",
+    "::test_failure_boundaries_preserve_no_false_complete[final-read]": "passed",
+    "::test_bytecode_exact_module_selection[ingestion.pyc-True]": "passed",
+    "::test_bytecode_exact_module_selection[ingestion.pyo-True]": "passed",
+    "::test_bytecode_exact_module_selection[__pycache__/ingestion.cpython-312.pyc-True]": "passed",
+    "::test_bytecode_exact_module_selection[__pycache__/ingestion.cpython-312.opt-2.pyc-True]": "passed",
+    "::test_bytecode_exact_module_selection[ingestion_other.pyc-False]": "passed",
+    "::test_bytecode_exact_module_selection[__pycache__/ingestion_other.cpython-312.pyc-False]": "passed",
+    "::test_bytecode_exact_module_selection[different/__pycache__/ingestion.cpython-312.pyc-False]": "passed",
+    "::test_exact_unprivileged_bootstrap_reader[same-bytes]": "passed",
+    "::test_exact_unprivileged_bootstrap_reader[bad-bytes]": "passed",
+    "::test_exact_unprivileged_bootstrap_reader[final-symlink]": "passed",
+    "::test_exact_unprivileged_bootstrap_reader[parent-alias]": "passed",
+    "::test_exact_unprivileged_bootstrap_reader[missing]": "passed",
+    "::test_command_metadata_and_syntax": "passed",
+    "::test_fresh_execution_trust_controls[uid]": "passed",
+    "::test_fresh_execution_trust_controls[isolated]": "passed",
+    "::test_fresh_execution_trust_controls[site]": "passed",
+    "::test_fresh_execution_trust_controls[bytecode]": "passed",
+    "::test_fresh_execution_trust_controls[wrong-script-path]": "passed",
+    "::test_fresh_execution_trust_controls[script-symlink]": "passed",
+    "::test_fresh_execution_trust_controls[script-hardlink]": "passed",
+    "::test_fresh_execution_trust_controls[bundle-ancestor-mode]": "passed",
+    "::test_fresh_execution_trust_controls[wrong-executable]": "passed",
+    "::test_fresh_execution_trust_controls[lexical-executor-alias]": "passed",
+    "::test_fresh_execution_trust_controls[writable-executor-alias-parent]": "passed"
+  },
+  "fixture_corrections": [
+    {
+      "case": "test_specialfile_metadata_challenges[socket]",
+      "cause": "AF_UNIX address exceeded kernel pathname length before tested helper invocation",
+      "correction": "Bind a relative address while temporarily in the scratch runtime directory; unchanged rejection expectation.",
+      "original_retained": "independent-01/stdout.txt",
+      "mapping": "same case ID, corrected in independent-02"
+    },
+    {
+      "case": "test_failure_boundaries_preserve_no_false_complete[clone-read]",
+      "cause": "Injected persistent read failure was still active during separate original-runtime preservation inspection; intended clone fault had already been caught.",
+      "correction": "Inject the same OSError only at the second read (clone read); retain successful original-runtime inspection and no-COMPLETE/refused-reuse assertions.",
+      "original_retained": "independent-01/stdout.txt",
+      "mapping": "same case ID, corrected in independent-02"
+    }
+  ]
+}

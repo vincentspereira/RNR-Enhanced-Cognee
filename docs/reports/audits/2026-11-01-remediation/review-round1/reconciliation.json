@@ -1,0 +1,55 @@
+{
+  "baseline": "89d1be78bbe9571b9152396c5483eabbb8360b95",
+  "manifest_count": 29,
+  "source_count": 16,
+  "test_file_count": 13,
+  "manifest_mismatches": [],
+  "unmanifested_source_changes": [],
+  "manifest_not_in_changed_source": [],
+  "inventory_count": 45,
+  "inventory_unique": 45,
+  "static_scan_added_line_hits": [],
+  "fresh_challenges": {
+    "distinct": 15,
+    "passed": 5,
+    "failed": 10,
+    "failed_case_names": [
+      "test_mcp_rejects_http_200_invalid_response_shapes[]",
+      "test_mcp_rejects_http_200_invalid_response_shapes[null]",
+      "test_mcp_rejects_http_200_invalid_response_shapes[[]]",
+      "test_mcp_rejects_http_200_invalid_response_shapes[true]",
+      "test_mcp_rejects_http_200_invalid_response_shapes[17]",
+      "test_mcp_rejects_http_200_invalid_response_shapes[\"not-an-object\"]",
+      "test_renewal_unrepresentable_expiry_does_not_abort_remaining_profiles",
+      "test_root_runtime_rejects_replaceable_interpreter_alias",
+      "test_installer_rejects_replaceable_interpreter_before_launch",
+      "test_installer_rejects_unknown_existing_inventory"
+    ]
+  },
+  "fixture_mapping": [
+    {
+      "original_file": "test_independent_challenges.py",
+      "corrected_file": "test_independent_challenges_v2.py",
+      "case_name": "test_installer_rejects_replaceable_interpreter_before_launch"
+    },
+    {
+      "original_file": "test_independent_challenges.py",
+      "corrected_file": "test_independent_challenges_v2.py",
+      "case_name": "test_installer_rejects_unknown_existing_inventory"
+    },
+    {
+      "original_file": "test_independent_challenges.py",
+      "corrected_file": "test_independent_challenges_v2.py",
+      "case_name": "test_root_runtime_positive_control"
+    },
+    {
+      "original_file": "test_independent_challenges.py",
+      "corrected_file": "test_independent_challenges_v2.py",
+      "case_name": "test_root_runtime_rejects_replaceable_interpreter_alias"
+    }
+  ],
+  "candidate_regressions": {
+    "cases": 149,
+    "failed": 0
+  }
+}

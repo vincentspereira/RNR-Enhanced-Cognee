@@ -1,0 +1,11 @@
+--- docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py
++++ docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/copied-review-cases.py
+@@ -182,7 +182,7 @@
+ @pytest.mark.parametrize('which', ['inventory', 'loaded'])
+ def test_C01_snapshot_rechecks_both_manager_views(monkeypatch, which):
+     snap = invented_snapshot(monkeypatch)
+-    content = exact_content(snap, installed=False)
++    content = exact_content(snap, installed=True)
+     calls = {'inventory': 0, 'loaded': 0}
+     def inventory():
+         calls['inventory'] += 1

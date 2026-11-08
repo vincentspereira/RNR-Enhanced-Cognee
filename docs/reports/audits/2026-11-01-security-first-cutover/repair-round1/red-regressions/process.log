@@ -1,0 +1,218 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0 -- /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 3 items
+
+tests/unit/test_security_first_cutover_review_regressions.py::test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting [31mFAILED[0m[31m [ 33%][0m
+tests/unit/test_security_first_cutover_review_regressions.py::test_L01_exact_installed_module_mapping_is_readable [31mFAILED[0m[31m [ 66%][0m
+tests/unit/test_security_first_cutover_review_regressions.py::test_L02_root_decoys_cannot_authorize_changed_installed_modules [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m______ test_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting ______[0m
+
+challenge = <module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'>
+tmp_path = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/sandbox/test_S01_alias_dotdot_rejects_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582c800>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting[39;49;00m(challenge, tmp_path, monkeypatch):[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(challenge.h.Refusal, match=[33m"[39;49;00m[33m^unsafe_path_link$[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           challenge.test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor(tmp_path, monkeypatch)[90m[39;49;00m
+
+[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/sandbox/test_S01_alias_dotdot_rejects_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582c800>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor[39;49;00m(tmp_path, monkeypatch):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A real lexical alias resolves to untrusted bytes; guard hashes another file."""[39;49;00m[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mFalse[39;49;00m)[90m[39;49;00m
+        virtual_root = tmp_path / [33m'[39;49;00m[33mvfs[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        virtual_root.mkdir()[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mlocal[39;49;00m(path):[90m[39;49;00m
+            [94massert[39;49;00m path.startswith([33m'[39;49;00m[33m/[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+            [94mreturn[39;49;00m virtual_root / path.lstrip([33m'[39;49;00m[33m/[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+        lexical = h.CANDIDATE + [33m'[39;49;00m[33m/runtime/bin/python[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        safe = [33m'[39;49;00m[33m/usr/bin/python3.12[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        bridge = [33m'[39;49;00m[33m/usr/bin/bridge[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        unsafe = [33m'[39;49;00m[33m/outside/python3.12[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        [94mfor[39;49;00m path, data [95min[39;49;00m content.items():[90m[39;49;00m
+            [94mif[39;49;00m path == lexical:[90m[39;49;00m
+                [94mcontinue[39;49;00m[90m[39;49;00m
+            p = local(path)[90m[39;49;00m
+            p.parent.mkdir(parents=[94mTrue[39;49;00m, exist_ok=[94mTrue[39;49;00m)[90m[39;49;00m
+            p.write_bytes(data)[90m[39;49;00m
+            p.chmod([94m0o644[39;49;00m)[90m[39;49;00m
+        local(safe).parent.mkdir(parents=[94mTrue[39;49;00m, exist_ok=[94mTrue[39;49;00m)[90m[39;49;00m
+        local(safe).write_bytes([33mb[39;49;00m[33m'[39;49;00m[33minvented safe interpreter[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+        local(safe).chmod([94m0o755[39;49;00m)[90m[39;49;00m
+        local([33m'[39;49;00m[33m/outside/nested[39;49;00m[33m'[39;49;00m).mkdir(parents=[94mTrue[39;49;00m)[90m[39;49;00m
+        local(unsafe).write_bytes([33mb[39;49;00m[33m'[39;49;00m[33minvented unsafe interpreter[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+        local(unsafe).chmod([94m0o777[39;49;00m)[90m[39;49;00m
+        local(bridge).symlink_to([33m'[39;49;00m[33m../../outside/nested[39;49;00m[33m'[39;49;00m)[90m[39;49;00m
+        local(lexical).parent.mkdir(parents=[94mTrue[39;49;00m, exist_ok=[94mTrue[39;49;00m)[90m[39;49;00m
+        alias_target = os.path.relpath(local(bridge), local(lexical).parent) + [33m'[39;49;00m[33m/../python3.12[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        local(lexical).symlink_to(alias_target)[90m[39;49;00m
+        [94massert[39;49;00m os.path.realpath(local(lexical)) == [96mstr[39;49;00m(local(unsafe))[90m[39;49;00m
+        checked = [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mmetadata[39;49;00m(path):[90m[39;49;00m
+            checked.append(path)[90m[39;49;00m
+            [94mreturn[39;49;00m rootish_metadata(local(path))[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mguard[39;49;00m(path, **kwargs):[90m[39;49;00m
+            [94mreturn[39;49;00m h.trusted_path(path, stat_fn=metadata, readlink=[94mlambda[39;49;00m p: os.readlink(local(p)), **kwargs)[90m[39;49;00m
+        reads = [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+            reads.append(path)[90m[39;49;00m
+            [94mif[39;49;00m path == safe:[90m[39;49;00m
+                [94mreturn[39;49;00m local(safe).read_bytes()[90m[39;49;00m
+            [94mreturn[39;49;00m content[path][90m[39;49;00m
+        result = h.collect_snapshot(reader=reader, guard=guard,[90m[39;49;00m
+                                    inventory=[94mlambda[39;49;00m: [96mlist[39;49;00m(h.SOURCES), loaded=[94mlambda[39;49;00m: [96mdict[39;49;00m(h.EXPECTED_LOADED))[90m[39;49;00m
+        accepted = h.plan_from_snapshot(result)[90m[39;49;00m
+        evidence([33m'[39;49;00m[33mS01-alias-normalization[39;49;00m[33m'[39;49;00m, {[33m'[39;49;00m[33mhelper_sha256[39;49;00m[33m'[39;49;00m: PIN, [33m'[39;49;00m[33mlexical[39;49;00m[33m'[39;49;00m: lexical, [33m'[39;49;00m[33malias_target[39;49;00m[33m'[39;49;00m: alias_target,[90m[39;49;00m
+            [33m'[39;49;00m[33mactual_sandbox_resolution[39;49;00m[33m'[39;49;00m: os.path.realpath(local(lexical)), [33m'[39;49;00m[33msafe_sandbox_file[39;49;00m[33m'[39;49;00m: [96mstr[39;49;00m(local(safe)),[90m[39;49;00m
+            [33m'[39;49;00m[33munsafe_sandbox_file[39;49;00m[33m'[39;49;00m: [96mstr[39;49;00m(local(unsafe)), [33m'[39;49;00m[33munsafe_mode[39;49;00m[33m'[39;49;00m: [96moct[39;49;00m(stat.S_IMODE(local(unsafe).stat().st_mode)),[90m[39;49;00m
+            [33m'[39;49;00m[33mguard_checked_paths[39;49;00m[33m'[39;49;00m: checked, [33m'[39;49;00m[33mreads[39;49;00m[33m'[39;49;00m: reads, [33m'[39;49;00m[33maccepted_startup_interpreter[39;49;00m[33m'[39;49;00m: accepted[[33m'[39;49;00m[33mstartup_interpreter[39;49;00m[33m'[39;49;00m],[90m[39;49;00m
+            [33m'[39;49;00m[33mexpected[39;49;00m[33m'[39;49;00m: [33m'[39;49;00m[33mreject the intermediate symlink ancestor or bind the real unsafe target[39;49;00m[33m'[39;49;00m,[90m[39;49;00m
+            [33m'[39;49;00m[33mactual[39;49;00m[33m'[39;49;00m: [33m'[39;49;00m[33maccepted; resolved field and hash describe the different safe file[39;49;00m[33m'[39;49;00m})[90m[39;49;00m
+>       [94massert[39;49;00m accepted[[33m'[39;49;00m[33mstartup_interpreter[39;49;00m[33m'[39;49;00m][[33m'[39;49;00m[33mresolved[39;49;00m[33m'[39;49;00m] != safe, [33m'[39;49;00m[33mS01: normpath erased a symlink ancestor and fingerprinted the wrong executable[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AssertionError: S01: normpath erased a symlink ancestor and fingerprinted the wrong executable[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:162: AssertionError
+[31m[1m_____________ test_L01_exact_installed_module_mapping_is_readable ______________[0m
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_L01_installed_site_packages_layout_is_readable[39;49;00m(monkeypatch):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Contract assertion deliberately fails when helper looks in candidate root."""[39;49;00m[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mTrue[39;49;00m)[90m[39;49;00m
+        reads = [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+            reads.append(path)[90m[39;49;00m
+            [94mif[39;49;00m path [95mnot[39;49;00m [95min[39;49;00m content:[90m[39;49;00m
+                [94mraise[39;49;00m [96mFileNotFoundError[39;49;00m(path)[90m[39;49;00m
+            [94mreturn[39;49;00m content[path][90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+>           result = h.collect_snapshot(reader=reader, guard=[94mlambda[39;49;00m p, **kw: p,[90m[39;49;00m
+                                        inventory=[94mlambda[39;49;00m: [96mlist[39;49;00m(h.SOURCES), loaded=[94mlambda[39;49;00m: [96mdict[39;49;00m(h.EXPECTED_LOADED))[90m[39;49;00m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reader = <function test_L01_installed_site_packages_layout_is_readable.<locals>.reader at 0x7b52c56d0220>
+guard = <function test_L01_installed_site_packages_layout_is_readable.<locals>.<lambda> at 0x7b52c56d02c0>
+inventory = <function test_L01_installed_site_packages_layout_is_readable.<locals>.<lambda> at 0x7b52c56d0360>
+loaded = <function test_L01_installed_site_packages_layout_is_readable.<locals>.<lambda> at 0x7b52c56d0400>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcollect_snapshot[39;49;00m(*, reader=read_protected, guard=trusted_path,[90m[39;49;00m
+                         inventory=inventory_sources, loaded=read_loaded):[90m[39;49;00m
+        first_inventory, first_loaded = inventory(), loaded()[90m[39;49;00m
+        guard(CANDIDATE, kind=[33m"[39;49;00m[33mdirectory[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        lexical = CANDIDATE + [33m"[39;49;00m[33m/runtime/bin/python[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        resolved = guard(lexical, allow_alias=[94mTrue[39;49;00m, executable=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m resolved != lexical [95mand[39;49;00m re.fullmatch([33mr[39;49;00m[33m"[39;49;00m[33m/usr/bin/python3(?:[39;49;00m[33m\[39;49;00m[33m.[0-9]+)?[39;49;00m[33m"[39;49;00m, resolved) [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m Refusal([33m"[39;49;00m[33mstartup_interpreter_target_refused[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        snapshot = {[90m[39;49;00m
+            [33m"[39;49;00m[33minventory[39;49;00m[33m"[39;49;00m: first_inventory, [33m"[39;49;00m[33mloaded[39;49;00m[33m"[39;49;00m: first_loaded,[90m[39;49;00m
+            [33m"[39;49;00m[33msource_bytes[39;49;00m[33m"[39;49;00m: {path: reader(path) [94mfor[39;49;00m path [95min[39;49;00m SOURCES},[90m[39;49;00m
+            [33m"[39;49;00m[33mcandidate[39;49;00m[33m"[39;49;00m: CANDIDATE,[90m[39;49;00m
+>           [33m"[39;49;00m[33mcandidate_hashes[39;49;00m[33m"[39;49;00m: {path: digest(reader(CANDIDATE + [33m"[39;49;00m[33m/[39;49;00m[33m"[39;49;00m + path)) [94mfor[39;49;00m path [95min[39;49;00m MODULE_HASHES},[90m[39;49;00m
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+            [33m"[39;49;00m[33mhelper_sha256[39;49;00m[33m"[39;49;00m: digest(reader(INSTALLED_HELPER)),[90m[39;49;00m
+            [33m"[39;49;00m[33mstartup_interpreter[39;49;00m[33m"[39;49;00m: {[33m"[39;49;00m[33mlexical[39;49;00m[33m"[39;49;00m: lexical, [33m"[39;49;00m[33mresolved[39;49;00m[33m"[39;49;00m: resolved, [33m"[39;49;00m[33msha256[39;49;00m[33m"[39;49;00m: digest(reader(resolved))},[90m[39;49;00m
+        }[90m[39;49;00m
+
+[1m[31mintegrations/hermes/deployment/prepare_security_first_cutover.py[0m:340: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+        reads.append(path)[90m[39;49;00m
+        [94mif[39;49;00m path [95mnot[39;49;00m [95min[39;49;00m content:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mFileNotFoundError[39;49;00m(path)[90m[39;49;00m
+[1m[31mE           FileNotFoundError: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:69: FileNotFoundError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+challenge = <module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_L01_exact_installed_module_mapping_is_readable[39;49;00m(challenge, monkeypatch):[90m[39;49;00m
+>       challenge.test_L01_installed_site_packages_layout_is_readable(monkeypatch)[90m[39;49;00m
+
+[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c582e870>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_L01_installed_site_packages_layout_is_readable[39;49;00m(monkeypatch):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Contract assertion deliberately fails when helper looks in candidate root."""[39;49;00m[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mTrue[39;49;00m)[90m[39;49;00m
+        reads = [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+            reads.append(path)[90m[39;49;00m
+            [94mif[39;49;00m path [95mnot[39;49;00m [95min[39;49;00m content:[90m[39;49;00m
+                [94mraise[39;49;00m [96mFileNotFoundError[39;49;00m(path)[90m[39;49;00m
+            [94mreturn[39;49;00m content[path][90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            result = h.collect_snapshot(reader=reader, guard=[94mlambda[39;49;00m p, **kw: p,[90m[39;49;00m
+                                        inventory=[94mlambda[39;49;00m: [96mlist[39;49;00m(h.SOURCES), loaded=[94mlambda[39;49;00m: [96mdict[39;49;00m(h.EXPECTED_LOADED))[90m[39;49;00m
+        [94mexcept[39;49;00m [96mFileNotFoundError[39;49;00m [94mas[39;49;00m exc:[90m[39;49;00m
+            evidence([33m'[39;49;00m[33mL01-installed-layout[39;49;00m[33m'[39;49;00m, {[33m'[39;49;00m[33mhelper_sha256[39;49;00m[33m'[39;49;00m: PIN, [33m'[39;49;00m[33mexpected[39;49;00m[33m'[39;49;00m: [33m'[39;49;00m[33mcollect hashes from runtime/lib/python3.12/site-packages/src[39;49;00m[33m'[39;49;00m,[90m[39;49;00m
+                [33m'[39;49;00m[33mactual_missing_request[39;49;00m[33m'[39;49;00m: [96mstr[39;49;00m(exc), [33m'[39;49;00m[33mreads[39;49;00m[33m'[39;49;00m: reads, [33m'[39;49;00m[33mexact_available_inputs[39;49;00m[33m'[39;49;00m: [96msorted[39;49;00m(content),[90m[39;49;00m
+                [33m'[39;49;00m[33maccepted_module_hashes[39;49;00m[33m'[39;49;00m: [96mdict[39;49;00m(h.MODULE_HASHES), [33m'[39;49;00m[33msource_hash_pins_rebound_for_invented_units_only[39;49;00m[33m'[39;49;00m: [96mdict[39;49;00m(h.SOURCE_HASHES)})[90m[39;49;00m
+>           pytest.fail([33m'[39;49;00m[33mL01: collect_snapshot requests nonexistent candidate-root module: [39;49;00m[33m'[39;49;00m + [96mstr[39;49;00m(exc))[90m[39;49;00m
+[1m[31mE           Failed: L01: collect_snapshot requests nonexistent candidate-root module: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:78: Failed
+[31m[1m_______ test_L02_root_decoys_cannot_authorize_changed_installed_modules ________[0m
+
+challenge = <module 'repair_independent_inputs' from '/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c58054f0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_L02_root_decoys_cannot_authorize_changed_installed_modules[39;49;00m(challenge, monkeypatch):[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(challenge.h.Refusal, match=[33m"[39;49;00m[33m^inventory_or_loaded_or_candidate_drift$[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           challenge.test_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules(monkeypatch)[90m[39;49;00m
+
+[1m[31mtests/unit/test_security_first_cutover_review_regressions.py[0m:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b52c58054f0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_L02_candidate_root_decoys_must_not_substitute_for_runtime_modules[39;49;00m(monkeypatch):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Wrong physical binding is one defect with L01, not a second count."""[39;49;00m[90m[39;49;00m
+        snap = invented_snapshot(monkeypatch)[90m[39;49;00m
+        content = exact_content(snap, installed=[94mFalse[39;49;00m)[90m[39;49;00m
+        [94mfor[39;49;00m rel [95min[39;49;00m h.MODULE_HASHES:[90m[39;49;00m
+            content[h.CANDIDATE + [33m'[39;49;00m[33m/runtime/lib/python3.12/site-packages/[39;49;00m[33m'[39;49;00m + rel] = [33mb[39;49;00m[33m'[39;49;00m[33minvented unreviewed runtime module[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+        reads = [][90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mreader[39;49;00m(path):[90m[39;49;00m
+            reads.append(path)[90m[39;49;00m
+            [94mreturn[39;49;00m content[path][90m[39;49;00m
+        result = h.collect_snapshot(reader=reader, guard=[94mlambda[39;49;00m p, **kw: p,[90m[39;49;00m
+                                    inventory=[94mlambda[39;49;00m: [96mlist[39;49;00m(h.SOURCES), loaded=[94mlambda[39;49;00m: [96mdict[39;49;00m(h.EXPECTED_LOADED))[90m[39;49;00m
+        accepted = h.plan_from_snapshot(result)[90m[39;49;00m
+        evidence([33m'[39;49;00m[33mL02-runtime-decoys[39;49;00m[33m'[39;49;00m, {[33m'[39;49;00m[33mhelper_sha256[39;49;00m[33m'[39;49;00m: PIN, [33m'[39;49;00m[33maccepted[39;49;00m[33m'[39;49;00m: accepted, [33m'[39;49;00m[33mreads[39;49;00m[33m'[39;49;00m: reads,[90m[39;49;00m
+            [33m'[39;49;00m[33mruntime_module_sha256[39;49;00m[33m'[39;49;00m: h.digest([33mb[39;49;00m[33m'[39;49;00m[33minvented unreviewed runtime module[39;49;00m[33m'[39;49;00m),[90m[39;49;00m
+            [33m'[39;49;00m[33mexpected[39;49;00m[33m'[39;49;00m: [33m'[39;49;00m[33mreject unreviewed runtime module bytes[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mactual[39;49;00m[33m'[39;49;00m: [33m'[39;49;00m[33maccepted candidate-root decoys; never read runtime modules[39;49;00m[33m'[39;49;00m})[90m[39;49;00m
+>       [94massert[39;49;00m accepted[[33m'[39;49;00m[33mcandidate_hashes[39;49;00m[33m'[39;49;00m] != h.MODULE_HASHES, [33m'[39;49;00m[33mL02: approved hashes do not bind the modules selected by -I -m[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AssertionError: L02: approved hashes do not bind the modules selected by -I -m[0m
+
+[1m[31mdocs/reports/audits/2026-11-01-security-first-cutover/review-round1/test_independent_challenges.py[0m:98: AssertionError
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/repair-round1/red-regressions/junit.xml -
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/unit/test_security_first_cutover_review_regressions.py::[1mtest_S01_alias_dotdot_rejects_hidden_symlink_before_fingerprinting[0m - AssertionError: S01: normpath erased a symlink ancestor and fingerprinted the wrong executable
+[31mFAILED[0m tests/unit/test_security_first_cutover_review_regressions.py::[1mtest_L01_exact_installed_module_mapping_is_readable[0m - Failed: L01: collect_snapshot requests nonexistent candidate-root module: /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py
+[31mFAILED[0m tests/unit/test_security_first_cutover_review_regressions.py::[1mtest_L02_root_decoys_cannot_authorize_changed_installed_modules[0m - AssertionError: L02: approved hashes do not bind the modules selected by -I -m
+[31m============================== [31m[1m3 failed[0m[31m in 0.28s[0m[31m ===============================[0m

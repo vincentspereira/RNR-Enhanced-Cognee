@@ -1,0 +1,8 @@
+{
+  "selected_files": 190,
+  "explicit_sanitised_evidence_logs_ignored_by_generic_log_rule": 33,
+  "scoped_source_and_owner_docs_whitespace_exit": 0,
+  "full_evidence_whitespace_exit": 2,
+  "accepted_input_blobs_verified": 11,
+  "note": "Initial staging stopped on generic *.log exclusions; read index back and resumed only explicit synthetic/sanitised logs, preserving all evidence bytes."
+}

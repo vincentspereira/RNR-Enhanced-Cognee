@@ -1,0 +1,24 @@
+{
+  "added_source_scan": {
+    "deserialize": [],
+    "dynamic_exec": [],
+    "secret_literal": [],
+    "shell": []
+  },
+  "all_module_assignments_unchanged": true,
+  "ascii_ast_and_authored_source_whitespace": "pass",
+  "changed_functions": [
+    "collect_snapshot",
+    "trusted_path"
+  ],
+  "git_diff_check": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "git_diff_scope_note": "helper and tests are preexisting untracked paths; explicit baseline diff and direct checks provide actual coverage",
+  "imports_unchanged": true,
+  "module_hash_pins_and_logical_identifiers_unchanged": true,
+  "source_patch_sha256": "b6f7eddfbc058410460c6306ac05a569c775263a0d5a24e9fe41765a3fbac169",
+  "source_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63"
+}

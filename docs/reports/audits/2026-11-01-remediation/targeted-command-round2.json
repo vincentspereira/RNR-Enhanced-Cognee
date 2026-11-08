@@ -1,0 +1,43 @@
+{
+  "command": [
+    "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/.venv-deployment/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/unit/test_analysis_audit_remediation.py",
+    "tests/unit/test_analysis_lifespan_audit_remediation.py",
+    "tests/unit/test_analysis_protocol_audit_remediation.py",
+    "tests/unit/test_api_integration_audit.py",
+    "tests/unit/test_daemon_budget_audit.py",
+    "tests/unit/test_functional_runner_audit.py",
+    "tests/unit/test_ingestion_audit_remediation.py",
+    "tests/unit/test_library_read_audit_remediation.py",
+    "tests/unit/test_llm_budget_audit_remediation.py",
+    "tests/unit/test_mcp_audit_remediation.py",
+    "tests/unit/test_renewal_audit_remediation.py",
+    "tests/unit/test_renewal_installer_audit.py",
+    "tests/unit/test_review_round1_remediation.py",
+    "tests/unit/test_verifier_audit_remediation.py",
+    "--confcutdir=tests/unit",
+    "--color=no",
+    "-q",
+    "--junitxml=/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/docs/reports/audits/2026-11-01-remediation/targeted-regressions-round2.xml"
+  ],
+  "exit": 0,
+  "files": [
+    "tests/unit/test_analysis_audit_remediation.py",
+    "tests/unit/test_analysis_lifespan_audit_remediation.py",
+    "tests/unit/test_analysis_protocol_audit_remediation.py",
+    "tests/unit/test_api_integration_audit.py",
+    "tests/unit/test_daemon_budget_audit.py",
+    "tests/unit/test_functional_runner_audit.py",
+    "tests/unit/test_ingestion_audit_remediation.py",
+    "tests/unit/test_library_read_audit_remediation.py",
+    "tests/unit/test_llm_budget_audit_remediation.py",
+    "tests/unit/test_mcp_audit_remediation.py",
+    "tests/unit/test_renewal_audit_remediation.py",
+    "tests/unit/test_renewal_installer_audit.py",
+    "tests/unit/test_review_round1_remediation.py",
+    "tests/unit/test_verifier_audit_remediation.py"
+  ]
+}

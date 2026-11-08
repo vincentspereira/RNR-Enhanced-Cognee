@@ -1,0 +1,61 @@
+--- v1
++++ v2
+@@ -22,8 +22,8 @@
+ BASE = "/opt/enhanced-cognee-memory"
+ CANDIDATE = BASE + "/candidates/audit-c14f595c-20261101"
+ OLD = BASE + "/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529"
+-BUNDLE = BASE + "/cutover/security-first-c14f595c-20261101"
+-INSTALLED_HELPER = BASE + "/security-first-helper/prepare_security_first_cutover.py"
++BUNDLE = BASE + "/cutover/security-first-c14f595c-20261101-v2"
++INSTALLED_HELPER = BASE + "/security-first-helper-v2/prepare_security_first_cutover_v2.py"
+ UNIT = "enhanced-cognee-api.service"
+ SOURCE = "/etc/systemd/system/" + UNIT
+ SOURCES = (SOURCE, SOURCE + ".d/10-protected-stores.conf",
+@@ -84,6 +84,8 @@
+             refuse()
+         if not value and key not in {"ExecStart", "CapabilityBoundingSet", "AmbientCapabilities"}:
+             refuse()
++        if key in {"User", "Group"} and value != "enhanced-cognee-api":
++            refuse()
+         if key == "Environment":
+             try:
+                 pairs = shlex.split(value)
+@@ -95,8 +97,7 @@
+     if not result:
+         refuse()
+     if launch:
+-        expected = {"User": ["enhanced-cognee-api"], "Group": ["enhanced-cognee-api"],
+-                    "WorkingDirectory": [OLD],
++        expected = {"WorkingDirectory": [OLD],
+                     "ExecStart": ["", OLD + "/runtime/bin/python -m src.memory_daemon api"]}
+         if any(result.get(key) != value for key, value in expected.items()):
+             refuse()
+@@ -138,9 +139,28 @@
+     if any(hashes[p] != value for p, value in SOURCE_HASHES.items()):
+         raise Refusal("source_hash_drift")
+     credentials = []
++    identity = {}
++    dynamic = []
+     for index, path in enumerate(SOURCES):
+         parsed = parse_unit(snapshot["source_bytes"][path], launch=index == 2)
+         credentials += parsed.get("LoadCredential", [])
++        dynamic += parsed.get("DynamicUser", [])
++        for key in ("User", "Group"):
++            if key in parsed:
++                identity[key] = parsed[key][0]
++    # DynamicUser defaults apply to the whole effective unit, not each drop-in.
++    # Every explicit identity was checked above, including overwritten values.
++    user = identity.get("User")
++    if user is None:
++        user = UNIT[:-8] if UNIT.endswith(".service") else ""
++        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_-]{0,30}", user) is None:
++            raise Refusal("source_identity_drift")
++    group = identity.get("Group", user)
++    if (not dynamic or any(value != "yes" for value in dynamic)
++            or snapshot["loaded"]["DynamicUser"] != "yes"
++            or user != "enhanced-cognee-api" or group != "enhanced-cognee-api"
++            or snapshot["loaded"]["User"] != user or snapshot["loaded"]["Group"] != group):
++        raise Refusal("source_identity_drift")
+     if credentials != [name + ":/etc/enhanced-cognee/" + name for name in ("api.json", "index.json", "llm.json")]:
+         raise Refusal("credential_inventory_drift")
+     return {

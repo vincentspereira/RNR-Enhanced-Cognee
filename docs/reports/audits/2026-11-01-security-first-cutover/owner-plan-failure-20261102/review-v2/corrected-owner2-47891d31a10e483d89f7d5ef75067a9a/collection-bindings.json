@@ -1,0 +1,17 @@
+[
+  {
+    "nodeid": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected2.py::test_owner_shell_ast_and_commands",
+    "test_source": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review-v2/test_fresh_review_corrected2.py",
+      "sha256": "dd2f0c7668d5132d0413699a967e366f6280d262045e8c247cb92d6e818a1cfa"
+    },
+    "declared_helper": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    "actual_import": {
+      "path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+      "sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    }
+  }
+]

@@ -1,0 +1,158 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 229 items
+
+tests/unit/test_analysis_audit_remediation.py .......................... [ 11%]
+...................................                                      [ 26%]
+tests/unit/test_analysis_lifespan_audit_remediation.py ...               [ 27%]
+tests/unit/test_analysis_protocol_audit_remediation.py ...........       [ 32%]
+tests/unit/test_api_integration_audit.py ...                             [ 34%]
+tests/unit/test_audit_boundary_regressions.py .F.EEEEEEEEEEEEEEEEE.....  [ 44%]
+tests/unit/test_audit_logger_extended.py ............................... [ 58%]
+...............                                                          [ 65%]
+tests/unit/test_coverage_audit.py .........                              [ 68%]
+tests/unit/test_daemon_budget_audit.py .                                 [ 69%]
+tests/unit/test_functional_runner_audit.py .....                         [ 71%]
+tests/unit/test_ingestion_audit_remediation.py ........                  [ 75%]
+tests/unit/test_library_read_audit_remediation.py ....                   [ 76%]
+tests/unit/test_llm_budget_audit_remediation.py .......................  [ 86%]
+tests/unit/test_mcp_audit_remediation.py .......                         [ 89%]
+tests/unit/test_renewal_audit_remediation.py ...............             [ 96%]
+tests/unit/test_renewal_installer_audit.py ....                          [ 98%]
+tests/unit/test_verifier_audit_remediation.py ....                       [100%]
+
+==================================== ERRORS ====================================
+____ ERROR at setup of test_readonly_cannot_reach_mutating_tools[remember] _____
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_____ ERROR at setup of test_readonly_cannot_reach_mutating_tools[improve] _____
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+__ ERROR at setup of test_readonly_cannot_reach_mutating_tools[revert_memory] __
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+____ ERROR at setup of test_readonly_cannot_reach_mutating_tools[undo_last] ____
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_ ERROR at setup of test_readonly_cannot_reach_mutating_tools[load_document_with_plugin] _
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+__ ERROR at setup of test_readonly_cannot_reach_mutating_tools[schedule_task] __
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+__ ERROR at setup of test_readonly_cannot_reach_mutating_tools[verify_memory] __
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+________ ERROR at setup of test_credential_tenant_cannot_be_overridden _________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_____________ ERROR at setup of test_writer_cannot_be_impersonated _____________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_______ ERROR at setup of test_credential_tenant_is_used_without_header ________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+________ ERROR at setup of test_body_limit_counts_received_bytes[True] _________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+________ ERROR at setup of test_body_limit_counts_received_bytes[False] ________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+____________ ERROR at setup of test_dashboard_requires_credentials _____________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_____ ERROR at setup of test_project_credential_cannot_enter_legacy_routes _____
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_____ ERROR at setup of test_expiration_is_mandatory_for_production_tokens _____
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+___________ ERROR at setup of test_invalid_nested_arguments_rejected ___________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+_________ ERROR at setup of test_slow_body_is_rejected_within_deadline _________
+tests/unit/test_audit_boundary_regressions.py:75: in boundary
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+=================================== FAILURES ===================================
+_________ test_vector_category_discovery_and_query_use_the_same_tenant _________
+tests/unit/test_audit_boundary_regressions.py:49: in test_vector_category_discovery_and_query_use_the_same_tenant
+    from src import enhanced_cognee_mcp as mod
+src/enhanced_cognee_mcp.py:20: in <module>
+    from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+E   ModuleNotFoundError: No module named 'qdrant_client'
+- generated xml file: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101/docs/reports/audits/2026-11-01-remediation/combined-regressions.xml -
+=========================== short test summary info ============================
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[remember]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[improve]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[revert_memory]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[undo_last]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[load_document_with_plugin]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[schedule_task]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_readonly_cannot_reach_mutating_tools[verify_memory]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_credential_tenant_cannot_be_overridden
+ERROR tests/unit/test_audit_boundary_regressions.py::test_writer_cannot_be_impersonated
+ERROR tests/unit/test_audit_boundary_regressions.py::test_credential_tenant_is_used_without_header
+ERROR tests/unit/test_audit_boundary_regressions.py::test_body_limit_counts_received_bytes[True]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_body_limit_counts_received_bytes[False]
+ERROR tests/unit/test_audit_boundary_regressions.py::test_dashboard_requires_credentials
+ERROR tests/unit/test_audit_boundary_regressions.py::test_project_credential_cannot_enter_legacy_routes
+ERROR tests/unit/test_audit_boundary_regressions.py::test_expiration_is_mandatory_for_production_tokens
+ERROR tests/unit/test_audit_boundary_regressions.py::test_invalid_nested_arguments_rejected
+ERROR tests/unit/test_audit_boundary_regressions.py::test_slow_body_is_rejected_within_deadline
+FAILED tests/unit/test_audit_boundary_regressions.py::test_vector_category_discovery_and_query_use_the_same_tenant
+=================== 1 failed, 211 passed, 17 errors in 6.18s ===================

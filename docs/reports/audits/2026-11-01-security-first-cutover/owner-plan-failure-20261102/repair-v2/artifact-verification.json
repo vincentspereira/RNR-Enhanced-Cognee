@@ -1,0 +1,118 @@
+{
+  "actual_imported_v2_path": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/integrations/hermes/deployment/prepare_security_first_cutover_v2.py",
+  "changed_source_functions": [
+    "parse_unit",
+    "plan_from_snapshot"
+  ],
+  "fresh_independent_review": "pending_parent",
+  "inventory_counts": {
+    "canonical_v2": 202,
+    "historical_v1": 126,
+    "new_v2_cases": 76,
+    "v2_replays": 126
+  },
+  "ordinary_reader_probes": [
+    {
+      "case": "valid-source",
+      "exit": 0,
+      "stderr": "",
+      "stdout_bytes": 20937,
+      "stdout_sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365"
+    },
+    {
+      "case": "wrong-hash",
+      "exit": 1,
+      "stderr": "Source hash mismatch; no bytes emitted\n",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "short-hash",
+      "exit": 1,
+      "stderr": "Source hash mismatch; no bytes emitted\n",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "long-hash",
+      "exit": 1,
+      "stderr": "Source hash mismatch; no bytes emitted\n",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "uppercase-hash",
+      "exit": 1,
+      "stderr": "Source hash mismatch; no bytes emitted\n",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "mocked-root-reader",
+      "exit": 1,
+      "stderr": "Payload reader must remain unprivileged\n",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "owner_bash_n": [
+    {
+      "bash_n_exit": 0,
+      "block": 1,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "bash_n_exit": 0,
+      "block": 2,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "owner_sha256": "cbebb9eb0ae50451e5df431312ce9c7776dc90cabad1c5ec39ab2d3955bbeba0",
+  "preserved_originals": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/OWNER-NEXT-PLAN.md": "421c67f8db3549fc1b8000bf5982925dfc17ae8de551594c04b069960b0bf416",
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "tests/unit/test_security_first_cutover.py": "1d32c2528b1f860f5ae495f3606e7496c720fba463f5ae617345b23f65c1f213",
+    "tests/unit/test_security_first_cutover_review_regressions.py": "27fcf6efdab49c8dec979c0804a7568c4010706374ea4343047034d59e8b3bb0"
+  },
+  "runtime_acceptance": false,
+  "scoped_whitespace": {
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/OWNER-V2-PLAN.md": [],
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/owner-block-1.sh": [],
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/owner-block-2.sh": [],
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/run_offline.py": [],
+    "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/repair-v2/verify_v2_artifacts.py": [],
+    "integrations/hermes/deployment/prepare_security_first_cutover_v2.py": [],
+    "tests/unit/test_security_first_cutover_v2.py": [],
+    "tests/unit/test_security_first_cutover_v2_review_regressions.py": []
+  },
+  "source_and_owner_ast": "passed",
+  "source_sha256": "a8b333c156f03aa32ac3c69d8475f5978f9651bb3547b9ececca61be18e97365",
+  "static_added_source_scan": {
+    "eval_exec": [],
+    "os_system": [],
+    "pickle": [],
+    "shell_true": []
+  },
+  "sudo_portions_executed": false,
+  "uid": 1000,
+  "unchanged_historical_test_functions": 29,
+  "unchanged_source_functions": [
+    "digest",
+    "canonical",
+    "proposed_dropin",
+    "trusted_path",
+    "write_new",
+    "write_bundle",
+    "read_protected",
+    "show_properties",
+    "read_loaded",
+    "inventory_sources",
+    "collect_snapshot",
+    "runtime_guard",
+    "check_output",
+    "main"
+  ],
+  "v1_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63"
+}

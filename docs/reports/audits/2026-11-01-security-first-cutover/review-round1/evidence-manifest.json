@@ -1,0 +1,602 @@
+{
+  "excluded_self": "evidence-manifest.json",
+  "files": {
+    "L01-installed-layout.json": {
+      "kind": "file",
+      "sha256": "3777baa79931c299d01f0c99f9c8bd0e59fc9a677c76bd95e90f0b2649624f9d",
+      "size": 3471
+    },
+    "L02-runtime-decoys.json": {
+      "kind": "file",
+      "sha256": "ab77048934f1d3491294a84a5a74ad6051e6072182fdbdb7bd1b655b8a6184a1",
+      "size": 5140
+    },
+    "S01-alias-normalization.json": {
+      "kind": "file",
+      "sha256": "ad21e8e14667aac0b87e321ad4bd60fa89214440b38644b0dafa9621f4605ba3",
+      "size": 3413
+    },
+    "challenges-receipt.json": {
+      "kind": "file",
+      "sha256": "56ce39c033ee08c73f6a035d3d58bc50118361a27b20841b546513cf5cd530bf",
+      "size": 13776
+    },
+    "challenges-sandbox/test_M01_plan_does_not_call_wrcurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_M01_plan_does_not_call_wr0"
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/etc/systemd/system/enhanced-cognee-api.service": {
+      "kind": "file",
+      "sha256": "7354431b0cba37c2bf1f591264bb23faec5c8c686cbbc65962297223dbfaf38d",
+      "size": 64
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf": {
+      "kind": "file",
+      "sha256": "5fadaaad5b608494bab14c3f2f0f1f0e17e374f7815378424e62ecab63e67c9e",
+      "size": 68
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf": {
+      "kind": "file",
+      "sha256": "d5759e82f4c1c0c4866d1eda75ec7cd254682a11455113fbe64e0c3c97e13247",
+      "size": 303
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf": {
+      "kind": "file",
+      "sha256": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33",
+      "size": 64
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python": {
+      "kind": "symlink",
+      "target": "../../../../../../usr/bin/bridge/../python3.12"
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py": {
+      "kind": "file",
+      "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+      "size": 11956
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_budget.py": {
+      "kind": "file",
+      "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+      "size": 5790
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_summarize.py": {
+      "kind": "file",
+      "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+      "size": 12522
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_api.py": {
+      "kind": "file",
+      "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+      "size": 20416
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_daemon.py": {
+      "kind": "file",
+      "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+      "size": 8332
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_library.py": {
+      "kind": "file",
+      "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+      "size": 7835
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_queries.py": {
+      "kind": "file",
+      "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+      "size": 5129
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/security/enterprise_auth.py": {
+      "kind": "file",
+      "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+      "size": 28336
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/opt/enhanced-cognee-memory/security-first-helper/prepare_security_first_cutover.py": {
+      "kind": "file",
+      "sha256": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+      "size": 19531
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/outside/python3.12": {
+      "kind": "file",
+      "sha256": "5f75497c18a639a670a6100165437689c63373bb9ed6c756e097b7460f38c875",
+      "size": 27
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/usr/bin/bridge": {
+      "kind": "symlink",
+      "target": "../../outside/nested"
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dot0/vfs/usr/bin/python3.12": {
+      "kind": "file",
+      "sha256": "9cf9605a276549eab3de9eb4e4ee49219b63e393b357b18dfc668177a98f837f",
+      "size": 25
+    },
+    "challenges-sandbox/test_S01_interpreter_alias_dotcurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_S01_interpreter_alias_dot0"
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_0/safe/alias": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_T01_reader_guard_rejects_0/safe/source"
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_0/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_1/safe/other": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_1/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_2/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_3/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_4/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_5/safe/source": {
+      "kind": "file",
+      "sha256": "aae4d54e45ab998689057025904cd61ef00463c1edfe61bd76062370e55e80a1",
+      "size": 15
+    },
+    "challenges-sandbox/test_T01_reader_guard_rejects_current": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_T01_reader_guard_rejects_5"
+    },
+    "challenges-sandbox/test_W01_partial_artifacts_are1/private/bundle/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "e1e7d9164318d3781285a4f8cac53bf32f27ad37b9b5c178a2526f69c9716b1d",
+      "size": 17
+    },
+    "challenges-sandbox/test_W01_partial_artifacts_are2/private/bundle/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "e1e7d9164318d3781285a4f8cac53bf32f27ad37b9b5c178a2526f69c9716b1d",
+      "size": 17
+    },
+    "challenges-sandbox/test_W01_partial_artifacts_are2/private/bundle/manifest.json": {
+      "kind": "file",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "challenges-sandbox/test_W01_partial_artifacts_arecurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/challenges-sandbox/test_W01_partial_artifacts_are2"
+    },
+    "challenges.stderr": {
+      "kind": "file",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "challenges.stdout": {
+      "kind": "file",
+      "sha256": "ceae37e53b3024a2eabf4ea8e244b6599bd5e6170cfc3014cd6844439dc54f9c",
+      "size": 6416
+    },
+    "challenges.xml": {
+      "kind": "file",
+      "sha256": "a4854565e179a0f8479129ed8501ccc91b6db1bd450fb925f0ebfa77e3e5fa27",
+      "size": 14924
+    },
+    "deployed-layout-metadata.json": {
+      "kind": "file",
+      "sha256": "79a3729700c7ed601b8635438569c86a52c19705c8600b4647f497410fc3fe1d",
+      "size": 1107
+    },
+    "finalize_review.py": {
+      "kind": "file",
+      "sha256": "44fce553a0f3b983e99d74fc53a6315cc6e22baa315246a3211be3233e93f5b0",
+      "size": 11229
+    },
+    "initial-bindings.json": {
+      "kind": "file",
+      "sha256": "9815be7d2ecf981a0dc4b5b2f000210a40b5991465acac92afb78f395213c621",
+      "size": 769
+    },
+    "regressions-receipt.json": {
+      "kind": "file",
+      "sha256": "ebb5e3345a1e97f9c45e2beb6a27ac6a71e02fbeba311d6e5f4747b87506780d",
+      "size": 23962
+    },
+    "regressions-sandbox/test_bundle_readback_catches_c0/private/bundle/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_bundle_readback_catches_c0/private/bundle/manifest.json": {
+      "kind": "file",
+      "sha256": "e2247e2d0a18ae64dddde4817edc2667df1a8edc117b95edbe27cd640cd7d64f",
+      "size": 11
+    },
+    "regressions-sandbox/test_bundle_readback_catches_ccurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_bundle_readback_catches_c0"
+    },
+    "regressions-sandbox/test_bundle_rejects_extra_filecurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_bundle_rejects_extra_file0"
+    },
+    "regressions-sandbox/test_cli_entry_rejects_unprivicurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_cli_entry_rejects_unprivi0"
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_0/bin/python": {
+      "kind": "symlink",
+      "target": "../python3.12"
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_0/python3.12": {
+      "kind": "file",
+      "sha256": "e72ab46236746564da43748a4b4100ba760e674492c7792c033daf0613e63e9b",
+      "size": 20
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_1/bin/python": {
+      "kind": "symlink",
+      "target": "../python3.12"
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_1/python3.12": {
+      "kind": "file",
+      "sha256": "e72ab46236746564da43748a4b4100ba760e674492c7792c033daf0613e63e9b",
+      "size": 20
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_2/bin/python": {
+      "kind": "symlink",
+      "target": "../python3.12"
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_2/python3.12": {
+      "kind": "file",
+      "sha256": "e72ab46236746564da43748a4b4100ba760e674492c7792c033daf0613e63e9b",
+      "size": 20
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_3/another": {
+      "kind": "file",
+      "sha256": "e72ab46236746564da43748a4b4100ba760e674492c7792c033daf0613e63e9b",
+      "size": 20
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_3/bin/python": {
+      "kind": "symlink",
+      "target": "../python3.12"
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_3/python3.12": {
+      "kind": "file",
+      "sha256": "e72ab46236746564da43748a4b4100ba760e674492c7792c033daf0613e63e9b",
+      "size": 20
+    },
+    "regressions-sandbox/test_interpreter_alias_checks_current": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_interpreter_alias_checks_3"
+    },
+    "regressions-sandbox/test_interpreter_must_have_exe0/python": {
+      "kind": "file",
+      "sha256": "9af29df409ffeefa98efc8fe388c63d1c123e894a1401e5e77c569592fd7a588",
+      "size": 23
+    },
+    "regressions-sandbox/test_interpreter_must_have_execurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_interpreter_must_have_exe0"
+    },
+    "regressions-sandbox/test_main_full_plan_is_read_on0/private/bundle/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "40ee1d8b61322c49676666257531953ee7957db086269bbb25a0373ad4619651",
+      "size": 352
+    },
+    "regressions-sandbox/test_main_full_plan_is_read_on0/private/bundle/manifest.json": {
+      "kind": "file",
+      "sha256": "12db99b435adc0effff77674c6a367408f0d4245787945c49cde3b8ef84624c2",
+      "size": 3088
+    },
+    "regressions-sandbox/test_main_full_plan_is_read_on0/private/bundle/receipt.json": {
+      "kind": "file",
+      "sha256": "451c861135682046c5a5bfd2d61b2d5812009443e946237f4842258f9cb12645",
+      "size": 485
+    },
+    "regressions-sandbox/test_main_full_plan_is_read_oncurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_main_full_plan_is_read_on0"
+    },
+    "regressions-sandbox/test_new_private_bundle_and_pa0/private/package/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_new_private_bundle_and_pa0/private/package/manifest.json": {
+      "kind": "file",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "regressions-sandbox/test_new_private_bundle_and_pa0/private/package/receipt.json": {
+      "kind": "file",
+      "sha256": "79090167129a91dac6a3363514658b06ae0d3c83f26172fea2a42474b991d6b3",
+      "size": 18
+    },
+    "regressions-sandbox/test_new_private_bundle_and_pa0/private/partial/40-audit-security-first.conf": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_new_private_bundle_and_pacurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_new_private_bundle_and_pa0"
+    },
+    "regressions-sandbox/test_no_application_imports_nocurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_no_application_imports_no0"
+    },
+    "regressions-sandbox/test_output_guard_requires_pricurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_output_guard_requires_pri0"
+    },
+    "regressions-sandbox/test_protected_reader_never_fo0/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_protected_reader_never_fo0/link": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_protected_reader_never_fo0/file"
+    },
+    "regressions-sandbox/test_protected_reader_never_focurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_protected_reader_never_fo0"
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi0/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi1/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi10/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi11/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi2/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi3/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi4/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi5/alias": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_trust_rejects_unsafe_lexi5/safe"
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi5/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi6/safe/alias": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_trust_rejects_unsafe_lexi6/safe/file"
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi6/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi7/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi7/safe/other": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi8/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexi9/safe/file": {
+      "kind": "file",
+      "sha256": "80914f0274ced542b3c64fd18666296efc1be86f90fc57f02ac5b46ed46d4489",
+      "size": 8
+    },
+    "regressions-sandbox/test_trust_rejects_unsafe_lexicurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_trust_rejects_unsafe_lexi11"
+    },
+    "regressions-sandbox/test_writer_rejects_unsafe_parcurrent": {
+      "kind": "symlink",
+      "target": "/home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/security-first-cutover-worktree-20261101/docs/reports/audits/2026-11-01-security-first-cutover/review-round1/regressions-sandbox/test_writer_rejects_unsafe_par0"
+    },
+    "regressions.stderr": {
+      "kind": "file",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "regressions.stdout": {
+      "kind": "file",
+      "sha256": "bc9de604d380fe02651bf068becd3e05fc44e15a24a35529bd241700968c466f",
+      "size": 2194
+    },
+    "regressions.xml": {
+      "kind": "file",
+      "sha256": "c99f99232bb2d38562de5541f37099e94455d7fee325e2682e06b8b7612df304",
+      "size": 18705
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/L01-installed-layout.json": {
+      "kind": "file",
+      "sha256": "3777baa79931c299d01f0c99f9c8bd0e59fc9a677c76bd95e90f0b2649624f9d",
+      "size": 3471
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/L02-runtime-decoys.json": {
+      "kind": "file",
+      "sha256": "ab77048934f1d3491294a84a5a74ad6051e6072182fdbdb7bd1b655b8a6184a1",
+      "size": 5140
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/S01-alias-normalization.json": {
+      "kind": "file",
+      "sha256": "5d84646334143751089bc7f726c7d54838d9a6ae269b63f91ad554043a9e28a9",
+      "size": 3575
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/replay-receipt.json": {
+      "kind": "file",
+      "sha256": "9006f784757f4261d589259a53a699201c16f684cbec8518b9463b2196e309ed",
+      "size": 1323
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/etc/systemd/system/enhanced-cognee-api.service": {
+      "kind": "file",
+      "sha256": "7354431b0cba37c2bf1f591264bb23faec5c8c686cbbc65962297223dbfaf38d",
+      "size": 64
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/etc/systemd/system/enhanced-cognee-api.service.d/10-protected-stores.conf": {
+      "kind": "file",
+      "sha256": "5fadaaad5b608494bab14c3f2f0f1f0e17e374f7815378424e62ecab63e67c9e",
+      "size": 68
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/etc/systemd/system/enhanced-cognee-api.service.d/20-launch-runtime.conf": {
+      "kind": "file",
+      "sha256": "d5759e82f4c1c0c4866d1eda75ec7cd254682a11455113fbe64e0c3c97e13247",
+      "size": 303
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/etc/systemd/system/enhanced-cognee-api.service.d/30-llm.conf": {
+      "kind": "file",
+      "sha256": "12f118dd78e34477736a3e4a9db2d5d29bcafb199a77386f58b8cc45b5e60f33",
+      "size": 64
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/bin/python": {
+      "kind": "symlink",
+      "target": "../../../../../../usr/bin/bridge/../python3.12"
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/ingestion.py": {
+      "kind": "file",
+      "sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+      "size": 11956
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_budget.py": {
+      "kind": "file",
+      "sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+      "size": 5790
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/llm_summarize.py": {
+      "kind": "file",
+      "sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+      "size": 12522
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_api.py": {
+      "kind": "file",
+      "sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+      "size": 20416
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_daemon.py": {
+      "kind": "file",
+      "sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+      "size": 8332
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_library.py": {
+      "kind": "file",
+      "sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+      "size": 7835
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/memory_queries.py": {
+      "kind": "file",
+      "sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+      "size": 5129
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/src/security/enterprise_auth.py": {
+      "kind": "file",
+      "sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+      "size": 28336
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/opt/enhanced-cognee-memory/security-first-helper/prepare_security_first_cutover.py": {
+      "kind": "file",
+      "sha256": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+      "size": 19531
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/outside/python3.12": {
+      "kind": "file",
+      "sha256": "5f75497c18a639a670a6100165437689c63373bb9ed6c756e097b7460f38c875",
+      "size": 27
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/usr/bin/bridge": {
+      "kind": "symlink",
+      "target": "../../outside/nested"
+    },
+    "replay-70e47a18fd99475488f5b82dc53a04a3/test_S01_interpreter_alias_dotdot_must_not_hide_symlink_ancestor/vfs/usr/bin/python3.12": {
+      "kind": "file",
+      "sha256": "9cf9605a276549eab3de9eb4e4ee49219b63e393b357b18dfc668177a98f837f",
+      "size": 25
+    },
+    "replay-process-receipt.json": {
+      "kind": "file",
+      "sha256": "330f7fe00b80e0fd0a06522046133659582613b09649865df31909ab071a2f09",
+      "size": 427
+    },
+    "replay-process.stderr": {
+      "kind": "file",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "replay-process.stdout": {
+      "kind": "file",
+      "sha256": "ccea5edf982d0e8c897321ff9c57aa7ed1dd2ed28c09010860c7913b98f83d4c",
+      "size": 1138
+    },
+    "replay_findings.py": {
+      "kind": "file",
+      "sha256": "705dba5102b5d8bb954180813d0c6a4628069430289b3f601fb514ebb7e50b8c",
+      "size": 2539
+    },
+    "run_review.py": {
+      "kind": "file",
+      "sha256": "f55d6f8fb50454384d4254f47308928006cc9938e87b89daf473a376f538d2e1",
+      "size": 5637
+    },
+    "static-scan.json": {
+      "kind": "file",
+      "sha256": "833e96a49b040944b0a27f1962a10ae77989e6dd3e4a3986b8abfc56f6a02417",
+      "size": 5606
+    },
+    "static-security-assessment.json": {
+      "kind": "file",
+      "sha256": "90ff8f4546bda33dc8d603fb1c654dd2e9ab7584aa34bb48ac1536fb7690e0d8",
+      "size": 1006
+    },
+    "test_independent_challenges.py": {
+      "kind": "file",
+      "sha256": "549b332ca4b469ed17101f9e4e1fc4341bd49551ce82ab38fd569d53a78af12f",
+      "size": 15748
+    },
+    "verdict.json": {
+      "kind": "file",
+      "sha256": "dd148a4fd7acaf4d6e3794c5f1221671366aee3f24589cb9640ea64dbfd8c4e8",
+      "size": 9578
+    }
+  },
+  "preservation": "All original failed test inputs, outputs and partial sandboxes retained; no existing source/evidence modified.",
+  "source_hashes_final": {
+    "integrations/hermes/deployment/prepare_security_first_cutover.py": "cba8d2184bc6c05490490b3a67e0bb4f77934378722afdb40284a63a2c96e813",
+    "tests/unit/test_security_first_cutover.py": "4c75858260829750aacb4e659b98a6fac698af88b99dbecb01c8e79683b61777"
+  }
+}

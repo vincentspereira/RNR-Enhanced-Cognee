@@ -2,7 +2,8 @@
 """Finite Fetch protocol/private-destination checks in a new empty HOME.
 
 No private profile or memory is used. The optional public check reads only the
-fixed example.com fixture; it is not a remote MCP or a native fleet acceptance.
+fixed example.com fixture, once raw and once through default HTML-to-Markdown
+conversion; it is not a remote MCP or a native fleet acceptance.
 """
 from __future__ import annotations
 
@@ -37,6 +38,28 @@ def private_denial(value: dict) -> bool:
     return 'not a public address' in text
 
 
+def expected_html_body(text: str) -> bool:
+    """Default-mode output must be converted Markdown of the fixed fixture.
+
+    The check is structural, not textual: example.com's served copy has been
+    reworded before, and with Node present Mozilla Readability moves the page
+    heading into article metadata. Assert the server's own URL prefix, that
+    HTML was actually converted away, and that the simplification failure
+    marker is absent.
+    """
+    if not isinstance(text, str):
+        return False
+    if '<error>Page failed to be simplified from HTML</error>' in text:
+        return False
+    prefix = 'Contents of https://example.com/:'
+    if not text.startswith(prefix):
+        return False
+    lowered = text.lower()
+    if '<html' in lowered or '<body' in lowered or '<div' in lowered:
+        return False
+    return bool(text[len(prefix):].strip())
+
+
 def exercise(executable: Path, home: Path, *, public: bool = False) -> dict:
     old = protocol()
     env = {'HOME': str(home), 'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8',
@@ -66,6 +89,12 @@ def exercise(executable: Path, home: Path, *, public: bool = False) -> dict:
             old['require'](not value.get('isError') and 'example domain' in old['texts'](value).lower())
             result['public_example_passed'] = True
             result['public_example_mode'] = 'raw'
+            result['phase'] = 'default_html_extraction'
+            value = client.rpc('tools/call', {'name': 'fetch', 'arguments': {'url': 'https://example.com/', 'max_length': 5000}})
+            old['require'](not value.get('isError'))
+            old['require'](expected_html_body(old['texts'](value)))
+            result['html_markdown_extraction_qualified'] = True
+            result['html_default_mode_check'] = 'converted-markdown-structure-verified'
         result['complete'] = True
         result['phase'] = 'complete'
         return result

@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "security_concerns": [],
+  "logic_errors": [],
+  "suggestions": [],
+  "summary": "Accepted the exact-hash owner diagnostic for one read-only run. Protected-helper execution, non-main runpy/runtime_guard semantics, first-failure routing, closed-label redaction and fixed-code error reporting passed independent review; no install, prepare or service-write path is reachable.",
+  "counts": {
+    "distinct_cases": 35,
+    "latest_passed": 35,
+    "latest_failed": 0,
+    "prior_replayed_executions": 35,
+    "total_case_executions": 70
+  },
+  "source_hashes": {
+    "diagnostic_sha256": "1bcf3e2bb780a8baa59a8f68e75354e78bed9e767a631821a0314037e18b5256",
+    "helper_sha256": "d9424c108646f4a88a9cb8babad92d7335497b194d9fc80e6b27452e91731f63",
+    "embedded_python_sha256": "640d43a080e68037f46391624bf92c1f4ea098c3b644c700fbd0431766a67e44",
+    "probe_sha256": "e0d69b5a19bc7cf1e6604cafb66d89343363fc19caf365bfa16371f6f07128e4",
+    "probe_receipt_sha256": "e42d9168dd49b09a2ee7bc8c4c2b83237d3edf1b49e2ef22488615c9994de7e4",
+    "static_receipt_sha256": "10392e6494d6df07856ffcfa8c5e4cba2928a2cf92258e4f56bb7870b4ec4dd0"
+  },
+  "evidence_base": "docs/reports/audits/2026-11-01-security-first-cutover/owner-plan-failure-20261102/review/",
+  "evidence_paths": [
+    "independent_probe.py",
+    "independent-probe-receipt-v2.json",
+    "independent-static-receipt.json",
+    "independent_probe_v1.py",
+    "independent-probe-receipt.json"
+  ],
+  "changes": "Only new review evidence files; reviewed diagnostic and production source unchanged. Initial probe type annotations were corrected and rerun with preserved v1 bytes and receipt.",
+  "limitations": [
+    "Actual root diagnostic remains owner-pending; no cause is inferred for the original refusal.",
+    "Root ownership/identity and full-path positive routing used in-memory no-launch doubles, not live root proof.",
+    "Positive plan passthrough used a labelled synthetic plan; actual protected-unit and real plan acceptance remain pending."
+  ],
+  "root_commands_executed": false,
+  "private_file_contents_read": false,
+  "service_or_network_calls": false,
+  "next_owner_action": "Run only the reviewed diagnostic once and return its safe JSON; no helper changes or restart approval."
+}

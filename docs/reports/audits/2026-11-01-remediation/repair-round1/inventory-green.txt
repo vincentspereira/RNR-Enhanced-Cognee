@@ -1,0 +1,11 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/vincentspereira/agent-workspace/enhanced-cognee-deployment-20261020/audit-remediation-worktree-20261101
+configfile: pytest.ini
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 38 items / 35 deselected / 3 selected
+
+tests/unit/test_review_round1_remediation.py [32m.[0m[32m.[0m[32m.[0m[32m                         [100%][0m
+
+[32m======================= [32m[1m3 passed[0m, [33m35 deselected[0m[32m in 0.15s[0m[32m =======================[0m

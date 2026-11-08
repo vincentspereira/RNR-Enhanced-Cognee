@@ -1,0 +1,9 @@
+test_installer_does_not_start_renewal_or_timer (test_renewal_installer_audit.InstallerTests.test_installer_does_not_start_renewal_or_timer) ... ok
+test_inventory_is_data_not_imported_checkout_code (test_renewal_installer_audit.InstallerTests.test_inventory_is_data_not_imported_checkout_code) ... ok
+test_unit_uses_os_python_not_checkout_venv (test_renewal_installer_audit.InstallerTests.test_unit_uses_os_python_not_checkout_venv) ... ok
+test_unknown_predecessor_is_rejected (test_renewal_installer_audit.InstallerTests.test_unknown_predecessor_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
