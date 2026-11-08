@@ -201,7 +201,7 @@ class MemoryConsolidator:
                         SELECT a.id AS aid, a.content AS acontent,
                                b.id AS bid, b.content AS bcontent
                           FROM {_t_docs()} a
-                          JOIN shared_memory.documents b
+                          JOIN {_t_docs()} b
                             ON a.id < b.id
                            AND a.agent_id = b.agent_id
                            AND similarity(a.content, b.content) > $1
@@ -220,7 +220,7 @@ class MemoryConsolidator:
                         SELECT a.id AS aid, a.content AS acontent,
                                b.id AS bid, b.content AS bcontent
                           FROM {_t_docs()} a
-                          JOIN shared_memory.documents b
+                          JOIN {_t_docs()} b
                             ON a.id < b.id
                            AND a.agent_id = b.agent_id
                            AND similarity(a.content, b.content) > $1

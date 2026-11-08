@@ -1,0 +1,390 @@
+{
+  "environment": {
+    "distro": "Ubuntu-Hermes",
+    "os": "Ubuntu 24.04.4 LTS",
+    "user": "vincentspereira",
+    "base_revision": "3b05b4ae996c0d605e143a76397c4109abfba3b1",
+    "branch": "codex/hermes-ubuntu-deployment-20261020",
+    "hermes_revision": "d923a5eb487a17c0a68801bba9ef0f56c81040a8",
+    "hermes_version": "0.22.2",
+    "cli_python": "3.14.7",
+    "service_python": "3.12.13",
+    "systemd_active": false,
+    "sudo_noninteractive_root": false,
+    "protected_install": false
+  },
+  "instructions": {
+    "global_bytes": 15639,
+    "repository_bytes": 8857,
+    "overrides_found": false,
+    "settings_changed": false,
+    "originals_and_raw_diffs_private": true
+  },
+  "qualification": {
+    "tests": 77,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 73,
+    "seconds": 80.349,
+    "skip_names": [
+      "test_real_project_sdk[node-command0]",
+      "test_real_project_sdk[go-command1]",
+      "test_real_project_sdk[rust-command2]",
+      "test_built_dashboard_real_browser"
+    ]
+  },
+  "bounded_real_store_load": {
+    "actual_stores": [
+      "PostgreSQL",
+      "Qdrant",
+      "ArcadeDB",
+      "Valkey"
+    ],
+    "source_grounded_hops": 2,
+    "partial_delivery_recovered": true,
+    "stale_graph_denied": true,
+    "derived_retraction_cleaned": true,
+    "graph_transaction_rollback": true,
+    "fresh_namespace_rebuild": true,
+    "history_retained": true,
+    "fixtures_preserved": true,
+    "bounded_load": {
+      "enabled": true,
+      "requested_seconds": 60,
+      "actual_seconds": 60.07,
+      "concurrent_projects": 4,
+      "completed_rounds": 150,
+      "corrected_records": 600,
+      "semantic_queries": 750,
+      "graph_queries": 600,
+      "scope_leaks": 0,
+      "round_p95_ms": 528.78,
+      "pending_events": 0,
+      "retained_history": true,
+      "failures": 0,
+      "local_embedding_method_calls": 1354,
+      "chat_model_calls": 0,
+      "storage_before": {
+        "database_bytes": 8649751,
+        "current_records": 4,
+        "retained_versions": 6
+      },
+      "storage_after": {
+        "database_bytes": 25166351,
+        "current_records": 8,
+        "retained_versions": 610
+      }
+    }
+  },
+  "observed_resources": {
+    "workload_exit_code": 0,
+    "seconds": 82.25,
+    "samples": 40,
+    "interval_seconds": 2,
+    "services": {
+      "qdrant": {
+        "initial_rss_bytes": 71815168,
+        "peak_rss_bytes": 76210176,
+        "peak_pss_bytes": 74434560,
+        "cpu_seconds_observed": 1.9800000000000013,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 75440128
+      },
+      "arcade": {
+        "initial_rss_bytes": 171065344,
+        "peak_rss_bytes": 178999296,
+        "peak_pss_bytes": 179769344,
+        "cpu_seconds_observed": 5.539999999999999,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 160559104
+      },
+      "valkey": {
+        "initial_rss_bytes": 6144000,
+        "peak_rss_bytes": 6144000,
+        "peak_pss_bytes": 4696064,
+        "cpu_seconds_observed": 0.18000000000000002,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 6144000
+      },
+      "api": {
+        "initial_rss_bytes": 324722688,
+        "peak_rss_bytes": 324722688,
+        "peak_pss_bytes": 285782016,
+        "cpu_seconds_observed": 0.12,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 324722688
+      },
+      "worker": {
+        "initial_rss_bytes": 317198336,
+        "peak_rss_bytes": 317198336,
+        "peak_pss_bytes": 278232064,
+        "cpu_seconds_observed": 0.2900000000000001,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 317198336
+      },
+      "postgres": {
+        "initial_rss_bytes": 252329984,
+        "peak_rss_bytes": 482340864,
+        "peak_pss_bytes": 116921344,
+        "cpu_seconds_observed": 7.589999999999984,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 1,
+        "last_rss_bytes": 279461888
+      },
+      "workload": {
+        "initial_rss_bytes": 11702272,
+        "peak_rss_bytes": 706777088,
+        "peak_pss_bytes": 644254720,
+        "cpu_seconds_observed": 72.44,
+        "samples_with_missing_root": 0,
+        "samples_without_complete_pss": 0,
+        "last_rss_bytes": 706777088
+      }
+    },
+    "scope": "Explicit Linux fixture process trees plus qualification workload; no chat server, Hermes or GPU",
+    "limits": [
+      "RSS double-counts shared pages",
+      "PSS requires read permission",
+      "Short-lived processes between samples can be missed",
+      "CPU is observed lifetime deltas",
+      "No production capacity or memory-leak conclusion"
+    ]
+  },
+  "installed_index": {
+    "passed": 6,
+    "checks": [
+      "installed_two_hop_source_paths",
+      "cross_project_graph_denial",
+      "actual_worker_restart_backlog_recovery",
+      "corrected_graph_current",
+      "retraction_immediate_and_indexed",
+      "three_encrypted_versions_retained"
+    ],
+    "semantic_queries": 12,
+    "latency_median_ms": 44.62,
+    "latency_p95_ms": 179.37,
+    "final_status": {
+      "ready": true,
+      "tenant_id": "qualification",
+      "project_id": "hermes_test",
+      "subject": "hermes_test_operator",
+      "active_records": 8,
+      "pending_change_events": 0,
+      "change_feed_worker": "running",
+      "retrieval": "semantic",
+      "embedding_model": "BAAI/bge-small-en-v1.5",
+      "graph": "source_linked_graph",
+      "encryption": "AES-256-GCM",
+      "encryption_key_id": "legacy_unnamed",
+      "schema_version": 3,
+      "index": {
+        "pipeline": "hermes_deploy_v1",
+        "worker_available": true,
+        "worker_state": "running",
+        "pending_change_events": 0,
+        "oldest_pending_seconds": 0.0,
+        "graph": "source_linked_graph",
+        "vector_index": "available",
+        "cache_contents": "encrypted_records_only"
+      }
+    },
+    "graph_fixture_records": [
+      "663bd7af-0697-42ab-9747-f591da49af06",
+      "e260c40a-b97f-4edf-9937-eac508eedaa8"
+    ]
+  },
+  "second_profile": {
+    "passed": 6,
+    "checks": [
+      "cross_project_raw_denial",
+      "reviewed_shared_view_sanitized",
+      "membership_revocation_immediate",
+      "correction_requires_fresh_review",
+      "publication_revocation_immediate",
+      "actual_second_profile_loader_and_scope"
+    ],
+    "same_os_user_isolation": false,
+    "initial_custom_runner_failures": [
+      "incorrect correction URL corrected to PATCH",
+      "bare runtime smoke needed explicit dotenv loading"
+    ],
+    "everyday_profile_unchanged": true
+  },
+  "cloud_model": {
+    "model": "GLM-5.3-Flash",
+    "synthetic_only": true,
+    "record_id": "a5119406-b0dd-4911-b1b4-290179a4f51f",
+    "results": [
+      {
+        "scenario": "capture",
+        "passed": true,
+        "tools": [
+          "enhanced_recall",
+          "enhanced_remember",
+          "enhanced_status",
+          "enhanced_remember"
+        ],
+        "version": 1,
+        "duration_ms": 61892,
+        "tokens": {
+          "input": 11709,
+          "output": 2610,
+          "total": 47535,
+          "cache_read": 33216,
+          "cache_write": 0
+        }
+      },
+      {
+        "scenario": "recall",
+        "passed": true,
+        "tools": [
+          "enhanced_recall"
+        ],
+        "version": 1,
+        "duration_ms": 16144,
+        "tokens": {
+          "input": 5927,
+          "output": 440,
+          "total": 15903,
+          "cache_read": 9536,
+          "cache_write": 0
+        }
+      },
+      {
+        "scenario": "correct",
+        "passed": true,
+        "tools": [
+          "enhanced_correct",
+          "enhanced_get",
+          "enhanced_correct",
+          "enhanced_correct"
+        ],
+        "version": 2,
+        "duration_ms": 51854,
+        "tokens": {
+          "input": 4339,
+          "output": 2010,
+          "total": 42957,
+          "cache_read": 36608,
+          "cache_write": 0
+        }
+      },
+      {
+        "scenario": "uncertain",
+        "passed": true,
+        "tools": [
+          "enhanced_clarify"
+        ],
+        "version": 2,
+        "duration_ms": 44015,
+        "tokens": {
+          "input": 3958,
+          "output": 2256,
+          "total": 18118,
+          "cache_read": 11904,
+          "cache_write": 0
+        }
+      },
+      {
+        "scenario": "credential_refusal",
+        "passed": true,
+        "tools": [],
+        "version": 2,
+        "duration_ms": 11687,
+        "tokens": {
+          "input": 1828,
+          "output": 252,
+          "total": 7136,
+          "cache_read": 5056,
+          "cache_write": 0
+        }
+      }
+    ],
+    "settings_restored": true
+  },
+  "local_model": {
+    "model": "ibm-granite/granite-4.2-8b-GGUF",
+    "synthetic_only": true,
+    "record_id": null,
+    "results": [],
+    "settings_restored": true,
+    "selected_capture_passed": false,
+    "chat_completed": true,
+    "exact_served_context_tokens": null
+  },
+  "backup": {
+    "ciphertext": "selected-20261020_162017.dump.age",
+    "manifest_authenticated": true,
+    "restricted_backup_role": true,
+    "backup_config_excludes_decryption_and_jwt_keys": true,
+    "restored_database": "memory_restore_selected_20261020_162017",
+    "exact_canonical_comparison": {
+      "records": 15,
+      "record_versions": 30,
+      "record_audit": 42,
+      "library_members": 2,
+      "library_publications": 1
+    },
+    "all_current_payloads_decrypted": true,
+    "cross_project_denial": true,
+    "fresh_index_rebuild_and_graph": true,
+    "role_restrictions": {
+      "api": {
+        "no_schema_create": true,
+        "no_history_update": true,
+        "no_records_delete": true
+      },
+      "worker": {
+        "no_schema_create": true,
+        "no_history_update": true,
+        "no_records_delete": true,
+        "no_records_update": true
+      },
+      "backup": {
+        "no_schema_create": true,
+        "no_history_update": true,
+        "no_records_delete": true,
+        "no_records_update": true
+      },
+      "restored_api": {
+        "no_schema_create": true,
+        "no_history_update": true,
+        "no_records_delete": true
+      }
+    },
+    "scheduled_service_executed": false,
+    "timer_enabled": false,
+    "owner_custody_confirmed": false,
+    "initial_check_failure": "Initial custom readiness assertion failed. Subsequent direct delivery inspection and bounded polling verified complete replay and ready graph; the original timing failure was not conclusively isolated."
+  },
+  "migration": {
+    "source_database": "cognee_hermes_test",
+    "target_database": "cognee_hermes_selected_20261020",
+    "source_retained": true,
+    "selected_tenant": "qualification",
+    "selected_project": "hermes_test",
+    "copied_and_compared": {
+      "records": 6,
+      "record_versions": 16,
+      "record_shares": 0,
+      "record_outbox": 16,
+      "record_audit": 16,
+      "library_members": 0,
+      "library_publications": 0
+    },
+    "keys_unchanged": true
+  },
+  "hashes": {
+    "global_AGENTS.md": "d499d22d086d87c96a23bea70bb7303058f0f61fb8b2d362932ef3ba5558c173",
+    "repository_AGENTS.md": "792dcbb128fb77acb0307d992246d95b1f2f2bd9c602617920720d35954480cf",
+    "__init__.py": "acea6e5a617ba4aecc171ca3446794de29b284e4c19ceaff1885bc8a0d3ef80d",
+    "rnr_enhanced_cognee_memory-1.1.0-py3-none-any.whl": "97c88cd6fc73c775c410aa7317fda79c2f3d26c7d4332bb430ff09b6e7092067"
+  },
+  "profile_token_expiration_utc": "2026-10-21T00:05:21+00:00"
+}

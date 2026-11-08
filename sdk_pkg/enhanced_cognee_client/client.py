@@ -14,7 +14,10 @@ from typing import Any, Dict, List, Optional
 
 import httpx
 
-from .exceptions import AuthError, ConnectionError, EnhancedCogneeError, ToolError
+from .exceptions import (
+    AuthError as AuthError, ConnectionError as ConnectionError,
+    EnhancedCogneeError as EnhancedCogneeError, ToolError as ToolError,
+)
 
 
 class EnhancedCogneeClient:
@@ -38,6 +41,10 @@ class EnhancedCogneeClient:
         port: int = 8080,
         timeout: float = 30.0,
         api_key: Optional[str] = None,
+        *,
+        base_url: Optional[str] = None,
+        access_token: Optional[str] = None,
+        tenant_id: Optional[str] = None,
     ) -> None:
         """Initialise the client.
 
@@ -45,23 +52,39 @@ class EnhancedCogneeClient:
             host:    Hostname or IP of the RNR Enhanced Cognee MCP server.
             port:    Port number the server is listening on.
             timeout: Request timeout in seconds for all HTTP calls.
-            api_key: Optional Bearer token sent in the Authorization header.
-                     Pass None to skip authentication.
+            api_key: Optional operator key sent in X-API-Key.
+            access_token: Scoped Bearer token, mutually exclusive with api_key.
+            base_url: Explicit HTTP or HTTPS service URL; TLS verification stays on.
+            tenant_id: Optional tenant selector, subject to server authorization.
         """
         self.host = host
         self.port = port
         self.timeout = timeout
         self.api_key = api_key
-        self._base_url = f"http://{host}:{port}"
+        self._base_url = (base_url or f"http://{host}:{port}").rstrip("/")
+        from urllib.parse import urlsplit
+        parsed = urlsplit(self._base_url)
+        if parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+            raise ValueError("base_url must use HTTP or HTTPS")
+        if api_key and access_token:
+            raise ValueError("Use either api_key or access_token")
+        if (api_key or access_token) and parsed.scheme == "http" and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+            raise ValueError("Authenticated remote services require HTTPS")
 
         headers: Dict[str, str] = {"Content-Type": "application/json"}
         if api_key:
-            headers["Authorization"] = f"Bearer {api_key}"
+            headers["X-API-Key"] = api_key
+        if access_token:
+            headers["Authorization"] = f"Bearer {access_token}"
+        if tenant_id:
+            headers["X-Tenant-ID"] = tenant_id
 
         self._client = httpx.AsyncClient(
             base_url=self._base_url,
             headers=headers,
             timeout=timeout,
+            follow_redirects=False,
+            trust_env=False,
         )
 
     # ------------------------------------------------------------------
@@ -109,7 +132,7 @@ class EnhancedCogneeClient:
             Parsed JSON response dict from the server, or a dict of the
             form ``{"error": "<message>"}`` when the call fails.
         """
-        payload: Dict[str, Any] = {"arguments": kwargs}
+        payload: Dict[str, Any] = {"arguments": {key: value for key, value in kwargs.items() if value is not None}}
         try:
             response = await self._client.post(
                 f"/tools/{tool_name}",
@@ -140,8 +163,8 @@ class EnhancedCogneeClient:
     async def add_memory(
         self,
         content: str,
-        user_id: str = "default",
-        agent_id: str = "claude-code",
+        user_id: Optional[str] = None,
+        agent_id: Optional[str] = None,
         metadata: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Store a new memory entry in the RNR Enhanced Cognee server.
@@ -168,7 +191,7 @@ class EnhancedCogneeClient:
     async def search_memories(
         self,
         query: str,
-        user_id: str = "default",
+        user_id: Optional[str] = None,
         agent_id: Optional[str] = None,
         limit: int = 10,
     ) -> List[Dict[str, Any]]:
@@ -177,7 +200,7 @@ class EnhancedCogneeClient:
         Args:
             query:    Natural-language search query.
             user_id:  User scope for the search.
-            agent_id: Optional agent scope; pass None to search all agents.
+            agent_id: Optional agent filter; omission uses the credential's scope.
             limit:    Maximum number of results to return.
 
         Returns:
@@ -197,7 +220,7 @@ class EnhancedCogneeClient:
 
     async def get_memories(
         self,
-        user_id: str = "default",
+        user_id: Optional[str] = None,
         agent_id: Optional[str] = None,
         limit: int = 50,
     ) -> List[Dict[str, Any]]:
@@ -205,7 +228,7 @@ class EnhancedCogneeClient:
 
         Args:
             user_id:  User scope for the retrieval.
-            agent_id: Optional agent scope; pass None to retrieve from all agents.
+            agent_id: Optional agent filter; omission uses the credential's scope.
             limit:    Maximum number of memories to return.
 
         Returns:
@@ -270,7 +293,7 @@ class EnhancedCogneeClient:
     async def remember(
         self,
         content: str,
-        agent_id: str = "claude-code",
+        agent_id: Optional[str] = None,
         session_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Store a memory in the context of an active session.
@@ -280,7 +303,8 @@ class EnhancedCogneeClient:
 
         Args:
             content:    The text content to remember.
-            agent_id:   Agent identifier for memory ownership.
+            agent_id:   Unsupported by this legacy graph tool. Use add_memory
+                        for credential-bound agent memory instead.
             session_id: Optional session identifier; if None the server
                         assigns or reuses a session automatically.
 
@@ -288,17 +312,18 @@ class EnhancedCogneeClient:
             Dict with the server response including the memory ID, or
             ``{"error": "..."}`` on failure.
         """
+        if agent_id is not None:
+            return {"error": "ERR Legacy graph remember has no agent selector; use add_memory"}
         return await self._call(
             "remember",
-            content=content,
-            agent_id=agent_id,
+            data=content,
             session_id=session_id,
         )
 
     async def recall(
         self,
         query: str,
-        agent_id: str = "claude-code",
+        agent_id: Optional[str] = None,
         limit: int = 10,
     ) -> List[Dict[str, Any]]:
         """Recall memories relevant to a query within an agent session.
@@ -307,14 +332,17 @@ class EnhancedCogneeClient:
 
         Args:
             query:    Natural-language query describing what to recall.
-            agent_id: Agent scope for the recall operation.
+            agent_id: Unsupported by this legacy graph tool. Use search_memories
+                      for credential-bound agent recall instead.
             limit:    Maximum number of results to return.
 
         Returns:
             List of relevant memory dicts, or a list containing a single
             ``{"error": "..."}`` dict on failure.
         """
-        result = await self._call("recall", query=query, agent_id=agent_id, limit=limit)
+        if agent_id is not None:
+            return [{"error": "ERR Legacy graph recall has no agent selector; use search_memories"}]
+        result = await self._call("recall", query=query, top_k=limit)
         if isinstance(result, list):
             return result
         return [result]

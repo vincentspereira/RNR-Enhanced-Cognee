@@ -3,7 +3,7 @@ Extended unit tests for src/notification_manager.py
 
 Covers:
 - _build_slack_payload / _build_discord_payload
-- _post_json with aiohttp success, aiohttp failure, urllib fallback
+- _post_json with explicit HTTPS grants, disabled redirects and denied destinations
 - send_notification with disabled channel, channel not subscribed to event
 - test_channel for slack and discord
 - Unknown events passed to send_notification
@@ -244,84 +244,51 @@ class TestConfigureWithUnknownEvents:
 
 
 class TestPostJson:
-    """Tests for _post_json HTTP transport."""
+    """Approved transport and denied-destination checks; no external requests."""
+
+    @pytest.fixture(autouse=True)
+    def approved_destination(self, monkeypatch):
+        monkeypatch.setenv("ENHANCED_CAPABILITIES", "notifications")
+        monkeypatch.setenv("ENHANCED_OUTBOUND_ORIGINS", '["https://x"]')
 
     @pytest.mark.asyncio
-    async def test_post_json_aiohttp_success(self):
+    async def test_approved_https_uses_no_redirect_or_proxy(self):
         from src.notification_manager import NotificationManager
-
-        mock_resp = AsyncMock()
-        mock_resp.status = 200
-        mock_session = AsyncMock()
-        mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-        mock_session.__aexit__ = AsyncMock(return_value=False)
-        mock_session.post = MagicMock(return_value=mock_resp)
-        mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
-        mock_resp.__aexit__ = AsyncMock(return_value=False)
-
-        with patch("aiohttp.ClientSession", return_value=mock_session):
-            status = await NotificationManager._post_json("https://x", {"k": "v"})
-        assert status == 200
+        client = AsyncMock()
+        client.post.return_value = MagicMock(status_code=200)
+        context = AsyncMock()
+        context.__aenter__.return_value = client
+        with patch("httpx.AsyncClient", return_value=context) as factory:
+            assert await NotificationManager._post_json("https://x/hook", {"k": "v"}) == 200
+        factory.assert_called_once_with(timeout=10, follow_redirects=False, trust_env=False)
 
     @pytest.mark.asyncio
-    async def test_post_json_aiohttp_exception_returns_zero(self):
+    async def test_network_failure_returns_zero(self):
         from src.notification_manager import NotificationManager
-
-        mock_session = AsyncMock()
-        mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-        mock_session.__aexit__ = AsyncMock(return_value=False)
-        mock_session.post = MagicMock(side_effect=Exception("network error"))
-
-        with patch("aiohttp.ClientSession", return_value=mock_session):
-            status = await NotificationManager._post_json("https://x", {})
-        assert status == 0
+        with patch("httpx.AsyncClient", side_effect=ConnectionError("fixture")):
+            assert await NotificationManager._post_json("https://x", {}) == 0
 
     @pytest.mark.asyncio
-    async def test_post_json_urllib_fallback_success(self):
+    async def test_disabled_capability_performs_no_io(self, monkeypatch):
         from src.notification_manager import NotificationManager
-        import urllib
-
-        def fake_urlopen(req, timeout=10):
-            class FakeResp:
-                status = 200
-                def __enter__(self):
-                    return self
-                def __exit__(self, *a):
-                    pass
-            return FakeResp()
-
-        # Force ImportError for aiohttp so we fall through to urllib
-        with patch.dict("sys.modules", {"aiohttp": None}):
-            with patch("urllib.request.urlopen", fake_urlopen):
-                status = await NotificationManager._post_json("https://x", {})
-        assert status == 200
+        monkeypatch.delenv("ENHANCED_CAPABILITIES")
+        with patch("httpx.AsyncClient") as factory:
+            assert await NotificationManager._post_json("https://x", {}) == 0
+        factory.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_post_json_urllib_fallback_http_error(self):
+    async def test_unapproved_origin_performs_no_io(self):
         from src.notification_manager import NotificationManager
-        import urllib.error
-
-        def fake_urlopen(req, timeout=10):
-            raise urllib.error.HTTPError(
-                "https://x", 404, "Not Found", {}, None
-            )
-
-        with patch.dict("sys.modules", {"aiohttp": None}):
-            with patch("urllib.request.urlopen", fake_urlopen):
-                status = await NotificationManager._post_json("https://x", {})
-        assert status == 404
+        with patch("httpx.AsyncClient") as factory:
+            assert await NotificationManager._post_json("https://other", {}) == 0
+        factory.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_post_json_urllib_fallback_generic_exception(self):
+    async def test_http_origin_performs_no_io(self):
         from src.notification_manager import NotificationManager
-
-        def fake_urlopen(req, timeout=10):
-            raise ConnectionError("refused")
-
-        with patch.dict("sys.modules", {"aiohttp": None}):
-            with patch("urllib.request.urlopen", fake_urlopen):
-                status = await NotificationManager._post_json("https://x", {})
-        assert status == 0
+        with patch("httpx.AsyncClient") as factory:
+            assert await NotificationManager._post_json("http://x", {}) == 0
+        factory.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

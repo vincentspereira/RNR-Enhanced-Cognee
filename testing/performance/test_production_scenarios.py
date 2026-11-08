@@ -891,7 +891,8 @@ class TestProductionPerformance:
             "No resource saturation detected in stress test"
 
         # Validate graceful degradation
-        assert metrics.error_rate <= 0.1,  # Allow up to 10% errors under extreme stress
+        # Allow up to 10% errors under extreme stress.
+        assert metrics.error_rate <= 0.1, \
             f"Error rate {metrics.error_rate:.2%} too high even under stress"
 
         # System should maintain some level of service

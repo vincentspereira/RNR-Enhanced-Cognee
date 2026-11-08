@@ -39,20 +39,8 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
     refetchInterval: 30000,
   });
 
-  // Process memory growth data (mock for now - would come from API)
-  const memoryGrowthData = useMemo(() => {
-    const days = 30;
-    const data = [];
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      data.push({
-        date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-        memories: Math.floor(Math.random() * 50) + 10 + (days - i) * 2,
-      });
-    }
-    return data;
-  }, []);
+  // No historical series is provided by the API. Keep missing measurements empty.
+  const memoryGrowthData: { date: string; memories: number }[] = [];
 
   // Process memory type distribution
   const memoryTypeData = useMemo(() => {
@@ -67,20 +55,7 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
     ];
   }, [structuredStats]);
 
-  // Process agent activity data (mock)
-  const agentActivityData = useMemo(() => {
-    return [
-      { agent: "Ops Bot", memories: 245, searches: 120, updates: 45 },
-      { agent: "Trading Bot", memories: 189, searches: 98, updates: 32 },
-      { agent: "Dev Assistant", memories: 156, searches: 87, updates: 28 },
-      { agent: "Analysis Agent", memories: 134, searches: 76, updates: 21 },
-    ];
-  }, []);
-
-  // Generate sparkline data
-  const sparklineData = useMemo(() => {
-    return Array.from({ length: 12 }, () => Math.floor(Math.random() * 50) + 50);
-  }, []);
+  const agentActivityData: { agent: string; memories: number; searches: number; updates: number }[] = [];
 
   if (statsLoading) {
     return (
@@ -90,7 +65,10 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
     );
   }
 
-  const stats = systemStats!;
+  if (!systemStats) {
+    return <p role="alert">System statistics are unavailable. Please try again.</p>;
+  }
+  const stats = systemStats;
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -99,16 +77,13 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
         <KPICard
           title="Total Memories"
           value={stats.total_memories.toLocaleString()}
-          trend={{ value: 12, label: "vs last month" }}
           status="healthy"
           icon={<Database className="w-5 h-5" />}
-          sparkline={sparklineData}
         />
 
         <KPICard
           title="Active Sessions"
           value={stats.active_sessions}
-          trend={{ value: 8, label: "vs last hour" }}
           status="healthy"
           icon={<Activity className="w-5 h-5" />}
         />
@@ -116,7 +91,6 @@ export function AnalyticsDashboard({ className = "" }: AnalyticsDashboardProps) 
         <KPICard
           title="Token Efficiency"
           value={`${stats.token_efficiency_percent.toFixed(1)}%`}
-          trend={{ value: 5, label: "improvement" }}
           status="healthy"
           icon={<Zap className="w-5 h-5" />}
         />

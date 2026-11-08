@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
+  icon?: React.ReactNode;
   "aria-label": string;
 }
 
@@ -14,6 +15,7 @@ export function IconButton({
   variant = "ghost",
   size = "md",
   children,
+  icon,
   ...props
 }: IconButtonProps) {
   const sizeClasses = {
@@ -38,7 +40,7 @@ export function IconButton({
       )}
       {...props}
     >
-      {children}
+      {children ?? icon}
     </button>
   );
 }

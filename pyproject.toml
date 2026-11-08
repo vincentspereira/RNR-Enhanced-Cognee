@@ -25,7 +25,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
 ]
 dependencies = [
-    "openai>=1.80.1",
+    "openai>=2.20.0,<3",
     "python-dotenv>=1.0.1,<2.0.0",
     "pydantic>=2.10.5",
     "pydantic-settings>=2.2.1,<3",
@@ -34,20 +34,20 @@ dependencies = [
     "sqlalchemy>=2.0.39,<3.0.0",
     "aiosqlite>=0.20.0,<1.0.0",
     "tiktoken>=0.8.0,<1.0.0",
-    "litellm>=1.83.7",
+    "litellm>=1.96.2",
     "instructor>=1.9.1,<2.0.0",
     "filetype>=1.2.0,<2.0.0",
-    "aiohttp>=3.13.3,<4.0.0",
+    "aiohttp>=3.14.3,<4.0.0",
     "aiofiles>=23.2.1",
     "rdflib>=7.1.4,<7.2.0",
-    "pypdf>=6.6.2,<7.0.0",
+    "pypdf>=6.21.2,<7.0.0",
     "jinja2>=3.1.3,<4",
     "lancedb>=0.24.0,<1.0.0",
     "nbformat>=5.7.0,<6.0.0",
     "alembic>=1.13.3,<2",
-    "limits>=4.4.1,<5",
+    "limits>=5.8.0,<6",
     "fastapi>=0.116.2,<1.0.0",
-    "python-multipart>=0.0.22,<1.0.0",
+    "python-multipart>=0.0.31,<1.0.0",
     "fastapi-users[sqlalchemy]>=15.0.2",
     "structlog>=25.2.0,<26",
     "pympler>=1.1,<2.0.0",
@@ -62,12 +62,11 @@ dependencies = [
     "uvicorn>=0.34.0,<1.0.0",
     "gunicorn>=20.1.0,<24",
     "websockets>=15.0.1,<16.0.0",
-    "tenacity>=9.0.0",
+    "tenacity>=9.2.1",
     "fakeredis[lua]>=2.32.0",
-    "diskcache>=5.6.3",
     "aiolimiter>=1.2.1",
     # New in upstream v1.0.9
-    "urllib3>=2.6.0",
+    "urllib3>=2.8.0",
     "cbor2>=5.8.0",
     "langdetect>=1.0.9",
     "datamodel-code-generator>=0.54.0",
@@ -93,7 +92,7 @@ scraping = [
 
 # fastembed is now an optional group (was in core in v0.5.1)
 fastembed = [
-    "fastembed<=0.8.0",
+    "fastembed>=0.9.0,<1",
     "onnxruntime<=1.23.2 ; python_version < '3.14'",
     "onnxruntime>=1.24.1 ; python_version >= '3.14'",
 ]
@@ -119,12 +118,12 @@ qdrant = [
 notebook = ["notebook>=7.1.0,<8"]
 langchain = [
     "langsmith>=0.2.3,<1.0.0",
-    "langchain_text_splitters>=0.3.2,<1.0.0",
+    "langchain_text_splitters>=1.1.2,<2.0.0",
     "langchain-core>=1.2.5",
 ]
 llama-index = ["llama-index-core>=0.14.20,<0.15"]
-huggingface = ["transformers>=4.46.3,<5"]
-ollama = ["transformers>=4.46.3,<5"]
+huggingface = ["transformers>=5.10.0,<6"]
+ollama = ["transformers>=5.10.0,<6"]
 mistral = ["mistral-common>=1.5.2,<2", "mistralai>=1.9.10,<3"]
 anthropic = ["anthropic>=0.27"]
 azure = ["azure-identity>=1.15.0,<2"]
@@ -145,9 +144,9 @@ docs = [
     "nltk>=3.9.3,<4",
 ]
 codegraph = [
-    "fastembed<=0.8.0 ; python_version < '3.14'",
-    "transformers>=4.46.3,<5",
-    "tree-sitter>=0.24.0,<0.25",
+    "fastembed>=0.9.0,<1 ; python_version < '3.14'",
+    "transformers>=5.10.0,<6",
+    "tree-sitter>=0.25.0,<0.26",
     "tree-sitter-python>=0.23.6,<0.24",
 ]
 evals = [
@@ -165,9 +164,9 @@ aws = ["s3fs[boto3]==2025.3.2"]
 dlt = ["dlt[sqlalchemy]>=1.9.0,<2"]
 baml = ["baml-py (==0.222.0)"]
 dev = [
-    "pytest>=7.4.0,<8",
+    "pytest>=9.0.3,<10",
     "pytest-cov>=6.1.1,<7.0.0",
-    "pytest-asyncio>=0.21.1,<0.22",
+    "pytest-asyncio>=1.0,<2",
     "coverage>=7.3.2,<8",
     "mypy>=1.7.1,<2",
     "pre-commit>=4.0.1,<5",
@@ -267,9 +266,17 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 exclude = [
-  "/bin",
   "/dist",
   "/.data",
+  "/cognee/.cognee_system",
+  "/cognee/.data_storage",
+  "/cognee/.cognee_cache",
+  "/cognee/tests",
+  "**/.env",
+  "**/.env.*",
+  "**/.local.env",
+  "**/.prod.env",
+  "**/secrets/**",
   "/.github",
   "/deployment",
   "/cognee-mcp",
@@ -286,7 +293,7 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["cognee", "distributed"]
+packages = ["cognee", "distributed", "src", "bin", "sdk_pkg/enhanced_cognee_client"]
 
 [tool.ruff]
 line-length = 100

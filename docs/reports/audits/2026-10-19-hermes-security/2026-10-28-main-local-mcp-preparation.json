@@ -1,0 +1,84 @@
+{
+  "ci": {
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "new_helper_hosted_ci_pass_claimed": false,
+    "provenance": "current_public_github_api_exact_delivery_revision",
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "prepared_sources": {
+    "mcp_public_programs.py": "e6aa3a3db3d6b7a9917314035c8646e446e5600a87fa253399b205bfefc37c82",
+    "probe_main_local_mcp.py": "415ef81f50ca0c209d9afd08c6a685f70c6ab951bbd5b672c5b32128bff52c07",
+    "qualify_main_local_mcp.py": "d9ecbb88b03fa32a0867ac2cfe827a23edf69eac2ca4bf7eb00632ccfc795983"
+  },
+  "protected_qualification": {
+    "executed": false,
+    "full_main_tool_coverage_qualified": false,
+    "planned_credential_issuance": 0,
+    "planned_platform_adapters": 0,
+    "planned_remote_connections": 0,
+    "reason": "sudo_requires_owner_terminal",
+    "surface": "two_public_local_mcp_components_empty_home_actual_main_uid"
+  },
+  "public_program_readback": {
+    "filesystem": {
+      "archive_bytes": 27525120,
+      "archive_sha256": "eeac2e4bd8302b1117c040fe251b3a565f740b28cb56011a727d756e7e7353de",
+      "bytes_verified": 23266928,
+      "files_verified": 4022,
+      "version": "2026.8.31"
+    },
+    "package_code_executed": false,
+    "private_profiles_read": false,
+    "provenance": "actual_public_distribution_archives_and_disposable_copies_under_ordinary_owner",
+    "rea": {
+      "archive_bytes": 132792320,
+      "archive_sha256": "30a10da51b212810c6510497a87f6e93b15ea14da31702d38193a18d603ab623",
+      "bytes_verified": 124711903,
+      "files_verified": 7886,
+      "version": "6.7.0"
+    }
+  },
+  "readonly_runtime_inventory": {
+    "fetch_uvx_present_in_standard_user_local_bin": false,
+    "fetch_uvx_present_on_inspected_path": false,
+    "local_definitions": 3,
+    "private_url_header_or_auth_values_published": false,
+    "public_cached_local_packages": 2,
+    "remote_definitions": 3,
+    "remote_endpoints_contacted": false
+  },
+  "recorded_date": "2026-10-28",
+  "remaining": [
+    "protected_offline_local_mcp_components",
+    "fetch_runtime_and_guarded_launch",
+    "remote_mcp_connectivity_and_auth",
+    "actual_candidate_native_mcp_binding_and_security_preflight",
+    "served_context_acceptance",
+    "production_dispatch_and_launch_bindings",
+    "admitted_unattended_renewal",
+    "deferred_profile_bindings",
+    "final_fresh_main_live_state",
+    "final_fleet_switch_review"
+  ],
+  "source_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "tests": {
+    "errors": 0,
+    "failed": 0,
+    "native_python": "3.14.7",
+    "native_syntax_passed": true,
+    "passed": 57,
+    "service_receipt_protocol_tests": "invented_fixtures_and_local_fixture_subprocesses",
+    "skipped": 0,
+    "warnings": 0
+  }
+}

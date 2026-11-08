@@ -9,6 +9,8 @@ Phase 4: Production Readiness and Optimization (Weeks 11-12)
 Category: Disaster Recovery and Business Continuity
 """
 
+import statistics
+
 import pytest
 import asyncio
 import json

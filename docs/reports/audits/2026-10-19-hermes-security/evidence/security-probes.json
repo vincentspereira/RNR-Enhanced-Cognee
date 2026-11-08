@@ -1,0 +1,103 @@
+[
+  {
+    "probe": "registered_search_ignores_tenant",
+    "status": "OBSERVED",
+    "details": {
+      "contexts": [
+        "audit_a",
+        "audit_b"
+      ],
+      "table": "shared_memory.documents"
+    }
+  },
+  {
+    "probe": "jwt_tenant_mismatch_and_agent_spoof_accepted",
+    "status": "OBSERVED",
+    "details": {
+      "status": 200,
+      "token_tenant": "audit_a",
+      "observed": [
+        {
+          "tenant": "audit_b",
+          "agent_id": "another-agent"
+        }
+      ]
+    }
+  },
+  {
+    "probe": "readonly_reaches_unmapped_mutating_tool",
+    "status": "OBSERVED",
+    "details": {
+      "remember": 200,
+      "mapped_add_memory_control": 403,
+      "remember_required_permission": "None"
+    }
+  },
+  {
+    "probe": "chunked_body_bypasses_payload_cap",
+    "status": "OBSERVED",
+    "details": {
+      "body_bytes": 525,
+      "cap": 128,
+      "fixed_length_status": 413,
+      "chunked_status": 200
+    }
+  },
+  {
+    "probe": "dashboard_unauthenticated_delete",
+    "status": "OBSERVED",
+    "details": {
+      "status": 204,
+      "fake_database_calls": 1
+    }
+  },
+  {
+    "probe": "vector_scope_mismatch_and_unscoped_cache",
+    "status": "OBSERVED",
+    "details": {
+      "write_collection": "cognee_dynamic_audit_memory__t__audit_a",
+      "read_collection": "cognee_dynamic_audit_memory",
+      "cache_key_prefix": "memory:"
+    }
+  },
+  {
+    "probe": "normal_add_stores_plaintext",
+    "status": "OBSERVED",
+    "details": {
+      "stored_content_equals_input": true
+    }
+  },
+  {
+    "probe": "cache_failure_after_database_commit",
+    "status": "OBSERVED",
+    "details": {
+      "insert_observed": true,
+      "reported_failure_type": "HTTPException"
+    }
+  },
+  {
+    "probe": "tenant_identifier_collision",
+    "status": "OBSERVED",
+    "details": {
+      "audit-a": "audit_a",
+      "audit_a": "audit_a"
+    }
+  },
+  {
+    "probe": "ephemeral_keys_and_encrypt_failure_passthrough",
+    "status": "OBSERVED",
+    "details": {
+      "fresh_instance_cannot_decrypt": true,
+      "encryption_error_returns_plaintext": true
+    }
+  },
+  {
+    "probe": "python_sdk_static_key_header_mismatch",
+    "status": "OBSERVED",
+    "details": {
+      "uses_bearer_for_api_key": true,
+      "tenant_header": false,
+      "scheme": "http"
+    }
+  }
+]

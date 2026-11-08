@@ -1,0 +1,53 @@
+{
+  "run_url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39370495182",
+  "source_commit": "bad9c2831f4084dc40880a784e5d897e7a9fcd8f",
+  "fresh_hashed_full_application_and_test_environment": true,
+  "unit": {
+    "tests": 4285,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "unit_seconds": 30.5,
+  "unit_xml_sha256": "3070a5004f990f0ac2c46bd434e10bbae051610190f94266131bd5f672f7e4fb",
+  "unit_zero_skip_assertion": "passed",
+  "legacy_install_upgrade_tests": 3,
+  "overall_run": "failed",
+  "later_failure": "upstream-settings test collection: Tenacity 9.2.1 deprecated initial argument; warnings remain errors",
+  "fix": "Current multiplier keyword in all 13 affected model/embedding modules; minimum dependency now 9.2.1; original retry values/caps preserved",
+  "repaired_upstream_settings_local": {
+    "passed": 10,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "repaired_hosted_run": {
+    "url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39371928694",
+    "source_commit": "cf9030f02bf71280fc9af553da38e53e9dd4a070",
+    "result": "success",
+    "unit": {
+      "tests": 4285,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 37.205,
+      "xml_sha256": "1ba001e9a9fab6872ac8e8788fee3d43ce07dd91ed850af1260b6317432d88fc"
+    },
+    "upstream_settings": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.685,
+      "xml_sha256": "16a335a3f4daf4b27a1d5c609df274c323de823b0fecfdb54afef588545c55be"
+    },
+    "canonical": {
+      "tests": 64,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.758,
+      "xml_sha256": "6e364743363a0cdf795bc34ae203d09c0e996aa9bc9aa08b0344fa96ef473b0e"
+    }
+  }
+}

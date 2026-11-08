@@ -255,13 +255,13 @@ class RateLimiter:
         request = {
             "tokens": tokens,
             "priority": priority,
-            "timestamp": time.time()
+            "timestamp": time.monotonic()
         }
         queue.append(request)
 
         # Wait for capacity
-        start_time = time.time()
-        while time.time() - start_time < timeout:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < timeout:
             # Check if we can proceed
             if request_bucket.try_consume(1) and token_bucket.try_consume(tokens):
                 # Remove from queue
@@ -351,9 +351,9 @@ class RateLimiter:
 
             try:
                 # Execute the function
-                start_time = time.time()
+                start_time = time.monotonic()
                 result = await func(*args, **kwargs)
-                elapsed = time.time() - start_time
+                elapsed = time.monotonic() - start_time
 
                 # Record success
                 await self.release_rate_lock(provider, api_key, success=True)
@@ -482,7 +482,7 @@ class RateLimiter:
                 {
                     "priority": req["priority"].name,
                     "tokens": req["tokens"],
-                    "waiting_seconds": time.time() - req["timestamp"]
+                    "waiting_seconds": time.monotonic() - req["timestamp"]
                 }
                 for req in queue
             ]
@@ -558,7 +558,7 @@ class RateLimiter:
                 await asyncio.sleep(3600)  # Run every hour
 
                 # Clean up stats older than 1 hour
-                cutoff = time.time() - 3600
+                cutoff = time.monotonic() - 3600
 
                 for key, bucket in list(self.request_buckets.items()):
                     if bucket.last_refill < cutoff:
@@ -597,12 +597,12 @@ class TokenBucket:
         self.capacity = capacity
         self.tokens = tokens
         self.refill_rate = refill_rate
-        self.last_refill = time.time()
+        self.last_refill = time.monotonic()
 
     def _refill(self):
         """Refill tokens based on elapsed time."""
-        now = time.time()
-        elapsed = now - self.last_refill
+        now = time.monotonic()
+        elapsed = max(0.0, now - self.last_refill)
 
         # Calculate tokens to add
         tokens_to_add = elapsed * self.refill_rate

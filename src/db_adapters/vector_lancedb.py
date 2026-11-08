@@ -18,7 +18,10 @@ provider.
 - ``get_collections()`` / ``get_collection(name)`` / ``count(name)``
 - ``create_collection(name, vectors_config=VectorParams(size, distance))``
 - ``upsert(name, points=[PointStruct(id, vector, payload)])``
-- ``search(name, query_vector, limit, score_threshold)``
+- ``search(name, query_vector, limit, score_threshold, query_filter)``
+  with one top-level payload equality. JSON text is parsed structurally in a
+  complete ID/payload scan, then matching IDs prefilter the engine before
+  ranking/limiting. This is O(collection size), not an indexed JSON query.
 - ``delete(name, points_selector)`` accepting:
     * plain list / tuple of IDs
     * ``FilterSelector(filter=Filter(must=[FieldCondition(key, match=MatchValue(value))]))``
@@ -27,8 +30,7 @@ provider.
 
 **Not supported (raises NotImplementedError):**
 
-- ``query_filter`` in ``search()`` (post-filter in the caller for now)
-- Multi-condition / nested / negation delete filters
+- Multi-condition / nested / negation payload filters
 - Named vectors, sparse vectors, hybrid search
 
 Env-var fallbacks: ``LANCEDB_URI`` (default ``./lancedb_data`` -- a
@@ -205,10 +207,14 @@ class _LanceDBClient:
         from src.db_adapters import _vector_filter
 
         normalised = _vector_filter.normalise(query_filter)
-        where_clause = _vector_filter.to_lance_where(normalised)
 
         db = self._connect()
         table = db.open_table(collection_name)
+        payload_rows = (
+            table.search().select(["id", "payload"]).limit(None).to_list()
+            if normalised.must else None
+        )
+        where_clause = _vector_filter.to_lance_where(normalised, payload_rows)
 
         distance = self._distance_by_collection.get(collection_name)
         metric = _distance_to_lance_metric(distance)
@@ -217,10 +223,10 @@ class _LanceDBClient:
             search = search.metric(metric)
         if where_clause:
             search = search.where(where_clause)
-        df = search.limit(limit).to_pandas()
+        rows = search.limit(limit).to_list()
 
         hits: List[_SearchHit] = []
-        for _, row in df.iterrows():
+        for row in rows:
             raw_distance = float(row.get("_distance", 0.0))
             # LanceDB returns *distance* (smaller better); normalise to
             # a similarity score (higher better) so callers' threshold
@@ -261,10 +267,10 @@ class _LanceDBClient:
             table.delete(f"id IN ({','.join(repr(i) for i in ids)})")
             return
 
-        # Shape 2: FilterSelector with a single must FieldCondition.
-        # Limited because LanceDB's SQL-like filter doesn't easily
-        # introspect JSON columns; we restrict to a single equality
-        # check on a top-level payload key.
+        # Shape 2: FilterSelector with one top-level payload equality.
+        # Resolve structurally, just as search does; LIKE is not identity.
+        from src.db_adapters import _vector_filter
+
         filt = getattr(points_selector, "filter", None)
         if filt is None:
             raise NotImplementedError(
@@ -276,26 +282,14 @@ class _LanceDBClient:
         must = list(getattr(filt, "must", []) or [])
         should = list(getattr(filt, "should", []) or [])
         must_not = list(getattr(filt, "must_not", []) or [])
-
         if should or must_not or len(must) != 1:
             raise NotImplementedError(
                 "lancedb adapter: delete() supports only a single "
                 "FieldCondition in `must`."
             )
-
-        cond = must[0]
-        key = getattr(cond, "key", None)
-        match = getattr(cond, "match", None)
-        value = getattr(match, "value", None) if match is not None else None
-        if key is None or value is None:
-            raise NotImplementedError(
-                "lancedb adapter: delete() FieldCondition must expose "
-                ".key and .match.value."
-            )
-        # Delete via a substring match on the JSON-encoded payload --
-        # works for top-level string values, which is the GDPR shape.
-        marker = f'"{key}": "{value}"'
-        table.delete(f"payload LIKE '%{marker}%'")
+        normalised = _vector_filter.normalise(filt)
+        payload_rows = table.search().select(["id", "payload"]).limit(None).to_list()
+        table.delete(_vector_filter.to_lance_where(normalised, payload_rows))
 
     def close(self) -> None:
         # LanceDB connections are file-system handles; let GC clean up.

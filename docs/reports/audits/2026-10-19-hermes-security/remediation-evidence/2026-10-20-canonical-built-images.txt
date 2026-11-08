@@ -1,0 +1,2 @@
+Built-image authentication, retry, scope, recall, sharing/revocation, evidence, correction lineage, retraction and key-status checks passed.
+Actual restricted API/worker images: semantic/source-linked recall, restart/backlog recovery, scope, correction and retraction passed

@@ -81,7 +81,6 @@ test.describe("Keyboard Navigation", () => {
     }
 
     // Enter to activate focused element
-    const focusedElement = page.locator(":focus");
     await page.keyboard.press("Enter");
   });
 
@@ -128,9 +127,9 @@ test.describe("Keyboard Navigation", () => {
     // Press Tab multiple times and verify focus stays in modal
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("Tab");
-      const focusedElement = page.locator(":focus");
 
       // Check if focused element is within the modal
+      const focusedElement = page.locator(":focus");
       const isInModal = await focusedElement.evaluate((el) => {
         return el.closest('[role="dialog"]') !== null;
       });
@@ -220,7 +219,7 @@ test.describe("Forms", () => {
         return (
           el.hasAttribute("aria-label") ||
           el.hasAttribute("aria-labelledby") ||
-          el.labels !== null && el.labels.length > 0 ||
+          ("labels" in el && el.labels !== null && (el.labels as NodeListOf<HTMLLabelElement>).length > 0) ||
           el.closest("label") !== null
         );
       });

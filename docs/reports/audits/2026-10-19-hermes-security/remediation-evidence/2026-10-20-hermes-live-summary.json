@@ -1,0 +1,94 @@
+{
+  "source_commit": "dce8b145554b3cf635d0b842742fb33d462b527c",
+  "hermes_source_commit": "d923a5eb487a17c0a68801bba9ef0f56c81040a8",
+  "service_python": "3.12.13",
+  "cli_python": "3.14.7",
+  "profile": "enhanced-cognee-test",
+  "synthetic_only": true,
+  "capture": {
+    "exit_code": 0,
+    "tool_calls": [
+      "enhanced_recall",
+      "enhanced_remember"
+    ],
+    "duration_ms": 39784,
+    "tokens": {
+      "input": 5928,
+      "output": 901,
+      "total": 16621,
+      "cache_read": 9792,
+      "cache_write": 0
+    },
+    "fixture_response": "For scheduling, an eleven-day review cycle means each review round starts exactly eleven days after the previous one, so all review-related milestones \u2014 preparation, feedback, fixes, and sign-off \u2014 must fit within and be planned on that fixed eleven-day cadence.\n\n(Saved as a durable decision: cedar-qualification.review-cycle-days, record 4da4d4e3.)"
+  },
+  "new_session_recall": {
+    "exit_code": 0,
+    "tool_calls": [
+      "enhanced_recall",
+      "enhanced_get"
+    ],
+    "duration_ms": 18053,
+    "tokens": {
+      "input": 1681,
+      "output": 436,
+      "total": 11653,
+      "cache_read": 9536,
+      "cache_write": 0
+    },
+    "fixture_response": "An **eleven-day review cycle** \u2014 review rounds recur on a fixed 11-day cadence, with scheduling and deadlines planned within that window.\n\nCited memory record:\n- ID: 4da4d4e3-6217-4735-a352-689b21fb59dd, version 1, state active\n- Fact key: cedar-qualification.review-cycle-days\n- Evidence: actor-submitted user statement (source_id: user-statement-session-2026-10-20), observed 2026-10-20T00:12:48Z in session 20261020_011215_81a412\n\nNote this record is unverified/actor-submitted, so treat it as a planning decision on record rather than externally validated."
+  },
+  "clear_correction": {
+    "exit_code": 0,
+    "tool_calls": [
+      "enhanced_correct"
+    ],
+    "duration_ms": 18852,
+    "tokens": {
+      "input": 6077,
+      "output": 467,
+      "total": 11024,
+      "cache_read": 4480,
+      "cache_write": 0
+    },
+    "fixture_response": "Corrected (record 4da4d4e3, now version 2): for the fictional Cedar qualification project, review rounds now recur on a fixed nine-day cadence instead of eleven days, with all scheduling and deadlines planned within that nine-day window."
+  },
+  "uncertain_change": {
+    "exit_code": 0,
+    "tool_calls": [
+      "enhanced_clarify"
+    ],
+    "duration_ms": 21995,
+    "tokens": {
+      "input": 1097,
+      "output": 444,
+      "total": 11205,
+      "cache_read": 9664,
+      "cache_write": 0
+    },
+    "fixture_response": "The stored decision currently says a nine-day review cycle (record 4da4d4e3, v2 \u2014 corrected from eleven days earlier today). Since you now say it's undecided between nine days and monthly, I've flagged that record for your review rather than changing it.\n\nWhich should it be \u2014 nine days or monthly? Once you confirm, I'll correct the record accordingly (and quote your answer as the confirmation)."
+  },
+  "correction_check_note": "Initial checker rejected the historical eleven-day wording. Current decision clause and committed version independently verified; checker repaired without banning legitimate history.",
+  "local_chat_gate": {
+    "served_context_tokens": 8192,
+    "hermes_minimum_tokens": 64000,
+    "qualified": false,
+    "settings_changed": false
+  },
+  "builtin_notebook_contains_fixture": false,
+  "runtime_source_sha256": {
+    "src/memory_service.py": "9f6b7d999cc38be119cf519a34a8c7d10ecf289df6ea0fb01ff5d379ae9f7028",
+    "src/memory_api.py": "8b1e9d31583918f39259e5d2d4840bc7dee8523ba528417065bfd5b6675aeca5",
+    "src/memory_backup.py": "fe20a73dc4d36c957ee1eb3f96f14944066d5aaf0a60cfb7766753279d53057e",
+    "integrations/hermes/enhanced_cognee/__init__.py": "06a72b1631af03cf69d60c72b4790e19450ae94d9ad2418d5cea8a10fe05a1c5"
+  },
+  "canonical_history": {
+    "encrypted_envelopes": true,
+    "versions": [
+      1,
+      2
+    ],
+    "first_interval": "eleven days",
+    "current_interval": "nine days",
+    "uncertain_change_did_not_modify": true
+  }
+}

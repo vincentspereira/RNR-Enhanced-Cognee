@@ -1,0 +1,33 @@
+{
+  "workflow_run": 39386830679,
+  "workflow_url": "https://github.com/vincentspereira/RNR-Enhanced-Cognee/actions/runs/39386830679",
+  "source_commit": "65d78f3cf2ae11ef9b5aecc0ce7954e9a37b41ea",
+  "conclusion": "success",
+  "lanes": {
+    "junit.xml": {
+      "tests": 4290,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "upstream-security.xml": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "schema-qualification.xml": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "canonical-qualification.xml": {
+      "tests": 64,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "scope": "Fresh hosted full dependency installation, root wheel boundary, network-denying units, legacy upgrade, upstream settings and clean canonical runtime"
+}

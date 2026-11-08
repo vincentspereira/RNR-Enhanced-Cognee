@@ -1,0 +1,99 @@
+{
+  "date": "2026-10-27",
+  "environment": "Ubuntu-Hermes",
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "source_parent": "733c9581262dd8ad93e7647843d35782146143f6",
+  "public_source_sha256": {
+    "isolated_delivery_journal.py": "e047170f33f87ab7788c29d8ad4c41d9748a6a641341404d7c3d6e8f241551d4",
+    "probe_isolated_delivery_recovery.py": "690f21e53e757da388ce5bdb11b5a9f1cb1878bb6b923413bd9396dbedcf8d7d",
+    "qualify_isolated_delivery_recovery.py": "d325f3f4f5c82aa672cc7f390491a0ee2018729e63c9a1576878bec2f402790d",
+    "launch_control.py": "edd2bc0a7423f3f55a82b65316f287d6b745c6d0c291646fa692eeaa2b9bd17b"
+  },
+  "owner_reported_native_pass": {
+    "complete": true,
+    "evidence": "operator-evidence/isolated-native-text-s9awh1b9",
+    "operator_helper_sha256": "024c69cdf3f097624dd17948fe502e898b16a5e8cece5233d23e3d6ff31acdb9",
+    "component_hashes": {
+      "isolated_gateway_transport.py": "543a712ebe8ab95bdd9ab48bb202e71be116e5a51ea138236f0a4baa6acf9711",
+      "isolated_native_text_ingress.py": "579122e02485597535f71fd6f8f40250a6a231e1dd6e99a4bab7f95689fa88a9",
+      "probe_isolated_native_text_ingress.py": "7afcbc1804bb1eca4d4ff95f244abea615f52074b6f8c4165d478100c84536b3"
+    },
+    "native_source_hashes": {
+      "gateway/run.py": "a98407aeb888003a2dcb75287291ecc33c8509a24ff8ef6576c00bca4e28de9c",
+      "gateway/run_adapters.py": "d2a6825f72fa5cebc167d073601c660250a0bf884a2321754bee189c5f7fccf9",
+      "gateway/run_inbound.py": "e1148cc822a69802c60c07c03afea08a3661975e6d16d57798673e1e87937d60",
+      "gateway/authz_mixin.py": "16178cdab78dd0fa32432bbf65bc1259e3b3da3eab1030c920b3b5a3cf33244d",
+      "gateway/session.py": "ed560fb1b416e1bc111ed9c1e20945238fc2632c60121852a428b4ec02b60d5c",
+      "gateway/platforms/event.py": "629770dd61c610bde1a62c6735e2a0ccf04df0399731cc40c40b33d30c8480e8",
+      "tools/clarify_gateway.py": "7052ea9832fc93e40146fb1226753fd1bd5618943cf437d822a2821840fba26c",
+      "agent/secret_scope.py": "dce64ce99a6966836108e202e1db41c4be97bd3dad41a79e357f39b8d7e90dec"
+    },
+    "binding_manifest_sha256": "0ac7793980b60bceb14fa9b57a49b9db09cafbf729e22f9b1585bea960b29e3b",
+    "distinct_restricted_uids": 2,
+    "native_dm_text_ingress_component_qualified": true,
+    "native_authorization_and_pending_clarification_preserved": true,
+    "all_admission_policies_preserved_disabled": true
+  },
+  "targeted_source_tests": {
+    "passed": 54,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings": 0,
+    "journal_native_entry": 20,
+    "operator": 17,
+    "controller": 17
+  },
+  "actual_process_crash_tests": {
+    "python": "3.12.13",
+    "forced_exits": 4,
+    "stages": [
+      "reserved",
+      "handled",
+      "sending",
+      "sent"
+    ],
+    "replay_refused": true,
+    "power_loss_test": false
+  },
+  "installed_native_offline_fixture": {
+    "python": "3.14.7",
+    "same_uid_fixture_only": true,
+    "native_base_adapter_background_and_final_delivery": true,
+    "platform_send": "in_memory_test_double",
+    "network_attempts": 0,
+    "original_profile_access_attempts": 0,
+    "subprocess_attempts": 0,
+    "model_called": false,
+    "memory_api_called": false
+  },
+  "failed_preparation_attempts": {
+    "sandbox_ancestor_metadata_refusals": 16,
+    "native_sink_missing_abstract_chat_info": 1,
+    "product_identity_guards_relaxed": false
+  },
+  "protected_four_phase_execution": "prepared_not_executed",
+  "production_dispatch_qualified": false,
+  "native_gateway_integration_qualified": false,
+  "actual_profile_admission_qualified": false,
+  "fleet_launch_approved": false,
+  "previous_completed_tests_replayed": false,
+  "main_source_tool_metadata": {
+    "definitions_observed": 6,
+    "retained_candidate_definitions": 4,
+    "command_kinds": {
+      "npx": 2,
+      "uvx": 1,
+      "remote_endpoint": 3
+    },
+    "raw_values_retained": false,
+    "source_changed": false,
+    "candidate_changed": false,
+    "reconciliation_required": true
+  },
+  "hosted_workflow_observation": {
+    "commit": "733c9581262dd8ad93e7647843d35782146143f6",
+    "workflow_runs": 0
+  }
+}

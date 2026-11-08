@@ -1,0 +1,5 @@
+name: enhanced_cognee
+version: 0.1.0
+description: "Project-scoped Enhanced Cognee memory; selected capture and reviewed sharing."
+requires_env:
+  - ENHANCED_COGNEE_ACCESS_TOKEN

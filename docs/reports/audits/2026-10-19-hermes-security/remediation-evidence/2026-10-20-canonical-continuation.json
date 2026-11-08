@@ -1,0 +1,50 @@
+{
+  "qualification": {
+    "passed": 73,
+    "skipped": 0,
+    "seconds": 31.28
+  },
+  "unit_lane": {
+    "passed": 4245,
+    "skipped": 2,
+    "seconds": 38.25,
+    "credential_environment_scrubbed": true,
+    "outbound_network_denied": true,
+    "compatible_developer_overlays": true
+  },
+  "native_distribution": {
+    "filename": "rnr_enhanced_cognee_memory-1.1.0-py3-none-any.whl",
+    "sha256": "0ed2582898658ca5140d8a54d79542ea3d0f70e7f46ff8b688b6aaf790f8723d",
+    "outside_checkout_imports": "passed",
+    "dependency_compatibility": "55 installed packages passed",
+    "upstream_engine_included": false
+  },
+  "service_os_separation": {
+    "assets_prepared": true,
+    "installed_in_Hermes": false
+  },
+  "hosted_newest_images": {
+    "run_id": 39364795136,
+    "source_commit": "6eb6114b2a98545d11394a5aa52e295c71d968da",
+    "functional_checks": "passed",
+    "security_gate": "failed",
+    "high_matches": 44,
+    "critical_matches": 0
+  },
+  "merge": "not_ready",
+  "longer_bounded_workload": {
+    "requested_seconds": 300,
+    "test_seconds": 303.929,
+    "concurrent_projects": 4,
+    "result": "passed",
+    "stores": [
+      "PostgreSQL",
+      "Qdrant",
+      "ArcadeDB",
+      "Valkey"
+    ],
+    "test_assertions": "current-version semantic and graph recall, scope denial, no remaining events at each indexing checkpoint",
+    "per_round_metrics": "Passing-test stdout was not retained in this XML; do not invent latency or throughput",
+    "production_capacity_qualified": false
+  }
+}

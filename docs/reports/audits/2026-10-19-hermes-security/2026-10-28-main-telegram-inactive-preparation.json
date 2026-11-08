@@ -1,0 +1,91 @@
+{
+  "ci": {
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "label_skipped": [
+      40056091863,
+      40055894047,
+      40055828381
+    ],
+    "new_helper_hosted_ci_pass_claimed": false,
+    "provenance": "current_public_github_api_exact_delivery_revision",
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "environment": "Ubuntu-Hermes",
+  "fleet_launch_approved": false,
+  "main_merged": false,
+  "metadata_inspection": {
+    "enabled": true,
+    "home_field_names": [
+      "chat_id",
+      "name",
+      "platform",
+      "user_id"
+    ],
+    "private_values_published": false,
+    "provenance": "readonly_local_field_metadata_only",
+    "telegram_top_fields": [
+      "enabled",
+      "home_channel"
+    ],
+    "token_or_custom_option_field_present": false
+  },
+  "prepared_action": {
+    "completed_tests_replayed": false,
+    "external_platform_sends": 0,
+    "fresh_main_operational_capture": false,
+    "helper": "prepare_main_with_telegram.py",
+    "new_signed_configured_restore_pending": true,
+    "platform_adapters_started": 0,
+    "previous_candidates_changed": false,
+    "protected_execution_verified": false,
+    "rea_dependency_pass_reused": true,
+    "source_profiles_changed": false
+  },
+  "prepared_sources": {
+    "assess_telegram_candidate_owner.py": "ea7d3ec35d021196f3ce17c67699503744622a69c0007f9c7323eb2bee1ed24c",
+    "prepare_main_with_telegram.py": "fc389e21e8f13dd9feb54e35a760ccf482fc0bcf6d79c76ffa13bf3e47bd1d51"
+  },
+  "protected_result": {
+    "all_admission_policies_preserved_disabled": true,
+    "category": "unreviewed_setting_change_requires_review_no_credentials_issued",
+    "checkpoint": "settings_assessment",
+    "complete": false,
+    "credentials_issued": 0,
+    "encrypted_generations_created": 0,
+    "evidence_basename": "main-rea-reviewed-pq0i9j79",
+    "operator_job_stopped": true,
+    "prior_dependency_pass_preserved": true,
+    "provenance": "owner_supplied_final_json"
+  },
+  "recorded_date": "2026-10-28",
+  "remaining": [
+    "protected_inactive_candidate_preparation_and_restore",
+    "six_mcp_and_context_acceptance",
+    "production_dispatch_and_launch_bindings",
+    "admitted_unattended_renewal",
+    "deferred_profile_bindings",
+    "final_fresh_main_live_state_reconciliation",
+    "final_fleet_switch_review"
+  ],
+  "scope": "prepared_inactive_main_candidate_only",
+  "tests": {
+    "errors": 0,
+    "failed": 0,
+    "grouped_crypto_service_restore_tests": "invented_doubles",
+    "installed_public_parent_schema_policy_passed": true,
+    "native_compile_passed": true,
+    "native_python": "3.14.7",
+    "passed": 48,
+    "skipped": 0,
+    "warnings": 0
+  }
+}

@@ -11,6 +11,49 @@ import (
 	"time"
 )
 
+func TestScopedTokenRedirectAndResponseBudget(t *testing.T) {
+	called := false
+	destination := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { called = true }))
+	defer destination.Close()
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Authorization") != "Bearer synthetic" {
+			t.Error("missing scoped token")
+		}
+		http.Redirect(w, r, destination.URL, http.StatusFound)
+	}))
+	defer origin.Close()
+	client, err := NewClient(Options{BaseURL: origin.URL, AccessToken: "synthetic"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.GetHealth(context.Background())
+	var status *Error
+	if !errors.As(err, &status) || status.Status != 302 || called {
+		t.Fatal("redirect was followed or not reported")
+	}
+	oversized := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write([]byte(strings.Repeat("x", 1024*1024+1))) }))
+	defer oversized.Close()
+	client, _ = NewClient(Options{BaseURL: oversized.URL})
+	_, err = client.GetHealth(context.Background())
+	if err == nil || !strings.Contains(err.Error(), "1 MiB") {
+		t.Fatal("response budget was not enforced")
+	}
+}
+
+func TestUnsafeOrAmbiguousCredentials(t *testing.T) {
+	for _, options := range []Options{
+		{BaseURL: "http://remote", AccessToken: "synthetic"},
+		{BaseURL: "https://approved", AccessToken: "one", APIKey: "two"},
+		{BaseURL: "file:///private"},
+		{BaseURL: "https://user:pass@approved"},
+		{BaseURL: "https://approved/?secret=fixture"},
+	} {
+		if _, err := NewClient(options); err == nil {
+			t.Error("unsafe constructor accepted")
+		}
+	}
+}
+
 func newTestClient(handler http.Handler) (*Client, *httptest.Server) {
 	srv := httptest.NewServer(handler)
 	cli, _ := NewClient(Options{

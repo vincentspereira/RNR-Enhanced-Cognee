@@ -1,88 +1,51 @@
-# Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
-
-# Install the project into `/app`
+# Full legacy Enhanced Cognee image. The restricted Hermes image is
+# docker/Dockerfile.memory. Both use a hashed, resolved dependency lock.
+FROM python:3.12.15-slim-trixie AS dependencies
 WORKDIR /app
-
-# Enable bytecode compilation
-# ENV UV_COMPILE_BYTECODE=1
-
-# Copy from the cache instead of linking since it's a mounted volume
-ENV UV_LINK_MODE=copy
-
-# Set build argument
-ARG DEBUG
-
-# Set environment variable based on the build argument
-ENV DEBUG=${DEBUG}
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    libpq-dev \
-    git \
-    curl \
-    cmake \
-    clang \
-    build-essential \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev cmake git libmagic1 \
     && rm -rf /var/lib/apt/lists/*
+COPY requirements-build.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock \
+    && python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir --require-hashes -r requirements-build.lock
+ENV PATH="/opt/venv/bin:$PATH"
+COPY requirements-full.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-full.lock
 
-# Copy pyproject.toml and lockfile first for better caching
-COPY README.md pyproject.toml uv.lock entrypoint.sh ./
+FROM dependencies AS build
+COPY pyproject.toml README.md /app/
+COPY src/ /app/src/
+COPY bin/ /app/bin/
+COPY cognee/ /app/cognee/
+COPY distributed/ /app/distributed/
+RUN pip install --no-cache-dir --no-deps --no-build-isolation --target /app/runtime .
+COPY config/ /app/config/
+COPY migrations/ /app/migrations/
+COPY alembic/ /app/alembic/
+COPY alembic_enhanced/ /app/alembic_enhanced/
+COPY alembic.ini alembic-enhanced.ini entrypoint.sh /app/
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
-# Install the project's dependencies using the lockfile and settings
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --extra debug --extra api --extra postgres --extra neo4j --extra llama-index --extra ollama --extra mistral --extra groq --extra anthropic --frozen --no-install-project --no-dev --no-editable
-
-# Copy Alembic configuration (both the base and the Enhanced PostgreSQL schema).
-# entrypoint.sh runs `alembic -c alembic-enhanced.ini upgrade head` when
-# ENHANCED_RUN_MIGRATIONS=1, so the enhanced config + its versions must be here.
-COPY alembic.ini /app/alembic.ini
-COPY alembic/ /app/alembic
-COPY alembic-enhanced.ini /app/alembic-enhanced.ini
-COPY alembic_enhanced/ /app/alembic_enhanced
-
-# Then, add the rest of the project source code and install it
-# Installing separately from its dependencies allows optimal layer caching.
-# src/ holds the RNR Enhanced Cognee FastAPI app (src.enhanced_cognee_mcp:app) that
-# entrypoint.sh launches -- it MUST be copied or the container exits on start.
-COPY ./src /app/src
-COPY ./cognee /app/cognee
-COPY ./distributed /app/distributed
-RUN --mount=type=cache,target=/root/.cache/uv \
-uv sync --extra debug --extra api --extra postgres --extra neo4j --extra llama-index --extra ollama --extra mistral --extra groq --extra anthropic --frozen --no-dev --no-editable
-
-# Pinned runtime base: Python 3.12 on Debian Bookworm slim.
-FROM python:3.12-slim-bookworm
-
-RUN apt-get update && apt-get install -y \
-    libpq5 \
+FROM python:3.12.15-slim-trixie
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 libmagic1 \
     && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
-
-COPY --from=uv /app /app
-# COPY --from=uv /app/.venv /app/.venv
-# COPY --from=uv /root/.local /root/.local
-
-# Normalize line endings (strip any CR introduced by Windows/git autocrlf) and
-# mark the entrypoint executable so `/bin/sh` can run it inside the container.
-RUN sed -i 's/\r$//' /app/entrypoint.sh \
-    && chmod +x /app/entrypoint.sh
-
-# Create a non-root user and hand it ownership of the app tree.
+COPY requirements-build.lock /app/
+RUN pip install --no-cache-dir --require-hashes -r requirements-build.lock
+COPY --from=dependencies /opt/venv /opt/venv
+COPY --from=build /app /app
+RUN PYTHONPATH=/app/runtime /opt/venv/bin/python -m pip check \
+    && python -m pip uninstall -y pip \
+    && /opt/venv/bin/python -m pip uninstall -y pip
 RUN groupadd --system appuser \
     && useradd --system --gid appuser --create-home --home-dir /home/appuser appuser \
-    && chown -R appuser:appuser /app
-
-# Place executables in the environment at the front of the path
-ENV PATH="/app/.venv/bin:$PATH"
-
-ENV PYTHONPATH=/app
-# ENV LOG_LEVEL=ERROR
-ENV PYTHONUNBUFFERED=1
-
-# Drop privileges -- the app runs as the unprivileged appuser.
+    && mkdir -p /app/data /app/logs /app/tmp \
+    && chown -R appuser:appuser /app/data /app/logs /app/tmp
+ENV PATH="/app/runtime/bin:/opt/venv/bin:$PATH" PYTHONPATH=/app:/app/runtime PYTHONUNBUFFERED=1 COGNEE_TELEMETRY_ENABLED=0 COGNEE_LOG_FILE=false ENHANCED_LOAD_DOTENV=0
+# The service never needs setuid/setgid helpers. Keep their files but remove
+# privilege-changing mode bits, including those inherited from the base image.
+RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 USER appuser
-
+EXPOSE 8080
 ENTRYPOINT ["/app/entrypoint.sh"]

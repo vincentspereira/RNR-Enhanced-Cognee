@@ -484,6 +484,22 @@ class TestSecurityLogger:
         assert security_logger.logger is not None
         assert security_logger.log_file == "test_security_events.log"
 
+    def test_repeated_loggers_do_not_duplicate_or_cross_write(self, tmp_path, sample_security_event):
+        first = SecurityLogger(str(tmp_path / "first.log"))
+        initial = tuple(first.logger.handlers)
+        for _ in range(20):
+            repeated = SecurityLogger(str(tmp_path / "first.log"))
+            assert repeated.logger is first.logger
+            assert tuple(repeated.logger.handlers) == initial
+        second = SecurityLogger(str(tmp_path / "second.log"))
+        sample_security_event.event_type = "first_destination_only"
+        first.log_security_event(sample_security_event)
+        for handler in first.logger.handlers:
+            handler.flush()
+        assert "first_destination_only" in (tmp_path / "first.log").read_text()
+        assert "first_destination_only" not in (tmp_path / "second.log").read_text()
+        assert second.logger is not first.logger
+
     def test_log_security_event_high_severity(self, security_logger, sample_security_event):
         """Test logging high severity security event"""
         sample_security_event.severity = "high"
@@ -1615,10 +1631,10 @@ class TestSecurityPerformance:
         """Test password validation performance"""
         password = "Str0ng!P@ssw0rd#123"
 
-        start_time = time.time()
+        start_time = time.perf_counter()
         for _ in range(100):
             password_policy.validate_password(password)
-        elapsed = time.time() - start_time
+        elapsed = time.perf_counter() - start_time
 
         # Should complete 100 validations in under 1 second
         assert elapsed < 1.0

@@ -1,0 +1,146 @@
+{
+  "build": {
+    "actual_offline_frozen_lock_check_passed": true,
+    "complete": true,
+    "current_builder_uses_retained_frozen_lock": true,
+    "dependency_rebuild_for_lock_check": false,
+    "fetch_lock_sha256": "78647ee83c9b32ba3cd170b75367a7d171818b67e1dc4d929962d7463f095fdc",
+    "fetch_pin": "2026.10.24",
+    "fetch_wheel_sha256": "3dbcb37801a037b29d486f791328a38354f6b2a8ab54ada8064ecf7268a826bf",
+    "initial_builder_sha256": "c9846a3fbbd2f3aa63350e0e535eb6a4ab6705ea36f739292a144eedc4507674",
+    "provenance": "ordinary_owner_supported_pm_in_new_home_and_store",
+    "public_source_bytes": 15047588,
+    "public_source_files": 823,
+    "python_pin": "3.14.7+20260901",
+    "uv_pin": "0.12.3"
+  },
+  "ci": {
+    "exact_delivery_checked_again": true,
+    "failure": [
+      40055830266,
+      40055830273
+    ],
+    "new_helper_hosted_ci_pass_claimed": false,
+    "success": [
+      40055830507,
+      40055830334,
+      40055830340,
+      40055830325
+    ]
+  },
+  "completed_native_memory_tests_replayed": false,
+  "concurrent_fleet_work": {
+    "backend_services_running": 6,
+    "bot_or_fleet_user_services_observed": 0,
+    "older_roster_status_not_current_acceptance": true,
+    "owner_confirms_preparation_only": true,
+    "private_preparation_contents_published": false,
+    "restricted_account_count": 43,
+    "restricted_account_processes": 0
+  },
+  "delivery_revision": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "disposable_relocation": {
+    "archive_members_validated": 5005,
+    "capabilities_zero": true,
+    "child_exit_code": 0,
+    "complete": true,
+    "native_uvx_resolution_passed": true,
+    "prior_disposable_restore_reused": true,
+    "prior_failure_preserved": true,
+    "profiles_read": false,
+    "qualification_surface": "ordinary_owner_relocated_public_payload",
+    "relocated_resident_runtime_passed": true,
+    "verified_tools": [
+      "python",
+      "uv"
+    ]
+  },
+  "environment": "Ubuntu-Hermes",
+  "fetch_build_probe": {
+    "complete": true,
+    "fetch_defaults_and_guards_unchanged": true,
+    "fleet_launch_approved": false,
+    "html_markdown_extraction_qualified": false,
+    "initialize_passed": true,
+    "memory_api_called": false,
+    "model_called": false,
+    "native_hermes_binding_qualified": false,
+    "phase": "complete",
+    "private_destination_denials": 2,
+    "profiles_read": false,
+    "public_example_checked": true,
+    "public_example_mode": "raw",
+    "public_example_passed": true,
+    "qualification_surface": "ordinary_owner_independent_public_fetch_build",
+    "tools_count": 1,
+    "tools_list_passed": true
+  },
+  "fetch_warning": {
+    "earlier_default_html_expected_content_check_failed": true,
+    "earlier_failure_preserved": true,
+    "html_markdown_extraction_qualified": false,
+    "native_hermes_fetch_binding_qualified": false
+  },
+  "filesystem_replayed": false,
+  "fleet_launch_approved": false,
+  "java_ghidra_proof_replayed": false,
+  "new_dependency_advisory_check": {
+    "complete": true,
+    "findings": [],
+    "original_runtime_audit_claimed": false,
+    "private_data_sent": false,
+    "queried_public_packages": 50,
+    "scope_counts": {
+      "fetch": 46,
+      "pm_runtime": 4
+    },
+    "source": "https://api.osv.dev/v1/querybatch",
+    "timestamp_utc": "2026-10-28T20:01:18.580122+00:00"
+  },
+  "protected_installation": {
+    "credentials_issued": 0,
+    "exact_actual_readonly_public_preflight_passed": true,
+    "executed": false,
+    "existing_python_venv_and_code_replaced": false,
+    "keys_read": false,
+    "native_mcp_server_binding_qualified": false,
+    "new_tools": 2,
+    "old_public_package_records": 5,
+    "prepared": true,
+    "public_pins_verified": 4,
+    "reason": "sudo_requires_owner_terminal",
+    "restricted_accounts_inactive_at_inspection": true,
+    "services_restarted": false,
+    "source": "install_managed_mcp_runtime.py",
+    "source_profiles_changed": false
+  },
+  "rea_replayed": false,
+  "recorded_date": "2026-10-28",
+  "sealed_public_artifact": {
+    "archive_bytes": 464097280,
+    "archive_sha256": "68a0325fec51b2922b379cec51b8d80a202f2e7783e3c8561154d8a9eb52f521",
+    "marker": {
+      "python": "../python/python-3.14.7+20260901-linux-x64/bin/python3.14",
+      "sitePackages": "lib/python3.14/site-packages"
+    },
+    "native_sealing_helper_sha256": "ab2fb59a2face83a92121af5e09e68b04c3abe3301261248cdf0c8a2cca9ae98"
+  },
+  "source_sha256": {
+    "build_managed_mcp_candidate.py": "cc9c32ad6b0365687e7bd1c63cdf4ea4b4ef5b6b101062fa486e4e4f33e6e119",
+    "install_managed_mcp_runtime.py": "a877fd6dd3688ea77d42ae02c94b060340b5a3c217f85df85ec035f987822711",
+    "probe_fetch_candidate.py": "6cd5cabb12386bef7981cbd97a59e225bb1a465d9791977d32fef035440ecede",
+    "qualify_managed_pm_payload.py": "6ce31d944fbb82020ddfc6ae3c14bb6620c5bdbeb343e26908280ad83894688e",
+    "seal_managed_mcp_candidate.py": "ed55116643125b7caa47771ac66a5f7e7c3449f1378291332bc03a1b7d3d409c"
+  },
+  "source_validation": {
+    "errors": 0,
+    "failures": 0,
+    "native_compilation_passed": true,
+    "native_python": "3.14.7",
+    "resolved_test_fixture_setup_failures": 2,
+    "service_archive_fixtures": "invented",
+    "skips": 0,
+    "tests_passed": 37,
+    "warnings": 0
+  }
+}

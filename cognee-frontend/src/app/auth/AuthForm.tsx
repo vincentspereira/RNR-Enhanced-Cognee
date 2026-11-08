@@ -21,7 +21,7 @@ export default function AuthForm({
   submitButtonText = "Sign in",
   authUrl = "/v1/auth/login",
   formatPayload = defaultFormatPayload,
-  onSignInSuccess = () => window.location.href = "/",
+  onSignInSuccess = () => window.location.replace(new URL("/", window.location.origin).href),
 }) {
   const {
       value: isSigningIn,

@@ -44,7 +44,8 @@ logging.basicConfig(level=logging.INFO)
 try:
     from dotenv import load_dotenv
 
-    load_dotenv()
+    if os.getenv("ENHANCED_LOAD_DOTENV", "0") == "1":
+        load_dotenv()
 except ImportError:  # python-dotenv is optional outside Docker
     pass
 
@@ -315,6 +316,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from src.security.http_boundary import SecurityBoundary
+app.add_middleware(SecurityBoundary, dashboard=True)
+
+from src.multi_tenant import tenant_scoped_table
 
 security = HTTPBearer(auto_error=False)
 
@@ -625,7 +631,7 @@ async def _graph_from_postgres(limit: int) -> Dict[str, Any]:
         async with conns.pg_pool.acquire() as conn:
             entity_rows = await conn.fetch(
                 f"""SELECT id, name, entity_type, confidence_score
-                    FROM {ENTITIES} ORDER BY created_at DESC LIMIT $1""",
+                    FROM {tenant_scoped_table(ENTITIES)} ORDER BY created_at DESC LIMIT $1""",
                 limit,
             )
             for row in entity_rows:
@@ -639,7 +645,7 @@ async def _graph_from_postgres(limit: int) -> Dict[str, Any]:
             rel_rows = await conn.fetch(
                 f"""SELECT id, source_entity_id, target_entity_id,
                            relationship_type, confidence_score
-                    FROM {RELATIONSHIPS}
+                    FROM {tenant_scoped_table(RELATIONSHIPS)}
                     WHERE source_entity_id = ANY($1::uuid[])
                       AND target_entity_id = ANY($1::uuid[])
                     LIMIT $2""",
@@ -698,22 +704,22 @@ async def get_system_stats():
         try:
             async with conns.pg_pool.acquire() as conn:
                 total_memories = (
-                    await conn.fetchval(f"SELECT COUNT(*) FROM {DOCUMENTS}") or 0
+                    await conn.fetchval(f"SELECT COUNT(*) FROM {tenant_scoped_table(DOCUMENTS)}") or 0
                 )
                 avg_chars = (
                     await conn.fetchval(
-                        f"SELECT AVG(LENGTH(coalesce(content, ''))) FROM {DOCUMENTS}"
+                        f"SELECT AVG(LENGTH(coalesce(content, ''))) FROM {tenant_scoped_table(DOCUMENTS)}"
                     )
                     or 0
                 )
                 avg_tokens = round(float(avg_chars) / 4.0, 1)
                 try:
                     total_sessions = (
-                        await conn.fetchval(f"SELECT COUNT(*) FROM {SESSIONS}") or 0
+                        await conn.fetchval(f"SELECT COUNT(*) FROM {tenant_scoped_table(SESSIONS)}") or 0
                     )
                     active_sessions = (
                         await conn.fetchval(
-                            f"SELECT COUNT(*) FROM {SESSIONS} WHERE end_time IS NULL"
+                            f"SELECT COUNT(*) FROM {tenant_scoped_table(SESSIONS)} WHERE end_time IS NULL"
                         )
                         or 0
                     )
@@ -726,7 +732,7 @@ async def get_system_stats():
                 row = await conn.fetchrow(
                     f"""SELECT AVG(LENGTH(coalesce(content, ''))) AS avg_content,
                                AVG(LENGTH(metadata->>'summary')) AS avg_summary
-                        FROM {DOCUMENTS}
+                        FROM {tenant_scoped_table(DOCUMENTS)}
                         WHERE metadata ? 'summary'"""
                 )
                 if row and row["avg_content"] and row["avg_summary"]:
@@ -777,7 +783,7 @@ async def list_memories(
         clauses.append(f"metadata->>'memory_concept' = {param(memory_concept)}")
 
     where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
-    sql = f"""SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} {where}
+    sql = f"""SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} {where}
               ORDER BY created_at DESC
               LIMIT {param(limit)} OFFSET {param(offset)}"""
     try:
@@ -800,7 +806,7 @@ async def get_memory(memory_id: str):
     try:
         async with pool.acquire() as conn:
             row = await conn.fetchrow(
-                f"SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} WHERE id = $1", mem_uuid
+                f"SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", mem_uuid
             )
     except Exception as exc:
         logger.error("ERR get_memory failed: %s", exc)
@@ -831,7 +837,7 @@ async def add_memory(request: MemoryCreateRequest):
     try:
         async with pool.acquire() as conn:
             await conn.execute(
-                f"""INSERT INTO {DOCUMENTS}
+                f"""INSERT INTO {tenant_scoped_table(DOCUMENTS)}
                     (id, title, content, agent_id, memory_category, tags,
                      metadata, created_at, updated_at)
                     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $8)""",
@@ -845,7 +851,7 @@ async def add_memory(request: MemoryCreateRequest):
                 now,
             )
             row = await conn.fetchrow(
-                f"SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} WHERE id = $1", memory_id
+                f"SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", memory_id
             )
         logger.info("OK memory added: %s", memory_id)
         return _row_to_memory(row)
@@ -872,7 +878,7 @@ async def update_memory(memory_id: str, request: MemoryUpdateRequest):
     try:
         async with pool.acquire() as conn:
             row = await conn.fetchrow(
-                f"SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} WHERE id = $1", mem_uuid
+                f"SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", mem_uuid
             )
             if row is None:
                 raise HTTPException(
@@ -896,7 +902,7 @@ async def update_memory(memory_id: str, request: MemoryUpdateRequest):
                 else row["memory_category"]
             )
             await conn.execute(
-                f"""UPDATE {DOCUMENTS}
+                f"""UPDATE {tenant_scoped_table(DOCUMENTS)}
                     SET content = $2, metadata = $3::jsonb,
                         memory_category = $4, updated_at = $5
                     WHERE id = $1""",
@@ -907,7 +913,7 @@ async def update_memory(memory_id: str, request: MemoryUpdateRequest):
                 datetime.now(timezone.utc),
             )
             row = await conn.fetchrow(
-                f"SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} WHERE id = $1", mem_uuid
+                f"SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", mem_uuid
             )
         logger.info("OK memory updated: %s", memory_id)
         return _row_to_memory(row)
@@ -929,7 +935,7 @@ async def delete_memory(memory_id: str):
     try:
         async with pool.acquire() as conn:
             result = await conn.execute(
-                f"DELETE FROM {DOCUMENTS} WHERE id = $1", mem_uuid
+                f"DELETE FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", mem_uuid
             )
     except Exception as exc:
         logger.error("ERR delete_memory failed: %s", exc)
@@ -964,7 +970,7 @@ async def search_memories(
                 f"""SELECT {MEMORY_COLUMNS},
                            ts_rank(to_tsvector('english', coalesce(content, '')),
                                    plainto_tsquery('english', $1)) AS rank
-                    FROM {DOCUMENTS}
+                    FROM {tenant_scoped_table(DOCUMENTS)}
                     WHERE to_tsvector('english', coalesce(content, ''))
                           @@ plainto_tsquery('english', $1)
                       {agent_clause}
@@ -975,7 +981,7 @@ async def search_memories(
             if not rows:
                 # Fallback for partial words / non-English terms
                 rows = await conn.fetch(
-                    f"""SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS}
+                    f"""SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)}
                         WHERE content ILIKE '%' || $1 || '%'
                           {agent_clause}
                         ORDER BY created_at DESC
@@ -1005,11 +1011,12 @@ async def search_memories(
 # Sessions
 # ---------------------------------------------------------------------------
 
-SESSION_QUERY = f"""
+def _session_query() -> str:
+    return f"""
     SELECT s.id, s.user_id, s.agent_id, s.start_time, s.end_time, s.summary,
-           (SELECT COUNT(*) FROM {DOCUMENTS} d WHERE d.session_id = s.id)
+           (SELECT COUNT(*) FROM {tenant_scoped_table(DOCUMENTS)} d WHERE d.session_id = s.id)
                AS memory_count
-    FROM {SESSIONS} s
+    FROM {tenant_scoped_table(SESSIONS)} s
 """
 
 
@@ -1045,7 +1052,7 @@ async def list_sessions(
     try:
         async with pool.acquire() as conn:
             rows = await conn.fetch(
-                f"{SESSION_QUERY} {where} ORDER BY s.start_time DESC LIMIT ${len(params)}",
+                f"{_session_query()} {where} ORDER BY s.start_time DESC LIMIT ${len(params)}",
                 *params,
             )
         return [_row_to_session(r) for r in rows]
@@ -1064,7 +1071,7 @@ async def get_session(session_id: str):
         raise HTTPException(status_code=400, detail="Invalid session id format")
     try:
         async with pool.acquire() as conn:
-            row = await conn.fetchrow(f"{SESSION_QUERY} WHERE s.id = $1", sess_uuid)
+            row = await conn.fetchrow(f"{_session_query()} WHERE s.id = $1", sess_uuid)
     except Exception as exc:
         logger.error("ERR get_session failed: %s", exc)
         raise HTTPException(status_code=500, detail="Failed to fetch session")
@@ -1093,14 +1100,14 @@ async def get_timeline(
     try:
         async with pool.acquire() as conn:
             current = await conn.fetchrow(
-                f"SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS} WHERE id = $1", mem_uuid
+                f"SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)} WHERE id = $1", mem_uuid
             )
             if current is None:
                 raise HTTPException(
                     status_code=404, detail=f"Memory {memory_id} not found"
                 )
             before_rows = await conn.fetch(
-                f"""SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS}
+                f"""SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)}
                     WHERE agent_id = $1 AND created_at < $2
                     ORDER BY created_at DESC LIMIT $3""",
                 current["agent_id"],
@@ -1108,7 +1115,7 @@ async def get_timeline(
                 before,
             )
             after_rows = await conn.fetch(
-                f"""SELECT {MEMORY_COLUMNS} FROM {DOCUMENTS}
+                f"""SELECT {MEMORY_COLUMNS} FROM {tenant_scoped_table(DOCUMENTS)}
                     WHERE agent_id = $1 AND created_at > $2
                     ORDER BY created_at ASC LIMIT $3""",
                 current["agent_id"],
@@ -1326,7 +1333,7 @@ async def search_graph_nodes(
             async with conns.pg_pool.acquire() as conn:
                 rows = await conn.fetch(
                     f"""SELECT id, name, entity_type, confidence_score
-                        FROM {ENTITIES}
+                        FROM {tenant_scoped_table(ENTITIES)}
                         WHERE name ILIKE '%' || $1 || '%'
                         LIMIT $2""",
                     query,
@@ -1510,7 +1517,7 @@ async def get_activity_data(
         async with pool.acquire() as conn:
             rows = await conn.fetch(
                 f"""SELECT DATE(created_at) AS day, COUNT(*) AS cnt
-                    FROM {DOCUMENTS}
+                    FROM {tenant_scoped_table(DOCUMENTS)}
                     WHERE created_at >= NOW() - ($1::int * INTERVAL '1 day')
                       {agent_clause}
                     GROUP BY DATE(created_at)
@@ -1547,7 +1554,7 @@ async def get_structured_stats():
                 f"""SELECT LOWER(coalesce(metadata->>'memory_type',
                                           memory_category, 'general')) AS mtype,
                            COUNT(*) AS cnt
-                    FROM {DOCUMENTS}
+                    FROM {tenant_scoped_table(DOCUMENTS)}
                     GROUP BY mtype"""
             )
         for row in rows:
@@ -1579,7 +1586,7 @@ async def list_agents():
                            COUNT(*) AS memory_count,
                            MAX(created_at) AS last_activity,
                            COUNT(DISTINCT memory_category) AS category_count
-                    FROM {DOCUMENTS}
+                    FROM {tenant_scoped_table(DOCUMENTS)}
                     WHERE agent_id IS NOT NULL
                     GROUP BY agent_id
                     ORDER BY memory_count DESC"""
@@ -1656,7 +1663,7 @@ async def stream_updates():
                     try:
                         async with conns.pg_pool.acquire() as conn:
                             count = await conn.fetchval(
-                                f"SELECT COUNT(*) FROM {DOCUMENTS}"
+                                f"SELECT COUNT(*) FROM {tenant_scoped_table(DOCUMENTS)}"
                             )
                         if last_count is not None and count != last_count:
                             payload = json.dumps(
@@ -1854,6 +1861,12 @@ async def dashboard_root():
     </html>
     """
     return HTMLResponse(content=html_content)
+
+
+from src.canonical_adapters import canonical_mode
+if canonical_mode():
+    from src.memory_api import app as canonical_app
+    app = canonical_app
 
 
 if __name__ == "__main__":

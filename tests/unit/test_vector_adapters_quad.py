@@ -99,33 +99,59 @@ class TestLanceDBAdapter:
             client.search("ats", query_vector=[0.1], query_filter=filt)
 
     def test_search_query_filter_translated_to_where(self):
-        # Single FieldCondition is now translated into LanceDB SQL WHERE.
+        # A complete native ID/payload scan resolves structural JSON equality
+        # before vector ranking/limit. No pandas-only or JSON substring fixture.
         from src.db_adapters import vector_lancedb
         client = vector_lancedb.create_client()
         fake_db = MagicMock()
         fake_table = MagicMock()
+        fake_scan = MagicMock()
+        fake_scan.select.return_value = fake_scan
+        fake_scan.limit.return_value = fake_scan
+        rows = [
+            {"id": "exact", "payload": '{"user_id": "u1"}'},
+            {"id": "escaped", "payload": '{"user_id":"\\u00751"}'},
+            {"id": "other", "payload": '{"user_id":"u2"}'},
+            {"id": "nested", "payload": '{"nested":{"user_id":"u1"}}'},
+            {"id": "substring", "payload": '{"user_id":"u10"}'},
+        ]
+        fake_scan.to_list.return_value = rows
         fake_search = MagicMock()
         fake_search.metric.return_value = fake_search
         fake_search.where.return_value = fake_search
         fake_search.limit.return_value = fake_search
 
-        class _EmptyDF:
-            def iterrows(self):
-                return iter([])
-
-        fake_search.to_pandas.return_value = _EmptyDF()
-        fake_table.search.return_value = fake_search
+        fake_search.to_list.return_value = [{**rows[0], "_distance": .1}]
+        fake_table.search.side_effect = lambda *args: fake_search if args else fake_scan
         fake_db.open_table.return_value = fake_table
         client._db = fake_db
 
         cond = MagicMock(key="user_id", match=MagicMock(value="u1"))
         filt = MagicMock(must=[cond], should=None, must_not=None)
-        client.search("ats", query_vector=[0.1], query_filter=filt)
+        hits = client.search("ats", query_vector=[0.1], query_filter=filt, limit=1)
 
         fake_search.where.assert_called_once()
         where_arg = fake_search.where.call_args[0][0]
-        assert "user_id" in where_arg
-        assert "u1" in where_arg
+        assert where_arg == "id IN ('exact','escaped')"
+        assert "payload" not in where_arg and "LIKE" not in where_arg
+        fake_scan.select.assert_called_once_with(["id", "payload"])
+        fake_scan.limit.assert_called_once_with(None)
+        fake_scan.to_list.assert_called_once_with()
+        fake_search.limit.assert_called_once_with(1)
+        fake_search.to_list.assert_called_once_with()
+        fake_search.to_pandas.assert_not_called()
+        assert [hit.id for hit in hits] == ["exact"]
+        assert hits[0].payload == {"user_id": "u1"}
+        assert hits[0].score == pytest.approx(.9)
+        from unittest.mock import call
+        assert fake_search.mock_calls == [call.where(where_arg), call.limit(1), call.to_list()]
+
+        # A full scan containing only negative rows must yield a false prefilter.
+        fake_scan.to_list.return_value = rows[2:]
+        fake_search.reset_mock()
+        fake_search.to_list.return_value = []
+        assert client.search("ats", query_vector=[0.1], query_filter=filt, limit=1) == []
+        fake_search.where.assert_called_once_with("false")
 
     def test_delete_by_id_list(self):
         from src.db_adapters import vector_lancedb

@@ -22,14 +22,22 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Create memory_versions table and add Phase 10 columns to documents."""
     conn = op.get_bind()
+    # Older Docker installations used UUID IDs; the Alembic baseline uses
+    # TEXT. A foreign key must match the existing source, without converting
+    # IDs or discarding historical rows during an upgrade.
+    document_type = conn.execute(sa.text("""SELECT data_type FROM information_schema.columns
+        WHERE table_schema='shared_memory' AND table_name='documents' AND column_name='id'""")).scalar_one()
+    if document_type not in {"uuid", "text", "character varying"}:
+        raise RuntimeError("Unsupported legacy document ID type; use a reviewed copy migration")
+    memory_id_type = "UUID" if document_type == "uuid" else "TEXT"
 
     # ------------------------------------------------------------------
     # 15.1 - memory_versions table
     # ------------------------------------------------------------------
-    conn.execute(sa.text("""
+    conn.execute(sa.text(f"""
         CREATE TABLE IF NOT EXISTS shared_memory.memory_versions (
             id              BIGSERIAL PRIMARY KEY,
-            memory_id       TEXT NOT NULL,
+            memory_id       {memory_id_type} NOT NULL,
             version_number  INTEGER NOT NULL,
             content         TEXT NOT NULL,
             agent_id        TEXT,

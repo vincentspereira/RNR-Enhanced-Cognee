@@ -17,6 +17,7 @@ This module is ASCII-only output compatible for Windows console.
 """
 
 import json
+from src.multi_tenant import tenant_scoped_table as _scoped_table
 import logging
 from typing import Optional, Dict, Any
 from datetime import datetime
@@ -137,7 +138,7 @@ async def add_memory(
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     """,
                     memory_id, f"Memory from {agent_id}", content,
-                    agent_id, "general", [], metadata_dict, created_at,
+                    agent_id, "general", [], json.dumps(metadata_dict), created_at,
                 )
 
         if tenant_id:
@@ -441,7 +442,7 @@ async def delete_memory(
             target_table = tenant_scoped_table("shared_memory.documents")
             async with postgres_pool.acquire() as conn_:
                 existing_ = await conn_.fetchrow(
-                    f"SELECT id, agent_id, data->>'category' as category "
+                    f"SELECT id, agent_id, memory_category as category "
                     f"FROM {target_table} WHERE id = $1",
                     memory_id,
                 )

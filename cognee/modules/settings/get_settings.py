@@ -91,9 +91,9 @@ def get_settings() -> SettingsDict:
                 "model": llm_config.llm_model,
                 "endpoint": llm_config.llm_endpoint,
                 "api_version": llm_config.llm_api_version,
-                "api_key": (llm_config.llm_api_key[0:10] + "*" * (len(llm_config.llm_api_key) - 10))
+                "api_key": "********"
                 if llm_config.llm_api_key
-                else None,
+                else "",
                 "providers": llm_providers,
                 "models": {
                     "openai": [
@@ -181,10 +181,7 @@ def get_settings() -> SettingsDict:
             vector_db={
                 "provider": vector_config.vector_db_provider,
                 "url": vector_config.vector_db_url,
-                "api_key": (
-                    vector_config.vector_db_key[0:10]
-                    + "*" * (len(vector_config.vector_db_key) - 10)
-                ),
+                "api_key": "********" if vector_config.vector_db_key else "",
                 "providers": vector_dbs,
             },
         )
