@@ -1,0 +1,135 @@
+{
+  "package_under_review": {
+    "branch": "codex/enhanced-cognee-cutover-package-20261105",
+    "commit": "66d1744e6bdd891ff570cc06ab48be469ad77aba",
+    "worktree": "cutover-package-worktree-20261105",
+    "worktree_clean_at_commit": true
+  },
+  "review": {
+    "reviewer": "independent reviewer (fresh non-builder context), read-only live system",
+    "date_utc": "2026-11-05",
+    "checks_run": 40,
+    "offline_tests_repassed": 30,
+    "offline_tests_total": 30,
+    "verdict": "FAIL"
+  },
+  "defects": [
+    {
+      "id": 1,
+      "severity": "blocking",
+      "where": "CUTOVER-COMMANDS.md Block B1 (pre-switch check, first gate)",
+      "what": "The pinned sha256 for src/security/enterprise_auth.py is wrong against the staged candidate. Pinned (Block B1 and the 2026-11-03 owner step-2 receipt it was copied from): 78cf82b8d052c74438dc85e9b24393128e837dbb8bfee78eda8146dbef66ae1e. Actual file at /opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/security/enterprise_auth.py (read this session, unprivileged, read-only): 78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e (one hex character differs: position 21, 'e' vs 'b').",
+      "evidence": "At least six preserved pre-package artifacts (security-first-cutover review-round1/evidence-manifest.json, route-review/offline-route-receipt.json, owner-reader-repair-v3-20261103 MANIFEST.json, integrations/hermes/deployment/audit_backend_payload.json, L02-runtime-decoys.json, review-round2 sandbox manifests) record ...85b9..., agreeing with the actual file. The typo originates in OWNER-SUPPLIED-STEP2.txt (2026-11-03) and was propagated into the package without re-hashing the readable candidate file.",
+      "impact": "Block B1's rule 'any mismatch = STOP' fires deterministically on the first pre-switch gate. An owner following the package verbatim aborts the cutover and is directed toward an unnecessary drift/security re-assessment. The candidate itself is NOT drifted (all other 8 pinned hashes match live bytes: ingestion.py, llm_summarize.py, llm_budget.py, memory_api.py, memory_daemon.py, memory_library.py, memory_queries.py, runtime/bin/python - all re-hashed this session and matching).",
+      "fix_direction": "Re-pin enterprise_auth.py to the re-derived value (and re-derive all pins from the candidate bytes, not from the receipt) in a reviewed package revision."
+    },
+    {
+      "id": 2,
+      "severity": "major",
+      "where": "Blocks A, C, D1, F1, G - every 'LoadCredential=' readback receipt",
+      "what": "'systemctl show -p LoadCredential' prints 'LoadCredential=[unprintable]' on this deployment host (systemd 255.4-1ubuntu8.18), regardless of content. Verified live this session three ways (plain, --value, --output=json) against the running unit whose actual merged value (via busctl introspect, read-only) consists of three clean ASCII pairs: index.json, llm.json, api.json. Therefore every expected receipt of the form 'LoadCredential= shows api.json:... and index.json:... and NO llm.json entry' is not checkable by the shown command; Block A's captured systemctl-api-before.txt also records the masked form.",
+      "evidence": "The package's own preserved evidence already knew this: SERVICE-USER-PASSED-CUTOVER-DECISION.md (2026-11-01) states 'systemctl's generic LoadCredential display was opaque, not evidence of the full credential layout'. Yet CUTOVER-COMMANDS.md Block C asserts 'systemctl's merged LoadCredential readback in this block proves it'.",
+      "impact": "Immediately after the single permitted restart in Block C, the owner hits a guaranteed receipt mismatch. Under the package's own stop-on-mismatch discipline the owner must treat the switch as failed and consider rollback - even though the withholding configuration is actually correct. The security property (no llm credential to the new daemon) holds - verified at unit-semantics and daemon-code level - but the documented PROOF mechanism is broken.",
+      "fix_direction": "Replace LoadCredential readbacks with a working equivalent, e.g. 'sudo busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1/unit/enhanced_2dcognee_2dapi_2eservice | grep .LoadCredential' or root-side reads of the drop-in files (byte-verified by hash)."
+    },
+    {
+      "id": 3,
+      "severity": "major",
+      "where": "Block E1 (one-shot ledger initialization as the service identity)",
+      "what": "E1 runs 'sudo -u enhanced-cognee-api ... ENHANCED_LLM_BUDGET_DB=/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3 ... TokenBudget()' OUTSIDE the service's mount namespace. With DynamicUser=yes (unchanged by the 40- drop-in), systemd provisions that state directory at /var/lib/private/enhanced-cognee-llm-budget (/var/lib/private is 0700 root:root - stat verified this session) and exposes only a host-side SYMLINK at /var/lib/enhanced-cognee-llm-budget (systemd.exec(5): 'Symbolic links are created to hide this difference'). The service account (dynamic uid 63764, NSS-synthesized only while the unit is active - verified: no /etc/passwd entry, getent resolves while active) cannot traverse /var/lib/private; and src/llm_budget.py's _secure_path lstat's the host path, which is a symlink (not S_ISDIR). Result: deterministic BudgetUnavailable('The model budget ledger path is not service-private') - the very refusal E1 documents.",
+      "impact": "E1 can never pass as written, so E2-E4 receipts and the Block G gate chain (ledger + backup gates) are unreachable via the documented procedure. Failure mode is fail-closed (no security or spend exposure; ordinary memory unaffected). Root-side steps E2/E3 and the E4 backup drop-in step DO work, because root traverses /var/lib/private through the host symlink, and the daemon itself can initialize the ledger in-namespace at enablement time. systemd also recursively re-chowns state directories when the dynamic uid changes on restart (systemd.exec(5)), so ledger persistence across restarts is sound.",
+      "fix_direction": "Initialize the ledger from inside the service namespace (e.g. systemd-run/nsenter-based one-shot as the service, or a one-shot oneshot unit with the same StateDirectory), or defer ledger initialization to the daemon at Block G time and restrict Block E to the root-side verify/backup steps."
+    },
+    {
+      "id": 4,
+      "severity": "minor",
+      "where": "CUTOVER-COMMANDS.md Block C design note",
+      "what": "'lines 1-6 are byte-identical to the independently reviewed V3 proposal' - the accurate statement is the first SEVEN lines (through LoadCredential=index.json...). The operative sentence ('removing the three StateDirectory lines from the file above reproduces that hash exactly') is correct and was verified by computation: stripping the three StateDirectory/StateDirectoryMode lines from the shipped 40-cutover-candidate.conf reproduces sha256 40ee1d8b61322c49676666257531953ee7957db086269bbb25a0373ad4619651, which matches the dropin_sha256 pinned in the preserved 2026-11-03 owner step-2 receipt.",
+      "impact": "Wording only; the hash-derivation rule and the shipped bytes are exact."
+    },
+    {
+      "id": 5,
+      "severity": "minor",
+      "where": "Block B3 exit-code documentation",
+      "what": "'If exit code is 2 the api.json has no ENHANCED_JWT_SECRET (unexpected)' - exit 2 is also returned for transport/parse failures (API down, malformed responses), per the probe's own error handling. Both conditions are stop conditions, but the stated mapping is incomplete and could misdirect diagnosis.",
+      "impact": "Low; conservative direction."
+    },
+    {
+      "id": 6,
+      "severity": "info",
+      "where": "Blocks A/D5 (no-other-units-restarted proof)",
+      "what": "Only the four store units (postgres, qdrant, graph, cache, index) and enhanced-cognee-backup.timer are captured before/after. Other existing enhanced-cognee-* units/timers (profile-backup.timer, qualified-fleet-backup timers - all present on this host) are not covered by the before/after comparison.",
+      "impact": "Nothing in the procedure touches them; residual blind spot noted for completeness."
+    },
+    {
+      "id": 7,
+      "severity": "info",
+      "where": "Builder no-live-changes claim (DELIVERY.json live_changes_made=false)",
+      "what": "Consistent with everything readable: package worktree clean at 66d1744e; /etc/systemd/system/enhanced-cognee-api.service.d contains exactly 10/20/30 with pre-package mtimes (2026-10-20/24/31); no 40-/50- drop-ins anywhere; no enhanced-cognee-backup.service.d; NeedDaemonReload=no; /opt/enhanced-cognee-memory/cutover pre-exists with mtime 2026-11-02 (used by the 2026-11-01/03 owner operations per the step-2 receipt bundle path). The contents of that 0700 root-only directory cannot be listed without root, so the absence of the Block 0 helper installs there is unverified directly - Block 0's REFUSE-if-exists guard covers it at owner execution time.",
+      "impact": "No indication of any live mutation by the builder."
+    }
+  ],
+  "verified_sound": [
+    "40-cutover-candidate.conf = reviewed V3 bytes + exactly three StateDirectory lines (hash-proven, both directions)",
+    "src/memory_daemon.py hardcodes ENHANCED_LLM_BUDGET_DB=/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3 (worktree line 123 AND staged candidate line 123) but ONLY when an llm credential is loaded - before enablement the env var is never set, no ledger exists, and the empty 0700 manager-provisioned directory weakens nothing",
+    "LLM withholding mechanism: 40- drop-in resets the LoadCredential list and re-adds only api.json/index.json; 30-llm.conf untouched; daemon loads llm.json only from $CREDENTIALS_DIRECTORY; blocks C-F deliver no llm credential; Block G requires a manual owner-installed 50-llm-enable.conf (REFUSE-if-exists, hash-pinned) - no auto-enable path",
+    "F1 rollback withholding verified against the OLD daemon's own loader (same CREDENTIALS_DIRECTORY/llm.json mechanism in the old memory_daemon.py)",
+    "Block A rollback evidence: unit + all three drop-ins captured byte-for-byte with root-only 0600 storage, SHA256SUMS, REFUSE-if-exists; all four pinned hashes re-derivable from preserved pre-package evidence (43/42/14/100 files respectively)",
+    "Block B honest-abort rule: precise, never aborts the switch, governs optional analysis only, clean-UTC-day-boundary rule enforceable (old daemon serves GET /v1/memories/summarization/status with configured/used_today - verified in old runtime source; probe JWT claims sub/roles/tenant/project_id match enterprise_auth + MemoryScope.from_principal in both old and new code)",
+    "Block C: exactly one enhanced-cognee-api restart, daemon-reload verified via NeedDaemonReload=no, drop-in hash pre-checked, REFUSE if destination exists, StateDirectoryMode=0700",
+    "Block D2 stat expectation 'enhanced-cognee-api:enhanced-cognee-api 700' is correct (NSS-synthesized dynamic account resolves while the unit is active)",
+    "Block E4: re-added first ExecStart line is byte-exact the CURRENT backup unit line (verified read-only); ledger step runs as root (works via the host symlink); age binary present (/usr/local/bin/age); E3 honesty about the owner-held age identity is explicit",
+    "Block F: restores captured bytes (sha256sum -c + repair-from-evidence), one restart, spend-not-reverted warning explicit, ledger rows explicitly preserved not deleted",
+    "MANIFEST.json (12 hashes) and DELIVERY.json (13 hashes incl. MANIFEST) all re-verified against worktree bytes: zero mismatches",
+    "Offline test suite re-run from a clean environment: 30/30 passed (4.89s); worktree still clean afterward",
+    "MCP/plugin contract: 44/44 profile plugin.yaml byte-identical (single sha256; name enhanced_cognee 0.1.0, requires_env ENHANCED_COGNEE_ACCESS_TOKEN); client.py permits only /v1/memories* + /health/ready with Bearer; default origin http://127.0.0.1:28080; zero enhanced_cognee.json overrides; new daemon binds that exact origin and serves every plugin-called route; withheld endpoints (422 + configured=false) are plugin-unused (verified in new memory_api.py source)"
+  ],
+  "could_not_verify": [
+    "Contents of root-only paths (drop-in file bytes, /opt/enhanced-cognee-memory/cutover contents, credential files) - never read by policy; only hashes/metadata from preserved evidence",
+    "The real TENANT/PROJECT scope values for B3/D4 (not discoverable read-only; the package itself flags this)",
+    "Whether the owner's private age identity exists for E3 (package honestly gates G on it)",
+    "Block A pinned unit-file hashes against TODAY'S live bytes (root-only files; pins are anchored to preserved 2026-11-03 evidence, which is the package's own drift-detection design)"
+  ],
+  "case_list": [
+    "C01 worktree state: clean at 66d1744e on codex/enhanced-cognee-cutover-package-20261105",
+    "C02 package inventory: 14 files, one commit on 41e4de7a",
+    "C03 unit-file byte checks: 4 conf hashes match all pins (worktree)",
+    "C04 V3 derivation: strip 3 StateDirectory lines -> 40ee1d8b... exact match",
+    "C05 MANIFEST.json: 12/12 hashes verified",
+    "C06 DELIVERY.json: 13/13 hashes verified",
+    "C07 B1 live re-hash: 9 files re-hashed read-only from the staged candidate; 8 match, enterprise_auth.py mismatch (defect 1)",
+    "C08 step2-receipt cross-check of B1 pins (typo source isolated)",
+    "C09 pre-package evidence scan for the correct enterprise_auth hash (6+ artifacts agree with the file)",
+    "C10 Block A pin re-derivability from preserved evidence (4/4 hashes present)",
+    "C11 B2 verbatim diff vs NEXT-READONLY-SERVICE-USER-CHECK.md: identical; original confirmed untracked as claimed",
+    "C12 memory_daemon.py ENHANCED_LLM_BUDGET_DB hardcode (worktree)",
+    "C13 same (staged candidate bytes, readable)",
+    "C14 llm_budget.py path/security rules read (service-private refusal, fail-closed)",
+    "C15 old daemon llm.json loader (F1 withholding viability)",
+    "C16 live systemctl show -p LoadCredential display test (3 variants -> [unprintable])",
+    "C17 busctl introspect merged LoadCredential (clean triples; proves masking is version behavior)",
+    "C18 dynamic account checks: /etc/passwd absent, getent resolves while active, runtime UID=GID=63764, User/Group/DynamicUser merged values",
+    "C19 /var/lib/private permissions (0700 root:root)",
+    "C20 systemd.exec(5) semantics: private/ + host symlink, recursive chown on uid change, StateDirectoryMode scope",
+    "C21 live drop-in directory listing: only 10/20/30 present",
+    "C22 backup unit read-only show: ExecStart matches E4 re-added line; User=root; no drop-ins",
+    "C23 absence of enhanced-cognee-backup.service.d",
+    "C24 /opt/enhanced-cognee-memory/cutover mtime 2026-11-02 (pre-package)",
+    "C25 E1 namespace- access analysis (defect 3)",
+    "C26 old runtime summarization/status endpoint shape (B3 enforceability)",
+    "C27 new memory_api endpoints/models/422 handler vs probe D4 bodies",
+    "C28 cutover_probe_20261105.py code review (secret hygiene, exit codes)",
+    "C29 ledger_tools_20261105.py code review (fail-closed, manifest HMAC, snapshot cleanup)",
+    "C30 offline suite re-run in clean env: 30/30",
+    "C31 worktree clean after test run",
+    "C32 plugin.yaml uniformity: 44 profiles, 1 unique hash",
+    "C33 client.py path allowlist + default origin + Bearer header",
+    "C34 zero enhanced_cognee.json overrides across profiles",
+    "C35 related-units existence for A/D5 (all present)",
+    "C36 age/age-keygen binaries present",
+    "C37 JWT claim mapping in both old and new memory_service/enterprise_auth",
+    "C38 drop-in mtimes predate the package",
+    "C39 G ordering: 50- > 40- lexical append after reset; hash equal to deployed 30-llm.conf bytes",
+    "C40 F2 full-restore path restores original merged LoadCredential set (matches live busctl value)"
+  ]
+}
