@@ -120,7 +120,12 @@ def credential_environment(role: str, directory: str) -> dict[str, str]:
             environment["ENHANCED_LLM_TOKEN_CAP"] = str(llm_value.get("daily_token_cap", 50000))
             # Settings, not secret material. The API unit must provision this
             # private StateDirectory before the model route is admitted.
-            environment["ENHANCED_LLM_BUDGET_DB"] = "/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3"
+            # Namespace-aware path (2026-11-06 fix): with DynamicUser=yes the unit
+            # namespace keeps /var/lib/enhanced-cognee-llm-budget as a symlink to
+            # private/, which llm_budget._secure_path correctly refuses; the real
+            # private directory lives at /var/lib/private/enhanced-cognee-llm-budget
+            # inside the namespace (systemd mounts it read-write there).
+            environment["ENHANCED_LLM_BUDGET_DB"] = "/var/lib/private/enhanced-cognee-llm-budget/tokens.sqlite3"
     environment.update(PATH="/usr/local/bin:/usr/bin:/bin", ENHANCED_ENV="production",
         ENHANCED_REQUIRE_TENANT="1", ENHANCED_LOAD_DOTENV="0", COGNEE_LOG_FILE="false",
         COGNEE_TELEMETRY_ENABLED="0", HF_HUB_OFFLINE="1", PYTHONDONTWRITEBYTECODE="1",

@@ -13,6 +13,9 @@ class DaemonBudgetTests(unittest.TestCase):
                               ('llm.json',{'base_url':'https://model.invalid/v1','api_key':'invented-test-only','model':'invented-model','daily_token_cap':50000})]:
                 path=root/name;path.write_text(json.dumps(data));path.chmod(0o600)
             env=credential_environment('api',str(root))
-            self.assertEqual(env.get('ENHANCED_LLM_BUDGET_DB'),'/var/lib/enhanced-cognee-llm-budget/tokens.sqlite3')
+            # 2026-11-06 G2 fix: the plain path is a symlink inside the DynamicUser
+            # namespace (incident 2026-11-06); the daemon must provision the
+            # namespace-private real directory path instead.
+            self.assertEqual(env.get('ENHANCED_LLM_BUDGET_DB'),'/var/lib/private/enhanced-cognee-llm-budget/tokens.sqlite3')
 
 if __name__=='__main__':unittest.main()
