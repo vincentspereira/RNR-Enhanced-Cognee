@@ -1,0 +1,59 @@
+== Backend services ==
+OK   enhanced-cognee-api.service                          active
+OK   enhanced-cognee-postgres.service                     active
+OK   enhanced-cognee-qdrant.service                       active
+OK   enhanced-cognee-graph.service                        active
+OK   enhanced-cognee-cache.service                        active
+OK   memory API health                                    
+OK   main assistant memory status                         default
+== Provider + MCP tools per role (live) ==
+OK   protocol pin                                         
+OK   role accounting-specialist                           17 tools
+OK   role ai-safety-guardrails                            15 tools
+OK   role aiml-engineer                                   17 tools
+OK   role backend-developer                               15 tools
+OK   role chief-of-staff                                  15 tools
+OK   role cloud-engineer                                  10 tools
+OK   role code-implementer                                15 tools
+OK   role code-reviewer                                   15 tools
+OK   role context-engineer                                17 tools
+OK   role cross-project-collaborator                      15 tools
+OK   role customer-feedback-analyst                       17 tools
+OK   role data-engineer                                   17 tools
+OK   role data-gen-rl                                     17 tools
+OK   role debug-specialist                                15 tools
+OK   role deep-research-specialist                        17 tools
+OK   role deliberation-moderator                          15 tools
+OK   role deployment-engineer                             10 tools
+OK   role devops-engineer                                 10 tools
+OK   role ecommerce-kdp-publisher                         17 tools
+OK   role educational-content-author                      17 tools
+OK   role fiction-content-author                          17 tools
+OK   role frontend-developer                              15 tools
+OK   role github-collaborator                             17 tools
+OK   role governance-privacy                              15 tools
+OK   role integration-specialist                          15 tools
+OK   role legal-specialist                                15 tools
+OK   role marketing-social-manager                        17 tools
+OK   role media-producer                                  17 tools
+OK   role mobile-developer                                15 tools
+OK   role multimedia-producer                             17 tools
+OK   role niche-hunter                                    17 tools
+OK   role observability-specialist                        10 tools
+OK   role performance-optimiser                           10 tools
+OK   role print-merch-designer                            17 tools
+OK   role project-orchestrator                            15 tools
+OK   role security-specialist                             15 tools
+OK   role social-work-specialist                          17 tools
+OK   role software-architect                              15 tools
+OK   role technical-consultant                            17 tools
+OK   role technical-writer                                17 tools
+OK   role test-engineer                                   15 tools
+OK   role theology-content-author                         17 tools
+OK   role uxui-engineer                                   17 tools
+OK   role web-researcher                                  17 tools
+OK   main assistant tools                                 17 tools
+== Automation and rotation ==
+OK   token renewal timer                                  active
+OK   daily fleet backup timer                             Sun 2026-11-01 13:16:59 GMT 8h Sat 2026-
+{"complete": false, "error_kind": "PermissionError", "detail": "[Errno 13] Permission denied: '/var/lib/enhanced-cognee-rotation'"}

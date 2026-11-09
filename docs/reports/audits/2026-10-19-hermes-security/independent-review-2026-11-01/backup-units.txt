@@ -1,0 +1,97 @@
+# /etc/systemd/system/enhanced-cognee-backup.service
+[Unit]
+Description=Encrypted Enhanced Cognee database backup
+
+[Service]
+Type=oneshot
+# System unit, separate from the Hermes user and its writable checkout.
+# Owner selected /var/backups/enhanced-cognee inside Ubuntu-Hermes.
+# Operator prepares that root-owned 0700 directory before installation.
+User=root
+Group=root
+LoadCredential=backup.json:/etc/enhanced-cognee/backup.json
+WorkingDirectory=/opt/enhanced-cognee-memory
+ExecStart=/opt/enhanced-cognee-memory/runtime/bin/python -m src.memory_daemon backup
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/backups/enhanced-cognee
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+AmbientCapabilities=
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=32
+TimeoutStartSec=15min
+
+# /etc/systemd/system/enhanced-cognee-profile-backup.service
+[Unit]
+Description=Encrypted restricted Hermes profile backup
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+Environment=WSL_DISTRO_NAME=Ubuntu-Hermes
+WorkingDirectory=/tmp
+ExecStart=/usr/bin/python3 -I -B /opt/enhanced-cognee-profile-backup/a1ffd4c258238847/run.py
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateNetwork=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadOnlyPaths=/var/lib/hermes-runtime
+ReadWritePaths=/var/backups/enhanced-cognee
+InaccessiblePaths=-/etc/enhanced-cognee/age-recovery-identity.txt -/etc/enhanced-cognee/operator.json -/etc/enhanced-cognee/api.json -/etc/enhanced-cognee/worker.json
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID
+AmbientCapabilities=CAP_SETUID
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=32
+TimeoutStartSec=3min
+
+# /etc/systemd/system/enhanced-cognee-qualified-fleet-backup-v2.service
+[Unit]
+Description=Daily encrypted backups of qualified inactive Hermes candidates
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+WorkingDirectory=/
+ExecStart=/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/bin/python -I -B /opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-fleet-daily-backups-v2/install_launch_fleet_backups.py --worker
+NoNewPrivileges=yes
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID
+AmbientCapabilities=CAP_SETUID CAP_SETGID
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+InaccessiblePaths=/etc/enhanced-cognee/age-recovery-identity.txt /etc/enhanced-cognee/operator.json /etc/enhanced-cognee/api.json /etc/enhanced-cognee/worker.json
+ReadWritePaths=/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/operator-fleet-daily-backups-v2 /var/backups/enhanced-cognee /var/lib/enhanced-cognee-profiles/534e43407c192971 /var/lib/enhanced-cognee-profiles/99a613c8095432e6 /var/lib/enhanced-cognee-profiles/1a733fd671436033 /var/lib/enhanced-cognee-profiles/c1f790d3d6074908 /var/lib/enhanced-cognee-profiles/7bb7c9428ac8d1af /var/lib/enhanced-cognee-profiles/cc1f540864bed6b7 /var/lib/enhanced-cognee-profiles/f151bf8d4c66d830 /var/lib/enhanced-cognee-profiles/862ad11b003bdcaa /var/lib/enhanced-cognee-profiles/053d2ec9f3d9a90a /var/lib/enhanced-cognee-profiles/ac5b15df58654bab /var/lib/enhanced-cognee-profiles/164d97c1055368ca /var/lib/enhanced-cognee-profiles/3914b0c773055503 /var/lib/enhanced-cognee-profiles/8b926f9216d5cb92 /var/lib/enhanced-cognee-profiles/aff7dcb9ea88bdaa /var/lib/enhanced-cognee-profiles/44f5a516a3b78532 /var/lib/enhanced-cognee-profiles/5324becd60ee80a4 /var/lib/enhanced-cognee-profiles/7f1a04a3b4505bb6 /var/lib/enhanced-cognee-profiles/6e0db565741ca339 /var/lib/enhanced-cognee-profiles/43a7dd403ea6f343 /var/lib/enhanced-cognee-profiles/3fae09eef98774b9 /var/lib/enhanced-cognee-profiles/b735c29dea5507cf /var/lib/enhanced-cognee-profiles/fe9ff8061732de3a /var/lib/enhanced-cognee-profiles/f0b590890f59ed61 /var/lib/enhanced-cognee-profiles/b782d34157afd712 /var/lib/enhanced-cognee-profiles/2c76f3d7d63a7f57 /var/lib/enhanced-cognee-profiles/0c31d1567924b4a4 /var/lib/enhanced-cognee-profiles/2f93b7836fc677cb /var/lib/enhanced-cognee-profiles/2660f97e18a42d2d /var/lib/enhanced-cognee-profiles/21153b6ecb7d017c /var/lib/enhanced-cognee-profiles/a9cc1964b1938b5f /var/lib/enhanced-cognee-profiles/6d385fef0858d93d /var/lib/enhanced-cognee-profiles/612c787f2fa9c699 /var/lib/enhanced-cognee-profiles/e32b6d3d1a129c21 /var/lib/enhanced-cognee-profiles/8c2e4d341ad5cf7a /var/lib/enhanced-cognee-profiles/d87e70151eeb62b0 /var/lib/enhanced-cognee-profiles/f3f91bd3a521a7d5 /var/lib/enhanced-cognee-profiles/e1e205eaf3ad197c /var/lib/enhanced-cognee-profiles/eaa9b4dc51eccaf9 /var/lib/enhanced-cognee-profiles/fbd89fdf65005a63 /var/lib/enhanced-cognee-profiles/8958368a43d70421 /var/lib/enhanced-cognee-profiles/5592956882ea9a13
+Restart=no
+TimeoutStartSec=3600
+MemoryMax=8G
+LimitCORE=0

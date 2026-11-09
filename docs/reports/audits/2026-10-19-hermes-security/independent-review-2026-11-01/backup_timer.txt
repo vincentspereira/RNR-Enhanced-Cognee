@@ -1,0 +1,9 @@
+$ systemctl show enhanced-cognee-qualified-fleet-backup-v2.timer -p Id -p ActiveState -p NextElapseUSecMonotonic -p TimersMonotonic -p LastTriggerUSec -p Persistent
+exit=0
+TimersMonotonic={ OnUnitActiveUSec=1d ; next_elapse=1d 1min 9.652568s }
+TimersMonotonic={ OnActiveUSec=15s ; next_elapse=1min 8.850486s }
+NextElapseUSecMonotonic=1d 1min 9.652568s
+LastTriggerUSec=Sat 2026-10-31 13:29:02 GMT
+Persistent=no
+Id=enhanced-cognee-qualified-fleet-backup-v2.timer
+ActiveState=active

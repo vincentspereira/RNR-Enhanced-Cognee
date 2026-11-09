@@ -1,0 +1,9 @@
+$ systemctl show ec-hermes-memory-token-renew.timer -p Id -p ActiveState -p NextElapseUSecRealtime -p LastTriggerUSec -p TimersCalendar -p RandomizedDelayUSec -p Persistent
+exit=0
+TimersCalendar={ OnCalendar=Mon *-*-* 04:00:00 ; next_elapse=Mon 2026-11-02 04:00:00 GMT }
+NextElapseUSecRealtime=Mon 2026-11-02 04:04:07 GMT
+LastTriggerUSec=Fri 2026-10-30 21:30:07 GMT
+RandomizedDelayUSec=5min
+Persistent=yes
+Id=ec-hermes-memory-token-renew.timer
+ActiveState=active

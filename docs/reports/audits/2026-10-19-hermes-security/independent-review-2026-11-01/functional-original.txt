@@ -1,0 +1,21 @@
+OK   memory: remember (write)                       
+OK   memory: get by id                              
+OK   memory: correct with version check + history   
+OK   memory: semantic recall                        
+OK   memory: retract                                
+OK   read tools: advertised exactly                 
+OK   read tools: get_stats live                     
+OK   read tools: graph traversal (connections)      
+OK   ingest: document chunked and stored            
+OK   ingest: private-address refused                
+ERR  analysis: summarize (real model)               
+OK   analysis: translate                            
+OK   analysis: detect-language                      
+ERR  analysis: consolidation report-only            
+OK   analysis: budget accounting                    
+OK   coordination: coordinator write                
+OK   coordination: 15 tools advertised              
+OK   coordination: library publish correctly reviewer-gated 
+OK   worker/graph: pending drained                  
+OK   backend: active records back to baseline       0
+{"checks": 20, "complete": false, "failed": ["analysis: summarize (real model)", "analysis: consolidation report-only"]}

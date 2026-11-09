@@ -1,0 +1,5 @@
+$ df -i /var/lib /var/backups
+exit=0
+Filesystem       Inodes   IUsed    IFree IUse% Mounted on
+/dev/sde       67108864 1641985 65466879    3% /
+/dev/sde       67108864 1641985 65466879    3% /

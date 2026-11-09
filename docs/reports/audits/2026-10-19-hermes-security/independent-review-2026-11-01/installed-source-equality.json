@@ -1,0 +1,32 @@
+[
+  {
+    "file": "src/memory_api.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  },
+  {
+    "file": "src/ingestion.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  },
+  {
+    "file": "src/llm_summarize.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  },
+  {
+    "file": "src/memory_daemon.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  },
+  {
+    "file": "src/security/enterprise_auth.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  },
+  {
+    "file": "src/security/http_boundary.py",
+    "installed_readable": false,
+    "source_equals_installed": null
+  }
+]

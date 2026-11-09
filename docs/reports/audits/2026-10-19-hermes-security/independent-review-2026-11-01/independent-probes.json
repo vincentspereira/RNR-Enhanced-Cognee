@@ -1,0 +1,124 @@
+[
+  {
+    "check": "manual_legal_specialist_mcp_names",
+    "passed": true,
+    "count": 15,
+    "names": [
+      "detect_language",
+      "find_consolidation_candidates",
+      "get_memories",
+      "get_memory",
+      "get_memory_history",
+      "get_related",
+      "get_shared_memories",
+      "get_stats",
+      "get_summarization_status",
+      "health",
+      "library_membership",
+      "list_agents",
+      "recall",
+      "summarize_memories",
+      "translate_text"
+    ]
+  },
+  {
+    "check": "manual_legal_specialist_auth_call",
+    "passed": true,
+    "isError": false
+  },
+  {
+    "check": "manual_unoffered_tool_refused",
+    "passed": true
+  },
+  {
+    "check": "malformed_params_empty_list",
+    "server_alive": true,
+    "reply_received": true
+  },
+  {
+    "check": "malformed_params_nonempty_list",
+    "server_alive": false,
+    "exit_code": 1
+  },
+  {
+    "check": "empty_scope_summarize",
+    "status": 422,
+    "fixed_detail": "Nothing to summarize"
+  },
+  {
+    "check": "empty_scope_consolidation_candidates",
+    "status": 422,
+    "fixed_detail": "Too few records to compare"
+  },
+  {
+    "check": "paced_fixture_write_1",
+    "status": 200,
+    "id_present": true
+  },
+  {
+    "check": "paced_fixture_readback_1",
+    "passed": true
+  },
+  {
+    "check": "paced_fixture_write_2",
+    "status": 200,
+    "id_present": true
+  },
+  {
+    "check": "paced_fixture_readback_2",
+    "passed": true
+  },
+  {
+    "check": "llm_route_status",
+    "status": 200,
+    "configured": true,
+    "model": "GLM-5.3-Flash",
+    "daily_token_cap": 50000,
+    "used_today": 346
+  },
+  {
+    "check": "seeded_summary_investigation",
+    "status": 200,
+    "sources": 2,
+    "tokens_used": 568,
+    "summary_present": true,
+    "record_id_present": true,
+    "seconds": 13.573,
+    "fixed_detail": null
+  },
+  {
+    "check": "seeded_summary_readback",
+    "passed": true
+  },
+  {
+    "check": "seeded_consolidation_investigation",
+    "status": 200,
+    "compared": 3,
+    "report_only": true,
+    "tokens_used": 580,
+    "fixed_detail": null
+  },
+  {
+    "check": "audit_fixture_retraction",
+    "status": 200,
+    "readback_status": 404,
+    "readback_state": null
+  },
+  {
+    "check": "audit_fixture_retraction",
+    "status": 200,
+    "readback_status": 404,
+    "readback_state": null
+  },
+  {
+    "check": "audit_fixture_retraction",
+    "status": 200,
+    "readback_status": 404,
+    "readback_state": null
+  },
+  {
+    "check": "audit_scope_clean_readback",
+    "passed": true,
+    "active_rows": 0
+  }
+]

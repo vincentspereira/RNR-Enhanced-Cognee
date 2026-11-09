@@ -1,0 +1,8 @@
+$ systemctl is-active enhanced-cognee-api enhanced-cognee-postgres enhanced-cognee-qdrant enhanced-cognee-graph enhanced-cognee-cache enhanced-cognee-index
+exit=0
+active
+active
+active
+active
+active
+active

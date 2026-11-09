@@ -1,0 +1,27 @@
+{
+  "mcp_http_error_propagation": {
+    "http_status": 403,
+    "mcp_isError": false
+  },
+  "renewal_bad_receipt_accepted": {
+    "process_exit": 1,
+    "complete_input_type": "str",
+    "accepted_as_complete": true
+  },
+  "renewal_timeout": {
+    "exception_escapes_profile_function": true
+  },
+  "installed_renewal_source": {
+    "byte_identical": false,
+    "live_profile_discovery_count": 45,
+    "source_only_unpinned_code_import": true,
+    "installed_has_that_code_import": false
+  },
+  "root_job_writable_interpreter": {
+    "uid": 1000,
+    "mode": "0o775",
+    "user_can_write_target": true,
+    "user_can_replace_symlink": true,
+    "service_user_root": true
+  }
+}

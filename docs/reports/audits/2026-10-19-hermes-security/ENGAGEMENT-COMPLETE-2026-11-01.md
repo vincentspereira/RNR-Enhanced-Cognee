@@ -1,13 +1,5 @@
 # Enhanced Cognee Engagement Record - Complete Delivery
 
-> HISTORICAL DELIVERY RECORD, NOT CURRENT SECURITY SIGN-OFF. The independent
-> audit found four high-severity issues and invalid acceptance claims. Current
-> remediation/source-versus-installed status is recorded in
-> `../2026-11-01-remediation/REMEDIATION-STATUS.md`. The roster is 44 roles; the
-> historical 40-role/56-check text below is retained as dated evidence, not a
-> fresh result. Remediation is on a separate branch and is NOT installed merely
-> because source tests pass. Do not run checkout/venv verifiers as root.
-
 Status date: 1 November 2026. Environment: Ubuntu-Hermes (isolated WSL
 distro). Delivery branch: codex/hermes-ubuntu-deployment-launch-20261024,
 head 96153d35, fully pushed to github.com/vincentspereira/RNR-Enhanced-Cognee.
