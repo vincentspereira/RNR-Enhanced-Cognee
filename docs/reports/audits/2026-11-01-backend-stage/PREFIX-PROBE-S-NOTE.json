@@ -1,0 +1,11 @@
+{
+  "first_probe_flags": [
+    "-I",
+    "-S",
+    "-B"
+  ],
+  "observed_prefix": "/opt/enhanced-cognee-memory/python",
+  "classification": "harness mismatch: Python 3.12 site initialisation supplies the venv prefix; -S intentionally skips it",
+  "candidate_bytes_changed": false,
+  "next_probe": "Use -I -B matching planned application launch, with clean environment and namespace-spec inspection only"
+}

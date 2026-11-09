@@ -1,0 +1,49 @@
+{
+  "mode": "offline-isolated-invented-data",
+  "source_sha256": {
+    "src/ingestion.py": "205d1c72ad937db1fa2990f3bcdba29599eceec9c17dae9e467c84b55749a821",
+    "src/llm_summarize.py": "6a20835307a697ff401138f8fc67a6c3c8bfbb109203070da3f02812df5c78cf",
+    "src/memory_api.py": "e21ba22d0bf02fee1c4ce2b1b0720dfa2fc2130118ac6e54ee0225285edd07d0"
+  },
+  "results": {
+    "ssrf_dns_rebinding": {
+      "dns_calls": 2,
+      "connected_to": [
+        [
+          "127.0.0.1",
+          80
+        ]
+      ],
+      "document_returned": true
+    },
+    "budget_concurrency": {
+      "completed_requests": 2,
+      "cap": 5000,
+      "charged": 8000
+    },
+    "summary_grant_lifecycle": {
+      "include_shared_requested": true,
+      "foreign_content_in_prompt": true,
+      "persisted_copy_after_simulated_source_revocation": true,
+      "source_ids_or_versions_recorded": false,
+      "expiry_passed_to_remember": false,
+      "saved_metadata_keys": [
+        "model",
+        "origin",
+        "source",
+        "sources"
+      ]
+    },
+    "translation_admission": {
+      "credential_shaped_input_reached_chat": true
+    },
+    "ingestion_partial_commit": {
+      "request_raised": true,
+      "already_stored": 1
+    },
+    "budget_missing_usage": {
+      "reply_accepted": true,
+      "charged_tokens": 0
+    }
+  }
+}

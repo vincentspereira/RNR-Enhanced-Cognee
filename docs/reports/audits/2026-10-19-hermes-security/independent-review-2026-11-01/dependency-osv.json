@@ -1,0 +1,13 @@
+{
+  "utc": "2026-11-01T04:46:44.409953+00:00",
+  "scope": "Current public lockfiles, NOT proof of installed protected-runtime inventory",
+  "locks": {
+    "requirements-memory.lock": 34,
+    "requirements-index.lock": 35,
+    "requirements-memory-mcp.lock": 29
+  },
+  "unique_packages_and_versions": 47,
+  "source": "https://api.osv.dev/v1/querybatch",
+  "complete": true,
+  "affected": []
+}

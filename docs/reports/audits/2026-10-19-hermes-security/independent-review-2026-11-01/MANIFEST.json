@@ -1,0 +1,227 @@
+[
+  {
+    "file": "OWNER-CHECKS.md",
+    "bytes": 3505,
+    "sha256": "3e28ef6d58e799b7728641e95813016f6bbc4d5531cd6e59730988f2d45e67b6"
+  },
+  {
+    "file": "REPORT.md",
+    "bytes": 35940,
+    "sha256": "178d62b79b98bde0854ba136596a97003e4827fc7c3c9a592696aafcdb5cbcb4"
+  },
+  {
+    "file": "VERIFICATION-MATRIX.md",
+    "bytes": 17169,
+    "sha256": "da6f4581fb8ba4213a771d4596c352c4ae19220fe82f5f7ba67a31ea335b610b"
+  },
+  {
+    "file": "audit-summary.json",
+    "bytes": 4057,
+    "sha256": "132bec5339b4843e7061b384d873279c92a57c3d3aa233dc8764ffe11b77254b"
+  },
+  {
+    "file": "audit_dependencies.py",
+    "bytes": 1727,
+    "sha256": "2fb0100c21d1747b10f937c44e9b0c79f92f6e41a6e34a1d1c268f28cb4a7c7b"
+  },
+  {
+    "file": "backup-units.txt",
+    "bytes": 5257,
+    "sha256": "0092a1ac3b04b606a81383f4772f55a8dc6ee24766b2e34209be4b9ef4f538d5"
+  },
+  {
+    "file": "backup_timer.txt",
+    "bytes": 480,
+    "sha256": "f07a0b4d30d51eb3d7a86a291f4833594bab34b594f90c500620602810f3cbdd"
+  },
+  {
+    "file": "commands.json",
+    "bytes": 511,
+    "sha256": "a88fc9ac9723dada5d17f46417b637f1a615b14aff7334277fb2e09d9af94ba7"
+  },
+  {
+    "file": "consolidated.txt",
+    "bytes": 3916,
+    "sha256": "3700f40e12e53e072ff342e53dcd6b88716f704fe102e21cab61457628f5a4c8"
+  },
+  {
+    "file": "dependency-osv.json",
+    "bytes": 391,
+    "sha256": "b86b689041a83e21f85ad1b55a34b6f72ae465881231620b673866f5e28b05d1"
+  },
+  {
+    "file": "disk.txt",
+    "bytes": 208,
+    "sha256": "81539c4a0dae27eb7832cd91552d691abc98dd7a2f9fc8dc9686a2c91b37bb39"
+  },
+  {
+    "file": "fleet-tools.txt",
+    "bytes": 5680,
+    "sha256": "04033470d9e85d43cdf68f2d40f9ec366c815c73e9b2faadd19280ec61b08ec7"
+  },
+  {
+    "file": "functional-command.json",
+    "bytes": 200,
+    "sha256": "30338d6139535b8d620281208e0f8fd28c7c0dd0dc575f3b55bf45f327c14d67"
+  },
+  {
+    "file": "functional-original.txt",
+    "bytes": 1190,
+    "sha256": "0acba6e6081cc399badbb0219c57a0fbb6d66af12d2843dd17e78f23a8e64681"
+  },
+  {
+    "file": "host.txt",
+    "bytes": 59,
+    "sha256": "cf338049c2eb76e16ebf24e764cacd7678f22a02f09157da6d9be950ce48ecd2"
+  },
+  {
+    "file": "independent-probes.json",
+    "bytes": 2520,
+    "sha256": "ea45ac9ed9688923cd0e23ad9b03d58e8d49ed5cb8fe3236531747331194c7e5"
+  },
+  {
+    "file": "independent_probes.py",
+    "bytes": 7464,
+    "sha256": "d7f7570b51dcca44165619d83d3daf083540e19c37170777a88ad45655cba062"
+  },
+  {
+    "file": "inodes.txt",
+    "bytes": 193,
+    "sha256": "e8595412784a5dda91c7d1e34bb73214e5ba2bfda81b218f82877b1e561f3934"
+  },
+  {
+    "file": "inspect_host.py",
+    "bytes": 8134,
+    "sha256": "da75507ab6e223cb9e446e841f24f7f289d7d2a1fab6683449ee20ede565256d"
+  },
+  {
+    "file": "installed-source-equality.json",
+    "bytes": 699,
+    "sha256": "b967293c4da7c73bc43ed387a5d1c90fc845daf7df82244e64db4d0513e51de1"
+  },
+  {
+    "file": "job_results.txt",
+    "bytes": 713,
+    "sha256": "0cf0d7fd8104cc26056b3d2ef7792d33eb79d6e8cb4e91d811a4f0df7d0f54c2"
+  },
+  {
+    "file": "journal_retention.txt",
+    "bytes": 1718,
+    "sha256": "eee83f064351d12ad7e45bbc179a5601bc48bde3d612637d9edd4cfadb29dfac"
+  },
+  {
+    "file": "journal_size.txt",
+    "bytes": 97,
+    "sha256": "deac0a52d4e154d12f92034b553ca5cb4c5a25e41b62c039997af5e8252560fe"
+  },
+  {
+    "file": "listeners.txt",
+    "bytes": 3496,
+    "sha256": "528b4fc2dc9e4d2b88f807b22a4d61a227fdb3cd5e83fa7ad808914e0420af5d"
+  },
+  {
+    "file": "monitoring.txt",
+    "bytes": 697,
+    "sha256": "4004a5b85fb158e6fd829ce08f30414cb30a1e68d859b09833f761c8788a4003"
+  },
+  {
+    "file": "offline-secondary-probes.json",
+    "bytes": 675,
+    "sha256": "8ee6c34fa45fa8a890495e2d8af841d392f4e8286c235e608b2922317e8e8bac"
+  },
+  {
+    "file": "offline-security-receipt.json",
+    "bytes": 1321,
+    "sha256": "ae11c7e0f566fd8cbeb41be2014f38f98b33a0329cb01db8761325fde1798f9e"
+  },
+  {
+    "file": "offline_secondary_probes.py",
+    "bytes": 3475,
+    "sha256": "343ea2369217740549ac48e98d05f8cce5886744037ddc12440527de60d90844"
+  },
+  {
+    "file": "offline_security_probe.py",
+    "bytes": 8179,
+    "sha256": "2144f90a3e81a6caca3f89ab0ad13695575cc4dfbfb4dc20203f7a698d3a9bf0"
+  },
+  {
+    "file": "package_audit.py",
+    "bytes": 10356,
+    "sha256": "0731b969c18288be4ab8c62e3cebe0172e5f336752222616875b993c436ef63a"
+  },
+  {
+    "file": "probe_read_tools.py",
+    "bytes": 4102,
+    "sha256": "263b6cf4bd47e54f3f74ce5e595b5c64801f19585e8ecf79f8c937b3e024b54b"
+  },
+  {
+    "file": "profile-settings.json",
+    "bytes": 49475,
+    "sha256": "805b2e437faff9366cb55f8cbbd7f6ab68fe31d52793b0ad4441aa70db588ed5"
+  },
+  {
+    "file": "read-tool-cleanup.json",
+    "bytes": 103,
+    "sha256": "45c06968f6bed3938001bf1af49d1c930729a60d7b6dcf2f3d33ae5571e1ef08"
+  },
+  {
+    "file": "read-tool-live.json",
+    "bytes": 2029,
+    "sha256": "920fad240323237bf9dac1e69df9d7d92d42e4fca517e641cc43826d35f9b466"
+  },
+  {
+    "file": "receipt_permissions.txt",
+    "bytes": 459,
+    "sha256": "0533873e81d005c71ba99795507c15e85693f68aeb209d9e67420d7cb0f52b99"
+  },
+  {
+    "file": "renew_timer.txt",
+    "bytes": 463,
+    "sha256": "ac4d0953a7d52e9cc0362888519010d99285bbcfdbeaea6331f9a061a414c9bf"
+  },
+  {
+    "file": "renewal-state-selected.json",
+    "bytes": 3316,
+    "sha256": "ac4a3fed517429a7b12b724d4dacfdb3cc046098a24865505ae5d2057b6591ef"
+  },
+  {
+    "file": "renewal-units.txt",
+    "bytes": 731,
+    "sha256": "84dcd6b5efbf5188d21e06f13c3a7086f97e5da8652416b8a8d39ceeba7aaa1f"
+  },
+  {
+    "file": "scan_branch.py",
+    "bytes": 3440,
+    "sha256": "6f59d99d054a22f97602dd86d245babfb9a7f2f593d8d584139e991697065c55"
+  },
+  {
+    "file": "secret-candidate-triage.json",
+    "bytes": 8727,
+    "sha256": "f848fda1a5dec4dec085ce805e492d34952967915271bc061285254006ae72a4"
+  },
+  {
+    "file": "secret-redacted-context.json",
+    "bytes": 1129,
+    "sha256": "175875e13e0a2e69b2c1c96e5c2de940340254a7744b2e999400d9c5cca023b6"
+  },
+  {
+    "file": "secret-scan.json",
+    "bytes": 7803,
+    "sha256": "0c811fdc187462bc0b922dc7a0b0f43b618b87a97f71ae1f0dc7d781922265db"
+  },
+  {
+    "file": "services.txt",
+    "bytes": 205,
+    "sha256": "227dea6c7d45a91f3761dc8b00463931dcdf0e0aba40e422084856cb39138d6c"
+  },
+  {
+    "file": "services_security.txt",
+    "bytes": 612,
+    "sha256": "699fa6f99f75047b95aaeec020f4a10c703e949b32500dc848c2c45aa3b08b7c"
+  },
+  {
+    "file": "timers.txt",
+    "bytes": 2486,
+    "sha256": "5b5d71d9b86edfa06399e0b33a77262785c7e34debb31762b192b6667ff49a9e"
+  }
+]

@@ -1,0 +1,6 @@
+$ df -h / /var/lib /var/backups
+exit=0
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sde       1007G  133G  823G  14% /
+/dev/sde       1007G  133G  823G  14% /
+/dev/sde       1007G  133G  823G  14% /

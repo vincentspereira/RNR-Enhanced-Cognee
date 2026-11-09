@@ -1,0 +1,82 @@
+[
+  {
+    "tool": "recall",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_memories",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_memory",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_memory_history",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_related",
+    "mcp_isError": false,
+    "payload_error_present": true,
+    "http_error_status": 422,
+    "fixed_detail": "Invalid memory fields; check the API contract",
+    "payload_type": "dict"
+  },
+  {
+    "tool": "list_agents",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_shared_memories",
+    "mcp_isError": false,
+    "payload_error_present": true,
+    "http_error_status": 403,
+    "fixed_detail": "Permission denied: 'memory:admin' is required (caller role 'api_client' lacks it).",
+    "payload_type": "dict"
+  },
+  {
+    "tool": "library_membership",
+    "mcp_isError": false,
+    "payload_error_present": true,
+    "http_error_status": 403,
+    "fixed_detail": "Permission denied: 'memory:admin' is required (caller role 'api_client' lacks it).",
+    "payload_type": "dict"
+  },
+  {
+    "tool": "get_stats",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  },
+  {
+    "tool": "health",
+    "mcp_isError": false,
+    "payload_error_present": false,
+    "http_error_status": null,
+    "fixed_detail": null,
+    "payload_type": "dict"
+  }
+]

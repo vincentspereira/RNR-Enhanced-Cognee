@@ -1,0 +1,27 @@
+{
+  "uid": 1000,
+  "application_modules_executed": false,
+  "credential_environment_passed": false,
+  "runtime_metadata": [
+    {
+      "candidate": "21abf4857ca8dce8e0a3aafc725266c8d3754529",
+      "exit": 0,
+      "metadata": {
+        "prefix": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime",
+        "base_prefix": "/opt/enhanced-cognee-memory/python",
+        "purelib": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/lib/python3.12/site-packages",
+        "memory_api_origin": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529/runtime/lib/python3.12/site-packages/src/memory_api.py"
+      }
+    },
+    {
+      "candidate": "audit-c14f595c-20261101",
+      "exit": 0,
+      "metadata": {
+        "prefix": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime",
+        "base_prefix": "/opt/enhanced-cognee-memory/python",
+        "purelib": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages",
+        "memory_api_origin": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101/runtime/lib/python3.12/site-packages/src/memory_api.py"
+      }
+    }
+  ]
+}

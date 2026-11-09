@@ -1,0 +1,7 @@
+$ stat -c %a %U:%G %n /etc/enhanced-cognee /etc/enhanced-cognee/llm.json /opt/enhanced-cognee-memory/fleet-renewal/state.json /var/lib/enhanced-cognee-rotation /var/backups/enhanced-cognee
+exit=1
+700 root:root /etc/enhanced-cognee
+644 root:root /opt/enhanced-cognee-memory/fleet-renewal/state.json
+700 root:root /var/lib/enhanced-cognee-rotation
+700 root:root /var/backups/enhanced-cognee
+stat: cannot statx '/etc/enhanced-cognee/llm.json': Permission denied

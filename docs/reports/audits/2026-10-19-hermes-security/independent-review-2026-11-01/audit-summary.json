@@ -1,0 +1,153 @@
+{
+  "audit_date": "2026-11-01",
+  "completed_utc": "2026-11-01T04:57:00.586067+00:00",
+  "hostname": "Ubuntu-Hermes",
+  "head": "89d1be78bbe9571b9152396c5483eabbb8360b95",
+  "branch": "codex/hermes-ubuntu-deployment-launch-20261024",
+  "verdict": "Substantially functional; unrestricted production-readiness sign-off not recommended",
+  "consolidated": {
+    "planned": 60,
+    "ok_rows_before_receipt_exception": 55,
+    "receipt_checks_not_completed": 5,
+    "exit_code": 1,
+    "error_kind": "PermissionError"
+  },
+  "fleet_catalogue": {
+    "complete": true,
+    "failures": [],
+    "roles": 44
+  },
+  "functional": {
+    "checks": 20,
+    "complete": false,
+    "failed": [
+      "analysis: summarize (real model)",
+      "analysis: consolidation report-only"
+    ],
+    "exit_code": 0,
+    "ok_flags": 18,
+    "warning": "A further graph false positive was established by independent live read-tool calls."
+  },
+  "read_tools_live": {
+    "advertised_group_count": 10,
+    "non_error_payloads": 7,
+    "error_payloads": 3
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "HIGH",
+      "title": "Root renewal depends on an ordinary-user-writable runtime"
+    },
+    {
+      "id": "F02",
+      "severity": "HIGH",
+      "title": "Public-address validation can be bypassed by DNS rebinding"
+    },
+    {
+      "id": "F03",
+      "severity": "HIGH",
+      "title": "Stored summaries lose shared-source access and expiry controls"
+    },
+    {
+      "id": "F04",
+      "severity": "HIGH",
+      "title": "The 50k/day cap is not a dependable spending limit"
+    },
+    {
+      "id": "F05",
+      "severity": "MEDIUM",
+      "title": "Hosted model requests lack explicit source/privacy admission"
+    },
+    {
+      "id": "F06",
+      "severity": "MEDIUM",
+      "title": "MCP transport errors do not set isError"
+    },
+    {
+      "id": "F07",
+      "severity": "MEDIUM",
+      "title": "MCP's timeout is shorter than real model operations"
+    },
+    {
+      "id": "F08",
+      "severity": "MEDIUM",
+      "title": "Renewal failures are not reliably isolated or acknowledged"
+    },
+    {
+      "id": "F09",
+      "severity": "MEDIUM",
+      "title": "The documented renewal source update is not installed"
+    },
+    {
+      "id": "F10",
+      "severity": "MEDIUM",
+      "title": "Running MCP credential refresh remains an acceptance gap"
+    },
+    {
+      "id": "F11",
+      "severity": "MEDIUM",
+      "title": "Acceptance scripts give misleading or incomplete verdicts"
+    },
+    {
+      "id": "F12",
+      "severity": "MEDIUM",
+      "title": "Catalogue verification is not provider end-to-end proof"
+    },
+    {
+      "id": "F13",
+      "severity": "MEDIUM",
+      "title": "The named fleet backup does not prove current fleet recovery"
+    },
+    {
+      "id": "F14",
+      "severity": "MEDIUM",
+      "title": "URL-fetch timeout is not an absolute operation deadline"
+    },
+    {
+      "id": "F15",
+      "severity": "LOW",
+      "title": "Failed multi-chunk ingestion can leave partial writes"
+    },
+    {
+      "id": "F16",
+      "severity": "LOW",
+      "title": "Malformed MCP params terminates the child"
+    },
+    {
+      "id": "F17",
+      "severity": "LOW",
+      "title": "Completion documentation contains stale and conflicting claims"
+    },
+    {
+      "id": "F18",
+      "severity": "MEDIUM",
+      "title": "Three of ten advertised read tools fail on the live path"
+    }
+  ],
+  "severity_counts": {
+    "HIGH": 4,
+    "MEDIUM": 11,
+    "LOW": 3
+  },
+  "role_groups": {
+    "memory_read,ingest,analysis": 22,
+    "memory_read,analysis": 17,
+    "memory_read": 5
+  },
+  "protected_backend_source_equivalence": "not established",
+  "changes": {
+    "tracked_repository_diff": "",
+    "service_restarts": 0,
+    "credential_rotations": 0,
+    "fleet_bot_activations": 0,
+    "commits": 0,
+    "pushes": 0,
+    "profiles_modified": 0
+  },
+  "root_evidence_pending": [
+    "rotation receipts",
+    "LLM credential file mode and accidental-copy verification",
+    "current profile backup and recovery receipts"
+  ]
+}

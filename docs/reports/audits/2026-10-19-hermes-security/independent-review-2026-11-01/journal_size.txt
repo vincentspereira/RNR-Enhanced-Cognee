@@ -1,0 +1,3 @@
+$ journalctl --disk-usage
+exit=0
+Archived and active journals take up 388.2M in the file system.

@@ -1,0 +1,21 @@
+$ systemctl show ec-hermes-memory-token-renew.service enhanced-cognee-qualified-fleet-backup-v2.service enhanced-cognee-backup.service enhanced-cognee-profile-backup.service -p Id -p Result -p ExecMainStatus -p ExecMainExitTimestamp
+exit=0
+Result=success
+ExecMainExitTimestamp=
+ExecMainStatus=0
+Id=ec-hermes-memory-token-renew.service
+
+Result=success
+ExecMainExitTimestamp=Sat 2026-10-31 13:29:49 GMT
+ExecMainStatus=0
+Id=enhanced-cognee-qualified-fleet-backup-v2.service
+
+Result=success
+ExecMainExitTimestamp=Sun 2026-11-01 00:04:35 GMT
+ExecMainStatus=0
+Id=enhanced-cognee-backup.service
+
+Result=success
+ExecMainExitTimestamp=Sun 2026-11-01 00:02:31 GMT
+ExecMainStatus=0
+Id=enhanced-cognee-profile-backup.service

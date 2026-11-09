@@ -1,0 +1,58 @@
+{
+  "activated": false,
+  "candidate": "/opt/enhanced-cognee-memory/candidates/audit-c14f595c-20261101",
+  "complete": true,
+  "credentials_issued": 0,
+  "helper_sha256": "3bbe0c2305cc87489cea9c5bd87d68c434414dbf82d5fe484a82ad87699ae0c3",
+  "ledger_created": false,
+  "manifest_sha256": "801103b2fc3f4a01860ed9cb8d45b7d2d4a45c10e2be0c8c339ea11b415112d7",
+  "original_candidate": "/opt/enhanced-cognee-memory/candidates/21abf4857ca8dce8e0a3aafc725266c8d3754529",
+  "original_runtime_inventory": "55897401aad689f945b96d0e9e56b17ee2165eb9567d2cce84347f0ac32b2926",
+  "overlay_files": [
+    {
+      "new_sha256": "b814d10674a13ac6e7ed8f1be7de5eec5ae215109dafd85bf524d6f6ba94c32b",
+      "old_sha256": "205d1c72ad937db1fa2990f3bcdba29599eceec9c17dae9e467c84b55749a821",
+      "path": "src/ingestion.py"
+    },
+    {
+      "new_sha256": "e78c3c7fae47afe6c6228d6cab7b45387fb375f8c07ca37261a606e79a4010ae",
+      "old_sha256": "6a20835307a697ff401138f8fc67a6c3c8bfbb109203070da3f02812df5c78cf",
+      "path": "src/llm_summarize.py"
+    },
+    {
+      "new_sha256": "81a4ddc2ef5aee073b814a428a112cabe3536f4e83cbd7a0e15c83522b8d10a7",
+      "old_sha256": null,
+      "path": "src/llm_budget.py"
+    },
+    {
+      "new_sha256": "4f125fb6d01719440a0b6c614a7767bbe386c73756b19e232e1fd481a7b64dda",
+      "old_sha256": "e21ba22d0bf02fee1c4ce2b1b0720dfa2fc2130118ac6e54ee0225285edd07d0",
+      "path": "src/memory_api.py"
+    },
+    {
+      "new_sha256": "c0e97e285e30232467207e767a66dff2201e9041b62aeee07cada3619ee65d20",
+      "old_sha256": "64abec3c2883b0efcf718c17e52083156b5db41f1da0bd37b7d2035960b85909",
+      "path": "src/memory_daemon.py"
+    },
+    {
+      "new_sha256": "9ca8bec14760ca2793b175bf69d088ed1a78eb9a5a06a94a744929ec3aa4ef2f",
+      "old_sha256": "7cb28171050a55d2046e7977c8ab603cc9bfbe3bc748d3efab87d263817cebcd",
+      "path": "src/memory_library.py"
+    },
+    {
+      "new_sha256": "be051d645535239d57677a8a9d05bf47929d9c80f5e49d3e3884ea47e9c275a3",
+      "old_sha256": "0d75ea1dcdc331c28bedfb4c090310035d354820a36a55960cfb7299d77be561",
+      "path": "src/memory_queries.py"
+    },
+    {
+      "new_sha256": "78cf82b8d052c74438dc85b9b24393128e837dbb8bfee78eda8146dbef66ae1e",
+      "old_sha256": "e9c117d5ab50bb557804ab6b3bb756ce73b918782f1a7e831b90baeabd490993",
+      "path": "src/security/enterprise_auth.py"
+    }
+  ],
+  "overlay_source_commit": "c14f595ccd53f432b455b16f116765d9aa6c9a14",
+  "runtime_entries": 7229,
+  "runtime_inventory": "038250d1b86726ec65d0de0c7582a91ce5de1ad47b7091d16fa06e2b84242ff9",
+  "services_restarted": false,
+  "wheel_metadata_rebuilt": false
+}

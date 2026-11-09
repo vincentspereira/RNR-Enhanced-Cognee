@@ -1,0 +1,10 @@
+{
+  "old_runtime_unchanged": true,
+  "old_entries": 7235,
+  "candidate_inventory_matches": true,
+  "candidate_entries": 7229,
+  "excluded_old_overlay_bytecode_files": 7,
+  "new_source_modules": 1,
+  "candidate_inventory_sha256": "038250d1b86726ec65d0de0c7582a91ce5de1ad47b7091d16fa06e2b84242ff9",
+  "src_init_present": false
+}

@@ -1,0 +1,21 @@
+$ systemctl show enhanced-cognee-api.service enhanced-cognee-index.service -p Id -p User -p Group -p NoNewPrivileges -p ProtectSystem -p PrivateTmp -p Restart -p StandardOutput -p StandardError
+exit=0
+Restart=on-failure
+StandardOutput=journal
+StandardError=inherit
+User=enhanced-cognee-api
+Group=enhanced-cognee-api
+PrivateTmp=yes
+ProtectSystem=strict
+NoNewPrivileges=yes
+Id=enhanced-cognee-api.service
+
+Restart=on-failure
+StandardOutput=journal
+StandardError=inherit
+User=enhanced-cognee-index
+Group=enhanced-cognee-index
+PrivateTmp=yes
+ProtectSystem=strict
+NoNewPrivileges=yes
+Id=enhanced-cognee-index.service

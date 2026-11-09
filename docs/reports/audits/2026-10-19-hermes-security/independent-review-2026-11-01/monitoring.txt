@@ -1,0 +1,26 @@
+$ systemctl show enhanced-cognee-api.service enhanced-cognee-index.service ec-hermes-memory-token-renew.service enhanced-cognee-backup.service enhanced-cognee-qualified-fleet-backup-v2.service -p Id -p OnFailure -p WatchdogUSec -p StartLimitAction
+exit=0
+WatchdogUSec=0
+Id=enhanced-cognee-api.service
+OnFailure=
+StartLimitAction=none
+
+WatchdogUSec=0
+Id=enhanced-cognee-index.service
+OnFailure=
+StartLimitAction=none
+
+WatchdogUSec=infinity
+Id=ec-hermes-memory-token-renew.service
+OnFailure=
+StartLimitAction=none
+
+WatchdogUSec=0
+Id=enhanced-cognee-backup.service
+OnFailure=
+StartLimitAction=none
+
+WatchdogUSec=0
+Id=enhanced-cognee-qualified-fleet-backup-v2.service
+OnFailure=
+StartLimitAction=none

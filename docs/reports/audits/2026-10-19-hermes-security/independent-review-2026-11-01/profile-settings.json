@@ -1,0 +1,1612 @@
+[
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-cb51c9652a6c4a12a178fcfdf5e2abeb"
+      },
+      {
+        "has_memory_token": true,
+        "mode": "0o600",
+        "name": ".env-before-gateway-d314b73d6da14520af516a9ba879692e"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o644",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env.bak.vin49.20260816_055925"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env.bak-20261021T225922Z"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": false,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "default",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 28.78481,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-a35838451f1a415ebab8769ee4175916"
+      },
+      {
+        "has_memory_token": true,
+        "mode": "0o600",
+        "name": ".env-before-gateway-477714f3d7dd47e79cf10642e796f403"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "accounting-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 29.98078,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-ae3861b5386e402c9ae9d314ef77aef8"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "ai-safety-guardrails",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99085,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-b3b0de7d49b149e0a7bbe52d64dabb0f"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "aiml-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-b8ea7eb204f2475795243649c3271a05"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "backend-developer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-8b924fc5ba6e48e89f6408360b7bfbec"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "chief-of-staff",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-5d0da4b68761447e8cf34f29b4085d76"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "cloud-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-068b208cc56a46289b21ed07425e7fd2"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "code-implementer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-7e644db6abcc47e880fd97d3fc990787"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "code-reviewer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-cb828ded08a34ebf8b48c9a715fa07b2"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "context-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-e2064a0b05fb4b6da1f427ca99178fa8"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "cross-project-collaborator",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99086,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-1cf4ee989aef4868a92990e1ffb36334"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "customer-feedback-analyst",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-476fcbdac12a4f638054b3298db7fb68"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "data-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-45a4b0f618a245979462aa2fd5f6db8c"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "data-gen-rl",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-e373a3c8bf4544b4a485c5f466ea2958"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "debug-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-3e2504d35c3e4c9aa285d8a15c703963"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "deep-research-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-fa8bc071983648f6a83772e373bcf76f"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "deliberation-moderator",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-e1b58f75e429482d8f25481372f13254"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "deployment-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-7afe1081c792433183e96db659672838"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "devops-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99087,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-5d4455ded7d245cb9159fc94a1530b85"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "ecommerce-kdp-publisher",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-6083926ad4414fda88a84130b766348d"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "educational-content-author",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-ab9d7036958942f6832856baacc1ae2a"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "fiction-content-author",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-02c1a13b97b94a45a44b8295baed98af"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "frontend-developer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-36a9002aebd24c35a43cdcaa975e5561"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "github-collaborator",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-b4577863904140178c01d442b7a36592"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "governance-privacy",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-de2529443aa84377a2fe757a2b9a97de"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "integration-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-7fa66e8bcc4342bcb563096a370bc20a"
+      },
+      {
+        "has_memory_token": true,
+        "mode": "0o600",
+        "name": ".env-before-gateway-947bfc385c8a4711bed138ca7aee7389"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "legal-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 29.98078,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-f92bb9aa07964b2b8cef01348df5926e"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "marketing-social-manager",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-beedc5078eb649a592afd4ec3051eb6b"
+      },
+      {
+        "has_memory_token": true,
+        "mode": "0o600",
+        "name": ".env-before-gateway-27452c482959424aa9fce6333e6a6dea"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "media-producer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 29.98078,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-bbbaffecd919494c868d0efd168eb23b"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "mobile-developer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99088,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-74db7f959a654b768560c84c362a66bc"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "multimedia-producer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-754314bfa2484c93974519d92b30419a"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "niche-hunter",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-164ac89e6ce34aea867e9c555ba78722"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "observability-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-ae1e77e63e8549bb849c4ac5fea95f94"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "performance-optimiser",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-bf4d01d02aea40b89d848cf433d798df"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "print-merch-designer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-c6cfecc60c2d4965a381b3a51e6cbc63"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "project-orchestrator",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-6a181f945dc34d69aa48191b18c1dc6d"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "security-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-f1c7494c9f3e43fbaff889d1932b2840"
+      },
+      {
+        "has_memory_token": true,
+        "mode": "0o600",
+        "name": ".env-before-gateway-2ba06d6a3c9a40bba8d34938d9c7a4d3"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "social-work-specialist",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 29.98077,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-7e58e846509845cc934342088c4c58e4"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "software-architect",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-f63ea5d129094d9ba7b5e0049fc06028"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "technical-consultant",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.99089,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-9f603bfad701407d99a8f0a52b97aa67"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "technical-writer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.9909,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-ff3fecb154564293831d5994279856f6"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "test-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.9909,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-9407868e6a3649e7a772e18c4bab4c8e"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "theology-content-author",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.9909,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-ae714d4956244cc081656b4812bb606c"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "uxui-engineer",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.9909,
+    "token_ttl_days": 30.0
+  },
+  {
+    "authenticated_status_code": 200,
+    "claims_unverified": true,
+    "env_backups": [
+      {
+        "has_memory_token": false,
+        "mode": "0o664",
+        "name": ".env.lock"
+      },
+      {
+        "has_memory_token": false,
+        "mode": "0o600",
+        "name": ".env-before-gateway-6a3d48e95c13456089d2d46966ce1f0a"
+      }
+    ],
+    "env_mode": "0o600",
+    "mcp_args_script_matches": true,
+    "mcp_command_exists": true,
+    "mcp_env_placeholder_exact": true,
+    "mcp_groups": "memory_read,ingest,analysis",
+    "memory_in_cli_allowlist": true,
+    "memory_toolset_not_disabled": true,
+    "plugin_enabled": true,
+    "plugin_files": {
+      "__init__.py": "fcc7be3d7659671f14006f685c8e5419554075a1e35ca4dde687d7ae46400061",
+      "client.py": "8c57f6db374fdc3ca2db4b40c9a1b3858cd92546827043e328ce74045012af64"
+    },
+    "provider": "enhanced_cognee",
+    "role": "web-researcher",
+    "status_project_matches": true,
+    "token_present": true,
+    "token_project_matches": true,
+    "token_remaining_days": 27.9909,
+    "token_ttl_days": 30.0
+  }
+]

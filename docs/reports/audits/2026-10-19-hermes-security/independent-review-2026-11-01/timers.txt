@@ -1,0 +1,18 @@
+$ systemctl list-timers --all --no-pager --no-legend
+exit=0
+Sun 2026-11-01 06:37:09 GMT 1h 56min Sat 2026-10-31 06:02:26 GMT            - apt-daily-upgrade.timer                         apt-daily-upgrade.service
+Sun 2026-11-01 09:02:21 GMT 4h 21min Sat 2026-10-31 21:13:55 GMT       7h ago apt-daily.timer                                 apt-daily.service
+Sun 2026-11-01 13:16:55 GMT       8h Sat 2026-10-31 13:29:02 GMT      15h ago enhanced-cognee-qualified-fleet-backup-v2.timer enhanced-cognee-qualified-fleet-backup-v2.service
+Sun 2026-11-01 13:31:40 GMT       8h Sat 2026-10-31 13:43:48 GMT      15h ago systemd-tmpfiles-clean.timer                    systemd-tmpfiles-clean.service
+Sun 2026-11-01 15:30:31 GMT      10h Sun 2026-11-01 00:38:10 GMT 4h 10min ago motd-news.timer                                 motd-news.service
+Mon 2026-11-02 00:00:00 GMT      19h Sun 2026-11-01 00:00:02 GMT 4h 49min ago dpkg-db-backup.timer                            dpkg-db-backup.service
+Mon 2026-11-02 00:00:00 GMT      19h Sun 2026-11-01 00:00:02 GMT 4h 49min ago logrotate.timer                                 logrotate.service
+Mon 2026-11-02 00:04:08 GMT      19h Sun 2026-11-01 00:02:30 GMT 4h 46min ago enhanced-cognee-profile-backup.timer            enhanced-cognee-profile-backup.service
+Mon 2026-11-02 00:05:24 GMT      19h Sun 2026-11-01 00:04:34 GMT 4h 44min ago enhanced-cognee-backup.timer                    enhanced-cognee-backup.service
+Mon 2026-11-02 04:04:07 GMT      23h Fri 2026-10-30 21:30:07 GMT            - ec-hermes-memory-token-renew.timer              ec-hermes-memory-token-renew.service
+Mon 2026-11-02 07:10:47 GMT 1 day 2h Sun 2026-11-01 00:19:51 GMT 4h 29min ago man-db.timer                                    man-db.service
+Sun 2026-11-08 03:10:55 GMT   6 days Sun 2026-11-01 03:10:12 GMT 1h 33min ago e2scrub_all.timer                               e2scrub_all.service
+-                                  - -                                      - apport-autoreport.timer                         apport-autoreport.service
+-                                  - -                                      - fstrim.timer                                    fstrim.service
+-                                  - -                                      - snapd.snap-repair.timer                         snapd.snap-repair.service
+-                                  - -                                      - ua-timer.timer                                  ua-timer.service
